@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>サンプルスリーブ2｜価格推移</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 24px; }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    .top { display:flex; gap:16px; align-items:center; }
+    img { width: 140px; height: 140px; object-fit: cover; border-radius: 12px; border:1px solid #ddd; }
+    a { color: #0b57d0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p><a href="../index.html">← 一覧に戻る</a></p>
+
+    <div class="top">
+      <img src="../img/sample-1.jpg" alt="サンプルスリーブ1">
+      <div>
+        <h1>サンプルスリーブ2</h1>
+        <div>未開封 / 公式</div>
+      </div>
+    </div>
+
+    <h2>年次価格推移（平均）</h2>
+    <canvas id="priceChart" height="120"></canvas>
+
+    <script>
+      const labels = ["2022", "2023", "2024", "2025"];
+      const prices  = [800, 1200, 2000, 1700];
+
+      new Chart(document.getElementById("priceChart"), {
+        type: "line",
+        data: {
+          labels,
+          datasets: [{
+            label: "平均価格（円）",
+            data: prices,
+            borderWidth: 2,
+            tension: 0.2
+          }]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    </script>
+  </div>
+</body>
+</html>
