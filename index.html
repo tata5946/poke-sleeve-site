@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ポケカスリーブ価格推移</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>ポケカスリーブ価格推移</h1>
+  <canvas id="priceChart" width="400" height="200"></canvas>
+
+  <script>
+    const data = {
+      labels: ["2022", "2023", "2024"],
+      datasets: [{
+        label: "平均価格（円）",
+        data: [800, 1200, 2000],
+        borderWidth: 2
+      }]
+    };
+
+    const config = {
+      type: 'line',
+      data: data,
+    };
+
+    new Chart(
+      document.getElementById('priceChart'),
+      config
+    );
+  </script>
+</body>
+</html>
