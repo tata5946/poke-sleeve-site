@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>価格推移</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 40px; }
+    a { color: #0b57d0; }
+    .meta { color:#666; margin-top:6px; }
+    .wrap { max-width: 900px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p><a href="./index.html">← 一覧に戻る</a></p>
+
+    <h1 id="name">読み込み中…</h1>
+    <div id="meta" class="meta"></div>
+
+    <h2>年次平均価格推移</h2>
+    <canvas id="priceChart" height="120"></canvas>
+  </div>
+
+  <script>
+    function getId() {
+      const params = new URLSearchParams(location.search);
+      return params.get("id");
+    }
+
+    async function main() {
+      const id = getId();
+      if (!id) {
+        document.getElementById("name").textContent = "IDが指定されていません";
+        return;
+      }
+
+      const res = await fetch("./data.json");
+      const data = await res.json();
+      const s = data.sleeves.find(x => x.id === id);
+
+      if (!s) {
+        document.getElementById("name").textContent = "データが見つかりません";
+        return;
+      }
+
+      document.title = `${s.name}｜価格推移`;
+      document.getElementById("name").textContent = s.name;
+      document.getElementById("meta").textContent = `発売年：${s.releaseYear} / ${s.condition} / ${s.series}`;
+
+      const years = Object.keys(s.pricesByYear).sort();
+      const prices = years.map(y => s.pricesByYear[y]);
+
+      new Chart(document.getElementById("priceChart"), {
+        type: "line",
+        data: {
+          labels: years,
+          datasets: [{
+            label: "平均価格（円）",
+            data: prices,
+            borderWidth: 2,
+            tension: 0.2
+          }]
+        },
+        options: {
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    }
+
+    main();
+  </script>
+</body>
+</html>
