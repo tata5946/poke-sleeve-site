@@ -21,7 +21,7 @@
 
   <div id="list" class="grid"></div>
 
-  <script>
+ <script>
 async function main() {
   const res = await fetch("./data.json");
   const data = await res.json();
@@ -47,16 +47,24 @@ async function main() {
     }
   }
 
-  // 初期表示
   render();
 
-  // 検索イベント
   searchInput.addEventListener("input", () => {
     render(searchInput.value);
   });
 }
-    
-    main();
-  </script>
+
+function escapeHtml(str) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+main();
+</script>
+
 </body>
 </html>
