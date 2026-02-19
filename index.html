@@ -12,59 +12,94 @@
     .title { font-weight: 800; font-size: 16px; margin-bottom: 6px; }
     .meta { font-size: 13px; color: #666; }
     a.btn { display:inline-block; margin-top: 10px; text-decoration:none; border:1px solid #333; padding:8px 10px; border-radius:8px; color:#111; }
+    .error { background:#fff3f3; border:1px solid #ffcccc; padding:12px; border-radius:10px; color:#b00020; margin: 12px 0; }
+    .small { font-size: 12px; color:#666; }
   </style>
 </head>
 <body>
   <h1>ポケカスリーブ価格推移</h1>
-  <input type="text" id="search" placeholder="スリーブ名で検索..." style="padding:8px; width:300px; margin-bottom:20px;">
-  <p>データ（data.json）を更新すると一覧が自動で増えます。</p>
 
+  <input type="text" id="search" placeholder="スリーブ名で検索..." style="padding:8px; width:300px; margin-bottom:12px;">
+  <p class="small">データ（data.json）を更新すると一覧が自動で増えます。</p>
+
+  <div id="error" class="error" style="display:none;"></div>
   <div id="list" class="grid"></div>
 
- <script>
-async function main() {
-  const res = await fetch("./data.json");
-  const data = await res.json();
-
-  const list = document.getElementById("list");
-  const searchInput = document.getElementById("search");
-
-  function render(keyword = "") {
-    list.innerHTML = "";
-
-    for (const s of data.sleeves) {
-      if (!s.name.toLowerCase().includes(keyword.toLowerCase())) continue;
-
-      const div = document.createElement("div");
-      div.className = "card";
-
-      div.innerHTML = `
-        <div class="title">${escapeHtml(s.name)}</div>
-        <div class="meta">発売年：${s.releaseYear} / ${escapeHtml(s.condition)} / ${escapeHtml(s.series)}</div>
-        <a class="btn" href="./detail.html?id=${encodeURIComponent(s.id)}">価格推移を見る →</a>
-      `;
-      list.appendChild(div);
+  <script>
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
-  }
 
-  render();
+    function showError(msg) {
+      const el = document.getElementById("error");
+      el.style.display = "block";
+      el.textContent = msg;
+    }
 
-  searchInput.addEventListener("input", () => {
-    render(searchInput.value);
-  });
-}
+    async function loadData() {
+      // キャッシュの影響で古い data.json を掴むことがあるので、クエリで回避
+      const res = await fetch("./data.json?v=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) {
+        throw new Error(`data.json の取得に失敗しました（HTTP ${res.status}）`);
+      }
+      return await res.json();
+    }
 
-function escapeHtml(str) {
-  return String(str)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+    async function main() {
+      const list = document.getElementById("list");
+      const searchInput = document.getElementById("search");
 
-main();
-</script>
+      let data;
+      try {
+        data = await loadData();
+      } catch (e) {
+        showError(e.message + " / ファイル名や配置（ルート直下に data.json）が正しいか確認してください。");
+        return;
+      }
 
+      if (!data || !Array.isArray(data.sleeves)) {
+        showError("data.json の形式が想定と違います。{ sleeves: [...] } になっているか確認してください。");
+        return;
+      }
+
+      function render(keyword = "") {
+        const kw = keyword.trim().toLowerCase();
+        list.innerHTML = "";
+
+        const filtered = data.sleeves.filter(s =>
+          String(s.name || "").toLowerCase().includes(kw)
+        );
+
+        if (filtered.length === 0) {
+          list.innerHTML = `<div class="card"><div class="title">該当なし</div><div class="meta">検索条件に一致するスリーブがありません</div></div>`;
+          return;
+        }
+
+        for (const s of filtered) {
+          const div = document.createElement("div");
+          div.className = "card";
+          div.innerHTML = `
+            <div class="title">${escapeHtml(s.name ?? "")}</div>
+            <div class="meta">発売年：${escapeHtml(s.releaseYear ?? "")} / ${escapeHtml(s.condition ?? "")} / ${escapeHtml(s.series ?? "")}</div>
+            <a class="btn" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}">価格推移を見る →</a>
+          `;
+          list.appendChild(div);
+        }
+      }
+
+      // 初期表示
+      render("");
+
+      // 検索
+      searchInput.addEventListener("input", () => render(searchInput.value));
+    }
+
+    main();
+  </script>
 </body>
 </html>
