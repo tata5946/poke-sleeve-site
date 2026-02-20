@@ -175,6 +175,13 @@
       list.innerHTML = "";
 
       const filtered = sleeves.filter(s => {
+        // 最新価格（選択年）の高い順に並び替え
+filtered.sort((a, b) => {
+  const pa = getPriceForYear(a, priceYear) ?? -1;
+  const pb = getPriceForYear(b, priceYear) ?? -1;
+  return pb - pa;
+});
+        
         // 検索
         if (kw && !String(s.name || "").toLowerCase().includes(kw)) return false;
 
