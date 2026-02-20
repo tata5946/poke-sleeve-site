@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>価格ランキング｜ポケカスリーブ価格推移</title>
+  <meta name="description" content="ポケカスリーブの最新年平均価格ランキング。相場が高いスリーブを一覧で確認できます。">
+  <style>
+    body { font-family: sans-serif; margin: 40px; }
+    a { color:#0b57d0; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+    th { background: #f6f6f6; }
+    .small { font-size: 12px; color:#666; }
+    .controls { display:flex; gap:12px; align-items:center; flex-wrap: wrap; margin: 12px 0; }
+    select, input { padding: 8px; }
+  </style>
+</head>
+<body>
+  <p><a href="./index.html">← 一覧に戻る</a></p>
+  <h1>価格ランキング</h1>
+  <p class="small">data.json から「指定年の平均価格」を集計して表示します。</p>
+
+  <div class="controls">
+    <label>年：
+      <select id="yearSelect"></select>
+    </label>
+    <label>検索：
+      <input id="q" type="text" placeholder="名前で絞り込み" />
+    </label>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>順位</th>
+        <th>スリーブ</th>
+        <th>平均価格（円）</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <script>
+    async function loadData() {
+      const res = await fetch("./data.json?v=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error("data.json の取得に失敗しました");
+      return await res.json();
+    }
+
+    function getAllYears(sleeves) {
+      const years = new Set();
+      for (const s of sleeves) {
+        for (const y of Object.keys(s.pricesByYear || {})) years.add(y);
+      }
+      return Array.from(years).sort(); // "2022","2023"...
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function main() {
+      const data = await loadData();
+      const sleeves = data.sleeves || [];
+
+      const yearSelect = document.getElementById("yearSelect");
+      const q = document.getElementById("q");
+      const rows = document.getElementById("rows");
+
+      const years = getAllYears(sleeves);
+      if (years.length === 0) {
+        rows.innerHTML = `<tr><td colspan="3">年データがありません</td></tr>`;
+        return;
+      }
+
+      // 最新年をデフォルト
+      for (const y of years) {
+        const opt = document.createElement("option");
+        opt.value = y;
+        opt.textContent = y;
+        yearSelect.appendChild(opt);
+      }
+      yearSelect.value = years[years.length - 1];
+
+      function render() {
+        const targetYear = yearSelect.value;
+        const keyword = q.value.trim().toLowerCase();
+
+        const items = sleeves
+          .filter(s => String(s.name || "").toLowerCase().includes(keyword))
+          .map(s => {
+            const v = (s.pricesByYear || {})[targetYear];
+            return { s, price: (v == null ? null : Number(v)) };
+          })
+          .filter(x => x.price != null && !Number.isNaN(x.price))
+          .sort((a, b) => b.price - a.price);
+
+        rows.innerHTML = "";
+        if (items.length === 0) {
+          rows.innerHTML = `<tr><td colspan="3">該当データがありません</td></tr>`;
+          return;
+        }
+
+        items.forEach((x, idx) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td><a href="./detail.html?id=${encodeURIComponent(x.s.id)}">${escapeHtml(x.s.name)}</a></td>
+            <td>${x.price.toLocaleString()}</td>
+          `;
+          rows.appendChild(tr);
+        });
+      }
+
+      yearSelect.addEventListener("change", render);
+      q.addEventListener("input", render);
+      render();
+    }
+
+    main().catch(e => {
+      document.getElementById("rows").innerHTML = `<tr><td colspan="3">${e.message}</td></tr>`;
+    });
+  </script>
+</body>
+</html>
