@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>急上昇ランキング｜ポケカスリーブ価格推移</title>
+  <meta name="description" content="ポケカスリーブの急上昇ランキング。各スリーブの直近2年データから上昇率を算出して一覧表示します。">
+  <style>
+    body { font-family: sans-serif; margin: 40px; }
+    a { color:#0b57d0; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid #ddd; padding: 10px; }
+    th { background: #f6f6f6; }
+    .controls { display:flex; gap:12px; align-items:center; flex-wrap: wrap; margin: 12px 0; }
+    input { padding: 8px; }
+    .small { font-size: 12px; color:#666; }
+  </style>
+</head>
+<body>
+  <p><a href="./index.html">← 一覧に戻る</a></p>
+  <h1>急上昇ランキング</h1>
+  <p class="small">各スリーブの「直近2年（データがある最新2点）」から上昇率を計算します。</p>
+
+  <div class="controls">
+    <label>検索：
+      <input id="q" type="text" placeholder="名前で絞り込み" />
+    </label>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>順位</th>
+        <th>スリーブ</th>
+        <th>対象期間</th>
+        <th>上昇率</th>
+        <th>前年差（円）</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <script>
+    async function loadData() {
+      const res = await fetch("./data.json?v=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error("data.json の取得に失敗しました");
+      return await res.json();
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function getLatestTwoPoints(pricesByYear) {
+      const years = Object.keys(pricesByYear || {})
+        .map(y => Number(y))
+        .filter(y => Number.isFinite(y))
+        .sort((a,b) => a - b);
+
+      if (years.length < 2) return null;
+
+      const y2 = years[years.length - 1];
+      const y1 = years[years.length - 2];
+
+      const v2 = Number(pricesByYear[String(y2)]);
+      const v1 = Number(pricesByYear[String(y1)]);
+
+      if (!Number.isFinite(v1) || !Number.isFinite(v2) || v1 <= 0) return null;
+      return { y1, y2, v1, v2 };
+    }
+
+    async function main() {
+      const data = await loadData();
+      const sleeves = data.sleeves || [];
+
+      const q = document.getElementById("q");
+      const rows = document.getElementById("rows");
+
+      function render() {
+        const kw = q.value.trim().toLowerCase();
+
+        const results = sleeves
+          .filter(s => String(s.name || "").toLowerCase().includes(kw))
+          .map(s => {
+            const pts = getLatestTwoPoints(s.pricesByYear);
+            if (!pts) return null;
+            const diff = pts.v2 - pts.v1;
+            const pct = (diff / pts.v1) * 100;
+            return {
+              id: s.id,
+              name: s.name,
+              y1: pts.y1,
+              y2: pts.y2,
+              diff,
+              pct
+            };
+          })
+          .filter(x => x && Number.isFinite(x.pct))
+          .sort((a,b) => b.pct - a.pct);
+
+        rows.innerHTML = "";
+        if (results.length === 0) {
+          rows.innerHTML = `<tr><td colspan="5">該当データがありません</td></tr>`;
+          return;
+        }
+
+        results.forEach((r, i) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td><a href="./detail.html?id=${encodeURIComponent(r.id)}">${escapeHtml(r.name)}</a></td>
+            <td>${r.y1} → ${r.y2}</td>
+            <td>${r.pct.toFixed(1)}%</td>
+            <td>${r.diff.toLocaleString()}</td>
+          `;
+          rows.appendChild(tr);
+        });
+      }
+
+      q.addEventListener("input", render);
+      render();
+    }
+
+    main().catch(e => {
+      document.getElementById("rows").innerHTML = `<tr><td colspan="5">${escapeHtml(e.message)}</td></tr>`;
+    });
+  </script>
+</body>
+</html>
