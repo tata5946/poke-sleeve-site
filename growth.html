@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>高騰率ランキング｜ポケカスリーブ価格推移</title>
+  <meta name="description" content="ポケカスリーブの前年比高騰率ランキング。値上がりしているスリーブを一覧表示します。">
+  <style>
+    body { font-family: sans-serif; margin: 40px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid #ddd; padding: 10px; }
+    th { background: #f6f6f6; }
+    a { color:#0b57d0; }
+  </style>
+</head>
+<body>
+  <p><a href="./index.html">← 一覧に戻る</a></p>
+  <h1>前年比 高騰率ランキング</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>順位</th>
+        <th>スリーブ</th>
+        <th>高騰率</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <script>
+    async function main() {
+      const res = await fetch("./data.json");
+      const data = await res.json();
+      const sleeves = data.sleeves;
+
+      const latestYear = Math.max(
+        ...sleeves.flatMap(s => Object.keys(s.pricesByYear).map(Number))
+      );
+      const prevYear = latestYear - 1;
+
+      const results = [];
+
+      for (const s of sleeves) {
+        const current = s.pricesByYear[latestYear];
+        const previous = s.pricesByYear[prevYear];
+
+        if (current && previous) {
+          const growth = ((current - previous) / previous) * 100;
+          results.push({ name: s.name, id: s.id, growth });
+        }
+      }
+
+      results.sort((a,b) => b.growth - a.growth);
+
+      const rows = document.getElementById("rows");
+      results.forEach((r,i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${i+1}</td>
+          <td><a href="./detail.html?id=${r.id}">${r.name}</a></td>
+          <td>${r.growth.toFixed(1)}%</td>
+        `;
+        rows.appendChild(tr);
+      });
+    }
+
+    main();
+  </script>
+</body>
+</html>
