@@ -42,23 +42,34 @@
 </p>
   </div>
 
-  <script>
-    function getId() {
-      const params = new URLSearchParams(location.search);
-      return params.get("id");
-    }
+ <script>
+  function getId() {
+    const params = new URLSearchParams(location.search);
+    return params.get("id");
+  }
 
-    async function main() {
+  function escapeHtml(str) {
+    return String(str ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  async function main() {
+    try {
       const id = getId();
       if (!id) {
         document.getElementById("name").textContent = "IDが指定されていません";
         return;
       }
 
-      const res = await fetch("./data.json");
+      const res = await fetch("./data.json?v=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error("data.json の取得に失敗: HTTP " + res.status);
       const data = await res.json();
-      const s = data.sleeves.find(x => x.id === id);
 
+      const s = (data.sleeves || []).find(x => x.id === id);
       if (!s) {
         document.getElementById("name").textContent = "データが見つかりません";
         return;
@@ -66,37 +77,76 @@
 
       document.title = `${s.name}｜価格推移`;
       document.getElementById("name").textContent = s.name;
-      document.getElementById("meta").textContent = `発売年：${s.releaseYear} / ${s.condition} / ${s.series}`;
+      document.getElementById("meta").textContent = `発売年：${escapeHtml(s.releaseYear ?? "")} / ${escapeHtml(s.condition ?? "")} / ${escapeHtml(s.series ?? "")}`;
 
-      const years = Object.keys(s.pricesByYear).sort();
-      const prices = years.map(y => s.pricesByYear[y]);
+      // years を数値でソートして文字列配列に戻す（安全）
+      const rawYears = Object.keys(s.pricesByYear || {});
+      const yearsNum = rawYears.map(y => Number(y)).filter(Number.isFinite).sort((a,b) => a - b);
+      const years = yearsNum.map(String);
 
-      const latestYear = years[years.length - 1];
-const latestPrice = Number(s.pricesByYear[latestYear]);
+      // prices を安全に作る
+      const prices = years.map(y => {
+        const v = s.pricesByYear[y];
+        const n = Number(v);
+        return Number.isFinite(n) ? n : null;
+      });
 
-let statsHtml = `最新（${latestYear}）：${latestPrice.toLocaleString()}円`;
+      const statsEl = document.getElementById("stats");
+      // 年データがない場合のフォールバック
+      if (years.length === 0 || prices.every(p => p == null)) {
+        statsEl.innerHTML = "価格データがありません";
+        // グラフを空にする（既に描画済みの場合に備え、canvasをクリア）
+        const ctx = document.getElementById("priceChart").getContext && document.getElementById("priceChart").getContext('2d');
+        // ※ Chart.js のインスタンス管理している場合は別途destroyが必要（今回は単発描画なのでスキップ）
+      } else {
+        const latestYear = years[years.length - 1];
+        const latestPriceRaw = s.pricesByYear[latestYear];
+        const latestPrice = Number(latestPriceRaw);
 
-if (years.length >= 2) {
-  const prevYear = years[years.length - 2];
-  const prevPrice = Number(s.pricesByYear[prevYear]);
-  const diff = latestPrice - prevPrice;
-  const pct = (diff / prevPrice) * 100;
+        // 表示用に安全にformat
+        const fmt = (n) => Number.isFinite(n) ? n.toLocaleString() + "円" : "データなし";
 
-  statsHtml += `<br>前年差（${prevYear}→${latestYear}）：${diff.toLocaleString()}円`;
-  statsHtml += `<br>上昇率：${pct.toFixed(1)}%`;
-} else {
-  statsHtml += `<br>前年差/上昇率：データ不足`;
-}
+        let statsHtml = `最新（${escapeHtml(latestYear)}）：${fmt(latestPrice)}`;
 
-document.getElementById("stats").innerHTML = statsHtml;
+        if (years.length >= 2) {
+          const prevYear = years[years.length - 2];
+          const prevPrice = Number(s.pricesByYear[prevYear]);
+          if (Number.isFinite(prevPrice) && Number.isFinite(latestPrice) && prevPrice !== 0) {
+            const diff = latestPrice - prevPrice;
+            const pct = (diff / prevPrice) * 100;
+            statsHtml += `<br>前年差（${escapeHtml(prevYear)}→${escapeHtml(latestYear)}）：${diff.toLocaleString()}円`;
+            statsHtml += `<br>上昇率：${pct.toFixed(1)}%`;
+          } else {
+            statsHtml += `<br>前年差/上昇率：データ不足または前年価格が0です`;
+          }
+        } else {
+          statsHtml += `<br>前年差/上昇率：データ不足`;
+        }
 
-      new Chart(document.getElementById("priceChart"), {
+        statsEl.innerHTML = statsHtml;
+      }
+
+      // Chart 描画（prices の null を扱うため、null を 0 にせずにフィルタして描画する方法をとる）
+      // chartLabels と chartData を prices の null を除外しつつ対応する year を残す
+      const chartLabels = [];
+      const chartData = [];
+      for (let i = 0; i < years.length; i++) {
+        const p = prices[i];
+        if (p == null) continue;
+        chartLabels.push(years[i]);
+        chartData.push(p);
+      }
+
+      // 描画前に既存キャンバスをクリア（単純に上書きでOK）
+      const ctxEl = document.getElementById("priceChart");
+      // 既に Chart インスタンスがある場合は破棄したほうが安全だが、シンプル実装のため再描画で上書き
+      new Chart(ctxEl, {
         type: "line",
         data: {
-          labels: years,
+          labels: chartLabels,
           datasets: [{
             label: "平均価格（円）",
-            data: prices,
+            data: chartData,
             borderWidth: 2,
             tension: 0.2
           }]
@@ -105,9 +155,15 @@ document.getElementById("stats").innerHTML = statsHtml;
           scales: { y: { beginAtZero: true } }
         }
       });
+    } catch (err) {
+      console.error("detail page error:", err);
+      // エラーが起きたら #stats に出す（ユーザー側にも分かるように）
+      const statsEl = document.getElementById("stats");
+      if (statsEl) statsEl.textContent = "エラーが発生しました（Console を確認してください）";
     }
+  }
 
-    main();
-  </script>
+  main();
+</script>
 </body>
 </html>
