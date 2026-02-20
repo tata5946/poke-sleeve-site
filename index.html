@@ -15,6 +15,10 @@
     a.btn { display:inline-block; margin-top: 10px; text-decoration:none; border:1px solid #333; padding:8px 10px; border-radius:8px; color:#111; }
     .error { background:#fff3f3; border:1px solid #ffcccc; padding:12px; border-radius:10px; color:#b00020; margin: 12px 0; }
     .small { font-size: 12px; color:#666; }
+    .controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin: 12px 0 18px; }
+    .controls select, .controls button { padding: 8px; }
+    .controls label { font-size: 13px; color:#333; }
+    
   </style>
 </head>
 <body>
@@ -30,83 +34,207 @@
   <p class="small">データ（data.json）を更新すると一覧が自動で増えます。</p>
 
   <div id="error" class="error" style="display:none;"></div>
+  <div class="controls">
+  <label>発売年：
+    <select id="releaseYear">
+      <option value="">全部</option>
+    </select>
+  </label>
+
+  <label>シリーズ：
+    <select id="series">
+      <option value="">全部</option>
+    </select>
+  </label>
+
+  <label>価格の年：
+    <select id="priceYear">
+      <option value="">（年を選択）</option>
+    </select>
+  </label>
+
+  <label>価格帯：
+    <select id="priceBand">
+      <option value="">全部</option>
+      <option value="0-999">〜999円</option>
+      <option value="1000-1999">1,000〜1,999円</option>
+      <option value="2000-2999">2,000〜2,999円</option>
+      <option value="3000-4999">3,000〜4,999円</option>
+      <option value="5000-99999999">5,000円〜</option>
+    </select>
+  </label>
+
+  <button id="clear">クリア</button>
+</div>
   <div id="list" class="grid"></div>
 
-  <script>
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+<script>
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function showError(msg) {
+    const el = document.getElementById("error");
+    if (!el) return;
+    el.style.display = "block";
+    el.textContent = msg;
+  }
+
+  async function loadData() {
+    const res = await fetch("./data.json?v=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error(`data.json の取得に失敗しました（HTTP ${res.status}）`);
+    return await res.json();
+  }
+
+  function uniq(arr) {
+    return Array.from(new Set(arr.filter(v => v != null && String(v).trim() !== "")));
+  }
+
+  function parseBand(v) {
+    if (!v) return null;
+    const [a,b] = v.split("-").map(Number);
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+    return { min: a, max: b };
+  }
+
+  async function main() {
+    const list = document.getElementById("list");
+    const searchInput = document.getElementById("search");
+
+    const releaseYearSel = document.getElementById("releaseYear");
+    const seriesSel = document.getElementById("series");
+    const priceYearSel = document.getElementById("priceYear");
+    const priceBandSel = document.getElementById("priceBand");
+    const clearBtn = document.getElementById("clear");
+
+    let data;
+    try {
+      data = await loadData();
+    } catch (e) {
+      showError(e.message + " / data.json がルート直下にあるか確認してください。");
+      return;
     }
 
-    function showError(msg) {
-      const el = document.getElementById("error");
-      el.style.display = "block";
-      el.textContent = msg;
+    const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
+
+    // フィルタ選択肢の生成
+    const releaseYears = uniq(sleeves.map(s => s.releaseYear)).sort((a,b) => a-b);
+    const seriesList = uniq(sleeves.map(s => s.series)).sort();
+
+    const allPriceYears = uniq(
+      sleeves.flatMap(s => Object.keys(s.pricesByYear || {}))
+    ).sort();
+
+    // selectへ注入
+    for (const y of releaseYears) {
+      const opt = document.createElement("option");
+      opt.value = String(y);
+      opt.textContent = String(y);
+      releaseYearSel.appendChild(opt);
     }
 
-    async function loadData() {
-      // キャッシュの影響で古い data.json を掴むことがあるので、クエリで回避
-      const res = await fetch("./data.json?v=" + Date.now(), { cache: "no-store" });
-      if (!res.ok) {
-        throw new Error(`data.json の取得に失敗しました（HTTP ${res.status}）`);
-      }
-      return await res.json();
+    for (const ser of seriesList) {
+      const opt = document.createElement("option");
+      opt.value = ser;
+      opt.textContent = ser;
+      seriesSel.appendChild(opt);
     }
 
-    async function main() {
-      const list = document.getElementById("list");
-      const searchInput = document.getElementById("search");
+    for (const y of allPriceYears) {
+      const opt = document.createElement("option");
+      opt.value = y;
+      opt.textContent = y;
+      priceYearSel.appendChild(opt);
+    }
 
-      let data;
-      try {
-        data = await loadData();
-      } catch (e) {
-        showError(e.message + " / ファイル名や配置（ルート直下に data.json）が正しいか確認してください。");
+    // 初期は最新年を選ぶ（ある場合）
+    if (allPriceYears.length > 0) {
+      priceYearSel.value = allPriceYears[allPriceYears.length - 1];
+    }
+
+    function getPriceForYear(s, year) {
+      if (!year) return null;
+      const v = (s.pricesByYear || {})[year];
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function render() {
+      const kw = searchInput.value.trim().toLowerCase();
+      const releaseYear = releaseYearSel.value; // "" or "2023"
+      const series = seriesSel.value;           // "" or "公式"
+      const priceYear = priceYearSel.value;     // "" or "2025"
+      const band = parseBand(priceBandSel.value);
+
+      list.innerHTML = "";
+
+      const filtered = sleeves.filter(s => {
+        // 検索
+        if (kw && !String(s.name || "").toLowerCase().includes(kw)) return false;
+
+        // 発売年
+        if (releaseYear && String(s.releaseYear) !== releaseYear) return false;
+
+        // シリーズ
+        if (series && String(s.series || "") !== series) return false;
+
+        // 価格帯（選択年の価格で判定）
+        if (band) {
+          const p = getPriceForYear(s, priceYear);
+          if (p == null) return false;
+          if (p < band.min || p > band.max) return false;
+        }
+
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>`;
         return;
       }
 
-      if (!data || !Array.isArray(data.sleeves)) {
-        showError("data.json の形式が想定と違います。{ sleeves: [...] } になっているか確認してください。");
-        return;
+      for (const s of filtered) {
+        const div = document.createElement("div");
+        div.className = "card";
+
+        const p = getPriceForYear(s, priceYear);
+        const priceText = (p == null) ? "—" : `${p.toLocaleString()}円（${priceYear}）`;
+
+        div.innerHTML = `
+          <div class="title">${escapeHtml(s.name ?? "")}</div>
+          <div class="meta">発売年：${escapeHtml(s.releaseYear ?? "")} / ${escapeHtml(s.condition ?? "")} / ${escapeHtml(s.series ?? "")}</div>
+          <div class="meta">表示価格：${escapeHtml(priceText)}</div>
+          <a class="btn" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}">価格推移を見る →</a>
+        `;
+        list.appendChild(div);
       }
-
-      function render(keyword = "") {
-        const kw = keyword.trim().toLowerCase();
-        list.innerHTML = "";
-
-        const filtered = data.sleeves.filter(s =>
-          String(s.name || "").toLowerCase().includes(kw)
-        );
-
-        if (filtered.length === 0) {
-          list.innerHTML = `<div class="card"><div class="title">該当なし</div><div class="meta">検索条件に一致するスリーブがありません</div></div>`;
-          return;
-        }
-
-        for (const s of filtered) {
-          const div = document.createElement("div");
-          div.className = "card";
-          div.innerHTML = `
-            <div class="title">${escapeHtml(s.name ?? "")}</div>
-            <div class="meta">発売年：${escapeHtml(s.releaseYear ?? "")} / ${escapeHtml(s.condition ?? "")} / ${escapeHtml(s.series ?? "")}</div>
-            <a class="btn" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}">価格推移を見る →</a>
-          `;
-          list.appendChild(div);
-        }
-      }
-
-      // 初期表示
-      render("");
-
-      // 検索
-      searchInput.addEventListener("input", () => render(searchInput.value));
     }
 
-    main();
-  </script>
+    // イベント
+    searchInput.addEventListener("input", render);
+    releaseYearSel.addEventListener("change", render);
+    seriesSel.addEventListener("change", render);
+    priceYearSel.addEventListener("change", render);
+    priceBandSel.addEventListener("change", render);
+
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      releaseYearSel.value = "";
+      seriesSel.value = "";
+      priceBandSel.value = "";
+      if (allPriceYears.length > 0) priceYearSel.value = allPriceYears[allPriceYears.length - 1];
+      render();
+    });
+
+    render();
+  }
+
+  main();
+</script>
 </body>
 </html>
