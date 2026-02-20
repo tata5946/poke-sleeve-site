@@ -191,7 +191,7 @@
         const series = seriesSel.value;
         const priceYear = priceYearSel.value;
         const band = parseBand(priceBandSel.value);
-
+        const sortOrder = document.getElementById("sortOrder").value;
         list.innerHTML = "";
 
         // ① まずフィルタ
@@ -212,7 +212,16 @@
         filtered.sort((a, b) => {
           const pa = getPriceForYear(a, priceYear) ?? -1;
           const pb = getPriceForYear(b, priceYear) ?? -1;
-          return pb - pa;
+          switch (sortOrder) {
+            case "priceAsc":
+              return pa - pb;
+            case "nameAsc":
+              return String(a.name).localeCompare(String(b.name));
+            case "releaseDesc":
+              return (b.releaseYear ?? 0) - (a.releaseYear ?? 0);
+            default: // priceDesc
+              return pb - pa;
+          }
         });
 
         // ③ 表示
@@ -244,7 +253,8 @@
       seriesSel.addEventListener("change", render);
       priceYearSel.addEventListener("change", render);
       priceBandSel.addEventListener("change", render);
-
+      document.getElementById("sortOrder").addEventListener("change", render);
+      
       clearBtn.addEventListener("click", () => {
         searchInput.value = "";
         releaseYearSel.value = "";
