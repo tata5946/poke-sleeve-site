@@ -42,7 +42,7 @@
   <div id="error" class="error" style="display:none;"></div>
 
   <!-- フィルタ -->
-  <div class="controls">
+  <div class="">
     <label>発売年：
       <select id="releaseYear">
         <option value="">全部</option>
@@ -71,7 +71,14 @@
         <option value="5000-99999999">5,000円〜</option>
       </select>
     </label>
-
+<label>並び替え：
+  <select id="sortOrder">
+    <option value="priceDesc">価格が高い順</option>
+    <option value="priceAsc">価格が安い順</option>
+    <option value="nameAsc">名前順</option>
+    <option value="releaseDesc">発売年が新しい順</option>
+  </select>
+</label>
     <button id="clear" type="button">クリア</button>
   </div>
 
