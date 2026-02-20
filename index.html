@@ -6,83 +6,202 @@
   <title>ポケカスリーブ価格推移</title>
   <meta name="description" content="ポケカスリーブの年次平均価格推移を掲載するデータベースサイト。各スリーブの相場変動を確認できます。">
   <style>
-    body { font-family: sans-serif; margin: 40px; }
-    h1 { margin-bottom: 10px; }
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --text:#111;
+      --muted:#667085;
+      --border:#e6e8ef;
+      --shadow: 0 6px 18px rgba(16,24,40,.06);
+      --radius:14px;
+      --accent:#0b57d0;
+    }
+    *{ box-sizing:border-box; }
+    body{ font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin:0; background:var(--bg); color:var(--text); }
+    a{ color:var(--accent); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
 
-    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; padding:0; }
-    .card { border: 1px solid #ddd; border-radius: 10px; padding: 14px; }
-    .title { font-weight: 800; font-size: 16px; margin-bottom: 6px; }
-    .meta { font-size: 13px; color: #666; }
-    a.btn { display:inline-block; margin-top: 10px; text-decoration:none; border:1px solid #333; padding:8px 10px; border-radius:8px; color:#111; }
+    .container{ max-width:1100px; margin:0 auto; padding:20px; }
 
-    .small { font-size: 12px; color:#666; }
-    .error { background:#fff3f3; border:1px solid #ffcccc; padding:12px; border-radius:10px; color:#b00020; margin: 12px 0; }
+    /* header */
+    .header{
+      position: sticky; top:0; z-index:50;
+      background: rgba(246,247,251,.92);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--border);
+    }
+    .header-inner{ display:flex; gap:14px; align-items:center; justify-content:space-between; padding:14px 20px; max-width:1100px; margin:0 auto; }
+    .brand{ display:flex; gap:10px; align-items:center; }
+    .logo{ width:34px; height:34px; border-radius:10px; background:var(--accent); box-shadow: var(--shadow); }
+    .brand h1{ font-size:16px; margin:0; line-height:1.2; }
+    .brand .sub{ font-size:12px; color:var(--muted); margin-top:2px; }
 
-    .controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin: 12px 0 18px; }
-    .controls select, .controls button { padding: 8px; }
-    .controls label { font-size: 13px; color:#333; }
+    .nav{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .nav a{
+      padding:8px 10px; border:1px solid var(--border); border-radius:999px;
+      background:var(--card); box-shadow: 0 2px 10px rgba(16,24,40,.04);
+      font-size:13px; color:#1f2a37;
+    }
+
+    /* layout */
+    .hero{ margin-top:18px; }
+    .hero-card{
+      background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+      padding:16px; box-shadow: var(--shadow);
+      display:flex; gap:14px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
+    }
+    .hero-title{ font-size:18px; font-weight:800; margin:0; }
+    .hero-desc{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.6; }
+
+    .searchbox{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .searchbox input{
+      width:min(420px, 80vw);
+      padding:10px 12px; border:1px solid var(--border); border-radius:12px;
+      background:#fff; box-shadow: 0 2px 10px rgba(16,24,40,.04);
+      font-size:14px;
+    }
+
+    .main{ display:grid; grid-template-columns: 300px 1fr; gap:14px; margin-top:14px; }
+    @media (max-width: 900px){
+      .main{ grid-template-columns: 1fr; }
+    }
+
+    /* sidebar */
+    .panel{
+      background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+      padding:14px; box-shadow: var(--shadow);
+    }
+    .panel h2{ font-size:14px; margin:0 0 10px; }
+    .small{ font-size:12px; color:var(--muted); margin:0 0 12px; }
+
+    .controls{ display:flex; flex-direction:column; gap:10px; }
+    .controls label{ font-size:12px; color:#1f2a37; display:flex; flex-direction:column; gap:6px; }
+    .controls select, .controls button{
+      padding:10px 10px; border:1px solid var(--border); border-radius:12px; background:#fff;
+      font-size:14px;
+    }
+    .controls button{
+      background:#111; color:#fff; border-color:#111; cursor:pointer;
+    }
+
+    /* content list */
+    .error{ background:#fff3f3; border:1px solid #ffcccc; padding:12px; border-radius:12px; color:#b00020; margin-bottom:12px; display:none; }
+
+    .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; padding:0; }
+    .card{
+      background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+      padding:14px; box-shadow: var(--shadow);
+    }
+    .title{ font-weight:900; font-size:15px; margin:0 0 8px; }
+    .meta{ font-size:12px; color:var(--muted); line-height:1.5; }
+    .badges{ display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+    .badge{
+      font-size:11px; padding:4px 8px; border-radius:999px; border:1px solid var(--border);
+      background:#fafbff; color:#1f2a37;
+    }
+    .price{
+      margin-top:10px; font-size:18px; font-weight:900;
+    }
+    .btn{
+      display:inline-block; margin-top:10px; padding:10px 12px; border-radius:12px;
+      border:1px solid var(--border); background:#fff; color:#111;
+    }
+    .btn:hover{ background:#f2f4f7; text-decoration:none; }
   </style>
 </head>
+
 <body>
-  <h1>ポケカスリーブ価格推移</h1>
-
-  <p><a href="./ranking.html">📈 価格ランキングを見る</a></p>
-  <p><a href="./growth.html">🔥 高騰率ランキングを見る</a></p>
-  <p><a href="./surge.html">🚀 急上昇ランキングを見る</a></p>
-
-  <p>
-    当サイトは、ポケカスリーブの年次平均価格推移をまとめたデータベースです。<br>
-    各スリーブごとの相場変動を一覧で確認できます。
-  </p>
-
-  <input type="text" id="search" placeholder="スリーブ名で検索..." style="padding:8px; width:300px; margin-bottom:12px;">
-  <p class="small">データ（data.json）を更新すると一覧が自動で増えます。</p>
-
-  <!-- エラー表示（idはこれ1つだけ） -->
-  <div id="error" class="error" style="display:none;"></div>
-
-  <!-- フィルタ -->
-  <div class="controls">
-    <label>発売年：
-      <select id="releaseYear">
-        <option value="">全部</option>
-      </select>
-    </label>
-
-    <label>シリーズ：
-      <select id="series">
-        <option value="">全部</option>
-      </select>
-    </label>
-
-    <label>価格の年：
-      <select id="priceYear">
-        <option value="">（年を選択）</option>
-      </select>
-    </label>
-
-    <label>価格帯：
-      <select id="priceBand">
-        <option value="">全部</option>
-        <option value="0-999">〜999円</option>
-        <option value="1000-1999">1,000〜1,999円</option>
-        <option value="2000-2999">2,000〜2,999円</option>
-        <option value="3000-4999">3,000〜4,999円</option>
-        <option value="5000-99999999">5,000円〜</option>
-      </select>
-    </label>
-<label>並び替え：
-  <select id="sortOrder">
-    <option value="priceDesc">価格が高い順</option>
-    <option value="priceAsc">価格が安い順</option>
-    <option value="nameAsc">名前順</option>
-    <option value="releaseDesc">発売年が新しい順</option>
-  </select>
-</label>
-    <button id="clear" type="button">クリア</button>
+  <!-- sticky header -->
+  <div class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>ポケカスリーブ価格推移</h1>
+          <div class="sub">年次平均価格を一覧・比較できるデータベース</div>
+        </div>
+      </div>
+      <div class="nav">
+        <a href="./index.html">一覧</a>
+        <a href="./ranking.html">価格ランキング</a>
+        <a href="./growth.html">高騰率</a>
+        <a href="./surge.html">急上昇</a>
+      </div>
+    </div>
   </div>
 
-  <div id="list" class="grid"></div>
+  <div class="container">
+    <!-- hero -->
+    <div class="hero">
+      <div class="hero-card">
+        <div>
+          <p class="hero-title">スリーブ相場を “探す・絞る・比較する”</p>
+          <p class="hero-desc">検索・フィルタ・並び替えで目的のスリーブを見つけ、詳細ページで年次推移を確認できます。</p>
+        </div>
+
+        <div class="searchbox">
+          <input type="text" id="search" placeholder="スリーブ名で検索…">
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- sidebar -->
+      <div class="panel">
+        <h2>絞り込み</h2>
+        <p class="small">フィルタと並び替えを変更すると一覧が更新されます。</p>
+
+        <div id="error" class="error"></div>
+
+        <div class="controls">
+          <label>発売年
+            <select id="releaseYear">
+              <option value="">全部</option>
+            </select>
+          </label>
+
+          <label>シリーズ
+            <select id="series">
+              <option value="">全部</option>
+            </select>
+          </label>
+
+          <label>価格の年
+            <select id="priceYear">
+              <option value="">（年を選択）</option>
+            </select>
+          </label>
+
+          <label>価格帯
+            <select id="priceBand">
+              <option value="">全部</option>
+              <option value="0-999">〜999円</option>
+              <option value="1000-1999">1,000〜1,999円</option>
+              <option value="2000-2999">2,000〜2,999円</option>
+              <option value="3000-4999">3,000〜4,999円</option>
+              <option value="5000-99999999">5,000円〜</option>
+            </select>
+          </label>
+
+          <label>並び替え
+            <select id="sortOrder">
+              <option value="priceDesc">価格が高い順</option>
+              <option value="priceAsc">価格が安い順</option>
+              <option value="nameAsc">名前順</option>
+              <option value="releaseDesc">発売年が新しい順</option>
+            </select>
+          </label>
+
+          <button id="clear" type="button">クリア</button>
+        </div>
+      </div>
+
+      <!-- content -->
+      <div>
+        <div id="list" class="grid"></div>
+      </div>
+    </div>
+  </div>
 
   <script>
     function escapeHtml(str) {
@@ -133,6 +252,7 @@
       const seriesSel = document.getElementById("series");
       const priceYearSel = document.getElementById("priceYear");
       const priceBandSel = document.getElementById("priceBand");
+      const sortOrderSel = document.getElementById("sortOrder");
       const clearBtn = document.getElementById("clear");
 
       let data;
@@ -147,7 +267,6 @@
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
 
-      // フィルタ選択肢の生成
       const releaseYears = uniq(sleeves.map(s => s.releaseYear)).sort((a, b) => a - b);
       const seriesList = uniq(sleeves.map(s => s.series)).sort();
       const allPriceYears = uniq(sleeves.flatMap(s => Object.keys(s.pricesByYear || {}))).sort();
@@ -173,7 +292,6 @@
         priceYearSel.appendChild(opt);
       }
 
-      // 初期は最新年
       if (allPriceYears.length > 0) {
         priceYearSel.value = allPriceYears[allPriceYears.length - 1];
       }
@@ -191,10 +309,10 @@
         const series = seriesSel.value;
         const priceYear = priceYearSel.value;
         const band = parseBand(priceBandSel.value);
-        const sortOrder = document.getElementById("sortOrder").value;
+        const sortOrder = sortOrderSel.value;
+
         list.innerHTML = "";
 
-        // ① まずフィルタ
         const filtered = sleeves.filter(s => {
           if (kw && !String(s.name || "").toLowerCase().includes(kw)) return false;
           if (releaseYear && String(s.releaseYear) !== releaseYear) return false;
@@ -208,59 +326,60 @@
           return true;
         });
 
-        // ② その後ソート（選択年の価格が高い順）
         filtered.sort((a, b) => {
           const pa = getPriceForYear(a, priceYear) ?? -1;
           const pb = getPriceForYear(b, priceYear) ?? -1;
+
           switch (sortOrder) {
-            case "priceAsc":
-              return pa - pb;
-            case "nameAsc":
-              return String(a.name).localeCompare(String(b.name));
-            case "releaseDesc":
-              return (b.releaseYear ?? 0) - (a.releaseYear ?? 0);
-            default: // priceDesc
-              return pb - pa;
+            case "priceAsc": return pa - pb;
+            case "nameAsc": return String(a.name).localeCompare(String(b.name));
+            case "releaseDesc": return (b.releaseYear ?? 0) - (a.releaseYear ?? 0);
+            default: return pb - pa; // priceDesc
           }
         });
 
-        // ③ 表示
         if (filtered.length === 0) {
           list.innerHTML = `<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>`;
           return;
         }
 
         for (const s of filtered) {
+          const p = getPriceForYear(s, priceYear);
+          const priceText = (p == null) ? "—" : `${p.toLocaleString()}円`;
+
           const div = document.createElement("div");
           div.className = "card";
-
-          const p = getPriceForYear(s, priceYear);
-          const priceText = (p == null) ? "—" : `${p.toLocaleString()}円（${priceYear}）`;
-
           div.innerHTML = `
             <div class="title">${escapeHtml(s.name ?? "")}</div>
-            <div class="meta">発売年：${escapeHtml(s.releaseYear ?? "")} / ${escapeHtml(s.condition ?? "")} / ${escapeHtml(s.series ?? "")}</div>
-            <div class="meta">表示価格：${escapeHtml(priceText)}</div>
+
+            <div class="price">${escapeHtml(priceText)} <span class="meta">（${escapeHtml(priceYear)}）</span></div>
+
+            <div class="badges">
+              <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
+              <span class="badge">${escapeHtml(s.condition ?? "")}</span>
+              <span class="badge">${escapeHtml(s.series ?? "")}</span>
+            </div>
+
             <a class="btn" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}">価格推移を見る →</a>
           `;
           list.appendChild(div);
         }
       }
 
-      // イベント
       searchInput.addEventListener("input", render);
       releaseYearSel.addEventListener("change", render);
       seriesSel.addEventListener("change", render);
       priceYearSel.addEventListener("change", render);
       priceBandSel.addEventListener("change", render);
-      document.getElementById("sortOrder").addEventListener("change", render);
-      
+      sortOrderSel.addEventListener("change", render);
+
       clearBtn.addEventListener("click", () => {
         searchInput.value = "";
         releaseYearSel.value = "";
         seriesSel.value = "";
         priceBandSel.value = "";
         if (allPriceYears.length > 0) priceYearSel.value = allPriceYears[allPriceYears.length - 1];
+        sortOrderSel.value = "priceDesc";
         render();
       });
 
