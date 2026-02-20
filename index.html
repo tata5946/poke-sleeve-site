@@ -7,15 +7,16 @@
   <meta name="description" content="ポケカスリーブの年次平均価格推移を掲載するデータベースサイト。各スリーブの相場変動を確認できます。">
   <style>
     :root{
-      --bg:#f6f7fb;
-      --card:#ffffff;
-      --text:#111;
-      --muted:#667085;
-      --border:#e6e8ef;
-      --shadow: 0 6px 18px rgba(16,24,40,.06);
-      --radius:14px;
-      --accent:#0b57d0;
-    }
+  --bg:#f5f9ff;
+  --card:#ffffff;
+  --text:#111;
+  --muted:#667085;
+  --border:#e6e8ef;
+  --shadow: 0 6px 18px rgba(16,24,40,.06);
+  --radius:14px;
+  --accent:#1e5bd7; /* 青系 */
+  --accent2:#ffcc00; /* 黄系 */
+}
     *{ box-sizing:border-box; }
     body{ font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin:0; background:var(--bg); color:var(--text); }
     a{ color:var(--accent); text-decoration:none; }
@@ -113,8 +114,10 @@
     .meta{ font-size:12px; color:var(--muted); line-height:1.5; }
     .badges{ display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
     .badge{
-      font-size:11px; padding:4px 8px; border-radius:999px; border:1px solid var(--border);
-      background:#fafbff; color:#1f2a37;
+      font-size:11px; padding:4px 8px; border-radius:999px;
+      border:1px solid var(--border);
+      background: linear-gradient(90deg, #fff7cc, #f8fbff);
+      color:#1f2a37;
     }
     .price{
       margin-top:10px; font-size:18px; font-weight:900;
