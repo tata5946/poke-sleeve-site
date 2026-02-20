@@ -78,7 +78,32 @@
       document.title = `${s.name}｜価格推移`;
       document.getElementById("name").textContent = s.name;
       document.getElementById("meta").textContent = `発売年：${escapeHtml(s.releaseYear ?? "")} / ${escapeHtml(s.condition ?? "")} / ${escapeHtml(s.series ?? "")}`;
+// 構造化データ（Product）
+const yearsNum = Object.keys(s.pricesByYear || {}).map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
+const latestY = yearsNum.length ? String(yearsNum[yearsNum.length - 1]) : null;
+const latestP = latestY ? Number(s.pricesByYear[latestY]) : null;
 
+const ld = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": s.name,
+  "description": "未開封状態のポケカスリーブの年次平均価格推移を掲載。過去の相場変動を確認できます。",
+  "category": "Trading Card Game Accessory",
+  "brand": { "@type": "Brand", "name": "Pokemon" },
+  "offers": (latestP != null && Number.isFinite(latestP)) ? {
+    "@type": "Offer",
+    "priceCurrency": "JPY",
+    "price": String(latestP),
+    "url": location.href,
+    "availability": "https://schema.org/InStock"
+  } : undefined
+};
+
+// scriptタグを動的に追加
+const script = document.createElement("script");
+script.type = "application/ld+json";
+script.textContent = JSON.stringify(ld);
+document.head.appendChild(script);
       // years を数値でソートして文字列配列に戻す（安全）
       const rawYears = Object.keys(s.pricesByYear || {});
       const yearsNum = rawYears.map(y => Number(y)).filter(Number.isFinite).sort((a,b) => a - b);
