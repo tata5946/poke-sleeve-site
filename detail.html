@@ -25,6 +25,16 @@
     </p>
     <div id="meta" class="meta"></div>
 
+    <div id="stats" style="border:1px solid #ddd; border-radius:10px; padding:12px; margin: 14px 0;">
+  読み込み中…
+</div>
+
+<p style="margin: 10px 0;">
+  <a href="./ranking.html">📈 価格ランキング</a> /
+  <a href="./surge.html">🚀 急上昇ランキング</a> /
+  <a href="./growth.html">🔥 高騰率ランキング</a>
+</p>
+    
     <h2>年次平均価格推移</h2>
     <canvas id="priceChart" height="120"></canvas>
     <p style="font-size:12px; color:#666; margin-top:8px;">
@@ -60,6 +70,25 @@
 
       const years = Object.keys(s.pricesByYear).sort();
       const prices = years.map(y => s.pricesByYear[y]);
+
+      const latestYear = years[years.length - 1];
+const latestPrice = Number(s.pricesByYear[latestYear]);
+
+let statsHtml = `最新（${latestYear}）：${latestPrice.toLocaleString()}円`;
+
+if (years.length >= 2) {
+  const prevYear = years[years.length - 2];
+  const prevPrice = Number(s.pricesByYear[prevYear]);
+  const diff = latestPrice - prevPrice;
+  const pct = (diff / prevPrice) * 100;
+
+  statsHtml += `<br>前年差（${prevYear}→${latestYear}）：${diff.toLocaleString()}円`;
+  statsHtml += `<br>上昇率：${pct.toFixed(1)}%`;
+} else {
+  statsHtml += `<br>前年差/上昇率：データ不足`;
+}
+
+document.getElementById("stats").innerHTML = statsHtml;
 
       new Chart(document.getElementById("priceChart"), {
         type: "line",
