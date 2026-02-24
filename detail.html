@@ -1,194 +1,528 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>価格推移</title>
-  <meta name="description" content="ポケカスリーブの年次平均価格推移を掲載。過去の相場変動を確認できます。">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>スリーブ詳細｜ポケスリ相場ナビ</title>
+  <meta name="description" content="ポケカスリーブの価格推移（週次・年次）を表示します。" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: sans-serif; margin: 40px; }
-    a { color: #0b57d0; }
-    .meta { color:#666; margin-top:6px; }
-    .wrap { max-width: 900px; margin: 0 auto; }
+    :root{
+      --bg:#f5f9ff;
+      --card:#ffffff;
+      --text:#111;
+      --muted:#667085;
+      --border:#e6e8ef;
+      --shadow: 0 6px 18px rgba(16,24,40,.06);
+      --radius:14px;
+      --accent:#1e5bd7;
+      --accent2:#ffcc00;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+    }
+    a{ color:var(--accent); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .container{ max-width:1100px; margin:0 auto; padding:20px; }
+
+    /* header */
+    .header{
+      position: sticky;
+      top:0;
+      z-index:50;
+      background: rgba(245,249,255,.88);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--border);
+    }
+    .header-inner{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 20px;
+      max-width:1100px;
+      margin:0 auto;
+    }
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      min-width: 260px;
+    }
+    .logo{
+      width:38px; height:38px; border-radius:999px;
+      background: linear-gradient(#e53935 0 50%, #ffffff 50% 100%);
+      border: 2px solid #111;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+      flex: 0 0 auto;
+    }
+    .logo::before{
+      content:"";
+      position:absolute;
+      left:0; right:0; top:50%;
+      height:3px;
+      background:#111;
+      transform: translateY(-50%);
+    }
+    .logo::after{
+      content:"";
+      position:absolute;
+      left:50%; top:50%;
+      width:12px; height:12px;
+      border-radius:999px;
+      background:#fff;
+      border:2px solid #111;
+      transform: translate(-50%,-50%);
+    }
+
+    .main-title{
+      font-size:24px;
+      font-weight:900;
+      letter-spacing:0.8px;
+      margin:0;
+      line-height:1.1;
+      color:#7aa8ff;
+      white-space: nowrap;
+      font-family: "M PLUS Rounded 1c", system-ui, -apple-system, "Segoe UI", sans-serif;
+      text-shadow: 0 2px 0 rgba(255, 204, 0, .35);
+    }
+    .accent{ color: var(--accent2); }
+    .sub-title{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:4px;
+      line-height:1.3;
+    }
+
+    .nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .nav a{
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid #d0dcff;
+      background:#f0f5ff;
+      color:var(--accent);
+      font-weight:700;
+      font-size:13px;
+    }
+    .nav a:hover{
+      background:#dbe6ff;
+      text-decoration:none;
+    }
+
+    .panel{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow: var(--shadow);
+    }
+
+    .error{
+      background:#fff3f3;
+      border:1px solid #ffcccc;
+      padding:12px;
+      border-radius:12px;
+      color:#b00020;
+      display:none;
+      margin: 14px 0;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr; }
+      .main-title{ font-size:20px; }
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 900px){
+      .hero{ grid-template-columns: 1fr; }
+    }
+
+    .thumb{
+      width:100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:#fff;
+      display:block;
+    }
+
+    .name{
+      font-size:22px;
+      font-weight:900;
+      margin:0 0 6px;
+    }
+    .meta{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+    .badges{ display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+    .badge{
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid #ffe082;
+      background:#fff8cc;
+      color:#5c4b00;
+      font-weight:800;
+    }
+
+    .kpi{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .kpi .box{
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px 12px;
+      background:#fff;
+      min-width: 160px;
+    }
+    .kpi .label{ font-size:11px; color:var(--muted); font-weight:800; }
+    .kpi .value{ font-size:18px; font-weight:900; margin-top:4px; }
+
+    .delta{
+      margin-top:6px;
+      font-size:12px;
+      font-weight:900;
+    }
+    .up{ color:#d32f2f; }
+    .down{ color:#1976d2; }
+    .flat{ color:#667085; }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      font-size:13px;
+      background:#fff;
+      border-radius:12px;
+      overflow:hidden;
+      border:1px solid var(--border);
+    }
+    th, td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--border);
+      text-align:left;
+    }
+    th{
+      background:#f6f8ff;
+      font-weight:900;
+      color:#111;
+    }
+    tr:last-child td{ border-bottom:none; }
+
+    .btn{
+      display:inline-block;
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:#111;
+      font-weight:800;
+    }
+    .btn:hover{ background:#f2f4f7; text-decoration:none; }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <p><a href="./index.html">← 一覧に戻る</a></p>
+  <div class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1 class="main-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
+          <div class="sub-title">ポケカスリーブ価格推移データベース</div>
+        </div>
+      </div>
 
-    <h1 id="name">読み込み中…</h1>
-    <p>
-本ページでは、未開封状態のポケカスリーブの年次平均価格推移を掲載しています。
-過去の相場変動を確認することで、現在の市場傾向や価格の推移を把握できます。
-コレクションや売買判断の参考データとしてご活用ください。
-    </p>
-    <div id="meta" class="meta"></div>
-
-    <div id="stats" style="border:1px solid #ddd; border-radius:10px; padding:12px; margin: 14px 0;">
-  読み込み中…
-</div>
-
-<p style="margin: 10px 0;">
-  <a href="./ranking.html">📈 価格ランキング</a> /
-  <a href="./surge.html">🚀 急上昇ランキング</a> /
-  <a href="./growth.html">🔥 高騰率ランキング</a>
-</p>
-    
-    <h2>年次平均価格推移</h2>
-    <canvas id="priceChart" height="120"></canvas>
-    <p style="font-size:12px; color:#666; margin-top:8px;">
-最終更新日：2026年2月更新
-</p>
+      <nav class="nav" aria-label="メインメニュー">
+        <a href="./index.html">一覧</a>
+        <a href="./ranking.html">価格ランキング</a>
+        <a href="./growth.html">高騰率</a>
+        <a href="./surge.html">急上昇</a>
+      </nav>
+    </div>
   </div>
 
- <script>
-  function getId() {
-    const params = new URLSearchParams(location.search);
-    return params.get("id");
-  }
+  <div class="container">
+    <div id="error" class="error"></div>
 
-  function escapeHtml(str) {
-    return String(str ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
+    <div class="hero">
+      <div class="panel">
+        <img id="img" class="thumb" alt="" />
+      </div>
 
-  async function main() {
-    try {
-      const id = getId();
-      if (!id) {
-        document.getElementById("name").textContent = "IDが指定されていません";
-        return;
-      }
+      <div class="panel">
+        <h2 id="name" class="name">読み込み中…</h2>
+        <div id="meta" class="meta"></div>
 
-      const res = await fetch("./data.json?v=" + Date.now(), { cache: "no-store" });
-      if (!res.ok) throw new Error("data.json の取得に失敗: HTTP " + res.status);
-      const data = await res.json();
+        <div id="badges" class="badges"></div>
 
-      const s = (data.sleeves || []).find(x => x.id === id);
-      if (!s) {
-        document.getElementById("name").textContent = "データが見つかりません";
-        return;
-      }
+        <div class="kpi">
+          <div class="box">
+            <div class="label">最新週次価格</div>
+            <div id="latestWeekly" class="value">—</div>
+            <div id="weeklyDelta" class="delta"></div>
+          </div>
 
-      document.title = `${s.name}｜価格推移`;
-      document.getElementById("name").textContent = s.name;
-      document.getElementById("meta").textContent = `発売年：${escapeHtml(s.releaseYear ?? "")} / ${escapeHtml(s.condition ?? "")} / ${escapeHtml(s.series ?? "")}`;
-// 構造化データ（Product）
-const yearsNum = Object.keys(s.pricesByYear || {}).map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
-const latestY = yearsNum.length ? String(yearsNum[yearsNum.length - 1]) : null;
-const latestP = latestY ? Number(s.pricesByYear[latestY]) : null;
+          <div class="box">
+            <div class="label">最新年次価格</div>
+            <div id="latestYearly" class="value">—</div>
+            <div id="latestYearLabel" class="meta"></div>
+          </div>
+        </div>
 
-const ld = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": s.name,
-  "description": "未開封状態のポケカスリーブの年次平均価格推移を掲載。過去の相場変動を確認できます。",
-  "category": "Trading Card Game Accessory",
-  "brand": { "@type": "Brand", "name": "Pokemon" },
-  "offers": (latestP != null && Number.isFinite(latestP)) ? {
-    "@type": "Offer",
-    "priceCurrency": "JPY",
-    "price": String(latestP),
-    "url": location.href,
-    "availability": "https://schema.org/InStock"
-  } : undefined
-};
+        <a class="btn" href="./index.html">← 一覧へ戻る</a>
+      </div>
+    </div>
 
-// scriptタグを動的に追加
-const script = document.createElement("script");
-script.type = "application/ld+json";
-script.textContent = JSON.stringify(ld);
-document.head.appendChild(script);
-      // years を数値でソートして文字列配列に戻す（安全）
-      const rawYears = Object.keys(s.pricesByYear || {});
-      const yearsNum = rawYears.map(y => Number(y)).filter(Number.isFinite).sort((a,b) => a - b);
-      const years = yearsNum.map(String);
+    <div class="grid">
+      <div class="panel">
+        <h3 style="margin:0 0 10px;">週次価格（weekly）</h3>
+        <div id="weeklyTable"></div>
+      </div>
 
-      // prices を安全に作る
-      const prices = years.map(y => {
-        const v = s.pricesByYear[y];
-        const n = Number(v);
-        return Number.isFinite(n) ? n : null;
-      });
+      <div class="panel">
+        <h3 style="margin:0 0 10px;">年次価格（yearly）</h3>
+        <div id="yearlyTable"></div>
+      </div>
+    </div>
+  </div>
 
-      const statsEl = document.getElementById("stats");
-      // 年データがない場合のフォールバック
-      if (years.length === 0 || prices.every(p => p == null)) {
-        statsEl.innerHTML = "価格データがありません";
-        // グラフを空にする（既に描画済みの場合に備え、canvasをクリア）
-        const ctx = document.getElementById("priceChart").getContext && document.getElementById("priceChart").getContext('2d');
-        // ※ Chart.js のインスタンス管理している場合は別途destroyが必要（今回は単発描画なのでスキップ）
-      } else {
-        const latestYear = years[years.length - 1];
-        const latestPriceRaw = s.pricesByYear[latestYear];
-        const latestPrice = Number(latestPriceRaw);
+  <script>
+    // ★ index.html と同じURLにする
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxenw78eclLqZbQu_hOJzcjMWCT29lQgOjzLOR3TG6__ETt8S6OzZKzAUmJyv6b7fI/exec";
 
-        // 表示用に安全にformat
-        const fmt = (n) => Number.isFinite(n) ? n.toLocaleString() + "円" : "データなし";
-
-        let statsHtml = `最新（${escapeHtml(latestYear)}）：${fmt(latestPrice)}`;
-
-        if (years.length >= 2) {
-          const prevYear = years[years.length - 2];
-          const prevPrice = Number(s.pricesByYear[prevYear]);
-          if (Number.isFinite(prevPrice) && Number.isFinite(latestPrice) && prevPrice !== 0) {
-            const diff = latestPrice - prevPrice;
-            const pct = (diff / prevPrice) * 100;
-            statsHtml += `<br>前年差（${escapeHtml(prevYear)}→${escapeHtml(latestYear)}）：${diff.toLocaleString()}円`;
-            statsHtml += `<br>上昇率：${pct.toFixed(1)}%`;
-          } else {
-            statsHtml += `<br>前年差/上昇率：データ不足または前年価格が0です`;
-          }
-        } else {
-          statsHtml += `<br>前年差/上昇率：データ不足`;
-        }
-
-        statsEl.innerHTML = statsHtml;
-      }
-
-      // Chart 描画（prices の null を扱うため、null を 0 にせずにフィルタして描画する方法をとる）
-      // chartLabels と chartData を prices の null を除外しつつ対応する year を残す
-      const chartLabels = [];
-      const chartData = [];
-      for (let i = 0; i < years.length; i++) {
-        const p = prices[i];
-        if (p == null) continue;
-        chartLabels.push(years[i]);
-        chartData.push(p);
-      }
-
-      // 描画前に既存キャンバスをクリア（単純に上書きでOK）
-      const ctxEl = document.getElementById("priceChart");
-      // 既に Chart インスタンスがある場合は破棄したほうが安全だが、シンプル実装のため再描画で上書き
-      new Chart(ctxEl, {
-        type: "line",
-        data: {
-          labels: chartLabels,
-          datasets: [{
-            label: "平均価格（円）",
-            data: chartData,
-            borderWidth: 2,
-            tension: 0.2
-          }]
-        },
-        options: {
-          scales: { y: { beginAtZero: true } }
-        }
-      });
-    } catch (err) {
-      console.error("detail page error:", err);
-      // エラーが起きたら #stats に出す（ユーザー側にも分かるように）
-      const statsEl = document.getElementById("stats");
-      if (statsEl) statsEl.textContent = "エラーが発生しました（Console を確認してください）";
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
-  }
 
-  main();
-</script>
+    function showError(msg) {
+      const el = document.getElementById("error");
+      el.style.display = "block";
+      el.textContent = msg;
+    }
+
+    function getParam(name) {
+      const u = new URL(location.href);
+      return u.searchParams.get(name);
+    }
+
+    async function loadData() {
+      if (!GAS_URL || GAS_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
+        throw new Error("GAS_URL が未設定です。detail.html の GAS_URL に WebアプリURL を貼ってください。");
+      }
+      const res = await fetch(GAS_URL + "?v=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
+      return await res.json();
+    }
+
+    function toISODate(d) {
+      const dd = new Date(d);
+      if (Number.isNaN(dd.getTime())) return null;
+      const y = dd.getFullYear();
+      const m = String(dd.getMonth() + 1).padStart(2, "0");
+      const day = String(dd.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function normalizeWeekly(arr) {
+      return (Array.isArray(arr) ? arr : [])
+        .map(x => ({ week: toISODate(x.week), price: Number(x.price) }))
+        .filter(x => x.week && Number.isFinite(x.price))
+        .sort((a, b) => String(a.week).localeCompare(String(b.week))); // asc
+    }
+
+    function latestTwoWeekly(arr) {
+      const a = normalizeWeekly(arr);
+      if (a.length === 0) return null;
+
+      // 同日重複を除いて最新2つ
+      const uniq = [];
+      const seen = new Set();
+      for (let i = a.length - 1; i >= 0; i--) {
+        if (seen.has(a[i].week)) continue;
+        seen.add(a[i].week);
+        uniq.push(a[i]);
+        if (uniq.length === 2) break;
+      }
+      return { latest: uniq[0], prev: uniq[1] || null };
+    }
+
+    function normalizeYearly(obj) {
+      const o = obj && typeof obj === "object" ? obj : {};
+      const rows = Object.keys(o).map(y => ({ year: String(y), price: Number(o[y]) }))
+        .filter(x => x.year && Number.isFinite(x.price))
+        .sort((a, b) => String(a.year).localeCompare(String(b.year))); // asc
+      return rows;
+    }
+
+    function renderTableWeekly(rows) {
+      if (!rows.length) return `<div class="meta">週次データがまだありません</div>`;
+      const html = rows.slice().reverse().map(r =>
+        `<tr><td>${escapeHtml(r.week)}</td><td>${Number(r.price).toLocaleString()}円</td></tr>`
+      ).join("");
+      return `
+        <table>
+          <thead><tr><th>週</th><th>価格</th></tr></thead>
+          <tbody>${html}</tbody>
+        </table>
+      `;
+    }
+
+    function renderTableYearly(rows) {
+      if (!rows.length) return `<div class="meta">年次データがまだありません</div>`;
+      const html = rows.slice().reverse().map(r =>
+        `<tr><td>${escapeHtml(r.year)}</td><td>${Number(r.price).toLocaleString()}円</td></tr>`
+      ).join("");
+      return `
+        <table>
+          <thead><tr><th>年</th><th>価格</th></tr></thead>
+          <tbody>${html}</tbody>
+        </table>
+      `;
+    }
+
+    function setWeeklyKpi(pair) {
+      const latestEl = document.getElementById("latestWeekly");
+      const deltaEl = document.getElementById("weeklyDelta");
+
+      if (!pair) {
+        latestEl.textContent = "—";
+        deltaEl.textContent = "週次データなし";
+        deltaEl.className = "delta flat";
+        return;
+      }
+
+      latestEl.textContent = `${pair.latest.price.toLocaleString()}円`;
+
+      if (!pair.prev) {
+        deltaEl.textContent = "前週データなし";
+        deltaEl.className = "delta flat";
+        return;
+      }
+
+      const diff = pair.latest.price - pair.prev.price;
+      const abs = Math.abs(diff);
+      let cls = "flat";
+      let arrow = "→";
+      let sign = "±";
+      if (diff > 0) { cls = "up"; arrow = "↑"; sign = "+"; }
+      if (diff < 0) { cls = "down"; arrow = "↓"; sign = "−"; }
+
+      let pct = "";
+      if (pair.prev.price !== 0) {
+        const rate = (diff / pair.prev.price) * 100;
+        if (Number.isFinite(rate)) {
+          pct = `（${diff > 0 ? "+" : diff < 0 ? "-" : ""}${Math.abs(rate).toFixed(1)}%）`;
+        }
+      }
+
+      deltaEl.className = "delta " + cls;
+      deltaEl.textContent = `${arrow} 前週比 ${sign}${abs.toLocaleString()}円 ${pct}`;
+    }
+
+    function setYearlyKpi(rows) {
+      const latestEl = document.getElementById("latestYearly");
+      const labelEl = document.getElementById("latestYearLabel");
+      if (!rows.length) {
+        latestEl.textContent = "—";
+        labelEl.textContent = "年次データなし";
+        return;
+      }
+      const last = rows[rows.length - 1];
+      latestEl.textContent = `${last.price.toLocaleString()}円`;
+      labelEl.textContent = `${last.year}年`;
+    }
+
+    async function main() {
+      const id = getParam("id");
+      if (!id) {
+        showError("id が指定されていません。indexから入り直してください。");
+        return;
+      }
+
+      let data;
+      try {
+        data = await loadData();
+      } catch (e) {
+        showError(e.message);
+        return;
+      }
+
+      const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
+      const s = sleeves.find(x => String(x.id) === String(id));
+      if (!s) {
+        showError("該当スリーブが見つかりませんでした。");
+        return;
+      }
+
+      // 基本情報
+      document.title = `${s.name || "スリーブ詳細"}｜ポケスリ相場ナビ`;
+
+      const img = document.getElementById("img");
+      img.src = String(s.imageUrl || "").trim();
+      img.alt = s.name || "";
+
+      document.getElementById("name").textContent = s.name || "";
+      document.getElementById("meta").innerHTML =
+        `ID：${escapeHtml(s.id)}<br>発売年：${escapeHtml(s.releaseYear)} / シリーズ：${escapeHtml(s.series)} / 状態：${escapeHtml(s.condition)}`;
+
+      const badges = document.getElementById("badges");
+      badges.innerHTML = `
+        <span class="badge">発売年：${escapeHtml(s.releaseYear)}</span>
+        <span class="badge">${escapeHtml(s.condition)}</span>
+        <span class="badge">${escapeHtml(s.series)}</span>
+      `;
+
+      // 週次
+      const weeklyRows = normalizeWeekly(s.weeklyPrices);
+      document.getElementById("weeklyTable").innerHTML = renderTableWeekly(weeklyRows);
+      setWeeklyKpi(latestTwoWeekly(s.weeklyPrices));
+
+      // 年次
+      const yearlyRows = normalizeYearly(s.pricesByYear);
+      document.getElementById("yearlyTable").innerHTML = renderTableYearly(yearlyRows);
+      setYearlyKpi(yearlyRows);
+    }
+
+    main();
+  </script>
 </body>
 </html>
