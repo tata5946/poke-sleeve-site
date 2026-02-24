@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ポケスリ相場ナビ｜ポケカスリーブ価格推移</title>
   <meta name="description" content="ポケスリ相場ナビは、ポケカスリーブの年次平均価格推移を掲載するデータベース。検索・絞り込み・並び替えで相場を比較できます。">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+
   <style>
     :root{
       --bg:#f5f9ff;
@@ -87,7 +88,7 @@
       transform: translate(-50%,-50%);
     }
 
-    /* タイトル（ここが本命：重複定義を排除） */
+    /* タイトル */
     .main-title{
       font-size:28px;
       font-weight:900;
@@ -96,6 +97,8 @@
       line-height:1.1;
       color:#7aa8ff;
       white-space: nowrap;
+      font-family: "M PLUS Rounded 1c", system-ui, -apple-system, "Segoe UI", sans-serif;
+      text-shadow: 0 2px 0 rgba(255, 204, 0, .35);
     }
     .accent{ color: var(--accent2); }
 
@@ -259,12 +262,29 @@
       background:#f2f4f7;
       text-decoration:none;
     }
-    .main-title{
-  font-family: "M PLUS Rounded 1c", system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-    .main-title{
-  text-shadow: 0 2px 0 rgba(255, 204, 0, .35);
-}
+
+    /* 週次差分表示 */
+    .delta {
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .delta .up { color: #d32f2f; }
+    .delta .down { color: #1976d2; }
+    .delta .flat { color: #667085; }
+    .delta .chip{
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f6f8ff;
+      color: #111;
+      font-weight: 800;
+    }
   </style>
 </head>
 
@@ -399,6 +419,84 @@
       return { min: a, max: b };
     }
 
+    function toISODate(d) {
+      // YYYY-MM-DD に正規化（時間は無視）
+      const dd = new Date(d);
+      if (Number.isNaN(dd.getTime())) return null;
+      const y = dd.getFullYear();
+      const m = String(dd.getMonth() + 1).padStart(2, "0");
+      const day = String(dd.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function getWeeklyPair(s) {
+      // s.weeklyPrices から「最新」と「1つ前」を返す
+      const arr = Array.isArray(s.weeklyPrices) ? s.weeklyPrices : [];
+      const normalized = arr
+        .map(x => ({
+          week: toISODate(x.week),
+          price: Number(x.price)
+        }))
+        .filter(x => x.week && Number.isFinite(x.price))
+        .sort((a, b) => String(a.week).localeCompare(String(b.week))); // 昇順
+
+      if (normalized.length < 2) return null;
+
+      const latest = normalized[normalized.length - 1];
+      const prev = normalized[normalized.length - 2];
+
+      // 同じ週が重複してたら最後のものを優先（念のため）
+      if (latest.week === prev.week) {
+        const unique = [];
+        const seen = new Set();
+        for (let i = normalized.length - 1; i >= 0; i--) {
+          const w = normalized[i].week;
+          if (seen.has(w)) continue;
+          seen.add(w);
+          unique.push(normalized[i]);
+          if (unique.length === 2) break;
+        }
+        if (unique.length < 2) return null;
+        return { latest: unique[0], prev: unique[1] };
+      }
+
+      return { latest, prev };
+    }
+
+    function formatDelta(pair) {
+      // 表示用HTMLを返す（週次データがないなら空文字）
+      if (!pair) return "";
+
+      const { latest, prev } = pair;
+      const diff = latest.price - prev.price;
+
+      const sign = diff > 0 ? "+" : diff < 0 ? "−" : "±";
+      const abs = Math.abs(diff);
+
+      let cls = "flat";
+      let arrow = "→";
+      if (diff > 0) { cls = "up"; arrow = "↑"; }
+      if (diff < 0) { cls = "down"; arrow = "↓"; }
+
+      // 変化率（prevが0のときは出さない）
+      let pct = "";
+      if (prev.price !== 0) {
+        const rate = (diff / prev.price) * 100;
+        if (Number.isFinite(rate)) {
+          const r = Math.abs(rate).toFixed(1);
+          pct = `（${diff > 0 ? "+" : diff < 0 ? "-" : ""}${r}%）`;
+        }
+      }
+
+      return `
+        <div class="delta">
+          <span class="${cls}">${arrow} 前週比 ${sign}${abs.toLocaleString()}円 ${escapeHtml(pct)}</span>
+          <span class="chip">先週 ${prev.price.toLocaleString()}円</span>
+          <span class="chip">今週 ${latest.price.toLocaleString()}円</span>
+        </div>
+      `;
+    }
+
     async function main() {
       const list = document.getElementById("list");
       const searchInput = document.getElementById("search");
@@ -501,12 +599,17 @@
           const p = getPriceForYear(s, priceYear);
           const priceText = (p == null) ? "—" : `${p.toLocaleString()}円`;
 
+          const weeklyPair = getWeeklyPair(s);
+          const weeklyHtml = formatDelta(weeklyPair);
+
           const div = document.createElement("div");
           div.className = "card";
           div.innerHTML = `
             <div class="title">${escapeHtml(s.name ?? "")}</div>
 
             <div class="price">${escapeHtml(priceText)} <span class="meta">（${escapeHtml(priceYear)}）</span></div>
+
+            ${weeklyHtml}
 
             <div class="badges">
               <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
