@@ -403,7 +403,8 @@
     }
 
     async function loadData() {
-      const res = await fetch("./data.json?v=" + Date.now(), { cache: "no-store" });
+      const GAS_URL = "https://script.google.com/macros/s/AKfycbzjocon7KJ6qTjpruSRK-hTHle4E2OBeinQlJmSt1xkuMmVwdKQnfLStPcERbLgS4C6/exec";
+      const res = await fetch(GAS_URL + "?v=" + Date.now(), { cache: "no-store" });
       if (!res.ok) throw new Error(`data.json の取得に失敗しました（HTTP ${res.status}）`);
       return await res.json();
     }
