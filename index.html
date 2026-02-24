@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ポケスリ相場ナビ｜ポケカスリーブ価格推移</title>
   <meta name="description" content="ポケスリ相場ナビは、ポケカスリーブの年次平均価格推移を掲載するデータベース。検索・絞り込み・並び替えで相場を比較できます。">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
@@ -233,6 +234,16 @@
       padding:14px;
       box-shadow: var(--shadow);
     }
+    .thumb{
+      width:100%;
+      height:140px;
+      object-fit:cover;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      display:block;
+      margin-bottom:10px;
+    }
     .title{ font-weight:900; font-size:15px; margin:0 0 8px; }
     .meta{ font-size:12px; color:var(--muted); line-height:1.5; }
 
@@ -379,6 +390,10 @@
   </div>
 
   <script>
+    // ★ここに Apps Script の WebアプリURL を貼ってください
+    // 例: https://script.google.com/macros/s/xxxxxxxxxxxxxxxx/exec
+    const GAS_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
+
     function escapeHtml(str) {
       return String(str ?? "")
         .replaceAll("&", "&amp;")
@@ -403,9 +418,11 @@
     }
 
     async function loadData() {
-      const GAS_URL = "https://script.google.com/macros/s/AKfycbzjocon7KJ6qTjpruSRK-hTHle4E2OBeinQlJmSt1xkuMmVwdKQnfLStPcERbLgS4C6/exec";
+      if (!GAS_URL || GAS_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
+        throw new Error("GAS_URL が未設定です。index.html の GAS_URL に WebアプリURL を貼ってください。");
+      }
       const res = await fetch(GAS_URL + "?v=" + Date.now(), { cache: "no-store" });
-      if (!res.ok) throw new Error(`data.json の取得に失敗しました（HTTP ${res.status}）`);
+      if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
       return await res.json();
     }
 
@@ -421,7 +438,6 @@
     }
 
     function toISODate(d) {
-      // YYYY-MM-DD に正規化（時間は無視）
       const dd = new Date(d);
       if (Number.isNaN(dd.getTime())) return null;
       const y = dd.getFullYear();
@@ -431,7 +447,6 @@
     }
 
     function getWeeklyPair(s) {
-      // s.weeklyPrices から「最新」と「1つ前」を返す
       const arr = Array.isArray(s.weeklyPrices) ? s.weeklyPrices : [];
       const normalized = arr
         .map(x => ({
@@ -446,7 +461,6 @@
       const latest = normalized[normalized.length - 1];
       const prev = normalized[normalized.length - 2];
 
-      // 同じ週が重複してたら最後のものを優先（念のため）
       if (latest.week === prev.week) {
         const unique = [];
         const seen = new Set();
@@ -465,7 +479,6 @@
     }
 
     function formatDelta(pair) {
-      // 表示用HTMLを返す（週次データがないなら空文字）
       if (!pair) return "";
 
       const { latest, prev } = pair;
@@ -479,7 +492,6 @@
       if (diff > 0) { cls = "up"; arrow = "↑"; }
       if (diff < 0) { cls = "down"; arrow = "↓"; }
 
-      // 変化率（prevが0のときは出さない）
       let pct = "";
       if (prev.price !== 0) {
         const rate = (diff / prev.price) * 100;
@@ -513,7 +525,7 @@
       try {
         data = await loadData();
       } catch (e) {
-        showError(e.message + " / data.json がルート直下にあるか確認してください。");
+        showError(e.message);
         return;
       }
       hideError();
@@ -603,9 +615,15 @@
           const weeklyPair = getWeeklyPair(s);
           const weeklyHtml = formatDelta(weeklyPair);
 
+          const imgSrc = String(s.imageUrl || "").trim();
+          const imgHtml = imgSrc
+            ? `<img class="thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer">`
+            : "";
+
           const div = document.createElement("div");
           div.className = "card";
           div.innerHTML = `
+            ${imgHtml}
             <div class="title">${escapeHtml(s.name ?? "")}</div>
 
             <div class="price">${escapeHtml(priceText)} <span class="meta">（${escapeHtml(priceYear)}）</span></div>
