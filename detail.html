@@ -608,7 +608,7 @@
 
       document.getElementById("name").textContent = s.name || "";
       document.getElementById("meta").innerHTML =
-        `ID：${escapeHtml(s.id)}<br>発売年：${escapeHtml(s.releaseYear)} / シリーズ：${escapeHtml(s.series)} / 状態：${escapeHtml(s.condition)}`;
+        `発売年：${escapeHtml(s.releaseYear)} / シリーズ：${escapeHtml(s.series)} / 状態：${escapeHtml(s.condition)}`;
 
       document.getElementById("badges").innerHTML = `
         <span class="badge">発売年：${escapeHtml(s.releaseYear)}</span>
