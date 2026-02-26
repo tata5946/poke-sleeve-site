@@ -206,7 +206,7 @@
       border-radius:12px;
       padding:10px 12px;
       background:#fff;
-      min-width: 180px;
+      min-width: 220px;
     }
     .kpi .label{ font-size:11px; color:var(--muted); font-weight:800; }
     .kpi .value{ font-size:18px; font-weight:900; margin-top:4px; }
@@ -323,12 +323,6 @@
             <div id="weeklyDelta" class="delta"></div>
             <div id="weeklyCount" class="meta" style="margin-top:6px;">取引件数：—</div>
           </div>
-
-          <div class="box">
-            <div class="label">最新年次価格</div>
-            <div id="latestYearly" class="value">—</div>
-            <div id="latestYearLabel" class="meta"></div>
-          </div>
         </div>
 
         <a class="btn" href="./index.html">← 一覧へ戻る</a>
@@ -351,8 +345,7 @@
   </div>
 
   <script>
-    // ★ index.html と同じURLにする（/exec）
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyl-TAhWBEVIgilTDv7lwS14T3_i9z57dUX4fqUVBS9gyr1EO7SaYy3aqP0V1gZtt6z/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxenw78eclLqZbQu_hOJzcjMWCT29lQgOjzLOR3TG6__ETt8S6OzZKzAUmJyv6b7fI/exec";
 
     function escapeHtml(str) {
       return String(str ?? "")
@@ -375,9 +368,6 @@
     }
 
     async function loadData() {
-      if (!GAS_URL || GAS_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
-        throw new Error("GAS_URL が未設定です。detail.html の GAS_URL に WebアプリURL を貼ってください。");
-      }
       const res = await fetch(GAS_URL + "?v=" + Date.now(), { cache: "no-store" });
       if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
       return await res.json();
@@ -392,35 +382,41 @@
       return `${y}-${m}-${day}`;
     }
 
-    // weeklyPrices: [{week, price, count}] を想定（countが無ければnull）
+    // weeklyPrices: [{week, price, count}]
+    // 取引なし（count<=0 または priceが数値じゃない）は price=null 扱いにして、表示は「-」
     function normalizeWeekly(arr) {
       return (Array.isArray(arr) ? arr : [])
         .map(x => {
           const week = toISODate(x.week);
-          const price = Number(x.price);
-          const count = Number(
-            x.count ?? x.trades ?? x.n ?? x.cnt ?? null
-          );
+          const priceN = Number(x.price);
+          const countN = Number(x.count);
+
+          const count = Number.isFinite(countN) ? countN : null;
+
+          // 取引なし週の判定：count===0 または priceが数値でない
+          const noTrades = (count === 0) || !Number.isFinite(priceN);
+
           return {
             week,
-            price: Number.isFinite(price) ? price : null,
-            count: Number.isFinite(count) ? count : null
+            price: noTrades ? null : priceN,
+            count: (count == null) ? null : count
           };
         })
-        .filter(x => x.week) // 週は必須
+        .filter(x => x.week)
         .sort((a, b) => String(a.week).localeCompare(String(b.week))); // asc
     }
 
-    function latestTwoWeekly(arr) {
-      const a = normalizeWeekly(arr).filter(x => Number.isFinite(x.price));
-      if (a.length === 0) return null;
+    // 「直近で取引があった週」2つで比較（取引なし週は飛ばす）
+    function latestTwoTradedWeeks(rows) {
+      const traded = (Array.isArray(rows) ? rows : []).filter(r => Number.isFinite(r.price));
+      if (traded.length === 0) return null;
 
       const uniq = [];
       const seen = new Set();
-      for (let i = a.length - 1; i >= 0; i--) {
-        if (seen.has(a[i].week)) continue;
-        seen.add(a[i].week);
-        uniq.push(a[i]);
+      for (let i = traded.length - 1; i >= 0; i--) {
+        if (seen.has(traded[i].week)) continue;
+        seen.add(traded[i].week);
+        uniq.push(traded[i]);
         if (uniq.length === 2) break;
       }
       return { latest: uniq[0], prev: uniq[1] || null };
@@ -441,7 +437,7 @@
 
       const html = rows.slice().reverse().map(r => {
         const priceCell = Number.isFinite(r.price) ? `${Number(r.price).toLocaleString()}円` : "—";
-        const countCell = (hasCount ? `<td>${Number.isFinite(r.count) ? `${r.count}件` : "—"}</td>` : "");
+        const countCell = hasCount ? `<td>${Number.isFinite(r.count) ? `${r.count}件` : "—"}</td>` : "";
         return `<tr><td>${escapeHtml(r.week)}</td><td>${priceCell}</td>${countCell}</tr>`;
       }).join("");
 
@@ -468,14 +464,16 @@
       `;
     }
 
-    function setWeeklyKpi(pair, allWeeklyRows) {
+    function setWeeklyKpi(weeklyRows) {
       const latestEl = document.getElementById("latestWeekly");
       const deltaEl = document.getElementById("weeklyDelta");
       const countEl = document.getElementById("weeklyCount");
 
+      const pair = latestTwoTradedWeeks(weeklyRows);
+
       if (!pair) {
         latestEl.textContent = "—";
-        deltaEl.textContent = "週次データなし";
+        deltaEl.textContent = "直近の取引なし";
         deltaEl.className = "delta flat";
         countEl.textContent = "取引件数：—";
         return;
@@ -483,14 +481,13 @@
 
       latestEl.textContent = `${pair.latest.price.toLocaleString()}円`;
 
-      // 取引件数（latest週のcountを優先、無ければ—）
-      const latestWeek = pair.latest.week;
-      const latestRow = (Array.isArray(allWeeklyRows) ? allWeeklyRows : []).find(r => r.week === latestWeek);
-      const cnt = latestRow && Number.isFinite(latestRow.count) ? latestRow.count : null;
+      // 最新取引週の件数
+      const cnt = Number.isFinite(pair.latest.count) ? pair.latest.count : null;
       countEl.textContent = `取引件数：${cnt != null ? `${cnt}件` : "—"}`;
 
+      // 前週比：直前の「取引あり週」が無ければ出さない
       if (!pair.prev) {
-        deltaEl.textContent = "前週データなし";
+        deltaEl.textContent = "比較できる前週データなし";
         deltaEl.className = "delta flat";
         return;
       }
@@ -512,20 +509,7 @@
       }
 
       deltaEl.className = "delta " + cls;
-      deltaEl.textContent = `${arrow} 前週比 ${sign}${abs.toLocaleString()}円 ${pct}`;
-    }
-
-    function setYearlyKpi(rows) {
-      const latestEl = document.getElementById("latestYearly");
-      const labelEl = document.getElementById("latestYearLabel");
-      if (!rows.length) {
-        latestEl.textContent = "—";
-        labelEl.textContent = "年次データなし";
-        return;
-      }
-      const last = rows[rows.length - 1];
-      latestEl.textContent = `${last.price.toLocaleString()}円`;
-      labelEl.textContent = `${last.year}年`;
+      deltaEl.textContent = `${arrow} 前回取引週比 ${sign}${abs.toLocaleString()}円 ${pct}`;
     }
 
     function renderLineChart(containerId, title, rows, xKey, yKey, options = {}) {
@@ -611,29 +595,20 @@
 
     async function main() {
       const id = getParam("id");
-      if (!id) {
-        showError("id が指定されていません。indexから入り直してください。");
-        return;
-      }
+      if (!id) { showError("id が指定されていません。indexから入り直してください。"); return; }
 
       let data;
-      try {
-        data = await loadData();
-      } catch (e) {
-        showError(e.message);
-        return;
-      }
+      try { data = await loadData(); }
+      catch (e) { showError(e.message); return; }
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
       const s = sleeves.find(x => String(x.id) === String(id));
-      if (!s) {
-        showError("該当スリーブが見つかりませんでした。");
-        return;
-      }
+      if (!s) { showError("該当スリーブが見つかりませんでした。"); return; }
 
       document.title = `${s.name || "スリーブ詳細"}｜ポケスリ相場ナビ`;
 
       const img = document.getElementById("img");
+      img.referrerPolicy = "no-referrer";
       img.src = String(s.imageUrl || "").trim();
       img.alt = s.name || "";
 
@@ -651,13 +626,12 @@
       const weeklyRows = normalizeWeekly(s.weeklyPrices);
       renderLineChart("weeklyChart", "週次価格 推移", weeklyRows, "week", "price", { height: 240 });
       document.getElementById("weeklyTable").innerHTML = renderTableWeekly(weeklyRows);
-      setWeeklyKpi(latestTwoWeekly(s.weeklyPrices), weeklyRows);
+      setWeeklyKpi(weeklyRows);
 
-      // yearly
+      // yearly（KPIは削除したが、推移は残す）
       const yearlyRows = normalizeYearly(s.pricesByYear);
       renderLineChart("yearlyChart", "年次価格 推移", yearlyRows, "year", "price", { height: 240 });
       document.getElementById("yearlyTable").innerHTML = renderTableYearly(yearlyRows);
-      setYearlyKpi(yearlyRows);
     }
 
     main();
