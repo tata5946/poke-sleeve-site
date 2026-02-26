@@ -22,7 +22,13 @@
       --accent:#1e5bd7;
       --accent2:#ffcc00;
     }
-
+    .brand{
+      text-decoration:none;
+      color:inherit;
+    }
+    .brand:hover{
+      text-decoration:none;
+    }
     *{ box-sizing:border-box; }
     body{
       font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -285,13 +291,13 @@
 <body>
   <div class="header">
     <div class="header-inner">
-      <div class="brand">
+      <a href="./index.html" class="brand">
         <div class="logo" aria-hidden="true"></div>
         <div>
           <h1 class="main-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
           <div class="sub-title">ポケカスリーブ価格推移データベース</div>
         </div>
-      </div>
+      </a>
 
       <nav class="nav" aria-label="メインメニュー">
         <a href="./index.html">一覧</a>
