@@ -525,7 +525,10 @@
 
       return { latest, prev };
     }
-
+      function getLatestWeeklyPrice(s) {
+       const pair = getWeeklyPair(s); // 取引あり週だけで latest/prev を返す版になってる前提
+        return pair ? pair.latest.price : null;
+      }
     function formatDelta(pair) {
       if (!pair) {
         return `<div class="delta"><span class="flat">直近の取引なし</span></div>`;
@@ -630,11 +633,8 @@
         priceYearSel.value = allPriceYears[allPriceYears.length - 1];
       }
 
-      function getPriceForYear(s, year) {
-        if (!year) return null;
-        const v = (s.pricesByYear || {})[year];
-        const n = Number(v);
-        return Number.isFinite(n) ? n : null;
+      function getCardPrice(s) {
+        return getLatestWeeklyPrice(s); // 今週(直近取引週)の価格
       }
 
       function render() {
@@ -655,7 +655,7 @@
           if (series && String(s.series || "") !== series) continue;
 
           if (band) {
-            const p = getPriceForYear(s, priceYear);
+            const p = getCardPrice(s);
             if (p == null) continue;
             if (p < band.min || p > band.max) continue;
           }
@@ -665,8 +665,8 @@
 
         // ソート（価格は year 固定で取り出して比較）
         filtered.sort((a, b) => {
-          const pa = getPriceForYear(a, priceYear) ?? -1;
-          const pb = getPriceForYear(b, priceYear) ?? -1;
+          const pa = getCardPrice(a) ?? -1;
+          const pb = getCardPrice(b) ?? -1;
 
           switch (sortOrder) {
             case "priceAsc": return pa - pb;
@@ -685,7 +685,7 @@
         const frag = document.createDocumentFragment();
 
         for (const s of filtered) {
-          const p = getPriceForYear(s, priceYear);
+          const p = getCardPrice(s);
           const priceText = (p == null) ? "—" : `${p.toLocaleString()}円`;
 
           const weeklyPair = getWeeklyPair(s);
@@ -703,7 +703,7 @@
             ${imgHtml}
             <div class="title">${escapeHtml(s.name ?? "")}</div>
 
-            <div class="price">${escapeHtml(priceText)} <span class="meta">（${escapeHtml(priceYear)}）</span></div>
+            <div class="price">${escapeHtml(priceText)} <span class="meta">（最新週次）</span></div>
 
             ${weeklyHtml}
 
