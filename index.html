@@ -448,69 +448,88 @@
     }
 
     function getWeeklyPair(s) {
-      const arr = Array.isArray(s.weeklyPrices) ? s.weeklyPrices : [];
-      const normalized = arr
-        .map(x => ({
-          week: toISODate(x.week),
-          price: Number(x.price)
-        }))
-        .filter(x => x.week && Number.isFinite(x.price))
-        .sort((a, b) => String(a.week).localeCompare(String(b.week))); // 昇順
+  const arr = Array.isArray(s.weeklyPrices) ? s.weeklyPrices : [];
 
-      if (normalized.length < 2) return null;
+  const normalized = arr
+    .map(x => {
+      const week = toISODate(x.week);
+      const price = Number(x.price);
+      const count = Number(x.count);
+      const cnt = Number.isFinite(count) ? count : null;
 
-      const latest = normalized[normalized.length - 1];
-      const prev = normalized[normalized.length - 2];
+      // 取引なし週は除外（count=0 or priceが数値じゃない）
+      const hasTrade = (cnt == null ? Number.isFinite(price) : (cnt > 0 && Number.isFinite(price)));
 
-      if (latest.week === prev.week) {
-        const unique = [];
-        const seen = new Set();
-        for (let i = normalized.length - 1; i >= 0; i--) {
-          const w = normalized[i].week;
-          if (seen.has(w)) continue;
-          seen.add(w);
-          unique.push(normalized[i]);
-          if (unique.length === 2) break;
-        }
-        if (unique.length < 2) return null;
-        return { latest: unique[0], prev: unique[1] };
-      }
+      return { week, price, count: cnt, hasTrade };
+    })
+    .filter(x => x.week && x.hasTrade)
+    .sort((a, b) => String(a.week).localeCompare(String(b.week))); // 昇順
+
+  if (normalized.length === 0) return null;
+
+  // 直近2つ（取引あり週）を返す
+  const uniq = [];
+  const seen = new Set();
+  for (let i = normalized.length - 1; i >= 0; i--) {
+    const w = normalized[i].week;
+    if (seen.has(w)) continue;
+    seen.add(w);
+    uniq.push(normalized[i]);
+    if (uniq.length === 2) break;
+  }
+
+  return { latest: uniq[0], prev: uniq[1] || null };
+}
 
       return { latest, prev };
     }
 
     function formatDelta(pair) {
-      if (!pair) return "";
+  if (!pair) return `<div class="delta"><span class="flat">直近の取引なし</span></div>`;
 
-      const { latest, prev } = pair;
-      const diff = latest.price - prev.price;
+  const { latest, prev } = pair;
 
-      const sign = diff > 0 ? "+" : diff < 0 ? "−" : "±";
-      const abs = Math.abs(diff);
+  // 直前の取引週がないなら差分は出さない
+  if (!prev) {
+    const cntText = Number.isFinite(latest.count) ? ` / ${latest.count}件` : "";
+    return `
+      <div class="delta">
+        <span class="flat">比較できる前週データなし</span>
+        <span class="chip">直近 ${latest.price.toLocaleString()}円${cntText}</span>
+      </div>
+    `;
+  }
 
-      let cls = "flat";
-      let arrow = "→";
-      if (diff > 0) { cls = "up"; arrow = "↑"; }
-      if (diff < 0) { cls = "down"; arrow = "↓"; }
+  const diff = latest.price - prev.price;
 
-      let pct = "";
-      if (prev.price !== 0) {
-        const rate = (diff / prev.price) * 100;
-        if (Number.isFinite(rate)) {
-          const r = Math.abs(rate).toFixed(1);
-          pct = `（${diff > 0 ? "+" : diff < 0 ? "-" : ""}${r}%）`;
-        }
-      }
+  const sign = diff > 0 ? "+" : diff < 0 ? "−" : "±";
+  const abs = Math.abs(diff);
 
-      return `
-        <div class="delta">
-          <span class="${cls}">${arrow} 前週比 ${sign}${abs.toLocaleString()}円 ${escapeHtml(pct)}</span>
-          <span class="chip">先週 ${prev.price.toLocaleString()}円</span>
-          <span class="chip">今週 ${latest.price.toLocaleString()}円</span>
-        </div>
-      `;
+  let cls = "flat";
+  let arrow = "→";
+  if (diff > 0) { cls = "up"; arrow = "↑"; }
+  if (diff < 0) { cls = "down"; arrow = "↓"; }
+
+  let pct = "";
+  if (prev.price !== 0) {
+    const rate = (diff / prev.price) * 100;
+    if (Number.isFinite(rate)) {
+      const r = Math.abs(rate).toFixed(1);
+      pct = `（${diff > 0 ? "+" : diff < 0 ? "-" : ""}${r}%）`;
     }
+  }
 
+  const prevCnt = Number.isFinite(prev.count) ? `${prev.count}件` : "—";
+  const latestCnt = Number.isFinite(latest.count) ? `${latest.count}件` : "—";
+
+  return `
+    <div class="delta">
+      <span class="${cls}">${arrow} 前回取引週比 ${sign}${abs.toLocaleString()}円 ${escapeHtml(pct)}</span>
+      <span class="chip">前回 ${prev.price.toLocaleString()}円 / ${prevCnt}</span>
+      <span class="chip">直近 ${latest.price.toLocaleString()}円 / ${latestCnt}</span>
+    </div>
+  `;
+}
     async function main() {
       const list = document.getElementById("list");
       const searchInput = document.getElementById("search");
