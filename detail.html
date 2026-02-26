@@ -411,18 +411,34 @@
       return (Array.isArray(arr) ? arr : [])
         .map(x => {
           const week = toISODate(x.week);
-          const priceN = Number(x.price);
-          const countN = Number(x.count);
 
-          const count = Number.isFinite(countN) ? countN : null;
+          // priceを安全にパース
+          let price = null;
+          const priceStr = String(x.price ?? "").trim();
+          if (priceStr !== "" && priceStr !== "-" && priceStr !== "—") {
+            const n = Number(priceStr);
+            if (Number.isFinite(n)) {
+              price = n;
+            }
+          }
 
-          // 取引なし週の判定：count===0 または priceが数値でない
-          const noTrades = (count === 0) || !Number.isFinite(priceN);
+          // countを安全にパース
+          let count = null;
+          const countStr = String(x.count ?? "").trim();
+          if (countStr !== "" && countStr !== "-" && countStr !== "—") {
+            const n = Number(countStr);
+            if (Number.isFinite(n)) {
+              count = n;
+            }
+          }
+
+          // 取引なし週：count===0 または priceがnull
+          const noTrades = (count === 0) || (price === null);
 
           return {
             week,
-            price: noTrades ? null : priceN,
-            count: (count == null) ? null : count
+            price: noTrades ? null : price,
+            count: count
           };
         })
         .filter(x => x.week)
