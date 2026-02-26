@@ -386,7 +386,25 @@
       const day = String(dd.getDate()).padStart(2, "0");
       return `${y}-${m}-${day}`;
     }
+    function formatPeriodLabel(iso) {
+      // iso: "YYYY-MM-DD"
+      const s = String(iso || "").trim();
+      const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return s;
 
+      const y = m[1];
+      const mo = m[2];
+      const d = m[3];
+
+      // 1/1 → 年
+      if (mo === "01" && d === "01") return `${y}年`;
+
+      // xx/1 → 月（ただし1月1日以外）
+      if (d === "01") return `${y}年${Number(mo)}月`;
+
+      // それ以外 → 週（実体は「その週の月曜」）
+      return `${y}/${mo}/${d}`;
+    }
     // weeklyPrices: [{week, price, count}]
     // 取引なし（count<=0 または priceが数値じゃない）は price=null 扱いにして、表示は「-」
     function normalizeWeekly(arr) {
