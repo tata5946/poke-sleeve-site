@@ -461,7 +461,7 @@
       const html = rows.slice().reverse().map(r => {
         const priceCell = Number.isFinite(r.price) ? `${Number(r.price).toLocaleString()}円` : "—";
         const countCell = hasCount ? `<td>${Number.isFinite(r.count) ? `${r.count}件` : "—"}</td>` : "";
-        return `<tr><td>${escapeHtml(r.week)}</td><td>${priceCell}</td>${countCell}</tr>`;
+        return `<tr><td>${escapeHtml(formatPeriodLabel(r.week))}</td><td>${priceCell}</td>${countCell}</tr>`;
       }).join("");
 
       const headCount = hasCount ? `<th>件数</th>` : "";
