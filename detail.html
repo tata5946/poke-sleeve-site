@@ -556,8 +556,7 @@
     function renderLineChart(containerId, title, rows, xKey, yKey, options = {}) {
       const el = document.getElementById(containerId);
       if (!el) return;
-
-      // yKey が null / "-" / "—" などなら y=null にして除外
+    
       const data = (Array.isArray(rows) ? rows : [])
         .map(r => {
           const x = String(r?.[xKey] ?? "");
@@ -570,31 +569,25 @@
           return { x, y };
         })
         .filter(p => p.x && Number.isFinite(p.y));
-
+    
       if (data.length < 2) {
         el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">データが不足しています</div></div>`;
         return;
       }
-
-      const W = options.width ?? 760;
-      const H = options.height ?? 240;
-      const padL = 52, padR = 16, padT = 16, padB = 34;
-
-      const ticks = options.ticks ?? 4;
-
+    
+      const W = 760;
+      const H = 240;
+      const padL = 60, padR = 20, padT = 20, padB = 40;
+      const ticks = 4;
+    
       const ys = data.map(d => d.y);
       let yMin = Math.min(...ys);
       let yMax = Math.max(...ys);
-
-      if (yMin === yMax) {
-        yMin -= 1;
-        yMax += 1;
-      } else {
-        const margin = (yMax - yMin) * 0.08;
-        yMin -= margin;
-        yMax += margin;
-      }
-
+    
+      const margin = (yMax - yMin) * 0.1 || 1;
+      yMin -= margin;
+      yMax += margin;
+    
       function niceStep(range, t) {
         const rough = range / t;
         const pow = Math.pow(10, Math.floor(Math.log10(Math.max(rough, 1))));
@@ -603,87 +596,125 @@
           Math.abs(v - rough) < Math.abs(best - rough) ? v : best
         , candidates[0]);
       }
-
+    
       const step = niceStep(yMax - yMin, ticks);
       yMin = Math.floor(yMin / step) * step;
       yMax = Math.ceil(yMax / step) * step;
-
-      const xToPx = (i) => {
-        const span = Math.max(1, data.length - 1);
-        return padL + (i / span) * (W - padL - padR);
-      };
-      const yToPx = (v) => {
-        const t = (v - yMin) / (yMax - yMin);
-        return padT + (1 - t) * (H - padT - padB);
-      };
-
-      const pathD = data
-        .map((p, i) => `${i === 0 ? "M" : "L"} ${xToPx(i).toFixed(2)} ${yToPx(p.y).toFixed(2)}`)
-        .join(" ");
-
+    
+      const xToPx = (i) => padL + (i / (data.length - 1)) * (W - padL - padR);
+      const yToPx = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * (H - padT - padB);
+    
+      const pathD = data.map((p, i) =>
+        `${i === 0 ? "M" : "L"} ${xToPx(i)} ${yToPx(p.y)}`
+      ).join(" ");
+    
       const tickLines = [];
       const tickLabels = [];
       for (let i = 0; i <= ticks; i++) {
         const v = yMin + (i / ticks) * (yMax - yMin);
         const y = yToPx(v);
-        tickLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef" stroke-width="1" />`);
+        tickLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef"/>`);
         tickLabels.push(
-          `<text x="${padL - 10}" y="${y + 4}" text-anchor="end"
+          `<text x="${padL - 12}" y="${y + 4}" text-anchor="end"
              font-size="12" fill="#475467" font-weight="700">
-             ${Math.round(v).toLocaleString()}円
+             ${Math.round(v).toLocaleString()}
            </text>`
         );
       }
-
+    
       const xFirst = formatPeriodLabel(data[0].x);
       const xLast  = formatPeriodLabel(data[data.length - 1].x);
-
+    
       const lastIdx = data.length - 1;
       const lastX = xToPx(lastIdx);
       const lastY = yToPx(data[lastIdx].y);
-
-      const labelX = lastX + 8;
-      const labelY = lastY - 10;
-      const labelW = Math.max(52, lastLabel.length * 9.2);
-      const labelH = 18;
-
+    
+      const lastLabel = `${data[lastIdx].y.toLocaleString()}円`;
+    
       el.innerHTML = `
         <div class="chart-wrap">
           <div class="chart-title">${escapeHtml(title)}</div>
           <div class="chart-tooltip"></div>
-
-          <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${escapeHtml(title)}">
+    
+          <svg class="chart" viewBox="0 0 ${W} ${H}">
+            <defs>
+              <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1e5bd7" stop-opacity="0.08"/>
+                <stop offset="100%" stop-color="#1e5bd7" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+    
             ${tickLines.join("")}
             ${tickLabels.join("")}
-
-            <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#e6e8ef" stroke-width="1" />
-            <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#e6e8ef" stroke-width="1" />
-
-            <!-- dotted line -->
-            <path d="${pathD}" fill="none" stroke="#1e5bd7" stroke-width="3.2"
-              stroke-linecap="round" stroke-linejoin="round"
-              stroke-dasharray="6 6" />
-
-            <!-- hover line & dot -->
-            <line class="hover-line" x1="0" y1="${padT}" x2="0" y2="${H - padB}"
-              stroke="#cbd5e1" stroke-width="1" style="display:none;" />
-            <circle class="hover-dot" cx="0" cy="0" r="5" fill="#1e5bd7" style="display:none;" />
-
-            <!-- hit area -->
-            <rect class="hover-hit" x="${padL}" y="${padT}"
-              width="${W - padL - padR}" height="${H - padT - padB}"
-              fill="transparent" />
-
-            <!-- last point label -->
-            <circle cx="${lastX}" cy="${lastY}" r="5.5" fill="#1e5bd7" />
-            <rect x="${labelX - 4}" y="${labelY - 14}" width="${labelW}" height="${labelH}" rx="8" ry="8" fill="#fff" stroke="#e6e8ef" />
-            <text x="${labelX}" y="${labelY}" font-size="12" fill="#111" font-weight="800">${escapeHtml(lastLabel)}</text>
-
+    
+            <rect x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="url(#bgGrad)" />
+    
+            <path d="${pathD}" fill="none" stroke="#1e5bd7"
+              stroke-width="3"
+              stroke-dasharray="6 6"
+              stroke-linecap="round"/>
+    
+            <line class="hover-line" y1="${padT}" y2="${H - padB}"
+              stroke="#94a3b8" stroke-width="1" style="display:none;" />
+            <circle class="hover-dot" r="5" fill="#1e5bd7" style="display:none;" />
+    
+            <rect class="hover-hit"
+              x="${padL}" y="${padT}"
+              width="${W - padL - padR}"
+              height="${H - padT - padB}"
+              fill="transparent"/>
+    
+            <circle cx="${lastX}" cy="${lastY}" r="5" fill="#1e5bd7"/>
+            <text x="${lastX + 8}" y="${lastY - 8}"
+              font-size="12" font-weight="800" fill="#111">
+              ${lastLabel}
+            </text>
+    
             <text x="${padL}" y="${H - 10}" font-size="11" fill="#667085">${escapeHtml(xFirst)}</text>
             <text x="${W - padR}" y="${H - 10}" font-size="11" fill="#667085" text-anchor="end">${escapeHtml(xLast)}</text>
           </svg>
         </div>
       `;
+    
+      const wrap = el.querySelector(".chart-wrap");
+      const svg = el.querySelector("svg.chart");
+      const tip = el.querySelector(".chart-tooltip");
+      const hit = el.querySelector(".hover-hit");
+      const hLine = el.querySelector(".hover-line");
+      const hDot = el.querySelector(".hover-dot");
+    
+      hit.addEventListener("mousemove", (ev) => {
+        const rect = svg.getBoundingClientRect();
+        const x = ev.clientX - rect.left;
+        const vbX = (x / rect.width) * W;
+        const idx = Math.round((vbX - padL) / (W - padL - padR) * (data.length - 1));
+        const safeIdx = Math.max(0, Math.min(data.length - 1, idx));
+    
+        const px = xToPx(safeIdx);
+        const py = yToPx(data[safeIdx].y);
+    
+        hLine.style.display = "block";
+        hDot.style.display = "block";
+        tip.style.display = "block";
+    
+        hLine.setAttribute("x1", px);
+        hLine.setAttribute("x2", px);
+        hDot.setAttribute("cx", px);
+        hDot.setAttribute("cy", py);
+    
+        tip.textContent = `${formatPeriodLabel(data[safeIdx].x)}：${data[safeIdx].y.toLocaleString()}円`;
+    
+        const wrapRect = wrap.getBoundingClientRect();
+        tip.style.left = `${ev.clientX - wrapRect.left}px`;
+        tip.style.top  = `${ev.clientY - wrapRect.top}px`;
+      });
+    
+      hit.addEventListener("mouseleave", () => {
+        hLine.style.display = "none";
+        hDot.style.display = "none";
+        tip.style.display = "none";
+      });
+    }
 
       // --- hover tooltip（描画後に要素を掴む） ---
       const wrap = el.querySelector(".chart-wrap");
