@@ -555,19 +555,19 @@
       const el = document.getElementById(containerId);
       if (!el) return;
 
-      // ここで price が null/undefined/"-" 等なら y=null にして取り除けるようにする
+      // yKey が null / "-" / "—" などなら y=null にして除外
       const data = (Array.isArray(rows) ? rows : [])
         .map(r => {
-          const x = String(r[xKey] ?? "");
-          const rawY = r[yKey]; // そのまま取る（normalizeWeekly で price=null になっていればここは null）
+          const x = String(r?.[xKey] ?? "");
+          const rawY = r?.[yKey];
           let y = null;
-          if (rawY != null) {
+          if (rawY !== null && rawY !== undefined && rawY !== "" && rawY !== "-" && rawY !== "—") {
             const n = Number(rawY);
             if (Number.isFinite(n)) y = n;
           }
           return { x, y };
         })
-        .filter(p => p.x && Number.isFinite(p.y)); // y が finite のものだけ描画
+        .filter(p => p.x && Number.isFinite(p.y));
 
       if (data.length < 2) {
         el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">データが不足しています</div></div>`;
@@ -576,23 +576,26 @@
 
       const W = options.width ?? 760;
       const H = options.height ?? 240;
-      const padL = 44, padR = 16, padT = 16, padB = 34;
+      const padL = 52, padR = 16, padT = 16, padB = 34;
+
+      const ticks = options.ticks ?? 4;
 
       const ys = data.map(d => d.y);
       let yMin = Math.min(...ys);
       let yMax = Math.max(...ys);
 
       if (yMin === yMax) {
-        yMin = yMin - 1;
-        yMax = yMax + 1;
+        yMin -= 1;
+        yMax += 1;
       } else {
         const margin = (yMax - yMin) * 0.08;
         yMin -= margin;
         yMax += margin;
       }
-      // 目盛りを「キリのいい値」に寄せる（例：50円/100円/500円刻み）
-      function niceStep(range) {
-        const rough = range / ticks;
+
+      // 目盛りを「キリのいい値」に寄せる
+      function niceStep(range, t) {
+        const rough = range / t;
         const pow = Math.pow(10, Math.floor(Math.log10(Math.max(rough, 1))));
         const candidates = [1, 2, 5, 10].map(m => m * pow);
         return candidates.reduce((best, v) =>
@@ -600,7 +603,7 @@
         , candidates[0]);
       }
 
-      const step = niceStep(yMax - yMin);
+      const step = niceStep(yMax - yMin, ticks);
       yMin = Math.floor(yMin / step) * step;
       yMax = Math.ceil(yMax / step) * step;
 
@@ -613,9 +616,10 @@
         return padT + (1 - t) * (H - padT - padB);
       };
 
-      const d = data.map((p, i) => `${i === 0 ? "M" : "L"} ${xToPx(i).toFixed(2)} ${yToPx(p.y).toFixed(2)}`).join(" ");
+      const pathD = data
+        .map((p, i) => `${i === 0 ? "M" : "L"} ${xToPx(i).toFixed(2)} ${yToPx(p.y).toFixed(2)}`)
+        .join(" ");
 
-      const ticks = 4;
       const tickLines = [];
       const tickLabels = [];
       for (let i = 0; i <= ticks; i++) {
@@ -623,19 +627,22 @@
         const y = yToPx(v);
         tickLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef" stroke-width="1" />`);
         tickLabels.push(
-        `<text x="${padL - 8}" y="${y + 4}" text-anchor="end"
-          font-size="12" fill="#475467" font-weight="700">
-          ${Math.round(v).toLocaleString()}
-        </text>`
-      );
+          `<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="12" fill="#475467" font-weight="700">${Math.round(v).toLocaleString()}</text>`
+        );
+      }
 
-      // 期間ラベル化（formatPeriodLabel が定義済みであること）
       const xFirst = formatPeriodLabel(data[0].x);
       const xLast  = formatPeriodLabel(data[data.length - 1].x);
 
       const lastIdx = data.length - 1;
       const lastX = xToPx(lastIdx);
       const lastY = yToPx(data[lastIdx].y);
+
+      const lastLabel = `${data[lastIdx].y.toLocaleString()}円`;
+      const labelX = lastX + 8;
+      const labelY = lastY - 10;
+      const labelW = Math.max(52, lastLabel.length * 9.2);
+      const labelH = 18;
 
       el.innerHTML = `
         <div class="chart-wrap">
@@ -646,24 +653,12 @@
 
             <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#e6e8ef" stroke-width="1" />
             <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#e6e8ef" stroke-width="1" />
-             
-            <path d="${d}" fill="none" stroke="#1e5bd7" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+
+            <path d="${pathD}" fill="none" stroke="#1e5bd7" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
 
             <circle cx="${lastX}" cy="${lastY}" r="5.5" fill="#1e5bd7" />
-            <rect x="${labelX - 4}" y="${labelY - 14}" width="${labelW}" height="${labelH}"
-              rx="8" ry="8" fill="#fff" stroke="#e6e8ef" />
-
-            <text x="${labelX}" y="${labelY}" font-size="12" fill="#111" font-weight="800">
-              ${lastLabel}
-            </text>
-            const lastLabel = `${data[lastIdx].y.toLocaleString()}円`;
-            const labelX = lastX + 8;
-            const labelY = lastY - 10;
-
-            // SVGはテキストの幅が測りにくいのでざっくり
-            const labelW = Math.max(44, lastLabel.length * 9.2);
-            const labelH = 18;
-            <text x="${lastX + 8}" y="${lastY - 8}" font-size="11" fill="#111" font-weight="700">${data[lastIdx].y.toLocaleString()}円</text>
+            <rect x="${labelX - 4}" y="${labelY - 14}" width="${labelW}" height="${labelH}" rx="8" ry="8" fill="#fff" stroke="#e6e8ef" />
+            <text x="${labelX}" y="${labelY}" font-size="12" fill="#111" font-weight="800">${escapeHtml(lastLabel)}</text>
 
             <text x="${padL}" y="${H - 10}" font-size="11" fill="#667085">${escapeHtml(xFirst)}</text>
             <text x="${W - padR}" y="${H - 10}" font-size="11" fill="#667085" text-anchor="end">${escapeHtml(xLast)}</text>
@@ -672,7 +667,6 @@
         </div>
       `;
     }
-
     async function main() {
       const id = getParam("id");
       if (!id) { showError("id が指定されていません。indexから入り直してください。"); return; }
