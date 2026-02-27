@@ -628,7 +628,10 @@
         const y = yToPx(v);
         tickLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef" stroke-width="1" />`);
         tickLabels.push(
-          `<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="12" fill="#475467" font-weight="700">${Math.round(v).toLocaleString()}</text>`
+          `<text x="${padL - 10}" y="${y + 4}" text-anchor="end"
+             font-size="12" fill="#475467" font-weight="700">
+             ${Math.round(v).toLocaleString()}円
+           </text>`
         );
       }
 
@@ -680,8 +683,6 @@
             <text x="${padL}" y="${H - 10}" font-size="11" fill="#667085">${escapeHtml(xFirst)}</text>
             <text x="${W - padR}" y="${H - 10}" font-size="11" fill="#667085" text-anchor="end">${escapeHtml(xLast)}</text>
           </svg>
-
-          <div class="chart-meta">点数：${data.length}（${escapeHtml(xFirst)} → ${escapeHtml(xLast)}）</div>
         </div>
       `;
 
