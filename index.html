@@ -59,14 +59,11 @@
       gap:12px;
       align-items:center;
       min-width: 260px;
-    }
-    .brand{
       text-decoration:none;
       color:inherit;
     }
-    .brand:hover{
-      text-decoration:none;
-    }
+    .brand:hover{ text-decoration:none; }
+
     /* “ボール風”ロゴ（CSSだけ） */
     .logo{
       width:38px; height:38px; border-radius:999px;
@@ -295,13 +292,18 @@
     .delta .down { color: #1976d2; }
     .delta .flat { color: #667085; }
     .delta .chip{
-      font-size: 11px;
+      font-size: 12px;
       padding: 3px 8px;
       border-radius: 999px;
       border: 1px solid var(--border);
       background: #f6f8ff;
       color: #111;
       font-weight: 800;
+    }
+    /* 「前回取引週比」を強調 */
+    .delta .delta-main{
+      font-size: 14px;
+      font-weight: 900;
     }
   </style>
 </head>
@@ -360,11 +362,7 @@
             </select>
           </label>
 
-          <label>価格の年
-            <select id="priceYear">
-              <option value="">（年を選択）</option>
-            </select>
-          </label>
+          <!-- ★「価格の年」フィルタは削除 -->
 
           <label>価格帯
             <select id="priceBand">
@@ -531,10 +529,28 @@
 
       return { latest, prev };
     }
-      function getLatestWeeklyPrice(s) {
-       const pair = getWeeklyPair(s); // 取引あり週だけで latest/prev を返す版になってる前提
-        return pair ? pair.latest.price : null;
+
+    function getLatestWeeklyPrice(s) {
+      const pair = getWeeklyPair(s); // 取引あり週だけで latest/prev を返す版
+      return pair ? pair.latest.price : null;
+    }
+
+    // ★ 各スリーブの「総取引件数」
+    function getTotalTradeCount(sleeve) {
+      const arr = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      let sum = 0;
+      let hasAny = false;
+
+      for (const x of arr) {
+        const c = numOrNull(x.count);
+        if (Number.isFinite(c) && c > 0) {
+          sum += c;
+          hasAny = true;
+        }
       }
+      return hasAny ? sum : null;
+    }
+
     function formatDelta(pair) {
       if (!pair) {
         return `<div class="delta"><span class="flat">直近の取引なし</span></div>`;
@@ -577,7 +593,7 @@
 
       return `
         <div class="delta">
-          <span class="${cls}">${arrow} 前回取引週比 ${sign}${abs.toLocaleString()}円 ${escapeHtml(pct)}</span>
+          <span class="delta-main ${cls}">${arrow} 前回取引週比 ${sign}${abs.toLocaleString()}円 ${escapeHtml(pct)}</span>
           <span class="chip">前回 ${prev.price.toLocaleString()}円 / ${prevCnt}</span>
           <span class="chip">直近 ${latest.price.toLocaleString()}円 / ${latestCnt}</span>
         </div>
@@ -593,7 +609,6 @@
 
       const releaseYearSel = document.getElementById("releaseYear");
       const seriesSel = document.getElementById("series");
-      const priceYearSel = document.getElementById("priceYear");
       const priceBandSel = document.getElementById("priceBand");
       const sortOrderSel = document.getElementById("sortOrder");
       const clearBtn = document.getElementById("clear");
@@ -612,7 +627,6 @@
       // セレクト初期化
       const releaseYears = uniq(sleeves.map(s => s.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
       const seriesList = uniq(sleeves.map(s => s.series)).sort();
-      const allPriceYears = uniq(sleeves.flatMap(s => Object.keys(s.pricesByYear || {}))).sort();
 
       for (const y of releaseYears) {
         const opt = document.createElement("option");
@@ -628,26 +642,14 @@
         seriesSel.appendChild(opt);
       }
 
-      for (const y of allPriceYears) {
-        const opt = document.createElement("option");
-        opt.value = y;
-        opt.textContent = y;
-        priceYearSel.appendChild(opt);
-      }
-
-      if (allPriceYears.length > 0) {
-        priceYearSel.value = allPriceYears[allPriceYears.length - 1];
-      }
-
       function getCardPrice(s) {
-        return getLatestWeeklyPrice(s); // 今週(直近取引週)の価格
+        return getLatestWeeklyPrice(s); // 直近取引週の価格
       }
 
       function render() {
         const kw = searchInput.value.trim().toLowerCase();
         const releaseYear = releaseYearSel.value;
         const series = seriesSel.value;
-        const priceYear = priceYearSel.value;
         const band = parseBand(priceBandSel.value);
         const sortOrder = sortOrderSel.value;
 
@@ -669,7 +671,7 @@
           filtered.push(s);
         }
 
-        // ソート（価格は year 固定で取り出して比較）
+        // ソート
         filtered.sort((a, b) => {
           const pa = getCardPrice(a) ?? -1;
           const pb = getCardPrice(b) ?? -1;
@@ -697,6 +699,9 @@
           const weeklyPair = getWeeklyPair(s);
           const weeklyHtml = formatDelta(weeklyPair);
 
+          const totalTrades = getTotalTradeCount(s);
+          const totalTradesText = (totalTrades == null) ? "—" : `${totalTrades.toLocaleString()}件`;
+
           const imgSrc = String(s.imageUrl || "").trim();
           const imgHtml = imgSrc
             ? `<img class="thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
@@ -714,6 +719,7 @@
             ${weeklyHtml}
 
             <div class="badges">
+              <span class="badge">総取引：${escapeHtml(totalTradesText)}</span>
               <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
               <span class="badge">${escapeHtml(s.condition ?? "")}</span>
               <span class="badge">${escapeHtml(s.series ?? "")}</span>
@@ -736,7 +742,6 @@
 
       releaseYearSel.addEventListener("change", render);
       seriesSel.addEventListener("change", render);
-      priceYearSel.addEventListener("change", render);
       priceBandSel.addEventListener("change", render);
       sortOrderSel.addEventListener("change", render);
 
@@ -745,7 +750,6 @@
         releaseYearSel.value = "";
         seriesSel.value = "";
         priceBandSel.value = "";
-        if (allPriceYears.length > 0) priceYearSel.value = allPriceYears[allPriceYears.length - 1];
         sortOrderSel.value = "priceDesc";
         render();
       });
@@ -753,6 +757,10 @@
       render();
     }
 
+    main();
+  </script>
+</body>
+</html>
     main();
   </script>
 </body>
