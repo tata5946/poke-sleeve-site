@@ -538,28 +538,172 @@
         justify-content: flex-start;
       }
     }
+      /* ===== PB風 2段ヘッダー ===== */
+      .header{
+        position: sticky;
+        top:0;
+        z-index:50;
+        background:#fff;
+        border-bottom:1px solid var(--border);
+        backdrop-filter:none;
+      }
+      
+      /* 上段 */
+      .header-top{
+        max-width:1100px;
+        margin:0 auto;
+        padding:10px 20px;
+        display:flex;
+        align-items:center;
+        gap:14px;
+      }
+      
+      .brand{
+        min-width:0;
+        gap:10px;
+      }
+      .main-title{
+        font-size:22px;
+        color:#111;
+        text-shadow:none;
+        white-space:nowrap;
+      }
+      .sub-title{ display:none; }
+      
+      /* 検索（ヘッダー内） */
+      .header-search{
+        flex:1;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+      .header-search .search-wrap{
+        width:min(520px, 100%);
+        display:flex;
+        align-items:center;
+        gap:10px;
+        padding:8px 12px;
+        border:1px solid var(--border);
+        border-radius:999px;
+        background:#fff;
+        box-shadow: 0 2px 10px rgba(16,24,40,.05);
+      }
+      .header-search .search-ico{
+        font-weight:900;
+        color:#667085;
+      }
+      .header-search input{
+        width:100%;
+        border:0;
+        outline:0;
+        font-size:14px;
+        background:transparent;
+      }
+      
+      /* 右側（将来ログイン等置ける） */
+      .header-right{
+        display:flex;
+        gap:10px;
+        align-items:center;
+      }
+      .header-right a{
+        font-weight:800;
+        font-size:13px;
+        color:#111;
+      }
+      
+      /* 下段：ナビバー */
+      .header-bottom{
+        background:#111; /* PBっぽい濃色 */
+        border-top:1px solid rgba(255,255,255,.08);
+      }
+      .header-bottom-inner{
+        max-width:1100px;
+        margin:0 auto;
+        padding:8px 20px;
+        display:flex;
+        gap:10px;
+        align-items:center;
+        overflow-x:auto;
+        -webkit-overflow-scrolling:touch;
+      }
+      .header-bottom-inner::-webkit-scrollbar{ height:8px; }
+      .header-bottom-inner::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.18); border-radius:999px; }
+      .header-bottom-inner::-webkit-scrollbar-track{ background:transparent; }
+      
+      .nav a{
+        border:0;
+        background:transparent;
+        color:#fff;
+        padding:8px 10px;
+        border-radius:10px;
+        font-size:13px;
+        font-weight:900;
+        white-space:nowrap;
+        display:flex;
+        align-items:center;
+        gap:8px;
+      }
+      .nav a:hover{
+        background:rgba(255,255,255,.12);
+        text-decoration:none;
+      }
+      
+      /* アクティブ表示（JSなし：手動でclass付ける方式） */
+      .nav a.is-active{
+        background:rgba(255,255,255,.18);
+      }
+      
+      /* スマホ最適化 */
+      @media (max-width: 700px){
+        .header-top{
+          padding:10px 14px;
+          gap:10px;
+        }
+        .logo{ width:32px; height:32px; }
+        .main-title{ font-size:18px; }
+        .header-right{ display:none; } /* 右側は一旦隠す */
+        .header-bottom-inner{ padding:8px 14px; }
+      }
   </style>
 </head>
 
 <body>
   <div class="header">
-    <div class="header-inner">
-      <a href="./index.html" class="brand" style="text-decoration:none; color:inherit;">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1 class="main-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
-          <div class="sub-title">ポケカスリーブ価格推移データベース</div>
-        </div>
-      </a>
+  <!-- 上段 -->
+  <div class="header-top">
+    <a href="./index.html" class="brand" style="text-decoration:none; color:inherit;">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1 class="main-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
+      </div>
+    </a>
 
+    <div class="header-search" aria-label="サイト内検索">
+      <div class="search-wrap">
+        <span class="search-ico">🔍</span>
+        <input type="text" id="search" placeholder="スリーブ名で検索…" autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="header-right">
+      <!-- 将来：ログイン/登録/通知など -->
+      <a href="./policy.html">ポリシー</a>
+    </div>
+  </div>
+
+  <!-- 下段 -->
+  <div class="header-bottom">
+    <div class="header-bottom-inner">
       <nav class="nav" aria-label="メインメニュー">
-        <a href="./index.html">一覧</a>
+        <a class="is-active" href="./index.html">一覧</a>
         <a href="./ranking.html">価格ランキング</a>
         <a href="./growth.html">高騰率</a>
         <a href="./surge.html">急上昇</a>
       </nav>
     </div>
   </div>
+</div>
 
   <div class="container">
     <!-- HERO -->
@@ -570,10 +714,6 @@
           <p class="hero-desc">ランキングで注目スリーブをチェックし、一覧の検索・フィルタで目的のスリーブを見つけられます。</p>
           <p class="data-note">※価格はフリマアプリ等の売却履歴をもとに独自集計しています。</p>
           <p id="updatedAt" class="data-note" style="display:none;"></p>
-        </div>
-
-        <div class="searchbox">
-          <input type="text" id="search" placeholder="スリーブ名で検索…" autocomplete="off" />
         </div>
       </div>
     </div>
