@@ -462,6 +462,58 @@
       border-top:1px solid var(--border);
     }
     footer.site-footer a{ color:var(--accent); font-weight:800; }
+
+    /* ===== Mobile Optimizations ===== */
+    @media (max-width: 600px){
+    
+      .container{ padding:14px; }
+    
+      /* ヘッダーを詰める */
+      .header-inner{ padding:10px 14px; }
+      .logo{ width:32px; height:32px; }
+      .main-title{ font-size:20px; }
+      .sub-title{ font-size:12px; }
+    
+      /* ナビは横スクロールに（折返しで縦に伸びない） */
+      .nav{
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap:8px;
+        padding-bottom:4px;
+      }
+      .nav a{
+        white-space: nowrap;
+        padding:7px 12px;
+        font-size:12px;
+      }
+    
+      /* ヒーロー */
+      .hero-card{ padding:12px; }
+      .searchbox input{
+        width: 100%;
+        min-width: 0;
+      }
+    
+      /* 棚：タイルを少し細くして枚数増やす */
+      .tile{ width:150px; }
+      .tile-img{ height:130px; }
+    
+      /* 左右ボタンはスマホでは不要（スワイプが主） */
+      .rail-btn{ display:none; }
+    
+      /* 一覧：2列固定で見やすく（iPhoneで1列はもったいない） */
+      .grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap:10px;
+      }
+      .thumb{ height:130px; }
+      .title{ font-size:13px; }
+    
+      /* 絞り込みは“折りたたみ”にしたくなるけど、まずは詰める */
+      .panel{ padding:12px; }
+      .controls select, .controls button{ padding:9px 10px; }
+    }
   </style>
 </head>
 
