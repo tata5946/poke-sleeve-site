@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ポケスリ相場ナビ｜ポケカスリーブ価格推移</title>
-  <meta name="description" content="ポケスリ相場ナビは、ポケカスリーブの年次平均価格推移を掲載するデータベース。検索・絞り込み・並び替えで相場を比較できます。">
+  <meta name="description" content="ポケスリ相場ナビは、ポケカスリーブの週次・年次の価格推移を掲載するデータベース。ランキング・急上昇・検索/絞り込みで相場を比較できます。">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,7 +92,6 @@
       transform: translate(-50%,-50%);
     }
 
-    /* タイトル */
     .main-title{
       font-size:28px;
       font-weight:900;
@@ -133,7 +132,7 @@
       text-decoration:none;
     }
 
-    /* layout */
+    /* hero */
     .hero{ margin-top:18px; }
     .hero-card{
       background:var(--card);
@@ -154,6 +153,11 @@
       font-size:13px;
       line-height:1.6;
     }
+    .data-note{
+      margin-top:8px;
+      font-size:12px;
+      color:var(--muted);
+    }
 
     .searchbox{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
     .searchbox input{
@@ -166,6 +170,151 @@
       font-size:14px;
     }
 
+    /* sections (棚) */
+    .sections{ margin-top:14px; display:flex; flex-direction:column; gap:14px; }
+
+    .section{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:14px;
+    }
+    .section-head{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    .section-title{
+      margin:0;
+      font-size:16px;
+      font-weight:900;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      font-size:12px;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid #ffe082;
+      background:#fff8cc;
+      color:#5c4b00;
+      font-weight:800;
+    }
+    .more{
+      font-size:13px;
+      font-weight:800;
+      color:var(--accent);
+      white-space:nowrap;
+    }
+
+    .rail-wrap{
+      position:relative;
+    }
+    .rail{
+      display:flex;
+      gap:12px;
+      overflow:auto;
+      padding:4px 2px 10px;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .rail::-webkit-scrollbar{ height:10px; }
+    .rail::-webkit-scrollbar-thumb{ background:#dbe6ff; border-radius:999px; }
+    .rail::-webkit-scrollbar-track{ background:transparent; }
+
+    .rail-btn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:40px; height:40px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.9);
+      box-shadow:0 8px 18px rgba(16,24,40,.10);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      color:#111;
+      user-select:none;
+    }
+    .rail-btn:hover{ background:#fff; }
+    .rail-btn.left{ left:-10px; }
+    .rail-btn.right{ right:-10px; }
+    @media (max-width: 900px){
+      .rail-btn.left{ left:-6px; }
+      .rail-btn.right{ right:-6px; }
+    }
+
+    /* 棚カード */
+    .tile{
+      scroll-snap-align:start;
+      flex:0 0 auto;
+      width:180px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background:#fff;
+      padding:10px;
+      box-shadow:0 4px 14px rgba(16,24,40,.06);
+    }
+    .tile:hover{ outline:2px solid rgba(30,91,215,.10); }
+    .tile-img{
+      width:100%;
+      height:160px;
+      object-fit:cover;
+      border-radius:12px;
+      background:#f2f4f7;
+      display:block;
+    }
+    .tile-name{
+      font-size:13px;
+      font-weight:900;
+      margin:10px 0 6px;
+      line-height:1.25;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+      min-height: 32px;
+    }
+    .tile-price{
+      font-size:15px;
+      font-weight:900;
+      margin:0;
+    }
+    .tile-sub{
+      margin:4px 0 0;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+    .chipline{
+      margin-top:8px;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+    .chip{
+      font-size:12px;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#f6f8ff;
+      color:#111;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .up{ color:#d32f2f; }
+    .down{ color:#1976d2; }
+    .flat{ color:#667085; }
+
+    /* layout (一覧部分) */
     .main{
       display:grid;
       grid-template-columns: 300px 1fr;
@@ -223,35 +372,35 @@
       display:none;
     }
 
-    /* content list */
+    /* 一覧グリッド（コンパクト） */
     .grid{
       display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
       padding:0;
     }
     .card{
       background:var(--card);
       border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:14px;
+      border-radius:16px;
+      padding:10px;
       box-shadow: var(--shadow);
     }
     .thumb{
       width:100%;
-      aspect-ratio: 1 / 1;
+      height:160px;          /* ここで縦を圧縮 */
       object-fit: cover;
-      border-radius:16px;
+      border-radius:14px;
       box-shadow: 0 6px 14px rgba(0,0,0,.08);
       transition: transform .2s ease;
       background: #f2f4f7;
     }
-    .card:hover .thumb{ transform: scale(1.03); }
+    .card:hover .thumb{ transform: scale(1.02); }
 
-    .title{ font-weight:900; font-size:15px; margin:10px 0 8px; }
-    .meta{ font-size:12px; color:var(--muted); line-height:1.5; }
+    .title{ font-weight:900; font-size:14px; margin:10px 0 6px; }
+    .meta{ font-size:12px; color:var(--muted); line-height:1.45; }
 
-    .badges{ display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+    .badges{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
     .badge{
       font-size:11px;
       padding:4px 8px;
@@ -262,23 +411,24 @@
       font-weight:700;
     }
 
-    .price{ margin-top:10px; font-size:18px; font-weight:900; }
+    .price{ margin-top:8px; font-size:16px; font-weight:900; }
     .btn{
       display:inline-block;
-      margin-top:10px;
-      padding:10px 12px;
+      margin-top:8px;
+      padding:8px 10px;
       border-radius:12px;
       border:1px solid var(--border);
       background:#fff;
       color:#111;
-      font-weight:700;
+      font-weight:800;
+      font-size:12px;
     }
     .btn:hover{
       background:#f2f4f7;
       text-decoration:none;
     }
 
-    /* 週次差分表示 */
+    /* 週次差分表示（一覧用） */
     .delta {
       margin-top: 6px;
       font-size: 12px;
@@ -288,9 +438,6 @@
       align-items: center;
       flex-wrap: wrap;
     }
-    .delta .up { color: #d32f2f; }
-    .delta .down { color: #1976d2; }
-    .delta .flat { color: #667085; }
     .delta .chip{
       font-size: 12px;
       padding: 3px 8px;
@@ -300,17 +447,21 @@
       color: #111;
       font-weight: 800;
     }
-    /* 「前回取引週比」を強調 */
     .delta .delta-main{
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 900;
     }
 
-    .data-note{
-      margin-top:8px;
+    /* footer */
+    footer.site-footer{
+      margin-top:40px;
+      padding:20px 0;
+      text-align:center;
       font-size:12px;
       color:#667085;
+      border-top:1px solid var(--border);
     }
+    footer.site-footer a{ color:var(--accent); font-weight:800; }
   </style>
 </head>
 
@@ -335,12 +486,14 @@
   </div>
 
   <div class="container">
+    <!-- HERO -->
     <div class="hero">
       <div class="hero-card">
         <div>
           <p class="hero-title">スリーブ相場を “探す・絞る・比較する”</p>
-          <p class="hero-desc">検索・フィルタ・並び替えで目的のスリーブを見つけ、詳細ページで年次推移を確認できます。</p>
+          <p class="hero-desc">ランキングで注目スリーブをチェックし、一覧の検索・フィルタで目的のスリーブを見つけられます。</p>
           <p class="data-note">※価格はフリマアプリ等の売却履歴をもとに独自集計しています。</p>
+          <p id="updatedAt" class="data-note" style="display:none;"></p>
         </div>
 
         <div class="searchbox">
@@ -349,6 +502,55 @@
       </div>
     </div>
 
+    <!-- 棚（横スライダー） -->
+    <div class="sections" aria-label="ランキング棚">
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">
+            急上昇ランキング <span class="pill">直近取引週</span>
+          </h2>
+          <a class="more" href="./surge.html">もっと見る</a>
+        </div>
+
+        <div class="rail-wrap">
+          <button class="rail-btn left" type="button" data-rail="rail-surge" aria-label="左へ">‹</button>
+          <div id="rail-surge" class="rail" tabindex="0" aria-label="急上昇ランキング"></div>
+          <button class="rail-btn right" type="button" data-rail="rail-surge" aria-label="右へ">›</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">
+            高騰率ランキング <span class="pill">30日</span>
+          </h2>
+          <a class="more" href="./growth.html">もっと見る</a>
+        </div>
+
+        <div class="rail-wrap">
+          <button class="rail-btn left" type="button" data-rail="rail-growth" aria-label="左へ">‹</button>
+          <div id="rail-growth" class="rail" tabindex="0" aria-label="高騰率ランキング"></div>
+          <button class="rail-btn right" type="button" data-rail="rail-growth" aria-label="右へ">›</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">
+            価格ランキング <span class="pill">最新週次</span>
+          </h2>
+          <a class="more" href="./ranking.html">もっと見る</a>
+        </div>
+
+        <div class="rail-wrap">
+          <button class="rail-btn left" type="button" data-rail="rail-price" aria-label="左へ">‹</button>
+          <div id="rail-price" class="rail" tabindex="0" aria-label="価格ランキング"></div>
+          <button class="rail-btn right" type="button" data-rail="rail-price" aria-label="右へ">›</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- 一覧（検索・絞り込み） -->
     <div class="main">
       <aside class="panel">
         <h2>絞り込み</h2>
@@ -368,8 +570,6 @@
               <option value="">全部</option>
             </select>
           </label>
-
-          <!-- ★「価格の年」フィルタは削除 -->
 
           <label>価格帯
             <select id="priceBand">
@@ -399,6 +599,11 @@
         <div id="list" class="grid"></div>
       </main>
     </div>
+
+    <footer class="site-footer">
+      © 2026 ポケスリ相場ナビ |
+      <a href="./policy.html">プライバシーポリシー・免責事項</a>
+    </footer>
   </div>
 
   <script>
@@ -448,7 +653,6 @@
     }
 
     function toISODate(d) {
-      // d: Date | string | number
       const dd = new Date(d);
       if (Number.isNaN(dd.getTime())) return null;
       const y = dd.getFullYear();
@@ -505,7 +709,6 @@
       const arr = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
       if (arr.length === 0) return null;
 
-      // weekISO -> item（後勝ち）
       const map = new Map();
 
       for (const x of arr) {
@@ -515,30 +718,23 @@
         const price = numOrNull(x.price);
         const count = numOrNull(x.count);
 
-        // countがあるなら count>0 を必須。countが無いなら price が数値なら取引あり扱い。
         const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
         if (!hasTrade) continue;
 
-        map.set(weekISO, {
-          week: weekISO,
-          price,
-          count: count == null ? null : count
-        });
+        map.set(weekISO, { week: weekISO, price, count: count == null ? null : count });
       }
 
       if (map.size === 0) return null;
 
-      // 日付昇順に並べ、直近2つを取る
       const sorted = Array.from(map.values()).sort((a, b) => a.week.localeCompare(b.week));
-
       const latest = sorted[sorted.length - 1];
       const prev = sorted.length >= 2 ? sorted[sorted.length - 2] : null;
 
-      return { latest, prev };
+      return { latest, prev, sorted };
     }
 
     function getLatestWeeklyPrice(s) {
-      const pair = getWeeklyPair(s); // 取引あり週だけで latest/prev を返す版
+      const pair = getWeeklyPair(s);
       return pair ? pair.latest.price : null;
     }
 
@@ -565,7 +761,6 @@
 
       const { latest, prev } = pair;
 
-      // 直前の取引週がないなら差分は出さない
       if (!prev) {
         const cntText = Number.isFinite(latest.count) ? ` / ${latest.count}件` : "";
         return `
@@ -608,6 +803,92 @@
     }
 
     // -----------------------------
+    // growth (30日) helper
+    // -----------------------------
+    function isoToDate(iso) {
+      const d = new Date(iso);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+    function addDays(iso, days) {
+      const d = isoToDate(iso);
+      if (!d) return null;
+      d.setDate(d.getDate() + days);
+      return toISODate(d);
+    }
+
+    // sorted: [{week, price, count}, ...] (昇順)
+    function getPriceAtOrBefore(sorted, targetISO) {
+      if (!sorted || sorted.length === 0) return null;
+      // 末尾から探す（件数少ない前提で十分速い）
+      for (let i = sorted.length - 1; i >= 0; i--) {
+        if (sorted[i].week <= targetISO) return sorted[i];
+      }
+      return null;
+    }
+
+    function get30dGrowth(sleeve) {
+      const pair = getWeeklyPair(sleeve);
+      if (!pair) return null;
+      const latest = pair.latest;
+      const sorted = pair.sorted;
+
+      const targetISO = addDays(latest.week, -30);
+      if (!targetISO) return null;
+
+      const base = getPriceAtOrBefore(sorted, targetISO);
+      if (!base || !Number.isFinite(base.price) || base.price === 0) return null;
+
+      const diff = latest.price - base.price;
+      const rate = (diff / base.price) * 100;
+      if (!Number.isFinite(rate)) return null;
+
+      return {
+        latest,
+        base,
+        diff,
+        rate
+      };
+    }
+
+    // -----------------------------
+    // rail (UI)
+    // -----------------------------
+    function scrollRail(id, dir = 1) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const step = Math.max(280, Math.floor(el.clientWidth * 0.85));
+      el.scrollBy({ left: dir * step, behavior: "smooth" });
+    }
+
+    function wireRailButtons() {
+      const btns = document.querySelectorAll(".rail-btn");
+      for (const b of btns) {
+        b.addEventListener("click", () => {
+          const railId = b.getAttribute("data-rail");
+          const dir = b.classList.contains("left") ? -1 : 1;
+          scrollRail(railId, dir);
+        });
+      }
+    }
+
+    function buildTileHTML(s, subHtml, chipsHtml) {
+      const imgSrc = String(s.imageUrl || "").trim();
+      const img = imgSrc
+        ? `<img class="tile-img" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
+             onerror="this.onerror=null; this.style.display='none';">`
+        : `<div class="tile-img"></div>`;
+
+      return `
+        <a class="tile" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}" aria-label="${escapeHtml(s.name ?? "")}">
+          ${img}
+          <div class="tile-name">${escapeHtml(s.name ?? "")}</div>
+          ${subHtml}
+          <div class="chipline">${chipsHtml}</div>
+        </a>
+      `;
+    }
+
+    // -----------------------------
     // main
     // -----------------------------
     async function main() {
@@ -620,6 +901,8 @@
       const sortOrderSel = document.getElementById("sortOrder");
       const clearBtn = document.getElementById("clear");
 
+      wireRailButtons();
+
       let data;
       try {
         data = await loadData();
@@ -630,6 +913,22 @@
       hideError();
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
+
+      // ---- 最終更新っぽい表示（直近取引週の最大日付） ----
+      try {
+        let maxWeek = null;
+        for (const s of sleeves) {
+          const p = getWeeklyPair(s);
+          if (!p) continue;
+          const w = p.latest.week;
+          if (!maxWeek || w > maxWeek) maxWeek = w;
+        }
+        if (maxWeek) {
+          const u = document.getElementById("updatedAt");
+          u.textContent = `最終更新：${maxWeek}（週次）`;
+          u.style.display = "block";
+        }
+      } catch(_) {}
 
       // セレクト初期化
       const releaseYears = uniq(sleeves.map(s => s.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
@@ -649,8 +948,99 @@
         seriesSel.appendChild(opt);
       }
 
+      // ---- 棚データ作成 ----
+      // 価格ランキング（最新週次価格）
+      const priceRank = sleeves
+        .map(s => ({ s, p: getLatestWeeklyPrice(s) }))
+        .filter(x => x.p != null)
+        .sort((a, b) => (b.p - a.p))
+        .slice(0, 12)
+        .map(x => x.s);
+
+      // 急上昇（直近取引週比の上昇額が大きい順）
+      const surgeRank = sleeves
+        .map(s => {
+          const pair = getWeeklyPair(s);
+          if (!pair || !pair.prev) return null;
+          const diff = pair.latest.price - pair.prev.price;
+          return { s, pair, diff };
+        })
+        .filter(x => x && x.diff > 0)
+        .sort((a, b) => b.diff - a.diff)
+        .slice(0, 12);
+
+      // 高騰率（30日）
+      const growthRank = sleeves
+        .map(s => {
+          const g = get30dGrowth(s);
+          if (!g) return null;
+          return { s, g };
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.g.rate - a.g.rate)
+        .slice(0, 12);
+
+      // ---- 棚描画 ----
+      const railSurge = document.getElementById("rail-surge");
+      const railGrowth = document.getElementById("rail-growth");
+      const railPrice = document.getElementById("rail-price");
+
+      // 急上昇
+      railSurge.innerHTML = surgeRank.length ? surgeRank.map(({s, pair, diff}) => {
+        const cls = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
+        const sign = diff > 0 ? "+" : diff < 0 ? "−" : "±";
+        const pct = (pair.prev.price !== 0) ? ((diff / pair.prev.price) * 100) : null;
+        const pctText = (pct == null || !Number.isFinite(pct)) ? "" : `（${pct.toFixed(1)}%）`;
+
+        const subHtml = `
+          <p class="tile-price">${pair.latest.price.toLocaleString()}円</p>
+          <p class="tile-sub"><span class="${cls}">↑ 前回比 ${sign}${Math.abs(diff).toLocaleString()}円</span> ${escapeHtml(pctText)}</p>
+        `;
+
+        const chipsHtml = `
+          <span class="chip">直近 ${pair.latest.week}</span>
+          <span class="chip">前回 ${pair.prev.week}</span>
+        `;
+        return buildTileHTML(s, subHtml, chipsHtml);
+      }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
+
+      // 高騰率 30日
+      railGrowth.innerHTML = growthRank.length ? growthRank.map(({s, g}) => {
+        const cls = g.diff > 0 ? "up" : g.diff < 0 ? "down" : "flat";
+        const sign = g.diff > 0 ? "+" : g.diff < 0 ? "−" : "±";
+        const rateAbs = Math.abs(g.rate).toFixed(1);
+
+        const subHtml = `
+          <p class="tile-price">${g.latest.price.toLocaleString()}円</p>
+          <p class="tile-sub"><span class="${cls}">30日 ${sign}${Math.abs(g.diff).toLocaleString()}円</span>（${g.diff>0?"+":g.diff<0?"-":""}${rateAbs}%）</p>
+        `;
+
+        const chipsHtml = `
+          <span class="chip">基準 ${g.base.week}</span>
+          <span class="chip">直近 ${g.latest.week}</span>
+        `;
+        return buildTileHTML(s, subHtml, chipsHtml);
+      }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
+
+      // 価格ランキング
+      railPrice.innerHTML = priceRank.length ? priceRank.map((s) => {
+        const pair = getWeeklyPair(s);
+        const p = pair ? pair.latest.price : null;
+        const subHtml = `
+          <p class="tile-price">${(p==null) ? "—" : `${p.toLocaleString()}円`}</p>
+          <p class="tile-sub">${pair ? `直近 ${pair.latest.week}` : "直近データなし"}</p>
+        `;
+        const totalTrades = getTotalTradeCount(s);
+        const chipsHtml = `
+          <span class="chip">総取引 ${totalTrades==null ? "—" : totalTrades.toLocaleString()+"件"}</span>
+          <span class="chip">発売年 ${escapeHtml(s.releaseYear ?? "—")}</span>
+        `;
+        return buildTileHTML(s, subHtml, chipsHtml);
+      }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
+
+      // ---- 一覧（既存） ----
       function getCardPrice(s) {
-        return getLatestWeeklyPrice(s); // 直近取引週の価格
+        return getLatestWeeklyPrice(s);
       }
 
       function render() {
@@ -662,7 +1052,6 @@
 
         list.innerHTML = "";
 
-        // フィルタ
         const filtered = [];
         for (const s of sleeves) {
           if (kw && !String(s.name || "").toLowerCase().includes(kw)) continue;
@@ -674,11 +1063,9 @@
             if (p == null) continue;
             if (p < band.min || p > band.max) continue;
           }
-
           filtered.push(s);
         }
 
-        // ソート
         filtered.sort((a, b) => {
           const pa = getCardPrice(a) ?? -1;
           const pb = getCardPrice(b) ?? -1;
@@ -687,7 +1074,7 @@
             case "priceAsc": return pa - pb;
             case "nameAsc": return String(a.name ?? "").localeCompare(String(b.name ?? ""));
             case "releaseDesc": return (Number(b.releaseYear) || 0) - (Number(a.releaseYear) || 0);
-            default: return pb - pa; // priceDesc
+            default: return pb - pa;
           }
         });
 
@@ -696,7 +1083,6 @@
           return;
         }
 
-        // まとめてDOM追加（高速化）
         const frag = document.createDocumentFragment();
 
         for (const s of filtered) {
@@ -766,11 +1152,5 @@
 
     main();
   </script>
-  <footer style="margin-top:40px;padding:20px 0;text-align:center;font-size:12px;color:#667085;border-top:1px solid #e6e8ef;">
-    <div style="max-width:1100px;margin:0 auto;">
-      © 2026 ポケスリ相場ナビ |
-      <a href="./policy.html">プライバシーポリシー・免責事項</a>
-    </div>
-  </footer>
 </body>
 </html>
