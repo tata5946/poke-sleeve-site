@@ -653,7 +653,28 @@
       .nav a.is-active{
         background:rgba(255,255,255,.18);
       }
+
+      /* ナビのSVGアイコン */
+      .nav .ico{
+        width:18px;
+        height:18px;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        opacity:.92;
+      }
+      .nav .ico svg{
+        width:18px;
+        height:18px;
+        display:block;
+      }
       
+      /* アクティブを少し強めに */
+      .nav a.is-active{
+        background:rgba(255,255,255,.20);
+        box-shadow: 0 6px 18px rgba(0,0,0,.18) inset;
+      }
+    
       /* スマホ最適化 */
       @media (max-width: 700px){
         .header-top{
@@ -696,10 +717,48 @@
   <div class="header-bottom">
     <div class="header-bottom-inner">
       <nav class="nav" aria-label="メインメニュー">
-        <a class="is-active" href="./index.html">一覧</a>
-        <a href="./ranking.html">価格ランキング</a>
-        <a href="./growth.html">高騰率</a>
-        <a href="./surge.html">急上昇</a>
+        <a href="./index.html" data-nav="index">
+          <span class="ico" aria-hidden="true">
+            <!-- list -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M4.5 6.5h.01M4.5 12.5h.01M4.5 18.5h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </span>
+          一覧
+        </a>
+      
+        <a href="./ranking.html" data-nav="ranking">
+          <span class="ico" aria-hidden="true">
+            <!-- crown -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4 8l4 4 4-6 4 6 4-4v10H4V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          価格ランキング
+        </a>
+      
+        <a href="./growth.html" data-nav="growth">
+          <span class="ico" aria-hidden="true">
+            <!-- trending up -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4 16l6-6 4 4 6-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 6h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          高騰率
+        </a>
+      
+        <a href="./surge.html" data-nav="surge">
+          <span class="ico" aria-hidden="true">
+            <!-- bolt -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M13 2L4 14h7l-1 8 10-14h-7l0-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          急上昇
+        </a>
       </nav>
     </div>
   </div>
@@ -829,6 +888,24 @@
     // -----------------------------
     // utils
     // -----------------------------
+    // ===== Active Tab Auto Detect =====
+    function setActiveNav() {
+      const path = (location.pathname.split("/").pop() || "").toLowerCase();
+    
+      // どのページか判定
+      let key = "index";
+      if (path.includes("ranking")) key = "ranking";
+      else if (path.includes("growth")) key = "growth";
+      else if (path.includes("surge")) key = "surge";
+      else if (path.includes("detail")) key = "index"; // 詳細は一覧扱いにするなら
+      else if (path === "" || path === "index.html") key = "index";
+    
+      const links = document.querySelectorAll(".nav a[data-nav]");
+      for (const a of links) {
+        a.classList.toggle("is-active", a.getAttribute("data-nav") === key);
+      }
+    }
+        
     function escapeHtml(str) {
       return String(str ?? "")
         .replaceAll("&", "&amp;")
@@ -1108,6 +1185,7 @@
     // main
     // -----------------------------
     async function main() {
+      setActiveNav(); // ← これを追加
       const list = document.getElementById("list");
       const searchInput = document.getElementById("search");
 
