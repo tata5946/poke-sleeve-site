@@ -498,6 +498,16 @@
             </span>
             急上昇
           </a>
+          <a href="./index-market.html" data-nav="market">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M7 15l3-4 3 3 5-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            スリーブ指数
+          </a>
         </nav>
       </div>
     </div>
@@ -585,6 +595,7 @@
       if (path.includes("ranking")) key = "ranking";
       else if (path.includes("growth")) key = "growth";
       else if (path.includes("surge")) key = "surge";
+      else if (path.includes("market")) key = "market";     // ★追加
       else if (path.includes("detail")) key = "index";
       else if (path === "" || path === "index.html") key = "index";
 
