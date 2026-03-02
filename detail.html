@@ -34,34 +34,7 @@
 
     .container{ max-width:1100px; margin:0 auto; padding:20px; }
 
-    /* header */
-    .header{
-      position: sticky;
-      top:0;
-      z-index:50;
-      background: rgba(245,249,255,.88);
-      backdrop-filter: blur(10px);
-      border-bottom:1px solid var(--border);
-    }
-    .header-inner{
-      display:flex;
-      gap:14px;
-      align-items:center;
-      justify-content:space-between;
-      padding:14px 20px;
-      max-width:1100px;
-      margin:0 auto;
-    }
-    .brand{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      min-width: 260px;
-      text-decoration:none;
-      color:inherit;
-    }
-    .brand:hover{ text-decoration:none; }
-
+    /* ========== logo ========== */
     .logo{
       width:38px; height:38px; border-radius:999px;
       background: linear-gradient(#e53935 0 50%, #ffffff 50% 100%);
@@ -88,46 +61,131 @@
       border:2px solid #111;
       transform: translate(-50%,-50%);
     }
-
-    .main-title{
-      font-size:28px;
-      font-weight:900;
-      letter-spacing:0.8px;
-      margin:0;
-      line-height:1.1;
-      color:#7aa8ff;
-      white-space: nowrap;
-      font-family: "M PLUS Rounded 1c", system-ui, -apple-system, "Segoe UI", sans-serif;
-      text-shadow: 0 2px 0 rgba(255, 204, 0, .35);
-    }
     .accent{ color: var(--accent2); }
-    .sub-title{
-      font-size:13px;
-      color:var(--muted);
-      margin-top:4px;
-      line-height:1.3;
-    }
 
-    .nav{
+    /* ===== PB風 2段ヘッダー ===== */
+    .header{
+      position: sticky;
+      top:0;
+      z-index:50;
+      background:#fff;
+      border-bottom:1px solid var(--border);
+    }
+    .header-top{
+      max-width:1100px;
+      margin:0 auto;
+      padding:10px 20px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .brand{
       display:flex;
       gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-    .nav a{
-      padding:8px 14px;
-      border-radius:999px;
-      border:1px solid #d0dcff;
-      background:#f0f5ff;
-      color:var(--accent);
-      font-weight:700;
-      font-size:13px;
-    }
-    .nav a:hover{
-      background:#dbe6ff;
+      align-items:center;
+      min-width:0;
       text-decoration:none;
+      color:inherit;
+    }
+    .brand:hover{ text-decoration:none; }
+    .main-title{
+      font-size:22px;
+      font-weight:900;
+      margin:0;
+      line-height:1.1;
+      color:#111;
+      white-space:nowrap;
+      font-family: "M PLUS Rounded 1c", system-ui, -apple-system, "Segoe UI", sans-serif;
+      text-shadow:none;
     }
 
+    .header-search{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .header-search .search-wrap{
+      width:min(520px, 100%);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 12px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:#fff;
+      box-shadow: 0 2px 10px rgba(16,24,40,.05);
+    }
+    .header-search .search-ico{
+      font-weight:900;
+      color:#667085;
+    }
+    .header-search input{
+      width:100%;
+      border:0;
+      outline:0;
+      font-size:14px;
+      background:transparent;
+    }
+
+    .header-right{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .header-right a{
+      font-weight:800;
+      font-size:13px;
+      color:#111;
+    }
+
+    .header-bottom{
+      background:#111;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .header-bottom-inner{
+      max-width:1100px;
+      margin:0 auto;
+      padding:8px 20px;
+      display:flex;
+      align-items:center;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    .header-bottom-inner::-webkit-scrollbar{ height:8px; }
+    .header-bottom-inner::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.18); border-radius:999px; }
+    .header-bottom-inner::-webkit-scrollbar-track{ background:transparent; }
+
+    .nav{ display:flex; gap:10px; }
+    .nav a{
+      border:0;
+      background:transparent;
+      color:#fff;
+      padding:8px 10px;
+      border-radius:10px;
+      font-size:13px;
+      font-weight:900;
+      white-space:nowrap;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .nav a:hover{
+      background:rgba(255,255,255,.12);
+      text-decoration:none;
+    }
+    .nav .ico{
+      width:18px; height:18px;
+      display:inline-flex; align-items:center; justify-content:center;
+      opacity:.92;
+    }
+    .nav .ico svg{ width:18px; height:18px; display:block; }
+    .nav a.is-active{
+      background:rgba(255,255,255,.20);
+      box-shadow: 0 6px 18px rgba(0,0,0,.18) inset;
+    }
+
+    /* panels */
     .panel{
       background:var(--card);
       border:1px solid var(--border);
@@ -135,7 +193,6 @@
       padding:16px;
       box-shadow: var(--shadow);
     }
-
     .error{
       background:#fff3f3;
       border:1px solid #ffcccc;
@@ -154,7 +211,6 @@
     }
     @media (max-width: 900px){
       .grid{ grid-template-columns: 1fr; }
-      .main-title{ font-size:20px; }
     }
 
     .hero{
@@ -162,6 +218,7 @@
       grid-template-columns: 360px 1fr;
       gap:14px;
       align-items:start;
+      margin-top:18px;
     }
     @media (max-width: 900px){
       .hero{ grid-template-columns: 1fr; }
@@ -273,11 +330,6 @@
       font-weight:900;
       margin:0 0 6px;
     }
-    .chart-meta{
-      font-size:11px;
-      color:var(--muted);
-      margin-top:6px;
-    }
     svg.chart{
       width:100%;
       height:auto;
@@ -299,26 +351,101 @@
       z-index: 5;
       white-space: nowrap;
     }
+
+    /* ===== Responsive header ===== */
+    @media (max-width: 700px){
+      .header-top{
+        padding:10px 14px;
+        gap:10px;
+        flex-wrap:wrap;
+      }
+      .logo{ width:32px; height:32px; }
+      .main-title{ font-size:18px; }
+      .header-right{ display:none; }
+      .header-bottom-inner{ padding:8px 14px; }
+
+      .header-search{
+        flex: 1 1 100%;
+        justify-content:flex-start;
+      }
+      .header-search .search-wrap{ width:100%; }
+    }
+
+    @media (max-width: 600px){
+      .container{ padding:14px; }
+      .panel{ padding:12px; }
+    }
   </style>
 </head>
 
 <body>
   <div class="header">
-    <div class="header-inner">
+    <!-- 上段 -->
+    <div class="header-top">
       <a href="./index.html" class="brand">
         <div class="logo" aria-hidden="true"></div>
         <div>
           <h1 class="main-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
-          <div class="sub-title">ポケカスリーブ価格推移データベース</div>
         </div>
       </a>
 
-      <nav class="nav" aria-label="メインメニュー">
-        <a href="./index.html">一覧</a>
-        <a href="./ranking.html">価格ランキング</a>
-        <a href="./growth.html">高騰率</a>
-        <a href="./surge.html">急上昇</a>
-      </nav>
+      <div class="header-search" aria-label="サイト内検索">
+        <div class="search-wrap">
+          <span class="search-ico">🔍</span>
+          <!-- detailでは検索入力は“一覧へ戻って検索”に寄せる（実装は下で） -->
+          <input type="text" id="search" placeholder="一覧へ戻って検索…" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="header-right">
+        <a href="./policy.html">ポリシー</a>
+      </div>
+    </div>
+
+    <!-- 下段 -->
+    <div class="header-bottom">
+      <div class="header-bottom-inner">
+        <nav class="nav" aria-label="メインメニュー">
+          <a href="./index.html" data-nav="index">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4.5 6.5h.01M4.5 12.5h.01M4.5 18.5h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </span>
+            一覧
+          </a>
+
+          <a href="./ranking.html" data-nav="ranking">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 8l4 4 4-6 4 6 4-4v10H4V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            価格ランキング
+          </a>
+
+          <a href="./growth.html" data-nav="growth">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 16l6-6 4 4 6-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 6h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            高騰率
+          </a>
+
+          <a href="./surge.html" data-nav="surge">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M13 2L4 14h7l-1 8 10-14h-7l0-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            急上昇
+          </a>
+        </nav>
+      </div>
     </div>
   </div>
 
@@ -362,10 +489,32 @@
         <div id="yearlyTable"></div>
       </div>
     </div>
+
+    <footer style="margin-top:40px;padding:20px 0;text-align:center;font-size:12px;color:#667085;border-top:1px solid var(--border);">
+      © 2026 ポケスリ相場ナビ |
+      <a href="./policy.html">プライバシーポリシー・免責事項</a>
+    </footer>
   </div>
 
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyl-TAhWBEVIgilTDv7lwS14T3_i9z57dUX4fqUVBS9gyr1EO7SaYy3aqP0V1gZtt6z/exec";
+
+    // ===== Active Tab Auto Detect =====
+    function setActiveNav() {
+      const path = (location.pathname.split("/").pop() || "").toLowerCase();
+
+      let key = "index";
+      if (path.includes("ranking")) key = "ranking";
+      else if (path.includes("growth")) key = "growth";
+      else if (path.includes("surge")) key = "surge";
+      else if (path.includes("detail")) key = "index"; // detail は一覧扱い
+      else if (path === "" || path === "index.html") key = "index";
+
+      const links = document.querySelectorAll(".nav a[data-nav]");
+      for (const a of links) {
+        a.classList.toggle("is-active", a.getAttribute("data-nav") === key);
+      }
+    }
 
     function escapeHtml(str) {
       return String(str ?? "")
@@ -422,7 +571,6 @@
         .map(x => {
           const week = toISODate(x.week);
 
-          // priceを安全にパース
           let price = null;
           const priceStr = String(x.price ?? "").trim();
           if (priceStr !== "" && priceStr !== "-" && priceStr !== "—") {
@@ -430,7 +578,6 @@
             if (Number.isFinite(n)) price = n;
           }
 
-          // countを安全にパース
           let count = null;
           const countStr = String(x.count ?? "").trim();
           if (countStr !== "" && countStr !== "-" && countStr !== "—") {
@@ -438,7 +585,6 @@
             if (Number.isFinite(n)) count = n;
           }
 
-          // 取引なし週：count===0 または price===null
           const noTrades = (count === 0) || (price === null);
 
           return {
@@ -555,11 +701,10 @@
     }
 
     // ---------- renderLineChart（統合版） ----------
-    function renderLineChart(containerId, title, rows, xKey, yKey, options = {}) {
+    function renderLineChart(containerId, title, rows, xKey, yKey) {
       const el = document.getElementById(containerId);
       if (!el) return;
 
-      // data: filter out null prices so weeks with no trades are excluded from plot
       const data = (Array.isArray(rows) ? rows : [])
         .map(r => {
           const x = String(r?.[xKey] ?? "");
@@ -578,8 +723,7 @@
         return;
       }
 
-      const W = 760;
-      const H = 240;
+      const W = 760, H = 240;
       const padL = 60, padR = 20, padT = 20, padB = 40;
       const ticks = 4;
 
@@ -588,8 +732,7 @@
       let yMax = Math.max(...ys);
 
       const margin = (yMax - yMin) * 0.1 || 1;
-      yMin -= margin;
-      yMax += margin;
+      yMin -= margin; yMax += margin;
 
       function niceStep(range, t) {
         const rough = range / t;
@@ -637,7 +780,7 @@
 
           <svg class="chart" viewBox="0 0 ${W} ${H}">
             <defs>
-              <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="bgGrad-${escapeHtml(containerId)}" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="#1e5bd7" stop-opacity="0.08"/>
                 <stop offset="100%" stop-color="#1e5bd7" stop-opacity="0"/>
               </linearGradient>
@@ -646,7 +789,7 @@
             ${tickLines.join("")}
             ${tickLabels.join("")}
 
-            <rect x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="url(#bgGrad)" />
+            <rect x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="url(#bgGrad-${escapeHtml(containerId)})" />
 
             <path d="${pathD}" fill="none" stroke="#1e5bd7" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round"/>
 
@@ -664,7 +807,6 @@
         </div>
       `;
 
-      // hover interactions
       const wrap = el.querySelector(".chart-wrap");
       const svg = el.querySelector("svg.chart");
       const tip = el.querySelector(".chart-tooltip");
@@ -709,6 +851,18 @@
     // ---------- end renderLineChart ----------
 
     async function main() {
+      setActiveNav();
+
+      // detailの検索バーは「一覧に戻して検索語を渡す」動きにする
+      const search = document.getElementById("search");
+      search.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+        const q = search.value.trim();
+        if (!q) { location.href = "./index.html"; return; }
+        // index側で ?q= を読む実装がなくても、とりあえずURLで渡しておく
+        location.href = "./index.html?q=" + encodeURIComponent(q);
+      });
+
       const id = getParam("id");
       if (!id) { showError("id が指定されていません。indexから入り直してください。"); return; }
 
@@ -739,23 +893,17 @@
 
       // weekly
       const weeklyRows = normalizeWeekly(s.weeklyPrices);
-      renderLineChart("weeklyChart", "週次価格 推移", weeklyRows, "week", "price", { height: 240 });
+      renderLineChart("weeklyChart", "週次価格 推移", weeklyRows, "week", "price");
       document.getElementById("weeklyTable").innerHTML = renderTableWeekly(weeklyRows);
       setWeeklyKpi(weeklyRows);
 
-      // yearly（推移だけ）
+      // yearly
       const yearlyRows = normalizeYearly(s.pricesByYear);
-      renderLineChart("yearlyChart", "年次価格 推移", yearlyRows, "year", "price", { height: 240 });
+      renderLineChart("yearlyChart", "年次価格 推移", yearlyRows, "year", "price");
       document.getElementById("yearlyTable").innerHTML = renderTableYearly(yearlyRows);
     }
 
     main();
   </script>
-  <footer style="margin-top:40px;padding:20px 0;text-align:center;font-size:12px;color:#667085;border-top:1px solid #e6e8ef;">
-    <div style="max-width:1100px;margin:0 auto;">
-      © 2026 ポケスリ相場ナビ |
-      <a href="./policy.html">プライバシーポリシー・免責事項</a>
-    </div>
-  </footer>
 </body>
 </html>
