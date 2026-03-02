@@ -1109,7 +1109,7 @@
         .map(s => ({ s, p: getLatestWeeklyPrice(s) }))
         .filter(x => x.p != null)
         .sort((a, b) => (b.p - a.p))
-        .slice(0, 12)
+        .slice(0, 10)
         .map(x => x.s);
 
       const surgeRank = sleeves
@@ -1121,7 +1121,7 @@
         })
         .filter(x => x && x.diff > 0)
         .sort((a, b) => b.diff - a.diff)
-        .slice(0, 12);
+        .slice(0, 10);
 
       const growthRank = sleeves
         .map(s => {
@@ -1131,7 +1131,7 @@
         })
         .filter(Boolean)
         .sort((a, b) => b.g.rate - a.g.rate)
-        .slice(0, 12);
+        .slice(0, 10);
 
       // ---- 棚描画 ----
       const railSurge = document.getElementById("rail-surge");
