@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>スリーブ指数（週次）｜ポケスリ相場ナビ</title>
+  <meta name="description" content="ポケカスリーブ市場の週次指数（全体上昇率）と推移を表示します。" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f5f9ff;
+      --card:#ffffff;
+      --text:#111;
+      --muted:#667085;
+      --border:#e6e8ef;
+      --shadow: 0 6px 18px rgba(16,24,40,.06);
+      --radius:14px;
+      --accent:#1e5bd7;
+      --accent2:#ffcc00;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      margin:0;
+      background:linear-gradient(180deg,#f7fbff 0%, #f5f9ff 100%);
+      color:var(--text);
+    }
+    a{ color:var(--accent); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+    .container{ max-width:1100px; margin:0 auto; padding:20px; }
+
+    /* ========== logo ========== */
+    .logo{
+      width:38px; height:38px; border-radius:999px;
+      background: linear-gradient(#e53935 0 50%, #ffffff 50% 100%);
+      border: 2px solid #111;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+      flex: 0 0 auto;
+    }
+    .logo::before{
+      content:"";
+      position:absolute;
+      left:0; right:0; top:50%;
+      height:3px;
+      background:#111;
+      transform: translateY(-50%);
+    }
+    .logo::after{
+      content:"";
+      position:absolute;
+      left:50%; top:50%;
+      width:12px; height:12px;
+      border-radius:999px;
+      background:#fff;
+      border:2px solid #111;
+      transform: translate(-50%,-50%);
+    }
+    .accent{ color: var(--accent2); }
+
+    /* ===== 2段ヘッダー ===== */
+    .header{
+      position: sticky;
+      top:0;
+      z-index:50;
+      background:#fff;
+      border-bottom:1px solid var(--border);
+    }
+    .header-top{
+      max-width:1100px;
+      margin:0 auto;
+      padding:10px 20px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .brand{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      min-width:0;
+      text-decoration:none;
+      color:inherit;
+    }
+    .brand:hover{ text-decoration:none; }
+    .main-title{
+      font-size:22px;
+      font-weight:900;
+      margin:0;
+      line-height:1.1;
+      color:#111;
+      white-space:nowrap;
+      font-family: "M PLUS Rounded 1c", system-ui, -apple-system, "Segoe UI", sans-serif;
+      text-shadow:none;
+    }
+
+    .header-search{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .header-search .search-wrap{
+      width:min(520px, 100%);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 12px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:#fff;
+      box-shadow: 0 2px 10px rgba(16,24,40,.05);
+    }
+    .header-search .search-ico{ font-weight:900; color:#667085; }
+    .header-search input{
+      width:100%;
+      border:0;
+      outline:0;
+      font-size:14px;
+      background:transparent;
+    }
+    .header-right{ display:flex; gap:10px; align-items:center; }
+    .header-right a{ font-weight:800; font-size:13px; color:#111; }
+
+    .header-bottom{ background:#111; border-top:1px solid rgba(255,255,255,.08); }
+    .header-bottom-inner{
+      max-width:1100px;
+      margin:0 auto;
+      padding:8px 20px;
+      display:flex;
+      align-items:center;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    .header-bottom-inner::-webkit-scrollbar{ height:8px; }
+    .header-bottom-inner::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.18); border-radius:999px; }
+    .header-bottom-inner::-webkit-scrollbar-track{ background:transparent; }
+
+    .nav{ display:flex; gap:10px; }
+    .nav a{
+      border:0; background:transparent; color:#fff;
+      padding:8px 10px; border-radius:10px;
+      font-size:13px; font-weight:900;
+      white-space:nowrap; display:flex; align-items:center; gap:8px;
+    }
+    .nav a:hover{ background:rgba(255,255,255,.12); text-decoration:none; }
+    .nav .ico{ width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; opacity:.92; }
+    .nav .ico svg{ width:18px; height:18px; display:block; }
+    .nav a.is-active{
+      background:rgba(255,255,255,.20);
+      box-shadow: 0 6px 18px rgba(0,0,0,.18) inset;
+    }
+
+    /* panels */
+    .panel{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow: var(--shadow);
+    }
+    .error{
+      background:#fff3f3;
+      border:1px solid #ffcccc;
+      padding:12px;
+      border-radius:12px;
+      color:#b00020;
+      display:none;
+      margin: 14px 0;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:18px;
+    }
+
+    .title{
+      font-size:22px;
+      font-weight:900;
+      margin:0 0 6px;
+      font-family: "M PLUS Rounded 1c", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    .meta{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+    .kpi{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .kpi .box{
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px 12px;
+      background:#fff;
+      min-width: 240px;
+      flex: 1 1 240px;
+    }
+    .kpi .label{ font-size:11px; color:var(--muted); font-weight:800; }
+    .kpi .value{ font-size:18px; font-weight:900; margin-top:4px; }
+    .delta{ margin-top:6px; font-size:12px; font-weight:900; }
+    .up{ color:#d32f2f; }
+    .down{ color:#1976d2; }
+    .flat{ color:#667085; }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      font-size:13px;
+      background:#fff;
+      border-radius:12px;
+      overflow:hidden;
+      border:1px solid var(--border);
+    }
+    th, td{
+      padding:10px 10px;
+      border-bottom:1px solid var(--border);
+      text-align:left;
+      vertical-align: top;
+    }
+    th{
+      background:#f6f8ff;
+      font-weight:900;
+      color:#111;
+      white-space: nowrap;
+    }
+    tr:last-child td{ border-bottom:none; }
+
+    /* charts */
+    .chart-wrap{
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#fff;
+      padding:10px;
+      margin-bottom:10px;
+      position: relative;
+    }
+    .chart-title{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:900;
+      margin:0 0 6px;
+    }
+    svg.chart{ width:100%; height:auto; display:block; }
+    .chart-tooltip{
+      position:absolute;
+      display:none;
+      pointer-events:none;
+      padding:6px 8px;
+      border-radius:10px;
+      border:1px solid #e6e8ef;
+      background:#fff;
+      font-size:12px;
+      font-weight:800;
+      color:#111;
+      box-shadow:0 8px 18px rgba(16,24,40,.10);
+      transform: translate(-50%, -110%);
+      z-index: 5;
+      white-space: nowrap;
+    }
+
+    .note{
+      border:1px dashed #d0d5dd;
+      background:#fbfdff;
+      border-radius:12px;
+      padding:12px;
+      font-size:12px;
+      color:#475467;
+      line-height:1.7;
+    }
+
+    /* ===== Responsive header ===== */
+    @media (max-width: 700px){
+      .header-top{ padding:10px 14px; gap:10px; flex-wrap:wrap; }
+      .logo{ width:32px; height:32px; }
+      .main-title{ font-size:18px; }
+      .header-right{ display:none; }
+      .header-bottom-inner{ padding:8px 14px; }
+      .header-search{ flex: 1 1 100%; justify-content:flex-start; }
+      .header-search .search-wrap{ width:100%; }
+    }
+    @media (max-width: 600px){
+      .container{ padding:14px; }
+      .panel{ padding:12px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <div class="header-top">
+      <a href="./index.html" class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div><h1 class="main-title"><span class="accent">ポケスリ</span>相場ナビ</h1></div>
+      </a>
+
+      <div class="header-search" aria-label="サイト内検索">
+        <div class="search-wrap">
+          <span class="search-ico">🔍</span>
+          <input type="text" id="search" placeholder="一覧へ戻って検索…" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="header-right">
+        <a href="./policy.html">ポリシー</a>
+      </div>
+    </div>
+
+    <div class="header-bottom">
+      <div class="header-bottom-inner">
+        <nav class="nav" aria-label="メインメニュー">
+          <a href="./index.html" data-nav="index">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4.5 6.5h.01M4.5 12.5h.01M4.5 18.5h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </span>
+            一覧
+          </a>
+
+          <a href="./ranking.html" data-nav="ranking">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 8l4 4 4-6 4 6 4-4v10H4V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            価格ランキング
+          </a>
+
+          <a href="./growth.html" data-nav="growth">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 16l6-6 4 4 6-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 6h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            高騰率
+          </a>
+
+          <a href="./surge.html" data-nav="surge">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M13 2L4 14h7l-1 8 10-14h-7l0-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            急上昇
+          </a>
+
+          <!-- ★追加：指数 -->
+          <a href="./index-market.html" data-nav="market">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M7 15l3-4 3 3 5-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            スリーブ指数
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="error" class="error"></div>
+
+    <div class="hero">
+      <div class="panel">
+        <h2 class="title">スリーブ指数（週次）</h2>
+        <div id="subtitle" class="meta">読み込み中…</div>
+
+        <div class="kpi" style="margin-top:14px;">
+          <div class="box">
+            <div class="label">今週の市場上昇率（平均）</div>
+            <div id="kpiRate" class="value">—</div>
+            <div id="kpiRateDelta" class="delta flat">—</div>
+          </div>
+
+          <div class="box">
+            <div class="label">上昇スリーブ割合</div>
+            <div id="kpiUpShare" class="value">—</div>
+            <div class="meta" id="kpiUpShareMeta" style="margin-top:6px;">—</div>
+          </div>
+
+          <div class="box">
+            <div class="label">指数（基準=100）</div>
+            <div id="kpiIndex" class="value">—</div>
+            <div class="meta" id="kpiIndexMeta" style="margin-top:6px;">基準週：—</div>
+          </div>
+        </div>
+
+        <div class="note" style="margin-top:12px;">
+          指数は「全スリーブの週次上昇率（%）の平均」を週次で積み上げ、基準週を100として算出します。<br>
+          ※ 取引がない週（価格なし）は計算から除外。極端な価格変動の影響を抑えるため、週次上昇率は上下に上限を設けています（ページ下の設定参照）。
+        </div>
+      </div>
+
+      <div class="panel">
+        <div id="indexChart"></div>
+        <div id="indexTable"></div>
+      </div>
+
+      <div class="grid">
+        <div class="panel">
+          <h3 style="margin:0 0 10px;">今週の分布（上昇率）</h3>
+          <div id="distSummary" class="meta" style="margin-bottom:10px;">—</div>
+          <div id="distTable"></div>
+        </div>
+
+        <div class="panel">
+          <h3 style="margin:0 0 10px;">指数の設定</h3>
+          <table>
+            <tbody>
+              <tr><th>頻度</th><td>週次</td></tr>
+              <tr><th>計算対象</th><td>週次価格が「今週」と「前週」に存在するスリーブ</td></tr>
+              <tr><th>集計</th><td>上昇率（%）の単純平均（価格水準に引っ張られない）</td></tr>
+              <tr><th>外れ値抑制</th><td>週次上昇率を -60%〜+100% にクリップ（調整可）</td></tr>
+              <tr><th>指数化</th><td>基準週=100、以降は週次平均上昇率を乗算で積み上げ</td></tr>
+            </tbody>
+          </table>
+          <div class="meta" style="margin-top:10px;">
+            ※ クリップ範囲は市場が成長したら見直し推奨（データが増えるほど自然に安定します）。
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer style="margin-top:40px;padding:20px 0;text-align:center;font-size:12px;color:#667085;border-top:1px solid var(--border);">
+      © 2026 ポケスリ相場ナビ |
+      <a href="./policy.html">プライバシーポリシー・免責事項</a>
+    </footer>
+  </div>
+
+  <script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyl-TAhWBEVIgilTDv7lwS14T3_i9z57dUX4fqUVBS9gyr1EO7SaYy3aqP0V1gZtt6z/exec";
+
+    function setActiveNav() {
+      const path = (location.pathname.split("/").pop() || "").toLowerCase();
+      let key = "index";
+      if (path.includes("ranking")) key = "ranking";
+      else if (path.includes("growth")) key = "growth";
+      else if (path.includes("surge")) key = "surge";
+      else if (path.includes("market")) key = "market";
+      const links = document.querySelectorAll(".nav a[data-nav]");
+      for (const a of links) a.classList.toggle("is-active", a.getAttribute("data-nav") === key);
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function showError(msg) {
+      const el = document.getElementById("error");
+      el.style.display = "block";
+      el.textContent = msg;
+    }
+
+    async function loadData() {
+      const res = await fetch(GAS_URL + "?v=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
+      return await res.json();
+    }
+
+    function toISODate(d) {
+      const dd = new Date(d);
+      if (Number.isNaN(dd.getTime())) return null;
+      const y = dd.getFullYear();
+      const m = String(dd.getMonth() + 1).padStart(2, "0");
+      const day = String(dd.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function formatPeriodLabel(iso) {
+      const s = String(iso || "").trim();
+      const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return s;
+      const y = m[1], mo = m[2], d = m[3];
+      return `${y}/${mo}/${d}`;
+    }
+
+    // weeklyPrices: [{week, price, count}]
+    function normalizeWeekly(arr) {
+      return (Array.isArray(arr) ? arr : [])
+        .map(x => {
+          const week = toISODate(x.week);
+
+          let price = null;
+          const priceStr = String(x.price ?? "").trim();
+          if (priceStr !== "" && priceStr !== "-" && priceStr !== "—") {
+            const n = Number(priceStr);
+            if (Number.isFinite(n)) price = n;
+          }
+
+          let count = null;
+          const countStr = String(x.count ?? "").trim();
+          if (countStr !== "" && countStr !== "-" && countStr !== "—") {
+            const n = Number(countStr);
+            if (Number.isFinite(n)) count = n;
+          }
+
+          // 取引なし週は price=null 扱い
+          const noTrades = (count === 0) || (price === null);
+
+          return { week, price: noTrades ? null : price, count };
+        })
+        .filter(x => x.week)
+        .sort((a,b) => String(a.week).localeCompare(String(b.week))); // asc
+    }
+
+    // 週リスト（全スリーブの週を集約）
+    function collectWeeks(sleeves) {
+      const set = new Set();
+      for (const s of sleeves) {
+        const w = normalizeWeekly(s.weeklyPrices);
+        for (const r of w) set.add(r.week);
+      }
+      return Array.from(set).sort((a,b)=>String(a).localeCompare(String(b)));
+    }
+
+    // 週次上昇率（%）を計算、外れ値はクリップ
+    function clip(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+    function buildWeeklyMarketSeries(sleeves, weeks, opts) {
+      const clipLo = opts?.clipLo ?? -60;
+      const clipHi = opts?.clipHi ?? 100;
+
+      // スリーブごとに week->price map
+      const maps = sleeves.map(s => {
+        const m = new Map();
+        for (const r of normalizeWeekly(s.weeklyPrices)) m.set(r.week, r.price);
+        return m;
+      });
+
+      const rows = [];
+      for (let i = 1; i < weeks.length; i++) {
+        const cur = weeks[i];
+        const prev = weeks[i-1];
+
+        const rates = []; // 今週計算できたスリーブの週次上昇率%
+        let up = 0, down = 0, flat = 0;
+
+        for (const mp of maps) {
+          const p0 = mp.get(prev);
+          const p1 = mp.get(cur);
+          if (!Number.isFinite(p0) || !Number.isFinite(p1)) continue;
+          if (p0 === 0) continue;
+
+          let r = ((p1 - p0) / p0) * 100;
+          r = clip(r, clipLo, clipHi);
+          rates.push(r);
+
+          if (r > 0) up++;
+          else if (r < 0) down++;
+          else flat++;
+        }
+
+        const n = rates.length;
+        const avg = n ? (rates.reduce((a,b)=>a+b,0) / n) : null;
+
+        rows.push({
+          week: cur,
+          avgRate: avg,           // 今週の平均上昇率%
+          sample: n,              // 今週の計算対象スリーブ数
+          up, down, flat
+        });
+      }
+
+      return rows;
+    }
+
+    // avgRate(%) を積み上げて指数化（基準週=100）
+    function buildIndexFromRates(rateRows, baseIndex=100) {
+      let idx = baseIndex;
+      const out = [];
+      for (const r of rateRows) {
+        if (!Number.isFinite(r.avgRate)) {
+          out.push({ ...r, index: null });
+          continue;
+        }
+        idx = idx * (1 + (r.avgRate / 100));
+        out.push({ ...r, index: idx });
+      }
+      return out;
+    }
+
+    function latestTwoValid(rows, key) {
+      const valid = rows.filter(r => Number.isFinite(r[key]));
+      if (!valid.length) return null;
+      const latest = valid[valid.length - 1];
+      const prev = valid.length >= 2 ? valid[valid.length - 2] : null;
+      return { latest, prev };
+    }
+
+    function renderTableIndex(rows) {
+      if (!rows.length) return `<div class="meta">データがまだありません</div>`;
+      const valid = rows.filter(r => r.week);
+      const html = valid.slice().reverse().map(r => {
+        const rate = Number.isFinite(r.avgRate) ? `${r.avgRate.toFixed(2)}%` : "—";
+        const idx  = Number.isFinite(r.index) ? `${r.index.toFixed(1)}` : "—";
+        return `<tr>
+          <td>${escapeHtml(formatPeriodLabel(r.week))}</td>
+          <td>${rate}</td>
+          <td>${idx}</td>
+          <td>${Number.isFinite(r.sample) ? `${r.sample}件` : "—"}</td>
+        </tr>`;
+      }).join("");
+
+      return `
+        <table>
+          <thead><tr><th>週</th><th>平均上昇率</th><th>指数</th><th>サンプル</th></tr></thead>
+          <tbody>${html}</tbody>
+        </table>
+      `;
+    }
+
+    function renderTableDist(latestRow) {
+      if (!latestRow) return `<div class="meta">—</div>`;
+      const total = (latestRow.up + latestRow.down + latestRow.flat) || 0;
+      const upP = total ? (latestRow.up / total) * 100 : 0;
+      const downP = total ? (latestRow.down / total) * 100 : 0;
+      const flatP = total ? (latestRow.flat / total) * 100 : 0;
+
+      return `
+        <table>
+          <thead><tr><th>分類</th><th>件数</th><th>割合</th></tr></thead>
+          <tbody>
+            <tr><td>上昇</td><td>${latestRow.up}</td><td>${upP.toFixed(1)}%</td></tr>
+            <tr><td>下落</td><td>${latestRow.down}</td><td>${downP.toFixed(1)}%</td></tr>
+            <tr><td>横ばい</td><td>${latestRow.flat}</td><td>${flatP.toFixed(1)}%</td></tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    // ---------- renderLineChart（detailから流用、yKeyを任意表示） ----------
+    function renderLineChart(containerId, title, rows, xKey, yKey, yFmt) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+
+      const data = (Array.isArray(rows) ? rows : [])
+        .map(r => {
+          const x = String(r?.[xKey] ?? "");
+          const rawY = r?.[yKey];
+          let y = null;
+          const n = Number(rawY);
+          if (Number.isFinite(n)) y = n;
+          return { x, y };
+        })
+        .filter(p => p.x && Number.isFinite(p.y));
+
+      if (data.length < 2) {
+        el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">データが不足しています</div></div>`;
+        return;
+      }
+
+      const W = 760, H = 240;
+      const padL = 60, padR = 20, padT = 20, padB = 40;
+      const ticks = 4;
+
+      const ys = data.map(d => d.y);
+      let yMin = Math.min(...ys);
+      let yMax = Math.max(...ys);
+
+      const margin = (yMax - yMin) * 0.1 || 1;
+      yMin -= margin; yMax += margin;
+
+      function niceStep(range, t) {
+        const rough = range / t;
+        const pow = Math.pow(10, Math.floor(Math.log10(Math.max(rough, 1))));
+        const candidates = [1, 2, 5, 10].map(m => m * pow);
+        return candidates.reduce((best, v) =>
+          Math.abs(v - rough) < Math.abs(best - rough) ? v : best
+        , candidates[0]);
+      }
+
+      const step = niceStep(yMax - yMin, ticks);
+      yMin = Math.floor(yMin / step) * step;
+      yMax = Math.ceil(yMax / step) * step;
+
+      const xToPx = (i) => padL + (i / (data.length - 1)) * (W - padL - padR);
+      const yToPx = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * (H - padT - padB);
+
+      const pathD = data.map((p, i) =>
+        `${i === 0 ? "M" : "L"} ${xToPx(i)} ${yToPx(p.y)}`
+      ).join(" ");
+
+      const tickLines = [];
+      const tickLabels = [];
+      for (let i = 0; i <= ticks; i++) {
+        const v = yMin + (i / ticks) * (yMax - yMin);
+        const y = yToPx(v);
+        tickLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef"/>`);
+        tickLabels.push(
+          `<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="12" fill="#475467" font-weight="700">${escapeHtml(yFmt(v))}</text>`
+        );
+      }
+
+      const xFirst = formatPeriodLabel(data[0].x);
+      const xLast  = formatPeriodLabel(data[data.length - 1].x);
+
+      const lastIdx = data.length - 1;
+      const lastX = xToPx(lastIdx);
+      const lastY = yToPx(data[lastIdx].y);
+      const lastLabel = yFmt(data[lastIdx].y);
+
+      el.innerHTML = `
+        <div class="chart-wrap">
+          <div class="chart-title">${escapeHtml(title)}</div>
+          <div class="chart-tooltip"></div>
+
+          <svg class="chart" viewBox="0 0 ${W} ${H}">
+            <defs>
+              <linearGradient id="bgGrad-${escapeHtml(containerId)}" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1e5bd7" stop-opacity="0.08"/>
+                <stop offset="100%" stop-color="#1e5bd7" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+
+            ${tickLines.join("")}
+            ${tickLabels.join("")}
+
+            <rect x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="url(#bgGrad-${escapeHtml(containerId)})" />
+
+            <path d="${pathD}" fill="none" stroke="#1e5bd7" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round"/>
+
+            <line class="hover-line" y1="${padT}" y2="${H - padB}" stroke="#94a3b8" stroke-width="1" style="display:none;" />
+            <circle class="hover-dot" r="5" fill="#1e5bd7" style="display:none;" />
+
+            <rect class="hover-hit" x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="transparent"/>
+
+            <circle cx="${lastX}" cy="${lastY}" r="5" fill="#1e5bd7"/>
+            <text x="${lastX + 8}" y="${lastY - 8}" font-size="12" font-weight="800" fill="#111">${escapeHtml(lastLabel)}</text>
+
+            <text x="${padL}" y="${H - 10}" font-size="14" fill="#667085">${escapeHtml(xFirst)}</text>
+            <text x="${W - padR}" y="${H - 10}" font-size="14" fill="#667085" text-anchor="end">${escapeHtml(xLast)}</text>
+          </svg>
+        </div>
+      `;
+
+      const wrap = el.querySelector(".chart-wrap");
+      const svg = el.querySelector("svg.chart");
+      const tip = el.querySelector(".chart-tooltip");
+      const hit = el.querySelector(".hover-hit");
+      const hLine = el.querySelector(".hover-line");
+      const hDot = el.querySelector(".hover-dot");
+
+      hit.addEventListener("mousemove", (ev) => {
+        const rect = svg.getBoundingClientRect();
+        const x = ev.clientX - rect.left;
+        const vbX = (x / rect.width) * W;
+        const t = (vbX - padL) / (W - padL - padR);
+        const idx = Math.round(t * (data.length - 1));
+        const safeIdx = Math.max(0, Math.min(data.length - 1, idx));
+
+        const px = xToPx(safeIdx);
+        const py = yToPx(data[safeIdx].y);
+
+        hLine.style.display = "block";
+        hDot.style.display = "block";
+        tip.style.display = "block";
+
+        hLine.setAttribute("x1", px);
+        hLine.setAttribute("x2", px);
+        hLine.setAttribute("y1", padT);
+        hLine.setAttribute("y2", H - padB);
+        hDot.setAttribute("cx", px);
+        hDot.setAttribute("cy", py);
+
+        tip.textContent = `${formatPeriodLabel(data[safeIdx].x)}：${yFmt(data[safeIdx].y)}`;
+        const wrapRect = wrap.getBoundingClientRect();
+        tip.style.left = `${Math.min(Math.max(ev.clientX - wrapRect.left, 40), wrapRect.width - 40)}px`;
+        tip.style.top  = `${Math.max(ev.clientY - wrapRect.top - 12, 8)}px`;
+      });
+
+      hit.addEventListener("mouseleave", () => {
+        hLine.style.display = "none";
+        hDot.style.display = "none";
+        tip.style.display = "none";
+      });
+    }
+    // ---------- end renderLineChart ----------
+
+    async function main() {
+      setActiveNav();
+
+      // 検索バーは一覧へ
+      const search = document.getElementById("search");
+      search.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+        const q = search.value.trim();
+        if (!q) { location.href = "./index.html"; return; }
+        location.href = "./index.html?q=" + encodeURIComponent(q);
+      });
+
+      let data;
+      try { data = await loadData(); }
+      catch (e) { showError(e.message); return; }
+
+      const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
+      if (!sleeves.length) { showError("スリーブデータがありません"); return; }
+
+      // 週一覧
+      const weeks = collectWeeks(sleeves);
+      if (weeks.length < 2) { showError("週次データが不足しています"); return; }
+
+      // 市場系列（平均上昇率%）
+      const rateRows = buildWeeklyMarketSeries(sleeves, weeks, { clipLo: -60, clipHi: 100 });
+
+      // 指数化
+      const baseWeek = rateRows.find(r => Number.isFinite(r.avgRate))?.week || (rateRows[0]?.week ?? "—");
+      const series = buildIndexFromRates(rateRows, 100);
+
+      // KPI
+      document.getElementById("subtitle").textContent =
+        `対象：${sleeves.length}件 / 期間：${formatPeriodLabel(weeks[0])}〜${formatPeriodLabel(weeks[weeks.length-1])}`;
+
+      const pairRate = latestTwoValid(series, "avgRate");
+      const pairIdx  = latestTwoValid(series, "index");
+
+      // 今週上昇率
+      const kpiRate = document.getElementById("kpiRate");
+      const kpiRateDelta = document.getElementById("kpiRateDelta");
+      if (pairRate) {
+        kpiRate.textContent = `${pairRate.latest.avgRate.toFixed(2)}%`;
+        if (pairRate.prev) {
+          const diff = pairRate.latest.avgRate - pairRate.prev.avgRate;
+          const cls = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
+          const arrow = diff > 0 ? "↑" : diff < 0 ? "↓" : "→";
+          kpiRateDelta.className = "delta " + cls;
+          kpiRateDelta.textContent = `${arrow} 前週比 ${diff > 0 ? "+" : ""}${diff.toFixed(2)}pt`;
+        } else {
+          kpiRateDelta.className = "delta flat";
+          kpiRateDelta.textContent = "比較できる前週データなし";
+        }
+      }
+
+      // 上昇割合
+      const last = pairRate?.latest || null;
+      const total = last ? (last.up + last.down + last.flat) : 0;
+      const upShare = total ? (last.up / total) * 100 : null;
+      document.getElementById("kpiUpShare").textContent = (upShare == null) ? "—" : `${upShare.toFixed(1)}%`;
+      document.getElementById("kpiUpShareMeta").textContent = last ? `上昇${last.up} / 下落${last.down} / 横ばい${last.flat}（計${total}）` : "—";
+
+      // 指数
+      const kpiIndex = document.getElementById("kpiIndex");
+      const kpiIndexMeta = document.getElementById("kpiIndexMeta");
+      if (pairIdx) {
+        kpiIndex.textContent = `${pairIdx.latest.index.toFixed(1)}`;
+        kpiIndexMeta.textContent = `基準週：${formatPeriodLabel(baseWeek)} = 100`;
+      }
+
+      // チャート（指数）
+      renderLineChart("indexChart", "スリーブ指数 推移（週次）", series.filter(r=>Number.isFinite(r.index)), "week", "index", (v)=>Number(v).toFixed(1));
+
+      // テーブル
+      document.getElementById("indexTable").innerHTML = renderTableIndex(series);
+
+      // 分布
+      document.getElementById("distSummary").textContent =
+        last ? `最新週（${formatPeriodLabel(last.week)}）の上昇/下落/横ばい割合` : "—";
+      document.getElementById("distTable").innerHTML = renderTableDist(last);
+    }
+
+    main();
+  </script>
+</body>
+</html>
