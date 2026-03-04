@@ -367,7 +367,6 @@
             急上昇
           </a>
 
-          <!-- ★追加：指数 -->
           <a href="./index-market.html" data-nav="market">
             <span class="ico" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none">
@@ -412,8 +411,8 @@
         </div>
 
         <div class="note" style="margin-top:12px;">
-          指数は「全スリーブの週次上昇率（%）の平均」を週次で積み上げ、基準週を100として算出します。<br>
-          ※ 取引がない週（価格なし）は計算から除外。極端な価格変動の影響を抑えるため、週次上昇率は上下に上限を設けています（ページ下の設定参照）。
+          週次指数は「全スリーブの週次上昇率（%）の平均」を週次で積み上げ、基準週を100として算出します。<br>
+          ※ データ仕様上、2025年以前の「月次（毎月1日）」や「まとめ（2025/01/01）」は週次指数の計算対象から除外します。
         </div>
       </div>
 
@@ -424,7 +423,7 @@
 
       <div class="grid">
         <div class="panel">
-          <h3 style="margin:0 0 10px;">今週の分布（上昇率）</h3>
+          <h3 style="margin:0 0 10px;">最新週の分布（上昇率）</h3>
           <div id="distSummary" class="meta" style="margin-bottom:10px;">—</div>
           <div id="distTable"></div>
         </div>
@@ -441,11 +440,10 @@
             </tbody>
           </table>
           <div class="meta" style="margin-top:10px;">
-            ※ クリップ範囲は市場が成長したら見直し推奨（データが増えるほど自然に安定します）。
+            ※ スリーブ市場が拡大したら、クリップ範囲は見直し推奨です。
           </div>
         </div>
       </div>
-
     </div>
 
     <footer style="margin-top:40px;padding:20px 0;text-align:center;font-size:12px;color:#667085;border-top:1px solid var(--border);">
@@ -498,6 +496,14 @@
       return `${y}-${m}-${day}`;
     }
 
+    // 週/月/不明 を判定（あなたのデータ仕様：day=01 は月次/まとめ）
+    function periodKind(iso) {
+      const m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return "unknown";
+      const day = m[3];
+      return (day === "01") ? "month" : "week";
+    }
+
     function formatPeriodLabel(iso) {
       const s = String(iso || "").trim();
       const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -535,12 +541,15 @@
         .sort((a,b) => String(a.week).localeCompare(String(b.week))); // asc
     }
 
-    // 週リスト（全スリーブの週を集約）
+    // ★週リスト（週次指数は「週」だけ集める）
     function collectWeeks(sleeves) {
       const set = new Set();
       for (const s of sleeves) {
         const w = normalizeWeekly(s.weeklyPrices);
-        for (const r of w) set.add(r.week);
+        for (const r of w) {
+          if (periodKind(r.week) !== "week") continue; // ★月次/まとめを除外
+          set.add(r.week);
+        }
       }
       return Array.from(set).sort((a,b)=>String(a).localeCompare(String(b)));
     }
@@ -552,10 +561,13 @@
       const clipLo = opts?.clipLo ?? -60;
       const clipHi = opts?.clipHi ?? 100;
 
-      // スリーブごとに week->price map
+      // スリーブごとに week->price map（週データのみ）
       const maps = sleeves.map(s => {
         const m = new Map();
-        for (const r of normalizeWeekly(s.weeklyPrices)) m.set(r.week, r.price);
+        for (const r of normalizeWeekly(s.weeklyPrices)) {
+          if (periodKind(r.week) !== "week") continue; // ★月次/まとめを除外
+          m.set(r.week, r.price);
+        }
         return m;
       });
 
@@ -564,7 +576,10 @@
         const cur = weeks[i];
         const prev = weeks[i-1];
 
-        const rates = []; // 今週計算できたスリーブの週次上昇率%
+        // 念のため
+        if (periodKind(cur) !== "week" || periodKind(prev) !== "week") continue;
+
+        const rates = [];
         let up = 0, down = 0, flat = 0;
 
         for (const mp of maps) {
@@ -587,8 +602,8 @@
 
         rows.push({
           week: cur,
-          avgRate: avg,           // 今週の平均上昇率%
-          sample: n,              // 今週の計算対象スリーブ数
+          avgRate: avg,
+          sample: n,
           up, down, flat
         });
       }
@@ -660,7 +675,7 @@
       `;
     }
 
-    // ---------- renderLineChart（detailから流用、yKeyを任意表示） ----------
+    // ---------- SVG Line Chart ----------
     function renderLineChart(containerId, title, rows, xKey, yKey, yFmt) {
       const el = document.getElementById(containerId);
       if (!el) return;
@@ -677,7 +692,7 @@
         .filter(p => p.x && Number.isFinite(p.y));
 
       if (data.length < 2) {
-        el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">データが不足しています</div></div>`;
+        el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">データが不足しています（週次データが2点以上必要）</div></div>`;
         return;
       }
 
@@ -806,7 +821,6 @@
         tip.style.display = "none";
       });
     }
-    // ---------- end renderLineChart ----------
 
     async function main() {
       setActiveNav();
@@ -827,21 +841,22 @@
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
       if (!sleeves.length) { showError("スリーブデータがありません"); return; }
 
-      // 週一覧
+      // ★週一覧（週データのみ）
       const weeks = collectWeeks(sleeves);
-      if (weeks.length < 2) { showError("週次データが不足しています"); return; }
+      if (weeks.length < 2) {
+        showError("週次データが不足しています（週データが2点以上必要）");
+        return;
+      }
 
       // 市場系列（平均上昇率%）
       const rateRows = buildWeeklyMarketSeries(sleeves, weeks, { clipLo: -60, clipHi: 100 });
-
-      // 指数化
-      const baseWeek = rateRows.find(r => Number.isFinite(r.avgRate))?.week || (rateRows[0]?.week ?? "—");
       const series = buildIndexFromRates(rateRows, 100);
 
-      // KPI
+      // KPI表示用
       document.getElementById("subtitle").textContent =
         `対象：${sleeves.length}件 / 期間：${formatPeriodLabel(weeks[0])}〜${formatPeriodLabel(weeks[weeks.length-1])}`;
 
+      const baseWeek = rateRows.find(r => Number.isFinite(r.avgRate))?.week || (rateRows[0]?.week ?? "—");
       const pairRate = latestTwoValid(series, "avgRate");
       const pairIdx  = latestTwoValid(series, "index");
 
@@ -867,7 +882,8 @@
       const total = last ? (last.up + last.down + last.flat) : 0;
       const upShare = total ? (last.up / total) * 100 : null;
       document.getElementById("kpiUpShare").textContent = (upShare == null) ? "—" : `${upShare.toFixed(1)}%`;
-      document.getElementById("kpiUpShareMeta").textContent = last ? `上昇${last.up} / 下落${last.down} / 横ばい${last.flat}（計${total}）` : "—";
+      document.getElementById("kpiUpShareMeta").textContent =
+        last ? `上昇${last.up} / 下落${last.down} / 横ばい${last.flat}（計${total}） / サンプル${last.sample}件` : "—";
 
       // 指数
       const kpiIndex = document.getElementById("kpiIndex");
@@ -878,7 +894,13 @@
       }
 
       // チャート（指数）
-      renderLineChart("indexChart", "スリーブ指数 推移（週次）", series.filter(r=>Number.isFinite(r.index)), "week", "index", (v)=>Number(v).toFixed(1));
+      const indexSeries = series.filter(r => Number.isFinite(r.index));
+      if (indexSeries.length < 2) {
+        document.getElementById("indexChart").innerHTML =
+          `<div class="chart-wrap"><div class="chart-title">スリーブ指数 推移（週次）</div><div class="meta">指数データが不足しています</div></div>`;
+      } else {
+        renderLineChart("indexChart", "スリーブ指数 推移（週次）", indexSeries, "week", "index", (v)=>Number(v).toFixed(1));
+      }
 
       // テーブル
       document.getElementById("indexTable").innerHTML = renderTableIndex(series);
