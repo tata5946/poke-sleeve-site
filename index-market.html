@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,379 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --bg:#f5f9ff;
-      --card:#ffffff;
-      --text:#111;
-      --muted:#667085;
-      --border:#e6e8ef;
-      --shadow: 0 6px 18px rgba(16,24,40,.06);
-      --radius:14px;
-      --accent:#1e5bd7;
-      --accent2:#ffcc00;
-    }
-    *{ box-sizing:border-box; }
-    body{
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      margin:0;
-      background:linear-gradient(180deg,#f7fbff 0%, #f5f9ff 100%);
-      color:var(--text);
-    }
-    a{ color:var(--accent); text-decoration:none; }
-    a:hover{ text-decoration:underline; }
-    .container{ max-width:1100px; margin:0 auto; padding:20px; }
-
-    /* ========== logo ========== */
-    .logo{
-      width:38px; height:38px; border-radius:999px;
-      background: linear-gradient(#e53935 0 50%, #ffffff 50% 100%);
-      border: 2px solid #111;
-      position: relative;
-      box-shadow: 0 4px 12px rgba(0,0,0,.15);
-      flex: 0 0 auto;
-    }
-    .logo::before{
-      content:"";
-      position:absolute;
-      left:0; right:0; top:50%;
-      height:3px;
-      background:#111;
-      transform: translateY(-50%);
-    }
-    .logo::after{
-      content:"";
-      position:absolute;
-      left:50%; top:50%;
-      width:12px; height:12px;
-      border-radius:999px;
-      background:#fff;
-      border:2px solid #111;
-      transform: translate(-50%,-50%);
-    }
-    .accent{ color: var(--accent2); }
-
-    /* ===== 2段ヘッダー ===== */
-    .header{
-      position: sticky;
-      top:0;
-      z-index:50;
-      background:#fff;
-      border-bottom:1px solid var(--border);
-    }
-    .header-top{
-      max-width:1100px;
-      margin:0 auto;
-      padding:10px 20px;
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-    .brand{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      min-width:0;
-      text-decoration:none;
-      color:inherit;
-    }
-    .brand:hover{ text-decoration:none; }
-    .main-title{
-      font-size:22px;
-      font-weight:900;
-      margin:0;
-      line-height:1.1;
-      color:#111;
-      white-space:nowrap;
-      font-family: "M PLUS Rounded 1c", system-ui, -apple-system, "Segoe UI", sans-serif;
-      text-shadow:none;
-    }
-
-    .header-search{
-      flex:1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .header-search .search-wrap{
-      width:min(520px, 100%);
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:8px 12px;
-      border:1px solid var(--border);
-      border-radius:999px;
-      background:#fff;
-      box-shadow: 0 2px 10px rgba(16,24,40,.05);
-    }
-    .header-search .search-ico{ font-weight:900; color:#667085; }
-    .header-search input{
-      width:100%;
-      border:0;
-      outline:0;
-      font-size:14px;
-      background:transparent;
-    }
-    .header-right{ display:flex; gap:10px; align-items:center; }
-    .header-right a{ font-weight:800; font-size:13px; color:#111; }
-
-    .header-bottom{ background:#111; border-top:1px solid rgba(255,255,255,.08); }
-    .header-bottom-inner{
-      max-width:1100px;
-      margin:0 auto;
-      padding:8px 20px;
-      display:flex;
-      align-items:center;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
-    }
-    .header-bottom-inner::-webkit-scrollbar{ height:8px; }
-    .header-bottom-inner::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.18); border-radius:999px; }
-    .header-bottom-inner::-webkit-scrollbar-track{ background:transparent; }
-
-    .nav{ display:flex; gap:10px; }
-    .nav a{
-      border:0; background:transparent; color:#fff;
-      padding:8px 10px; border-radius:10px;
-      font-size:13px; font-weight:900;
-      white-space:nowrap; display:flex; align-items:center; gap:8px;
-    }
-    .nav a:hover{ background:rgba(255,255,255,.12); text-decoration:none; }
-    .nav .ico{ width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; opacity:.92; }
-    .nav .ico svg{ width:18px; height:18px; display:block; }
-    .nav a.is-active{
-      background:rgba(255,255,255,.20);
-      box-shadow: 0 6px 18px rgba(0,0,0,.18) inset;
-    }
-
-    /* panels */
-    .panel{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:16px;
-      box-shadow: var(--shadow);
-    }
-    .error{
-      background:#fff3f3;
-      border:1px solid #ffcccc;
-      padding:12px;
-      border-radius:12px;
-      color:#b00020;
-      display:none;
-      margin: 14px 0;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:14px;
-      margin-top:14px;
-    }
-    @media (max-width: 900px){
-      .grid{ grid-template-columns: 1fr; }
-    }
-
-    .hero{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:14px;
-      margin-top:18px;
-    }
-
-    .title{
-      font-size:20px;
-      font-weight:900;
-      margin:0 0 8px;
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      letter-spacing: .02em;
-    }
-    
-    .meta{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.6;
-    }
-    .kpi{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
-    .kpi .box{
-      border:1px solid var(--border);
-      border-radius:12px;
-      padding:10px 12px;
-      background:#fff;
-      min-width: 240px;
-      flex: 1 1 240px;
-    }
-    .kpi .label{ font-size:11px; color:var(--muted); font-weight:800; }
-    .kpi .value{ font-size:18px; font-weight:900; margin-top:4px; }
-    .delta{ margin-top:6px; font-size:12px; font-weight:900; }
-    .up{ color:#d32f2f; }
-    .down{ color:#1976d2; }
-    .flat{ color:#667085; }
-
-    table{
-      width:100%;
-      border-collapse: collapse;
-      font-size:13px;
-      background:#fff;
-      border-radius:12px;
-      overflow:hidden;
-      border:1px solid var(--border);
-    }
-    th, td{
-      padding:10px 10px;
-      border-bottom:1px solid var(--border);
-      text-align:left;
-      vertical-align: top;
-    }
-    th{
-      background:#f6f8ff;
-      font-weight:900;
-      color:#111;
-      white-space: nowrap;
-    }
-    tr:last-child td{ border-bottom:none; }
-
-    /* charts */
-    .chart-wrap{
-      border:1px solid var(--border);
-      border-radius:12px;
-      background:#fff;
-      padding:10px;
-      margin-bottom:10px;
-      position: relative;
-    }
-    .chart-title{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:900;
-      margin:0 0 6px;
-    }
-    svg.chart{ width:100%; height:auto; display:block; }
-    .chart-tooltip{
-      position:absolute;
-      display:none;
-      pointer-events:none;
-      padding:6px 8px;
-      border-radius:10px;
-      border:1px solid #e6e8ef;
-      background:#fff;
-      font-size:12px;
-      font-weight:800;
-      color:#111;
-      box-shadow:0 8px 18px rgba(16,24,40,.10);
-      transform: translate(-50%, -110%);
-      z-index: 5;
-      white-space: nowrap;
-    }
-
-    .note{
-      border:1px dashed #d0d5dd;
-      background:#fbfdff;
-      border-radius:12px;
-      padding:12px;
-      font-size:12px;
-      color:#475467;
-      line-height:1.7;
-    }
-
-    /* ===== Responsive header ===== */
-    @media (max-width: 700px){
-      .header-top{ padding:10px 14px; gap:10px; flex-wrap:wrap; }
-      .logo{ width:32px; height:32px; }
-      .main-title{ font-size:18px; }
-      .header-right{ display:none; }
-      .header-bottom-inner{ padding:8px 14px; }
-      .header-search{ flex: 1 1 100%; justify-content:flex-start; }
-      .header-search .search-wrap{ width:100%; }
-    }
-    @media (max-width: 600px){
-      .container{ padding:14px; }
-      .panel{ padding:12px; }
-    }
-  </style>
+  <!-- 共通CSS -->
+  <link rel="stylesheet" href="./assets/site.css" />
 </head>
 
 <body>
-  <div class="header">
-    <div class="header-top">
-      <a href="./index.html" class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div><h1 class="main-title"><span class="accent">ポケスリ</span>相場ナビ</h1></div>
-      </a>
-
-      <div class="header-search" aria-label="サイト内検索">
-        <div class="search-wrap">
-          <span class="search-ico">🔍</span>
-          <input type="text" id="search" placeholder="一覧へ戻って検索…" autocomplete="off" />
-        </div>
-      </div>
-
-      <div class="header-right">
-        <a href="./policy.html">ポリシー</a>
-      </div>
-    </div>
-
-    <div class="header-bottom">
-      <div class="header-bottom-inner">
-        <nav class="nav" aria-label="メインメニュー">
-          <a href="./index.html" data-nav="index">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4.5 6.5h.01M4.5 12.5h.01M4.5 18.5h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-              </svg>
-            </span>
-            一覧
-          </a>
-
-          <a href="./ranking.html" data-nav="ranking">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 8l4 4 4-6 4 6 4-4v10H4V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </span>
-            価格ランキング
-          </a>
-
-          <a href="./growth.html" data-nav="growth">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 16l6-6 4 4 6-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M14 6h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            高騰率
-          </a>
-
-          <a href="./surge.html" data-nav="surge">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M13 2L4 14h7l-1 8 10-14h-7l0-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            急上昇
-          </a>
-
-          <a href="./index-market.html" data-nav="market">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M7 15l3-4 3 3 5-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            スリーブ指数
-          </a>
-        </nav>
-      </div>
-    </div>
-  </div>
+  <!-- 共通ヘッダー差し込み -->
+  <div id="site-header"></div>
 
   <div class="container">
     <div id="error" class="error"></div>
@@ -434,11 +69,26 @@
           <h3 style="margin:0 0 10px;">指数の設定</h3>
           <table>
             <tbody>
-              <tr><th>頻度</th><td>週次</td></tr>
-              <tr><th>計算対象</th><td>週次価格が「今週」と「前週」に存在するスリーブ</td></tr>
-              <tr><th>集計</th><td>上昇率（%）の単純平均（価格水準に引っ張られない）</td></tr>
-              <tr><th>外れ値抑制</th><td>週次上昇率を -60%〜+100% にクリップ（調整可）</td></tr>
-              <tr><th>指数化</th><td>基準週=100、以降は週次平均上昇率を乗算で積み上げ</td></tr>
+              <tr>
+                <th>頻度</th>
+                <td>週次</td>
+              </tr>
+              <tr>
+                <th>計算対象</th>
+                <td>週次価格が「今週」と「前週」に存在するスリーブ</td>
+              </tr>
+              <tr>
+                <th>集計</th>
+                <td>上昇率（%）の単純平均（価格水準に引っ張られない）</td>
+              </tr>
+              <tr>
+                <th>外れ値抑制</th>
+                <td>週次上昇率を -60%〜+100% にクリップ（調整可）</td>
+              </tr>
+              <tr>
+                <th>指数化</th>
+                <td>基準週=100、以降は週次平均上昇率を乗算で積み上げ</td>
+              </tr>
             </tbody>
           </table>
           <div class="meta" style="margin-top:10px;">
@@ -448,25 +98,15 @@
       </div>
     </div>
 
-    <footer style="margin-top:40px;padding:20px 0;text-align:center;font-size:12px;color:#667085;border-top:1px solid var(--border);">
-      © 2026 ポケスリ相場ナビ |
-      <a href="./policy.html">プライバシーポリシー・免責事項</a>
-    </footer>
+    <!-- 共通フッター差し込み -->
+    <div id="site-footer"></div>
   </div>
+
+  <!-- 共通JS（header/footer差し込み & nav active 等） -->
+  <script src="./assets/common.js"></script>
 
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyl-TAhWBEVIgilTDv7lwS14T3_i9z57dUX4fqUVBS9gyr1EO7SaYy3aqP0V1gZtt6z/exec";
-
-    function setActiveNav() {
-      const path = (location.pathname.split("/").pop() || "").toLowerCase();
-      let key = "index";
-      if (path.includes("ranking")) key = "ranking";
-      else if (path.includes("growth")) key = "growth";
-      else if (path.includes("surge")) key = "surge";
-      else if (path.includes("market")) key = "market";
-      const links = document.querySelectorAll(".nav a[data-nav]");
-      for (const a of links) a.classList.toggle("is-active", a.getAttribute("data-nav") === key);
-    }
 
     function escapeHtml(str) {
       return String(str ?? "")
@@ -479,6 +119,7 @@
 
     function showError(msg) {
       const el = document.getElementById("error");
+      if (!el) return;
       el.style.display = "block";
       el.textContent = msg;
     }
@@ -540,7 +181,7 @@
           return { week, price: noTrades ? null : price, count };
         })
         .filter(x => x.week)
-        .sort((a,b) => String(a.week).localeCompare(String(b.week))); // asc
+        .sort((a, b) => String(a.week).localeCompare(String(b.week))); // asc
     }
 
     // ★週リスト（週次指数は「週」だけ集める）
@@ -553,7 +194,7 @@
           set.add(r.week);
         }
       }
-      return Array.from(set).sort((a,b)=>String(a).localeCompare(String(b)));
+      return Array.from(set).sort((a, b) => String(a).localeCompare(String(b)));
     }
 
     // 週次上昇率（%）を計算、外れ値はクリップ
@@ -576,7 +217,7 @@
       const rows = [];
       for (let i = 1; i < weeks.length; i++) {
         const cur = weeks[i];
-        const prev = weeks[i-1];
+        const prev = weeks[i - 1];
 
         // 念のため
         if (periodKind(cur) !== "week" || periodKind(prev) !== "week") continue;
@@ -600,7 +241,7 @@
         }
 
         const n = rates.length;
-        const avg = n ? (rates.reduce((a,b)=>a+b,0) / n) : null;
+        const avg = n ? (rates.reduce((a, b) => a + b, 0) / n) : null;
 
         rows.push({
           week: cur,
@@ -614,7 +255,7 @@
     }
 
     // avgRate(%) を積み上げて指数化（基準週=100）
-    function buildIndexFromRates(rateRows, baseIndex=100) {
+    function buildIndexFromRates(rateRows, baseIndex = 100) {
       let idx = baseIndex;
       const out = [];
       for (const r of rateRows) {
@@ -641,7 +282,7 @@
       const valid = rows.filter(r => r.week);
       const html = valid.slice().reverse().map(r => {
         const rate = Number.isFinite(r.avgRate) ? `${r.avgRate.toFixed(2)}%` : "—";
-        const idx  = Number.isFinite(r.index) ? `${r.index.toFixed(1)}` : "—";
+        const idx = Number.isFinite(r.index) ? `${r.index.toFixed(1)}` : "—";
         return `<tr>
           <td>${escapeHtml(formatPeriodLabel(r.week))}</td>
           <td>${rate}</td>
@@ -715,7 +356,7 @@
         const candidates = [1, 2, 5, 10].map(m => m * pow);
         return candidates.reduce((best, v) =>
           Math.abs(v - rough) < Math.abs(best - rough) ? v : best
-        , candidates[0]);
+          , candidates[0]);
       }
 
       const step = niceStep(yMax - yMin, ticks);
@@ -741,7 +382,7 @@
       }
 
       const xFirst = formatPeriodLabel(data[0].x);
-      const xLast  = formatPeriodLabel(data[data.length - 1].x);
+      const xLast = formatPeriodLabel(data[data.length - 1].x);
 
       const lastIdx = data.length - 1;
       const lastX = xToPx(lastIdx);
@@ -814,7 +455,7 @@
         tip.textContent = `${formatPeriodLabel(data[safeIdx].x)}：${yFmt(data[safeIdx].y)}`;
         const wrapRect = wrap.getBoundingClientRect();
         tip.style.left = `${Math.min(Math.max(ev.clientX - wrapRect.left, 40), wrapRect.width - 40)}px`;
-        tip.style.top  = `${Math.max(ev.clientY - wrapRect.top - 12, 8)}px`;
+        tip.style.top = `${Math.max(ev.clientY - wrapRect.top - 12, 8)}px`;
       });
 
       hit.addEventListener("mouseleave", () => {
@@ -825,16 +466,26 @@
     }
 
     async function main() {
-      setActiveNav();
+      // header差し込みが遅いと #search が無いことがあるので待つ
+      const waitForSearch = async () => {
+        for (let i = 0; i < 20; i++) {
+          const s = document.getElementById("search");
+          if (s) return s;
+          await new Promise(r => setTimeout(r, 50));
+        }
+        return null;
+      };
 
-      // 検索バーは一覧へ
-      const search = document.getElementById("search");
-      search.addEventListener("keydown", (e) => {
-        if (e.key !== "Enter") return;
-        const q = search.value.trim();
-        if (!q) { location.href = "./index.html"; return; }
-        location.href = "./index.html?q=" + encodeURIComponent(q);
-      });
+      const search = document.getElementById("search") || await waitForSearch();
+      if (search) {
+        // 検索バーは一覧へ
+        search.addEventListener("keydown", (e) => {
+          if (e.key !== "Enter") return;
+          const q = search.value.trim();
+          if (!q) { location.href = "./index.html"; return; }
+          location.href = "./index.html?q=" + encodeURIComponent(q);
+        });
+      }
 
       let data;
       try { data = await loadData(); }
@@ -856,11 +507,11 @@
 
       // KPI表示用
       document.getElementById("subtitle").textContent =
-        `対象：${sleeves.length}件 / 期間：${formatPeriodLabel(weeks[0])}〜${formatPeriodLabel(weeks[weeks.length-1])}`;
+        `対象：${sleeves.length}件 / 期間：${formatPeriodLabel(weeks[0])}〜${formatPeriodLabel(weeks[weeks.length - 1])}`;
 
       const baseWeek = rateRows.find(r => Number.isFinite(r.avgRate))?.week || (rateRows[0]?.week ?? "—");
       const pairRate = latestTwoValid(series, "avgRate");
-      const pairIdx  = latestTwoValid(series, "index");
+      const pairIdx = latestTwoValid(series, "index");
 
       // 今週上昇率
       const kpiRate = document.getElementById("kpiRate");
@@ -901,7 +552,7 @@
         document.getElementById("indexChart").innerHTML =
           `<div class="chart-wrap"><div class="chart-title">スリーブ指数 推移（週次）</div><div class="meta">指数データが不足しています</div></div>`;
       } else {
-        renderLineChart("indexChart", "スリーブ指数 推移（週次）", indexSeries, "week", "index", (v)=>Number(v).toFixed(1));
+        renderLineChart("indexChart", "スリーブ指数 推移（週次）", indexSeries, "week", "index", (v) => Number(v).toFixed(1));
       }
 
       // テーブル
@@ -916,4 +567,5 @@
     main();
   </script>
 </body>
+
 </html>

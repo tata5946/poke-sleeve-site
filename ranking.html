@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,474 +11,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --bg:#f5f9ff;
-      --card:#ffffff;
-      --text:#111;
-      --muted:#667085;
-      --border:#e6e8ef;
-      --shadow: 0 6px 18px rgba(16,24,40,.06);
-      --radius:14px;
-      --accent:#1e5bd7;
-      --accent2:#ffcc00;
-    }
-
-    *{ box-sizing:border-box; }
-    body{
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-    }
-    a{ color:var(--accent); text-decoration:none; }
-    a:hover{ text-decoration:underline; }
-
-    .container{ max-width:1100px; margin:0 auto; padding:20px; }
-
-    /* logo */
-    .logo{
-      width:38px; height:38px; border-radius:999px;
-      background: linear-gradient(#e53935 0 50%, #ffffff 50% 100%);
-      border: 2px solid #111;
-      position: relative;
-      box-shadow: 0 4px 12px rgba(0,0,0,.15);
-      flex: 0 0 auto;
-    }
-    .logo::before{
-      content:"";
-      position:absolute;
-      left:0; right:0; top:50%;
-      height:3px;
-      background:#111;
-      transform: translateY(-50%);
-    }
-    .logo::after{
-      content:"";
-      position:absolute;
-      left:50%; top:50%;
-      width:12px; height:12px;
-      border-radius:999px;
-      background:#fff;
-      border:2px solid #111;
-      transform: translate(-50%,-50%);
-    }
-    .accent{ color: var(--accent2); }
-
-    /* ===== PB風 2段ヘッダー ===== */
-    .header{
-      position: sticky;
-      top:0;
-      z-index:50;
-      background:#fff;
-      border-bottom:1px solid var(--border);
-    }
-    .header-top{
-      max-width:1100px;
-      margin:0 auto;
-      padding:10px 20px;
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-    .brand{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      min-width:0;
-      text-decoration:none;
-      color:inherit;
-    }
-    .brand:hover{ text-decoration:none; }
-    .main-title{
-      font-size:22px;
-      font-weight:900;
-      margin:0;
-      line-height:1.1;
-      color:#111;
-      white-space:nowrap;
-      font-family: "M PLUS Rounded 1c", system-ui, -apple-system, "Segoe UI", sans-serif;
-      text-shadow:none;
-    }
-
-    .header-search{
-      flex:1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .header-search .search-wrap{
-      width:min(520px, 100%);
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:8px 12px;
-      border:1px solid var(--border);
-      border-radius:999px;
-      background:#fff;
-      box-shadow: 0 2px 10px rgba(16,24,40,.05);
-    }
-    .header-search .search-ico{
-      font-weight:900;
-      color:#667085;
-    }
-    .header-search input{
-      width:100%;
-      border:0;
-      outline:0;
-      font-size:14px;
-      background:transparent;
-    }
-
-    .header-right{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .header-right a{
-      font-weight:800;
-      font-size:13px;
-      color:#111;
-    }
-
-    .header-bottom{
-      background:#111;
-      border-top:1px solid rgba(255,255,255,.08);
-    }
-    .header-bottom-inner{
-      max-width:1100px;
-      margin:0 auto;
-      padding:8px 20px;
-      display:flex;
-      align-items:center;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
-    }
-    .header-bottom-inner::-webkit-scrollbar{ height:8px; }
-    .header-bottom-inner::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.18); border-radius:999px; }
-    .header-bottom-inner::-webkit-scrollbar-track{ background:transparent; }
-
-    .nav{
-      display:flex;
-      gap:10px;
-    }
-    .nav a{
-      border:0;
-      background:transparent;
-      color:#fff;
-      padding:8px 10px;
-      border-radius:10px;
-      font-size:13px;
-      font-weight:900;
-      white-space:nowrap;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .nav a:hover{
-      background:rgba(255,255,255,.12);
-      text-decoration:none;
-    }
-    .nav .ico{
-      width:18px; height:18px;
-      display:inline-flex; align-items:center; justify-content:center;
-      opacity:.92;
-    }
-    .nav .ico svg{ width:18px; height:18px; display:block; }
-    .nav a.is-active{
-      background:rgba(255,255,255,.20);
-      box-shadow: 0 6px 18px rgba(0,0,0,.18) inset;
-    }
-
-    /* hero */
-    .hero{ margin-top:18px; }
-    .hero-card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:16px;
-      box-shadow: var(--shadow);
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
-    .hero-title{ font-size:18px; font-weight:900; margin:0; }
-    .hero-desc{
-      margin:6px 0 0;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.6;
-    }
-    .data-note{
-      margin-top:8px;
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    /* layout */
-    .main{
-      display:grid;
-      grid-template-columns: 300px 1fr;
-      gap:14px;
-      margin-top:14px;
-    }
-
-    /* sidebar */
-    .panel{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:14px;
-      box-shadow: var(--shadow);
-    }
-    .panel h2{ font-size:14px; margin:0 0 10px; }
-    .small{ font-size:12px; color:var(--muted); margin:0 0 12px; }
-
-    .controls{ display:flex; flex-direction:column; gap:10px; }
-    .controls label{
-      font-size:12px;
-      color:#1f2a37;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    .controls select, .controls button{
-      padding:10px 10px;
-      border:1px solid var(--border);
-      border-radius:12px;
-      background:#fff;
-      font-size:14px;
-    }
-    .controls button{
-      background:#111;
-      color:#fff;
-      border-color:#111;
-      cursor:pointer;
-      font-weight:900;
-    }
-    .controls button:hover{ opacity:.92; }
-
-    .error{
-      background:#fff3f3;
-      border:1px solid #ffcccc;
-      padding:12px;
-      border-radius:12px;
-      color:#b00020;
-      margin-bottom:12px;
-      display:none;
-    }
-
-    /* grid cards */
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 10px;
-      padding:0;
-    }
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:10px;
-      box-shadow: var(--shadow);
-      position: relative;
-    }
-    .thumb{
-      width:100%;
-      height:160px;
-      object-fit: cover;
-      border-radius:14px;
-      box-shadow: 0 6px 14px rgba(0,0,0,.08);
-      transition: transform .2s ease;
-      background: #f2f4f7;
-    }
-    .card:hover .thumb{ transform: scale(1.02); }
-
-    .title{ font-weight:900; font-size:14px; margin:10px 0 6px; }
-    .meta{ font-size:12px; color:var(--muted); line-height:1.45; }
-    .price{ margin-top:8px; font-size:16px; font-weight:900; }
-
-    /* rank */
-    .rank-row{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-top:10px;
-    }
-    .rank-badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:34px;
-      height:26px;
-      padding:0 10px;
-      border-radius:999px;
-      background:#111;
-      color:#fff;
-      font-weight:900;
-      font-size:12px;
-      white-space:nowrap;
-    }
-
-    .badges{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
-    .badge{
-      font-size:11px;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid #ffe082;
-      background:#fff8cc;
-      color:#5c4b00;
-      font-weight:700;
-    }
-
-    .btn{
-      display:inline-block;
-      margin-top:8px;
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid var(--border);
-      background:#fff;
-      color:#111;
-      font-weight:900;
-      font-size:12px;
-    }
-    .btn:hover{
-      background:#f2f4f7;
-      text-decoration:none;
-    }
-
-    footer.site-footer{
-      margin-top:40px;
-      padding:20px 0;
-      text-align:center;
-      font-size:12px;
-      color:#667085;
-      border-top:1px solid var(--border);
-    }
-    footer.site-footer a{ color:var(--accent); font-weight:800; }
-
-    /* ===== Responsive ===== */
-    @media (max-width: 900px){
-      .main{ grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 700px){
-      .header-top{
-        padding:10px 14px;
-        gap:10px;
-        flex-wrap:wrap;
-      }
-      .logo{ width:32px; height:32px; }
-      .main-title{ font-size:18px; }
-      .header-right{ display:none; }
-      .header-bottom-inner{ padding:8px 14px; }
-
-      .header-search{
-        flex: 1 1 100%;
-        justify-content:flex-start;
-      }
-      .header-search .search-wrap{ width:100%; }
-    }
-
-    @media (max-width: 600px){
-      .container{ padding:14px; }
-      .hero-card{ padding:12px; }
-
-      .grid{
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap:10px;
-      }
-      .thumb{ height:130px; }
-      .title{ font-size:13px; }
-
-      .panel{ padding:12px; }
-      .controls select, .controls button{ padding:9px 10px; }
-    }
-  </style>
+  <!-- 共通CSS -->
+  <link rel="stylesheet" href="./assets/site.css" />
 </head>
 
 <body>
-  <div class="header">
-    <!-- 上段 -->
-    <div class="header-top">
-      <a href="./index.html" class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1 class="main-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
-        </div>
-      </a>
-
-      <div class="header-search" aria-label="サイト内検索">
-        <div class="search-wrap">
-          <span class="search-ico">🔍</span>
-          <input type="text" id="search" placeholder="スリーブ名で検索…" autocomplete="off" />
-        </div>
-      </div>
-
-      <div class="header-right">
-        <a href="./policy.html">ポリシー</a>
-      </div>
-    </div>
-
-    <!-- 下段 -->
-    <div class="header-bottom">
-      <div class="header-bottom-inner">
-        <nav class="nav" aria-label="メインメニュー">
-          <a href="./index.html" data-nav="index">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4.5 6.5h.01M4.5 12.5h.01M4.5 18.5h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-              </svg>
-            </span>
-            一覧
-          </a>
-
-          <a href="./ranking.html" data-nav="ranking">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 8l4 4 4-6 4 6 4-4v10H4V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </span>
-            価格ランキング
-          </a>
-
-          <a href="./growth.html" data-nav="growth">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 16l6-6 4 4 6-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M14 6h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            高騰率
-          </a>
-
-          <a href="./surge.html" data-nav="surge">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M13 2L4 14h7l-1 8 10-14h-7l0-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            急上昇
-          </a>
-
-          <a href="./index-market.html" data-nav="market">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M7 15l3-4 3 3 5-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            スリーブ指数
-          </a>
-        </nav>
-      </div>
-    </div>
-  </div>
+  <!-- 共通ヘッダー差し込み -->
+  <div id="site-header"></div>
 
   <div class="container">
     <div class="hero">
@@ -532,33 +72,13 @@
       </main>
     </div>
 
-    <footer class="site-footer">
-      © 2026 ポケスリ相場ナビ |
-      <a href="./policy.html">プライバシーポリシー・免責事項</a>
-    </footer>
+    <!-- 共通フッター差し込み -->
+    <div id="site-footer"></div>
   </div>
 
   <script>
     // ★ index と同じ Apps Script WebアプリURL
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyl-TAhWBEVIgilTDv7lwS14T3_i9z57dUX4fqUVBS9gyr1EO7SaYy3aqP0V1gZtt6z/exec";
-
-    // ===== Active Tab Auto Detect =====
-    function setActiveNav() {
-      const path = (location.pathname.split("/").pop() || "").toLowerCase();
-
-      let key = "index";
-      if (path.includes("ranking")) key = "ranking";
-      else if (path.includes("growth")) key = "growth";
-      else if (path.includes("surge")) key = "surge";
-      else if (path.includes("market")) key = "market";     // ★追加
-      else if (path.includes("detail")) key = "index";
-      else if (path === "" || path === "index.html") key = "index";
-
-      const links = document.querySelectorAll(".nav a[data-nav]");
-      for (const a of links) {
-        a.classList.toggle("is-active", a.getAttribute("data-nav") === key);
-      }
-    }
 
     // -----------------------------
     // utils
@@ -654,6 +174,7 @@
       if (arr.length === 0) return null;
 
       const map = new Map();
+
       for (const x of arr) {
         const weekISO = toISODate(x.week);
         if (!weekISO) continue;
@@ -666,6 +187,7 @@
 
         map.set(weekISO, { week: weekISO, price, count: count == null ? null : count });
       }
+
       if (map.size === 0) return null;
 
       const sorted = Array.from(map.values()).sort((a, b) => a.week.localeCompare(b.week));
@@ -699,10 +221,8 @@
     // main
     // -----------------------------
     async function main() {
-      setActiveNav();
-
       const list = document.getElementById("list");
-      const searchInput = document.getElementById("search");
+      const searchInput = document.getElementById("search"); // header側にある想定
 
       const releaseYearSel = document.getElementById("releaseYear");
       const seriesSel = document.getElementById("series");
@@ -734,7 +254,7 @@
           u.textContent = `最終更新：${maxWeek}（週次）`;
           u.style.display = "block";
         }
-      } catch(_) {}
+      } catch (_) { }
 
       // セレクト初期化
       const releaseYears = uniq(sleeves.map(s => s.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
@@ -754,14 +274,14 @@
       }
 
       function render() {
-        const kw = searchInput.value.trim().toLowerCase();
+        const kw = (searchInput ? searchInput.value : "").trim().toLowerCase();
         const releaseYear = releaseYearSel.value;
         const series = seriesSel.value;
         const band = parseBand(priceBandSel.value);
 
         list.innerHTML = "";
 
-        // 最新週次価格があるものだけを対象にする（ランキングだから）
+        // 最新週次価格があるものだけ対象
         const rows = [];
         for (const s of sleeves) {
           if (kw && !String(s.name || "").toLowerCase().includes(kw)) continue;
@@ -776,10 +296,10 @@
           }
 
           const pair = getWeeklyPair(s);
-          rows.push({ s, price: p, week: pair ? pair.latest.week : null, pair });
+          rows.push({ s, price: p, week: pair ? pair.latest.week : null });
         }
 
-        // 価格が高い順（同値は名前順）
+        // 価格が高い順
         rows.sort((a, b) => {
           if (b.price !== a.price) return b.price - a.price;
           return String(a.s.name ?? "").localeCompare(String(b.s.name ?? ""));
@@ -812,11 +332,10 @@
                  onerror="this.onerror=null; this.style.display='none';">`
             : "";
 
-          const div = document.createElement("div");
-          div.className = "card";
-
           const weekText = row.week ? `直近 ${escapeHtml(row.week)}` : "直近データなし";
 
+          const div = document.createElement("div");
+          div.className = "card";
           div.innerHTML = `
             ${imgHtml}
 
@@ -843,19 +362,21 @@
         list.appendChild(frag);
       }
 
-      // events
+      // events（header検索が存在する前提）
       let t = null;
-      searchInput.addEventListener("input", () => {
-        clearTimeout(t);
-        t = setTimeout(render, 80);
-      });
+      if (searchInput) {
+        searchInput.addEventListener("input", () => {
+          clearTimeout(t);
+          t = setTimeout(render, 80);
+        });
+      }
 
       releaseYearSel.addEventListener("change", render);
       seriesSel.addEventListener("change", render);
       priceBandSel.addEventListener("change", render);
 
       clearBtn.addEventListener("click", () => {
-        searchInput.value = "";
+        if (searchInput) searchInput.value = "";
         releaseYearSel.value = "";
         seriesSel.value = "";
         priceBandSel.value = "";
@@ -867,5 +388,9 @@
 
     main();
   </script>
+
+  <!-- 共通JS（ヘッダー/フッター注入 + Active Nav） -->
+  <script src="./assets/common.js"></script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,459 +11,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --bg:#f5f9ff;
-      --card:#ffffff;
-      --text:#111;
-      --muted:#667085;
-      --border:#e6e8ef;
-      --shadow: 0 6px 18px rgba(16,24,40,.06);
-      --radius:14px;
-      --accent:#1e5bd7;
-      --accent2:#ffcc00;
-    }
-    *{ box-sizing:border-box; }
-    body{
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      margin:0;
-      background:linear-gradient(180deg,#f7fbff 0%, #f5f9ff 100%);
-      color:var(--text);
-    }
-    a{ color:var(--accent); text-decoration:none; }
-    a:hover{ text-decoration:underline; }
-
-    .container{ max-width:1100px; margin:0 auto; padding:20px; }
-
-    /* ========== logo ========== */
-    .logo{
-      width:38px; height:38px; border-radius:999px;
-      background: linear-gradient(#e53935 0 50%, #ffffff 50% 100%);
-      border: 2px solid #111;
-      position: relative;
-      box-shadow: 0 4px 12px rgba(0,0,0,.15);
-      flex: 0 0 auto;
-    }
-    .logo::before{
-      content:"";
-      position:absolute;
-      left:0; right:0; top:50%;
-      height:3px;
-      background:#111;
-      transform: translateY(-50%);
-    }
-    .logo::after{
-      content:"";
-      position:absolute;
-      left:50%; top:50%;
-      width:12px; height:12px;
-      border-radius:999px;
-      background:#fff;
-      border:2px solid #111;
-      transform: translate(-50%,-50%);
-    }
-    .accent{ color: var(--accent2); }
-
-    /* ===== PB風 2段ヘッダー ===== */
-    .header{
-      position: sticky;
-      top:0;
-      z-index:50;
-      background:#fff;
-      border-bottom:1px solid var(--border);
-    }
-    .header-top{
-      max-width:1100px;
-      margin:0 auto;
-      padding:10px 20px;
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-    .brand{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      min-width:0;
-      text-decoration:none;
-      color:inherit;
-    }
-    .brand:hover{ text-decoration:none; }
-    .main-title{
-      font-size:22px;
-      font-weight:900;
-      margin:0;
-      line-height:1.1;
-      color:#111;
-      white-space:nowrap;
-      font-family: "M PLUS Rounded 1c", system-ui, -apple-system, "Segoe UI", sans-serif;
-      text-shadow:none;
-    }
-
-    .header-search{
-      flex:1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .header-search .search-wrap{
-      width:min(520px, 100%);
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:8px 12px;
-      border:1px solid var(--border);
-      border-radius:999px;
-      background:#fff;
-      box-shadow: 0 2px 10px rgba(16,24,40,.05);
-    }
-    .header-search .search-ico{
-      font-weight:900;
-      color:#667085;
-    }
-    .header-search input{
-      width:100%;
-      border:0;
-      outline:0;
-      font-size:14px;
-      background:transparent;
-    }
-
-    .header-right{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .header-right a{
-      font-weight:800;
-      font-size:13px;
-      color:#111;
-    }
-
-    .header-bottom{
-      background:#111;
-      border-top:1px solid rgba(255,255,255,.08);
-    }
-    .header-bottom-inner{
-      max-width:1100px;
-      margin:0 auto;
-      padding:8px 20px;
-      display:flex;
-      align-items:center;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
-    }
-    .header-bottom-inner::-webkit-scrollbar{ height:8px; }
-    .header-bottom-inner::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.18); border-radius:999px; }
-    .header-bottom-inner::-webkit-scrollbar-track{ background:transparent; }
-
-    .nav{ display:flex; gap:10px; }
-    .nav a{
-      border:0;
-      background:transparent;
-      color:#fff;
-      padding:8px 10px;
-      border-radius:10px;
-      font-size:13px;
-      font-weight:900;
-      white-space:nowrap;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .nav a:hover{
-      background:rgba(255,255,255,.12);
-      text-decoration:none;
-    }
-    .nav .ico{
-      width:18px; height:18px;
-      display:inline-flex; align-items:center; justify-content:center;
-      opacity:.92;
-    }
-    .nav .ico svg{ width:18px; height:18px; display:block; }
-    .nav a.is-active{
-      background:rgba(255,255,255,.20);
-      box-shadow: 0 6px 18px rgba(0,0,0,.18) inset;
-    }
-
-    /* panels */
-    .panel{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      padding:16px;
-      box-shadow: var(--shadow);
-    }
-    .error{
-      background:#fff3f3;
-      border:1px solid #ffcccc;
-      padding:12px;
-      border-radius:12px;
-      color:#b00020;
-      display:none;
-      margin: 14px 0;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:14px;
-      margin-top:14px;
-    }
-    @media (max-width: 900px){
-      .grid{ grid-template-columns: 1fr; }
-    }
-
-    .hero{
-      display:grid;
-      grid-template-columns: 360px 1fr;
-      gap:14px;
-      align-items:start;
-      margin-top:18px;
-    }
-    @media (max-width: 900px){
-      .hero{ grid-template-columns: 1fr; }
-    }
-
-    .thumb{
-      width:100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      border-radius:16px;
-      border:1px solid var(--border);
-      background:#fff;
-      display:block;
-    }
-
-    .name{
-      font-size:22px;
-      font-weight:900;
-      margin:0 0 6px;
-    }
-    .meta{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.6;
-    }
-    .badges{ display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
-    .badge{
-      font-size:11px;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid #ffe082;
-      background:#fff8cc;
-      color:#5c4b00;
-      font-weight:800;
-    }
-
-    .kpi{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
-    .kpi .box{
-      border:1px solid var(--border);
-      border-radius:12px;
-      padding:10px 12px;
-      background:#fff;
-      min-width: 220px;
-    }
-    .kpi .label{ font-size:11px; color:var(--muted); font-weight:800; }
-    .kpi .value{ font-size:18px; font-weight:900; margin-top:4px; }
-
-    .delta{
-      margin-top:6px;
-      font-size:12px;
-      font-weight:900;
-    }
-    .up{ color:#d32f2f; }
-    .down{ color:#1976d2; }
-    .flat{ color:#667085; }
-
-    table{
-      width:100%;
-      border-collapse: collapse;
-      font-size:13px;
-      background:#fff;
-      border-radius:12px;
-      overflow:hidden;
-      border:1px solid var(--border);
-    }
-    th, td{
-      padding:10px 10px;
-      border-bottom:1px solid var(--border);
-      text-align:left;
-      vertical-align: top;
-    }
-    th{
-      background:#f6f8ff;
-      font-weight:900;
-      color:#111;
-      white-space: nowrap;
-    }
-    tr:last-child td{ border-bottom:none; }
-
-    .btn{
-      display:inline-block;
-      margin-top:12px;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid var(--border);
-      background:#fff;
-      color:#111;
-      font-weight:800;
-    }
-    .btn:hover{ background:#f2f4f7; text-decoration:none; }
-
-    /* charts */
-    .chart-wrap{
-      border:1px solid var(--border);
-      border-radius:12px;
-      background:#fff;
-      padding:10px;
-      margin-bottom:10px;
-      position: relative;
-    }
-    .chart-title{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:900;
-      margin:0 0 6px;
-    }
-    svg.chart{
-      width:100%;
-      height:auto;
-      display:block;
-    }
-    .chart-tooltip{
-      position:absolute;
-      display:none;
-      pointer-events:none;
-      padding:6px 8px;
-      border-radius:10px;
-      border:1px solid #e6e8ef;
-      background:#fff;
-      font-size:12px;
-      font-weight:800;
-      color:#111;
-      box-shadow:0 8px 18px rgba(16,24,40,.10);
-      transform: translate(-50%, -110%);
-      z-index: 5;
-      white-space: nowrap;
-    }
-
-    /* ===== Responsive header ===== */
-    @media (max-width: 700px){
-      .header-top{
-        padding:10px 14px;
-        gap:10px;
-        flex-wrap:wrap;
-      }
-      .logo{ width:32px; height:32px; }
-      .main-title{ font-size:18px; }
-      .header-right{ display:none; }
-      .header-bottom-inner{ padding:8px 14px; }
-
-      .header-search{
-        flex: 1 1 100%;
-        justify-content:flex-start;
-      }
-      .header-search .search-wrap{ width:100%; }
-    }
-
-    @media (max-width: 600px){
-      .container{ padding:14px; }
-      .panel{ padding:12px; }
-    }
-  </style>
+  <!-- 共通CSS -->
+  <link rel="stylesheet" href="./assets/site.css" />
 </head>
 
 <body>
-  <div class="header">
-    <!-- 上段 -->
-    <div class="header-top">
-      <a href="./index.html" class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1 class="main-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
-        </div>
-      </a>
-
-      <div class="header-search" aria-label="サイト内検索">
-        <div class="search-wrap">
-          <span class="search-ico">🔍</span>
-          <!-- detailでは検索入力は“一覧へ戻って検索”に寄せる（実装は下で） -->
-          <input type="text" id="search" placeholder="一覧へ戻って検索…" autocomplete="off" />
-        </div>
-      </div>
-
-      <div class="header-right">
-        <a href="./policy.html">ポリシー</a>
-      </div>
-    </div>
-
-    <!-- 下段 -->
-    <div class="header-bottom">
-      <div class="header-bottom-inner">
-        <nav class="nav" aria-label="メインメニュー">
-          <a href="./index.html" data-nav="index">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4.5 6.5h.01M4.5 12.5h.01M4.5 18.5h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-              </svg>
-            </span>
-            一覧
-          </a>
-
-          <a href="./ranking.html" data-nav="ranking">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 8l4 4 4-6 4 6 4-4v10H4V8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </span>
-            価格ランキング
-          </a>
-
-          <a href="./growth.html" data-nav="growth">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 16l6-6 4 4 6-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M14 6h6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            高騰率
-          </a>
-
-          <a href="./surge.html" data-nav="surge">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M13 2L4 14h7l-1 8 10-14h-7l0-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            急上昇
-          </a>
-          <a href="./index-market.html" data-nav="market">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M7 15l3-4 3 3 5-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            スリーブ指数
-          </a>
-        </nav>
-      </div>
-    </div>
-  </div>
+  <!-- 共通ヘッダー差し込み -->
+  <div id="site-header"></div>
 
   <div class="container">
     <div id="error" class="error"></div>
 
-    <div class="hero">
+    <div class="hero hero-detail">
       <div class="panel">
         <img id="img" class="thumb" alt="" />
       </div>
@@ -500,32 +60,16 @@
       </div>
     </div>
 
-    <footer style="margin-top:40px;padding:20px 0;text-align:center;font-size:12px;color:#667085;border-top:1px solid var(--border);">
-      © 2026 ポケスリ相場ナビ |
-      <a href="./policy.html">プライバシーポリシー・免責事項</a>
-    </footer>
+    <!-- 共通フッター差し込み -->
+    <div id="site-footer"></div>
   </div>
 
+  <!-- 共通JS（header/footer差し込み & nav active 等） -->
+  <script src="./assets/common.js"></script>
+
   <script>
+    // ★ Apps Script の WebアプリURL
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyl-TAhWBEVIgilTDv7lwS14T3_i9z57dUX4fqUVBS9gyr1EO7SaYy3aqP0V1gZtt6z/exec";
-
-    // ===== Active Tab Auto Detect =====
-    function setActiveNav() {
-      const path = (location.pathname.split("/").pop() || "").toLowerCase();
-
-      let key = "index";
-      if (path.includes("ranking")) key = "ranking";
-      else if (path.includes("growth")) key = "growth";
-      else if (path.includes("surge")) key = "surge";
-      else if (path.includes("market")) key = "market";     // ★追加
-      else if (path.includes("detail")) key = "index"; // detail は一覧扱い
-      else if (path === "" || path === "index.html") key = "index";
-
-      const links = document.querySelectorAll(".nav a[data-nav]");
-      for (const a of links) {
-        a.classList.toggle("is-active", a.getAttribute("data-nav") === key);
-      }
-    }
 
     function escapeHtml(str) {
       return String(str ?? "")
@@ -538,6 +82,7 @@
 
     function showError(msg) {
       const el = document.getElementById("error");
+      if (!el) return;
       el.style.display = "block";
       el.textContent = msg;
     }
@@ -562,18 +107,32 @@
       return `${y}-${m}-${day}`;
     }
 
+    // ★ ここはあなたの仕様に合わせたラベル
+    // - 2026年は週表示（YYYY/MM/DD）
+    // - 2025年は月表示（YYYY年M月）※日が01のとき
+    // - それ以前は 2025/01/01 でまとめる（＝年表示寄り）
     function formatPeriodLabel(iso) {
       const s = String(iso || "").trim();
       const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
       if (!m) return s;
 
-      const y = m[1];
-      const mo = m[2];
-      const d = m[3];
+      const y = Number(m[1]);
+      const mo = Number(m[2]);
+      const d = Number(m[3]);
 
-      if (mo === "01" && d === "01") return `${y}年`;
-      if (d === "01") return `${y}年${Number(mo)}月`;
-      return `${y}/${mo}/${d}`;
+      // 2026: 週表示（そのまま日付）
+      if (y >= 2026) return `${m[1]}/${m[2]}/${m[3]}`;
+
+      // 2025: 月表示（YYYY年M月）※日=01は月の代表日扱い
+      if (y === 2025) {
+        if (d === 1) return `${y}年${mo}月`;
+        return `${m[1]}/${m[2]}/${m[3]}`; // 万一日が入ってても日付で出す
+      }
+
+      // それ以前: まとめ（年表示）
+      // データが 2025-01-01 でまとめて入っている想定
+      if (mo === 1 && d === 1) return `${y}年`;
+      return `${m[1]}/${m[2]}/${m[3]}`;
     }
 
     // weeklyPrices: [{week, price, count}]
@@ -596,13 +155,10 @@
             if (Number.isFinite(n)) count = n;
           }
 
+          // 取引なし週は price=null 扱い
           const noTrades = (count === 0) || (price === null);
 
-          return {
-            week,
-            price: noTrades ? null : price,
-            count: count
-          };
+          return { week, price: noTrades ? null : price, count };
         })
         .filter(x => x.week)
         .sort((a, b) => String(a.week).localeCompare(String(b.week))); // asc
@@ -711,7 +267,7 @@
       deltaEl.textContent = `${arrow} 前回取引週比 ${sign}${abs.toLocaleString()}円 ${pct}`;
     }
 
-    // ---------- renderLineChart（統合版） ----------
+    // ---------- renderLineChart（yKey任意・フォーマット固定：円） ----------
     function renderLineChart(containerId, title, rows, xKey, yKey) {
       const el = document.getElementById(containerId);
       if (!el) return;
@@ -720,12 +276,8 @@
         .map(r => {
           const x = String(r?.[xKey] ?? "");
           const rawY = r?.[yKey];
-          let y = null;
-          if (rawY !== null && rawY !== undefined && rawY !== "" && rawY !== "-" && rawY !== "—") {
-            const n = Number(rawY);
-            if (Number.isFinite(n)) y = n;
-          }
-          return { x, y };
+          const n = Number(rawY);
+          return { x, y: Number.isFinite(n) ? n : null };
         })
         .filter(p => p.x && Number.isFinite(p.y));
 
@@ -751,7 +303,7 @@
         const candidates = [1, 2, 5, 10].map(m => m * pow);
         return candidates.reduce((best, v) =>
           Math.abs(v - rough) < Math.abs(best - rough) ? v : best
-        , candidates[0]);
+          , candidates[0]);
       }
 
       const step = niceStep(yMax - yMin, ticks);
@@ -777,7 +329,7 @@
       }
 
       const xFirst = formatPeriodLabel(data[0].x);
-      const xLast  = formatPeriodLabel(data[data.length - 1].x);
+      const xLast = formatPeriodLabel(data[data.length - 1].x);
 
       const lastIdx = data.length - 1;
       const lastX = xToPx(lastIdx);
@@ -850,7 +402,7 @@
         tip.textContent = `${formatPeriodLabel(data[safeIdx].x)}：${data[safeIdx].y.toLocaleString()}円`;
         const wrapRect = wrap.getBoundingClientRect();
         tip.style.left = `${Math.min(Math.max(ev.clientX - wrapRect.left, 40), wrapRect.width - 40)}px`;
-        tip.style.top  = `${Math.max(ev.clientY - wrapRect.top - 12, 8)}px`;
+        tip.style.top = `${Math.max(ev.clientY - wrapRect.top - 12, 8)}px`;
       });
 
       hit.addEventListener("mouseleave", () => {
@@ -862,17 +414,23 @@
     // ---------- end renderLineChart ----------
 
     async function main() {
-      setActiveNav();
-
-      // detailの検索バーは「一覧に戻して検索語を渡す」動きにする
-      const search = document.getElementById("search");
-      search.addEventListener("keydown", (e) => {
-        if (e.key !== "Enter") return;
-        const q = search.value.trim();
-        if (!q) { location.href = "./index.html"; return; }
-        // index側で ?q= を読む実装がなくても、とりあえずURLで渡しておく
-        location.href = "./index.html?q=" + encodeURIComponent(q);
-      });
+      // header が差し込まれるのを待ってから、検索バー上書き
+      // （common.js 側が先にheader読み込む想定だけど、保険で遅延）
+      const applySearchBehavior = () => {
+        const search = document.getElementById("search");
+        if (!search) return false;
+        search.placeholder = "一覧へ戻って検索…";
+        search.addEventListener("keydown", (e) => {
+          if (e.key !== "Enter") return;
+          const q = search.value.trim();
+          if (!q) { location.href = "./index.html"; return; }
+          location.href = "./index.html?q=" + encodeURIComponent(q);
+        });
+        return true;
+      };
+      if (!applySearchBehavior()) {
+        setTimeout(applySearchBehavior, 200);
+      }
 
       const id = getParam("id");
       if (!id) { showError("id が指定されていません。indexから入り直してください。"); return; }
@@ -917,4 +475,5 @@
     main();
   </script>
 </body>
+
 </html>
