@@ -1,16 +1,19 @@
-/* common.js
- - inject header/footer into #site-header / #site-footer
- - provide setActiveNav(), wireHeaderSearch()
- - provide fetchJsonWithTimeout() and loadData() with central GAS_URL
- - expose utility helpers used across pages
-*/
+/**
+ * common.js (改良版)
+ *
+ * - header/footer を #site-header / #site-footer に注入
+ * - 注入完了時に custom event "site:injected" を発火（ページ側はこれを待てば header 内の #search を安全に参照できる）
+ * - setActiveNav(), wireHeaderSearch() を提供
+ * - fetchJsonWithTimeout(), loadData() を中央管理（GAS_URL はここで一本化）
+ * - グローバルなヘルパーを window.common として公開
+ */
 
 /* ----- Config ----- */
 // ここに Apps Script Webアプリ URL を一度だけ書いておく（各ページから個別に書かなくてOK）
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyl-TAhWBEVIgilTDv7lwS14T3_i9z57dUX4fqUVBS9gyr1EO7SaYy3aqP0V1gZtt6z/exec";
 
-/* ----- Header / Footer HTML ----- */
-/* 必要ならここをテンプレ化してロゴやリンクを書き換えてください */
+/* ----- Header / Footer HTML (テンプレ) ----- */
+/* footer の container を重複させないように注意 */
 const HEADER_HTML = `
   <div class="header">
     <div class="header-top">
@@ -49,128 +52,171 @@ const HEADER_HTML = `
 
 const FOOTER_HTML = `
   <footer class="site-footer">
-    <div class="container">
-      © 2026 ポケスリ相場ナビ |
-      <a href="./policy.html">プライバシーポリシー・免責事項</a>
-    </div>
+    © 2026 ポケスリ相場ナビ |
+    <a href="./policy.html">プライバシーポリシー・免責事項</a>
   </footer>
 `;
 
-/* ----- Utilities exposed globally ----- */
+/* ----- Utilities ----- */
 function escapeHtml(str) {
-    return String(str ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+  return String(str ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
+
 function toISODate(d) {
-    const dd = new Date(d);
-    if (Number.isNaN(dd.getTime())) return null;
-    const y = dd.getFullYear();
-    const m = String(dd.getMonth() + 1).padStart(2, "0");
-    const day = String(dd.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
+  const dd = new Date(d);
+  if (Number.isNaN(dd.getTime())) return null;
+  const y = dd.getFullYear();
+  const m = String(dd.getMonth() + 1).padStart(2, "0");
+  const day = String(dd.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
+
 function numOrNull(v) {
-    const n = Number(v);
-    return Number.isFinite(n) ? n : null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
 }
+
 function uniq(arr) {
-    const s = new Set();
-    for (const v of arr) {
-        const t = (v == null) ? "" : String(v).trim();
-        if (t) s.add(t);
-    }
-    return Array.from(s);
+  const s = new Set();
+  for (const v of arr) {
+    const t = (v == null) ? "" : String(v).trim();
+    if (t) s.add(t);
+  }
+  return Array.from(s);
 }
 
-/* fetch with timeout helper */
+/* ----- fetch with timeout ----- */
 async function fetchJsonWithTimeout(url, { timeoutMs = 12000 } = {}) {
-    const controller = new AbortController();
-    const t = setTimeout(() => controller.abort(), timeoutMs);
+  const controller = new AbortController();
+  const t = setTimeout(() => controller.abort(), timeoutMs);
 
-    try {
-        const res = await fetch(url, {
-            cache: "no-store",
-            signal: controller.signal,
-            headers: { "Accept": "application/json" }
-        });
-        if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
-        return await res.json();
-    } catch (e) {
-        if (e && e.name === "AbortError") throw new Error("データ取得がタイムアウトしました。時間をおいて再度お試しください。");
-        throw e;
-    } finally {
-        clearTimeout(t);
-    }
-}
-
-/* central loadData(): pages call window.loadData() */
-async function loadData() {
-    if (!GAS_URL || GAS_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
-        throw new Error("GAS_URL が未設定です。common.js の GAS_URL を確認してください。");
-    }
-    const url = GAS_URL + "?v=" + Date.now();
-    return await fetchJsonWithTimeout(url, { timeoutMs: 12000 });
-}
-
-/* ----- Header/Footer injection and wiring ----- */
-function injectHeaderFooter() {
-    try {
-        const headSlot = document.getElementById("site-header");
-        if (headSlot) headSlot.innerHTML = HEADER_HTML;
-
-        const footSlot = document.getElementById("site-footer");
-        if (footSlot) footSlot.innerHTML = FOOTER_HTML;
-    } catch (e) {
-        // non-fatal
-        console.error("injectHeaderFooter error", e);
-    }
-}
-
-/* setActiveNav: path -> data-nav key */
-function setActiveNav() {
-    const path = (location.pathname.split("/").pop() || "").toLowerCase();
-    let key = "index";
-    if (path.includes("ranking")) key = "ranking";
-    else if (path.includes("growth")) key = "growth";
-    else if (path.includes("surge")) key = "surge";
-    else if (path.includes("market")) key = "market";
-    else if (path.includes("detail")) key = "index";
-    else if (path === "" || path === "index.html") key = "index";
-
-    const links = document.querySelectorAll(".nav a[data-nav]");
-    for (const a of links) a.classList.toggle("is-active", a.getAttribute("data-nav") === key);
-}
-
-/* header search behavior: Enter => index.html?q=... (same as pages expect) */
-function wireHeaderSearch() {
-    const search = document.querySelector(".header-search #search");
-    if (!search) return;
-    search.addEventListener("keydown", (e) => {
-        if (e.key !== "Enter") return;
-        const q = search.value.trim();
-        if (!q) { location.href = "./index.html"; return; }
-        location.href = "./index.html?q=" + encodeURIComponent(q);
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+      signal: controller.signal,
+      headers: { "Accept": "application/json" }
     });
+    if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
+    return await res.json();
+  } catch (e) {
+    if (e && e.name === "AbortError") throw new Error("データ取得がタイムアウトしました。時間をおいて再度お試しください。");
+    throw e;
+  } finally {
+    clearTimeout(t);
+  }
 }
 
-/* expose globally and init */
+/* ----- central loadData() ----- */
+async function loadData() {
+  if (!GAS_URL || GAS_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
+    throw new Error("GAS_URL が未設定です。common.js の GAS_URL を確認してください。");
+  }
+  const url = GAS_URL + "?v=" + Date.now();
+  return await fetchJsonWithTimeout(url, { timeoutMs: 12000 });
+}
+
+/* ----- Header/Footer injection ----- */
+function injectHeaderFooter() {
+  try {
+    const headSlot = document.getElementById("site-header");
+    if (headSlot) headSlot.innerHTML = HEADER_HTML;
+
+    const footSlot = document.getElementById("site-footer");
+    if (footSlot) footSlot.innerHTML = FOOTER_HTML;
+  } catch (e) {
+    console.error("injectHeaderFooter error", e);
+  } finally {
+    // 注入完了をページに通知（ページはこのイベントをリッスンして header 内の #search を使う）
+    document.dispatchEvent(new CustomEvent("site:injected"));
+  }
+}
+
+/* ----- Navigation active handling ----- */
+function setActiveNav() {
+  const path = (location.pathname.split("/").pop() || "").toLowerCase();
+  let key = "index";
+  if (path.includes("ranking")) key = "ranking";
+  else if (path.includes("growth")) key = "growth";
+  else if (path.includes("surge")) key = "surge";
+  else if (path.includes("market")) key = "market";
+  else if (path.includes("detail")) key = "index";
+  else if (path === "" || path === "index.html") key = "index";
+
+  const links = document.querySelectorAll(".nav a[data-nav]");
+  for (const a of links) {
+    a.classList.toggle("is-active", a.getAttribute("data-nav") === key);
+  }
+}
+
+/* ----- Header search wiring (Enter => index?q=) ----- */
+function wireHeaderSearch() {
+  const search = document.querySelector(".header-search #search");
+  if (!search) return;
+
+  // Enter で index に飛ばす（q が無ければ index に戻る）
+  search.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    const q = search.value.trim();
+    if (!q) { location.href = "./index.html"; return; }
+    location.href = "./index.html?q=" + encodeURIComponent(q);
+  });
+}
+
+/* ----- Utility to safely get header search (await site:injected) ----- */
+async function waitForInjected(timeoutMs = 2000) {
+  if (document.getElementById("search")) return document.getElementById("search");
+  return new Promise((resolve) => {
+    let done = false;
+    const onInjected = () => {
+      if (done) return;
+      done = true;
+      resolve(document.getElementById("search"));
+    };
+    document.addEventListener("site:injected", onInjected, { once: true });
+    // timeout fallback
+    setTimeout(() => {
+      if (done) return;
+      done = true;
+      resolve(document.getElementById("search"));
+    }, timeoutMs);
+  });
+}
+
+/* ----- Expose globals ----- */
 window.common = {
-    escapeHtml,
-    toISODate,
-    numOrNull,
-    uniq,
-    fetchJsonWithTimeout,
-    loadData
+  escapeHtml,
+  toISODate,
+  numOrNull,
+  uniq,
+  fetchJsonWithTimeout,
+  loadData,
+  injectHeaderFooter,
+  setActiveNav,
+  wireHeaderSearch,
+  waitForInjected,
+  GAS_URL
 };
 
+/* ----- Auto-init on DOMContentLoaded ----- */
 document.addEventListener("DOMContentLoaded", () => {
-    injectHeaderFooter();
-    setActiveNav();
-    wireHeaderSearch();
+  // inject header/footer ASAP
+  injectHeaderFooter();
 
-    // If pages need header search input immediately, focus logic or prefill q param can go here.
+  // After injection (or immediately if injected synchronously), wire nav & header search
+  // setActiveNav() depends on .nav existing in the injected header
+  // wireHeaderSearch() depends on #search in the injected header
+  // We run these both immediately and also on the custom event to be safe.
+  try { setActiveNav(); } catch (e) { console.error(e); }
+  try { wireHeaderSearch(); } catch (e) { console.error(e); }
+
+  // Also listen once for future injected events (in case injection happened async)
+  document.addEventListener("site:injected", () => {
+    try { setActiveNav(); } catch (e) { console.error(e); }
+    try { wireHeaderSearch(); } catch (e) { console.error(e); }
+  }, { once: true });
 });
