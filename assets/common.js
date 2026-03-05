@@ -2,59 +2,54 @@
  * common.js (改良版)
  *
  * - header/footer を #site-header / #site-footer に注入
- * - 注入完了時に custom event "site:injected" を発火（ページ側はこれを待てば header 内の #search を安全に参照できる）
+ * - 注入完了時に custom event "site:injected" を発火
  * - setActiveNav(), wireHeaderSearch() を提供
  * - fetchJsonWithTimeout(), loadData() を中央管理（GAS_URL はここで一本化）
  * - グローバルなヘルパーを window.common として公開
  */
 
 /* ----- Config ----- */
-// ここに Apps Script Webアプリ URL を一度だけ書いておく（各ページから個別に書かなくてOK）
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyl-TAhWBEVIgilTDv7lwS14T3_i9z57dUX4fqUVBS9gyr1EO7SaYy3aqP0V1gZtt6z/exec";
 
 /* ----- Header / Footer HTML (テンプレ) ----- */
-/* footer の container を重複させないように注意 */
 const HEADER_HTML = `
-  <div class="header">
-    <div class="header-top">
-      <a href="./index.html" class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1 class="main-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
-        </div>
-      </a>
-
-      <div class="header-search" aria-label="サイト内検索">
-        <div class="search-wrap">
-          <span class="search-ico">🔍</span>
-          <input type="text" id="search" placeholder="スリーブ名で検索…" autocomplete="off" />
-        </div>
+<div class="header">
+  <div class="header-top">
+    <a href="./index.html" class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1 class="main-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
       </div>
-
-      <div class="header-right">
-        <a href="./policy.html">ポリシー</a>
+    </a>
+    <div class="header-search" aria-label="サイト内検索">
+      <div class="search-wrap">
+        <span class="search-ico">🔍</span>
+        <input type="text" id="search" placeholder="スリーブ名で検索…" autocomplete="off" />
       </div>
     </div>
-
-    <div class="header-bottom">
-      <div class="header-bottom-inner">
-        <nav class="nav" aria-label="メインメニュー">
-          <a href="./index.html" data-nav="index"><span class="ico" aria-hidden="true">🏷</span>一覧</a>
-          <a href="./ranking.html" data-nav="ranking"><span class="ico" aria-hidden="true">🏆</span>価格ランキング</a>
-          <a href="./growth.html" data-nav="growth"><span class="ico" aria-hidden="true">📈</span>高騰率</a>
-          <a href="./surge.html" data-nav="surge"><span class="ico" aria-hidden="true">⚡</span>急上昇</a>
-          <a href="./index-market.html" data-nav="market"><span class="ico" aria-hidden="true">📊</span>スリーブ指数</a>
-        </nav>
-      </div>
+    <div class="header-right">
+      <a href="./policy.html">ポリシー</a>
     </div>
   </div>
+  <div class="header-bottom">
+    <div class="header-bottom-inner">
+      <nav class="nav" aria-label="メインメニュー">
+        <a href="./index.html"        data-nav="index"  ><span class="ico" aria-hidden="true">🏷</span>一覧</a>
+        <a href="./ranking.html"      data-nav="ranking"><span class="ico" aria-hidden="true">🏆</span>価格ランキング</a>
+        <a href="./growth.html"       data-nav="growth" ><span class="ico" aria-hidden="true">📈</span>高騰率</a>
+        <a href="./surge.html"        data-nav="surge"  ><span class="ico" aria-hidden="true">⚡</span>急上昇</a>
+        <a href="./index-market.html" data-nav="market" ><span class="ico" aria-hidden="true">📊</span>スリーブ指数</a>
+      </nav>
+    </div>
+  </div>
+</div>
 `;
 
 const FOOTER_HTML = `
-  <footer class="site-footer">
-    © 2026 ポケスリ相場ナビ |
-    <a href="./policy.html">プライバシーポリシー・免責事項</a>
-  </footer>
+<footer class="site-footer">
+  © 2026 ポケスリ相場ナビ |
+  <a href="./policy.html">プライバシーポリシー・免責事項</a>
+</footer>
 `;
 
 /* ----- Utilities ----- */
@@ -94,7 +89,6 @@ function uniq(arr) {
 async function fetchJsonWithTimeout(url, { timeoutMs = 12000 } = {}) {
   const controller = new AbortController();
   const t = setTimeout(() => controller.abort(), timeoutMs);
-
   try {
     const res = await fetch(url, {
       cache: "no-store",
@@ -104,7 +98,8 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000 } = {}) {
     if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
     return await res.json();
   } catch (e) {
-    if (e && e.name === "AbortError") throw new Error("データ取得がタイムアウトしました。時間をおいて再度お試しください。");
+    if (e && e.name === "AbortError")
+      throw new Error("データ取得がタイムアウトしました。時間をおいて再度お試しください。");
     throw e;
   } finally {
     clearTimeout(t);
@@ -131,7 +126,6 @@ function injectHeaderFooter() {
   } catch (e) {
     console.error("injectHeaderFooter error", e);
   } finally {
-    // 注入完了をページに通知（ページはこのイベントをリッスンして header 内の #search を使う）
     document.dispatchEvent(new CustomEvent("site:injected"));
   }
 }
@@ -158,7 +152,6 @@ function wireHeaderSearch() {
   const search = document.querySelector(".header-search #search");
   if (!search) return;
 
-  // Enter で index に飛ばす（q が無ければ index に戻る）
   search.addEventListener("keydown", (e) => {
     if (e.key !== "Enter") return;
     const q = search.value.trim();
@@ -178,7 +171,6 @@ async function waitForInjected(timeoutMs = 2000) {
       resolve(document.getElementById("search"));
     };
     document.addEventListener("site:injected", onInjected, { once: true });
-    // timeout fallback
     setTimeout(() => {
       if (done) return;
       done = true;
@@ -202,19 +194,16 @@ window.common = {
   GAS_URL
 };
 
+// GAS_URL をトップレベルにも公開（detail.html が window.GAS_URL を直接参照しているため）
+window.GAS_URL = GAS_URL;
+
 /* ----- Auto-init on DOMContentLoaded ----- */
 document.addEventListener("DOMContentLoaded", () => {
-  // inject header/footer ASAP
   injectHeaderFooter();
 
-  // After injection (or immediately if injected synchronously), wire nav & header search
-  // setActiveNav() depends on .nav existing in the injected header
-  // wireHeaderSearch() depends on #search in the injected header
-  // We run these both immediately and also on the custom event to be safe.
   try { setActiveNav(); } catch (e) { console.error(e); }
   try { wireHeaderSearch(); } catch (e) { console.error(e); }
 
-  // Also listen once for future injected events (in case injection happened async)
   document.addEventListener("site:injected", () => {
     try { setActiveNav(); } catch (e) { console.error(e); }
     try { wireHeaderSearch(); } catch (e) { console.error(e); }
