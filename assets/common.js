@@ -8,6 +8,10 @@
 
 /* ----- Config ----- */
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyl-TAhWBEVIgilTDv7lwS14T3_i9z57dUX4fqUVBS9gyr1EO7SaYy3aqP0V1gZtt6z/exec";
+const DATA_CACHE_KEY = "pokeSleeve:dataCache:v1";
+const DATA_CACHE_TTL_MS = 60 * 1000;
+let __dataCacheMem = null;
+let __dataCachePromise = null;
 
 /* ----- Header / Footer HTML ----- */
 const HEADER_HTML = `
@@ -84,12 +88,12 @@ function uniq(arr) {
 }
 
 /* ----- fetch with timeout ----- */
-async function fetchJsonWithTimeout(url, { timeoutMs = 12000 } = {}) {
+async function fetchJsonWithTimeout(url, { timeoutMs = 12000, cacheMode = "default" } = {}) {
   const controller = new AbortController();
   const t = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const res = await fetch(url, {
-      cache: "no-store",
+      cache: cacheMode,
       signal: controller.signal,
       headers: { "Accept": "application/json" }
     });
@@ -105,13 +109,65 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000 } = {}) {
   }
 }
 
+function readSessionCache() {
+  try {
+    const raw = sessionStorage.getItem(DATA_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return null;
+    if (!Number.isFinite(parsed.cachedAt)) return null;
+    if ((Date.now() - parsed.cachedAt) > DATA_CACHE_TTL_MS) return null;
+    return parsed.data ?? null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function writeSessionCache(data) {
+  try {
+    sessionStorage.setItem(DATA_CACHE_KEY, JSON.stringify({
+      cachedAt: Date.now(),
+      data
+    }));
+  } catch (_) { }
+}
+
 /* ----- central loadData() ----- */
-async function loadData() {
+async function loadData({ forceRefresh = false, ttlMs = DATA_CACHE_TTL_MS } = {}) {
   if (!GAS_URL || GAS_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
     throw new Error("GAS_URL が未設定です。assets/common.js の GAS_URL を確認してください。");
   }
-  const url = GAS_URL + "?v=" + Date.now();
-  return await fetchJsonWithTimeout(url, { timeoutMs: 12000 });
+
+  const withinTtl = (entry) => !!(entry && Number.isFinite(entry.cachedAt) && (Date.now() - entry.cachedAt) <= ttlMs);
+
+  if (!forceRefresh && withinTtl(__dataCacheMem)) {
+    return __dataCacheMem.data;
+  }
+
+  if (!forceRefresh) {
+    const cached = readSessionCache();
+    if (cached != null) {
+      __dataCacheMem = { cachedAt: Date.now(), data: cached };
+      return cached;
+    }
+  }
+
+  if (!forceRefresh && __dataCachePromise) {
+    return await __dataCachePromise;
+  }
+
+  __dataCachePromise = (async () => {
+    const data = await fetchJsonWithTimeout(GAS_URL, { timeoutMs: 12000, cacheMode: "default" });
+    __dataCacheMem = { cachedAt: Date.now(), data };
+    writeSessionCache(data);
+    return data;
+  })();
+
+  try {
+    return await __dataCachePromise;
+  } finally {
+    __dataCachePromise = null;
+  }
 }
 
 /* ----- Header/Footer injection ----- */

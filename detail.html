@@ -323,11 +323,10 @@
     }
 
     async function loadData() {
-      const url = window.GAS_URL;
-      if (!url) throw new Error("GAS_URL が未設定です。assets/common.js を確認してください。");
-      const res = await fetch(url + "?v=" + Date.now(), { cache: "no-store" });
-      if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
-      return await res.json();
+      if (!window.common || typeof window.common.loadData !== "function") {
+        throw new Error("共通データローダーの初期化に失敗しました（assets/common.js）");
+      }
+      return await window.common.loadData();
     }
 
     function toISODate(d) {
@@ -696,3 +695,4 @@
 </body>
 
 </html>
+

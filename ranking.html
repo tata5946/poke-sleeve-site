@@ -1,34 +1,34 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>価格ランキング｜ポケスリ相場ナビ</title>
-  <meta name="description" content="ポケカスリーブの価格ランキング（最新週次）を掲載。検索・絞り込みで相場を比較できます。">
+  <title>萓｡譬ｼ繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ・懊・繧ｱ繧ｹ繝ｪ逶ｸ蝣ｴ繝翫ン</title>
+  <meta name="description" content="繝昴こ繧ｫ繧ｹ繝ｪ繝ｼ繝悶・萓｡譬ｼ繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ・域怙譁ｰ騾ｱ谺｡・峨ｒ謗ｲ霈峨よ､懃ｴ｢繝ｻ邨槭ｊ霎ｼ縺ｿ縺ｧ逶ｸ蝣ｴ繧呈ｯ碑ｼ・〒縺阪∪縺吶・>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
 
-  <!-- 共通CSS -->
+  <!-- 蜈ｱ騾咾SS -->
   <link rel="stylesheet" href="./assets/site.css" />
 </head>
 
-  <!-- 共通JS（ヘッダー/フッター注入 + Active Nav） -->
+  <!-- 蜈ｱ騾哽S・医・繝・ム繝ｼ/繝輔ャ繧ｿ繝ｼ豕ｨ蜈･ + Active Nav・・-->
   <script src="./assets/common.js"></script>
 
 <body>
-  <!-- 共通ヘッダー差し込み -->
+  <!-- 蜈ｱ騾壹・繝・ム繝ｼ蟾ｮ縺苓ｾｼ縺ｿ -->
   <div id="site-header"></div>
 
   <div class="container">
     <div class="hero">
       <div class="hero-card">
         <div>
-          <p class="hero-title">価格ランキング</p>
-          <p class="hero-desc">最新の取引週（週次）価格が高い順にランキング表示します。</p>
-          <p class="data-note">※価格はフリマアプリ等の売却履歴をもとに独自集計しています。</p>
+          <p class="hero-title">萓｡譬ｼ繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ</p>
+          <p class="hero-desc">譛譁ｰ縺ｮ蜿門ｼ暮ｱ・磯ｱ谺｡・我ｾ｡譬ｼ縺碁ｫ倥＞鬆・↓繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ陦ｨ遉ｺ縺励∪縺吶・/p>
+          <p class="data-note">窶ｻ萓｡譬ｼ縺ｯ繝輔Μ繝槭い繝励Μ遲峨・螢ｲ蜊ｴ螻･豁ｴ繧偵ｂ縺ｨ縺ｫ迢ｬ閾ｪ髮・ｨ医＠縺ｦ縺・∪縺吶・/p>
           <p id="updatedAt" class="data-note" style="display:none;"></p>
           <p id="countInfo" class="data-note" style="display:none;"></p>
         </div>
@@ -37,36 +37,36 @@
 
     <div class="main">
       <aside class="panel">
-        <h2>絞り込み</h2>
-        <p class="small">条件を変更するとランキングが更新されます。</p>
+        <h2>邨槭ｊ霎ｼ縺ｿ</h2>
+        <p class="small">譚｡莉ｶ繧貞､画峩縺吶ｋ縺ｨ繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ縺梧峩譁ｰ縺輔ｌ縺ｾ縺吶・/p>
 
         <div id="error" class="error"></div>
 
         <div class="controls">
-          <label>発売年
+          <label>逋ｺ螢ｲ蟷ｴ
             <select id="releaseYear">
-              <option value="">全部</option>
+              <option value="">蜈ｨ驛ｨ</option>
             </select>
           </label>
 
-          <label>シリーズ
+          <label>繧ｷ繝ｪ繝ｼ繧ｺ
             <select id="series">
-              <option value="">全部</option>
+              <option value="">蜈ｨ驛ｨ</option>
             </select>
           </label>
 
-          <label>価格帯
+          <label>萓｡譬ｼ蟶ｯ
             <select id="priceBand">
-              <option value="">全部</option>
-              <option value="0-999">〜999円</option>
-              <option value="1000-1999">1,000〜1,999円</option>
-              <option value="2000-2999">2,000〜2,999円</option>
-              <option value="3000-4999">3,000〜4,999円</option>
-              <option value="5000-99999999">5,000円〜</option>
+              <option value="">蜈ｨ驛ｨ</option>
+              <option value="0-999">縲・99蜀・/option>
+              <option value="1000-1999">1,000縲・,999蜀・/option>
+              <option value="2000-2999">2,000縲・,999蜀・/option>
+              <option value="3000-4999">3,000縲・,999蜀・/option>
+              <option value="5000-99999999">5,000蜀・・/option>
             </select>
           </label>
 
-          <button id="clear" type="button">クリア</button>
+          <button id="clear" type="button">繧ｯ繝ｪ繧｢</button>
         </div>
       </aside>
 
@@ -75,7 +75,7 @@
       </main>
     </div>
 
-    <!-- 共通フッター差し込み -->
+    <!-- 蜈ｱ騾壹ヵ繝・ち繝ｼ蟾ｮ縺苓ｾｼ縺ｿ -->
     <div id="site-footer"></div>
   </div>
 
@@ -147,11 +147,11 @@
           signal: controller.signal,
           headers: { "Accept": "application/json" }
         });
-        if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
+        if (!res.ok) throw new Error(`繝・・繧ｿ蜿門ｾ励↓螟ｱ謨励＠縺ｾ縺励◆・・TTP ${res.status}・荏);
         return await res.json();
       } catch (e) {
         if (e && e.name === "AbortError") {
-          throw new Error("データ取得がタイムアウトしました。時間をおいて再度お試しください。");
+          throw new Error("繝・・繧ｿ蜿門ｾ励′繧ｿ繧､繝繧｢繧ｦ繝医＠縺ｾ縺励◆縲よ凾髢薙ｒ縺翫＞縺ｦ蜀榊ｺｦ縺願ｩｦ縺励￥縺縺輔＞縲・);
         }
         throw e;
       } finally {
@@ -160,11 +160,10 @@
     }
 
     async function loadData() {
-      const url = window.GAS_URL;  // common.jsが同期読み込み済みなので確実に存在
-      if (!url) throw new Error("GAS_URL が未設定です（common.js を確認してください）");
-      const res = await fetch(url + "?v=" + Date.now(), { cache: "no-store" });
-      if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
-      return await res.json();
+      if (!window.common || typeof window.common.loadData !== "function") {
+        throw new Error("共通データローダーの初期化に失敗しました（assets/common.js）");
+      }
+      return await window.common.loadData();
     }
 
     // -----------------------------
@@ -223,7 +222,7 @@
     // -----------------------------
     async function main() {
       const list = document.getElementById("list");
-      const searchInput = document.getElementById("search"); // header側にある想定
+      const searchInput = document.getElementById("search"); // header蛛ｴ縺ｫ縺ゅｋ諠ｳ螳・
 
       const releaseYearSel = document.getElementById("releaseYear");
       const seriesSel = document.getElementById("series");
@@ -234,14 +233,14 @@
       try {
         data = await loadData();
       } catch (e) {
-        showError(e.message || "不明なエラーが発生しました");
+        showError(e.message || "荳肴・縺ｪ繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆");
         return;
       }
       hideError();
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
 
-      // 最終更新（直近取引週の最大日付）
+      // 譛邨よ峩譁ｰ・育峩霑大叙蠑暮ｱ縺ｮ譛螟ｧ譌･莉假ｼ・
       try {
         let maxWeek = null;
         for (const s of sleeves) {
@@ -252,12 +251,12 @@
         }
         if (maxWeek) {
           const u = document.getElementById("updatedAt");
-          u.textContent = `最終更新：${maxWeek}（週次）`;
+          u.textContent = `譛邨よ峩譁ｰ・・{maxWeek}・磯ｱ谺｡・荏;
           u.style.display = "block";
         }
       } catch (_) { }
 
-      // セレクト初期化
+      // 繧ｻ繝ｬ繧ｯ繝亥・譛溷喧
       const releaseYears = uniq(sleeves.map(s => s.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
       const seriesList = uniq(sleeves.map(s => s.series)).sort();
 
@@ -282,7 +281,7 @@
 
         list.innerHTML = "";
 
-        // 最新週次価格があるものだけ対象
+        // 譛譁ｰ騾ｱ谺｡萓｡譬ｼ縺後≠繧九ｂ縺ｮ縺縺大ｯｾ雎｡
         const rows = [];
         for (const s of sleeves) {
           if (kw && !String(s.name || "").toLowerCase().includes(kw)) continue;
@@ -300,18 +299,18 @@
           rows.push({ s, price: p, week: pair ? pair.latest.week : null });
         }
 
-        // 価格が高い順
+        // 萓｡譬ｼ縺碁ｫ倥＞鬆・
         rows.sort((a, b) => {
           if (b.price !== a.price) return b.price - a.price;
           return String(a.s.name ?? "").localeCompare(String(b.s.name ?? ""));
         });
 
         const c = document.getElementById("countInfo");
-        c.textContent = `表示件数：${rows.length.toLocaleString()}件（最新週次価格あり）`;
+        c.textContent = `陦ｨ遉ｺ莉ｶ謨ｰ・・{rows.length.toLocaleString()}莉ｶ・域怙譁ｰ騾ｱ谺｡萓｡譬ｼ縺ゅｊ・荏;
         c.style.display = "block";
 
         if (rows.length === 0) {
-          list.innerHTML = `<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>`;
+          list.innerHTML = `<div class="card"><div class="title">隧ｲ蠖薙↑縺・/div><div class="meta">譚｡莉ｶ縺ｫ荳閾ｴ縺吶ｋ繧ｹ繝ｪ繝ｼ繝悶′縺ゅｊ縺ｾ縺帙ｓ</div></div>`;
           return;
         }
 
@@ -325,7 +324,7 @@
           const p = row.price;
 
           const totalTrades = getTotalTradeCount(s);
-          const totalTradesText = (totalTrades == null) ? "—" : `${totalTrades.toLocaleString()}件`;
+          const totalTradesText = (totalTrades == null) ? "窶・ : `${totalTrades.toLocaleString()}莉ｶ`;
 
           const imgSrc = String(s.imageUrl || "").trim();
           const imgHtml = imgSrc
@@ -333,7 +332,7 @@
                  onerror="this.onerror=null; this.style.display='none';">`
             : "";
 
-          const weekText = row.week ? `直近 ${escapeHtml(row.week)}` : "直近データなし";
+          const weekText = row.week ? `逶ｴ霑・${escapeHtml(row.week)}` : "逶ｴ霑代ョ繝ｼ繧ｿ縺ｪ縺・;
 
           const div = document.createElement("div");
           div.className = "card";
@@ -341,21 +340,21 @@
             ${imgHtml}
 
             <div class="rank-row">
-              <span class="rank-badge">${rank}位</span>
+              <span class="rank-badge">${rank}菴・/span>
               <div class="title" style="margin:0;">${escapeHtml(s.name ?? "")}</div>
             </div>
 
-            <div class="price">${p.toLocaleString()}円 <span class="meta">（最新週次）</span></div>
+            <div class="price">${p.toLocaleString()}蜀・<span class="meta">・域怙譁ｰ騾ｱ谺｡・・/span></div>
             <div class="meta" style="margin-top:4px;">${weekText}</div>
 
             <div class="badges">
-              <span class="badge">総取引：${escapeHtml(totalTradesText)}</span>
-              <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
+              <span class="badge">邱丞叙蠑包ｼ・{escapeHtml(totalTradesText)}</span>
+              <span class="badge">逋ｺ螢ｲ蟷ｴ・・{escapeHtml(s.releaseYear ?? "")}</span>
               <span class="badge">${escapeHtml(s.condition ?? "")}</span>
               <span class="badge">${escapeHtml(s.series ?? "")}</span>
             </div>
 
-            <a class="btn" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}">価格推移を見る →</a>
+            <a class="btn" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}">萓｡譬ｼ謗ｨ遘ｻ繧定ｦ九ｋ 竊・/a>
           `;
           frag.appendChild(div);
         }
@@ -363,7 +362,7 @@
         list.appendChild(frag);
       }
 
-      // events（header検索が存在する前提）
+      // events・・eader讀懃ｴ｢縺悟ｭ伜惠縺吶ｋ蜑肴署・・
       let t = null;
       if (searchInput) {
         searchInput.addEventListener("input", () => {
