@@ -38,6 +38,14 @@
       margin-top: 14px;
     }
 
+    .detail-price-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      align-items: start;
+    }
+
     .detail-hero {
       display: grid;
       grid-template-columns: 320px 1fr;
@@ -189,6 +197,10 @@
         grid-template-columns: 1fr;
       }
 
+      .detail-price-grid {
+        grid-template-columns: 1fr;
+      }
+
       .detail-hero {
         grid-template-columns: 1fr;
       }
@@ -243,7 +255,7 @@
           </div>
         </div>
 
-        <div class="grid" style="margin-top:14px;">
+        <div class="detail-price-grid">
           <div class="panel">
             <h3 style="margin:0;">週次価格（weekly）</h3>
             <div id="weeklyChart"></div>
