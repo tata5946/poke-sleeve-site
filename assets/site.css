@@ -396,8 +396,9 @@ a:hover {
 /* rank */
 .rank-row {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    align-items: flex-start;
+    /* ← center → flex-start */
+    gap: 8px;
     margin-top: 10px;
 }
 
@@ -413,6 +414,21 @@ a:hover {
     color: #fff;
     font-weight: 900;
     font-size: 12px;
+    flex-shrink: 0;
+    /* ← 追加：バッジが潰れないように */
+    margin-top: 1px;
+    /* ← 追加：テキストの上端と視覚的に揃える */
+}
+
+.rank-row .title {
+    margin: 0;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* ← 追加：2行でクランプ */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-all;
 }
 
 /* error */
