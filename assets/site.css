@@ -24,6 +24,8 @@
 html,
 body {
     height: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 body {
@@ -172,6 +174,8 @@ a:hover {
     display: flex;
     gap: 10px;
     width: max-content;
+    min-width: max-content;
+    flex: 0 0 auto;
 }
 
 .nav a {
@@ -183,8 +187,10 @@ a:hover {
     display: flex;
     gap: 8px;
     align-items: center;
+    justify-content: center;
     flex: 0 0 auto;
     white-space: nowrap;
+    line-height: 1.2;
 }
 
 .nav a:hover {
