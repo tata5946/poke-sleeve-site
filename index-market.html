@@ -14,6 +14,59 @@
   <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
   <style>
+    .hero .panel {
+      background: #fff;
+    }
+
+    .hero .kpi {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .hero .box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: linear-gradient(180deg, #fff 0%, #fbfcff 100%);
+      padding: 12px;
+      box-shadow: 0 4px 14px rgba(16, 24, 40, .05);
+      min-width: 0;
+    }
+
+    .hero .box .label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 900;
+      line-height: 1.4;
+    }
+
+    .hero .box .value {
+      margin-top: 6px;
+      font-size: clamp(26px, 3vw, 34px);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: .2px;
+      color: #111;
+    }
+
+    .hero #subtitle {
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .hero .note {
+      margin-top: 12px;
+      font-size: 12px;
+      line-height: 1.65;
+      color: #475467;
+      background: #f8faff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
     .market-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -53,6 +106,10 @@
     }
 
     @media (max-width: 900px) {
+      .hero .kpi {
+        grid-template-columns: 1fr;
+      }
+
       .market-grid {
         grid-template-columns: 1fr;
       }
