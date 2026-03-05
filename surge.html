@@ -448,8 +448,9 @@
 
       render();
     }
-
+  document.addEventListener("site:injected", () => {
     main();
+  });
   </script>
 
   <!-- 共通JS（ヘッダー/フッター注入 + Active Nav） -->
