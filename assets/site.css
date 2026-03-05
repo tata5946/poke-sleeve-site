@@ -282,6 +282,16 @@ a:hover {
     transition: transform .2s ease;
 }
 
+.thumb-link {
+    display: block;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.thumb-link:hover {
+    text-decoration: none;
+}
+
 .card:hover .thumb {
     transform: scale(1.02);
 }
