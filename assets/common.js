@@ -10,8 +10,10 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyl-TAhWBEVIgilTDv7lwS14T3_i9z57dUX4fqUVBS9gyr1EO7SaYy3aqP0V1gZtt6z/exec";
 const DATA_CACHE_KEY = "pokeSleeve:dataCache:v1";
 const DATA_CACHE_TTL_MS = 60 * 1000;
+const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
 let __dataCacheMem = null;
 let __dataCachePromise = null;
+let __sleeveFeedbackWired = false;
 
 /* ----- Header / Footer HTML ----- */
 const HEADER_HTML = `
@@ -234,6 +236,67 @@ async function waitForInjected(timeoutMs = 2000) {
   });
 }
 
+function getDetailIdFromHref(href) {
+  try {
+    const u = new URL(href, location.href);
+    const filename = (u.pathname.split("/").pop() || "").toLowerCase();
+    if (filename !== "detail.html") return null;
+    const id = (u.searchParams.get("id") || "").trim();
+    return id || null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function markSelectedSleeveLinks() {
+  let selectedId = null;
+  try {
+    selectedId = (sessionStorage.getItem(LAST_SELECTED_SLEEVE_ID_KEY) || "").trim();
+  } catch (_) {
+    selectedId = null;
+  }
+
+  const links = document.querySelectorAll('a[href*="detail.html?id="]');
+  for (const a of links) {
+    const id = getDetailIdFromHref(a.href);
+    a.classList.toggle("is-selected-sleeve", !!selectedId && id === selectedId);
+  }
+}
+
+function wireSleeveSelectionFeedback() {
+  if (__sleeveFeedbackWired) return;
+  __sleeveFeedbackWired = true;
+
+  markSelectedSleeveLinks();
+
+  document.addEventListener("click", (e) => {
+    const a = e.target && e.target.closest ? e.target.closest('a[href*="detail.html?id="]') : null;
+    if (!a) return;
+
+    const id = getDetailIdFromHref(a.href);
+    if (id) {
+      try { sessionStorage.setItem(LAST_SELECTED_SLEEVE_ID_KEY, id); } catch (_) { }
+    }
+    markSelectedSleeveLinks();
+
+    if (e.defaultPrevented) return;
+    if (e.button !== 0) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if ((a.target || "").toLowerCase() === "_blank") return;
+
+    e.preventDefault();
+    a.classList.add("is-picked");
+    const href = a.href;
+    setTimeout(() => { location.href = href; }, 130);
+  }, true);
+
+  if (document.body) {
+    const mo = new MutationObserver(() => { markSelectedSleeveLinks(); });
+    mo.observe(document.body, { childList: true, subtree: true });
+    setTimeout(() => mo.disconnect(), 20000);
+  }
+}
+
 /* ----- Expose globals ----- */
 window.common = {
   escapeHtml,
@@ -245,6 +308,7 @@ window.common = {
   injectHeaderFooter,
   setActiveNav,
   wireHeaderSearch,
+  wireSleeveSelectionFeedback,
   waitForInjected,
   GAS_URL
 };
@@ -257,9 +321,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   try { setActiveNav(); } catch (e) { console.error(e); }
   try { wireHeaderSearch(); } catch (e) { console.error(e); }
+  try { wireSleeveSelectionFeedback(); } catch (e) { console.error(e); }
 
   document.addEventListener("site:injected", () => {
     try { setActiveNav(); } catch (e) { console.error(e); }
     try { wireHeaderSearch(); } catch (e) { console.error(e); }
+    try { markSelectedSleeveLinks(); } catch (e) { console.error(e); }
   }, { once: true });
 });
