@@ -171,6 +171,7 @@ a:hover {
 .nav {
     display: flex;
     gap: 10px;
+    width: max-content;
 }
 
 .nav a {
@@ -182,6 +183,8 @@ a:hover {
     display: flex;
     gap: 8px;
     align-items: center;
+    flex: 0 0 auto;
+    white-space: nowrap;
 }
 
 .nav a:hover {
