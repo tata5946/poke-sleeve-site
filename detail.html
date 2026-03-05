@@ -13,6 +13,183 @@
 
   <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
+
+  <!-- detail用の補助CSS（site.cssに移してもOK） -->
+  <style>
+    /* ===== detail layout ===== */
+    .detail-wrap {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .detail-left,
+    .detail-right {
+      min-width: 0;
+    }
+
+    .detail-hero {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .detail-hero .thumb {
+      height: 240px;
+      border: 1px solid var(--border);
+    }
+
+    .name {
+      font-size: 18px;
+      font-weight: 900;
+      margin: 0 0 6px;
+      line-height: 1.25;
+    }
+
+    .meta-line {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .kpi {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .box {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fff 0%, #fbfcff 100%);
+      box-shadow: 0 6px 16px rgba(16, 24, 40, .06);
+      padding: 12px;
+    }
+
+    .box .label {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+    }
+
+    .box .value {
+      margin-top: 6px;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+
+    /* ===== chart ===== */
+    .chart-wrap {
+      position: relative;
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 6px 16px rgba(16, 24, 40, .06);
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    .chart-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin: 2px 0 8px;
+    }
+
+    svg.chart {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      transform: translateX(-50%);
+      background: rgba(17, 17, 17, .92);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 10px;
+      border-radius: 999px;
+      display: none;
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 10px 24px rgba(16, 24, 40, .24);
+    }
+
+    /* ===== tables ===== */
+    .table-wrap {
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 6px 16px rgba(16, 24, 40, .06);
+    }
+
+    .table-wrap table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 12px;
+    }
+
+    .table-wrap th,
+    .table-wrap td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .table-wrap thead th {
+      font-weight: 900;
+      background: #fbfcff;
+    }
+
+    .table-wrap tr:last-child td {
+      border-bottom: 0;
+    }
+
+    /* 右カラムの「戻る」ボタンを目立たせる */
+    .btn-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn.primary {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
+    .btn.primary:hover {
+      opacity: .92;
+    }
+
+    @media (max-width: 900px) {
+      .detail-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-hero {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-hero .thumb {
+        height: 220px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -22,41 +199,59 @@
   <div class="container">
     <div id="error" class="error"></div>
 
-    <div class="hero hero-detail">
-      <div class="panel">
-        <img id="img" class="thumb" alt="" />
-      </div>
+    <div class="detail-wrap">
+      <!-- LEFT -->
+      <div class="detail-left">
+        <div class="panel">
+          <div class="detail-hero">
+            <img id="img" class="thumb" alt="" />
 
-      <div class="panel">
-        <h2 id="name" class="name">読み込み中…</h2>
-        <div id="meta" class="meta"></div>
+            <div>
+              <h2 id="name" class="name">読み込み中…</h2>
+              <div id="meta" class="meta-line"></div>
 
-        <div id="badges" class="badges"></div>
+              <div id="badges" class="badges" style="margin-top:8px;"></div>
 
-        <div class="kpi">
-          <div class="box">
-            <div class="label">最新週次価格</div>
-            <div id="latestWeekly" class="value">—</div>
-            <div id="weeklyDelta" class="delta"></div>
-            <div id="weeklyCount" class="meta" style="margin-top:6px;">取引件数：—</div>
+              <div class="kpi">
+                <div class="box">
+                  <div class="label">最新週次価格</div>
+                  <div id="latestWeekly" class="value">—</div>
+                  <div id="weeklyDelta" class="delta" style="margin-top:6px;"></div>
+                  <div id="weeklyCount" class="meta" style="margin-top:6px;">取引件数：—</div>
+                </div>
+              </div>
+
+              <div class="btn-row">
+                <a class="btn primary" id="backLink" href="./index.html">← 一覧へ戻る</a>
+              </div>
+            </div>
           </div>
         </div>
 
-        <a class="btn" href="./index.html">← 一覧へ戻る</a>
-      </div>
-    </div>
+        <div class="grid" style="margin-top:14px;">
+          <div class="panel">
+            <h3 style="margin:0;">週次価格（weekly）</h3>
+            <div id="weeklyChart"></div>
+            <div id="weeklyTable"></div>
+          </div>
 
-    <div class="grid">
-      <div class="panel">
-        <h3 style="margin:0 0 10px;">週次価格（weekly）</h3>
-        <div id="weeklyChart"></div>
-        <div id="weeklyTable"></div>
+          <div class="panel">
+            <h3 style="margin:0;">年次価格（yearly）</h3>
+            <div id="yearlyChart"></div>
+            <div id="yearlyTable"></div>
+          </div>
+        </div>
       </div>
 
-      <div class="panel">
-        <h3 style="margin:0 0 10px;">年次価格（yearly）</h3>
-        <div id="yearlyChart"></div>
-        <div id="yearlyTable"></div>
+      <!-- RIGHT（将来：関連/人気/注目など置ける） -->
+      <div class="detail-right">
+        <div class="panel">
+          <h3 style="margin:0 0 8px;">このページの使い方</h3>
+          <div class="meta">
+            週次・年次のチャートとテーブルで、価格推移を確認できます。<br>
+            一覧へ戻って検索するときは、ヘッダーの検索欄で Enter を押してください。
+          </div>
+        </div>
       </div>
     </div>
 
@@ -68,7 +263,6 @@
   <script src="./assets/common.js"></script>
 
   <script>
-
     function escapeHtml(str) {
       return String(str ?? "")
         .replaceAll("&", "&amp;")
@@ -91,7 +285,9 @@
     }
 
     async function loadData() {
-      const res = await fetch(GAS_URL + "?v=" + Date.now(), { cache: "no-store" });
+      // common.js 側で window.GAS_URL を設定している前提
+      if (!window.GAS_URL) throw new Error("GAS_URL が未設定です（common.js を確認してください）");
+      const res = await fetch(window.GAS_URL + "?v=" + Date.now(), { cache: "no-store" });
       if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
       return await res.json();
     }
@@ -105,10 +301,6 @@
       return `${y}-${m}-${day}`;
     }
 
-    // ★ ここはあなたの仕様に合わせたラベル
-    // - 2026年は週表示（YYYY/MM/DD）
-    // - 2025年は月表示（YYYY年M月）※日が01のとき
-    // - それ以前は 2025/01/01 でまとめる（＝年表示寄り）
     function formatPeriodLabel(iso) {
       const s = String(iso || "").trim();
       const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -118,17 +310,13 @@
       const mo = Number(m[2]);
       const d = Number(m[3]);
 
-      // 2026: 週表示（そのまま日付）
       if (y >= 2026) return `${m[1]}/${m[2]}/${m[3]}`;
 
-      // 2025: 月表示（YYYY年M月）※日=01は月の代表日扱い
       if (y === 2025) {
         if (d === 1) return `${y}年${mo}月`;
-        return `${m[1]}/${m[2]}/${m[3]}`; // 万一日が入ってても日付で出す
+        return `${m[1]}/${m[2]}/${m[3]}`;
       }
 
-      // それ以前: まとめ（年表示）
-      // データが 2025-01-01 でまとめて入っている想定
       if (mo === 1 && d === 1) return `${y}年`;
       return `${m[1]}/${m[2]}/${m[3]}`;
     }
@@ -139,24 +327,24 @@
         .map(x => {
           const week = toISODate(x.week);
 
-          let price = null;
-          const priceStr = String(x.price ?? "").trim();
-          if (priceStr !== "" && priceStr !== "-" && priceStr !== "—") {
-            const n = Number(priceStr);
-            if (Number.isFinite(n)) price = n;
-          }
+          // 数値化（"1,280円" みたいなのも許容）
+          const toNum = (v) => {
+            if (v == null) return null;
+            if (typeof v === "number") return Number.isFinite(v) ? v : null;
+            const s = String(v).trim();
+            if (!s || s === "-" || s === "—") return null;
+            const cleaned = s.replace(/[^\d.\-]/g, "");
+            if (!cleaned) return null;
+            const n = Number(cleaned);
+            return Number.isFinite(n) ? n : null;
+          };
 
-          let count = null;
-          const countStr = String(x.count ?? "").trim();
-          if (countStr !== "" && countStr !== "-" && countStr !== "—") {
-            const n = Number(countStr);
-            if (Number.isFinite(n)) count = n;
-          }
+          const price = toNum(x.price);
+          const count = toNum(x.count);
 
-          // 取引なし週は price=null 扱い
-          const noTrades = (count === 0) || (price === null);
+          const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
 
-          return { week, price: noTrades ? null : price, count };
+          return { week, price: hasTrade ? price : null, count: count == null ? null : count };
         })
         .filter(x => x.week)
         .sort((a, b) => String(a.week).localeCompare(String(b.week))); // asc
@@ -199,23 +387,29 @@
       const headCount = hasCount ? `<th>件数</th>` : "";
 
       return `
-        <table>
-          <thead><tr><th>期間</th><th>価格</th>${headCount}</tr></thead>
-          <tbody>${html}</tbody>
-        </table>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>期間</th><th>価格</th>${headCount}</tr></thead>
+            <tbody>${html}</tbody>
+          </table>
+        </div>
       `;
     }
 
     function renderTableYearly(rows) {
       if (!rows.length) return `<div class="meta">年次データがまだありません</div>`;
+
       const html = rows.slice().reverse().map(r =>
         `<tr><td>${escapeHtml(r.year)}</td><td>${Number(r.price).toLocaleString()}円</td></tr>`
       ).join("");
+
       return `
-        <table>
-          <thead><tr><th>年</th><th>価格</th></tr></thead>
-          <tbody>${html}</tbody>
-        </table>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>年</th><th>価格</th></tr></thead>
+            <tbody>${html}</tbody>
+          </table>
+        </div>
       `;
     }
 
@@ -265,7 +459,6 @@
       deltaEl.textContent = `${arrow} 前回取引週比 ${sign}${abs.toLocaleString()}円 ${pct}`;
     }
 
-    // ---------- renderLineChart（yKey任意・フォーマット固定：円） ----------
     function renderLineChart(containerId, title, rows, xKey, yKey) {
       const el = document.getElementById(containerId);
       if (!el) return;
@@ -280,7 +473,11 @@
         .filter(p => p.x && Number.isFinite(p.y));
 
       if (data.length < 2) {
-        el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">データが不足しています</div></div>`;
+        el.innerHTML = `
+          <div class="chart-wrap">
+            <div class="chart-title">${escapeHtml(title)}</div>
+            <div class="meta">データが不足しています</div>
+          </div>`;
         return;
       }
 
@@ -409,11 +606,9 @@
         tip.style.display = "none";
       });
     }
-    // ---------- end renderLineChart ----------
 
     async function main() {
-      // header が差し込まれるのを待ってから、検索バー上書き
-      // （common.js 側が先にheader読み込む想定だけど、保険で遅延）
+      // header差し込み後の検索欄挙動（一覧に戻して?q=）
       const applySearchBehavior = () => {
         const search = document.getElementById("search");
         if (!search) return false;
@@ -426,16 +621,14 @@
         });
         return true;
       };
-      if (!applySearchBehavior()) {
-        setTimeout(applySearchBehavior, 200);
-      }
+      if (!applySearchBehavior()) setTimeout(applySearchBehavior, 200);
 
       const id = getParam("id");
       if (!id) { showError("id が指定されていません。indexから入り直してください。"); return; }
 
       let data;
       try { data = await loadData(); }
-      catch (e) { showError(e.message); return; }
+      catch (e) { showError(e.message || "不明なエラー"); return; }
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
       const s = sleeves.find(x => String(x.id) === String(id));
@@ -457,6 +650,9 @@
         <span class="badge">${escapeHtml(s.condition)}</span>
         <span class="badge">${escapeHtml(s.series)}</span>
       `;
+
+      // 戻るリンク（検索?q=を維持したい場合の保険：今はidだけなのでそのまま）
+      document.getElementById("backLink").href = "./index.html";
 
       // weekly
       const weeklyRows = normalizeWeekly(s.weeklyPrices);
