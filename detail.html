@@ -286,7 +286,8 @@
 
     async function loadData() {
       // common.js 側で window.GAS_URL を設定している前提
-      if (!window.GAS_URL) throw new Error("GAS_URL が未設定です（common.js を確認してください）");
+      await new Promise(resolve => { /* window.common を10msごとにチェック */ });
+      return await window.common.loadData();
       const res = await fetch(window.GAS_URL + "?v=" + Date.now(), { cache: "no-store" });
       if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
       return await res.json();
@@ -666,7 +667,7 @@
       document.getElementById("yearlyTable").innerHTML = renderTableYearly(yearlyRows);
     }
 
-    main();
+    document.addEventListener("DOMContentLoaded", () => main());
   </script>
 </body>
 
