@@ -1,22 +1,19 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>スリーブ詳細｜ポケスリ相場ナビ</title>
-  <meta name="description" content="ポケカスリーブの価格推移（週次・年次）を表示します。" />
+  <title>スリーブ相場 - ポケスリ相場ナビ</title>
+  <meta name="description" content="ポケカスリーブの週次価格推移を確認できる詳細ページです。" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
 
-  <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
 
-  <!-- detail用の補助CSS（site.cssに移してもOK） -->
   <style>
-    /* ===== detail layout ===== */
     .detail-wrap {
       margin-top: 14px;
       display: grid;
@@ -41,7 +38,7 @@
     .detail-price-grid {
       margin-top: 14px;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr;
       gap: 14px;
       align-items: start;
     }
@@ -99,7 +96,6 @@
       letter-spacing: .2px;
     }
 
-    /* ===== chart ===== */
     .chart-wrap {
       position: relative;
       margin-top: 10px;
@@ -174,7 +170,6 @@
       box-shadow: 0 10px 24px rgba(16, 24, 40, .24);
     }
 
-    /* ===== tables ===== */
     .table-wrap {
       margin-top: 10px;
       border: 1px solid var(--border);
@@ -208,7 +203,6 @@
       border-bottom: 0;
     }
 
-    /* 右カラムの「戻る」ボタンを目立たせる */
     .btn-row {
       margin-top: 10px;
       display: flex;
@@ -247,38 +241,36 @@
 </head>
 
 <body>
-  <!-- 共通ヘッダー差し込み -->
   <div id="site-header"></div>
 
   <div class="container">
     <div id="error" class="error"></div>
+
     <div class="panel usage-panel">
       <h3 style="margin:0 0 8px;">このページの使い方</h3>
       <div class="meta">
-        週次・年次のチャートとテーブルで、価格推移を確認できます。<br>
-        一覧へ戻って検索するときは、ヘッダーの検索欄で Enter を押してください。
+        週次価格のチャートとテーブルで、価格推移を確認できます。<br>
+        一覧に戻って検索するときは、ヘッダーの検索欄で Enter を押してください。
       </div>
     </div>
 
     <div class="detail-wrap">
-      <!-- LEFT -->
       <div class="detail-left">
         <div class="panel">
           <div class="detail-hero">
             <img id="img" class="thumb" alt="" />
 
             <div>
-              <h2 id="name" class="name">読み込み中…</h2>
+              <h2 id="name" class="name">読み込み中...</h2>
               <div id="meta" class="meta-line"></div>
-
               <div id="badges" class="badges" style="margin-top:8px;"></div>
 
               <div class="kpi">
                 <div class="box">
                   <div class="label">最新週次価格</div>
-                  <div id="latestWeekly" class="value">—</div>
+                  <div id="latestWeekly" class="value">-</div>
                   <div id="weeklyDelta" class="delta" style="margin-top:6px;"></div>
-                  <div id="weeklyCount" class="meta" style="margin-top:6px;">取引件数：—</div>
+                  <div id="weeklyCount" class="meta" style="margin-top:6px;">取引件数: -</div>
                 </div>
               </div>
 
@@ -295,32 +287,13 @@
             <div id="weeklyChart"></div>
             <div id="weeklyTable"></div>
           </div>
-
-          <div class="panel">
-            <h3 style="margin:0;">年次価格（yearly）</h3>
-            <div id="yearlyChart"></div>
-            <div id="yearlyTable"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- RIGHT（将来：関連/人気/注目など置ける） -->
-      <div class="detail-right">
-        <div class="panel">
-          <h3 style="margin:0 0 8px;">このページの使い方</h3>
-          <div class="meta">
-            週次・年次のチャートとテーブルで、価格推移を確認できます。<br>
-            一覧へ戻って検索するときは、ヘッダーの検索欄で Enter を押してください。
-          </div>
         </div>
       </div>
     </div>
 
-    <!-- 共通フッター差し込み -->
     <div id="site-footer"></div>
   </div>
 
-  <!-- 共通JS（header/footer差し込み & nav active 等） -->
   <script src="./assets/common.js"></script>
 
   <script>
@@ -346,8 +319,8 @@
     }
 
     async function loadData() {
-      const url = window.GAS_URL;  // common.jsが同期読み込み済みなので確実に存在
-      if (!url) throw new Error("GAS_URL が未設定です（common.js を確認してください）");
+      const url = window.GAS_URL;
+      if (!url) throw new Error("GAS_URL が未設定です。assets/common.js を確認してください。");
       const res = await fetch(url + "?v=" + Date.now(), { cache: "no-store" });
       if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
       return await res.json();
@@ -366,34 +339,18 @@
       const s = String(iso || "").trim();
       const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
       if (!m) return s;
-
-      const y = Number(m[1]);
-      const mo = Number(m[2]);
-      const d = Number(m[3]);
-
-      if (y >= 2026) return `${m[1]}/${m[2]}/${m[3]}`;
-
-      if (y === 2025) {
-        if (d === 1) return `${y}年${mo}月`;
-        return `${m[1]}/${m[2]}/${m[3]}`;
-      }
-
-      if (mo === 1 && d === 1) return `${y}年`;
       return `${m[1]}/${m[2]}/${m[3]}`;
     }
 
-    // weeklyPrices: [{week, price, count}]
     function normalizeWeekly(arr) {
       return (Array.isArray(arr) ? arr : [])
         .map(x => {
           const week = toISODate(x.week);
-
-          // 数値化（"1,280円" みたいなのも許容）
           const toNum = (v) => {
             if (v == null) return null;
             if (typeof v === "number") return Number.isFinite(v) ? v : null;
             const s = String(v).trim();
-            if (!s || s === "-" || s === "—") return null;
+            if (!s || s === "-") return null;
             const cleaned = s.replace(/[^\d.\-]/g, "");
             if (!cleaned) return null;
             const n = Number(cleaned);
@@ -402,13 +359,12 @@
 
           const price = toNum(x.price);
           const count = toNum(x.count);
-
           const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
 
           return { week, price: hasTrade ? price : null, count: count == null ? null : count };
         })
         .filter(x => x.week)
-        .sort((a, b) => String(a.week).localeCompare(String(b.week))); // asc
+        .sort((a, b) => String(a.week).localeCompare(String(b.week)));
     }
 
     function latestTwoTradedWeeks(rows) {
@@ -426,22 +382,13 @@
       return { latest: uniq[0], prev: uniq[1] || null };
     }
 
-    function normalizeYearly(obj) {
-      const o = obj && typeof obj === "object" ? obj : {};
-      return Object.keys(o)
-        .map(y => ({ year: String(y), price: Number(o[y]) }))
-        .filter(x => x.year && Number.isFinite(x.price))
-        .sort((a, b) => String(a.year).localeCompare(String(b.year))); // asc
-    }
-
     function renderTableWeekly(rows) {
       if (!rows.length) return `<div class="meta">週次データがまだありません</div>`;
 
       const hasCount = rows.some(r => Number.isFinite(r.count));
-
       const html = rows.slice().reverse().map(r => {
-        const priceCell = Number.isFinite(r.price) ? `${Number(r.price).toLocaleString()}円` : "—";
-        const countCell = hasCount ? `<td>${Number.isFinite(r.count) ? `${r.count}件` : "—"}</td>` : "";
+        const priceCell = Number.isFinite(r.price) ? `${Number(r.price).toLocaleString()}円` : "-";
+        const countCell = hasCount ? `<td>${Number.isFinite(r.count) ? `${r.count}件` : "-"}</td>` : "";
         return `<tr><td>${escapeHtml(formatPeriodLabel(r.week))}</td><td>${priceCell}</td>${countCell}</tr>`;
       }).join("");
 
@@ -457,23 +404,6 @@
       `;
     }
 
-    function renderTableYearly(rows) {
-      if (!rows.length) return `<div class="meta">年次データがまだありません</div>`;
-
-      const html = rows.slice().reverse().map(r =>
-        `<tr><td>${escapeHtml(r.year)}</td><td>${Number(r.price).toLocaleString()}円</td></tr>`
-      ).join("");
-
-      return `
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>年</th><th>価格</th></tr></thead>
-            <tbody>${html}</tbody>
-          </table>
-        </div>
-      `;
-    }
-
     function setWeeklyKpi(weeklyRows) {
       const latestEl = document.getElementById("latestWeekly");
       const deltaEl = document.getElementById("weeklyDelta");
@@ -482,20 +412,20 @@
       const pair = latestTwoTradedWeeks(weeklyRows);
 
       if (!pair) {
-        latestEl.textContent = "—";
-        deltaEl.textContent = "直近の取引なし";
+        latestEl.textContent = "-";
+        deltaEl.textContent = "比較できるデータがありません";
         deltaEl.className = "delta flat";
-        countEl.textContent = "取引件数：—";
+        countEl.textContent = "取引件数: -";
         return;
       }
 
       latestEl.textContent = `${pair.latest.price.toLocaleString()}円`;
 
       const cnt = Number.isFinite(pair.latest.count) ? pair.latest.count : null;
-      countEl.textContent = `取引件数：${cnt != null ? `${cnt}件` : "—"}`;
+      countEl.textContent = `取引件数: ${cnt != null ? `${cnt}件` : "-"}`;
 
       if (!pair.prev) {
-        deltaEl.textContent = "比較できる前週データなし";
+        deltaEl.textContent = "比較できる前週データがありません";
         deltaEl.className = "delta flat";
         return;
       }
@@ -506,7 +436,7 @@
       let arrow = "→";
       let sign = "±";
       if (diff > 0) { cls = "up"; arrow = "↑"; sign = "+"; }
-      if (diff < 0) { cls = "down"; arrow = "↓"; sign = "−"; }
+      if (diff < 0) { cls = "down"; arrow = "↓"; sign = "-"; }
 
       let pct = "";
       if (pair.prev.price !== 0) {
@@ -517,7 +447,7 @@
       }
 
       deltaEl.className = "delta " + cls;
-      deltaEl.textContent = `${arrow} 前回取引週比 ${sign}${abs.toLocaleString()}円 ${pct}`;
+      deltaEl.textContent = `${arrow} 前週比 ${sign}${abs.toLocaleString()}円 ${pct}`;
     }
 
     function renderLineChart(containerId, title, rows, xKey, yKey) {
@@ -542,8 +472,8 @@
         return;
       }
 
-      const W = 880, H = 320;
-      const padL = 70, padR = 24, padT = 24, padB = 52;
+      const W = 1200, H = 420;
+      const padL = 80, padR = 30, padT = 26, padB = 58;
       const ticks = 4;
 
       const ys = data.map(d => d.y);
@@ -551,15 +481,14 @@
       let yMax = Math.max(...ys);
 
       const margin = (yMax - yMin) * 0.1 || 1;
-      yMin -= margin; yMax += margin;
+      yMin -= margin;
+      yMax += margin;
 
       function niceStep(range, t) {
         const rough = range / t;
         const pow = Math.pow(10, Math.floor(Math.log10(Math.max(rough, 1))));
         const candidates = [1, 2, 5, 10].map(m => m * pow);
-        return candidates.reduce((best, v) =>
-          Math.abs(v - rough) < Math.abs(best - rough) ? v : best
-          , candidates[0]);
+        return candidates.reduce((best, v) => Math.abs(v - rough) < Math.abs(best - rough) ? v : best, candidates[0]);
       }
 
       const step = niceStep(yMax - yMin, ticks);
@@ -569,9 +498,7 @@
       const xToPx = (i) => padL + (i / (data.length - 1)) * (W - padL - padR);
       const yToPx = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * (H - padT - padB);
 
-      const pathD = data.map((p, i) =>
-        `${i === 0 ? "M" : "L"} ${xToPx(i)} ${yToPx(p.y)}`
-      ).join(" ");
+      const pathD = data.map((p, i) => `${i === 0 ? "M" : "L"} ${xToPx(i)} ${yToPx(p.y)}`).join(" ");
 
       const tickLines = [];
       const tickLabels = [];
@@ -579,14 +506,11 @@
         const v = yMin + (i / ticks) * (yMax - yMin);
         const y = yToPx(v);
         tickLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef"/>`);
-        tickLabels.push(
-          `<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="12" fill="#475467" font-weight="700">${Math.round(v).toLocaleString()}</text>`
-        );
+        tickLabels.push(`<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="12" fill="#475467" font-weight="700">${Math.round(v).toLocaleString()}</text>`);
       }
 
       const xFirst = formatPeriodLabel(data[0].x);
       const xLast = formatPeriodLabel(data[data.length - 1].x);
-
       const lastIdx = data.length - 1;
       const lastX = xToPx(lastIdx);
       const lastY = yToPx(data[lastIdx].y);
@@ -615,12 +539,10 @@
               ${tickLabels.join("")}
 
               <rect x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="url(#bgGrad-${escapeHtml(containerId)})" />
-
               <path d="${pathD}" fill="none" stroke="#1e5bd7" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round"/>
 
               <line class="hover-line" y1="${padT}" y2="${H - padB}" stroke="#94a3b8" stroke-width="1" style="display:none;" />
               <circle class="hover-dot" r="5" fill="#1e5bd7" style="display:none;" />
-
               <rect class="hover-hit" x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="transparent"/>
 
               <circle cx="${lastX}" cy="${lastY}" r="5" fill="#1e5bd7"/>
@@ -653,9 +575,7 @@
         const pct = Math.round(zoom * 100);
         svg.style.width = `${pct}%`;
         zoomLabel.textContent = `${pct}%`;
-        if (zoom === 1) {
-          viewport.scrollLeft = 0;
-        }
+        if (zoom === 1) viewport.scrollLeft = 0;
       }
 
       zoomBtns.forEach((btn) => {
@@ -690,7 +610,7 @@
         hDot.setAttribute("cx", px);
         hDot.setAttribute("cy", py);
 
-        tip.textContent = `${formatPeriodLabel(data[safeIdx].x)}：${data[safeIdx].y.toLocaleString()}円`;
+        tip.textContent = `${formatPeriodLabel(data[safeIdx].x)} / ${data[safeIdx].y.toLocaleString()}円`;
         const wrapRect = wrap.getBoundingClientRect();
         tip.style.left = `${Math.min(Math.max(ev.clientX - wrapRect.left, 40), wrapRect.width - 40)}px`;
         tip.style.top = `${Math.max(ev.clientY - wrapRect.top - 12, 8)}px`;
@@ -704,15 +624,17 @@
     }
 
     async function main() {
-      // header差し込み後の検索欄挙動（一覧に戻して?q=）
       const applySearchBehavior = () => {
         const search = document.getElementById("search");
         if (!search) return false;
-        search.placeholder = "一覧へ戻って検索…";
+        search.placeholder = "一覧へ戻って検索...";
         search.addEventListener("keydown", (e) => {
           if (e.key !== "Enter") return;
           const q = search.value.trim();
-          if (!q) { location.href = "./index.html"; return; }
+          if (!q) {
+            location.href = "./index.html";
+            return;
+          }
           location.href = "./index.html?q=" + encodeURIComponent(q);
         });
         return true;
@@ -720,17 +642,27 @@
       if (!applySearchBehavior()) setTimeout(applySearchBehavior, 200);
 
       const id = getParam("id");
-      if (!id) { showError("id が指定されていません。indexから入り直してください。"); return; }
+      if (!id) {
+        showError("id が指定されていません。一覧ページから開いてください。");
+        return;
+      }
 
       let data;
-      try { data = await loadData(); }
-      catch (e) { showError(e.message || "不明なエラー"); return; }
+      try {
+        data = await loadData();
+      } catch (e) {
+        showError(e.message || "データ読み込みに失敗しました");
+        return;
+      }
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
       const s = sleeves.find(x => String(x.id) === String(id));
-      if (!s) { showError("該当スリーブが見つかりませんでした。"); return; }
+      if (!s) {
+        showError("指定されたスリーブが見つかりませんでした。");
+        return;
+      }
 
-      document.title = `${s.name || "スリーブ詳細"}｜ポケスリ相場ナビ`;
+      document.title = `${s.name || "スリーブ相場"} - ポケスリ相場ナビ`;
 
       const img = document.getElementById("img");
       img.referrerPolicy = "no-referrer";
@@ -739,27 +671,20 @@
 
       document.getElementById("name").textContent = s.name || "";
       document.getElementById("meta").innerHTML =
-        `発売年：${escapeHtml(s.releaseYear)} / シリーズ：${escapeHtml(s.series)} / 状態：${escapeHtml(s.condition)}`;
+        `発売年: ${escapeHtml(s.releaseYear)} / シリーズ: ${escapeHtml(s.series)} / 状態: ${escapeHtml(s.condition)}`;
 
       document.getElementById("badges").innerHTML = `
-        <span class="badge">発売年：${escapeHtml(s.releaseYear)}</span>
+        <span class="badge">発売年: ${escapeHtml(s.releaseYear)}</span>
         <span class="badge">${escapeHtml(s.condition)}</span>
         <span class="badge">${escapeHtml(s.series)}</span>
       `;
 
-      // 戻るリンク（検索?q=を維持したい場合の保険：今はidだけなのでそのまま）
       document.getElementById("backLink").href = "./index.html";
 
-      // weekly
       const weeklyRows = normalizeWeekly(s.weeklyPrices);
       renderLineChart("weeklyChart", "週次価格 推移", weeklyRows, "week", "price");
       document.getElementById("weeklyTable").innerHTML = renderTableWeekly(weeklyRows);
       setWeeklyKpi(weeklyRows);
-
-      // yearly
-      const yearlyRows = normalizeYearly(s.pricesByYear);
-      renderLineChart("yearlyChart", "年次価格 推移", yearlyRows, "year", "price");
-      document.getElementById("yearlyTable").innerHTML = renderTableYearly(yearlyRows);
     }
 
     document.addEventListener("DOMContentLoaded", () => main());

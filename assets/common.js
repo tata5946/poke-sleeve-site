@@ -1,17 +1,15 @@
-/**
- * common.js (改良版)
- *
+﻿/**
+ * common.js
  * - header/footer を #site-header / #site-footer に注入
  * - 注入完了時に custom event "site:injected" を発火
  * - setActiveNav(), wireHeaderSearch() を提供
- * - fetchJsonWithTimeout(), loadData() を中央管理（GAS_URL はここで一本化）
- * - グローバルなヘルパーを window.common として公開
+ * - fetchJsonWithTimeout(), loadData() を共通化
  */
 
 /* ----- Config ----- */
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyl-TAhWBEVIgilTDv7lwS14T3_i9z57dUX4fqUVBS9gyr1EO7SaYy3aqP0V1gZtt6z/exec";
 
-/* ----- Header / Footer HTML (テンプレ) ----- */
+/* ----- Header / Footer HTML ----- */
 const HEADER_HTML = `
 <div class="header">
   <div class="header-top">
@@ -23,8 +21,8 @@ const HEADER_HTML = `
     </a>
     <div class="header-search" aria-label="サイト内検索">
       <div class="search-wrap">
-        <span class="search-ico">🔍</span>
-        <input type="text" id="search" placeholder="スリーブ名で検索…" autocomplete="off" />
+        <span class="search-ico">🔎</span>
+        <input type="text" id="search" placeholder="スリーブ名で検索..." autocomplete="off" />
       </div>
     </div>
     <div class="header-right">
@@ -34,11 +32,11 @@ const HEADER_HTML = `
   <div class="header-bottom">
     <div class="header-bottom-inner">
       <nav class="nav" aria-label="メインメニュー">
-        <a href="./index.html"        data-nav="index"  ><span class="ico" aria-hidden="true">🏷</span>一覧</a>
-        <a href="./ranking.html"      data-nav="ranking"><span class="ico" aria-hidden="true">🏆</span>価格ランキング</a>
-        <a href="./growth.html"       data-nav="growth" ><span class="ico" aria-hidden="true">📈</span>高騰率</a>
-        <a href="./surge.html"        data-nav="surge"  ><span class="ico" aria-hidden="true">⚡</span>急上昇</a>
-        <a href="./index-market.html" data-nav="market" ><span class="ico" aria-hidden="true">📊</span>スリーブ指数</a>
+        <a href="./index.html" data-nav="index"><span class="ico" aria-hidden="true">🏠</span>一覧</a>
+        <a href="./ranking.html" data-nav="ranking"><span class="ico" aria-hidden="true">📊</span>価格ランキング</a>
+        <a href="./growth.html" data-nav="growth"><span class="ico" aria-hidden="true">📈</span>高騰率</a>
+        <a href="./surge.html" data-nav="surge"><span class="ico" aria-hidden="true">🔥</span>急上昇</a>
+        <a href="./index-market.html" data-nav="market"><span class="ico" aria-hidden="true">🧭</span>スリーブ指数</a>
       </nav>
     </div>
   </div>
@@ -47,7 +45,7 @@ const HEADER_HTML = `
 
 const FOOTER_HTML = `
 <footer class="site-footer">
-  © 2026 ポケスリ相場ナビ |
+  &copy; 2026 ポケスリ相場ナビ |
   <a href="./policy.html">プライバシーポリシー・免責事項</a>
 </footer>
 `;
@@ -98,8 +96,9 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000 } = {}) {
     if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
     return await res.json();
   } catch (e) {
-    if (e && e.name === "AbortError")
-      throw new Error("データ取得がタイムアウトしました。時間をおいて再度お試しください。");
+    if (e && e.name === "AbortError") {
+      throw new Error("データ取得がタイムアウトしました。時間をおいて再読み込みしてください。");
+    }
     throw e;
   } finally {
     clearTimeout(t);
@@ -109,7 +108,7 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000 } = {}) {
 /* ----- central loadData() ----- */
 async function loadData() {
   if (!GAS_URL || GAS_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
-    throw new Error("GAS_URL が未設定です。common.js の GAS_URL を確認してください。");
+    throw new Error("GAS_URL が未設定です。assets/common.js の GAS_URL を確認してください。");
   }
   const url = GAS_URL + "?v=" + Date.now();
   return await fetchJsonWithTimeout(url, { timeoutMs: 12000 });
@@ -194,7 +193,6 @@ window.common = {
   GAS_URL
 };
 
-// GAS_URL をトップレベルにも公開（detail.html が window.GAS_URL を直接参照しているため）
 window.GAS_URL = GAS_URL;
 
 /* ----- Auto-init on DOMContentLoaded ----- */
