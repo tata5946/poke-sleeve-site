@@ -160,11 +160,11 @@
     }
 
     async function loadData() {
-      if (!GAS_URL || GAS_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
-        throw new Error("GAS_URL が未設定です。surge.html の GAS_URL に WebアプリURL を貼ってください。");
-      }
-      const url = GAS_URL + "?v=" + Date.now();
-      return await fetchJsonWithTimeout(url, { timeoutMs: 12000 });
+      const url = window.GAS_URL;  // common.jsが同期読み込み済みなので確実に存在
+      if (!url) throw new Error("GAS_URL が未設定です（common.js を確認してください）");
+      const res = await fetch(url + "?v=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
+      return await res.json();
     }
 
     // -----------------------------
