@@ -469,9 +469,12 @@ footer.site-footer {
 
 @media (max-width:700px) {
     .header-top {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        column-gap: 10px;
+        row-gap: 10px;
         padding: 10px 14px;
-        gap: 10px;
-        flex-wrap: wrap;
     }
 
     .logo {
@@ -480,7 +483,10 @@ footer.site-footer {
     }
 
     .main-title {
-        font-size: 18px;
+        font-size: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .header-right {
@@ -488,12 +494,27 @@ footer.site-footer {
     }
 
     .header-search {
-        flex: 1 1 100%;
+        grid-column: 1 / -1;
+        width: 100%;
         justify-content: flex-start;
     }
 
     .search-wrap {
         width: 100%;
+    }
+
+    .header-bottom-inner {
+        padding: 8px 14px;
+    }
+
+    .nav {
+        gap: 8px;
+    }
+
+    .nav a {
+        white-space: nowrap;
+        font-size: 12px;
+        padding: 7px 9px;
     }
 }
 
