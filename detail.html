@@ -174,7 +174,8 @@
       margin-top: 10px;
       border: 1px solid var(--border);
       border-radius: 14px;
-      overflow: hidden;
+      overflow: auto;
+      max-height: min(46vh, 420px);
       background: #fff;
       box-shadow: 0 6px 16px rgba(16, 24, 40, .06);
     }
@@ -197,6 +198,9 @@
     .table-wrap thead th {
       font-weight: 900;
       background: #fbfcff;
+      position: sticky;
+      top: 0;
+      z-index: 1;
     }
 
     .table-wrap tr:last-child td {
