@@ -1,22 +1,22 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>繝昴こ繧ｹ繝ｪ逶ｸ蝣ｴ繝翫ン・懊・繧ｱ繧ｫ繧ｹ繝ｪ繝ｼ繝紋ｾ｡譬ｼ謗ｨ遘ｻ</title>
-  <meta name="description" content="繝昴こ繧ｹ繝ｪ逶ｸ蝣ｴ繝翫ン縺ｯ縲√・繧ｱ繧ｫ繧ｹ繝ｪ繝ｼ繝悶・騾ｱ谺｡繝ｻ蟷ｴ谺｡縺ｮ萓｡譬ｼ謗ｨ遘ｻ繧呈軸霈峨☆繧九ョ繝ｼ繧ｿ繝吶・繧ｹ縲ゅΛ繝ｳ繧ｭ繝ｳ繧ｰ繝ｻ諤･荳頑・繝ｻ讀懃ｴ｢/邨槭ｊ霎ｼ縺ｿ縺ｧ逶ｸ蝣ｴ繧呈ｯ碑ｼ・〒縺阪∪縺吶・>
+  <title>ポケスリ相場ナビ｜ポケカスリーブ価格推移</title>
+  <meta name="description" content="ポケスリ相場ナビは、ポケカスリーブの週次・年次の価格推移を掲載するデータベース。ランキング・急上昇・検索/絞り込みで相場を比較できます。">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
 
-  <!-- 蜈ｱ騾咾SS -->
+  <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
 </head>
 
 <body>
-  <!-- 蜈ｱ騾壹・繝・ム繝ｼ蟾ｮ縺苓ｾｼ縺ｿ -->
+  <!-- 共通ヘッダー差し込み -->
   <div id="site-header"></div>
 
   <div class="container">
@@ -24,104 +24,104 @@
     <div class="hero">
       <div class="hero-card">
         <div>
-          <p class="hero-title">繧ｹ繝ｪ繝ｼ繝也嶌蝣ｴ繧・窶懈爾縺吶・邨槭ｋ繝ｻ豈碑ｼ・☆繧銀・/p>
-          <p class="hero-desc">繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ縺ｧ豕ｨ逶ｮ繧ｹ繝ｪ繝ｼ繝悶ｒ繝√ぉ繝・け縺励∽ｸ隕ｧ縺ｮ讀懃ｴ｢繝ｻ繝輔ぅ繝ｫ繧ｿ縺ｧ逶ｮ逧・・繧ｹ繝ｪ繝ｼ繝悶ｒ隕九▽縺代ｉ繧後∪縺吶・/p>
-          <p class="data-note">窶ｻ萓｡譬ｼ縺ｯ繝輔Μ繝槭い繝励Μ遲峨・螢ｲ蜊ｴ螻･豁ｴ繧偵ｂ縺ｨ縺ｫ迢ｬ閾ｪ髮・ｨ医＠縺ｦ縺・∪縺吶・/p>
+          <p class="hero-title">スリーブ相場を “探す・絞る・比較する”</p>
+          <p class="hero-desc">ランキングで注目スリーブをチェックし、一覧の検索・フィルタで目的のスリーブを見つけられます。</p>
+          <p class="data-note">※価格はフリマアプリ等の売却履歴をもとに独自集計しています。</p>
           <p id="updatedAt" class="data-note" style="display:none;"></p>
         </div>
       </div>
     </div>
 
-    <!-- 譽夲ｼ域ｨｪ繧ｹ繝ｩ繧､繝繝ｼ・・-->
-    <div class="sections" aria-label="繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ譽・>
+    <!-- 棚（横スライダー） -->
+    <div class="sections" aria-label="ランキング棚">
       <section class="section">
         <div class="section-head">
           <h2 class="section-title">
-            諤･荳頑・繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ <span class="pill">逶ｴ霑大叙蠑暮ｱ</span>
+            急上昇ランキング <span class="pill">直近取引週</span>
           </h2>
-          <a class="more" href="./surge.html">繧ゅ▲縺ｨ隕九ｋ</a>
+          <a class="more" href="./surge.html">もっと見る</a>
         </div>
 
         <div class="rail-wrap">
-          <button class="rail-btn left" type="button" data-rail="rail-surge" aria-label="蟾ｦ縺ｸ">窶ｹ</button>
-          <div id="rail-surge" class="rail" tabindex="0" aria-label="諤･荳頑・繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ"></div>
-          <button class="rail-btn right" type="button" data-rail="rail-surge" aria-label="蜿ｳ縺ｸ">窶ｺ</button>
+          <button class="rail-btn left" type="button" data-rail="rail-surge" aria-label="左へ">‹</button>
+          <div id="rail-surge" class="rail" tabindex="0" aria-label="急上昇ランキング"></div>
+          <button class="rail-btn right" type="button" data-rail="rail-surge" aria-label="右へ">›</button>
         </div>
       </section>
 
       <section class="section">
         <div class="section-head">
           <h2 class="section-title">
-            鬮倬ｨｰ邇・Λ繝ｳ繧ｭ繝ｳ繧ｰ <span class="pill">30譌･</span>
+            高騰率ランキング <span class="pill">30日</span>
           </h2>
-          <a class="more" href="./growth.html">繧ゅ▲縺ｨ隕九ｋ</a>
+          <a class="more" href="./growth.html">もっと見る</a>
         </div>
 
         <div class="rail-wrap">
-          <button class="rail-btn left" type="button" data-rail="rail-growth" aria-label="蟾ｦ縺ｸ">窶ｹ</button>
-          <div id="rail-growth" class="rail" tabindex="0" aria-label="鬮倬ｨｰ邇・Λ繝ｳ繧ｭ繝ｳ繧ｰ"></div>
-          <button class="rail-btn right" type="button" data-rail="rail-growth" aria-label="蜿ｳ縺ｸ">窶ｺ</button>
+          <button class="rail-btn left" type="button" data-rail="rail-growth" aria-label="左へ">‹</button>
+          <div id="rail-growth" class="rail" tabindex="0" aria-label="高騰率ランキング"></div>
+          <button class="rail-btn right" type="button" data-rail="rail-growth" aria-label="右へ">›</button>
         </div>
       </section>
 
       <section class="section">
         <div class="section-head">
           <h2 class="section-title">
-            萓｡譬ｼ繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ <span class="pill">譛譁ｰ騾ｱ谺｡</span>
+            価格ランキング <span class="pill">最新週次</span>
           </h2>
-          <a class="more" href="./ranking.html">繧ゅ▲縺ｨ隕九ｋ</a>
+          <a class="more" href="./ranking.html">もっと見る</a>
         </div>
 
         <div class="rail-wrap">
-          <button class="rail-btn left" type="button" data-rail="rail-price" aria-label="蟾ｦ縺ｸ">窶ｹ</button>
-          <div id="rail-price" class="rail" tabindex="0" aria-label="萓｡譬ｼ繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ"></div>
-          <button class="rail-btn right" type="button" data-rail="rail-price" aria-label="蜿ｳ縺ｸ">窶ｺ</button>
+          <button class="rail-btn left" type="button" data-rail="rail-price" aria-label="左へ">‹</button>
+          <div id="rail-price" class="rail" tabindex="0" aria-label="価格ランキング"></div>
+          <button class="rail-btn right" type="button" data-rail="rail-price" aria-label="右へ">›</button>
         </div>
       </section>
     </div>
 
-    <!-- 荳隕ｧ・域､懃ｴ｢繝ｻ邨槭ｊ霎ｼ縺ｿ・・-->
+    <!-- 一覧（検索・絞り込み） -->
     <div class="main">
       <aside class="panel">
-        <h2>邨槭ｊ霎ｼ縺ｿ</h2>
-        <p class="small">繝輔ぅ繝ｫ繧ｿ縺ｨ荳ｦ縺ｳ譖ｿ縺医ｒ螟画峩縺吶ｋ縺ｨ荳隕ｧ縺梧峩譁ｰ縺輔ｌ縺ｾ縺吶・/p>
+        <h2>絞り込み</h2>
+        <p class="small">フィルタと並び替えを変更すると一覧が更新されます。</p>
 
         <div id="error" class="error"></div>
 
         <div class="controls">
-          <label>逋ｺ螢ｲ蟷ｴ
+          <label>発売年
             <select id="releaseYear">
-              <option value="">蜈ｨ驛ｨ</option>
+              <option value="">全部</option>
             </select>
           </label>
 
-          <label>繧ｷ繝ｪ繝ｼ繧ｺ
+          <label>シリーズ
             <select id="series">
-              <option value="">蜈ｨ驛ｨ</option>
+              <option value="">全部</option>
             </select>
           </label>
 
-          <label>萓｡譬ｼ蟶ｯ
+          <label>価格帯
             <select id="priceBand">
-              <option value="">蜈ｨ驛ｨ</option>
-              <option value="0-999">縲・99蜀・/option>
-              <option value="1000-1999">1,000縲・,999蜀・/option>
-              <option value="2000-2999">2,000縲・,999蜀・/option>
-              <option value="3000-4999">3,000縲・,999蜀・/option>
-              <option value="5000-99999999">5,000蜀・・/option>
+              <option value="">全部</option>
+              <option value="0-999">〜999円</option>
+              <option value="1000-1999">1,000〜1,999円</option>
+              <option value="2000-2999">2,000〜2,999円</option>
+              <option value="3000-4999">3,000〜4,999円</option>
+              <option value="5000-99999999">5,000円〜</option>
             </select>
           </label>
 
-          <label>荳ｦ縺ｳ譖ｿ縺・
+          <label>並び替え
             <select id="sortOrder">
-              <option value="priceDesc">萓｡譬ｼ縺碁ｫ倥＞鬆・/option>
-              <option value="priceAsc">萓｡譬ｼ縺悟ｮ峨＞鬆・/option>
-              <option value="nameAsc">蜷榊燕鬆・/option>
-              <option value="releaseDesc">逋ｺ螢ｲ蟷ｴ縺梧眠縺励＞鬆・/option>
+              <option value="priceDesc">価格が高い順</option>
+              <option value="priceAsc">価格が安い順</option>
+              <option value="nameAsc">名前順</option>
+              <option value="releaseDesc">発売年が新しい順</option>
             </select>
           </label>
 
-          <button id="clear" type="button">繧ｯ繝ｪ繧｢</button>
+          <button id="clear" type="button">クリア</button>
         </div>
       </aside>
 
@@ -130,11 +130,11 @@
       </main>
     </div>
 
-    <!-- 蜈ｱ騾壹ヵ繝・ち繝ｼ蟾ｮ縺苓ｾｼ縺ｿ -->
+    <!-- 共通フッター差し込み -->
     <div id="site-footer"></div>
   </div>
 
-  <!-- 蜈ｱ騾哽S・・eader/footer蟾ｮ縺苓ｾｼ縺ｿ & nav active 遲会ｼ・-->
+  <!-- 共通JS（header/footer差し込み & nav active 等） -->
   <script src="./assets/common.js"></script>
 
   <script>
@@ -204,11 +204,11 @@
           signal: controller.signal,
           headers: { "Accept": "application/json" }
         });
-        if (!res.ok) throw new Error(`繝・・繧ｿ蜿門ｾ励↓螟ｱ謨励＠縺ｾ縺励◆・・TTP ${res.status}・荏);
+        if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
         return await res.json();
       } catch (e) {
         if (e && e.name === "AbortError") {
-          throw new Error("繝・・繧ｿ蜿門ｾ励′繧ｿ繧､繝繧｢繧ｦ繝医＠縺ｾ縺励◆縲よ凾髢薙ｒ縺翫＞縺ｦ蜀榊ｺｦ縺願ｩｦ縺励￥縺縺輔＞縲・);
+          throw new Error("データ取得がタイムアウトしました。時間をおいて再度お試しください。");
         }
         throw e;
       } finally {
@@ -217,10 +217,11 @@
     }
 
     async function loadData() {
-      if (!window.common || typeof window.common.loadData !== "function") {
-        throw new Error("共通データローダーの初期化に失敗しました（assets/common.js）");
+      if (!GAS_URL || GAS_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
+        throw new Error("GAS_URL が未設定です。index.html の GAS_URL に WebアプリURL を貼ってください。");
       }
-      return await window.common.loadData();
+      const url = GAS_URL + "?v=" + Date.now();
+      return await fetchJsonWithTimeout(url, { timeoutMs: 12000 });
     }
 
     // -----------------------------
@@ -276,54 +277,54 @@
 
     function formatDelta(pair) {
       if (!pair) {
-        return `<div class="delta"><span class="flat">逶ｴ霑代・蜿門ｼ輔↑縺・/span></div>`;
+        return `<div class="delta"><span class="flat">直近の取引なし</span></div>`;
       }
 
       const { latest, prev } = pair;
 
       if (!prev) {
-        const cntText = Number.isFinite(latest.count) ? ` / ${latest.count}莉ｶ` : "";
+        const cntText = Number.isFinite(latest.count) ? ` / ${latest.count}件` : "";
         return `
           <div class="delta">
-            <span class="flat">豈碑ｼ・〒縺阪ｋ蜑榊屓繝・・繧ｿ縺ｪ縺・/span>
-            <span class="chip">逶ｴ霑・${latest.price.toLocaleString()}蜀・{cntText}</span>
+            <span class="flat">比較できる前回データなし</span>
+            <span class="chip">直近 ${latest.price.toLocaleString()}円${cntText}</span>
           </div>
         `;
       }
 
       const diff = latest.price - prev.price;
 
-      const sign = diff > 0 ? "+" : diff < 0 ? "竏・ : "ﾂｱ";
+      const sign = diff > 0 ? "+" : diff < 0 ? "−" : "±";
       const abs = Math.abs(diff);
 
       let cls = "flat";
-      let arrow = "竊・;
-      if (diff > 0) { cls = "up"; arrow = "竊・; }
-      if (diff < 0) { cls = "down"; arrow = "竊・; }
+      let arrow = "→";
+      if (diff > 0) { cls = "up"; arrow = "↑"; }
+      if (diff < 0) { cls = "down"; arrow = "↓"; }
 
       let pct = "";
       if (prev.price !== 0) {
         const rate = (diff / prev.price) * 100;
         if (Number.isFinite(rate)) {
           const r = Math.abs(rate).toFixed(1);
-          pct = `・・{diff > 0 ? "+" : diff < 0 ? "-" : ""}${r}%・荏;
+          pct = `（${diff > 0 ? "+" : diff < 0 ? "-" : ""}${r}%）`;
         }
       }
 
-      const prevCnt = Number.isFinite(prev.count) ? `${prev.count}莉ｶ` : "窶・;
-      const latestCnt = Number.isFinite(latest.count) ? `${latest.count}莉ｶ` : "窶・;
+      const prevCnt = Number.isFinite(prev.count) ? `${prev.count}件` : "—";
+      const latestCnt = Number.isFinite(latest.count) ? `${latest.count}件` : "—";
 
       return `
         <div class="delta">
-          <span class="delta-main ${cls}">${arrow} 蜑榊屓蜿門ｼ暮ｱ豈・${sign}${abs.toLocaleString()}蜀・${escapeHtml(pct)}</span>
-          <span class="chip">蜑榊屓 ${prev.price.toLocaleString()}蜀・/ ${prevCnt}</span>
-          <span class="chip">逶ｴ霑・${latest.price.toLocaleString()}蜀・/ ${latestCnt}</span>
+          <span class="delta-main ${cls}">${arrow} 前回取引週比 ${sign}${abs.toLocaleString()}円 ${escapeHtml(pct)}</span>
+          <span class="chip">前回 ${prev.price.toLocaleString()}円 / ${prevCnt}</span>
+          <span class="chip">直近 ${latest.price.toLocaleString()}円 / ${latestCnt}</span>
         </div>
       `;
     }
 
     // -----------------------------
-    // growth (30譌･) helper
+    // growth (30日) helper
     // -----------------------------
     function isoToDate(iso) {
       const d = new Date(iso);
@@ -405,7 +406,7 @@
     // main
     // -----------------------------
     async function main() {
-      // header蟾ｮ縺苓ｾｼ縺ｿ縺碁≦縺・→ #search 縺檎┌縺・％縺ｨ縺後≠繧九・縺ｧ蠕・▽
+      // header差し込みが遅いと #search が無いことがあるので待つ
       const waitForSearch = async () => {
         for (let i = 0; i < 20; i++) {
           const s = document.getElementById("search");
@@ -421,26 +422,26 @@
       try {
         data = await loadData();
       } catch (e) {
-        showError(e.message || "荳肴・縺ｪ繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆");
+        showError(e.message || "不明なエラーが発生しました");
         return;
       }
       hideError();
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
 
-      // 笘・RL繧ｯ繧ｨ繝ｪ ?q= 繧呈､懃ｴ｢縺ｫ蜿肴丐・・etail/index-market 縺九ｉ謌ｻ繧句ｰ守ｷ夂畑・・
+      // ★URLクエリ ?q= を検索に反映（detail/index-market から戻る導線用）
       const url = new URL(location.href);
       const qParam = (url.searchParams.get("q") || "").trim();
 
-      // searchInput 縺ｯ header 逕ｱ譚･
+      // searchInput は header 由来
       const searchInput = document.getElementById("search") || await waitForSearch();
       if (!searchInput) {
-        showError("讀懃ｴ｢谺・・蛻晄悄蛹悶↓螟ｱ謨励＠縺ｾ縺励◆・・eader縺瑚ｪｭ縺ｿ霎ｼ繧√※縺・∪縺帙ｓ・・);
+        showError("検索欄の初期化に失敗しました（headerが読み込めていません）");
         return;
       }
       if (qParam) searchInput.value = qParam;
 
-      // 譛邨よ峩譁ｰ縺｣縺ｽ縺・｡ｨ遉ｺ・育峩霑大叙蠑暮ｱ縺ｮ譛螟ｧ譌･莉假ｼ・
+      // 最終更新っぽい表示（直近取引週の最大日付）
       try {
         let maxWeek = null;
         for (const s of sleeves) {
@@ -451,12 +452,12 @@
         }
         if (maxWeek) {
           const u = document.getElementById("updatedAt");
-          u.textContent = `譛邨よ峩譁ｰ・・{maxWeek}・磯ｱ谺｡・荏;
+          u.textContent = `最終更新：${maxWeek}（週次）`;
           u.style.display = "block";
         }
       } catch (_) { }
 
-      // 繧ｻ繝ｬ繧ｯ繝亥・譛溷喧
+      // セレクト初期化
       const releaseYearSel = document.getElementById("releaseYear");
       const seriesSel = document.getElementById("series");
       const priceBandSel = document.getElementById("priceBand");
@@ -480,7 +481,7 @@
         seriesSel.appendChild(opt);
       }
 
-      // ---- 譽壹ョ繝ｼ繧ｿ菴懈・ ----
+      // ---- 棚データ作成 ----
       const priceRank = sleeves
         .map(s => ({ s, p: getLatestWeeklyPrice(s) }))
         .filter(x => x.p != null)
@@ -509,62 +510,62 @@
         .sort((a, b) => b.g.rate - a.g.rate)
         .slice(0, 10);
 
-      // ---- 譽壽緒逕ｻ ----
+      // ---- 棚描画 ----
       const railSurge = document.getElementById("rail-surge");
       const railGrowth = document.getElementById("rail-growth");
       const railPrice = document.getElementById("rail-price");
 
       railSurge.innerHTML = surgeRank.length ? surgeRank.map(({ s, pair, diff }) => {
         const cls = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
-        const sign = diff > 0 ? "+" : diff < 0 ? "竏・ : "ﾂｱ";
+        const sign = diff > 0 ? "+" : diff < 0 ? "−" : "±";
         const pct = (pair.prev.price !== 0) ? ((diff / pair.prev.price) * 100) : null;
-        const pctText = (pct == null || !Number.isFinite(pct)) ? "" : `・・{pct.toFixed(1)}%・荏;
+        const pctText = (pct == null || !Number.isFinite(pct)) ? "" : `（${pct.toFixed(1)}%）`;
 
         const subHtml = `
-          <p class="tile-price">${pair.latest.price.toLocaleString()}蜀・/p>
-          <p class="tile-sub"><span class="${cls}">竊・蜑榊屓豈・${sign}${Math.abs(diff).toLocaleString()}蜀・/span> ${escapeHtml(pctText)}</p>
+          <p class="tile-price">${pair.latest.price.toLocaleString()}円</p>
+          <p class="tile-sub"><span class="${cls}">↑ 前回比 ${sign}${Math.abs(diff).toLocaleString()}円</span> ${escapeHtml(pctText)}</p>
         `;
 
         const chipsHtml = `
-          <span class="chip">逶ｴ霑・${pair.latest.week}</span>
-          <span class="chip">蜑榊屓 ${pair.prev.week}</span>
+          <span class="chip">直近 ${pair.latest.week}</span>
+          <span class="chip">前回 ${pair.prev.week}</span>
         `;
         return buildTileHTML(s, subHtml, chipsHtml);
-      }).join("") : `<div class="meta" style="padding:8px 2px;">繝・・繧ｿ縺悟｢励∴繧九→陦ｨ遉ｺ縺輔ｌ縺ｾ縺・/div>`;
+      }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
 
       railGrowth.innerHTML = growthRank.length ? growthRank.map(({ s, g }) => {
         const cls = g.diff > 0 ? "up" : g.diff < 0 ? "down" : "flat";
-        const sign = g.diff > 0 ? "+" : g.diff < 0 ? "竏・ : "ﾂｱ";
+        const sign = g.diff > 0 ? "+" : g.diff < 0 ? "−" : "±";
         const rateAbs = Math.abs(g.rate).toFixed(1);
 
         const subHtml = `
-          <p class="tile-price">${g.latest.price.toLocaleString()}蜀・/p>
-          <p class="tile-sub"><span class="${cls}">30譌･ ${sign}${Math.abs(g.diff).toLocaleString()}蜀・/span>・・{g.diff > 0 ? "+" : g.diff < 0 ? "-" : ""}${rateAbs}%・・/p>
+          <p class="tile-price">${g.latest.price.toLocaleString()}円</p>
+          <p class="tile-sub"><span class="${cls}">30日 ${sign}${Math.abs(g.diff).toLocaleString()}円</span>（${g.diff > 0 ? "+" : g.diff < 0 ? "-" : ""}${rateAbs}%）</p>
         `;
 
         const chipsHtml = `
-          <span class="chip">蝓ｺ貅・${g.base.week}</span>
-          <span class="chip">逶ｴ霑・${g.latest.week}</span>
+          <span class="chip">基準 ${g.base.week}</span>
+          <span class="chip">直近 ${g.latest.week}</span>
         `;
         return buildTileHTML(s, subHtml, chipsHtml);
-      }).join("") : `<div class="meta" style="padding:8px 2px;">繝・・繧ｿ縺悟｢励∴繧九→陦ｨ遉ｺ縺輔ｌ縺ｾ縺・/div>`;
+      }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
 
       railPrice.innerHTML = priceRank.length ? priceRank.map((s) => {
         const pair = getWeeklyPair(s);
         const p = pair ? pair.latest.price : null;
         const subHtml = `
-          <p class="tile-price">${(p == null) ? "窶・ : `${p.toLocaleString()}蜀・}</p>
-          <p class="tile-sub">${pair ? `逶ｴ霑・${pair.latest.week}` : "逶ｴ霑代ョ繝ｼ繧ｿ縺ｪ縺・}</p>
+          <p class="tile-price">${(p == null) ? "—" : `${p.toLocaleString()}円`}</p>
+          <p class="tile-sub">${pair ? `直近 ${pair.latest.week}` : "直近データなし"}</p>
         `;
         const totalTrades = getTotalTradeCount(s);
         const chipsHtml = `
-          <span class="chip">邱丞叙蠑・${totalTrades == null ? "窶・ : totalTrades.toLocaleString() + "莉ｶ"}</span>
-          <span class="chip">逋ｺ螢ｲ蟷ｴ ${escapeHtml(s.releaseYear ?? "窶・)}</span>
+          <span class="chip">総取引 ${totalTrades == null ? "—" : totalTrades.toLocaleString() + "件"}</span>
+          <span class="chip">発売年 ${escapeHtml(s.releaseYear ?? "—")}</span>
         `;
         return buildTileHTML(s, subHtml, chipsHtml);
-      }).join("") : `<div class="meta" style="padding:8px 2px;">繝・・繧ｿ縺悟｢励∴繧九→陦ｨ遉ｺ縺輔ｌ縺ｾ縺・/div>`;
+      }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
 
-      // ---- 荳隕ｧ・域､懃ｴ｢繝ｻ邨槭ｊ霎ｼ縺ｿ・・----
+      // ---- 一覧（検索・絞り込み） ----
       function getCardPrice(s) {
         return getLatestWeeklyPrice(s);
       }
@@ -605,7 +606,7 @@
         });
 
         if (filtered.length === 0) {
-          list.innerHTML = `<div class="card"><div class="title">隧ｲ蠖薙↑縺・/div><div class="meta">譚｡莉ｶ縺ｫ荳閾ｴ縺吶ｋ繧ｹ繝ｪ繝ｼ繝悶′縺ゅｊ縺ｾ縺帙ｓ</div></div>`;
+          list.innerHTML = `<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>`;
           return;
         }
 
@@ -613,13 +614,13 @@
 
         for (const s of filtered) {
           const p = getCardPrice(s);
-          const priceText = (p == null) ? "窶・ : `${p.toLocaleString()}蜀・;
+          const priceText = (p == null) ? "—" : `${p.toLocaleString()}円`;
 
           const weeklyPair = getWeeklyPair(s);
           const weeklyHtml = formatDelta(weeklyPair);
 
           const totalTrades = getTotalTradeCount(s);
-          const totalTradesText = (totalTrades == null) ? "窶・ : `${totalTrades.toLocaleString()}莉ｶ`;
+          const totalTradesText = (totalTrades == null) ? "—" : `${totalTrades.toLocaleString()}件`;
 
           const imgSrc = String(s.imageUrl || "").trim();
           const imgHtml = imgSrc
@@ -633,18 +634,18 @@
             ${imgHtml}
             <div class="title">${escapeHtml(s.name ?? "")}</div>
 
-            <div class="price">${escapeHtml(priceText)} <span class="meta">・域怙譁ｰ騾ｱ谺｡・・/span></div>
+            <div class="price">${escapeHtml(priceText)} <span class="meta">（最新週次）</span></div>
 
             ${weeklyHtml}
 
             <div class="badges">
-              <span class="badge">邱丞叙蠑包ｼ・{escapeHtml(totalTradesText)}</span>
-              <span class="badge">逋ｺ螢ｲ蟷ｴ・・{escapeHtml(s.releaseYear ?? "")}</span>
+              <span class="badge">総取引：${escapeHtml(totalTradesText)}</span>
+              <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
               <span class="badge">${escapeHtml(s.condition ?? "")}</span>
               <span class="badge">${escapeHtml(s.series ?? "")}</span>
             </div>
 
-            <a class="btn" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}">萓｡譬ｼ謗ｨ遘ｻ繧定ｦ九ｋ 竊・/a>
+            <a class="btn" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}">価格推移を見る →</a>
           `;
           frag.appendChild(div);
         }
@@ -652,7 +653,7 @@
         list.appendChild(frag);
       }
 
-      // 繧､繝吶Φ繝茨ｼ亥・蜉帙・霆ｽ縺上ョ繝舌え繝ｳ繧ｹ・・
+      // イベント（入力は軽くデバウンス）
       let t = null;
       searchInput.addEventListener("input", () => {
         clearTimeout(t);

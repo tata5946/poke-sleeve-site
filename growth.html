@@ -1,31 +1,31 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>鬮倬ｨｰ邇・Λ繝ｳ繧ｭ繝ｳ繧ｰ・懊・繧ｱ繧ｹ繝ｪ逶ｸ蝣ｴ繝翫ン</title>
-  <meta name="description" content="繝昴こ繧ｫ繧ｹ繝ｪ繝ｼ繝悶・鬮倬ｨｰ邇・Λ繝ｳ繧ｭ繝ｳ繧ｰ・・0譌･・峨ｒ謗ｲ霈峨よ､懃ｴ｢繝ｻ邨槭ｊ霎ｼ縺ｿ縺ｧ逶ｸ蝣ｴ繧呈ｯ碑ｼ・〒縺阪∪縺吶・>
+  <title>高騰率ランキング｜ポケスリ相場ナビ</title>
+  <meta name="description" content="ポケカスリーブの高騰率ランキング（30日）を掲載。検索・絞り込みで相場を比較できます。">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
 
-  <!-- 蜈ｱ騾咾SS -->
+  <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
 </head>
 
 <body>
-  <!-- 蜈ｱ騾壹・繝・ム繝ｼ蟾ｮ縺苓ｾｼ縺ｿ -->
+  <!-- 共通ヘッダー差し込み -->
   <div id="site-header"></div>
 
   <div class="container">
     <div class="hero">
       <div class="hero-card">
         <div>
-          <p class="hero-title">鬮倬ｨｰ邇・Λ繝ｳ繧ｭ繝ｳ繧ｰ</p>
-          <p class="hero-desc">逶ｴ霑代・蜿門ｼ暮ｱ縺九ｉ30譌･蜑肴凾轤ｹ縺ｮ萓｡譬ｼ縺ｨ豈碑ｼ・＠縲∽ｸ頑・邇・′鬮倥＞鬆・↓繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ陦ｨ遉ｺ縺励∪縺吶・/p>
-          <p class="data-note">窶ｻ萓｡譬ｼ縺ｯ繝輔Μ繝槭い繝励Μ遲峨・螢ｲ蜊ｴ螻･豁ｴ繧偵ｂ縺ｨ縺ｫ迢ｬ閾ｪ髮・ｨ医＠縺ｦ縺・∪縺吶・/p>
+          <p class="hero-title">高騰率ランキング</p>
+          <p class="hero-desc">直近の取引週から30日前時点の価格と比較し、上昇率が高い順にランキング表示します。</p>
+          <p class="data-note">※価格はフリマアプリ等の売却履歴をもとに独自集計しています。</p>
           <p id="updatedAt" class="data-note" style="display:none;"></p>
           <p id="countInfo" class="data-note" style="display:none;"></p>
         </div>
@@ -34,53 +34,53 @@
 
     <div class="main">
       <aside class="panel">
-        <h2>邨槭ｊ霎ｼ縺ｿ</h2>
-        <p class="small">譚｡莉ｶ繧貞､画峩縺吶ｋ縺ｨ繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ縺梧峩譁ｰ縺輔ｌ縺ｾ縺吶・/p>
+        <h2>絞り込み</h2>
+        <p class="small">条件を変更するとランキングが更新されます。</p>
 
         <div id="error" class="error"></div>
 
         <div class="controls">
-          <label>謖・ｨ・
+          <label>指標
             <select id="metric">
-              <option value="rateDesc">荳頑・邇・ｼ・・・/option>
-              <option value="diffDesc">荳頑・鬘搾ｼ亥・・・/option>
+              <option value="rateDesc">上昇率（%）</option>
+              <option value="diffDesc">上昇額（円）</option>
             </select>
           </label>
 
-          <label>譛滄俣
+          <label>期間
             <select id="days">
-              <option value="30">30譌･</option>
-              <option value="14">14譌･</option>
-              <option value="60">60譌･</option>
-              <option value="90">90譌･</option>
+              <option value="30">30日</option>
+              <option value="14">14日</option>
+              <option value="60">60日</option>
+              <option value="90">90日</option>
             </select>
           </label>
 
-          <label>逋ｺ螢ｲ蟷ｴ
+          <label>発売年
             <select id="releaseYear">
-              <option value="">蜈ｨ驛ｨ</option>
+              <option value="">全部</option>
             </select>
           </label>
 
-          <label>繧ｷ繝ｪ繝ｼ繧ｺ
+          <label>シリーズ
             <select id="series">
-              <option value="">蜈ｨ驛ｨ</option>
+              <option value="">全部</option>
             </select>
           </label>
 
-          <label>譛菴惹ｸ頑・邇・ｼ・・・
+          <label>最低上昇率（%）
             <select id="minRate">
-              <option value="-999">謖・ｮ壹↑縺・/option>
-              <option value="0">0%莉･荳・/option>
-              <option value="10">+10%莉･荳・/option>
-              <option value="20">+20%莉･荳・/option>
-              <option value="30">+30%莉･荳・/option>
-              <option value="50">+50%莉･荳・/option>
-              <option value="100">+100%莉･荳・/option>
+              <option value="-999">指定なし</option>
+              <option value="0">0%以上</option>
+              <option value="10">+10%以上</option>
+              <option value="20">+20%以上</option>
+              <option value="30">+30%以上</option>
+              <option value="50">+50%以上</option>
+              <option value="100">+100%以上</option>
             </select>
           </label>
 
-          <button id="clear" type="button">繧ｯ繝ｪ繧｢</button>
+          <button id="clear" type="button">クリア</button>
         </div>
       </aside>
 
@@ -89,11 +89,11 @@
       </main>
     </div>
 
-    <!-- 蜈ｱ騾壹ヵ繝・ち繝ｼ蟾ｮ縺苓ｾｼ縺ｿ -->
+    <!-- 共通フッター差し込み -->
     <div id="site-footer"></div>
   </div>
 
-  <!-- 蜈ｱ騾哽S・・eader/footer蟾ｮ縺苓ｾｼ縺ｿ & nav active 遲会ｼ・-->
+  <!-- 共通JS（header/footer差し込み & nav active 等） -->
   <script src="./assets/common.js"></script>
 
   <script>
@@ -157,11 +157,11 @@
           signal: controller.signal,
           headers: { "Accept": "application/json" }
         });
-        if (!res.ok) throw new Error(`繝・・繧ｿ蜿門ｾ励↓螟ｱ謨励＠縺ｾ縺励◆・・TTP ${res.status}・荏);
+        if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
         return await res.json();
       } catch (e) {
         if (e && e.name === "AbortError") {
-          throw new Error("繝・・繧ｿ蜿門ｾ励′繧ｿ繧､繝繧｢繧ｦ繝医＠縺ｾ縺励◆縲よ凾髢薙ｒ縺翫＞縺ｦ蜀榊ｺｦ縺願ｩｦ縺励￥縺縺輔＞縲・);
+          throw new Error("データ取得がタイムアウトしました。時間をおいて再度お試しください。");
         }
         throw e;
       } finally {
@@ -170,10 +170,11 @@
     }
 
     async function loadData() {
-      if (!window.common || typeof window.common.loadData !== "function") {
-        throw new Error("共通データローダーの初期化に失敗しました（assets/common.js）");
-      }
-      return await window.common.loadData();
+      const url = window.GAS_URL;  // common.jsが同期読み込み済みなので確実に存在
+      if (!url) throw new Error("GAS_URL が未設定です（common.js を確認してください）");
+      const res = await fetch(url + "?v=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
+      return await res.json();
     }
 
     // -----------------------------
@@ -260,8 +261,8 @@
 
     function formatGrowthLine(g) {
       const cls = g.diff > 0 ? "up" : g.diff < 0 ? "down" : "flat";
-      const sign = g.diff > 0 ? "+" : g.diff < 0 ? "竏・ : "ﾂｱ";
-      const arrow = g.diff > 0 ? "竊・ : g.diff < 0 ? "竊・ : "竊・;
+      const sign = g.diff > 0 ? "+" : g.diff < 0 ? "−" : "±";
+      const arrow = g.diff > 0 ? "↑" : g.diff < 0 ? "↓" : "→";
       const abs = Math.abs(g.diff);
 
       const rateAbs = Math.abs(g.rate).toFixed(1);
@@ -269,9 +270,9 @@
 
       return `
         <div class="delta">
-          <span class="delta-main ${cls}">${arrow} ${sign}${abs.toLocaleString()}蜀・ｼ・{rateSign}${rateAbs}%・・/span>
-          <span class="chip">蝓ｺ貅・${escapeHtml(g.base.week)}・・{g.base.price.toLocaleString()}蜀・/span>
-          <span class="chip">逶ｴ霑・${escapeHtml(g.latest.week)}・・{g.latest.price.toLocaleString()}蜀・/span>
+          <span class="delta-main ${cls}">${arrow} ${sign}${abs.toLocaleString()}円（${rateSign}${rateAbs}%）</span>
+          <span class="chip">基準 ${escapeHtml(g.base.week)}：${g.base.price.toLocaleString()}円</span>
+          <span class="chip">直近 ${escapeHtml(g.latest.week)}：${g.latest.price.toLocaleString()}円</span>
         </div>
       `;
     }
@@ -280,7 +281,7 @@
     // main
     // -----------------------------
     async function main() {
-      // common.js 縺・header 繧貞ｷｮ縺苓ｾｼ繧諠ｳ螳壹↑縺ｮ縺ｧ縲∵､懃ｴ｢UI縺ｯ縺昴・縺ｾ縺ｾ蛻ｩ逕ｨ・医・繝ｼ繧ｸ蜀・､懃ｴ｢・・
+      // common.js が header を差し込む想定なので、検索UIはそのまま利用（ページ内検索）
       const list = document.getElementById("list");
       const searchInput = document.getElementById("search");
 
@@ -291,7 +292,7 @@
       const minRateSel = document.getElementById("minRate");
       const clearBtn = document.getElementById("clear");
 
-      // 蠢ｵ縺ｮ縺溘ａ・喇eader蟾ｮ縺苓ｾｼ縺ｿ縺碁≦縺・→ search 縺後∪縺辟｡縺・・縺ｧ蠕・▽
+      // 念のため：header差し込みが遅いと search がまだ無いので待つ
       const waitForSearch = async () => {
         for (let i = 0; i < 20; i++) {
           const s = document.getElementById("search");
@@ -303,7 +304,7 @@
 
       const sEl = searchInput || await waitForSearch();
       if (!sEl) {
-        showError("讀懃ｴ｢繝舌・縺瑚ｦ九▽縺九ｊ縺ｾ縺帙ｓ・・eader隱ｭ縺ｿ霎ｼ縺ｿ縺ｫ螟ｱ謨励＠縺ｦ縺・ｋ蜿ｯ閭ｽ諤ｧ縺後≠繧翫∪縺呻ｼ・);
+        showError("検索バーが見つかりません（header読み込みに失敗している可能性があります）");
         return;
       }
 
@@ -311,14 +312,14 @@
       try {
         data = await loadData();
       } catch (e) {
-        showError(e.message || "荳肴・縺ｪ繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆");
+        showError(e.message || "不明なエラーが発生しました");
         return;
       }
       hideError();
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
 
-      // 譛邨よ峩譁ｰ・育峩霑大叙蠑暮ｱ縺ｮ譛螟ｧ譌･莉假ｼ・
+      // 最終更新（直近取引週の最大日付）
       try {
         let maxWeek = null;
         for (const s of sleeves) {
@@ -330,12 +331,12 @@
         }
         if (maxWeek) {
           const u = document.getElementById("updatedAt");
-          u.textContent = `譛邨よ峩譁ｰ・・{maxWeek}・磯ｱ谺｡・荏;
+          u.textContent = `最終更新：${maxWeek}（週次）`;
           u.style.display = "block";
         }
       } catch (_) { }
 
-      // 繧ｻ繝ｬ繧ｯ繝亥・譛溷喧
+      // セレクト初期化
       const releaseYears = uniq(sleeves.map(s => s.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
       const seriesList = uniq(sleeves.map(s => s.series)).sort();
 
@@ -371,7 +372,7 @@
           const g = computeGrowth(s, days);
           if (!g) continue;
 
-          // 荳頑・邇・ヵ繧｣繝ｫ繧ｿ・域欠螳壹↑縺励↑繧・-999・・
+          // 上昇率フィルタ（指定なしなら -999）
           if (Number.isFinite(minRate) && minRate > -900) {
             if (g.rate < minRate) continue;
           }
@@ -391,11 +392,11 @@
         });
 
         const c = document.getElementById("countInfo");
-        c.textContent = `陦ｨ遉ｺ莉ｶ謨ｰ・・{rows.length.toLocaleString()}莉ｶ・・{days}譌･豈碑ｼ・ｼ荏;
+        c.textContent = `表示件数：${rows.length.toLocaleString()}件（${days}日比較）`;
         c.style.display = "block";
 
         if (rows.length === 0) {
-          list.innerHTML = `<div class="card"><div class="title">隧ｲ蠖薙↑縺・/div><div class="meta">譚｡莉ｶ縺ｫ荳閾ｴ縺吶ｋ繧ｹ繝ｪ繝ｼ繝悶′縺ゅｊ縺ｾ縺帙ｓ</div></div>`;
+          list.innerHTML = `<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>`;
           return;
         }
 
@@ -409,7 +410,7 @@
           const g = row.g;
 
           const totalTrades = getTotalTradeCount(s);
-          const totalTradesText = (totalTrades == null) ? "窶・ : `${totalTrades.toLocaleString()}莉ｶ`;
+          const totalTradesText = (totalTrades == null) ? "—" : `${totalTrades.toLocaleString()}件`;
 
           const imgSrc = String(s.imageUrl || "").trim();
           const imgHtml = imgSrc
@@ -420,29 +421,29 @@
           const div = document.createElement("div");
           div.className = "card";
 
-          const latestPriceText = `${g.latest.price.toLocaleString()}蜀・;
+          const latestPriceText = `${g.latest.price.toLocaleString()}円`;
           const growthHtml = formatGrowthLine(g);
 
           div.innerHTML = `
             ${imgHtml}
 
             <div class="rank-row">
-              <span class="rank-badge">${rank}菴・/span>
+              <span class="rank-badge">${rank}位</span>
               <div class="title" style="margin:0;">${escapeHtml(s.name ?? "")}</div>
             </div>
 
-            <div class="price">${latestPriceText} <span class="meta">・育峩霑大叙蠑暮ｱ・・/span></div>
+            <div class="price">${latestPriceText} <span class="meta">（直近取引週）</span></div>
 
             ${growthHtml}
 
             <div class="badges">
-              <span class="badge">邱丞叙蠑包ｼ・{escapeHtml(totalTradesText)}</span>
-              <span class="badge">逋ｺ螢ｲ蟷ｴ・・{escapeHtml(s.releaseYear ?? "")}</span>
+              <span class="badge">総取引：${escapeHtml(totalTradesText)}</span>
+              <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
               <span class="badge">${escapeHtml(s.condition ?? "")}</span>
               <span class="badge">${escapeHtml(s.series ?? "")}</span>
             </div>
 
-            <a class="btn" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}">萓｡譬ｼ謗ｨ遘ｻ繧定ｦ九ｋ 竊・/a>
+            <a class="btn" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}">価格推移を見る →</a>
           `;
           frag.appendChild(div);
         }
