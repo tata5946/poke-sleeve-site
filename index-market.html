@@ -105,6 +105,40 @@
       border-bottom: 0;
     }
 
+    .chart-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      margin: 0 0 8px;
+    }
+
+    .chart-zoom-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 4px 8px;
+      cursor: pointer;
+      color: #111;
+    }
+
+    .chart-zoom-label {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+      min-width: 44px;
+      text-align: right;
+    }
+
+    .chart-viewport {
+      width: 100%;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
+    }
+
     @media (max-width: 900px) {
       .hero .kpi {
         grid-template-columns: 1fr;
@@ -499,43 +533,76 @@
       el.innerHTML = `
         <div class="chart-wrap">
           <div class="chart-title">${escapeHtml(title)}</div>
+          <div class="chart-toolbar">
+            <button type="button" class="chart-zoom-btn" data-zoom="out">-</button>
+            <button type="button" class="chart-zoom-btn" data-zoom="in">+</button>
+            <button type="button" class="chart-zoom-btn" data-zoom="reset">リセット</button>
+            <span class="chart-zoom-label">100%</span>
+          </div>
           <div class="chart-tooltip"></div>
+          <div class="chart-viewport">
+            <svg class="chart" viewBox="0 0 ${W} ${H}">
+              <defs>
+                <linearGradient id="bgGrad-${escapeHtml(containerId)}" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1e5bd7" stop-opacity="0.08"/>
+                  <stop offset="100%" stop-color="#1e5bd7" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
 
-          <svg class="chart" viewBox="0 0 ${W} ${H}">
-            <defs>
-              <linearGradient id="bgGrad-${escapeHtml(containerId)}" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#1e5bd7" stop-opacity="0.08"/>
-                <stop offset="100%" stop-color="#1e5bd7" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
+              ${tickLines.join("")}
+              ${tickLabels.join("")}
 
-            ${tickLines.join("")}
-            ${tickLabels.join("")}
+              <rect x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="url(#bgGrad-${escapeHtml(containerId)})" />
 
-            <rect x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="url(#bgGrad-${escapeHtml(containerId)})" />
+              <path d="${pathD}" fill="none" stroke="#1e5bd7" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round"/>
 
-            <path d="${pathD}" fill="none" stroke="#1e5bd7" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round"/>
+              <line class="hover-line" y1="${padT}" y2="${H - padB}" stroke="#94a3b8" stroke-width="1" style="display:none;" />
+              <circle class="hover-dot" r="5" fill="#1e5bd7" style="display:none;" />
 
-            <line class="hover-line" y1="${padT}" y2="${H - padB}" stroke="#94a3b8" stroke-width="1" style="display:none;" />
-            <circle class="hover-dot" r="5" fill="#1e5bd7" style="display:none;" />
+              <rect class="hover-hit" x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="transparent"/>
 
-            <rect class="hover-hit" x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="transparent"/>
+              <circle cx="${lastX}" cy="${lastY}" r="5" fill="#1e5bd7"/>
+              <text x="${lastX + 8}" y="${lastY - 8}" font-size="12" font-weight="800" fill="#111">${escapeHtml(lastLabel)}</text>
 
-            <circle cx="${lastX}" cy="${lastY}" r="5" fill="#1e5bd7"/>
-            <text x="${lastX + 8}" y="${lastY - 8}" font-size="12" font-weight="800" fill="#111">${escapeHtml(lastLabel)}</text>
-
-            <text x="${padL}" y="${H - 10}" font-size="14" fill="#667085">${escapeHtml(xFirst)}</text>
-            <text x="${W - padR}" y="${H - 10}" font-size="14" fill="#667085" text-anchor="end">${escapeHtml(xLast)}</text>
-          </svg>
+              <text x="${padL}" y="${H - 10}" font-size="14" fill="#667085">${escapeHtml(xFirst)}</text>
+              <text x="${W - padR}" y="${H - 10}" font-size="14" fill="#667085" text-anchor="end">${escapeHtml(xLast)}</text>
+            </svg>
+          </div>
         </div>
       `;
 
       const wrap = el.querySelector(".chart-wrap");
+      const viewport = el.querySelector(".chart-viewport");
       const svg = el.querySelector("svg.chart");
       const tip = el.querySelector(".chart-tooltip");
       const hit = el.querySelector(".hover-hit");
       const hLine = el.querySelector(".hover-line");
       const hDot = el.querySelector(".hover-dot");
+      const zoomLabel = el.querySelector(".chart-zoom-label");
+      const zoomBtns = Array.from(el.querySelectorAll(".chart-zoom-btn"));
+
+      let zoom = 1;
+      const minZoom = 1;
+      const maxZoom = 3;
+      const stepZoom = 0.25;
+
+      function applyZoom(nextZoom) {
+        zoom = Math.max(minZoom, Math.min(maxZoom, nextZoom));
+        const pct = Math.round(zoom * 100);
+        svg.style.width = `${pct}%`;
+        zoomLabel.textContent = `${pct}%`;
+        if (zoom === 1) viewport.scrollLeft = 0;
+      }
+
+      zoomBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const mode = btn.getAttribute("data-zoom");
+          if (mode === "in") applyZoom(zoom + stepZoom);
+          if (mode === "out") applyZoom(zoom - stepZoom);
+          if (mode === "reset") applyZoom(1);
+        });
+      });
+      applyZoom(1);
 
       hit.addEventListener("mousemove", (ev) => {
         const rect = svg.getBoundingClientRect();
