@@ -176,12 +176,14 @@
 
     .chart-nav-hit {
       cursor: grab;
+      touch-action: none;
     }
 
     .chart-range {
       fill: rgba(30, 91, 215, .15);
       stroke: #1e5bd7;
       stroke-width: 1;
+      pointer-events: none;
     }
 
     .chart-handle {
@@ -189,6 +191,7 @@
       stroke: #1e5bd7;
       stroke-width: 1.5;
       cursor: ew-resize;
+      pointer-events: none;
     }
 
     .table-wrap {
