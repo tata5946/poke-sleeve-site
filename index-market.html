@@ -139,6 +139,30 @@
       touch-action: pan-x pan-y;
     }
 
+    .chart-main-hit {
+      cursor: crosshair;
+    }
+
+    .chart-nav-hit {
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .chart-range {
+      fill: rgba(30, 91, 215, .15);
+      stroke: #1e5bd7;
+      stroke-width: 1;
+      pointer-events: none;
+    }
+
+    .chart-handle {
+      fill: #fff;
+      stroke: #1e5bd7;
+      stroke-width: 1.5;
+      cursor: ew-resize;
+      pointer-events: none;
+    }
+
     @media (max-width: 900px) {
       .hero .kpi {
         grid-template-columns: 1fr;
@@ -639,6 +663,321 @@
       });
     }
 
+    function renderLineChartV2(containerId, title, rows, xKey, yKey, yFmt) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+
+      const data = (Array.isArray(rows) ? rows : [])
+        .map(r => {
+          const x = String(r?.[xKey] ?? "");
+          const n = Number(r?.[yKey]);
+          return { x, y: Number.isFinite(n) ? n : null };
+        })
+        .filter(p => p.x && Number.isFinite(p.y));
+
+      if (data.length < 2) {
+        el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">データが不足しています（週次データが2点以上必要）</div></div>`;
+        return;
+      }
+
+      const W = 1200;
+      const H = 540;
+      const padL = 80;
+      const padR = 24;
+      const mainTop = 24;
+      const mainBottom = 322;
+      const xLabelY = 350;
+      const navTop = 392;
+      const navBottom = 474;
+      const ticks = 4;
+      const minWindow = Math.min(Math.max(2, Math.ceil(data.length * 0.12)), data.length);
+
+      function niceStep(range, t) {
+        const rough = range / t;
+        const pow = Math.pow(10, Math.floor(Math.log10(Math.max(rough, 1))));
+        const candidates = [1, 2, 5, 10].map(m => m * pow);
+        return candidates.reduce((best, v) => Math.abs(v - rough) < Math.abs(best - rough) ? v : best, candidates[0]);
+      }
+
+      const xToPxAll = (i) => {
+        if (data.length <= 1) return padL;
+        return padL + (i / (data.length - 1)) * (W - padL - padR);
+      };
+
+      function rangeLabel(start, end) {
+        if (start === 0 && end === data.length - 1) return "全期間";
+        return `${formatPeriodLabel(data[start].x)} 〜 ${formatPeriodLabel(data[end].x)}`;
+      }
+
+      function clampRange(start, end) {
+        let s = Math.max(0, Math.min(data.length - 1, Math.round(start)));
+        let e = Math.max(0, Math.min(data.length - 1, Math.round(end)));
+        if (s > e) [s, e] = [e, s];
+        if ((e - s + 1) < minWindow) {
+          const need = minWindow - (e - s + 1);
+          s -= Math.ceil(need / 2);
+          e += Math.floor(need / 2);
+          if (s < 0) {
+            e += -s;
+            s = 0;
+          }
+          if (e > data.length - 1) {
+            const over = e - (data.length - 1);
+            s = Math.max(0, s - over);
+            e = data.length - 1;
+          }
+        }
+        return [s, e];
+      }
+
+      el.innerHTML = `
+        <div class="chart-wrap">
+          <div class="chart-title">${escapeHtml(title)}</div>
+          <div class="chart-toolbar">
+            <button type="button" class="chart-zoom-btn" data-zoom="out">-</button>
+            <button type="button" class="chart-zoom-btn" data-zoom="in">+</button>
+            <button type="button" class="chart-zoom-btn" data-zoom="reset">全期間</button>
+            <span class="chart-zoom-label">全期間</span>
+          </div>
+          <div class="chart-tooltip"></div>
+          <div class="chart-viewport">
+            <svg class="chart" viewBox="0 0 ${W} ${H}">
+              <defs>
+                <linearGradient id="bgGrad2-${escapeHtml(containerId)}" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1e5bd7" stop-opacity="0.11" />
+                  <stop offset="100%" stop-color="#1e5bd7" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <g class="main-grid"></g>
+              <g class="main-labels"></g>
+              <path class="main-fill" fill="url(#bgGrad2-${escapeHtml(containerId)})"></path>
+              <path class="main-line" fill="none" stroke="#1e5bd7" stroke-width="3" stroke-linecap="round"></path>
+              <line class="hover-line" stroke="#94a3b8" stroke-width="1" style="display:none;"></line>
+              <circle class="hover-dot" r="5" fill="#1e5bd7" style="display:none;"></circle>
+              <rect class="chart-main-hit" x="${padL}" y="${mainTop}" width="${W - padL - padR}" height="${mainBottom - mainTop}" fill="transparent"></rect>
+              <g class="main-x-labels"></g>
+              <path class="nav-line" fill="none" stroke="#8aa1d6" stroke-width="2"></path>
+              <rect class="chart-nav-hit" x="${padL}" y="${navTop}" width="${W - padL - padR}" height="${navBottom - navTop}" fill="transparent"></rect>
+              <rect class="chart-range" y="${navTop}" height="${navBottom - navTop}"></rect>
+              <rect class="chart-handle chart-handle-left" y="${navTop}" width="10" height="${navBottom - navTop}"></rect>
+              <rect class="chart-handle chart-handle-right" y="${navTop}" width="10" height="${navBottom - navTop}"></rect>
+            </svg>
+          </div>
+        </div>
+      `;
+
+      const wrap = el.querySelector(".chart-wrap");
+      const svg = el.querySelector("svg.chart");
+      const tip = el.querySelector(".chart-tooltip");
+      const hitMain = el.querySelector(".chart-main-hit");
+      const hitNav = el.querySelector(".chart-nav-hit");
+      const hLine = el.querySelector(".hover-line");
+      const hDot = el.querySelector(".hover-dot");
+      const mainGrid = el.querySelector(".main-grid");
+      const mainLabels = el.querySelector(".main-labels");
+      const mainXLabels = el.querySelector(".main-x-labels");
+      const mainFill = el.querySelector(".main-fill");
+      const mainLine = el.querySelector(".main-line");
+      const navLine = el.querySelector(".nav-line");
+      const rangeRect = el.querySelector(".chart-range");
+      const leftHandle = el.querySelector(".chart-handle-left");
+      const rightHandle = el.querySelector(".chart-handle-right");
+      const zoomLabel = el.querySelector(".chart-zoom-label");
+      const zoomBtns = Array.from(el.querySelectorAll(".chart-zoom-btn"));
+
+      const yAllMin = Math.min(...data.map(d => d.y));
+      const yAllMax = Math.max(...data.map(d => d.y));
+      const yAllSpan = (yAllMax - yAllMin) || 1;
+      const yNavMin = yAllMin - yAllSpan * 0.08;
+      const yNavMax = yAllMax + yAllSpan * 0.08;
+
+      const yToPxNav = (v) => navTop + (1 - (v - yNavMin) / (yNavMax - yNavMin)) * (navBottom - navTop);
+      const navPath = data.map((p, i) => `${i === 0 ? "M" : "L"} ${xToPxAll(i)} ${yToPxNav(p.y)}`).join(" ");
+      navLine.setAttribute("d", navPath);
+
+      let rangeStart = 0;
+      let rangeEnd = data.length - 1;
+      let activeRange = [0, data.length - 1];
+      let dragMode = null;
+      let dragAnchor = 0;
+      let dragLength = data.length;
+
+      function toSvgX(clientX) {
+        const rect = svg.getBoundingClientRect();
+        const x = clientX - rect.left;
+        return (x / rect.width) * W;
+      }
+
+      function idxFromClientX(clientX) {
+        const vbX = toSvgX(clientX);
+        const t = (vbX - padL) / (W - padL - padR);
+        const idx = Math.round(t * (data.length - 1));
+        return Math.max(0, Math.min(data.length - 1, idx));
+      }
+
+      function renderRange() {
+        const [s, e] = activeRange;
+        const visible = data.slice(s, e + 1);
+        if (!visible.length) return;
+
+        const xToPxMain = (i) => {
+          if (visible.length <= 1) return padL;
+          return padL + (i / (visible.length - 1)) * (W - padL - padR);
+        };
+
+        const ys = visible.map(v => v.y);
+        let yMin = Math.min(...ys);
+        let yMax = Math.max(...ys);
+        const margin = (yMax - yMin) * 0.12 || 1;
+        yMin -= margin;
+        yMax += margin;
+        const step = niceStep(yMax - yMin, ticks);
+        yMin = Math.floor(yMin / step) * step;
+        yMax = Math.ceil(yMax / step) * step;
+
+        const yToPxMain = (v) => mainTop + (1 - (v - yMin) / (yMax - yMin)) * (mainBottom - mainTop);
+        const pathD = visible.map((p, i) => `${i === 0 ? "M" : "L"} ${xToPxMain(i)} ${yToPxMain(p.y)}`).join(" ");
+        const fillD = `${pathD} L ${xToPxMain(visible.length - 1)} ${mainBottom} L ${xToPxMain(0)} ${mainBottom} Z`;
+        mainLine.setAttribute("d", pathD);
+        mainFill.setAttribute("d", fillD);
+
+        const gridLines = [];
+        const yLabels = [];
+        for (let i = 0; i <= ticks; i++) {
+          const v = yMin + (i / ticks) * (yMax - yMin);
+          const y = yToPxMain(v);
+          gridLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef"/>`);
+          yLabels.push(`<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="12" fill="#475467" font-weight="700">${escapeHtml(yFmt(v))}</text>`);
+        }
+        mainGrid.innerHTML = gridLines.join("");
+        mainLabels.innerHTML = yLabels.join("");
+
+        const midIdx = Math.floor((visible.length - 1) / 2);
+        const xLabels = [
+          { x: xToPxMain(0), text: formatPeriodLabel(visible[0].x), anchor: "start" },
+          { x: xToPxMain(midIdx), text: formatPeriodLabel(visible[midIdx].x), anchor: "middle" },
+          { x: xToPxMain(visible.length - 1), text: formatPeriodLabel(visible[visible.length - 1].x), anchor: "end" }
+        ];
+        mainXLabels.innerHTML = xLabels.map(l =>
+          `<text x="${l.x}" y="${xLabelY}" font-size="13" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
+        ).join("");
+
+        const rangeX1 = xToPxAll(s);
+        const rangeX2 = xToPxAll(e);
+        rangeRect.setAttribute("x", rangeX1);
+        rangeRect.setAttribute("width", Math.max(2, rangeX2 - rangeX1));
+        leftHandle.setAttribute("x", rangeX1 - 5);
+        rightHandle.setAttribute("x", rangeX2 - 5);
+        zoomLabel.textContent = rangeLabel(s, e);
+
+        hitMain.onmousemove = (ev) => {
+          const vbX = toSvgX(ev.clientX);
+          const t = (vbX - padL) / (W - padL - padR);
+          const visIdx = Math.max(0, Math.min(visible.length - 1, Math.round(t * (visible.length - 1))));
+          const point = visible[visIdx];
+          const px = xToPxMain(visIdx);
+          const py = yToPxMain(point.y);
+
+          hLine.style.display = "block";
+          hDot.style.display = "block";
+          tip.style.display = "block";
+          hLine.setAttribute("x1", px);
+          hLine.setAttribute("x2", px);
+          hLine.setAttribute("y1", mainTop);
+          hLine.setAttribute("y2", mainBottom);
+          hDot.setAttribute("cx", px);
+          hDot.setAttribute("cy", py);
+
+          tip.textContent = `${formatPeriodLabel(point.x)} / ${yFmt(point.y)}`;
+          const wrapRect = wrap.getBoundingClientRect();
+          tip.style.left = `${Math.min(Math.max(ev.clientX - wrapRect.left, 56), wrapRect.width - 56)}px`;
+          tip.style.top = `${Math.max(ev.clientY - wrapRect.top - 12, 8)}px`;
+        };
+      }
+
+      function updateRange(start, end) {
+        const [s, e] = clampRange(start, end);
+        activeRange = [s, e];
+        rangeStart = s;
+        rangeEnd = e;
+        renderRange();
+      }
+
+      function hideHover() {
+        hLine.style.display = "none";
+        hDot.style.display = "none";
+        tip.style.display = "none";
+      }
+
+      hitMain.addEventListener("mouseleave", hideHover);
+
+      hitNav.addEventListener("pointerdown", (ev) => {
+        const idx = idxFromClientX(ev.clientX);
+        const leftX = xToPxAll(rangeStart);
+        const rightX = xToPxAll(rangeEnd);
+        const downX = toSvgX(ev.clientX);
+        const nearLeft = Math.abs(downX - leftX) <= 10;
+        const nearRight = Math.abs(downX - rightX) <= 10;
+
+        if (nearLeft) dragMode = "left";
+        else if (nearRight) dragMode = "right";
+        else if (idx >= rangeStart && idx <= rangeEnd) {
+          dragMode = "move";
+          dragAnchor = idx - rangeStart;
+          dragLength = rangeEnd - rangeStart + 1;
+        } else {
+          dragMode = null;
+          const span = rangeEnd - rangeStart;
+          const nextStart = Math.max(0, Math.min(data.length - 1 - span, idx - Math.floor(span / 2)));
+          updateRange(nextStart, nextStart + span);
+        }
+        hitNav.setPointerCapture(ev.pointerId);
+      });
+
+      hitNav.addEventListener("pointermove", (ev) => {
+        if (!dragMode) return;
+        const idx = idxFromClientX(ev.clientX);
+        if (dragMode === "left") updateRange(idx, rangeEnd);
+        if (dragMode === "right") updateRange(rangeStart, idx);
+        if (dragMode === "move") {
+          let nextStart = idx - dragAnchor;
+          nextStart = Math.max(0, Math.min(data.length - dragLength, nextStart));
+          updateRange(nextStart, nextStart + dragLength - 1);
+        }
+      });
+
+      hitNav.addEventListener("pointerup", (ev) => {
+        dragMode = null;
+        if (hitNav.hasPointerCapture(ev.pointerId)) hitNav.releasePointerCapture(ev.pointerId);
+      });
+
+      hitNav.addEventListener("pointercancel", (ev) => {
+        dragMode = null;
+        if (hitNav.hasPointerCapture(ev.pointerId)) hitNav.releasePointerCapture(ev.pointerId);
+      });
+
+      zoomBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const mode = btn.getAttribute("data-zoom");
+          const span = rangeEnd - rangeStart + 1;
+          const center = Math.round((rangeStart + rangeEnd) / 2);
+          if (mode === "in") {
+            const nextSpan = Math.max(minWindow, Math.floor(span * 0.75));
+            const half = Math.floor(nextSpan / 2);
+            updateRange(center - half, center - half + nextSpan - 1);
+          }
+          if (mode === "out") {
+            const nextSpan = Math.min(data.length, Math.ceil(span * 1.3));
+            const half = Math.floor(nextSpan / 2);
+            updateRange(center - half, center - half + nextSpan - 1);
+          }
+          if (mode === "reset") updateRange(0, data.length - 1);
+        });
+      });
+
+      updateRange(0, data.length - 1);
+    }
+
     async function main() {
       // header差し込みが遅いと #search が無いことがあるので待つ
       const waitForSearch = async () => {
@@ -726,7 +1065,7 @@
         document.getElementById("indexChart").innerHTML =
           `<div class="chart-wrap"><div class="chart-title">スリーブ指数 推移（週次）</div><div class="meta">指数データが不足しています</div></div>`;
       } else {
-        renderLineChart("indexChart", "スリーブ指数 推移（週次）", indexSeries, "week", "index", (v) => Number(v).toFixed(1));
+        renderLineChartV2("indexChart", "スリーブ指数 推移（週次）", indexSeries, "week", "index", (v) => Number(v).toFixed(1));
       }
 
       // テーブル
