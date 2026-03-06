@@ -5,6 +5,10 @@
 
 :root {
     --bg: #f5f9ff;
+    --bg-soft-1: #eef4ff;
+    --bg-soft-2: #f8fbff;
+    --bg-glow-a: rgba(30, 91, 215, .12);
+    --bg-glow-b: rgba(255, 204, 0, .14);
     --card: #ffffff;
     --text: #111;
     --muted: #667085;
@@ -32,7 +36,11 @@ body {
 body {
     font-family: system-ui, -apple-system, "Segoe UI", "M PLUS Rounded 1c", sans-serif;
     margin: 0;
-    background: linear-gradient(180deg, #f7fbff 0%, var(--bg) 100%);
+    background:
+        radial-gradient(1200px 520px at 8% -8%, var(--bg-glow-a) 0%, rgba(30, 91, 215, 0) 62%),
+        radial-gradient(920px 420px at 92% 2%, var(--bg-glow-b) 0%, rgba(255, 204, 0, 0) 58%),
+        linear-gradient(180deg, var(--bg-soft-2) 0%, var(--bg) 46%, var(--bg-soft-1) 100%);
+    background-attachment: fixed;
     color: var(--text);
 }
 
