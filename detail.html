@@ -371,7 +371,8 @@
     }
 
     function buildMercariSearchUrl(name) {
-      const keyword = String(name || "").trim();
+      const baseName = String(name || "").trim();
+      const keyword = baseName ? `${baseName} デッキシールド` : "";
       if (!keyword) return "https://jp.mercari.com/search";
       return `https://jp.mercari.com/search?keyword=${encodeURIComponent(keyword)}`;
     }
