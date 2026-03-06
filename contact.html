@@ -128,11 +128,6 @@
           </div>
 
           <div class="field">
-            <label for="email">メールアドレス<span class="required">必須</span></label>
-            <input id="email" name="email" type="email" maxlength="120" required />
-          </div>
-
-          <div class="field">
             <label for="subject">件名<span class="required">必須</span></label>
             <input id="subject" name="subject" type="text" maxlength="100" required />
           </div>
@@ -165,13 +160,10 @@
 
     function validate(form) {
       const name = String(form.name.value || "").trim();
-      const email = String(form.email.value || "").trim();
       const subject = String(form.subject.value || "").trim();
       const message = String(form.message.value || "").trim();
-      if (!name || !email || !subject || !message) return { ok: false, msg: "必須項目を入力してください。" };
-      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRe.test(email)) return { ok: false, msg: "メールアドレスの形式が不正です。" };
-      return { ok: true, value: { name, email, subject, message } };
+      if (!name || !subject || !message) return { ok: false, msg: "必須項目を入力してください。" };
+      return { ok: true, value: { name, subject, message } };
     }
 
     async function submitContact(payload) {
@@ -181,7 +173,6 @@
       const body = {
         action: "contact",
         name: payload.name,
-        email: payload.email,
         subject: payload.subject,
         message: payload.message,
         page: location.href,
@@ -220,8 +211,7 @@
 
         sendBtn.disabled = true;
         try {
-          const payload = checked.value;
-          await submitContact(payload);
+          await submitContact(checked.value);
           location.href = "./contact-complete.html";
         } catch (err) {
           const msg = (err && err.message) ? err.message : "送信に失敗しました。時間をおいて再試行してください。";
