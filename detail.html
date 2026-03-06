@@ -304,6 +304,7 @@
 
               <div class="btn-row">
                 <a class="btn primary" id="backLink" href="./index.html">← 一覧へ戻る</a>
+                <a class="btn" id="mercariLink" href="https://jp.mercari.com/search" target="_blank" rel="noopener noreferrer nofollow">メルカリで最安値を見る</a>
               </div>
             </div>
           </div>
@@ -367,6 +368,12 @@
       const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
       if (!m) return s;
       return `${m[1]}/${m[2]}/${m[3]}`;
+    }
+
+    function buildMercariSearchUrl(name) {
+      const keyword = String(name || "").trim();
+      if (!keyword) return "https://jp.mercari.com/search";
+      return `https://jp.mercari.com/search?keyword=${encodeURIComponent(keyword)}`;
     }
 
     function normalizeWeekly(arr) {
@@ -856,6 +863,8 @@
       `;
 
       document.getElementById("backLink").href = "./index.html";
+      const mercariLink = document.getElementById("mercariLink");
+      if (mercariLink) mercariLink.href = buildMercariSearchUrl(s.name);
 
       const weeklyRows = normalizeWeekly(s.weeklyPrices);
       renderLineChart("weeklyChart", "週次価格 推移", weeklyRows, "week", "price");
