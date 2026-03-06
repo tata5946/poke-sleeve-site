@@ -92,8 +92,7 @@ a:hover {
 
 /* header */
 .header {
-    position: sticky;
-    top: 0;
+    position: relative;
     z-index: 50;
     background: #fff;
     border-bottom: 1px solid var(--border);
@@ -156,8 +155,12 @@ a:hover {
 
 /* header bottom nav */
 .header-bottom {
+    position: sticky;
+    top: 0;
+    z-index: 70;
     background: #111;
     border-top: 1px solid rgba(255, 255, 255, .08);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .18);
 }
 
 .header-bottom-inner {
