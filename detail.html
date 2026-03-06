@@ -578,8 +578,8 @@
               <path class="nav-line" fill="none" stroke="#8aa1d6" stroke-width="2"></path>
               <rect class="chart-nav-hit" x="${padL}" y="${navTop}" width="${W - padL - padR}" height="${navBottom - navTop}" fill="transparent"></rect>
               <rect class="chart-range" y="${navTop}" height="${navBottom - navTop}"></rect>
-              <rect class="chart-handle chart-handle-left" y="${navTop}" width="10" height="${navBottom - navTop}"></rect>
-              <rect class="chart-handle chart-handle-right" y="${navTop}" width="10" height="${navBottom - navTop}"></rect>
+              <rect class="chart-handle chart-handle-left" y="${navTop}" width="14" height="${navBottom - navTop}"></rect>
+              <rect class="chart-handle chart-handle-right" y="${navTop}" width="14" height="${navBottom - navTop}"></rect>
             </svg>
           </div>
         </div>
@@ -685,8 +685,8 @@
         const rangeX2 = xToPxAll(e);
         rangeRect.setAttribute("x", rangeX1);
         rangeRect.setAttribute("width", Math.max(2, rangeX2 - rangeX1));
-        leftHandle.setAttribute("x", rangeX1 - 5);
-        rightHandle.setAttribute("x", rangeX2 - 5);
+        leftHandle.setAttribute("x", rangeX1 - 7);
+        rightHandle.setAttribute("x", rangeX2 - 7);
         zoomLabel.textContent = rangeLabel(s, e);
 
         hitMain.onmousemove = (ev) => {
@@ -735,8 +735,8 @@
         const leftX = xToPxAll(rangeStart);
         const rightX = xToPxAll(rangeEnd);
         const downX = toSvgX(ev.clientX);
-        const nearLeft = Math.abs(downX - leftX) <= 10;
-        const nearRight = Math.abs(downX - rightX) <= 10;
+        const nearLeft = Math.abs(downX - leftX) <= 20;
+        const nearRight = Math.abs(downX - rightX) <= 20;
 
         if (nearLeft) dragMode = "left";
         else if (nearRight) dragMode = "right";
@@ -794,7 +794,9 @@
         });
       });
 
-      updateRange(0, data.length - 1);
+      const initialSpan = Math.max(minWindow, Math.min(data.length, Math.round(data.length * 0.7)));
+      const initialStart = Math.max(0, data.length - initialSpan);
+      updateRange(initialStart, data.length - 1);
     }
 
     async function main() {
