@@ -385,15 +385,17 @@
       }
     }
 
-    function buildTileHTML(s, subHtml, chipsHtml) {
+    function buildTileHTML(s, subHtml, chipsHtml, rank = null) {
       const imgSrc = String(s.imageUrl || "").trim();
       const img = imgSrc
         ? `<img class="tile-img" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
              onerror="this.onerror=null; this.style.display='none';">`
         : `<div class="tile-img"></div>`;
+      const rankBadge = Number.isFinite(rank) ? `<span class="tile-rank-badge">${rank}位</span>` : "";
 
       return `
         <a class="tile" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}" aria-label="${escapeHtml(s.name ?? "")}">
+          ${rankBadge}
           ${img}
           <div class="tile-name">${escapeHtml(s.name ?? "")}</div>
           ${subHtml}
@@ -515,7 +517,7 @@
       const railGrowth = document.getElementById("rail-growth");
       const railPrice = document.getElementById("rail-price");
 
-      railSurge.innerHTML = surgeRank.length ? surgeRank.map(({ s, pair, diff }) => {
+      railSurge.innerHTML = surgeRank.length ? surgeRank.map(({ s, pair, diff }, i) => {
         const cls = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
         const sign = diff > 0 ? "+" : diff < 0 ? "−" : "±";
         const pct = (pair.prev.price !== 0) ? ((diff / pair.prev.price) * 100) : null;
@@ -530,10 +532,10 @@
           <span class="chip">直近 ${pair.latest.week}</span>
           <span class="chip">前回 ${pair.prev.week}</span>
         `;
-        return buildTileHTML(s, subHtml, chipsHtml);
+        return buildTileHTML(s, subHtml, chipsHtml, i + 1);
       }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
 
-      railGrowth.innerHTML = growthRank.length ? growthRank.map(({ s, g }) => {
+      railGrowth.innerHTML = growthRank.length ? growthRank.map(({ s, g }, i) => {
         const cls = g.diff > 0 ? "up" : g.diff < 0 ? "down" : "flat";
         const sign = g.diff > 0 ? "+" : g.diff < 0 ? "−" : "±";
         const rateAbs = Math.abs(g.rate).toFixed(1);
@@ -547,10 +549,10 @@
           <span class="chip">基準 ${g.base.week}</span>
           <span class="chip">直近 ${g.latest.week}</span>
         `;
-        return buildTileHTML(s, subHtml, chipsHtml);
+        return buildTileHTML(s, subHtml, chipsHtml, i + 1);
       }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
 
-      railPrice.innerHTML = priceRank.length ? priceRank.map((s) => {
+      railPrice.innerHTML = priceRank.length ? priceRank.map((s, i) => {
         const pair = getWeeklyPair(s);
         const p = pair ? pair.latest.price : null;
         const subHtml = `
@@ -562,7 +564,7 @@
           <span class="chip">総取引 ${totalTrades == null ? "—" : totalTrades.toLocaleString() + "件"}</span>
           <span class="chip">発売年 ${escapeHtml(s.releaseYear ?? "—")}</span>
         `;
-        return buildTileHTML(s, subHtml, chipsHtml);
+        return buildTileHTML(s, subHtml, chipsHtml, i + 1);
       }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
 
       // ---- 一覧（検索・絞り込み） ----
