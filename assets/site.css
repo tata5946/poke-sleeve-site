@@ -14,6 +14,7 @@
     --accent: #1e5bd7;
     --accent2: #ffcc00;
     --max-width: 1100px;
+    --site-header-h: 0px;
 }
 
 /* base */
@@ -33,6 +34,10 @@ body {
     margin: 0;
     background: linear-gradient(180deg, #f7fbff 0%, var(--bg) 100%);
     color: var(--text);
+}
+
+body.has-fixed-header {
+    padding-top: var(--site-header-h);
 }
 
 a {
@@ -92,8 +97,11 @@ a:hover {
 
 /* header */
 .header {
-    position: relative;
-    z-index: 50;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 80;
     background: #fff;
     border-bottom: 1px solid var(--border);
 }
@@ -155,9 +163,8 @@ a:hover {
 
 /* header bottom nav */
 .header-bottom {
-    position: sticky;
-    top: 0;
-    z-index: 70;
+    position: relative;
+    z-index: 1;
     background: #111;
     border-top: 1px solid rgba(255, 255, 255, .08);
     box-shadow: 0 6px 14px rgba(0, 0, 0, .18);

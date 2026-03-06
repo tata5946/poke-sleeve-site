@@ -14,6 +14,7 @@ const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
 let __dataCacheMem = null;
 let __dataCachePromise = null;
 let __sleeveFeedbackWired = false;
+let __headerOffsetWired = false;
 
 /* ----- Header / Footer HTML ----- */
 const HEADER_HTML = `
@@ -181,10 +182,40 @@ function injectHeaderFooter() {
 
     const footSlot = document.getElementById("site-footer");
     if (footSlot) footSlot.innerHTML = FOOTER_HTML;
+
+    wireHeaderOffsetSync();
+    syncHeaderOffset();
+    requestAnimationFrame(syncHeaderOffset);
+    setTimeout(syncHeaderOffset, 120);
   } catch (e) {
     console.error("injectHeaderFooter error", e);
   } finally {
     document.dispatchEvent(new CustomEvent("site:injected"));
+  }
+}
+
+function syncHeaderOffset() {
+  const header = document.querySelector("#site-header .header");
+  if (!header) {
+    document.documentElement.style.setProperty("--site-header-h", "0px");
+    document.body.classList.remove("has-fixed-header");
+    return;
+  }
+
+  const h = Math.ceil(header.getBoundingClientRect().height);
+  document.documentElement.style.setProperty("--site-header-h", `${h}px`);
+  document.body.classList.add("has-fixed-header");
+}
+
+function wireHeaderOffsetSync() {
+  if (__headerOffsetWired) return;
+  __headerOffsetWired = true;
+
+  window.addEventListener("resize", syncHeaderOffset, { passive: true });
+  window.addEventListener("orientationchange", syncHeaderOffset, { passive: true });
+
+  if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === "function") {
+    document.fonts.ready.then(syncHeaderOffset).catch(() => {});
   }
 }
 
