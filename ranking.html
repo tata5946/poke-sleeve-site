@@ -327,10 +327,13 @@
           const totalTrades = getTotalTradeCount(s);
           const totalTradesText = (totalTrades == null) ? "—" : `${totalTrades.toLocaleString()}件`;
 
+          const detailHref = `./detail.html?id=${encodeURIComponent(s.id ?? "")}`;
           const imgSrc = String(s.imageUrl || "").trim();
           const imgHtml = imgSrc
-            ? `<img class="thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
-                 onerror="this.onerror=null; this.style.display='none';">`
+            ? `<a class="thumb-link" href="${detailHref}">
+                 <img class="thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
+                   onerror="this.onerror=null; this.style.display='none';">
+               </a>`
             : "";
 
           const weekText = row.week ? `直近 ${escapeHtml(row.week)}` : "直近データなし";
@@ -355,7 +358,7 @@
               <span class="badge">${escapeHtml(s.series ?? "")}</span>
             </div>
 
-            <a class="btn" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}">価格推移を見る →</a>
+            <a class="btn" href="${detailHref}">価格推移を見る →</a>
           `;
           frag.appendChild(div);
         }
