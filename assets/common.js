@@ -7,7 +7,7 @@
  */
 
 /* ----- Config ----- */
-const GAS_URL = "https://script.google.com/macros/s/AKfycbyl-TAhWBEVIgilTDv7lwS14T3_i9z57dUX4fqUVBS9gyr1EO7SaYy3aqP0V1gZtt6z/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxMxhjoQ4-PsJaMgsFZD93jAwP5EhPcCg1WUnyRQ3iyeDnaBMOg1eSzRb3zvBzQiM1P/exec";
 const DATA_CACHE_KEY = "pokeSleeve:dataCache:v1";
 const DATA_CACHE_TTL_MS = 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
