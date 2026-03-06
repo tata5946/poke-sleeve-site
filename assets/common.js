@@ -8,6 +8,7 @@
 
 /* ----- Config ----- */
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxMxhjoQ4-PsJaMgsFZD93jAwP5EhPcCg1WUnyRQ3iyeDnaBMOg1eSzRb3zvBzQiM1P/exec";
+const FAVICON_PATH = "./assets/favicon.svg";
 const DATA_CACHE_KEY = "pokeSleeve:dataCache:v1";
 const DATA_CACHE_TTL_MS = 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
@@ -219,6 +220,21 @@ function wireHeaderOffsetSync() {
   }
 }
 
+function ensureFavicon() {
+  const href = new URL(FAVICON_PATH, location.href).href;
+  const rels = ["icon", "shortcut icon", "apple-touch-icon"];
+  for (const rel of rels) {
+    let link = document.querySelector(`link[rel="${rel}"]`);
+    if (!link) {
+      link = document.createElement("link");
+      link.setAttribute("rel", rel);
+      document.head.appendChild(link);
+    }
+    link.setAttribute("href", href);
+    link.setAttribute("type", "image/svg+xml");
+  }
+}
+
 /* ----- Navigation active handling ----- */
 function setActiveNav() {
   const path = (location.pathname.split("/").pop() || "").toLowerCase();
@@ -350,6 +366,7 @@ window.GAS_URL = GAS_URL;
 
 /* ----- Auto-init on DOMContentLoaded ----- */
 document.addEventListener("DOMContentLoaded", () => {
+  try { ensureFavicon(); } catch (e) { console.error(e); }
   injectHeaderFooter();
 
   try { setActiveNav(); } catch (e) { console.error(e); }
