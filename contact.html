@@ -118,7 +118,7 @@
       <div class="panel">
         <h2 class="title" style="margin:0;">お問い合わせ</h2>
         <p class="meta" style="margin-top:6px;">
-          内容を入力して送信すると、メール作成画面が開きます。
+          内容を入力して送信してください。送信完了後に完了ページへ移動します。
         </p>
 
         <form id="contactForm" class="contact-form" novalidate>
@@ -163,27 +163,6 @@
       el.className = "status " + (ok ? "ok" : "ng");
     }
 
-    function buildRecipient() {
-      const local = ["pokesleeve", "contact"].join(".");
-      const domain = ["gmail", "com"].join(".");
-      return `${local}@${domain}`;
-    }
-
-    function buildBody(payload) {
-      const lines = [
-        "お問い合わせ内容",
-        "------------------------------",
-        `お名前: ${payload.name}`,
-        `メールアドレス: ${payload.email}`,
-        "",
-        payload.message,
-        "",
-        "------------------------------",
-        `送信時刻: ${new Date().toLocaleString("ja-JP")}`
-      ];
-      return lines.join("\n");
-    }
-
     function validate(form) {
       const name = String(form.name.value || "").trim();
       const email = String(form.email.value || "").trim();
@@ -195,21 +174,33 @@
       return { ok: true, value: { name, email, subject, message } };
     }
 
-    function openComposer(recipient, subject, body) {
-      const gmailUrl =
-        "https://mail.google.com/mail/?view=cm&fs=1"
-        + "&to=" + encodeURIComponent(recipient)
-        + "&su=" + encodeURIComponent(subject)
-        + "&body=" + encodeURIComponent(body);
-      const win = window.open(gmailUrl, "_blank", "noopener,noreferrer");
-      if (win) return true;
+    async function submitContact(payload) {
+      const endpoint = (window.common && window.common.GAS_URL) || window.GAS_URL || "";
+      if (!endpoint) throw new Error("送信先エンドポイントが未設定です。");
 
-      const mailtoUrl =
-        "mailto:" + encodeURIComponent(recipient)
-        + "?subject=" + encodeURIComponent(subject)
-        + "&body=" + encodeURIComponent(body);
-      location.href = mailtoUrl;
-      return false;
+      const body = {
+        action: "contact",
+        name: payload.name,
+        email: payload.email,
+        subject: payload.subject,
+        message: payload.message,
+        page: location.href,
+        sentAt: new Date().toISOString()
+      };
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) throw new Error(`送信に失敗しました（HTTP ${res.status}）`);
+      const data = await res.json().catch(() => ({}));
+      if (data && data.ok === false) throw new Error(data.message || "送信に失敗しました。");
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -217,7 +208,7 @@
       const sendBtn = document.getElementById("sendBtn");
       if (!form || !sendBtn) return;
 
-      form.addEventListener("submit", (e) => {
+      form.addEventListener("submit", async (e) => {
         e.preventDefault();
         showStatus("", true);
 
@@ -229,18 +220,12 @@
 
         sendBtn.disabled = true;
         try {
-          const recipient = buildRecipient();
           const payload = checked.value;
-          const subject = `[問い合わせ] ${payload.subject}`;
-          const body = buildBody(payload);
-          const opened = openComposer(recipient, subject, body);
-          if (opened) {
-            showStatus("メール作成画面を開きました。内容を確認して送信してください。", true);
-          } else {
-            showStatus("メールアプリを起動しました。内容を確認して送信してください。", true);
-          }
-        } catch (_) {
-          showStatus("メール作成画面を開けませんでした。時間をおいて再試行してください。", false);
+          await submitContact(payload);
+          location.href = "./contact-complete.html";
+        } catch (err) {
+          const msg = (err && err.message) ? err.message : "送信に失敗しました。時間をおいて再試行してください。";
+          showStatus(msg, false);
         } finally {
           sendBtn.disabled = false;
         }
