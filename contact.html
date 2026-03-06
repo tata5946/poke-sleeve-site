@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>お問い合わせ - ポケスリ相場ナビ</title>
+  <meta name="description" content="ポケスリ相場ナビへのお問い合わせフォームです。" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/site.css" />
+
+  <style>
+    .contact-wrap {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    .contact-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 12px;
+      font-weight: 900;
+      color: #344054;
+    }
+
+    .required {
+      color: #b42318;
+      margin-left: 4px;
+      font-size: 11px;
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #111;
+      background: #fff;
+    }
+
+    .field textarea {
+      min-height: 180px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      outline: 2px solid #8db1ff;
+      border-color: #8db1ff;
+      outline-offset: 1px;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .btn.send {
+      margin-top: 0;
+      background: #111;
+      color: #fff;
+      border-color: #111;
+      cursor: pointer;
+    }
+
+    .btn.send[disabled] {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      display: none;
+    }
+
+    .status.ok {
+      display: block;
+      color: #027a48;
+    }
+
+    .status.ng {
+      display: block;
+      color: #b42318;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="site-header"></div>
+
+  <div class="container">
+    <div id="error" class="error"></div>
+
+    <div class="contact-wrap">
+      <div class="panel">
+        <h2 class="title" style="margin:0;">お問い合わせ</h2>
+        <p class="meta" style="margin-top:6px;">
+          内容を入力して送信すると、メール作成画面が開きます。
+        </p>
+
+        <form id="contactForm" class="contact-form" novalidate>
+          <div class="field">
+            <label for="name">お名前<span class="required">必須</span></label>
+            <input id="name" name="name" type="text" maxlength="60" required />
+          </div>
+
+          <div class="field">
+            <label for="email">メールアドレス<span class="required">必須</span></label>
+            <input id="email" name="email" type="email" maxlength="120" required />
+          </div>
+
+          <div class="field">
+            <label for="subject">件名<span class="required">必須</span></label>
+            <input id="subject" name="subject" type="text" maxlength="100" required />
+          </div>
+
+          <div class="field">
+            <label for="message">お問い合わせ内容<span class="required">必須</span></label>
+            <textarea id="message" name="message" maxlength="3000" required></textarea>
+          </div>
+
+          <div class="actions">
+            <button id="sendBtn" type="submit" class="btn send">送信</button>
+            <a class="btn" href="./index.html">一覧へ戻る</a>
+          </div>
+          <div id="status" class="status"></div>
+        </form>
+      </div>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="./assets/common.js"></script>
+  <script>
+    function showStatus(text, ok) {
+      const el = document.getElementById("status");
+      if (!el) return;
+      el.textContent = text;
+      el.className = "status " + (ok ? "ok" : "ng");
+    }
+
+    function buildRecipient() {
+      const local = ["pokesleeve", "contact"].join(".");
+      const domain = ["gmail", "com"].join(".");
+      return `${local}@${domain}`;
+    }
+
+    function buildBody(payload) {
+      const lines = [
+        "お問い合わせ内容",
+        "------------------------------",
+        `お名前: ${payload.name}`,
+        `メールアドレス: ${payload.email}`,
+        "",
+        payload.message,
+        "",
+        "------------------------------",
+        `送信時刻: ${new Date().toLocaleString("ja-JP")}`
+      ];
+      return lines.join("\n");
+    }
+
+    function validate(form) {
+      const name = String(form.name.value || "").trim();
+      const email = String(form.email.value || "").trim();
+      const subject = String(form.subject.value || "").trim();
+      const message = String(form.message.value || "").trim();
+      if (!name || !email || !subject || !message) return { ok: false, msg: "必須項目を入力してください。" };
+      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRe.test(email)) return { ok: false, msg: "メールアドレスの形式が不正です。" };
+      return { ok: true, value: { name, email, subject, message } };
+    }
+
+    function openComposer(recipient, subject, body) {
+      const gmailUrl =
+        "https://mail.google.com/mail/?view=cm&fs=1"
+        + "&to=" + encodeURIComponent(recipient)
+        + "&su=" + encodeURIComponent(subject)
+        + "&body=" + encodeURIComponent(body);
+      const win = window.open(gmailUrl, "_blank", "noopener,noreferrer");
+      if (win) return true;
+
+      const mailtoUrl =
+        "mailto:" + encodeURIComponent(recipient)
+        + "?subject=" + encodeURIComponent(subject)
+        + "&body=" + encodeURIComponent(body);
+      location.href = mailtoUrl;
+      return false;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("contactForm");
+      const sendBtn = document.getElementById("sendBtn");
+      if (!form || !sendBtn) return;
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        showStatus("", true);
+
+        const checked = validate(form);
+        if (!checked.ok) {
+          showStatus(checked.msg, false);
+          return;
+        }
+
+        sendBtn.disabled = true;
+        try {
+          const recipient = buildRecipient();
+          const payload = checked.value;
+          const subject = `[問い合わせ] ${payload.subject}`;
+          const body = buildBody(payload);
+          const opened = openComposer(recipient, subject, body);
+          if (opened) {
+            showStatus("メール作成画面を開きました。内容を確認して送信してください。", true);
+          } else {
+            showStatus("メールアプリを起動しました。内容を確認して送信してください。", true);
+          }
+        } catch (_) {
+          showStatus("メール作成画面を開けませんでした。時間をおいて再試行してください。", false);
+        } finally {
+          sendBtn.disabled = false;
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

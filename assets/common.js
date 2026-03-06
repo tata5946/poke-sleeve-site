@@ -43,6 +43,7 @@ const HEADER_HTML = `
         <a href="./growth.html" data-nav="growth"><span class="ico" aria-hidden="true">📈</span>高騰率</a>
         <a href="./surge.html" data-nav="surge"><span class="ico" aria-hidden="true">🔥</span>急上昇</a>
         <a href="./index-market.html" data-nav="market"><span class="ico" aria-hidden="true">🧭</span>スリーブ指数</a>
+        <a href="./contact.html" data-nav="contact"><span class="ico" aria-hidden="true">✉️</span>お問い合わせ</a>
       </nav>
     </div>
   </div>
@@ -195,6 +196,7 @@ function setActiveNav() {
   else if (path.includes("growth")) key = "growth";
   else if (path.includes("surge")) key = "surge";
   else if (path.includes("market")) key = "market";
+  else if (path.includes("contact")) key = "contact";
   else if (path.includes("detail")) key = "index";
   else if (path === "" || path === "index.html") key = "index";
 
