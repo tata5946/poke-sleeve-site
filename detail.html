@@ -248,6 +248,40 @@
       opacity: .92;
     }
 
+    .share-block {
+      margin-top: 10px;
+    }
+
+    .share-title {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .share-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn.share-x {
+      border-color: #111;
+      color: #111;
+    }
+
+    .btn.share-ig {
+      border-color: #e1306c;
+      color: #e1306c;
+    }
+
+    .share-status {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      min-height: 1.2em;
+    }
+
     @media (max-width: 900px) {
       .detail-wrap {
         grid-template-columns: 1fr;
@@ -305,6 +339,15 @@
               <div class="btn-row">
                 <a class="btn primary" id="backLink" href="./index.html">← 一覧へ戻る</a>
                 <a class="btn" id="mercariLink" href="https://jp.mercari.com/search" target="_blank" rel="noopener noreferrer nofollow">メルカリで最安値を見る</a>
+              </div>
+
+              <div class="share-block">
+                <div class="share-title">シェア</div>
+                <div class="share-row">
+                  <button type="button" class="btn share-x" id="shareXBtn">X(Twitter)で共有</button>
+                  <button type="button" class="btn share-ig" id="shareInstagramBtn">Instagram用にコピー</button>
+                </div>
+                <div id="shareStatus" class="share-status"></div>
               </div>
             </div>
           </div>
@@ -400,6 +443,65 @@
         })
         .filter(x => x.week)
         .sort((a, b) => String(a.week).localeCompare(String(b.week)));
+    }
+
+    function currentShareUrl() {
+      const u = new URL(location.href);
+      u.hash = "";
+      return u.toString();
+    }
+
+    async function copyToClipboard(text) {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    }
+
+    function setupShare(sleeve, weeklyRows) {
+      const shareXBtn = document.getElementById("shareXBtn");
+      const shareInstagramBtn = document.getElementById("shareInstagramBtn");
+      const statusEl = document.getElementById("shareStatus");
+      if (!shareXBtn || !shareInstagramBtn || !statusEl) return;
+
+      const pair = latestTwoTradedWeeks(weeklyRows);
+      const priceText = (pair && pair.latest && Number.isFinite(pair.latest.price))
+        ? `最新週次価格: ${pair.latest.price.toLocaleString()}円`
+        : "最新週次価格: -";
+      const shareUrl = currentShareUrl();
+      const shareText = `【${sleeve.name || "ポケカスリーブ"}】${priceText} #ポケカ #ポケモンカード`;
+
+      const setStatus = (msg) => {
+        statusEl.textContent = msg;
+      };
+
+      shareXBtn.addEventListener("click", () => {
+        const intent = new URL("https://twitter.com/intent/tweet");
+        intent.searchParams.set("text", shareText);
+        intent.searchParams.set("url", shareUrl);
+        window.open(intent.toString(), "_blank", "noopener,noreferrer");
+      });
+
+      shareInstagramBtn.addEventListener("click", async () => {
+        const text = `${shareText}\n${shareUrl}`;
+        try {
+          await copyToClipboard(text);
+          setStatus("コピーしました。Instagramアプリで貼り付けて投稿してください。");
+          window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+        } catch (_) {
+          setStatus("コピーに失敗しました。ブラウザ設定をご確認ください。");
+        }
+      });
     }
 
     function latestTwoTradedWeeks(rows) {
@@ -871,6 +973,7 @@
       renderLineChart("weeklyChart", "週次価格 推移", weeklyRows, "week", "price");
       document.getElementById("weeklyTable").innerHTML = renderTableWeekly(weeklyRows);
       setWeeklyKpi(weeklyRows);
+      setupShare(s, weeklyRows);
     }
 
     document.addEventListener("DOMContentLoaded", () => main());
