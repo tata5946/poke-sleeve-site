@@ -336,7 +336,7 @@
       }
 
       svg.chart {
-        min-width: 980px;
+        min-width: 760px;
       }
     }
   </style>
@@ -651,19 +651,19 @@
         return;
       }
 
+      const isMobileView = window.matchMedia("(max-width: 900px)").matches;
       const W = 1200;
       const H = 540;
-      const isMobileView = window.matchMedia("(max-width: 900px)").matches;
       const axisFontSize = isMobileView ? 15 : 12;
       const xAxisFontSize = isMobileView ? 16 : 13;
-      const padL = 80;
+      const padL = isMobileView ? 92 : 80;
       const padR = 24;
       const mainTop = 24;
       const mainBottom = 322;
-      const xLabelY = 350;
+      const xLabelY = isMobileView ? 370 : 350;
       const navTop = 392;
       const navBottom = 474;
-      const ticks = 4;
+      const ticks = isMobileView ? 5 : 4;
       const minWindow = Math.min(Math.max(2, Math.ceil(data.length * 0.12)), data.length);
 
       function niceStep(range, t) {
@@ -820,21 +820,40 @@
         for (let i = 0; i <= ticks; i++) {
           const v = yMin + (i / ticks) * (yMax - yMin);
           const y = yToPxMain(v);
-          gridLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef"/>`);
-          yLabels.push(`<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="#475467" font-weight="700">${Math.round(v).toLocaleString()}</text>`);
+          const gridColor = isMobileView ? "#d7deea" : "#e6e8ef";
+          const yLabelColor = isMobileView ? "#344054" : "#475467";
+          gridLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="${gridColor}"/>`);
+          yLabels.push(`<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="${yLabelColor}" font-weight="800">${Math.round(v).toLocaleString()}</text>`);
         }
+        gridLines.push(`<line x1="${padL}" y1="${mainTop}" x2="${padL}" y2="${mainBottom}" stroke="#9aa4b2" stroke-width="1.2"/>`);
+        gridLines.push(`<line x1="${padL}" y1="${mainBottom}" x2="${W - padR}" y2="${mainBottom}" stroke="#9aa4b2" stroke-width="1.2"/>`);
         mainGrid.innerHTML = gridLines.join("");
         mainLabels.innerHTML = yLabels.join("");
 
-        const midIdx = Math.floor((visible.length - 1) / 2);
-        const xLabels = [
-          { x: xToPxMain(0), text: formatPeriodLabel(visible[0].x), anchor: "start" },
-          { x: xToPxMain(midIdx), text: formatPeriodLabel(visible[midIdx].x), anchor: "middle" },
-          { x: xToPxMain(visible.length - 1), text: formatPeriodLabel(visible[visible.length - 1].x), anchor: "end" }
-        ];
-        mainXLabels.innerHTML = xLabels.map(l =>
-          `<text x="${l.x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
-        ).join("");
+        if (isMobileView) {
+          const labelCount = Math.min(7, visible.length);
+          const idxSet = new Set();
+          for (let i = 0; i < labelCount; i++) {
+            const ratio = labelCount === 1 ? 0 : i / (labelCount - 1);
+            idxSet.add(Math.round((visible.length - 1) * ratio));
+          }
+          const mobileIdx = Array.from(idxSet).sort((a, b) => a - b);
+          mainXLabels.innerHTML = mobileIdx.map(i => {
+            const x = xToPxMain(i);
+            const text = escapeHtml(formatPeriodLabel(visible[i].x));
+            return `<text x="${x}" y="${xLabelY}" font-size="13" fill="#475467" text-anchor="end" transform="rotate(-42 ${x} ${xLabelY})">${text}</text>`;
+          }).join("");
+        } else {
+          const midIdx = Math.floor((visible.length - 1) / 2);
+          const xLabels = [
+            { x: xToPxMain(0), text: formatPeriodLabel(visible[0].x), anchor: "start" },
+            { x: xToPxMain(midIdx), text: formatPeriodLabel(visible[midIdx].x), anchor: "middle" },
+            { x: xToPxMain(visible.length - 1), text: formatPeriodLabel(visible[visible.length - 1].x), anchor: "end" }
+          ];
+          mainXLabels.innerHTML = xLabels.map(l =>
+            `<text x="${l.x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
+          ).join("");
+        }
 
         const rangeX1 = xToPxAll(s);
         const rangeX2 = xToPxAll(e);
