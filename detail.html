@@ -261,6 +261,19 @@
       flex-wrap: wrap;
     }
 
+    .share-row .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .share-icon {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      flex: 0 0 14px;
+    }
+
     .btn.share-x {
       border-color: #111;
       color: #111;
@@ -332,8 +345,18 @@
               <div class="share-block">
                 <div class="share-title">シェア</div>
                 <div class="share-row">
-                  <button type="button" class="btn share-x" id="shareXBtn">X(Twitter)で共有</button>
-                  <button type="button" class="btn share-ig" id="shareInstagramBtn">Instagram用にコピー</button>
+                  <button type="button" class="btn share-x" id="shareXBtn">
+                    <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="currentColor" d="M18.244 2H21.5l-7.112 8.129L22 22h-5.953l-4.661-6.108L6.04 22H2.78l7.606-8.695L2 2h6.105l4.213 5.566zM17.1 20h1.803L7.127 3.895H5.19z"></path>
+                    </svg>
+                    X(Twitter)で共有
+                  </button>
+                  <button type="button" class="btn share-ig" id="shareInstagramBtn">
+                    <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="currentColor" d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2m0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95zm9.12 1.37a1.08 1.08 0 1 1 0 2.16 1.08 1.08 0 0 1 0-2.16M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10m0 1.8A3.2 3.2 0 1 0 12 15.2 3.2 3.2 0 0 0 12 8.8"></path>
+                    </svg>
+                    Instagram用にコピー
+                  </button>
                 </div>
                 <div id="shareStatus" class="share-status"></div>
               </div>
