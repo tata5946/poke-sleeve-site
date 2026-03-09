@@ -515,7 +515,8 @@
             return Number.isFinite(n) ? n : null;
           };
 
-          const price = toNum(x.price);
+          const rawPrice = toNum(x.price);
+          const price = (Number.isFinite(rawPrice) && rawPrice > 0) ? rawPrice : null;
           const count = toNum(x.count);
           const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
 
@@ -629,7 +630,7 @@
     }
 
     function latestTwoTradedWeeks(rows) {
-      const traded = (Array.isArray(rows) ? rows : []).filter(r => Number.isFinite(r.price));
+      const traded = (Array.isArray(rows) ? rows : []).filter(r => Number.isFinite(r.price) && r.price > 0);
       if (traded.length === 0) return null;
 
       const uniq = [];
@@ -648,7 +649,7 @@
 
       const hasCount = rows.some(r => Number.isFinite(r.count));
       const html = rows.slice().reverse().map(r => {
-        const priceCell = Number.isFinite(r.price) ? `${Number(r.price).toLocaleString()}円` : "-";
+        const priceCell = (Number.isFinite(r.price) && r.price > 0) ? `${Number(r.price).toLocaleString()}円` : "-";
         const countCell = hasCount ? `<td>${Number.isFinite(r.count) ? `${r.count}件` : "-"}</td>` : "";
         return `<tr><td>${escapeHtml(formatPeriodLabel(r.week))}</td><td>${priceCell}</td>${countCell}</tr>`;
       }).join("");
@@ -1000,7 +1001,7 @@
           const visIdx = Math.max(0, Math.min(visible.length - 1, Math.round(t * (visible.length - 1))));
           const point = visible[visIdx];
           const px = xToPxMain(visIdx);
-          const hasValue = Number.isFinite(point?.y);
+          const hasValue = Number.isFinite(point?.y) && point.y > 0;
           const py = hasValue ? yToPxMain(point.y) : null;
 
           hLine.style.display = "block";
