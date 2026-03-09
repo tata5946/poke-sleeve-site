@@ -542,9 +542,8 @@
       if (Number.isNaN(endDate.getTime())) return [];
 
       const targetMonths = [];
-      for (let offset = 11; offset >= 0; offset--) {
-        const d = new Date(endDate);
-        d.setMonth(d.getMonth() - offset);
+      const startDate = new Date(endDate.getFullYear() - 1, 0, 1);
+      for (let d = new Date(startDate); d <= endDate; d.setMonth(d.getMonth() + 1)) {
         const y = d.getFullYear();
         const m = String(d.getMonth() + 1).padStart(2, "0");
         targetMonths.push(`${y}-${m}`);
@@ -558,6 +557,16 @@
         const count = counts.length ? counts.reduce((sum, v) => sum + v, 0) : null;
         return { week: month, price, count };
       });
+    }
+
+    function formatMonthAxisLabel(isoMonth) {
+      const s = String(isoMonth || "");
+      const m = s.match(/^(\d{4})-(\d{2})$/);
+      if (!m) return formatPeriodLabel(s);
+      const year = Number(m[1]);
+      const month = Number(m[2]);
+      if (month === 1) return `${year}年`;
+      return `${year}年${month}月`;
     }
 
     function currentShareUrl() {
@@ -949,7 +958,7 @@
             })();
           mainXLabels.innerHTML = mobileIdx.map((i, idx) => {
             const x = xToPxMain(i);
-            const text = escapeHtml(formatPeriodLabel(visible[i].x));
+            const text = escapeHtml(isMonthlyMode ? formatMonthAxisLabel(visible[i].x) : formatPeriodLabel(visible[i].x));
             if (isMonthlyMode) {
               const y = xLabelY + ((idx % 2) ? 16 : 0);
               return `<text x="${x}" y="${y}" font-size="12" fill="#475467" text-anchor="middle" font-weight="700">${text}</text>`;
@@ -962,7 +971,7 @@
             mainXLabels.innerHTML = visible.map((p, i) => {
               const x = xToPxMain(i);
               const y = xLabelY + ((i % 2) ? 12 : 0);
-              return `<text x="${x}" y="${y}" font-size="12" fill="#475467" text-anchor="middle" font-weight="700">${escapeHtml(formatPeriodLabel(p.x))}</text>`;
+              return `<text x="${x}" y="${y}" font-size="12" fill="#475467" text-anchor="middle" font-weight="700">${escapeHtml(formatMonthAxisLabel(p.x))}</text>`;
             }).join("");
           } else {
             const midIdx = Math.floor((visible.length - 1) / 2);
