@@ -265,6 +265,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      cursor: pointer;
+      transition: transform .14s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease;
     }
 
     .share-icon {
@@ -282,6 +284,27 @@
     .btn.share-ig {
       border-color: #e1306c;
       color: #e1306c;
+    }
+
+    .share-row .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(16, 24, 40, .14);
+    }
+
+    .share-row .btn:focus-visible {
+      outline: 2px solid #7aa2ff;
+      outline-offset: 2px;
+    }
+
+    .btn.share-x:hover {
+      background: #f3f4f6;
+      border-color: #111;
+    }
+
+    .btn.share-ig:hover {
+      background: #fff1f6;
+      border-color: #d91b5c;
+      color: #d91b5c;
     }
 
     .share-status {
