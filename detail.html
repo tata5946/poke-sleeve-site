@@ -330,6 +330,14 @@
       .detail-hero .thumb {
         height: 220px;
       }
+
+      .chart-viewport {
+        overflow-x: auto;
+      }
+
+      svg.chart {
+        min-width: 980px;
+      }
     }
   </style>
 </head>
@@ -645,6 +653,9 @@
 
       const W = 1200;
       const H = 540;
+      const isMobileView = window.matchMedia("(max-width: 900px)").matches;
+      const axisFontSize = isMobileView ? 15 : 12;
+      const xAxisFontSize = isMobileView ? 16 : 13;
       const padL = 80;
       const padR = 24;
       const mainTop = 24;
@@ -810,7 +821,7 @@
           const v = yMin + (i / ticks) * (yMax - yMin);
           const y = yToPxMain(v);
           gridLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef"/>`);
-          yLabels.push(`<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="12" fill="#475467" font-weight="700">${Math.round(v).toLocaleString()}</text>`);
+          yLabels.push(`<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="#475467" font-weight="700">${Math.round(v).toLocaleString()}</text>`);
         }
         mainGrid.innerHTML = gridLines.join("");
         mainLabels.innerHTML = yLabels.join("");
@@ -822,7 +833,7 @@
           { x: xToPxMain(visible.length - 1), text: formatPeriodLabel(visible[visible.length - 1].x), anchor: "end" }
         ];
         mainXLabels.innerHTML = xLabels.map(l =>
-          `<text x="${l.x}" y="${xLabelY}" font-size="13" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
+          `<text x="${l.x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
         ).join("");
 
         const rangeX1 = xToPxAll(s);
