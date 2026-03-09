@@ -997,41 +997,29 @@
         hitMain.onmousemove = (ev) => {
           const vbX = toSvgX(ev.clientX);
           const t = (vbX - padL) / (W - padL - padR);
-          let visIdx = Math.max(0, Math.min(visible.length - 1, Math.round(t * (visible.length - 1))));
-          if (!Number.isFinite(visible[visIdx]?.y)) {
-            let left = visIdx - 1;
-            let right = visIdx + 1;
-            let found = -1;
-            while (left >= 0 || right < visible.length) {
-              if (left >= 0 && Number.isFinite(visible[left]?.y)) { found = left; break; }
-              if (right < visible.length && Number.isFinite(visible[right]?.y)) { found = right; break; }
-              left--;
-              right++;
-            }
-            if (found < 0) {
-              hideHover();
-              return;
-            }
-            visIdx = found;
-          }
+          const visIdx = Math.max(0, Math.min(visible.length - 1, Math.round(t * (visible.length - 1))));
           const point = visible[visIdx];
           const px = xToPxMain(visIdx);
-          const py = yToPxMain(point.y);
+          const hasValue = Number.isFinite(point?.y);
+          const py = hasValue ? yToPxMain(point.y) : null;
 
           hLine.style.display = "block";
-          hDot.style.display = "block";
+          hDot.style.display = hasValue ? "block" : "none";
           tip.style.display = "block";
           hLine.setAttribute("x1", px);
           hLine.setAttribute("x2", px);
           hLine.setAttribute("y1", mainTop);
           hLine.setAttribute("y2", mainBottom);
-          hDot.setAttribute("cx", px);
-          hDot.setAttribute("cy", py);
+          if (hasValue) {
+            hDot.setAttribute("cx", px);
+            hDot.setAttribute("cy", py);
+          }
 
-          tip.textContent = `${formatPeriodLabel(point.x)} / ${point.y.toLocaleString()}円`;
+          tip.textContent = `${formatPeriodLabel(point.x)} / ${hasValue ? `${point.y.toLocaleString()}円` : "-"}`;
           const wrapRect = wrap.getBoundingClientRect();
           tip.style.left = `${Math.min(Math.max(ev.clientX - wrapRect.left, 56), wrapRect.width - 56)}px`;
-          tip.style.top = `${Math.max(ev.clientY - wrapRect.top - 12, 8)}px`;
+          const tipY = Math.max(ev.clientY - wrapRect.top - tip.offsetHeight - 12, 8);
+          tip.style.top = `${tipY}px`;
         };
       }
 
