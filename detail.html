@@ -314,6 +314,34 @@
       min-height: 1.2em;
     }
 
+    .granularity-switch {
+      margin-top: 10px;
+      display: inline-flex;
+      gap: 6px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    .granularity-btn {
+      border: 1px solid transparent;
+      background: transparent;
+      color: #475467;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .granularity-btn.is-active {
+      background: #fff;
+      color: #111;
+      border-color: var(--border);
+      box-shadow: 0 2px 8px rgba(16, 24, 40, .1);
+    }
+
     @media (max-width: 900px) {
       .detail-wrap {
         grid-template-columns: 1fr;
@@ -361,7 +389,7 @@
 
               <div class="kpi">
                 <div class="box">
-                  <div class="label">最新週次価格</div>
+                  <div id="latestPriceLabel" class="label">最新月次価格</div>
                   <div id="latestWeekly" class="value">-</div>
                   <div id="weeklyDelta" class="delta" style="margin-top:6px;"></div>
                   <div id="weeklyCount" class="meta" style="margin-top:6px;">取引件数: -</div>
@@ -397,7 +425,11 @@
 
         <div class="detail-price-grid">
           <div class="panel">
-            <h3 style="margin:0;">週次価格（weekly）</h3>
+            <h3 id="priceSectionTitle" style="margin:0;">月次価格（monthly）</h3>
+            <div class="granularity-switch" role="tablist" aria-label="表示粒度">
+              <button type="button" class="granularity-btn is-active" id="granularityMonthBtn" data-granularity="monthly">月次</button>
+              <button type="button" class="granularity-btn" id="granularityWeekBtn" data-granularity="weekly">週次</button>
+            </div>
             <div id="weeklyChart"></div>
             <div id="weeklyTable"></div>
           </div>
@@ -450,6 +482,8 @@
 
     function formatPeriodLabel(iso) {
       const s = String(iso || "").trim();
+      const month = s.match(/^(\d{4})-(\d{2})$/);
+      if (month) return `${month[1]}/${month[2]}`;
       const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
       if (!m) return s;
       return `${m[1]}/${m[2]}/${m[3]}`;
@@ -485,6 +519,28 @@
         })
         .filter(x => x.week)
         .sort((a, b) => String(a.week).localeCompare(String(b.week)));
+    }
+
+    function toMonthlyFromWeekly(weeklyRows) {
+      const buckets = new Map();
+      for (const r of (Array.isArray(weeklyRows) ? weeklyRows : [])) {
+        const week = String(r?.week || "");
+        const m = week.match(/^(\d{4})-(\d{2})-\d{2}$/);
+        if (!m) continue;
+        const key = `${m[1]}-${m[2]}`;
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(r);
+      }
+
+      return Array.from(buckets.entries())
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([month, rows]) => {
+          const prices = rows.map(x => x.price).filter(v => Number.isFinite(v));
+          const price = prices.length ? Math.round(prices.reduce((sum, v) => sum + v, 0) / prices.length) : null;
+          const counts = rows.map(x => x.count).filter(v => Number.isFinite(v));
+          const count = counts.length ? counts.reduce((sum, v) => sum + v, 0) : null;
+          return { week: month, price, count };
+        });
     }
 
     function currentShareUrl() {
@@ -583,12 +639,14 @@
       `;
     }
 
-    function setWeeklyKpi(weeklyRows) {
+    function setPriceKpi(rows, labelText) {
       const latestEl = document.getElementById("latestWeekly");
       const deltaEl = document.getElementById("weeklyDelta");
       const countEl = document.getElementById("weeklyCount");
+      const labelEl = document.getElementById("latestPriceLabel");
+      if (labelEl) labelEl.textContent = labelText;
 
-      const pair = latestTwoTradedWeeks(weeklyRows);
+      const pair = latestTwoTradedWeeks(rows);
 
       if (!pair) {
         latestEl.textContent = "-";
@@ -1034,9 +1092,32 @@
       if (mercariLink) mercariLink.href = buildMercariSearchUrl(s.name);
 
       const weeklyRows = normalizeWeekly(s.weeklyPrices);
-      renderLineChart("weeklyChart", "週次価格 推移", weeklyRows, "week", "price");
-      document.getElementById("weeklyTable").innerHTML = renderTableWeekly(weeklyRows);
-      setWeeklyKpi(weeklyRows);
+      const monthlyRows = toMonthlyFromWeekly(weeklyRows);
+
+      const chartTitleEl = document.getElementById("priceSectionTitle");
+      const monthBtn = document.getElementById("granularityMonthBtn");
+      const weekBtn = document.getElementById("granularityWeekBtn");
+      let granularity = "monthly";
+
+      const applyGranularity = (next) => {
+        granularity = next === "weekly" ? "weekly" : "monthly";
+        const rows = granularity === "monthly" ? monthlyRows : weeklyRows;
+        const labelJa = granularity === "monthly" ? "月次" : "週次";
+        const labelEn = granularity === "monthly" ? "monthly" : "weekly";
+
+        if (chartTitleEl) chartTitleEl.textContent = `${labelJa}価格（${labelEn}）`;
+        renderLineChart("weeklyChart", `${labelJa}価格 推移`, rows, "week", "price");
+        document.getElementById("weeklyTable").innerHTML = renderTableWeekly(rows);
+        setPriceKpi(rows, `最新${labelJa}価格`);
+
+        if (monthBtn) monthBtn.classList.toggle("is-active", granularity === "monthly");
+        if (weekBtn) weekBtn.classList.toggle("is-active", granularity === "weekly");
+      };
+
+      if (monthBtn) monthBtn.addEventListener("click", () => applyGranularity("monthly"));
+      if (weekBtn) weekBtn.addEventListener("click", () => applyGranularity("weekly"));
+
+      applyGranularity("monthly");
       setupShare(s, weeklyRows);
     }
 
