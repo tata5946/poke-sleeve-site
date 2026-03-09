@@ -719,17 +719,18 @@
       if (!el) return;
       const mode = String(options.mode || "weekly");
       const isMonthlyMode = mode === "monthly";
+      const hasValidPrice = (v) => Number.isFinite(v) && v > 0;
 
       const data = (Array.isArray(rows) ? rows : [])
         .map(r => {
           const x = String(r?.[xKey] ?? "");
           const rawY = r?.[yKey];
           const n = Number(rawY);
-          return { x, y: Number.isFinite(n) ? n : null };
+          return { x, y: hasValidPrice(n) ? n : null };
         })
         .filter(p => p.x);
 
-      const finiteData = data.filter(p => Number.isFinite(p.y));
+      const finiteData = data.filter(p => hasValidPrice(p.y));
       if (finiteData.length < 1 || data.length < 2) {
         el.innerHTML = `
           <div class="chart-wrap">
@@ -863,7 +864,7 @@
         let d = "";
         let penDown = false;
         for (let i = 0; i < data.length; i++) {
-          if (!Number.isFinite(data[i].y)) {
+          if (!hasValidPrice(data[i].y)) {
             penDown = false;
             continue;
           }
@@ -904,7 +905,7 @@
           return padL + (i / (visible.length - 1)) * (W - padL - padR);
         };
 
-        const ys = visible.map(v => v.y).filter(v => Number.isFinite(v));
+        const ys = visible.map(v => v.y).filter(v => hasValidPrice(v));
         if (!ys.length) return;
         let yMin = Math.min(...ys);
         let yMax = Math.max(...ys);
@@ -920,7 +921,7 @@
         let penDown = false;
         for (let i = 0; i < visible.length; i++) {
           const y = visible[i].y;
-          if (!Number.isFinite(y)) {
+          if (!hasValidPrice(y)) {
             penDown = false;
             continue;
           }
@@ -1001,7 +1002,7 @@
           const visIdx = Math.max(0, Math.min(visible.length - 1, Math.round(t * (visible.length - 1))));
           const point = visible[visIdx];
           const px = xToPxMain(visIdx);
-          const hasValue = Number.isFinite(point?.y) && point.y > 0;
+          const hasValue = hasValidPrice(point?.y);
           const py = hasValue ? yToPxMain(point.y) : null;
 
           hLine.style.display = "block";
