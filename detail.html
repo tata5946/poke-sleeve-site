@@ -401,7 +401,7 @@
               </div>
 
               <div class="btn-row">
-                <a class="btn primary" id="backLink" href="./index.html">← 一覧へ戻る</a>
+                <a class="btn primary" id="backLink" href="./zukan.html">← 図鑑へ戻る</a>
                 <a class="btn" id="mercariLink" href="https://jp.mercari.com/search" target="_blank" rel="noopener noreferrer nofollow">メルカリで最安値を見る</a>
               </div>
 
@@ -1118,15 +1118,15 @@
       const applySearchBehavior = () => {
         const search = document.getElementById("search");
         if (!search) return false;
-        search.placeholder = "一覧へ戻って検索...";
+        search.placeholder = "図鑑へ戻って検索...";
         search.addEventListener("keydown", (e) => {
           if (e.key !== "Enter") return;
           const q = search.value.trim();
           if (!q) {
-            location.href = "./index.html";
+            location.href = "./zukan.html";
             return;
           }
-          location.href = "./index.html?q=" + encodeURIComponent(q);
+          location.href = "./zukan.html?q=" + encodeURIComponent(q);
         });
         return true;
       };
@@ -1170,7 +1170,7 @@
         <span class="badge">${escapeHtml(s.series)}</span>
       `;
 
-      document.getElementById("backLink").href = "./index.html";
+      document.getElementById("backLink").href = "./zukan.html";
       const mercariLink = document.getElementById("mercariLink");
       if (mercariLink) mercariLink.href = buildMercariSearchUrl(s.name);
 

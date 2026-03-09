@@ -40,7 +40,8 @@ const HEADER_HTML = `
   <div class="header-bottom">
     <div class="header-bottom-inner">
       <nav class="nav" aria-label="メインメニュー">
-        <a href="./index.html" data-nav="index"><span class="ico" aria-hidden="true">🏠</span>一覧</a>
+        <a href="./index.html" data-nav="index"><span class="ico" aria-hidden="true">🏠</span>ホーム</a>
+        <a href="./zukan.html" data-nav="zukan"><span class="ico" aria-hidden="true">📚</span>図鑑</a>
         <a href="./ranking.html" data-nav="ranking"><span class="ico" aria-hidden="true">📊</span>価格ランキング</a>
         <a href="./growth.html" data-nav="growth"><span class="ico" aria-hidden="true">📈</span>高騰率</a>
         <a href="./surge.html" data-nav="surge"><span class="ico" aria-hidden="true">🔥</span>急上昇</a>
@@ -240,11 +241,12 @@ function setActiveNav() {
   const path = (location.pathname.split("/").pop() || "").toLowerCase();
   let key = "index";
   if (path.includes("ranking")) key = "ranking";
+  else if (path.includes("zukan")) key = "zukan";
   else if (path.includes("growth")) key = "growth";
   else if (path.includes("surge")) key = "surge";
   else if (path.includes("market")) key = "market";
   else if (path.includes("contact")) key = "contact";
-  else if (path.includes("detail")) key = "index";
+  else if (path.includes("detail")) key = "zukan";
   else if (path === "" || path === "index.html") key = "index";
 
   const links = document.querySelectorAll(".nav a[data-nav]");
@@ -261,8 +263,8 @@ function wireHeaderSearch() {
   search.addEventListener("keydown", (e) => {
     if (e.key !== "Enter") return;
     const q = search.value.trim();
-    if (!q) { location.href = "./index.html"; return; }
-    location.href = "./index.html?q=" + encodeURIComponent(q);
+    if (!q) { location.href = "./zukan.html"; return; }
+    location.href = "./zukan.html?q=" + encodeURIComponent(q);
   });
 }
 
