@@ -326,7 +326,7 @@
           const priceStr = String(x.price ?? "").trim();
           if (priceStr !== "" && priceStr !== "-" && priceStr !== "—") {
             const n = Number(priceStr);
-            if (Number.isFinite(n)) price = n;
+            if (Number.isFinite(n) && n > 0) price = n;
           }
 
           let count = null;
@@ -364,6 +364,7 @@
     function buildWeeklyMarketSeries(sleeves, weeks, opts) {
       const clipLo = opts?.clipLo ?? -60;
       const clipHi = opts?.clipHi ?? 100;
+      const hasValidPrice = (v) => Number.isFinite(v) && v > 0;
 
       // スリーブごとに week->price map（週データのみ）
       const maps = sleeves.map(s => {
@@ -389,8 +390,7 @@
         for (const mp of maps) {
           const p0 = mp.get(prev);
           const p1 = mp.get(cur);
-          if (!Number.isFinite(p0) || !Number.isFinite(p1)) continue;
-          if (p0 === 0) continue;
+          if (!hasValidPrice(p0) || !hasValidPrice(p1)) continue;
 
           let r = ((p1 - p0) / p0) * 100;
           r = clip(r, clipLo, clipHi);
@@ -666,16 +666,18 @@
     function renderLineChartV2(containerId, title, rows, xKey, yKey, yFmt) {
       const el = document.getElementById(containerId);
       if (!el) return;
+      const hasValidY = (v) => Number.isFinite(v) && v > 0;
 
       const data = (Array.isArray(rows) ? rows : [])
         .map(r => {
           const x = String(r?.[xKey] ?? "");
           const n = Number(r?.[yKey]);
-          return { x, y: Number.isFinite(n) ? n : null };
+          return { x, y: hasValidY(n) ? n : null };
         })
-        .filter(p => p.x && Number.isFinite(p.y));
+        .filter(p => p.x);
 
-      if (data.length < 2) {
+      const validData = data.filter(p => hasValidY(p.y));
+      if (data.length < 2 || validData.length < 2) {
         el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">データが不足しています（週次データが2点以上必要）</div></div>`;
         return;
       }
@@ -785,14 +787,26 @@
       const zoomLabel = el.querySelector(".chart-zoom-label");
       const zoomBtns = Array.from(el.querySelectorAll(".chart-zoom-btn"));
 
-      const yAllMin = Math.min(...data.map(d => d.y));
-      const yAllMax = Math.max(...data.map(d => d.y));
+      const yAllMin = Math.min(...validData.map(d => d.y));
+      const yAllMax = Math.max(...validData.map(d => d.y));
       const yAllSpan = (yAllMax - yAllMin) || 1;
       const yNavMin = yAllMin - yAllSpan * 0.08;
       const yNavMax = yAllMax + yAllSpan * 0.08;
 
       const yToPxNav = (v) => navTop + (1 - (v - yNavMin) / (yNavMax - yNavMin)) * (navBottom - navTop);
-      const navPath = data.map((p, i) => `${i === 0 ? "M" : "L"} ${xToPxAll(i)} ${yToPxNav(p.y)}`).join(" ");
+      const navPath = (() => {
+        let d = "";
+        let penDown = false;
+        for (let i = 0; i < data.length; i++) {
+          if (!hasValidY(data[i].y)) {
+            penDown = false;
+            continue;
+          }
+          d += `${penDown ? " L" : " M"} ${xToPxAll(i)} ${yToPxNav(data[i].y)}`;
+          penDown = true;
+        }
+        return d.trim();
+      })();
       navLine.setAttribute("d", navPath);
 
       let rangeStart = 0;
@@ -825,7 +839,12 @@
           return padL + (i / (visible.length - 1)) * (W - padL - padR);
         };
 
-        const ys = visible.map(v => v.y);
+        const ys = visible.map(v => v.y).filter(v => hasValidY(v));
+        if (!ys.length) {
+          mainLine.setAttribute("d", "");
+          mainFill.setAttribute("d", "");
+          return;
+        }
         let yMin = Math.min(...ys);
         let yMax = Math.max(...ys);
         const margin = (yMax - yMin) * 0.12 || 1;
@@ -836,10 +855,19 @@
         yMax = Math.ceil(yMax / step) * step;
 
         const yToPxMain = (v) => mainTop + (1 - (v - yMin) / (yMax - yMin)) * (mainBottom - mainTop);
-        const pathD = visible.map((p, i) => `${i === 0 ? "M" : "L"} ${xToPxMain(i)} ${yToPxMain(p.y)}`).join(" ");
-        const fillD = `${pathD} L ${xToPxMain(visible.length - 1)} ${mainBottom} L ${xToPxMain(0)} ${mainBottom} Z`;
+        let pathD = "";
+        let penDown = false;
+        for (let i = 0; i < visible.length; i++) {
+          const y = visible[i].y;
+          if (!hasValidY(y)) {
+            penDown = false;
+            continue;
+          }
+          pathD += `${penDown ? " L" : " M"} ${xToPxMain(i)} ${yToPxMain(y)}`;
+          penDown = true;
+        }
         mainLine.setAttribute("d", pathD);
-        mainFill.setAttribute("d", fillD);
+        mainFill.setAttribute("d", "");
 
         const gridLines = [];
         const yLabels = [];
@@ -876,22 +904,26 @@
           const visIdx = Math.max(0, Math.min(visible.length - 1, Math.round(t * (visible.length - 1))));
           const point = visible[visIdx];
           const px = xToPxMain(visIdx);
-          const py = yToPxMain(point.y);
+          const hasValue = hasValidY(point?.y);
+          const py = hasValue ? yToPxMain(point.y) : null;
 
           hLine.style.display = "block";
-          hDot.style.display = "block";
+          hDot.style.display = hasValue ? "block" : "none";
           tip.style.display = "block";
           hLine.setAttribute("x1", px);
           hLine.setAttribute("x2", px);
           hLine.setAttribute("y1", mainTop);
           hLine.setAttribute("y2", mainBottom);
-          hDot.setAttribute("cx", px);
-          hDot.setAttribute("cy", py);
+          if (hasValue) {
+            hDot.setAttribute("cx", px);
+            hDot.setAttribute("cy", py);
+          }
 
-          tip.textContent = `${formatPeriodLabel(point.x)} / ${yFmt(point.y)}`;
+          tip.textContent = `${formatPeriodLabel(point.x)} / ${hasValue ? yFmt(point.y) : "-"}`;
           const wrapRect = wrap.getBoundingClientRect();
           tip.style.left = `${Math.min(Math.max(ev.clientX - wrapRect.left, 56), wrapRect.width - 56)}px`;
-          tip.style.top = `${Math.max(ev.clientY - wrapRect.top - 12, 8)}px`;
+          const tipY = Math.max(ev.clientY - wrapRect.top - tip.offsetHeight - 12, 8);
+          tip.style.top = `${tipY}px`;
         };
       }
 
@@ -1062,8 +1094,9 @@
       }
 
       // チャート（指数）
-      const indexSeries = series.filter(r => Number.isFinite(r.index));
-      if (indexSeries.length < 2) {
+      const indexSeries = series;
+      const validIndexCount = indexSeries.filter(r => Number.isFinite(r.index) && r.index > 0).length;
+      if (validIndexCount < 2) {
         document.getElementById("indexChart").innerHTML =
           `<div class="chart-wrap"><div class="chart-title">スリーブ指数 推移（週次）</div><div class="meta">指数データが不足しています</div></div>`;
       } else {
