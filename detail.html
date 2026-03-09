@@ -360,11 +360,15 @@
       }
 
       .chart-viewport {
-        overflow-x: auto;
+        overflow: hidden;
       }
 
       svg.chart {
-        min-width: 760px;
+        min-width: 0;
+      }
+
+      .chart-wrap {
+        padding: 8px 8px 6px;
       }
     }
   </style>
@@ -712,16 +716,16 @@
       const isMobileView = window.matchMedia("(max-width: 900px)").matches;
       const W = 1200;
       const H = 540;
-      const axisFontSize = isMobileView ? 15 : 12;
-      const xAxisFontSize = isMobileView ? 16 : 13;
-      const padL = isMobileView ? 92 : 80;
+      const axisFontSize = isMobileView ? 19 : 12;
+      const xAxisFontSize = isMobileView ? 18 : 13;
+      const padL = isMobileView ? 110 : 80;
       const padR = 24;
       const mainTop = 24;
-      const mainBottom = 322;
-      const xLabelY = isMobileView ? 370 : 350;
+      const mainBottom = isMobileView ? 286 : 322;
+      const xLabelY = isMobileView ? 318 : 350;
       const navTop = 392;
       const navBottom = 474;
-      const ticks = isMobileView ? 5 : 4;
+      const ticks = 4;
       const minWindow = Math.min(Math.max(2, Math.ceil(data.length * 0.12)), data.length);
 
       function niceStep(range, t) {
@@ -889,17 +893,18 @@
         mainLabels.innerHTML = yLabels.join("");
 
         if (isMobileView) {
-          const labelCount = Math.min(7, visible.length);
+          const labelCount = Math.min(4, visible.length);
           const idxSet = new Set();
           for (let i = 0; i < labelCount; i++) {
             const ratio = labelCount === 1 ? 0 : i / (labelCount - 1);
             idxSet.add(Math.round((visible.length - 1) * ratio));
           }
           const mobileIdx = Array.from(idxSet).sort((a, b) => a - b);
-          mainXLabels.innerHTML = mobileIdx.map(i => {
+          mainXLabels.innerHTML = mobileIdx.map((i, idx) => {
             const x = xToPxMain(i);
             const text = escapeHtml(formatPeriodLabel(visible[i].x));
-            return `<text x="${x}" y="${xLabelY}" font-size="13" fill="#475467" text-anchor="end" transform="rotate(-42 ${x} ${xLabelY})">${text}</text>`;
+            const anchor = idx === 0 ? "start" : (idx === mobileIdx.length - 1 ? "end" : "middle");
+            return `<text x="${x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#475467" text-anchor="${anchor}" font-weight="700">${text}</text>`;
           }).join("");
         } else {
           const midIdx = Math.floor((visible.length - 1) / 2);
