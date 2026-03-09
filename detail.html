@@ -487,7 +487,7 @@
     function formatPeriodLabel(iso) {
       const s = String(iso || "").trim();
       const month = s.match(/^(\d{4})-(\d{2})$/);
-      if (month) return `${month[1]}/${month[2]}`;
+      if (month) return `${month[1]}/${Number(month[2])}`;
       const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
       if (!m) return s;
       return `${m[1]}/${m[2]}/${m[3]}`;
@@ -536,15 +536,28 @@
         buckets.get(key).push(r);
       }
 
-      return Array.from(buckets.entries())
-        .sort((a, b) => a[0].localeCompare(b[0]))
-        .map(([month, rows]) => {
-          const prices = rows.map(x => x.price).filter(v => Number.isFinite(v));
-          const price = prices.length ? Math.round(prices.reduce((sum, v) => sum + v, 0) / prices.length) : null;
-          const counts = rows.map(x => x.count).filter(v => Number.isFinite(v));
-          const count = counts.length ? counts.reduce((sum, v) => sum + v, 0) : null;
-          return { week: month, price, count };
-        });
+      const monthKeys = Array.from(buckets.keys()).sort((a, b) => a.localeCompare(b));
+      const endBase = monthKeys.length ? monthKeys[monthKeys.length - 1] : toISODate(new Date()).slice(0, 7);
+      const endDate = new Date(`${endBase}-01T00:00:00`);
+      if (Number.isNaN(endDate.getTime())) return [];
+
+      const targetMonths = [];
+      for (let offset = 11; offset >= 0; offset--) {
+        const d = new Date(endDate);
+        d.setMonth(d.getMonth() - offset);
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        targetMonths.push(`${y}-${m}`);
+      }
+
+      return targetMonths.map((month) => {
+        const rows = buckets.get(month) || [];
+        const prices = rows.map(x => x.price).filter(v => Number.isFinite(v));
+        const price = prices.length ? Math.round(prices.reduce((sum, v) => sum + v, 0) / prices.length) : null;
+        const counts = rows.map(x => x.count).filter(v => Number.isFinite(v));
+        const count = counts.length ? counts.reduce((sum, v) => sum + v, 0) : null;
+        return { week: month, price, count };
+      });
     }
 
     function currentShareUrl() {
@@ -691,9 +704,11 @@
       deltaEl.textContent = `${arrow} 前週比 ${sign}${abs.toLocaleString()}円 ${pct}`;
     }
 
-    function renderLineChart(containerId, title, rows, xKey, yKey) {
+    function renderLineChart(containerId, title, rows, xKey, yKey, options = {}) {
       const el = document.getElementById(containerId);
       if (!el) return;
+      const mode = String(options.mode || "weekly");
+      const isMonthlyMode = mode === "monthly";
 
       const data = (Array.isArray(rows) ? rows : [])
         .map(r => {
@@ -702,9 +717,10 @@
           const n = Number(rawY);
           return { x, y: Number.isFinite(n) ? n : null };
         })
-        .filter(p => p.x && Number.isFinite(p.y));
+        .filter(p => p.x);
 
-      if (data.length < 2) {
+      const finiteData = data.filter(p => Number.isFinite(p.y));
+      if (finiteData.length < 1 || data.length < 2) {
         el.innerHTML = `
           <div class="chart-wrap">
             <div class="chart-title">${escapeHtml(title)}</div>
@@ -715,16 +731,16 @@
 
       const isMobileView = window.matchMedia("(max-width: 900px)").matches;
       const W = 1200;
-      const H = 540;
+      const H = 680;
       const axisFontSize = isMobileView ? 19 : 12;
       const xAxisFontSize = isMobileView ? 18 : 13;
       const padL = isMobileView ? 110 : 80;
       const padR = 24;
       const mainTop = 24;
-      const mainBottom = isMobileView ? 286 : 322;
-      const xLabelY = isMobileView ? 318 : 350;
-      const navTop = 392;
-      const navBottom = 474;
+      const mainBottom = isMobileView ? 420 : 430;
+      const xLabelY = isMobileView ? 476 : 458;
+      const navTop = 540;
+      const navBottom = 628;
       const ticks = 4;
       const minWindow = Math.min(Math.max(2, Math.ceil(data.length * 0.12)), data.length);
 
@@ -741,7 +757,12 @@
       };
 
       function rangeLabel(start, end) {
-        if (start === 0 && end === data.length - 1) return "全期間";
+        if (start === 0 && end === data.length - 1) {
+          if (isMonthlyMode) {
+            return `${formatPeriodLabel(data[0].x)} 〜 ${formatPeriodLabel(data[data.length - 1].x)}`;
+          }
+          return "全期間";
+        }
         return `${formatPeriodLabel(data[start].x)} 〜 ${formatPeriodLabel(data[end].x)}`;
       }
 
@@ -821,14 +842,26 @@
       const zoomLabel = el.querySelector(".chart-zoom-label");
       const zoomBtns = Array.from(el.querySelectorAll(".chart-zoom-btn"));
 
-      const yAllMin = Math.min(...data.map(d => d.y));
-      const yAllMax = Math.max(...data.map(d => d.y));
+      const yAllMin = Math.min(...finiteData.map(d => d.y));
+      const yAllMax = Math.max(...finiteData.map(d => d.y));
       const yAllSpan = (yAllMax - yAllMin) || 1;
       const yNavMin = yAllMin - yAllSpan * 0.08;
       const yNavMax = yAllMax + yAllSpan * 0.08;
 
       const yToPxNav = (v) => navTop + (1 - (v - yNavMin) / (yNavMax - yNavMin)) * (navBottom - navTop);
-      const navPath = data.map((p, i) => `${i === 0 ? "M" : "L"} ${xToPxAll(i)} ${yToPxNav(p.y)}`).join(" ");
+      const navPath = (() => {
+        let d = "";
+        let penDown = false;
+        for (let i = 0; i < data.length; i++) {
+          if (!Number.isFinite(data[i].y)) {
+            penDown = false;
+            continue;
+          }
+          d += `${penDown ? " L" : " M"} ${xToPxAll(i)} ${yToPxNav(data[i].y)}`;
+          penDown = true;
+        }
+        return d.trim();
+      })();
       navLine.setAttribute("d", navPath);
 
       let rangeStart = 0;
@@ -861,7 +894,8 @@
           return padL + (i / (visible.length - 1)) * (W - padL - padR);
         };
 
-        const ys = visible.map(v => v.y);
+        const ys = visible.map(v => v.y).filter(v => Number.isFinite(v));
+        if (!ys.length) return;
         let yMin = Math.min(...ys);
         let yMax = Math.max(...ys);
         const margin = (yMax - yMin) * 0.12 || 1;
@@ -872,10 +906,19 @@
         yMax = Math.ceil(yMax / step) * step;
 
         const yToPxMain = (v) => mainTop + (1 - (v - yMin) / (yMax - yMin)) * (mainBottom - mainTop);
-        const pathD = visible.map((p, i) => `${i === 0 ? "M" : "L"} ${xToPxMain(i)} ${yToPxMain(p.y)}`).join(" ");
-        const fillD = `${pathD} L ${xToPxMain(visible.length - 1)} ${mainBottom} L ${xToPxMain(0)} ${mainBottom} Z`;
+        let pathD = "";
+        let penDown = false;
+        for (let i = 0; i < visible.length; i++) {
+          const y = visible[i].y;
+          if (!Number.isFinite(y)) {
+            penDown = false;
+            continue;
+          }
+          pathD += `${penDown ? " L" : " M"} ${xToPxMain(i)} ${yToPxMain(y)}`;
+          penDown = true;
+        }
         mainLine.setAttribute("d", pathD);
-        mainFill.setAttribute("d", fillD);
+        mainFill.setAttribute("d", "");
 
         const gridLines = [];
         const yLabels = [];
@@ -893,29 +936,45 @@
         mainLabels.innerHTML = yLabels.join("");
 
         if (isMobileView) {
-          const labelCount = Math.min(4, visible.length);
-          const idxSet = new Set();
-          for (let i = 0; i < labelCount; i++) {
-            const ratio = labelCount === 1 ? 0 : i / (labelCount - 1);
-            idxSet.add(Math.round((visible.length - 1) * ratio));
-          }
-          const mobileIdx = Array.from(idxSet).sort((a, b) => a - b);
+          const mobileIdx = isMonthlyMode
+            ? visible.map((_, i) => i)
+            : (() => {
+              const labelCount = Math.min(4, visible.length);
+              const idxSet = new Set();
+              for (let i = 0; i < labelCount; i++) {
+                const ratio = labelCount === 1 ? 0 : i / (labelCount - 1);
+                idxSet.add(Math.round((visible.length - 1) * ratio));
+              }
+              return Array.from(idxSet).sort((a, b) => a - b);
+            })();
           mainXLabels.innerHTML = mobileIdx.map((i, idx) => {
             const x = xToPxMain(i);
             const text = escapeHtml(formatPeriodLabel(visible[i].x));
+            if (isMonthlyMode) {
+              const y = xLabelY + ((idx % 2) ? 16 : 0);
+              return `<text x="${x}" y="${y}" font-size="12" fill="#475467" text-anchor="middle" font-weight="700">${text}</text>`;
+            }
             const anchor = idx === 0 ? "start" : (idx === mobileIdx.length - 1 ? "end" : "middle");
             return `<text x="${x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#475467" text-anchor="${anchor}" font-weight="700">${text}</text>`;
           }).join("");
         } else {
-          const midIdx = Math.floor((visible.length - 1) / 2);
-          const xLabels = [
-            { x: xToPxMain(0), text: formatPeriodLabel(visible[0].x), anchor: "start" },
-            { x: xToPxMain(midIdx), text: formatPeriodLabel(visible[midIdx].x), anchor: "middle" },
-            { x: xToPxMain(visible.length - 1), text: formatPeriodLabel(visible[visible.length - 1].x), anchor: "end" }
-          ];
-          mainXLabels.innerHTML = xLabels.map(l =>
-            `<text x="${l.x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
-          ).join("");
+          if (isMonthlyMode) {
+            mainXLabels.innerHTML = visible.map((p, i) => {
+              const x = xToPxMain(i);
+              const y = xLabelY + ((i % 2) ? 12 : 0);
+              return `<text x="${x}" y="${y}" font-size="12" fill="#475467" text-anchor="middle" font-weight="700">${escapeHtml(formatPeriodLabel(p.x))}</text>`;
+            }).join("");
+          } else {
+            const midIdx = Math.floor((visible.length - 1) / 2);
+            const xLabels = [
+              { x: xToPxMain(0), text: formatPeriodLabel(visible[0].x), anchor: "start" },
+              { x: xToPxMain(midIdx), text: formatPeriodLabel(visible[midIdx].x), anchor: "middle" },
+              { x: xToPxMain(visible.length - 1), text: formatPeriodLabel(visible[visible.length - 1].x), anchor: "end" }
+            ];
+            mainXLabels.innerHTML = xLabels.map(l =>
+              `<text x="${l.x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
+            ).join("");
+          }
         }
 
         const rangeX1 = xToPxAll(s);
@@ -929,7 +988,23 @@
         hitMain.onmousemove = (ev) => {
           const vbX = toSvgX(ev.clientX);
           const t = (vbX - padL) / (W - padL - padR);
-          const visIdx = Math.max(0, Math.min(visible.length - 1, Math.round(t * (visible.length - 1))));
+          let visIdx = Math.max(0, Math.min(visible.length - 1, Math.round(t * (visible.length - 1))));
+          if (!Number.isFinite(visible[visIdx]?.y)) {
+            let left = visIdx - 1;
+            let right = visIdx + 1;
+            let found = -1;
+            while (left >= 0 || right < visible.length) {
+              if (left >= 0 && Number.isFinite(visible[left]?.y)) { found = left; break; }
+              if (right < visible.length && Number.isFinite(visible[right]?.y)) { found = right; break; }
+              left--;
+              right++;
+            }
+            if (found < 0) {
+              hideHover();
+              return;
+            }
+            visIdx = found;
+          }
           const point = visible[visIdx];
           const px = xToPxMain(visIdx);
           const py = yToPxMain(point.y);
@@ -1031,9 +1106,13 @@
         });
       });
 
-      const initialSpan = Math.max(minWindow, Math.min(data.length, Math.round(data.length * 0.7)));
-      const initialStart = Math.max(0, data.length - initialSpan);
-      updateRange(initialStart, data.length - 1);
+      if (isMonthlyMode) {
+        updateRange(0, data.length - 1);
+      } else {
+        const initialSpan = Math.max(minWindow, Math.min(data.length, Math.round(data.length * 0.7)));
+        const initialStart = Math.max(0, data.length - initialSpan);
+        updateRange(initialStart, data.length - 1);
+      }
     }
 
     async function main() {
@@ -1111,7 +1190,7 @@
         const labelEn = granularity === "monthly" ? "monthly" : "weekly";
 
         if (chartTitleEl) chartTitleEl.textContent = `${labelJa}価格（${labelEn}）`;
-        renderLineChart("weeklyChart", `${labelJa}価格 推移`, rows, "week", "price");
+        renderLineChart("weeklyChart", `${labelJa}価格 推移`, rows, "week", "price", { mode: granularity });
         document.getElementById("weeklyTable").innerHTML = renderTableWeekly(rows);
         setPriceKpi(rows, `最新${labelJa}価格`);
 
