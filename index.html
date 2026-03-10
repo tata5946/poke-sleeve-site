@@ -396,6 +396,68 @@
       white-space: nowrap;
     }
 
+    .story-sticky {
+      grid-template-columns: 1fr;
+    }
+
+    .story-rank-board {
+      border: 1px solid #cfd7e7;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 16px 30px rgba(20, 31, 50, .12);
+      padding: 14px;
+      min-height: min(78vh, 700px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      opacity: var(--story-board-opacity, .92);
+      transform: translateY(var(--story-board-ty, 0px));
+      transition: opacity .15s linear, transform .15s linear;
+    }
+
+    .story-rank-board-head {
+      margin: 0;
+      font-size: clamp(20px, 2.8vw, 32px);
+      color: #1e2b40;
+      letter-spacing: .02em;
+    }
+
+    .story-rank-board-sub {
+      margin: 0;
+      color: #5d6d86;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .story-rank-board-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow: auto;
+      max-height: clamp(320px, 54vh, 560px);
+      padding-right: 4px;
+    }
+
+    .story-rank-board-item {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid #dce2ee;
+      border-radius: 12px;
+      background: #fff;
+      padding: 8px 10px;
+    }
+
+    .story-rank-board-item .story-rank-pos {
+      width: 30px;
+      height: 30px;
+      font-size: 12px;
+    }
+
     @media (max-width: 740px) {
       .scroll-story-inner {
         min-height: 180vh;
@@ -404,12 +466,7 @@
 
       .story-sticky {
         top: calc(var(--site-header-h) + 8px);
-        grid-template-columns: 1fr;
         min-height: 72vh;
-      }
-
-      .story-media img {
-        height: clamp(220px, 42vh, 360px);
       }
 
       .home-hero .home-hero-card {
@@ -475,25 +532,16 @@
         </div>
 
         <div class="story-sticky" id="storySticky">
-          <div class="story-media">
-            <img id="storyImage" src="" alt="注目スリーブ" loading="lazy" referrerpolicy="no-referrer">
-          </div>
-          <div class="story-copy">
-            <article class="story-step" data-step="0" id="storyPriceRank">
-              <h3>価格ランキング</h3>
-              <p>スクロールで表示切替</p>
-              <ul class="story-rank-list"><li class="story-rank-item"><span class="story-rank-pos">1</span><span class="story-rank-name">読み込み中...</span><span class="story-rank-val">-</span></li></ul>
-            </article>
-            <article class="story-step" data-step="1" id="storyGrowthRank">
-              <h3>高騰率ランキング</h3>
-              <p>スクロールで表示切替</p>
-              <ul class="story-rank-list"><li class="story-rank-item"><span class="story-rank-pos">1</span><span class="story-rank-name">読み込み中...</span><span class="story-rank-val">-</span></li></ul>
-            </article>
-            <article class="story-step" data-step="2" id="storySurgeRank">
-              <h3>急上昇ランキング</h3>
-              <p>スクロールで表示切替</p>
-              <ul class="story-rank-list"><li class="story-rank-item"><span class="story-rank-pos">1</span><span class="story-rank-name">読み込み中...</span><span class="story-rank-val">-</span></li></ul>
-            </article>
+          <div class="story-rank-board" id="storyRankBoard">
+            <h3 class="story-rank-board-head" id="storyBoardTitle">価格ランキング</h3>
+            <p class="story-rank-board-sub" id="storyBoardSub">読み込み中...</p>
+            <ol class="story-rank-board-list" id="storyBoardList">
+              <li class="story-rank-board-item">
+                <span class="story-rank-pos">1</span>
+                <span class="story-rank-name">読み込み中...</span>
+                <span class="story-rank-val">-</span>
+              </li>
+            </ol>
           </div>
         </div>
       </div>
@@ -662,9 +710,8 @@
       const section = document.getElementById("scrollStory");
       const intro = section ? section.querySelector("[data-story-reveal]") : null;
       const sticky = document.getElementById("storySticky");
-      const mediaImg = document.getElementById("storyImage");
-      const steps = Array.from(document.querySelectorAll(".story-step"));
-      if (!section || !sticky || !mediaImg || !steps.length) return;
+      const board = document.getElementById("storyRankBoard");
+      if (!section || !sticky || !board) return;
 
       const observer = new IntersectionObserver((entries) => {
         for (const e of entries) {
@@ -685,37 +732,20 @@
         const raw = (vh - rect.top) / total;
         const progress = clamp01(raw);
 
-        const zoomGain = reduced ? 0.05 : (window.innerWidth <= 740 ? 0.14 : 0.24);
-        mediaImg.style.setProperty("--story-image-scale", (1 + (progress * zoomGain)).toFixed(3));
-        mediaImg.style.setProperty("--story-image-opacity", (0.84 + progress * 0.16).toFixed(3));
+        const boardOpacity = reduced ? 1 : (0.8 + progress * 0.2);
+        const boardTy = reduced ? 0 : Math.round((1 - progress) * 16);
+        board.style.setProperty("--story-board-opacity", String(boardOpacity));
+        board.style.setProperty("--story-board-ty", `${boardTy}px`);
 
         const bgShift = reduced ? 0 : Math.round(progress * -40);
         section.style.setProperty("--story-bg-shift", `${bgShift}px`);
 
-        const stage = Math.min(steps.length - 1, Math.max(0, Math.floor(progress * steps.length)));
+        const stageCount = 3;
+        const stage = Math.min(stageCount - 1, Math.max(0, Math.floor(progress * stageCount)));
         if (stage !== activeStage) {
           activeStage = stage;
-          steps.forEach((el, i) => el.classList.toggle("is-active", i === stage));
-          const stageData = Array.isArray(window.__storyStageData) ? window.__storyStageData : [];
-          const picked = stageData[stage] || null;
-          if (picked && picked.imageUrl && mediaImg.src !== picked.imageUrl) {
-            mediaImg.src = picked.imageUrl;
-            mediaImg.alt = picked.alt || "注目スリーブ";
-          }
+          renderStoryRankingStage(stage);
         }
-
-        steps.forEach((el, i) => {
-          const start = i * 0.22;
-          const end = start + 0.34;
-          const local = clamp01((progress - start) / (end - start));
-          const eased = local * local * (3 - 2 * local);
-          const dir = (i % 2 === 0) ? -1 : 1;
-          const offsetX = reduced ? 0 : Math.round((1 - eased) * 52 * dir);
-          const offsetY = Math.round((1 - eased) * 18);
-          el.style.opacity = String(0.18 + eased * 0.82);
-          el.style.setProperty("--sx", `${offsetX}px`);
-          el.style.setProperty("--sy", `${offsetY}px`);
-        });
       };
 
       const onScroll = () => {
@@ -729,9 +759,9 @@
     }
 
     function buildStoryRankItems(rows, mode) {
-      const src = (Array.isArray(rows) ? rows : []).slice(0, 3);
+      const src = (Array.isArray(rows) ? rows : []).slice(0, 10);
       if (!src.length) {
-        return `<li class="story-rank-item"><span class="story-rank-pos">-</span><span class="story-rank-name">データなし</span><span class="story-rank-val">-</span></li>`;
+        return `<li class="story-rank-board-item"><span class="story-rank-pos">-</span><span class="story-rank-name">データなし</span><span class="story-rank-val">-</span></li>`;
       }
 
       return src.map((row, idx) => {
@@ -751,33 +781,37 @@
           const diff = Number(row?.diff);
           value = Number.isFinite(diff) ? `${diff > 0 ? "+" : ""}${Math.round(diff).toLocaleString()}円` : "-";
         }
-        return `<li class="story-rank-item"><span class="story-rank-pos">${rank}</span><span class="story-rank-name">${escapeHtml(name)}</span><span class="story-rank-val">${escapeHtml(value)}</span></li>`;
+        return `<li class="story-rank-board-item"><span class="story-rank-pos">${rank}</span><span class="story-rank-name">${escapeHtml(name)}</span><span class="story-rank-val">${escapeHtml(value)}</span></li>`;
       }).join("");
     }
 
+    function renderStoryRankingStage(stage) {
+      const titleEl = document.getElementById("storyBoardTitle");
+      const subEl = document.getElementById("storyBoardSub");
+      const listEl = document.getElementById("storyBoardList");
+      if (!titleEl || !subEl || !listEl) return;
+
+      const stages = Array.isArray(window.__storyRankingStages) ? window.__storyRankingStages : [];
+      const current = stages[stage] || stages[0] || null;
+      if (!current) {
+        titleEl.textContent = "ランキング";
+        subEl.textContent = "データなし";
+        listEl.innerHTML = buildStoryRankItems([], "price");
+        return;
+      }
+
+      titleEl.textContent = current.title;
+      subEl.textContent = current.sub;
+      listEl.innerHTML = buildStoryRankItems(current.rows, current.mode);
+    }
+
     function fillStoryRankings({ priceRows, growthRows, surgeRows }) {
-      const priceEl = document.getElementById("storyPriceRank");
-      const growthEl = document.getElementById("storyGrowthRank");
-      const surgeEl = document.getElementById("storySurgeRank");
-
-      if (priceEl) {
-        const sub = priceRows.length ? "価格が高い順（最新週）" : "データなし";
-        priceEl.innerHTML = `<h3>価格ランキング</h3><p>${escapeHtml(sub)}</p><ul class="story-rank-list">${buildStoryRankItems(priceRows, "price")}</ul>`;
-      }
-      if (growthEl) {
-        const sub = growthRows.length ? "上昇率が高い順（30日）" : "データなし";
-        growthEl.innerHTML = `<h3>高騰率ランキング</h3><p>${escapeHtml(sub)}</p><ul class="story-rank-list">${buildStoryRankItems(growthRows, "growth")}</ul>`;
-      }
-      if (surgeEl) {
-        const sub = surgeRows.length ? "前回比の上昇額が大きい順" : "データなし";
-        surgeEl.innerHTML = `<h3>急上昇ランキング</h3><p>${escapeHtml(sub)}</p><ul class="story-rank-list">${buildStoryRankItems(surgeRows, "surge")}</ul>`;
-      }
-
-      window.__storyStageData = [
-        priceRows[0] ? { imageUrl: String(priceRows[0].imageUrl || "").trim(), alt: `${priceRows[0].name || "価格ランキング1位"} の画像` } : null,
-        growthRows[0] ? { imageUrl: String(growthRows[0].imageUrl || "").trim(), alt: `${growthRows[0].name || "高騰率ランキング1位"} の画像` } : null,
-        surgeRows[0] ? { imageUrl: String(surgeRows[0].imageUrl || "").trim(), alt: `${surgeRows[0].name || "急上昇ランキング1位"} の画像` } : null
+      window.__storyRankingStages = [
+        { mode: "price", title: "価格ランキング", sub: "価格が高い順（最新週）", rows: priceRows },
+        { mode: "growth", title: "高騰率ランキング", sub: "上昇率が高い順（30日）", rows: growthRows },
+        { mode: "surge", title: "急上昇ランキング", sub: "前回比の上昇額が大きい順", rows: surgeRows }
       ];
+      renderStoryRankingStage(0);
     }
 
     function toISODate(d) {
@@ -1100,15 +1134,6 @@
         .sort((a, b) => (b.p - a.p))
         .slice(0, 10)
         .map(x => x.s);
-
-      const storyImageEl = document.getElementById("storyImage");
-      if (storyImageEl) {
-        const storyCandidate = sleeves.find(s => String(s.imageUrl || "").trim()) || priceRank[0] || null;
-        if (storyCandidate) {
-          storyImageEl.src = String(storyCandidate.imageUrl || "").trim();
-          storyImageEl.alt = `${String(storyCandidate.name || "注目スリーブ")} のイメージ`;
-        }
-      }
 
       const surgeRank = sleeves
         .map(s => {
