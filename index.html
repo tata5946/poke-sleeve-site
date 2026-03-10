@@ -219,6 +219,18 @@
       return pair ? pair.latest.price : null;
     }
 
+    function getGlobalLatestTradeWeek(sleeves) {
+      let maxWeek = null;
+      for (const s of (Array.isArray(sleeves) ? sleeves : [])) {
+        const p = getWeeklyPair(s);
+        if (!p) continue;
+        const w = String(p.latest.week || "");
+        if (!w) continue;
+        if (!maxWeek || w > maxWeek) maxWeek = w;
+      }
+      return maxWeek;
+    }
+
     function getTotalTradeCount(sleeve) {
       const arr = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
       let sum = 0;
@@ -304,10 +316,11 @@
       return null;
     }
 
-    function get30dGrowth(sleeve) {
+    function get30dGrowth(sleeve, latestWeek) {
       const pair = getWeeklyPair(sleeve);
       if (!pair) return null;
       const latest = pair.latest;
+      if (latestWeek && latest.week !== latestWeek) return null;
       const sorted = pair.sorted;
 
       const targetISO = addDays(latest.week, -30);
@@ -389,6 +402,7 @@
       hideError();
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
+      const latestWeek = getGlobalLatestTradeWeek(sleeves);
 
       // ★URLクエリ ?q= を検索に反映（detail/index-market から戻る導線用）
       const url = new URL(location.href);
@@ -404,16 +418,9 @@
 
       // 最終更新っぽい表示（直近取引週の最大日付）
       try {
-        let maxWeek = null;
-        for (const s of sleeves) {
-          const p = getWeeklyPair(s);
-          if (!p) continue;
-          const w = p.latest.week;
-          if (!maxWeek || w > maxWeek) maxWeek = w;
-        }
-        if (maxWeek) {
+        if (latestWeek) {
           const u = document.getElementById("updatedAt");
-          u.textContent = `最終更新：${maxWeek}（週次）`;
+          u.textContent = `最終更新：${latestWeek}（週次）`;
           u.style.display = "block";
         }
       } catch (_) { }
@@ -457,6 +464,7 @@
         .map(s => {
           const pair = getWeeklyPair(s);
           if (!pair || !pair.prev) return null;
+          if (latestWeek && pair.latest.week !== latestWeek) return null;
           const diff = pair.latest.price - pair.prev.price;
           return { s, pair, diff };
         })
@@ -466,7 +474,7 @@
 
       const growthRank = sleeves
         .map(s => {
-          const g = get30dGrowth(s);
+          const g = get30dGrowth(s, latestWeek);
           if (!g) return null;
           return { s, g };
         })
