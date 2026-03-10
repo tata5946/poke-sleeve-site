@@ -347,6 +347,55 @@
       font-weight: 700;
     }
 
+    .story-step.is-active {
+      border-color: #a9c4ff;
+      box-shadow: 0 12px 26px rgba(20, 35, 61, .14);
+      background: rgba(255, 255, 255, .94);
+    }
+
+    .story-rank-list {
+      margin: 6px 0 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .story-rank-item {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      color: #31425b;
+    }
+
+    .story-rank-pos {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid #cad4e7;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      color: #1f2a3d;
+      background: #fff;
+    }
+
+    .story-rank-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .story-rank-val {
+      font-weight: 900;
+      color: #1e3559;
+      white-space: nowrap;
+    }
+
     @media (max-width: 740px) {
       .scroll-story-inner {
         min-height: 180vh;
@@ -430,17 +479,20 @@
             <img id="storyImage" src="" alt="注目スリーブ" loading="lazy" referrerpolicy="no-referrer">
           </div>
           <div class="story-copy">
-            <article class="story-step" data-step="0">
-              <h3>1. Fade In</h3>
-              <p>導入テキストが淡く立ち上がり、視線を相場の全体観へ誘導します。</p>
+            <article class="story-step" data-step="0" id="storyPriceRank">
+              <h3>価格ランキング</h3>
+              <p>スクロールで表示切替</p>
+              <ul class="story-rank-list"><li class="story-rank-item"><span class="story-rank-pos">1</span><span class="story-rank-name">読み込み中...</span><span class="story-rank-val">-</span></li></ul>
             </article>
-            <article class="story-step" data-step="1">
-              <h3>2. Zoom & Focus</h3>
-              <p>画像はスクロール量に合わせて拡大し、直近の注目テーマを強調します。</p>
+            <article class="story-step" data-step="1" id="storyGrowthRank">
+              <h3>高騰率ランキング</h3>
+              <p>スクロールで表示切替</p>
+              <ul class="story-rank-list"><li class="story-rank-item"><span class="story-rank-pos">1</span><span class="story-rank-name">読み込み中...</span><span class="story-rank-val">-</span></li></ul>
             </article>
-            <article class="story-step" data-step="2">
-              <h3>3. Slide Narrative</h3>
-              <p>解説カードが横から順番に現れ、局面ごとの見方を整理して提示します。</p>
+            <article class="story-step" data-step="2" id="storySurgeRank">
+              <h3>急上昇ランキング</h3>
+              <p>スクロールで表示切替</p>
+              <ul class="story-rank-list"><li class="story-rank-item"><span class="story-rank-pos">1</span><span class="story-rank-name">読み込み中...</span><span class="story-rank-val">-</span></li></ul>
             </article>
           </div>
         </div>
@@ -622,6 +674,7 @@
       if (intro) observer.observe(intro);
 
       let rafId = null;
+      let activeStage = -1;
       const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       const update = () => {
@@ -638,6 +691,18 @@
 
         const bgShift = reduced ? 0 : Math.round(progress * -40);
         section.style.setProperty("--story-bg-shift", `${bgShift}px`);
+
+        const stage = Math.min(steps.length - 1, Math.max(0, Math.floor(progress * steps.length)));
+        if (stage !== activeStage) {
+          activeStage = stage;
+          steps.forEach((el, i) => el.classList.toggle("is-active", i === stage));
+          const stageData = Array.isArray(window.__storyStageData) ? window.__storyStageData : [];
+          const picked = stageData[stage] || null;
+          if (picked && picked.imageUrl && mediaImg.src !== picked.imageUrl) {
+            mediaImg.src = picked.imageUrl;
+            mediaImg.alt = picked.alt || "注目スリーブ";
+          }
+        }
 
         steps.forEach((el, i) => {
           const start = i * 0.22;
@@ -661,6 +726,58 @@
       window.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", onScroll, { passive: true });
       onScroll();
+    }
+
+    function buildStoryRankItems(rows, mode) {
+      const src = (Array.isArray(rows) ? rows : []).slice(0, 3);
+      if (!src.length) {
+        return `<li class="story-rank-item"><span class="story-rank-pos">-</span><span class="story-rank-name">データなし</span><span class="story-rank-val">-</span></li>`;
+      }
+
+      return src.map((row, idx) => {
+        const rank = idx + 1;
+        let name = "";
+        let value = "";
+        if (mode === "price") {
+          name = String(row?.name || "");
+          const p = Number(row?.price);
+          value = Number.isFinite(p) ? `${Math.round(p).toLocaleString()}円` : "-";
+        } else if (mode === "growth") {
+          name = String(row?.name || "");
+          const rate = Number(row?.rate);
+          value = Number.isFinite(rate) ? `${rate > 0 ? "+" : ""}${rate.toFixed(1)}%` : "-";
+        } else {
+          name = String(row?.name || "");
+          const diff = Number(row?.diff);
+          value = Number.isFinite(diff) ? `${diff > 0 ? "+" : ""}${Math.round(diff).toLocaleString()}円` : "-";
+        }
+        return `<li class="story-rank-item"><span class="story-rank-pos">${rank}</span><span class="story-rank-name">${escapeHtml(name)}</span><span class="story-rank-val">${escapeHtml(value)}</span></li>`;
+      }).join("");
+    }
+
+    function fillStoryRankings({ priceRows, growthRows, surgeRows }) {
+      const priceEl = document.getElementById("storyPriceRank");
+      const growthEl = document.getElementById("storyGrowthRank");
+      const surgeEl = document.getElementById("storySurgeRank");
+
+      if (priceEl) {
+        const sub = priceRows.length ? "価格が高い順（最新週）" : "データなし";
+        priceEl.innerHTML = `<h3>価格ランキング</h3><p>${escapeHtml(sub)}</p><ul class="story-rank-list">${buildStoryRankItems(priceRows, "price")}</ul>`;
+      }
+      if (growthEl) {
+        const sub = growthRows.length ? "上昇率が高い順（30日）" : "データなし";
+        growthEl.innerHTML = `<h3>高騰率ランキング</h3><p>${escapeHtml(sub)}</p><ul class="story-rank-list">${buildStoryRankItems(growthRows, "growth")}</ul>`;
+      }
+      if (surgeEl) {
+        const sub = surgeRows.length ? "前回比の上昇額が大きい順" : "データなし";
+        surgeEl.innerHTML = `<h3>急上昇ランキング</h3><p>${escapeHtml(sub)}</p><ul class="story-rank-list">${buildStoryRankItems(surgeRows, "surge")}</ul>`;
+      }
+
+      window.__storyStageData = [
+        priceRows[0] ? { imageUrl: String(priceRows[0].imageUrl || "").trim(), alt: `${priceRows[0].name || "価格ランキング1位"} の画像` } : null,
+        growthRows[0] ? { imageUrl: String(growthRows[0].imageUrl || "").trim(), alt: `${growthRows[0].name || "高騰率ランキング1位"} の画像` } : null,
+        surgeRows[0] ? { imageUrl: String(surgeRows[0].imageUrl || "").trim(), alt: `${surgeRows[0].name || "急上昇ランキング1位"} の画像` } : null
+      ];
     }
 
     function toISODate(d) {
@@ -1014,6 +1131,11 @@
         .filter(Boolean)
         .sort((a, b) => b.g.rate - a.g.rate)
         .slice(0, 10);
+
+      const storyPriceRows = priceRank.map(s => ({ name: s.name, imageUrl: s.imageUrl, price: getLatestWeeklyPrice(s) }));
+      const storyGrowthRows = growthRank.map(({ s, g }) => ({ name: s.name, imageUrl: s.imageUrl, rate: g.rate }));
+      const storySurgeRows = surgeRank.map(({ s, diff }) => ({ name: s.name, imageUrl: s.imageUrl, diff }));
+      fillStoryRankings({ priceRows: storyPriceRows, growthRows: storyGrowthRows, surgeRows: storySurgeRows });
 
       // ---- 棚描画 ----
       const railSurge = document.getElementById("rail-surge");
