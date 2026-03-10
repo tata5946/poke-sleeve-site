@@ -17,15 +17,19 @@
     .home-hero .home-hero-card {
       position: relative;
       overflow: hidden;
-      padding: clamp(18px, 3vw, 34px);
-      border: 1px solid #d4d7df;
-      border-radius: 18px;
+      min-height: 100vh;
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      padding: clamp(20px, 4vw, 40px);
+      border: 0;
+      border-radius: 0;
       background:
         radial-gradient(circle at 80% 24%, rgba(255, 86, 182, 0.78) 0 76px, transparent 77px),
         radial-gradient(circle at 12% 85%, rgba(255, 86, 182, 0.65) 0 48px, transparent 49px),
         radial-gradient(circle at 55% 75%, rgba(255, 255, 255, 0.88) 0 74px, transparent 75px),
         linear-gradient(160deg, #f2f3f6 0%, #e7eaef 100%);
-      box-shadow: 0 18px 36px rgba(22, 34, 52, 0.12);
+      box-shadow: none;
     }
 
     .home-bubbles {
@@ -51,6 +55,7 @@
       position: relative;
       z-index: 1;
       max-width: 760px;
+      margin-top: clamp(22px, 6vh, 70px);
     }
 
     .home-kicker {
@@ -468,7 +473,8 @@
       }
 
       .home-hero .home-hero-card {
-        padding: 18px 14px 16px;
+        min-height: 100svh;
+        padding: 16px 14px;
       }
 
       .home-copy {
