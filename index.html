@@ -160,6 +160,14 @@
       font-weight: 700;
     }
 
+    .rail .tile.tile-pop {
+      opacity: 0;
+      transform: translate3d(0, 14px, 0) scale(.96);
+      animation: rankTilePop .55s cubic-bezier(.22, 1, .36, 1) forwards;
+      animation-delay: calc(var(--pop-delay, 0) * 90ms);
+      will-change: transform, opacity;
+    }
+
     body.home-header-hidden #site-header .header {
       opacity: 0;
       transform: translateY(calc(-1 * var(--site-header-h) - 8px));
@@ -262,6 +270,11 @@
     @keyframes feedPulse {
       0%, 100% { opacity: 0; transform: scale(.75); }
       40%, 60% { opacity: .9; transform: scale(1.06); }
+    }
+
+    @keyframes rankTilePop {
+      from { opacity: 0; transform: translate3d(0, 14px, 0) scale(.96); }
+      to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
     }
 
     @keyframes introDrift {
@@ -541,6 +554,14 @@
 
       .home-copy {
         line-height: 1.6;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rail .tile.tile-pop {
+        animation: none;
+        opacity: 1;
+        transform: none;
       }
     }
   </style>
@@ -1059,16 +1080,17 @@
       }
     }
 
-    function buildTileHTML(s, subHtml, chipsHtml, rank = null) {
+    function buildTileHTML(s, subHtml, chipsHtml, rank = null, popIndex = 0) {
       const imgSrc = String(s.imageUrl || "").trim();
       const img = imgSrc
         ? `<img class="tile-img" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
              onerror="this.onerror=null; this.style.display='none';">`
         : `<div class="tile-img"></div>`;
       const rankBadge = Number.isFinite(rank) ? `<span class="tile-rank-badge">${rank}位</span>` : "";
+      const delay = Number.isFinite(popIndex) ? Math.max(0, popIndex) : 0;
 
       return `
-        <a class="tile" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}" aria-label="${escapeHtml(s.name ?? "")}">
+        <a class="tile tile-pop" style="--pop-delay:${delay};" href="./detail.html?id=${encodeURIComponent(s.id ?? "")}" aria-label="${escapeHtml(s.name ?? "")}">
           ${rankBadge}
           ${img}
           <div class="tile-name">${escapeHtml(s.name ?? "")}</div>
@@ -1209,7 +1231,7 @@
           <span class="chip">直近 ${pair.latest.week}</span>
           <span class="chip">前回 ${pair.prev.week}</span>
         `;
-        return buildTileHTML(s, subHtml, chipsHtml, i + 1);
+        return buildTileHTML(s, subHtml, chipsHtml, i + 1, i);
       }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
 
       railGrowth.innerHTML = growthRank.length ? growthRank.map(({ s, g }, i) => {
@@ -1226,7 +1248,7 @@
           <span class="chip">基準 ${g.base.week}</span>
           <span class="chip">直近 ${g.latest.week}</span>
         `;
-        return buildTileHTML(s, subHtml, chipsHtml, i + 1);
+        return buildTileHTML(s, subHtml, chipsHtml, i + 1, i);
       }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
 
       railPrice.innerHTML = priceRank.length ? priceRank.map((s, i) => {
@@ -1241,7 +1263,7 @@
           <span class="chip">総取引 ${totalTrades == null ? "—" : totalTrades.toLocaleString() + "件"}</span>
           <span class="chip">発売年 ${escapeHtml(s.releaseYear ?? "—")}</span>
         `;
-        return buildTileHTML(s, subHtml, chipsHtml, i + 1);
+        return buildTileHTML(s, subHtml, chipsHtml, i + 1, i);
       }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
 
       // ---- 一覧（検索・絞り込み） ----
