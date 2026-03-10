@@ -505,12 +505,6 @@
     <section class="scroll-story" id="scrollStory">
       <div class="scroll-story-bg" aria-hidden="true"></div>
       <div class="scroll-story-inner">
-        <div class="story-intro" data-story-reveal>
-          <p class="story-kicker">SCROLL INTERACTION</p>
-          <h2 class="story-title">TREND,<br>FLOW,<br>FOCUS</h2>
-          <p class="story-desc">スクロールに合わせて、相場の勢いと資金の流れを視覚化。指標の変化点を追いながら、注目テーマへの集中を直感的に確認できます。</p>
-        </div>
-
         <div class="story-sticky" id="storySticky">
           <div class="story-rank-board" id="storyRankBoard">
             <h3 class="story-rank-board-head" id="storyBoardTitle">価格ランキング</h3>
@@ -670,17 +664,9 @@
 
     function setupScrollStory() {
       const section = document.getElementById("scrollStory");
-      const intro = section ? section.querySelector("[data-story-reveal]") : null;
       const sticky = document.getElementById("storySticky");
       const board = document.getElementById("storyRankBoard");
       if (!section || !sticky || !board) return;
-
-      const observer = new IntersectionObserver((entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) e.target.classList.add("is-visible");
-        }
-      }, { threshold: 0.22 });
-      if (intro) observer.observe(intro);
 
       let rafId = null;
       let activeStage = -1;
