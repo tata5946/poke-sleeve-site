@@ -494,6 +494,24 @@
     }
 
     function formatReleaseDate(rawValue) {
+      if (rawValue == null) return "";
+
+      // Google Sheets serial date (e.g. 45234 -> 2023/10/05)
+      if (typeof rawValue === "number" && Number.isFinite(rawValue)) {
+        const serial = rawValue;
+        if (serial > 20000 && serial < 80000) {
+          const epoch = Date.UTC(1899, 11, 30); // Sheets/Excel serial origin
+          const ms = epoch + Math.round(serial * 86400000);
+          const d = new Date(ms);
+          if (!Number.isNaN(d.getTime())) {
+            const y = d.getUTCFullYear();
+            const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+            const day = String(d.getUTCDate()).padStart(2, "0");
+            return `${y}/${m}/${day}`;
+          }
+        }
+      }
+
       const raw = String(rawValue ?? "").trim();
       if (!raw) return "";
 
@@ -516,6 +534,28 @@
       return raw;
     }
 
+    function buildReleaseDateFromParts(sleeve) {
+      const y = Number(sleeve?.releaseYear ?? sleeve?.release_year ?? sleeve?.["発売年"]);
+      const m = Number(sleeve?.releaseMonth ?? sleeve?.release_month ?? sleeve?.["発売月"]);
+      const d = Number(sleeve?.releaseDay ?? sleeve?.release_day ?? sleeve?.["発売日"]);
+      if (Number.isFinite(y) && Number.isFinite(m) && Number.isFinite(d) && y > 1900 && m >= 1 && m <= 12 && d >= 1 && d <= 31) {
+        return `${String(y).padStart(4, "0")}/${String(m).padStart(2, "0")}/${String(d).padStart(2, "0")}`;
+      }
+      return "";
+    }
+
+    function findReleaseDateByKeyHeuristic(sleeve) {
+      if (!sleeve || typeof sleeve !== "object") return "";
+      for (const [k, v] of Object.entries(sleeve)) {
+        const key = String(k || "");
+        const isDateLikeKey = /release.*(date|at)|released.*(date|at)|発売.*(日|年月日|日付)|発売年月日/i.test(key);
+        if (!isDateLikeKey) continue;
+        const text = formatReleaseDate(v);
+        if (/^\d{4}\/\d{2}\/\d{2}$/.test(text)) return text;
+      }
+      return "";
+    }
+
     function getReleaseDateText(sleeve) {
       const candidates = [
         sleeve?.releaseDate,
@@ -523,8 +563,26 @@
         sleeve?.releaseAt,
         sleeve?.releasedAt,
         sleeve?.releasedDate,
-        sleeve?.["発売日"]
+        sleeve?.released_date,
+        sleeve?.release_dt,
+        sleeve?.releaseDatetime,
+        sleeve?.releasedDatetime,
+        sleeve?.["発売日"],
+        sleeve?.["発売年月日"],
+        sleeve?.["発売日付"],
+        sleeve?.["リリース日"]
       ];
+
+      for (const c of candidates) {
+        const text = formatReleaseDate(c);
+        if (/^\d{4}\/\d{2}\/\d{2}$/.test(text)) return text;
+      }
+
+      const fromParts = buildReleaseDateFromParts(sleeve);
+      if (fromParts) return fromParts;
+
+      const byHeuristic = findReleaseDateByKeyHeuristic(sleeve);
+      if (byHeuristic) return byHeuristic;
 
       for (const c of candidates) {
         const text = formatReleaseDate(c);
