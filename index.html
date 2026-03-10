@@ -209,12 +209,6 @@
     }
 
     .home-hero-main {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity .7s ease, transform .7s ease;
-    }
-
-    body.intro-done .home-hero-main {
       opacity: 1;
       transform: translateY(0);
     }
@@ -481,20 +475,6 @@
 </head>
 
 <body>
-  <div id="introSplash" class="intro-splash" aria-hidden="true">
-    <div class="intro-stage">
-      <div class="intro-bubbles">
-        <span class="intro-bubble p1"></span>
-        <span class="intro-bubble p2"></span>
-        <span class="intro-bubble p3"></span>
-        <span class="intro-bubble p4"></span>
-        <span class="intro-bubble p5"></span>
-      </div>
-      <div class="intro-copy">SLEEVE,<br>SELECT,<br>SURGE</div>
-      <p class="intro-tagline">探して、比べて、見極める。</p>
-    </div>
-  </div>
-
   <!-- 共通ヘッダー差し込み -->
   <div id="site-header"></div>
 
@@ -652,24 +632,6 @@
       const [a, b] = v.split("-").map(Number);
       if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
       return { min: a, max: b };
-    }
-
-    function runIntroSplash() {
-      const splash = document.getElementById("introSplash");
-      if (!splash) return;
-
-      document.body.classList.add("intro-playing");
-      const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const showMs = reduceMotion ? 600 : 2600;
-
-      setTimeout(() => {
-        splash.classList.add("is-exit");
-        setTimeout(() => {
-          splash.remove();
-          document.body.classList.remove("intro-playing");
-          document.body.classList.add("intro-done");
-        }, 900);
-      }, showMs);
     }
 
     function setupHeaderTabVisibility() {
@@ -1334,7 +1296,6 @@
       render();
     }
 
-    runIntroSplash();
     setupScrollStory();
     document.addEventListener("site:injected", setupHeaderTabVisibility, { once: true });
     setupHeaderTabVisibility();
