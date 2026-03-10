@@ -14,6 +14,10 @@
   <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
   <style>
+    body {
+      background-attachment: scroll;
+    }
+
     .home-hero .home-hero-card {
       position: relative;
       overflow: hidden;
@@ -110,13 +114,9 @@
       font-weight: 700;
     }
 
-    body.home-header-hidden.has-fixed-header {
-      padding-top: 0 !important;
-    }
-
     body.home-header-hidden #site-header .header {
       opacity: 0;
-      transform: translateY(-10px);
+      transform: translateY(calc(-1 * var(--site-header-h) - 8px));
       pointer-events: none;
     }
 
@@ -625,28 +625,42 @@
 
       document.body.classList.add("home-header-hidden");
 
-      const apply = (showTabs) => {
-        document.body.classList.toggle("home-header-hidden", !showTabs);
+      const apply = (showHeader) => {
+        document.body.classList.toggle("home-header-hidden", !showHeader);
       };
 
-      if (!("IntersectionObserver" in window)) {
-        const fallback = () => {
-          const rect = hero.getBoundingClientRect();
-          apply(rect.bottom <= 0);
-        };
-        window.addEventListener("scroll", fallback, { passive: true });
-        window.addEventListener("resize", fallback, { passive: true });
-        fallback();
-        return;
-      }
+      let rafId = null;
+      let shown = false; // 初期はヒーローを優先して非表示
+      const hysteresis = 24;
 
-      const io = new IntersectionObserver((entries) => {
-        const entry = entries[0];
-        if (!entry) return;
-        apply(!entry.isIntersecting);
-      }, { threshold: 0 });
+      const update = () => {
+        rafId = null;
+        const rect = hero.getBoundingClientRect();
+        const headerH = parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue("--site-header-h")
+        ) || 64;
+        const showLine = headerH + 8;
+        const hideLine = showLine + hysteresis;
 
-      io.observe(hero);
+        if (!shown && rect.bottom <= showLine) {
+          shown = true;
+          apply(true);
+          return;
+        }
+        if (shown && rect.bottom >= hideLine) {
+          shown = false;
+          apply(false);
+        }
+      };
+
+      const onScrollLike = () => {
+        if (rafId != null) return;
+        rafId = requestAnimationFrame(update);
+      };
+
+      window.addEventListener("scroll", onScrollLike, { passive: true });
+      window.addEventListener("resize", onScrollLike, { passive: true });
+      onScrollLike();
     }
 
     function clamp01(v) {
