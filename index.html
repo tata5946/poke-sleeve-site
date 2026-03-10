@@ -13,6 +13,113 @@
 
   <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
+  <style>
+    .home-hero .home-hero-card {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(18px, 3vw, 34px);
+      border: 1px solid #d4d7df;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 80% 24%, rgba(255, 86, 182, 0.78) 0 76px, transparent 77px),
+        radial-gradient(circle at 12% 85%, rgba(255, 86, 182, 0.65) 0 48px, transparent 49px),
+        radial-gradient(circle at 55% 75%, rgba(255, 255, 255, 0.88) 0 74px, transparent 75px),
+        linear-gradient(160deg, #f2f3f6 0%, #e7eaef 100%);
+      box-shadow: 0 18px 36px rgba(22, 34, 52, 0.12);
+    }
+
+    .home-bubbles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .home-bubble {
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.62);
+      animation: homeFloat 7s ease-in-out infinite;
+    }
+
+    .home-bubble.b1 { width: 120px; height: 120px; top: -22px; left: -26px; animation-delay: 0s; }
+    .home-bubble.b2 { width: 66px; height: 66px; top: 40px; right: 22px; animation-delay: .7s; }
+    .home-bubble.b3 { width: 34px; height: 34px; bottom: 28px; right: 12%; animation-delay: 1.4s; }
+    .home-bubble.b4 { width: 20px; height: 20px; top: 58%; left: 28%; animation-delay: 2.1s; }
+
+    .home-hero-main {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+    }
+
+    .home-kicker {
+      margin: 0 0 10px;
+      font-size: 11px;
+      letter-spacing: .16em;
+      font-weight: 900;
+      color: #58657d;
+    }
+
+    .home-display {
+      margin: 0;
+      font-size: clamp(36px, 8vw, 94px);
+      line-height: .92;
+      letter-spacing: .04em;
+      color: rgba(255, 255, 255, 0.9);
+      text-transform: uppercase;
+      text-shadow: 0 6px 18px rgba(31, 42, 58, 0.08);
+      font-weight: 900;
+    }
+
+    .home-copy {
+      margin: 14px 0 0;
+      font-size: clamp(14px, 1.8vw, 18px);
+      line-height: 1.7;
+      max-width: 620px;
+      color: #253142;
+      font-weight: 700;
+    }
+
+    .home-cta {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .home-cta .btn {
+      border-radius: 999px;
+      padding: 9px 14px;
+    }
+
+    .home-cta .btn.ghost {
+      background: rgba(255, 255, 255, 0.75);
+      color: #172033;
+      border: 1px solid #c9ced8;
+    }
+
+    .home-hero .data-note {
+      margin-top: 14px;
+      color: #435065;
+      font-weight: 700;
+    }
+
+    @keyframes homeFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @media (max-width: 740px) {
+      .home-hero .home-hero-card {
+        padding: 18px 14px 16px;
+      }
+
+      .home-copy {
+        line-height: 1.6;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -21,11 +128,22 @@
 
   <div class="container">
     <!-- HERO -->
-    <div class="hero">
-      <div class="hero-card">
-        <div>
-          <p class="hero-title">スリーブ相場を “探す・絞る・比較する”</p>
-          <p class="hero-desc">ランキングで注目スリーブをチェックし、検索・絞り込みは図鑑ページで確認できます。</p>
+    <div class="hero home-hero">
+      <div class="hero-card home-hero-card">
+        <div class="home-bubbles" aria-hidden="true">
+          <span class="home-bubble b1"></span>
+          <span class="home-bubble b2"></span>
+          <span class="home-bubble b3"></span>
+          <span class="home-bubble b4"></span>
+        </div>
+        <div class="home-hero-main">
+          <p class="home-kicker">POKE SLEEVE MARKET WATCH</p>
+          <p class="home-display">SLEEVE,<br>SELECT,<br>SURGE</p>
+          <p class="home-copy">注目銘柄を見つけて、値動きの強弱を読む。毎週更新のランキングと図鑑検索で、相場の流れをすばやく把握できます。</p>
+          <div class="home-cta">
+            <a class="btn" href="./zukan.html">図鑑で探す</a>
+            <a class="btn ghost" href="./ranking.html">ランキングを見る</a>
+          </div>
           <p class="data-note">※価格はフリマアプリ等の売却履歴をもとに独自集計しています。</p>
           <p id="updatedAt" class="data-note" style="display:none;"></p>
         </div>
