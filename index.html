@@ -105,6 +105,16 @@
       font-weight: 700;
     }
 
+    body.home-tabs-hidden #site-header .header-bottom {
+      opacity: 0;
+      transform: translateY(-8px);
+      pointer-events: none;
+    }
+
+    #site-header .header-bottom {
+      transition: opacity .45s ease, transform .45s ease;
+    }
+
     body.intro-playing {
       overflow: hidden;
     }
@@ -560,6 +570,36 @@
           document.body.classList.add("intro-done");
         }, 900);
       }, showMs);
+    }
+
+    function setupHeaderTabVisibility() {
+      const hero = document.querySelector(".home-hero");
+      if (!hero) return;
+
+      document.body.classList.add("home-tabs-hidden");
+
+      const apply = (showTabs) => {
+        document.body.classList.toggle("home-tabs-hidden", !showTabs);
+      };
+
+      if (!("IntersectionObserver" in window)) {
+        const fallback = () => {
+          const rect = hero.getBoundingClientRect();
+          apply(rect.bottom <= 0);
+        };
+        window.addEventListener("scroll", fallback, { passive: true });
+        window.addEventListener("resize", fallback, { passive: true });
+        fallback();
+        return;
+      }
+
+      const io = new IntersectionObserver((entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        apply(!entry.isIntersecting);
+      }, { threshold: 0 });
+
+      io.observe(hero);
     }
 
     function clamp01(v) {
@@ -1149,6 +1189,8 @@
 
     runIntroSplash();
     setupScrollStory();
+    document.addEventListener("site:injected", setupHeaderTabVisibility, { once: true });
+    setupHeaderTabVisibility();
     main();
   </script>
 </body>
