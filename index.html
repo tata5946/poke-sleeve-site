@@ -506,25 +506,6 @@
       </div>
     </div>
 
-    <section class="scroll-story" id="scrollStory">
-      <div class="scroll-story-bg" aria-hidden="true"></div>
-      <div class="scroll-story-inner">
-        <div class="story-sticky" id="storySticky">
-          <div class="story-rank-board" id="storyRankBoard">
-            <h3 class="story-rank-board-head" id="storyBoardTitle">価格ランキング</h3>
-            <p class="story-rank-board-sub" id="storyBoardSub">読み込み中...</p>
-            <ol class="story-rank-board-list" id="storyBoardList">
-              <li class="story-rank-board-item">
-                <span class="story-rank-pos">1</span>
-                <span class="story-rank-name">読み込み中...</span>
-                <span class="story-rank-val">-</span>
-              </li>
-            </ol>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- 棚（横スライダー） -->
     <div class="sections" aria-label="ランキング棚">
       <section class="section">
@@ -1286,7 +1267,6 @@
       render();
     }
 
-    setupScrollStory();
     document.addEventListener("site:injected", setupHeaderTabVisibility, { once: true });
     setupHeaderTabVisibility();
     main();
