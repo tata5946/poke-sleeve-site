@@ -493,6 +493,49 @@
       return `${m[1]}/${m[2]}/${m[3]}`;
     }
 
+    function formatReleaseDate(rawValue) {
+      const raw = String(rawValue ?? "").trim();
+      if (!raw) return "";
+
+      const ymd = raw.match(/^(\d{4})[\/\-\.年](\d{1,2})[\/\-\.月](\d{1,2})(?:日)?$/);
+      if (ymd) {
+        return `${ymd[1]}/${String(Number(ymd[2])).padStart(2, "0")}/${String(Number(ymd[3])).padStart(2, "0")}`;
+      }
+
+      const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})(?:T.*)?$/);
+      if (iso) return `${iso[1]}/${iso[2]}/${iso[3]}`;
+
+      const d = new Date(raw);
+      if (!Number.isNaN(d.getTime())) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${y}/${m}/${day}`;
+      }
+
+      return raw;
+    }
+
+    function getReleaseDateText(sleeve) {
+      const candidates = [
+        sleeve?.releaseDate,
+        sleeve?.release_date,
+        sleeve?.releaseAt,
+        sleeve?.releasedAt,
+        sleeve?.releasedDate,
+        sleeve?.["発売日"]
+      ];
+
+      for (const c of candidates) {
+        const text = formatReleaseDate(c);
+        if (text) return text;
+      }
+
+      const y = String(sleeve?.releaseYear ?? "").trim();
+      if (y) return y;
+      return "不明";
+    }
+
     function buildMercariSearchUrl(name) {
       const baseName = String(name || "").trim();
       const keyword = baseName ? `${baseName} デッキシールド` : "";
@@ -1160,12 +1203,13 @@
       img.src = String(s.imageUrl || "").trim();
       img.alt = s.name || "";
 
+      const releaseDateText = getReleaseDateText(s);
       document.getElementById("name").textContent = s.name || "";
       document.getElementById("meta").innerHTML =
-        `発売年: ${escapeHtml(s.releaseYear)} / シリーズ: ${escapeHtml(s.series)} / 状態: ${escapeHtml(s.condition)}`;
+        `発売日: ${escapeHtml(releaseDateText)} / シリーズ: ${escapeHtml(s.series)} / 状態: ${escapeHtml(s.condition)}`;
 
       document.getElementById("badges").innerHTML = `
-        <span class="badge">発売年: ${escapeHtml(s.releaseYear)}</span>
+        <span class="badge">発売日: ${escapeHtml(releaseDateText)}</span>
         <span class="badge">${escapeHtml(s.condition)}</span>
         <span class="badge">${escapeHtml(s.series)}</span>
       `;
