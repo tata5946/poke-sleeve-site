@@ -238,7 +238,7 @@
         </div>
 
         <div class="note" style="margin-top:12px;">
-          週次指数は「全スリーブの週次上昇率（%）の平均」を週次で積み上げ、基準週を100として算出します。<br>
+          週次指数は「全スリーブの週次上昇率（%）の平均」を用いて、毎週「12週間前=100」とするローリング基準で算出します。<br>
           ※ データ仕様上、2025年以前の「月次（毎月1日）」や「まとめ（2025/01/01）」は週次指数の計算対象から除外します。
         </div>
 
@@ -283,7 +283,7 @@
               </tr>
               <tr>
                 <th>指数化</th>
-                <td>基準週=100、以降は週次平均上昇率を乗算で積み上げ</td>
+                <td>毎週「12週間前=100」。直近12週の週次平均上昇率を乗算</td>
               </tr>
             </tbody>
           </table>
@@ -456,17 +456,30 @@
       return rows;
     }
 
-    // avgRate(%) を積み上げて指数化（基準週=100）
-    function buildIndexFromRates(rateRows, baseIndex = 100) {
-      let idx = baseIndex;
+    // 毎週「12週間前=100」のローリング基準で指数化
+    function buildRollingIndexFromRates(rateRows, lookbackWeeks = 12, baseIndex = 100) {
+      const factors = rateRows.map(r => {
+        if (!Number.isFinite(r?.avgRate)) return null;
+        return 1 + (r.avgRate / 100);
+      });
+
       const out = [];
-      for (const r of rateRows) {
-        if (!Number.isFinite(r.avgRate)) {
-          out.push({ ...r, index: null });
-          continue;
+      for (let i = 0; i < rateRows.length; i++) {
+        let idx = null;
+        if (i >= (lookbackWeeks - 1)) {
+          let prod = 1;
+          let ok = true;
+          for (let j = i - (lookbackWeeks - 1); j <= i; j++) {
+            const f = factors[j];
+            if (!Number.isFinite(f) || f <= 0) {
+              ok = false;
+              break;
+            }
+            prod *= f;
+          }
+          if (ok) idx = baseIndex * prod;
         }
-        idx = idx * (1 + (r.avgRate / 100));
-        out.push({ ...r, index: idx });
+        out.push({ ...rateRows[i], index: idx });
       }
       return out;
     }
@@ -1107,13 +1120,13 @@
 
       // 市場系列（平均上昇率%）
       const rateRows = buildWeeklyMarketSeries(sleeves, weeks, { clipLo: -60, clipHi: 100 });
-      const series = buildIndexFromRates(rateRows, 100);
+      const LOOKBACK_WEEKS = 12;
+      const series = buildRollingIndexFromRates(rateRows, LOOKBACK_WEEKS, 100);
 
       // KPI表示用
       document.getElementById("subtitle").textContent =
         `対象：${sleeves.length}件 / 期間：${formatPeriodLabel(weeks[0])}〜${formatPeriodLabel(weeks[weeks.length - 1])}`;
 
-      const baseWeek = rateRows.find(r => Number.isFinite(r.avgRate))?.week || (rateRows[0]?.week ?? "—");
       const pairRate = latestTwoValid(series, "avgRate");
       const pairIdx = latestTwoValid(series, "index");
 
@@ -1147,7 +1160,8 @@
       const kpiIndexMeta = document.getElementById("kpiIndexMeta");
       if (pairIdx) {
         kpiIndex.textContent = `${pairIdx.latest.index.toFixed(1)}`;
-        kpiIndexMeta.textContent = `基準週：${formatPeriodLabel(baseWeek)} = 100`;
+        const baseRef = addDays(pairIdx.latest.week, -(LOOKBACK_WEEKS * 7));
+        kpiIndexMeta.textContent = `基準週：${baseRef ? formatPeriodLabel(baseRef) : "12週間前"} = 100`;
       }
 
       // チャート（指数）
