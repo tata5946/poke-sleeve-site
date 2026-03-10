@@ -47,13 +47,16 @@
       position: absolute;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.62);
-      animation: homeFloat 7s ease-in-out infinite;
+      opacity: .9;
+      will-change: transform, opacity;
     }
 
-    .home-bubble.b1 { width: 120px; height: 120px; top: -22px; left: -26px; animation-delay: 0s; }
-    .home-bubble.b2 { width: 66px; height: 66px; top: 40px; right: 22px; animation-delay: .7s; }
-    .home-bubble.b3 { width: 34px; height: 34px; bottom: 28px; right: 12%; animation-delay: 1.4s; }
-    .home-bubble.b4 { width: 20px; height: 20px; top: 58%; left: 28%; animation-delay: 2.1s; }
+    .home-bubble.b1 { width: 120px; height: 120px; top: -22px; left: -26px; animation: bubbleDriftA 13.5s cubic-bezier(.55, .08, .45, .93) infinite; }
+    .home-bubble.b2 { width: 66px; height: 66px; top: 40px; right: 22px; animation: bubbleDriftB 9.8s cubic-bezier(.32, .06, .63, .95) infinite .7s; }
+    .home-bubble.b3 { width: 34px; height: 34px; bottom: 28px; right: 12%; animation: bubbleDriftC 11.2s cubic-bezier(.4, .02, .62, 1) infinite 1.4s; }
+    .home-bubble.b4 { width: 20px; height: 20px; top: 58%; left: 28%; animation: bubbleDriftD 8.9s cubic-bezier(.42, .01, .6, 1) infinite 2.1s; }
+    .home-bubble.b5 { width: 190px; height: 190px; top: 10%; right: 16%; background: rgba(245, 77, 186, .78); animation: bubbleDriftE 14.3s cubic-bezier(.44, .04, .54, .96) infinite; }
+    .home-bubble.b6 { width: 118px; height: 118px; bottom: 8%; left: 8%; background: rgba(245, 77, 186, .64); animation: bubbleDriftF 12.1s cubic-bezier(.46, .02, .56, .98) infinite .9s; }
 
     .home-feed {
       position: absolute;
@@ -256,9 +259,52 @@
       animation: introReveal 1s ease .55s both;
     }
 
-    @keyframes homeFloat {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-8px); }
+    @keyframes bubbleDriftA {
+      0% { transform: translate3d(0, 0, 0) scale(1); opacity: .72; }
+      23% { transform: translate3d(22px, -10px, 0) scale(1.05); opacity: .9; }
+      51% { transform: translate3d(8px, 14px, 0) scale(.94); opacity: .62; }
+      76% { transform: translate3d(-14px, -6px, 0) scale(1.02); opacity: .84; }
+      100% { transform: translate3d(0, 0, 0) scale(1); opacity: .72; }
+    }
+
+    @keyframes bubbleDriftB {
+      0% { transform: translate3d(0, 0, 0) scale(.96); opacity: .6; }
+      19% { transform: translate3d(-10px, 18px, 0) scale(1.08); opacity: .86; }
+      47% { transform: translate3d(14px, -8px, 0) scale(.92); opacity: .55; }
+      71% { transform: translate3d(24px, 6px, 0) scale(1.02); opacity: .8; }
+      100% { transform: translate3d(0, 0, 0) scale(.96); opacity: .6; }
+    }
+
+    @keyframes bubbleDriftC {
+      0% { transform: translate3d(0, 0, 0) scale(1); opacity: .52; }
+      28% { transform: translate3d(12px, -20px, 0) scale(1.16); opacity: .85; }
+      56% { transform: translate3d(-6px, -2px, 0) scale(.9); opacity: .45; }
+      82% { transform: translate3d(-16px, 14px, 0) scale(1.04); opacity: .78; }
+      100% { transform: translate3d(0, 0, 0) scale(1); opacity: .52; }
+    }
+
+    @keyframes bubbleDriftD {
+      0% { transform: translate3d(0, 0, 0) scale(.92); opacity: .56; }
+      22% { transform: translate3d(-18px, -8px, 0) scale(1.18); opacity: .88; }
+      49% { transform: translate3d(6px, 18px, 0) scale(.86); opacity: .46; }
+      74% { transform: translate3d(14px, -4px, 0) scale(1.05); opacity: .8; }
+      100% { transform: translate3d(0, 0, 0) scale(.92); opacity: .56; }
+    }
+
+    @keyframes bubbleDriftE {
+      0% { transform: translate3d(0, 0, 0) scale(1); opacity: .74; }
+      20% { transform: translate3d(-28px, 10px, 0) scale(1.06); opacity: .92; }
+      42% { transform: translate3d(16px, -18px, 0) scale(.95); opacity: .68; }
+      67% { transform: translate3d(-8px, -10px, 0) scale(1.03); opacity: .88; }
+      100% { transform: translate3d(0, 0, 0) scale(1); opacity: .74; }
+    }
+
+    @keyframes bubbleDriftF {
+      0% { transform: translate3d(0, 0, 0) scale(.98); opacity: .7; }
+      27% { transform: translate3d(18px, -16px, 0) scale(1.08); opacity: .9; }
+      54% { transform: translate3d(-12px, 10px, 0) scale(.9); opacity: .62; }
+      79% { transform: translate3d(6px, 18px, 0) scale(1.02); opacity: .84; }
+      100% { transform: translate3d(0, 0, 0) scale(.98); opacity: .7; }
     }
 
     @keyframes feedPop {
@@ -580,6 +626,8 @@
           <span class="home-bubble b2"></span>
           <span class="home-bubble b3"></span>
           <span class="home-bubble b4"></span>
+          <span class="home-bubble b5"></span>
+          <span class="home-bubble b6"></span>
         </div>
         <div class="home-feed" aria-hidden="true">
           <span class="home-feed-chip c1">価格 +12.4%</span>
