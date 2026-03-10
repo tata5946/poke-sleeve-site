@@ -217,9 +217,22 @@
       return hasAny ? sum : null;
     }
 
-    function computeSurge(sleeve) {
+    function getGlobalLatestTradeWeek(sleeves) {
+      let maxWeek = null;
+      for (const s of (Array.isArray(sleeves) ? sleeves : [])) {
+        const pair = getWeeklyPair(s);
+        if (!pair) continue;
+        const w = String(pair.latest.week || "");
+        if (!w) continue;
+        if (!maxWeek || w > maxWeek) maxWeek = w;
+      }
+      return maxWeek;
+    }
+
+    function computeSurge(sleeve, latestWeek) {
       const pair = getWeeklyPair(sleeve);
       if (!pair || !pair.prev) return null;
+      if (latestWeek && pair.latest.week !== latestWeek) return null;
 
       const diff = pair.latest.price - pair.prev.price;
       if (!(diff > 0)) return null; // 上昇だけ
@@ -295,19 +308,13 @@
       hideError();
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
+      const latestWeek = getGlobalLatestTradeWeek(sleeves);
 
       // 最終更新（直近取引週の最大日付）
       try {
-        let maxWeek = null;
-        for (const s of sleeves) {
-          const p = getWeeklyPair(s);
-          if (!p) continue;
-          const w = p.latest.week;
-          if (!maxWeek || w > maxWeek) maxWeek = w;
-        }
-        if (maxWeek) {
+        if (latestWeek) {
           const u = document.getElementById("updatedAt");
-          u.textContent = `最終更新：${maxWeek}（週次）`;
+          u.textContent = `最終更新：${latestWeek}（週次）`;
           u.style.display = "block";
         }
       } catch (_) { }
@@ -344,7 +351,7 @@
           if (releaseYear && String(s.releaseYear ?? "") !== releaseYear) continue;
           if (series && String(s.series || "") !== series) continue;
 
-          const surge = computeSurge(s);
+          const surge = computeSurge(s, latestWeek);
           if (!surge) continue;
           if (surge.diff < minDiff) continue;
 
