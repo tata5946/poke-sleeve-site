@@ -105,13 +105,17 @@
       font-weight: 700;
     }
 
-    body.home-tabs-hidden #site-header .header-bottom {
+    body.home-header-hidden.has-fixed-header {
+      padding-top: 0 !important;
+    }
+
+    body.home-header-hidden #site-header .header {
       opacity: 0;
-      transform: translateY(-8px);
+      transform: translateY(-10px);
       pointer-events: none;
     }
 
-    #site-header .header-bottom {
+    #site-header .header {
       transition: opacity .45s ease, transform .45s ease;
     }
 
@@ -632,10 +636,10 @@
       const hero = document.querySelector(".home-hero");
       if (!hero) return;
 
-      document.body.classList.add("home-tabs-hidden");
+      document.body.classList.add("home-header-hidden");
 
       const apply = (showTabs) => {
-        document.body.classList.toggle("home-tabs-hidden", !showTabs);
+        document.body.classList.toggle("home-header-hidden", !showTabs);
       };
 
       if (!("IntersectionObserver" in window)) {
