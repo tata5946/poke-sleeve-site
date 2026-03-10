@@ -105,9 +105,97 @@
       font-weight: 700;
     }
 
+    body.intro-playing {
+      overflow: hidden;
+    }
+
+    .intro-splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 72% 28%, rgba(251, 74, 181, 0.78) 0 100px, transparent 101px),
+        radial-gradient(circle at 16% 74%, rgba(251, 74, 181, 0.6) 0 62px, transparent 63px),
+        radial-gradient(circle at 38% 35%, rgba(255, 255, 255, 0.62) 0 96px, transparent 97px),
+        linear-gradient(160deg, #f0f1f4 0%, #e6e9ee 100%);
+      opacity: 1;
+      visibility: visible;
+      transition: opacity .85s ease, visibility .85s ease;
+    }
+
+    .intro-splash.is-exit {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .intro-stage {
+      position: relative;
+      width: min(95vw, 980px);
+      min-height: min(64vh, 500px);
+      padding: clamp(20px, 3vw, 34px);
+      border: 1px solid #d6dbe3;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.22);
+      backdrop-filter: blur(2px);
+      overflow: hidden;
+    }
+
+    .intro-bubbles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .intro-bubble {
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.56);
+      animation: introDrift 9s ease-in-out infinite;
+    }
+
+    .intro-bubble.p1 { width: 140px; height: 140px; left: -30px; top: -24px; animation-delay: 0s; }
+    .intro-bubble.p2 { width: 78px; height: 78px; right: 16%; top: 12%; animation-delay: .8s; }
+    .intro-bubble.p3 { width: 44px; height: 44px; right: 9%; bottom: 20%; animation-delay: 1.6s; }
+    .intro-bubble.p4 { width: 24px; height: 24px; left: 26%; bottom: 18%; animation-delay: 2.2s; }
+    .intro-bubble.p5 { width: 58px; height: 58px; left: 62%; bottom: -10px; animation-delay: 2.8s; }
+
+    .intro-copy {
+      position: relative;
+      z-index: 1;
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: 900;
+      line-height: .9;
+      letter-spacing: .05em;
+      font-size: clamp(42px, 12vw, 148px);
+      text-shadow: 0 8px 22px rgba(20, 29, 40, 0.1);
+      animation: introReveal 1s ease .25s both;
+    }
+
+    .intro-tagline {
+      margin-top: 10px;
+      font-size: clamp(12px, 2vw, 18px);
+      line-height: 1.7;
+      color: #f7f9ff;
+      font-weight: 700;
+      animation: introReveal 1s ease .55s both;
+    }
+
     @keyframes homeFloat {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-8px); }
+    }
+
+    @keyframes introDrift {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-12px) scale(1.04); }
+    }
+
+    @keyframes introReveal {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 740px) {
@@ -123,6 +211,20 @@
 </head>
 
 <body>
+  <div id="introSplash" class="intro-splash" aria-hidden="true">
+    <div class="intro-stage">
+      <div class="intro-bubbles">
+        <span class="intro-bubble p1"></span>
+        <span class="intro-bubble p2"></span>
+        <span class="intro-bubble p3"></span>
+        <span class="intro-bubble p4"></span>
+        <span class="intro-bubble p5"></span>
+      </div>
+      <div class="intro-copy">SLEEVE,<br>SELECT,<br>SURGE</div>
+      <p class="intro-tagline">探して、比べて、見極める。</p>
+    </div>
+  </div>
+
   <!-- 共通ヘッダー差し込み -->
   <div id="site-header"></div>
 
@@ -255,6 +357,23 @@
       const [a, b] = v.split("-").map(Number);
       if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
       return { min: a, max: b };
+    }
+
+    function runIntroSplash() {
+      const splash = document.getElementById("introSplash");
+      if (!splash) return;
+
+      document.body.classList.add("intro-playing");
+      const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const showMs = reduceMotion ? 600 : 2600;
+
+      setTimeout(() => {
+        splash.classList.add("is-exit");
+        setTimeout(() => {
+          splash.remove();
+          document.body.classList.remove("intro-playing");
+        }, 900);
+      }, showMs);
     }
 
     function toISODate(d) {
@@ -772,6 +891,7 @@
       render();
     }
 
+    runIntroSplash();
     main();
   </script>
 </body>
