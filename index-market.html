@@ -67,6 +67,36 @@
       padding: 10px 12px;
     }
 
+    .hero .ai-comment {
+      margin-top: 10px;
+      border: 1px solid #b9cdfb;
+      border-left: 4px solid #1e5bd7;
+      border-radius: 10px;
+      background: #f5f8ff;
+      padding: 10px 12px;
+    }
+
+    .hero .ai-comment-title {
+      font-size: 12px;
+      font-weight: 900;
+      color: #1e3a8a;
+      margin: 0 0 4px;
+    }
+
+    .hero .ai-comment-meta {
+      font-size: 12px;
+      color: #64748b;
+      margin: 0 0 6px;
+    }
+
+    .hero .ai-comment-body {
+      font-size: 13px;
+      line-height: 1.65;
+      color: #1f2937;
+      white-space: pre-wrap;
+      margin: 0;
+    }
+
     .market-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -211,6 +241,12 @@
           週次指数は「全スリーブの週次上昇率（%）の平均」を週次で積み上げ、基準週を100として算出します。<br>
           ※ データ仕様上、2025年以前の「月次（毎月1日）」や「まとめ（2025/01/01）」は週次指数の計算対象から除外します。
         </div>
+
+        <div class="ai-comment">
+          <p class="ai-comment-title">AIコメント（手動更新）</p>
+          <p id="aiCommentWeek" class="ai-comment-meta">対象週: -</p>
+          <p id="aiCommentBody" class="ai-comment-body">コメント未設定</p>
+        </div>
       </div>
 
       <div class="panel">
@@ -266,6 +302,11 @@
   <script src="./assets/common.js"></script>
 
   <script>
+    // 週次コメントは毎週ここに追記（キー: YYYY-MM-DD）
+    const AI_MARKET_COMMENTS_BY_WEEK = {
+      "2026-03-02": "指数は85.1まで低下。短期は戻り売り優勢で、弱含みの地合いです。反発継続の確認には上昇スリーブ割合の改善が必要です。"
+    };
+
     function escapeHtml(str) {
       return String(str ?? "")
         .replaceAll("&", "&amp;")
@@ -436,6 +477,22 @@
       const latest = valid[valid.length - 1];
       const prev = valid.length >= 2 ? valid[valid.length - 2] : null;
       return { latest, prev };
+    }
+
+    function renderAiComment(weekIso) {
+      const weekEl = document.getElementById("aiCommentWeek");
+      const bodyEl = document.getElementById("aiCommentBody");
+      if (!weekEl || !bodyEl) return;
+
+      if (!weekIso) {
+        weekEl.textContent = "対象週: -";
+        bodyEl.textContent = "コメント未設定";
+        return;
+      }
+
+      const txt = String(AI_MARKET_COMMENTS_BY_WEEK[weekIso] || "").trim();
+      weekEl.textContent = `対象週: ${formatPeriodLabel(weekIso)}`;
+      bodyEl.textContent = txt || "この週のコメントは未設定です。AI_MARKET_COMMENTS_BY_WEEK に追記してください。";
     }
 
     function renderTableIndex(rows) {
@@ -1110,6 +1167,8 @@
       document.getElementById("distSummary").textContent =
         last ? `最新週（${formatPeriodLabel(last.week)}）の上昇/下落/横ばい割合` : "—";
       document.getElementById("distTable").innerHTML = renderTableDist(last);
+
+      renderAiComment(last?.week || null);
     }
 
     main();
