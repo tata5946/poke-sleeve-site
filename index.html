@@ -55,6 +55,41 @@
       z-index: 0;
     }
 
+    .home-sleeve-cards {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .sleeve-shape {
+      position: absolute;
+      border-radius: 14px;
+      border: 1px solid rgba(44, 65, 95, 0.06);
+      background:
+        linear-gradient(150deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.015) 100%);
+      box-shadow:
+        0 6px 20px rgba(23, 35, 54, 0.03),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      opacity: .85;
+    }
+
+    .sleeve-shape::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 10px;
+      border: 1px dashed rgba(60, 84, 118, 0.05);
+    }
+
+    .sleeve-shape.s1 { width: 156px; height: 214px; left: 6%; top: 14%; transform: rotate(-12deg); }
+    .sleeve-shape.s2 { width: 132px; height: 184px; left: 18%; bottom: 8%; transform: rotate(9deg); }
+    .sleeve-shape.s3 { width: 178px; height: 238px; right: 7%; top: 30%; transform: rotate(11deg); }
+    .sleeve-shape.s4 { width: 118px; height: 168px; right: 26%; bottom: 14%; transform: rotate(-8deg); }
+    .sleeve-shape.s5 { width: 144px; height: 198px; left: 36%; top: 8%; transform: rotate(6deg); }
+    .sleeve-shape.s6 { width: 124px; height: 176px; right: 40%; top: 56%; transform: rotate(-10deg); }
+
     .home-bubble {
       position: absolute;
       border-radius: 999px;
@@ -750,6 +785,17 @@
         padding: 16px 14px;
       }
 
+      .sleeve-shape {
+        opacity: .72;
+      }
+
+      .sleeve-shape.s1 { width: 110px; height: 154px; left: 4%; top: 18%; }
+      .sleeve-shape.s2 { width: 96px; height: 136px; left: 14%; bottom: 10%; }
+      .sleeve-shape.s3 { width: 124px; height: 172px; right: 4%; top: 34%; }
+      .sleeve-shape.s4 { width: 90px; height: 126px; right: 22%; bottom: 16%; }
+      .sleeve-shape.s5 { display: none; }
+      .sleeve-shape.s6 { display: none; }
+
       .home-hero-main {
         padding: 18px 12px;
         border-radius: 14px;
@@ -837,6 +883,14 @@
           <span class="home-bubble b4"></span>
           <span class="home-bubble b5"></span>
           <span class="home-bubble b6"></span>
+        </div>
+        <div class="home-sleeve-cards" aria-hidden="true">
+          <span class="sleeve-shape s1"></span>
+          <span class="sleeve-shape s2"></span>
+          <span class="sleeve-shape s3"></span>
+          <span class="sleeve-shape s4"></span>
+          <span class="sleeve-shape s5"></span>
+          <span class="sleeve-shape s6"></span>
         </div>
         <div class="home-feed" aria-hidden="true">
           <span class="home-feed-chip c1">価格 +12.4%</span>
