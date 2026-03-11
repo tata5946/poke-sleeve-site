@@ -123,6 +123,8 @@
       z-index: 2;
       max-width: 760px;
       margin-top: clamp(22px, 6vh, 70px);
+      margin-inline: auto;
+      text-align: center;
     }
 
     .home-kicker {
@@ -135,11 +137,10 @@
 
     .home-display {
       margin: 0;
-      font-size: clamp(36px, 8vw, 94px);
-      line-height: .92;
-      letter-spacing: .04em;
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.08;
+      letter-spacing: .02em;
       color: rgba(255, 255, 255, 0.9);
-      text-transform: uppercase;
       text-shadow: 0 6px 18px rgba(31, 42, 58, 0.08);
       font-weight: 900;
     }
@@ -149,8 +150,42 @@
       font-size: clamp(14px, 1.8vw, 18px);
       line-height: 1.7;
       max-width: 620px;
+      margin-inline: auto;
       color: #253142;
       font-weight: 700;
+    }
+
+    .home-hero-search {
+      margin: 16px auto 0;
+      width: min(560px, 94%);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .home-hero-search input {
+      width: 100%;
+      height: 42px;
+      border-radius: 10px;
+      border: 1px solid #cfd6e3;
+      background: rgba(255, 255, 255, 0.93);
+      padding: 0 12px;
+      font-size: 14px;
+      color: #1e2c40;
+      outline: none;
+    }
+
+    .home-hero-search input:focus {
+      border-color: #6f7f98;
+      box-shadow: 0 0 0 3px rgba(111, 127, 152, 0.2);
+    }
+
+    .home-hero-search .btn {
+      height: 42px;
+      border-radius: 10px;
+      padding: 0 16px;
+      white-space: nowrap;
     }
 
     .home-cta {
@@ -615,6 +650,14 @@
       .home-copy {
         line-height: 1.6;
       }
+
+      .home-hero-search {
+        grid-template-columns: 1fr;
+      }
+
+      .home-hero-search .btn {
+        width: 100%;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -656,9 +699,13 @@
           <span class="home-feed-dot d4"></span>
         </div>
         <div class="home-hero-main">
-          <p class="home-kicker">POKE SLEEVE MARKET WATCH</p>
-          <p class="home-display">SLEEVE,<br>SELECT,<br>SURGE</p>
-          <p class="home-copy">注目銘柄を見つけて、値動きの強弱を読む。毎週更新のランキングと図鑑検索で、相場の流れをすばやく把握できます。</p>
+          <p class="home-kicker">POKE SLEEVE SEARCH</p>
+          <p class="home-display">ポケモンスリーブを検索。</p>
+          <form class="home-hero-search" id="heroSearchForm" action="./zukan.html" method="get" role="search" aria-label="スリーブ検索">
+            <input type="text" id="heroSearch" name="q" placeholder="キーワードでスリーブを検索" autocomplete="off">
+            <button class="btn" type="submit">検索</button>
+          </form>
+          <p class="home-copy">ポケモンスリーブ（デッキシールド）の図鑑と価格相場を掲載するデータサイト。<br>コレクションや相場チェックに役立つ情報をまとめています。</p>
           <div class="home-cta">
             <a class="btn" href="./zukan.html">図鑑で探す</a>
             <a class="btn ghost" href="./ranking.html">ランキングを見る</a>
@@ -1196,11 +1243,18 @@
 
       // searchInput は header 由来
       const searchInput = document.getElementById("search") || await waitForSearch();
+      const heroSearchInput = document.getElementById("heroSearch");
       if (!searchInput) {
         showError("検索欄の初期化に失敗しました（headerが読み込めていません）");
         return;
       }
       if (qParam) searchInput.value = qParam;
+      if (qParam && heroSearchInput) heroSearchInput.value = qParam;
+      if (heroSearchInput) {
+        heroSearchInput.addEventListener("input", () => {
+          searchInput.value = heroSearchInput.value;
+        });
+      }
 
       // 最終更新っぽい表示（直近取引週の最大日付）
       try {
@@ -1424,6 +1478,7 @@
       // イベント（入力は軽くデバウンス）
       let t = null;
       searchInput.addEventListener("input", () => {
+        if (heroSearchInput) heroSearchInput.value = searchInput.value;
         clearTimeout(t);
         t = setTimeout(render, 80);
       });
@@ -1435,6 +1490,7 @@
 
       clearBtn.addEventListener("click", () => {
         searchInput.value = "";
+        if (heroSearchInput) heroSearchInput.value = "";
         releaseYearSel.value = "";
         seriesSel.value = "";
         priceBandSel.value = "";
