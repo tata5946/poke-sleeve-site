@@ -730,10 +730,8 @@
       if (heroSearchForm && heroSearchInput) {
         heroSearchForm.addEventListener("submit", (ev) => {
           ev.preventDefault();
-          if (searchInput) searchInput.value = heroSearchInput.value.trim();
-          render();
-          const target = document.querySelector(".main");
-          if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+          const q = heroSearchInput.value.trim();
+          location.href = q ? `./zukan.html?q=${encodeURIComponent(q)}` : "./zukan.html";
         });
       }
 
