@@ -14,6 +14,18 @@
   <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
   <style>
+    body.home-page.has-fixed-header.home-header-hidden {
+      padding-top: 0 !important;
+    }
+
+    body.home-page .container {
+      padding-top: 0;
+    }
+
+    body.home-page .hero.home-hero {
+      margin-top: 0;
+    }
+
     body {
       background-attachment: scroll;
     }
@@ -23,6 +35,7 @@
       overflow: hidden;
       min-height: 100vh;
       width: 100vw;
+      margin-top: calc(-1 * var(--site-header-h));
       margin-left: calc(50% - 50vw);
       margin-right: calc(50% - 50vw);
       padding: clamp(20px, 4vw, 40px);
@@ -613,7 +626,7 @@
   </style>
 </head>
 
-<body>
+<body class="home-page">
   <!-- 共通ヘッダー差し込み -->
   <div id="site-header"></div>
 
