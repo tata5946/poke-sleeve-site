@@ -134,6 +134,43 @@
       box-shadow: 0 12px 30px rgba(31, 45, 65, 0.08);
     }
 
+    .hero-brand {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 0 auto 22px;
+    }
+
+    .hero-brand .logo {
+      width: clamp(60px, 6vw, 72px);
+      height: clamp(60px, 6vw, 72px);
+      border-width: 3px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .14);
+    }
+
+    .hero-brand .logo::before {
+      height: 4px;
+    }
+
+    .hero-brand .logo::after {
+      width: 18px;
+      height: 18px;
+      border-width: 3px;
+    }
+
+    .hero-brand-title {
+      margin: 0;
+      font-family: "M PLUS Rounded 1c", "Noto Sans JP", sans-serif;
+      font-size: clamp(36px, 4.1vw, 44px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: .01em;
+      color: #1e2d45;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+      white-space: nowrap;
+    }
+
     .home-bubbles {
       animation: heroBgFloat 18s ease-in-out infinite alternate;
     }
@@ -146,32 +183,44 @@
       color: #4f607c;
     }
 
-    body.js-hero-anim .home-kicker,
+    body.js-hero-anim .home-hero-main {
+      opacity: 0;
+      transform: translate3d(0, 8px, 0);
+    }
+
+    .home-hero-main.is-enter {
+      animation: heroCardIn .58s cubic-bezier(.22, 1, .36, 1) forwards;
+    }
+
+    body.js-hero-anim .hero-brand,
     body.js-hero-anim .home-display,
     body.js-hero-anim .home-hero-search,
     body.js-hero-anim .home-copy,
     body.js-hero-anim .home-hero .data-note,
-    body.js-hero-anim .home-cta {
+    body.js-hero-anim .home-cta .btn {
       opacity: 0;
-      transform: translate3d(0, 10px, 0);
+      transform: translate3d(0, 12px, 0);
     }
 
-    .home-hero-main.is-enter .home-kicker,
+    .home-hero-main.is-enter .hero-brand,
     .home-hero-main.is-enter .home-display,
     .home-hero-main.is-enter .home-hero-search,
     .home-hero-main.is-enter .home-copy,
     .home-hero-main.is-enter .data-note,
-    .home-hero-main.is-enter .home-cta {
-      animation: heroFadeUp .56s cubic-bezier(.22, 1, .36, 1) forwards;
+    .home-hero-main.is-enter .home-cta .btn {
+      animation: heroFadeUp .52s cubic-bezier(.22, 1, .36, 1) forwards;
       will-change: transform, opacity;
     }
 
-    .home-hero-main.is-enter .home-kicker { animation-delay: .03s; }
-    .home-hero-main.is-enter .home-display { animation-delay: .14s; }
-    .home-hero-main.is-enter .home-hero-search { animation-delay: .26s; }
-    .home-hero-main.is-enter .home-copy { animation-delay: .38s; }
-    .home-hero-main.is-enter .data-note { animation-delay: .50s; }
-    .home-hero-main.is-enter .home-cta { animation-delay: .62s; }
+    .home-hero-main.is-enter .hero-brand { animation-delay: .12s; }
+    .home-hero-main.is-enter .home-display { animation-delay: .24s; }
+    .home-hero-main.is-enter .home-hero-search { animation-delay: .36s; }
+    .home-hero-main.is-enter .home-copy { animation-delay: .48s; }
+    .home-hero-main.is-enter .data-note { animation-delay: .56s; }
+    .home-hero-main.is-enter .home-cta .btn:nth-child(1) { animation-delay: .64s; }
+    .home-hero-main.is-enter .home-cta .btn:nth-child(2) { animation-delay: .70s; }
+    .home-hero-main.is-enter .home-cta .btn:nth-child(3) { animation-delay: .76s; }
+    .home-hero-main.is-enter .home-cta .btn:nth-child(4) { animation-delay: .82s; }
 
     .home-display {
       margin: 0;
@@ -417,7 +466,12 @@
     }
 
     @keyframes heroFadeUp {
-      from { opacity: 0; transform: translate3d(0, 10px, 0); }
+      from { opacity: 0; transform: translate3d(0, 12px, 0); }
+      to { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+
+    @keyframes heroCardIn {
+      from { opacity: 0; transform: translate3d(0, 8px, 0); }
       to { opacity: 1; transform: translate3d(0, 0, 0); }
     }
 
@@ -701,6 +755,20 @@
         border-radius: 14px;
       }
 
+      .hero-brand {
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .hero-brand .logo {
+        width: clamp(52px, 14vw, 60px);
+        height: clamp(52px, 14vw, 60px);
+      }
+
+      .hero-brand-title {
+        font-size: clamp(28px, 8.2vw, 36px);
+      }
+
       .home-display {
         font-size: clamp(22px, 7.2vw, 30px);
         line-height: 1.3;
@@ -733,12 +801,13 @@
         animation: none;
       }
 
-      body.js-hero-anim .home-kicker,
+      body.js-hero-anim .home-hero-main,
+      body.js-hero-anim .hero-brand,
       body.js-hero-anim .home-display,
       body.js-hero-anim .home-hero-search,
       body.js-hero-anim .home-copy,
       body.js-hero-anim .home-hero .data-note,
-      body.js-hero-anim .home-cta {
+      body.js-hero-anim .home-cta .btn {
         opacity: 1;
         transform: none;
         animation: none !important;
@@ -782,6 +851,10 @@
           <span class="home-feed-dot d4"></span>
         </div>
         <div class="home-hero-main">
+          <div class="hero-brand" aria-label="ポケスリ相場ナビ">
+            <span class="logo" aria-hidden="true"></span>
+            <h1 class="hero-brand-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
+          </div>
           <p class="home-kicker">POKE SLEEVE SEARCH</p>
           <p class="home-display">ポケモンスリーブ（デッキシールド）の<br>データサイト</p>
           <form class="home-hero-search" id="heroSearchForm" action="./zukan.html" method="get" role="search" aria-label="スリーブ検索">
