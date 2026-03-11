@@ -9,7 +9,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&family=Yomogi&display=swap" rel="stylesheet">
 
   <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
@@ -141,12 +141,27 @@
 
     .home-display {
       margin: 0;
-      font-size: clamp(30px, 5vw, 52px);
-      line-height: 1.08;
-      letter-spacing: .02em;
+      display: inline-block;
+      position: relative;
+      font-family: "Yomogi", "M PLUS Rounded 1c", sans-serif;
+      font-size: clamp(32px, 5.2vw, 56px);
+      line-height: 1.12;
+      letter-spacing: .01em;
       color: rgba(255, 255, 255, 0.9);
       text-shadow: 0 6px 18px rgba(31, 42, 58, 0.08);
-      font-weight: 900;
+      font-weight: 400;
+    }
+
+    .home-display::after {
+      content: "";
+      position: absolute;
+      left: 6%;
+      right: 6%;
+      bottom: -10px;
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(255, 110, 183, 0.35);
+      transform: rotate(-1.2deg);
     }
 
     .home-copy {
@@ -707,7 +722,7 @@
         </div>
         <div class="home-hero-main">
           <p class="home-kicker">POKE SLEEVE SEARCH</p>
-          <p class="home-display">ポケモンスリーブを検索。</p>
+          <p class="home-display">ポケモンスリーブ（デッキシールド）のデータサイト</p>
           <form class="home-hero-search" id="heroSearchForm" action="./zukan.html" method="get" role="search" aria-label="スリーブ検索">
             <input type="text" id="heroSearch" name="q" placeholder="キーワードでスリーブを検索" autocomplete="off">
             <button class="btn" type="submit">検索</button>
