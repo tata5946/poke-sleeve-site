@@ -53,6 +53,7 @@
     .home-kicker { margin: 0 0 10px; font-size: 12px; letter-spacing: .14em; font-weight: 800; color: #4f607c; }
     .home-display { margin: 0; font-family: "Noto Sans JP", "M PLUS Rounded 1c", sans-serif; font-size: clamp(22px, 3.4vw, 34px); line-height: 1.28; letter-spacing: .01em; color: #1f2f47; font-weight: 800; }
     .home-hero-search { margin: 18px auto 0; width: min(680px, 100%); display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+    .home-hero-search .hero-search-field { position: relative; min-width: 0; }
     .home-hero-search input { width: 100%; height: 48px; border-radius: 12px; border: 1px solid #bcc9da; background: rgba(255, 255, 255, 0.95); padding: 0 14px; font-size: 15px; color: #1e2f48; outline: none; }
     .home-hero-search input:focus { border-color: #5b7aa3; box-shadow: 0 0 0 3px rgba(91, 122, 163, 0.18); }
     .home-hero-search .btn { height: 48px; border-radius: 12px; padding: 0 18px; font-size: 15px; font-weight: 800; white-space: nowrap; margin-top: 0; }
@@ -155,7 +156,9 @@
           <p class="home-kicker">POKE SLEEVE SEARCH</p>
           <p class="home-display">ポケモンスリーブ（デッキシールド）の<br>データサイト</p>
           <form class="home-hero-search" id="heroSearchForm" action="./zukan.html" method="get" role="search" aria-label="スリーブ検索">
-            <input type="text" id="heroSearch" name="q" placeholder="キーワードでスリーブを検索" autocomplete="off">
+            <div class="hero-search-field">
+              <input type="text" id="heroSearch" name="q" placeholder="キーワードでスリーブを検索" autocomplete="off">
+            </div>
             <button class="btn" type="submit">検索</button>
           </form>
           <p class="home-copy">ポケモンスリーブ（デッキシールド）の図鑑と価格相場を掲載するデータサイト。<br>コレクションや相場チェックに役立つ情報をまとめています。</p>
@@ -721,6 +724,13 @@
       }
       if (qParam && searchInput) searchInput.value = qParam;
       if (qParam && heroSearchInput) heroSearchInput.value = qParam;
+      if (heroSearchInput && window.common && typeof window.common.wireSleeveAutocomplete === "function") {
+        window.common.wireSleeveAutocomplete(heroSearchInput, {
+          minChars: 1,
+          maxItems: 8,
+          anchorEl: heroSearchInput.closest(".hero-search-field")
+        });
+      }
       if (heroSearchInput && searchInput) {
         heroSearchInput.addEventListener("input", () => {
           searchInput.value = heroSearchInput.value;

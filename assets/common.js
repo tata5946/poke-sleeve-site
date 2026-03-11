@@ -12,10 +12,13 @@ const FAVICON_PATH = "./assets/favicon.svg";
 const DATA_CACHE_KEY = "pokeSleeve:dataCache:v1";
 const DATA_CACHE_TTL_MS = 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
+const AUTOCOMPLETE_MIN_CHARS = 1;
+const AUTOCOMPLETE_MAX_ITEMS = 8;
 let __dataCacheMem = null;
 let __dataCachePromise = null;
 let __sleeveFeedbackWired = false;
 let __headerOffsetWired = false;
+let __autocompleteIndexPromise = null;
 
 /* ----- Header / Footer HTML ----- */
 const HEADER_HTML = `
@@ -91,6 +94,282 @@ function uniq(arr) {
     if (t) s.add(t);
   }
   return Array.from(s);
+}
+
+function normalizeSearchText(value) {
+  return String(value ?? "")
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .replace(/[‐‑‒–—―ーｰ\-_.・･]/g, "");
+}
+
+function getLatestPositivePrice(sleeve) {
+  const arr = Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+  let latest = null;
+  for (const x of arr) {
+    const week = toISODate(x && x.week);
+    const price = numOrNull(x && x.price);
+    if (!week || !(price > 0)) continue;
+    if (!latest || week > latest.week) latest = { week, price };
+  }
+  return latest ? latest.price : null;
+}
+
+async function getAutocompleteIndex() {
+  if (__autocompleteIndexPromise) return await __autocompleteIndexPromise;
+
+  __autocompleteIndexPromise = (async () => {
+    const data = await loadData();
+    const sleeves = Array.isArray(data && data.sleeves) ? data.sleeves : [];
+    return sleeves
+      .map((s) => {
+        const name = String(s && s.name || "").trim();
+        const id = String(s && s.id || "").trim();
+        if (!name || !id) return null;
+        return {
+          id,
+          name,
+          nameNorm: normalizeSearchText(name),
+          detailHref: `./detail.html?id=${encodeURIComponent(id)}`,
+          imageUrl: String(s && s.imageUrl || "").trim(),
+          latestPrice: getLatestPositivePrice(s)
+        };
+      })
+      .filter(Boolean);
+  })();
+
+  try {
+    return await __autocompleteIndexPromise;
+  } catch (e) {
+    __autocompleteIndexPromise = null;
+    throw e;
+  }
+}
+
+function findAutocompleteCandidates(indexItems, query, maxItems = AUTOCOMPLETE_MAX_ITEMS) {
+  const q = normalizeSearchText(query);
+  if (!q) return [];
+
+  const starts = [];
+  const contains = [];
+  for (const item of indexItems) {
+    const pos = item.nameNorm.indexOf(q);
+    if (pos < 0) continue;
+    if (pos === 0) starts.push(item);
+    else contains.push({ item, pos });
+  }
+
+  starts.sort((a, b) => {
+    if (a.nameNorm.length !== b.nameNorm.length) return a.nameNorm.length - b.nameNorm.length;
+    return a.name.localeCompare(b.name, "ja");
+  });
+
+  contains.sort((a, b) => {
+    if (a.pos !== b.pos) return a.pos - b.pos;
+    if (a.item.nameNorm.length !== b.item.nameNorm.length) return a.item.nameNorm.length - b.item.nameNorm.length;
+    return a.item.name.localeCompare(b.item.name, "ja");
+  });
+
+  const merged = starts.concat(contains.map((x) => x.item));
+  return merged.slice(0, Math.max(1, maxItems));
+}
+
+function defaultNavigateToDetail(item) {
+  if (!item || !item.id) return;
+  try { sessionStorage.setItem(LAST_SELECTED_SLEEVE_ID_KEY, item.id); } catch (_) { }
+  location.href = item.detailHref || (`./detail.html?id=${encodeURIComponent(item.id)}`);
+}
+
+function wireSleeveAutocomplete(input, options = {}) {
+  if (!input || input.dataset.autocompleteWired === "1") return null;
+  input.dataset.autocompleteWired = "1";
+
+  const minChars = Number.isFinite(options.minChars) ? Math.max(1, options.minChars) : AUTOCOMPLETE_MIN_CHARS;
+  const maxItems = Number.isFinite(options.maxItems) ? Math.max(1, options.maxItems) : AUTOCOMPLETE_MAX_ITEMS;
+  const anchorEl = options.anchorEl || input.parentElement;
+  if (!anchorEl) return null;
+
+  anchorEl.classList.add("has-search-autocomplete");
+
+  const list = document.createElement("div");
+  list.className = "search-autocomplete";
+  list.hidden = true;
+  list.setAttribute("role", "listbox");
+
+  const listId = `search-autocomplete-${Math.random().toString(36).slice(2, 10)}`;
+  list.id = listId;
+  input.setAttribute("autocomplete", "off");
+  input.setAttribute("aria-autocomplete", "list");
+  input.setAttribute("aria-controls", listId);
+  input.setAttribute("aria-expanded", "false");
+  anchorEl.appendChild(list);
+
+  let open = false;
+  let activeIndex = -1;
+  let currentItems = [];
+  let debounceTimer = null;
+  let indexItems = null;
+  let indexLoadFailed = false;
+
+  const close = () => {
+    open = false;
+    activeIndex = -1;
+    currentItems = [];
+    list.hidden = true;
+    list.innerHTML = "";
+    input.setAttribute("aria-expanded", "false");
+    input.removeAttribute("aria-activedescendant");
+  };
+
+  const openList = () => {
+    open = true;
+    list.hidden = false;
+    input.setAttribute("aria-expanded", "true");
+  };
+
+  const setActive = (next) => {
+    if (!currentItems.length) {
+      activeIndex = -1;
+      input.removeAttribute("aria-activedescendant");
+      return;
+    }
+    if (!Number.isFinite(next) || next < 0) {
+      activeIndex = -1;
+      const nodes = list.querySelectorAll(".search-suggest-item");
+      for (let i = 0; i < nodes.length; i += 1) {
+        nodes[i].classList.remove("is-active");
+        nodes[i].setAttribute("aria-selected", "false");
+      }
+      input.removeAttribute("aria-activedescendant");
+      return;
+    }
+    const bounded = ((next % currentItems.length) + currentItems.length) % currentItems.length;
+    activeIndex = bounded;
+    const nodes = list.querySelectorAll(".search-suggest-item");
+    for (let i = 0; i < nodes.length; i += 1) {
+      const isActive = i === activeIndex;
+      nodes[i].classList.toggle("is-active", isActive);
+      nodes[i].setAttribute("aria-selected", isActive ? "true" : "false");
+      if (isActive) {
+        input.setAttribute("aria-activedescendant", nodes[i].id);
+        nodes[i].scrollIntoView({ block: "nearest" });
+      }
+    }
+  };
+
+  const render = () => {
+    list.innerHTML = "";
+    if (!currentItems.length) {
+      close();
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < currentItems.length; i += 1) {
+      const item = currentItems[i];
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "search-suggest-item";
+      btn.id = `${listId}-opt-${i}`;
+      btn.setAttribute("role", "option");
+      btn.setAttribute("aria-selected", i === activeIndex ? "true" : "false");
+      btn.innerHTML = `
+        <span class="search-suggest-main">
+          <span class="search-suggest-name">${escapeHtml(item.name)}</span>
+          <span class="search-suggest-meta">${item.latestPrice == null ? "" : `${Number(item.latestPrice).toLocaleString()}円`}</span>
+        </span>
+      `;
+      btn.addEventListener("mouseenter", () => setActive(i));
+      btn.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        const onPick = typeof options.onPick === "function" ? options.onPick : defaultNavigateToDetail;
+        onPick(item);
+      });
+      frag.appendChild(btn);
+    }
+    list.appendChild(frag);
+    openList();
+    setActive(activeIndex);
+  };
+
+  const update = async () => {
+    const query = String(input.value || "").trim();
+    if (query.length < minChars) {
+      close();
+      return;
+    }
+    if (!indexItems && !indexLoadFailed) {
+      try {
+        indexItems = await getAutocompleteIndex();
+      } catch (_) {
+        indexLoadFailed = true;
+        close();
+        return;
+      }
+    }
+    if (!indexItems) {
+      close();
+      return;
+    }
+
+    currentItems = findAutocompleteCandidates(indexItems, query, maxItems);
+    activeIndex = -1;
+    render();
+  };
+
+  input.addEventListener("input", () => {
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      update().catch(() => { close(); });
+    }, 50);
+  });
+
+  input.addEventListener("focus", () => {
+    if (String(input.value || "").trim().length >= minChars) {
+      update().catch(() => { close(); });
+    }
+  });
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      if (open) {
+        e.preventDefault();
+        close();
+      }
+      return;
+    }
+    if (!open || !currentItems.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActive(activeIndex < 0 ? 0 : activeIndex + 1);
+      return;
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActive(activeIndex < 0 ? currentItems.length - 1 : activeIndex - 1);
+      return;
+    }
+    if (e.key === "Enter" && activeIndex >= 0) {
+      e.preventDefault();
+      const item = currentItems[activeIndex];
+      const onPick = typeof options.onPick === "function" ? options.onPick : defaultNavigateToDetail;
+      onPick(item);
+    }
+  });
+
+  document.addEventListener("mousedown", (e) => {
+    if (!anchorEl.contains(e.target)) close();
+  });
+
+  input.addEventListener("blur", () => {
+    setTimeout(() => {
+      if (!anchorEl.contains(document.activeElement)) close();
+    }, 0);
+  });
+
+  return { close };
 }
 
 /* ----- fetch with timeout ----- */
@@ -258,10 +537,18 @@ function setActiveNav() {
 /* ----- Header search wiring (Enter => index?q=) ----- */
 function wireHeaderSearch() {
   const search = document.querySelector(".header-search #search");
-  if (!search) return;
+  if (!search || search.dataset.headerSearchWired === "1") return;
+  search.dataset.headerSearchWired = "1";
+
+  wireSleeveAutocomplete(search, {
+    minChars: AUTOCOMPLETE_MIN_CHARS,
+    maxItems: AUTOCOMPLETE_MAX_ITEMS,
+    anchorEl: search.closest(".search-wrap")
+  });
 
   search.addEventListener("keydown", (e) => {
     if (e.key !== "Enter") return;
+    if (e.defaultPrevented) return;
     const q = search.value.trim();
     if (!q) { location.href = "./zukan.html"; return; }
     location.href = "./zukan.html?q=" + encodeURIComponent(q);
@@ -359,6 +646,7 @@ window.common = {
   injectHeaderFooter,
   setActiveNav,
   wireHeaderSearch,
+  wireSleeveAutocomplete,
   wireSleeveSelectionFeedback,
   waitForInjected,
   GAS_URL
