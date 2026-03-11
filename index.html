@@ -65,6 +65,7 @@
 
     .sleeve-shape {
       position: absolute;
+      --rot: 0deg;
       border-radius: 14px;
       border: 1px solid rgba(44, 65, 95, 0.06);
       background:
@@ -73,6 +74,7 @@
         0 6px 20px rgba(23, 35, 54, 0.03),
         inset 0 1px 0 rgba(255, 255, 255, 0.04);
       opacity: .85;
+      transform: rotate(var(--rot));
     }
 
     .sleeve-shape::before {
@@ -83,12 +85,12 @@
       border: 1px dashed rgba(60, 84, 118, 0.05);
     }
 
-    .sleeve-shape.s1 { width: 156px; height: 214px; left: 6%; top: 14%; transform: rotate(-12deg); }
-    .sleeve-shape.s2 { width: 132px; height: 184px; left: 18%; bottom: 8%; transform: rotate(9deg); }
-    .sleeve-shape.s3 { width: 178px; height: 238px; right: 7%; top: 30%; transform: rotate(11deg); }
-    .sleeve-shape.s4 { width: 118px; height: 168px; right: 26%; bottom: 14%; transform: rotate(-8deg); }
-    .sleeve-shape.s5 { width: 144px; height: 198px; left: 36%; top: 8%; transform: rotate(6deg); }
-    .sleeve-shape.s6 { width: 124px; height: 176px; right: 40%; top: 56%; transform: rotate(-10deg); }
+    .sleeve-shape.s1 { --rot: -12deg; width: 156px; height: 214px; left: 6%; top: 14%; animation: ornamentFloatA 9.6s ease-in-out infinite alternate; }
+    .sleeve-shape.s2 { --rot: 9deg; width: 132px; height: 184px; left: 18%; bottom: 8%; animation: ornamentFloatB 8.8s ease-in-out infinite alternate .7s; }
+    .sleeve-shape.s3 { --rot: 11deg; width: 178px; height: 238px; right: 7%; top: 30%; animation: ornamentFloatC 10.8s ease-in-out infinite alternate .4s; }
+    .sleeve-shape.s4 { --rot: -8deg; width: 118px; height: 168px; right: 26%; bottom: 14%; animation: ornamentFloatA 7.9s ease-in-out infinite alternate 1.1s; }
+    .sleeve-shape.s5 { --rot: 6deg; width: 144px; height: 198px; left: 36%; top: 8%; animation: ornamentFloatB 11.4s ease-in-out infinite alternate .2s; }
+    .sleeve-shape.s6 { --rot: -10deg; width: 124px; height: 176px; right: 40%; top: 56%; animation: ornamentFloatC 9.2s ease-in-out infinite alternate .9s; }
 
     .home-bubble {
       position: absolute;
@@ -99,12 +101,12 @@
       animation: none;
     }
 
-    .home-bubble.b1 { width: 120px; height: 120px; top: -22px; left: -26px; animation: bubbleDriftA 13.5s cubic-bezier(.55, .08, .45, .93) infinite; }
-    .home-bubble.b2 { width: 66px; height: 66px; top: 40px; right: 22px; animation: bubbleDriftB 9.8s cubic-bezier(.32, .06, .63, .95) infinite .7s; }
-    .home-bubble.b3 { width: 34px; height: 34px; bottom: 28px; right: 12%; animation: bubbleDriftC 11.2s cubic-bezier(.4, .02, .62, 1) infinite 1.4s; }
-    .home-bubble.b4 { width: 20px; height: 20px; top: 58%; left: 28%; animation: bubbleDriftD 8.9s cubic-bezier(.42, .01, .6, 1) infinite 2.1s; }
-    .home-bubble.b5 { width: 190px; height: 190px; top: 10%; right: 16%; background: rgba(245, 77, 186, .56); }
-    .home-bubble.b6 { width: 118px; height: 118px; bottom: 8%; left: 8%; background: rgba(245, 77, 186, .42); }
+    .home-bubble.b1 { width: 120px; height: 120px; top: -22px; left: -26px; animation: ornamentFloatA 10.2s ease-in-out infinite alternate .1s; }
+    .home-bubble.b2 { width: 66px; height: 66px; top: 40px; right: 22px; animation: ornamentFloatB 7.8s ease-in-out infinite alternate .9s; }
+    .home-bubble.b3 { width: 34px; height: 34px; bottom: 28px; right: 12%; animation: ornamentFloatC 9.6s ease-in-out infinite alternate 1.6s; }
+    .home-bubble.b4 { width: 20px; height: 20px; top: 58%; left: 28%; animation: ornamentFloatA 8.4s ease-in-out infinite alternate .6s; }
+    .home-bubble.b5 { width: 190px; height: 190px; top: 10%; right: 16%; background: rgba(245, 77, 186, .56); animation: ornamentFloatB 11.6s ease-in-out infinite alternate .3s; }
+    .home-bubble.b6 { width: 118px; height: 118px; bottom: 8%; left: 8%; background: rgba(245, 77, 186, .42); animation: ornamentFloatC 9.1s ease-in-out infinite alternate 1.2s; }
 
     .home-feed {
       position: absolute;
@@ -207,7 +209,7 @@
     }
 
     .home-bubbles {
-      animation: heroBgFloat 18s ease-in-out infinite alternate;
+      animation: none;
     }
 
     .home-kicker {
@@ -513,6 +515,21 @@
     @keyframes heroBgFloat {
       from { transform: translate3d(0, 0, 0); }
       to { transform: translate3d(0, -6px, 0); }
+    }
+
+    @keyframes ornamentFloatA {
+      from { transform: translate3d(0, 0, 0) rotate(var(--rot, 0deg)); }
+      to { transform: translate3d(4px, -6px, 0) rotate(var(--rot, 0deg)); }
+    }
+
+    @keyframes ornamentFloatB {
+      from { transform: translate3d(0, 0, 0) rotate(var(--rot, 0deg)); }
+      to { transform: translate3d(-5px, -8px, 0) rotate(var(--rot, 0deg)); }
+    }
+
+    @keyframes ornamentFloatC {
+      from { transform: translate3d(0, 0, 0) rotate(var(--rot, 0deg)); }
+      to { transform: translate3d(3px, -5px, 0) rotate(var(--rot, 0deg)); }
     }
 
     @keyframes introDrift {
@@ -845,6 +862,11 @@
     @media (prefers-reduced-motion: reduce) {
       .home-bubbles {
         animation: none;
+      }
+
+      .home-bubble,
+      .sleeve-shape {
+        animation: none !important;
       }
 
       body.js-hero-anim .home-hero-main,
