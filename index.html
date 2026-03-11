@@ -846,7 +846,7 @@
       return { min: a, max: b };
     }
 
-    function setupHeaderTabVisibility() {
+    let __headerTabVisibilityWired = false;`r`n    function setupHeaderTabVisibility() {`r`n      if (__headerTabVisibilityWired) return;`r`n      __headerTabVisibilityWired = true;
       const hero = document.querySelector(".home-hero");
       if (!hero) return;
 
@@ -858,7 +858,7 @@
 
       let rafId = null;
       let shown = false; // 初期はヒーローを優先して非表示
-      const hysteresis = 24;
+      const hysteresis = 56;
 
       const update = () => {
         rafId = null;
@@ -869,12 +869,12 @@
         const showLine = headerH + 8;
         const hideLine = showLine + hysteresis;
 
-        if (!shown && rect.bottom <= showLine) {
+        if (!shown && y >= showAtY) {
           shown = true;
           apply(true);
           return;
         }
-        if (shown && rect.bottom >= hideLine) {
+        if (shown && y <= hideAtY) {
           shown = false;
           apply(false);
         }
