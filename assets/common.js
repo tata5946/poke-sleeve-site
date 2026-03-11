@@ -104,6 +104,99 @@ function normalizeSearchText(value) {
     .replace(/[‐‑‒–—―ーｰ\-_.・･]/g, "");
 }
 
+function toHiragana(value) {
+  return String(value ?? "").replace(/[\u30A1-\u30F6]/g, (ch) =>
+    String.fromCharCode(ch.charCodeAt(0) - 0x60)
+  );
+}
+
+function toKatakana(value) {
+  return String(value ?? "").replace(/[\u3041-\u3096]/g, (ch) =>
+    String.fromCharCode(ch.charCodeAt(0) + 0x60)
+  );
+}
+
+function kanaToRomaji(value) {
+  const src = toHiragana(value);
+  const digraph = {
+    "きゃ": "kya", "きゅ": "kyu", "きょ": "kyo",
+    "ぎゃ": "gya", "ぎゅ": "gyu", "ぎょ": "gyo",
+    "しゃ": "sha", "しゅ": "shu", "しょ": "sho",
+    "じゃ": "ja", "じゅ": "ju", "じょ": "jo",
+    "ちゃ": "cha", "ちゅ": "chu", "ちょ": "cho",
+    "にゃ": "nya", "にゅ": "nyu", "にょ": "nyo",
+    "ひゃ": "hya", "ひゅ": "hyu", "ひょ": "hyo",
+    "びゃ": "bya", "びゅ": "byu", "びょ": "byo",
+    "ぴゃ": "pya", "ぴゅ": "pyu", "ぴょ": "pyo",
+    "みゃ": "mya", "みゅ": "myu", "みょ": "myo",
+    "りゃ": "rya", "りゅ": "ryu", "りょ": "ryo",
+    "ふぁ": "fa", "ふぃ": "fi", "ふぇ": "fe", "ふぉ": "fo",
+    "てぃ": "ti", "でぃ": "di", "とぅ": "tu", "どぅ": "du",
+    "うぃ": "wi", "うぇ": "we", "うぉ": "wo",
+    "ゔぁ": "va", "ゔぃ": "vi", "ゔぇ": "ve", "ゔぉ": "vo",
+    "しぇ": "she", "じぇ": "je", "ちぇ": "che"
+  };
+  const mono = {
+    "あ": "a", "い": "i", "う": "u", "え": "e", "お": "o",
+    "か": "ka", "き": "ki", "く": "ku", "け": "ke", "こ": "ko",
+    "さ": "sa", "し": "shi", "す": "su", "せ": "se", "そ": "so",
+    "た": "ta", "ち": "chi", "つ": "tsu", "て": "te", "と": "to",
+    "な": "na", "に": "ni", "ぬ": "nu", "ね": "ne", "の": "no",
+    "は": "ha", "ひ": "hi", "ふ": "fu", "へ": "he", "ほ": "ho",
+    "ま": "ma", "み": "mi", "む": "mu", "め": "me", "も": "mo",
+    "や": "ya", "ゆ": "yu", "よ": "yo",
+    "ら": "ra", "り": "ri", "る": "ru", "れ": "re", "ろ": "ro",
+    "わ": "wa", "を": "wo", "ん": "n",
+    "が": "ga", "ぎ": "gi", "ぐ": "gu", "げ": "ge", "ご": "go",
+    "ざ": "za", "じ": "ji", "ず": "zu", "ぜ": "ze", "ぞ": "zo",
+    "だ": "da", "ぢ": "ji", "づ": "zu", "で": "de", "ど": "do",
+    "ば": "ba", "び": "bi", "ぶ": "bu", "べ": "be", "ぼ": "bo",
+    "ぱ": "pa", "ぴ": "pi", "ぷ": "pu", "ぺ": "pe", "ぽ": "po",
+    "ぁ": "a", "ぃ": "i", "ぅ": "u", "ぇ": "e", "ぉ": "o",
+    "ゃ": "ya", "ゅ": "yu", "ょ": "yo", "ゎ": "wa", "ゔ": "vu"
+  };
+
+  let out = "";
+  for (let i = 0; i < src.length; i += 1) {
+    const ch = src[i];
+    if (ch === "ー") {
+      const last = out[out.length - 1];
+      if (/[aeiou]/.test(last || "")) out += last;
+      continue;
+    }
+    const pair = src.slice(i, i + 2);
+    if (digraph[pair]) {
+      out += digraph[pair];
+      i += 1;
+      continue;
+    }
+    if (ch === "っ") {
+      const nextPair = src.slice(i + 1, i + 3);
+      const nextRoma = digraph[nextPair] || mono[src[i + 1]] || "";
+      if (nextRoma) out += nextRoma[0];
+      continue;
+    }
+    out += mono[ch] || ch;
+  }
+  return out;
+}
+
+function buildSearchVariants(value) {
+  const raw = String(value ?? "");
+  const variants = new Set();
+  const push = (v) => {
+    const n = normalizeSearchText(v);
+    if (n) variants.add(n);
+  };
+
+  push(raw);
+  push(toHiragana(raw));
+  push(toKatakana(raw));
+  push(kanaToRomaji(raw));
+  push(kanaToRomaji(toKatakana(raw)));
+  return Array.from(variants);
+}
+
 function getLatestPositivePrice(sleeve) {
   const arr = Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
   let latest = null;
@@ -131,7 +224,7 @@ async function getAutocompleteIndex() {
           id,
           name,
           series: String(s && s.series || "").trim(),
-          nameNorm: normalizeSearchText(name),
+          searchKeys: buildSearchVariants(name),
           detailHref: `./detail.html?id=${encodeURIComponent(id)}`,
           imageUrl: String(s && s.imageUrl || "").trim(),
           latestPrice: getLatestPositivePrice(s)
@@ -149,26 +242,39 @@ async function getAutocompleteIndex() {
 }
 
 function findAutocompleteCandidates(indexItems, query, maxItems = AUTOCOMPLETE_MAX_ITEMS) {
-  const q = normalizeSearchText(query);
-  if (!q) return [];
+  const queryVariants = buildSearchVariants(query);
+  if (!queryVariants.length) return [];
 
   const starts = [];
   const contains = [];
   for (const item of indexItems) {
-    const pos = item.nameNorm.indexOf(q);
-    if (pos < 0) continue;
-    if (pos === 0) starts.push(item);
-    else contains.push({ item, pos });
+    const keys = Array.isArray(item.searchKeys) && item.searchKeys.length
+      ? item.searchKeys
+      : [normalizeSearchText(item.name)];
+    let bestPos = Infinity;
+    for (const key of keys) {
+      for (const q of queryVariants) {
+        const pos = key.indexOf(q);
+        if (pos >= 0 && pos < bestPos) bestPos = pos;
+      }
+    }
+    if (!Number.isFinite(bestPos)) continue;
+    if (bestPos === 0) starts.push(item);
+    else contains.push({ item, pos: bestPos });
   }
 
   starts.sort((a, b) => {
-    if (a.nameNorm.length !== b.nameNorm.length) return a.nameNorm.length - b.nameNorm.length;
+    const al = (a.searchKeys && a.searchKeys[0]) ? a.searchKeys[0].length : String(a.name || "").length;
+    const bl = (b.searchKeys && b.searchKeys[0]) ? b.searchKeys[0].length : String(b.name || "").length;
+    if (al !== bl) return al - bl;
     return a.name.localeCompare(b.name, "ja");
   });
 
   contains.sort((a, b) => {
     if (a.pos !== b.pos) return a.pos - b.pos;
-    if (a.item.nameNorm.length !== b.item.nameNorm.length) return a.item.nameNorm.length - b.item.nameNorm.length;
+    const al = (a.item.searchKeys && a.item.searchKeys[0]) ? a.item.searchKeys[0].length : String(a.item.name || "").length;
+    const bl = (b.item.searchKeys && b.item.searchKeys[0]) ? b.item.searchKeys[0].length : String(b.item.name || "").length;
+    if (al !== bl) return al - bl;
     return a.item.name.localeCompare(b.item.name, "ja");
   });
 
