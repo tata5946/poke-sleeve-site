@@ -618,11 +618,16 @@
         sections.forEach((section) => section.classList.add("is-inview"));
         return;
       }
+      const forceShowAll = () => sections.forEach((section) => section.classList.add("is-inview"));
+      const fallbackTimer = setTimeout(forceShowAll, 1800);
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting || entry.intersectionRatio < 0.18) return;
+          if (!entry.isIntersecting) return;
           entry.target.classList.add("is-inview");
           observer.unobserve(entry.target);
+          if (sections.every((section) => section.classList.contains("is-inview"))) {
+            clearTimeout(fallbackTimer);
+          }
         });
       }, { threshold: [0, 0.18, 0.25], rootMargin: "0px 0px -6% 0px" });
       sections.forEach((section) => observer.observe(section));
