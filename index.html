@@ -4,14 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ポケスリ相場ナビ｜ポケカスリーブ価格推移</title>
-  <meta name="description" content="ポケスリ相場ナビは、ポケカスリーブの週次・年次の価格推移を掲載するデータベース。ランキング・急上昇・検索/絞り込みで相場を比較できます。">
+  <title>驛｢譎・ｺ｢邵ｺ骰具ｽｹ・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｪ鬨ｾ・ｶ繝ｻ・ｸ髯懶ｽ｣繝ｻ・ｴ驛｢譎会ｽｿ・ｫ郢晢ｽｳ郢晢ｽｻ隲帷ｿｫ繝ｻ驛｢・ｧ繝ｻ・ｱ驛｢・ｧ繝ｻ・ｫ驛｢・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｪ驛｢譎｢・ｽ・ｼ驛｢譎会ｽｴ蜈ｷ・ｽ・ｾ繝ｻ・｡髫ｴ・ｬ繝ｻ・ｼ髫ｰ證ｦ・ｽ・ｨ鬩募∞・ｽ・ｻ</title>
+  <meta name="description" content="驛｢譎・ｺ｢邵ｺ骰具ｽｹ・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｪ鬨ｾ・ｶ繝ｻ・ｸ髯懶ｽ｣繝ｻ・ｴ驛｢譎会ｽｿ・ｫ郢晢ｽｳ驍ｵ・ｺ繝ｻ・ｯ驍ｵ・ｲ遶丞｣ｹ繝ｻ驛｢・ｧ繝ｻ・ｱ驛｢・ｧ繝ｻ・ｫ驛｢・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｪ驛｢譎｢・ｽ・ｼ驛｢譎・§郢晢ｽｻ鬯ｨ・ｾ繝ｻ・ｱ髫ｹ・ｺ繝ｻ・｡驛｢譎｢・ｽ・ｻ髯晢ｽｷ繝ｻ・ｴ髫ｹ・ｺ繝ｻ・｡驍ｵ・ｺ繝ｻ・ｮ髣憺屮・ｽ・｡髫ｴ・ｬ繝ｻ・ｼ髫ｰ證ｦ・ｽ・ｨ鬩募∞・ｽ・ｻ驛｢・ｧ陷ｻ驛・ｽｻ・ｸ鬮ｴ莠･・ｳ・ｨ隨倥・・ｹ・ｧ闕ｵ譏ｴﾎ咎Δ譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｿ驛｢譎冗函郢晢ｽｻ驛｢・ｧ繝ｻ・ｹ驍ｵ・ｲ郢ｧ繝ｻ蟶ｷ・ｹ譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ驛｢譎｢・ｽ・ｻ髫ｲ・､繝ｻ・･髣包ｽｳ鬯・ｻ｣繝ｻ驛｢譎｢・ｽ・ｻ髫ｶﾂ隲帙・・ｽ・ｴ繝ｻ・｢/鬩搾ｽｨ隶抵ｽｭ繝ｻ莨∵・繝ｻ・ｼ驍ｵ・ｺ繝ｻ・ｿ驍ｵ・ｺ繝ｻ・ｧ鬨ｾ・ｶ繝ｻ・ｸ髯懶ｽ｣繝ｻ・ｴ驛｢・ｧ陷ｻ闌ｨ・ｽ・ｯ驕呈汚・ｽ・ｼ郢晢ｽｻ邵ｲ蝣､・ｸ・ｺ鬮ｦ・ｪ遶擾ｽｪ驍ｵ・ｺ陷ｷ・ｶ・つ郢晢ｽｻ>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&family=Noto+Sans+JP:wght@500;700;800&display=swap" rel="stylesheet">
 
-  <!-- 共通CSS -->
+  <!-- 髯ｷ闌ｨ・ｽ・ｱ鬯ｨ・ｾ陷･・ｾSS -->
   <link rel="stylesheet" href="./assets/site.css" />
   <style>
     body.home-page .container {
@@ -387,6 +387,65 @@
       animation-delay: calc(180ms + var(--pop-delay, 0) * 60ms);
     }
 
+    .sections .rail-skeleton {
+      display: none;
+      gap: 12px;
+      overflow: hidden;
+      padding: 4px 2px 10px;
+    }
+
+    .sections .skeleton-tile {
+      flex: 0 0 auto;
+      width: 180px;
+      height: 278px;
+      border-radius: 16px;
+      border: 1px solid #d9e2f0;
+      background:
+        linear-gradient(110deg, rgba(255, 255, 255, .56) 8%, rgba(255, 255, 255, .84) 18%, rgba(255, 255, 255, .56) 33%),
+        linear-gradient(180deg, #f2f6fd 0%, #edf3fb 100%);
+      background-size: 240% 100%, 100% 100%;
+      animation: skeletonShimmer 1.2s ease-in-out infinite;
+      box-shadow: 0 4px 14px rgba(16, 24, 40, .05);
+    }
+
+    .sections.is-loading .section .rail {
+      display: none;
+    }
+
+    .sections.is-loading .section .rail-btn {
+      display: none;
+    }
+
+    .sections.is-loading .section .rail-skeleton {
+      display: flex;
+    }
+
+    body.js-rank-anim .sections.is-loading .section {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+
+    .sections.is-error .section {
+      display: none;
+    }
+
+    .ranking-status {
+      margin: 0;
+      padding: 12px 14px;
+      border: 1px solid #d3dcea;
+      border-radius: 14px;
+      background: rgba(248, 251, 255, .78);
+      color: #4b5a72;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .sections.is-error .ranking-status {
+      display: block;
+    }
+
     body.home-header-hidden #site-header .header {
       opacity: 0;
       transform: translateY(calc(-1 * var(--site-header-h) - 8px));
@@ -548,6 +607,11 @@
       0% { opacity: 0; transform: scale(.85) translateY(4px); }
       72% { opacity: 1; transform: scale(1.03) translateY(0); }
       100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes skeletonShimmer {
+      from { background-position: 200% 0, 0 0; }
+      to { background-position: -40% 0, 0 0; }
     }
 
     @keyframes heroFadeUp {
@@ -942,12 +1006,16 @@
         transform: none;
         animation: none !important;
       }
+
+      .sections .skeleton-tile {
+        animation: none;
+      }
     }
   </style>
 </head>
 
 <body class="home-page">
-  <!-- 共通ヘッダー差し込み -->
+  <!-- 髯ｷ闌ｨ・ｽ・ｱ鬯ｨ・ｾ陞｢・ｹ郢晢ｽｻ驛｢譏ｴ繝ｻ郢晢｣ｰ驛｢譎｢・ｽ・ｼ髯晢ｽｾ繝ｻ・ｮ驍ｵ・ｺ髣埼屮・ｽ・ｾ繝ｻ・ｼ驍ｵ・ｺ繝ｻ・ｿ -->
   <div id="site-header"></div>
 
   <div class="container">
@@ -971,102 +1039,106 @@
           <span class="sleeve-shape s6"></span>
         </div>
         <div class="home-feed" aria-hidden="true">
-          <span class="home-feed-chip c1">価格 +12.4%</span>
-          <span class="home-feed-chip c2">高騰率 TOP</span>
-          <span class="home-feed-chip c3">急上昇 +640円</span>
-          <span class="home-feed-chip c4">注目テーマ</span>
-          <span class="home-feed-chip c5">週次更新</span>
-          <span class="home-feed-chip c6">流動性チェック</span>
+          <span class="home-feed-chip c1">髣憺屮・ｽ・｡髫ｴ・ｬ繝ｻ・ｼ +12.4%</span>
+          <span class="home-feed-chip c2">鬯ｯ・ｮ陋滂ｽｬ繝ｻ・ｨ繝ｻ・ｰ鬩阪・繝ｻTOP</span>
+          <span class="home-feed-chip c3">髫ｲ・､繝ｻ・･髣包ｽｳ鬯・ｻ｣繝ｻ +640髯ｷﾂ郢晢ｽｻ/span>
+          <span class="home-feed-chip c4">髮主桁・ｽ・ｨ鬨ｾ・ｶ繝ｻ・ｮ驛｢譏ｴ繝ｻ郢晢ｽｻ驛｢譏ｴ繝ｻ/span>
+          <span class="home-feed-chip c5">鬯ｨ・ｾ繝ｻ・ｱ髫ｹ・ｺ繝ｻ・｡髫ｴ蜴・ｽｽ・ｴ髫ｴ繝ｻ・ｽ・ｰ</span>
+          <span class="home-feed-chip c6">髮趣ｽｬ遶乗凵蜉帝坿・､繝ｻ・ｧ驛｢譏ｶ繝ｻ邵ｺ閾･・ｹ譏ｴ繝ｻ邵ｺ繝ｻ/span>
           <span class="home-feed-dot d1"></span>
           <span class="home-feed-dot d2"></span>
           <span class="home-feed-dot d3"></span>
           <span class="home-feed-dot d4"></span>
         </div>
         <div class="home-hero-main">
-          <div class="hero-brand" aria-label="ポケスリ相場ナビ">
+          <div class="hero-brand" aria-label="驛｢譎・ｺ｢邵ｺ骰具ｽｹ・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｪ鬨ｾ・ｶ繝ｻ・ｸ髯懶ｽ｣繝ｻ・ｴ驛｢譎会ｽｿ・ｫ郢晢ｽｳ">
             <span class="logo" aria-hidden="true"></span>
-            <h1 class="hero-brand-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
+            <h1 class="hero-brand-title"><span class="accent">驛｢譎・ｺ｢邵ｺ骰具ｽｹ・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｪ</span>鬨ｾ・ｶ繝ｻ・ｸ髯懶ｽ｣繝ｻ・ｴ驛｢譎会ｽｿ・ｫ郢晢ｽｳ</h1>
           </div>
           <p class="home-kicker">POKE SLEEVE SEARCH</p>
-          <p class="home-display">ポケモンスリーブ（デッキシールド）の<br>データサイト</p>
-          <form class="home-hero-search" id="heroSearchForm" action="./zukan.html" method="get" role="search" aria-label="スリーブ検索">
-            <input type="text" id="heroSearch" name="q" placeholder="キーワードでスリーブを検索" autocomplete="off">
-            <button class="btn" type="submit">検索</button>
+          <p class="home-display">驛｢譎・ｺ｢邵ｺ骰具ｽｹ譎｢・ｽ・｢驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｪ驛｢譎｢・ｽ・ｼ驛｢譎冗ｧ√・・ｼ陋ｹ・ｻ郢晢ｽｧ驛｢譏ｴ繝ｻ邵ｺ蜀暦ｽｹ・ｧ繝ｻ・ｷ驛｢譎｢・ｽ・ｼ驛｢譎｢・ｽ・ｫ驛｢譏懶ｽｼ螟ｲ・ｽ・ｼ陝ｲ・ｨ郢晢ｽｻ<br>驛｢譏ｴ繝ｻ郢晢ｽｻ驛｢・ｧ繝ｻ・ｿ驛｢・ｧ繝ｻ・ｵ驛｢・ｧ繝ｻ・､驛｢譏ｴ繝ｻ/p>
+          <form class="home-hero-search" id="heroSearchForm" action="./zukan.html" method="get" role="search" aria-label="驛｢・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｪ驛｢譎｢・ｽ・ｼ驛｢譎乗亜繝ｻ・､隲帙・・ｽ・ｴ繝ｻ・｢">
+            <input type="text" id="heroSearch" name="q" placeholder="驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｼ驛｢譎｢・ｽ・ｯ驛｢譎｢・ｽ・ｼ驛｢譎擾ｽｳ・ｨ邵ｲ蝣､・ｹ・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｪ驛｢譎｢・ｽ・ｼ驛｢譎・§繝ｻ螳夲ｽｮﾂ隲帙・・ｽ・ｴ繝ｻ・｢" autocomplete="off">
+            <button class="btn" type="submit">髫ｶﾂ隲帙・・ｽ・ｴ繝ｻ・｢</button>
           </form>
-          <p class="home-copy">ポケモンスリーブ（デッキシールド）の図鑑と価格相場を掲載するデータサイト。<br>コレクションや相場チェックに役立つ情報をまとめています。</p>
-          <p class="data-note">※価格はフリマアプリ等の売却履歴をもとに独自集計しています。</p>
+          <p class="home-copy">驛｢譎・ｺ｢邵ｺ骰具ｽｹ譎｢・ｽ・｢驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｪ驛｢譎｢・ｽ・ｼ驛｢譎冗ｧ√・・ｼ陋ｹ・ｻ郢晢ｽｧ驛｢譏ｴ繝ｻ邵ｺ蜀暦ｽｹ・ｧ繝ｻ・ｷ驛｢譎｢・ｽ・ｼ驛｢譎｢・ｽ・ｫ驛｢譏懶ｽｼ螟ｲ・ｽ・ｼ陝ｲ・ｨ郢晢ｽｻ髯懈圜・ｽ・ｳ鬯ｮ蜿ｰ・ｻ・｣遶雁ｮ壼ｵｩ繝ｻ・｡髫ｴ・ｬ繝ｻ・ｼ鬨ｾ・ｶ繝ｻ・ｸ髯懶ｽ｣繝ｻ・ｴ驛｢・ｧ陷ｻ驛・ｽｻ・ｸ鬮ｴ莠･・ｳ・ｨ隨倥・・ｹ・ｧ闕ｵ譏ｴﾎ咎Δ譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｿ驛｢・ｧ繝ｻ・ｵ驛｢・ｧ繝ｻ・､驛｢譎冗樟・つ郢晢ｽｻbr>驛｢・ｧ繝ｻ・ｳ驛｢譎｢・ｽ・ｬ驛｢・ｧ繝ｻ・ｯ驛｢・ｧ繝ｻ・ｷ驛｢譎｢・ｽ・ｧ驛｢譎｢・ｽ・ｳ驛｢・ｧ郢晢ｽｻ陟咲霜謦ｻ繝ｻ・ｴ驛｢譏ｶ繝ｻ邵ｺ閾･・ｹ譏ｴ繝ｻ邵ｺ驢搾ｽｸ・ｺ繝ｻ・ｫ髯溷私・ｽ・ｹ鬩包ｽｶ闕ｵ譏ｶ蜻ｽ髫ｲ・ｰ郢晢ｽｻ繝ｻ・ｰ繝ｻ・ｱ驛｢・ｧ陋幢ｽｵ遶擾ｽｪ驍ｵ・ｺ繝ｻ・ｨ驛｢・ｧ遶丞｣ｺﾂ・ｻ驍ｵ・ｺ郢晢ｽｻ遶擾ｽｪ驍ｵ・ｺ陷ｷ・ｶ・つ郢晢ｽｻ/p>
+          <p class="data-note">驕ｯ・ｶ繝ｻ・ｻ髣憺屮・ｽ・｡髫ｴ・ｬ繝ｻ・ｼ驍ｵ・ｺ繝ｻ・ｯ驛｢譎・ｽｼ驥・㏍・ｹ譎・ｽｧ・ｭ邵ｺ繝ｻ・ｹ譎丞ｹｲ・取・繝ｻ陝ｲ・ｨ郢晢ｽｻ髯橸ｽ｢繝ｻ・ｲ髯ｷ螂・ｽｽ・ｴ髯橸ｽｻ繝ｻ・･髮弱・・ｽ・ｴ驛｢・ｧ陋幢ｽｵ繝ｻ繧会ｽｸ・ｺ繝ｻ・ｨ驍ｵ・ｺ繝ｻ・ｫ髴托ｽ｢繝ｻ・ｬ鬮｢・ｾ繝ｻ・ｪ鬯ｮ・ｮ郢晢ｽｻ繝ｻ・ｨ陋ｹ・ｻ繝ｻ・ｰ驍ｵ・ｺ繝ｻ・ｦ驍ｵ・ｺ郢晢ｽｻ遶擾ｽｪ驍ｵ・ｺ陷ｷ・ｶ・つ郢晢ｽｻ/p>
           <div class="home-cta">
-            <a class="btn" href="./zukan.html">図鑑で探す</a>
-            <a class="btn ghost" href="./surge.html">急上昇ランキングをみる</a>
-            <a class="btn ghost" href="./growth.html">高騰率ランキングをみる</a>
-            <a class="btn ghost" href="./ranking.html">価格ランキングをみる</a>
+            <a class="btn" href="./zukan.html">髯懈圜・ｽ・ｳ鬯ｮ蜿ｰ・ｻ・｣邵ｲ螳夲ｽｬ證ｦ・ｽ・｢驍ｵ・ｺ郢晢ｽｻ/a>
+            <a class="btn ghost" href="./surge.html">髫ｲ・､繝ｻ・･髣包ｽｳ鬯・ｻ｣繝ｻ驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ驛｢・ｧ陋幢ｽｵ遶擾ｽｩ驛｢・ｧ郢晢ｽｻ/a>
+            <a class="btn ghost" href="./growth.html">鬯ｯ・ｮ陋滂ｽｬ繝ｻ・ｨ繝ｻ・ｰ鬩阪・繝ｻ・主ｸｷ・ｹ譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ驛｢・ｧ陋幢ｽｵ遶擾ｽｩ驛｢・ｧ郢晢ｽｻ/a>
+            <a class="btn ghost" href="./ranking.html">髣憺屮・ｽ・｡髫ｴ・ｬ繝ｻ・ｼ驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ驛｢・ｧ陋幢ｽｵ遶擾ｽｩ驛｢・ｧ郢晢ｽｻ/a>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 棚（横スライダー） -->
-    <div class="sections" aria-label="ランキング棚">
-      <section class="section">
+    <!-- 髫ｴ・ｽ陞滂ｽｲ繝ｻ・ｼ陜捺ｻゑｽｽ・ｨ繝ｻ・ｪ驛｢・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｩ驛｢・ｧ繝ｻ・､驛｢謨鳴驛｢譎｢・ｽ・ｼ郢晢ｽｻ郢晢ｽｻ-->
+    <div id="rankingSections" class="sections is-loading" aria-busy="true" aria-label="rankings">
+      <section id="section-surge" class="section">
         <div class="section-head">
           <h2 class="section-title">
-            急上昇ランキング <span class="pill">直近取引週</span>
+            髫ｲ・､繝ｻ・･髣包ｽｳ鬯・ｻ｣繝ｻ驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ <span class="pill">鬨ｾ・ｶ繝ｻ・ｴ鬮ｴ螟ｧ・､・ｧ陷ｿ蜻ｵ・ｰ隨ｬ蝮ｩ・つ繝ｻ・ｱ</span>
           </h2>
-          <a class="more" href="./surge.html">もっと見る</a>
+          <a class="more" href="./surge.html">驛｢・ｧ郢ｧ繝ｻ螟｢驍ｵ・ｺ繝ｻ・ｨ鬮ｫ遨ゑｽｹ譎｢・ｽ繝ｻ/a>
         </div>
 
         <div class="rail-wrap">
-          <button class="rail-btn left" type="button" data-rail="rail-surge" aria-label="左へ">‹</button>
-          <div id="rail-surge" class="rail" tabindex="0" aria-label="急上昇ランキング"></div>
-          <button class="rail-btn right" type="button" data-rail="rail-surge" aria-label="右へ">›</button>
+          <button class="rail-btn left" type="button" data-rail="rail-surge" aria-label="髯晢ｽｾ繝ｻ・ｦ驍ｵ・ｺ繝ｻ・ｸ">驕ｯ・ｶ繝ｻ・ｹ</button>
+          <div id="rail-surge" class="rail" tabindex="0" aria-label="髫ｲ・､繝ｻ・･髣包ｽｳ鬯・ｻ｣繝ｻ驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ"></div>
+          <div class="rail-skeleton" aria-hidden="true"><span class="skeleton-tile"></span><span class="skeleton-tile"></span><span class="skeleton-tile"></span><span class="skeleton-tile"></span></div>
+          <button class="rail-btn right" type="button" data-rail="rail-surge" aria-label="髯ｷ・ｿ繝ｻ・ｳ驍ｵ・ｺ繝ｻ・ｸ">驕ｯ・ｶ繝ｻ・ｺ</button>
         </div>
       </section>
 
-      <section class="section">
+      <section id="section-growth" class="section">
         <div class="section-head">
           <h2 class="section-title">
-            高騰率ランキング <span class="pill">30日</span>
+            鬯ｯ・ｮ陋滂ｽｬ繝ｻ・ｨ繝ｻ・ｰ鬩阪・繝ｻ・主ｸｷ・ｹ譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ <span class="pill">30髫ｴ魃会ｽｽ・･</span>
           </h2>
-          <a class="more" href="./growth.html">もっと見る</a>
+          <a class="more" href="./growth.html">驛｢・ｧ郢ｧ繝ｻ螟｢驍ｵ・ｺ繝ｻ・ｨ鬮ｫ遨ゑｽｹ譎｢・ｽ繝ｻ/a>
         </div>
 
         <div class="rail-wrap">
-          <button class="rail-btn left" type="button" data-rail="rail-growth" aria-label="左へ">‹</button>
-          <div id="rail-growth" class="rail" tabindex="0" aria-label="高騰率ランキング"></div>
-          <button class="rail-btn right" type="button" data-rail="rail-growth" aria-label="右へ">›</button>
+          <button class="rail-btn left" type="button" data-rail="rail-growth" aria-label="髯晢ｽｾ繝ｻ・ｦ驍ｵ・ｺ繝ｻ・ｸ">驕ｯ・ｶ繝ｻ・ｹ</button>
+          <div id="rail-growth" class="rail" tabindex="0" aria-label="鬯ｯ・ｮ陋滂ｽｬ繝ｻ・ｨ繝ｻ・ｰ鬩阪・繝ｻ・主ｸｷ・ｹ譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ"></div>
+          <div class="rail-skeleton" aria-hidden="true"><span class="skeleton-tile"></span><span class="skeleton-tile"></span><span class="skeleton-tile"></span><span class="skeleton-tile"></span></div>
+          <button class="rail-btn right" type="button" data-rail="rail-growth" aria-label="髯ｷ・ｿ繝ｻ・ｳ驍ｵ・ｺ繝ｻ・ｸ">驕ｯ・ｶ繝ｻ・ｺ</button>
         </div>
       </section>
 
-      <section class="section">
+      <section id="section-price" class="section">
         <div class="section-head">
           <h2 class="section-title">
-            価格ランキング <span class="pill">最新週次</span>
+            髣憺屮・ｽ・｡髫ｴ・ｬ繝ｻ・ｼ驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ <span class="pill">髫ｴ蟠｢ﾂ髫ｴ繝ｻ・ｽ・ｰ鬯ｨ・ｾ繝ｻ・ｱ髫ｹ・ｺ繝ｻ・｡</span>
           </h2>
-          <a class="more" href="./ranking.html">もっと見る</a>
+          <a class="more" href="./ranking.html">驛｢・ｧ郢ｧ繝ｻ螟｢驍ｵ・ｺ繝ｻ・ｨ鬮ｫ遨ゑｽｹ譎｢・ｽ繝ｻ/a>
         </div>
 
         <div class="rail-wrap">
-          <button class="rail-btn left" type="button" data-rail="rail-price" aria-label="左へ">‹</button>
-          <div id="rail-price" class="rail" tabindex="0" aria-label="価格ランキング"></div>
-          <button class="rail-btn right" type="button" data-rail="rail-price" aria-label="右へ">›</button>
+          <button class="rail-btn left" type="button" data-rail="rail-price" aria-label="髯晢ｽｾ繝ｻ・ｦ驍ｵ・ｺ繝ｻ・ｸ">驕ｯ・ｶ繝ｻ・ｹ</button>
+          <div id="rail-price" class="rail" tabindex="0" aria-label="髣憺屮・ｽ・｡髫ｴ・ｬ繝ｻ・ｼ驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ"></div>
+          <div class="rail-skeleton" aria-hidden="true"><span class="skeleton-tile"></span><span class="skeleton-tile"></span><span class="skeleton-tile"></span><span class="skeleton-tile"></span></div>
+          <button class="rail-btn right" type="button" data-rail="rail-price" aria-label="髯ｷ・ｿ繝ｻ・ｳ驍ｵ・ｺ繝ｻ・ｸ">驕ｯ・ｶ繝ｻ・ｺ</button>
         </div>
       </section>
+      <p id="rankingStatus" class="ranking-status" hidden></p>
     </div>
 
-    <!-- 一覧（検索・絞り込み） -->
+    <!-- 髣包ｽｳ・つ鬮ｫ蛹・ｽｽ・ｧ郢晢ｽｻ陜捺ｻゑｽｽ・､隲帙・・ｽ・ｴ繝ｻ・｢驛｢譎｢・ｽ・ｻ鬩搾ｽｨ隶抵ｽｭ繝ｻ莨∵・繝ｻ・ｼ驍ｵ・ｺ繝ｻ・ｿ郢晢ｽｻ郢晢ｽｻ-->
     <div class="panel" style="margin-top:14px;">
-      <h2 style="margin:0 0 8px;">図鑑ページへ</h2>
+      <h2 style="margin:0 0 8px;">髯懈圜・ｽ・ｳ鬯ｮ蜿ｰ・ｻ・｣郢晢ｽｻ驛｢譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｸ驍ｵ・ｺ繝ｻ・ｸ</h2>
       <p class="meta" style="margin:0;">
-        スリーブの検索・絞り込み一覧は「図鑑」に移動しました。
+        驛｢・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｪ驛｢譎｢・ｽ・ｼ驛｢譎・§郢晢ｽｻ髫ｶﾂ隲帙・・ｽ・ｴ繝ｻ・｢驛｢譎｢・ｽ・ｻ鬩搾ｽｨ隶抵ｽｭ繝ｻ莨∵・繝ｻ・ｼ驍ｵ・ｺ繝ｻ・ｿ髣包ｽｳ・つ鬮ｫ蛹・ｽｽ・ｧ驍ｵ・ｺ繝ｻ・ｯ驍ｵ・ｲ隰疲ｺｷ・ｳ蜥趣ｽｫ蜿ｰ・ｻ・｣・つ鬮ｦ・ｪ遶企ｦｴﾂｧ繝ｻ・ｻ髯ｷ蟠趣ｽｼ雋ｻ・ｼ・ｰ驍ｵ・ｺ繝ｻ・ｾ驍ｵ・ｺ陷会ｽｱ隨ｳ繝ｻ・ｸ・ｲ郢晢ｽｻ
       </p>
-      <a class="btn" href="./zukan.html">図鑑を開く</a>
+      <a class="btn" href="./zukan.html">髯懈圜・ｽ・ｳ鬯ｮ蜿ｰ・ｻ・｣繝ｻ蟶晢ｽｫ・｢闕ｵ譎｢・ｿ・･</a>
     </div>
 
-    <!-- 共通フッター差し込み -->
+    <!-- 髯ｷ闌ｨ・ｽ・ｱ鬯ｨ・ｾ陞｢・ｹ郢晢ｽｵ驛｢譏ｴ繝ｻ邵ｺ・｡驛｢譎｢・ｽ・ｼ髯晢ｽｾ繝ｻ・ｮ驍ｵ・ｺ髣埼屮・ｽ・ｾ繝ｻ・ｼ驍ｵ・ｺ繝ｻ・ｿ -->
     <div id="site-footer"></div>
   </div>
 
-  <!-- 共通JS（header/footer差し込み & nav active 等） -->
+  <!-- 髯ｷ闌ｨ・ｽ・ｱ鬯ｨ・ｾ陷ｩ・ｽS郢晢ｽｻ郢晢ｽｻeader/footer髯晢ｽｾ繝ｻ・ｮ驍ｵ・ｺ髣埼屮・ｽ・ｾ繝ｻ・ｼ驍ｵ・ｺ繝ｻ・ｿ & nav active 鬩包ｽｲ闔ｨ螟ｲ・ｽ・ｼ郢晢ｽｻ-->
   <script src="./assets/common.js"></script>
 
   <script>
@@ -1257,7 +1329,7 @@
     function buildStoryRankItems(rows, mode) {
       const src = (Array.isArray(rows) ? rows : []).slice(0, 10);
       if (!src.length) {
-        return `<li class="story-rank-board-item"><span class="story-rank-pos">-</span><span class="story-rank-name">データなし</span><span class="story-rank-val">-</span></li>`;
+        return `<li class="story-rank-board-item"><span class="story-rank-pos">-</span><span class="story-rank-name">驛｢譏ｴ繝ｻ郢晢ｽｻ驛｢・ｧ繝ｻ・ｿ驍ｵ・ｺ繝ｻ・ｪ驍ｵ・ｺ郢晢ｽｻ/span><span class="story-rank-val">-</span></li>`;
       }
 
       return src.map((row, idx) => {
@@ -1267,7 +1339,7 @@
         if (mode === "price") {
           name = String(row?.name || "");
           const p = Number(row?.price);
-          value = Number.isFinite(p) ? `${Math.round(p).toLocaleString()}円` : "-";
+          value = Number.isFinite(p) ? `${Math.round(p).toLocaleString()}髯ｷﾂ郢晢ｽｻ : "-";
         } else if (mode === "growth") {
           name = String(row?.name || "");
           const rate = Number(row?.rate);
@@ -1275,7 +1347,7 @@
         } else {
           name = String(row?.name || "");
           const diff = Number(row?.diff);
-          value = Number.isFinite(diff) ? `${diff > 0 ? "+" : ""}${Math.round(diff).toLocaleString()}円` : "-";
+          value = Number.isFinite(diff) ? `${diff > 0 ? "+" : ""}${Math.round(diff).toLocaleString()}髯ｷﾂ郢晢ｽｻ : "-";
         }
         return `<li class="story-rank-board-item"><span class="story-rank-pos">${rank}</span><span class="story-rank-name">${escapeHtml(name)}</span><span class="story-rank-val">${escapeHtml(value)}</span></li>`;
       }).join("");
@@ -1290,8 +1362,8 @@
       const stages = Array.isArray(window.__storyRankingStages) ? window.__storyRankingStages : [];
       const current = stages[stage] || stages[0] || null;
       if (!current) {
-        titleEl.textContent = "ランキング";
-        subEl.textContent = "データなし";
+        titleEl.textContent = "驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ";
+        subEl.textContent = "驛｢譏ｴ繝ｻ郢晢ｽｻ驛｢・ｧ繝ｻ・ｿ驍ｵ・ｺ繝ｻ・ｪ驍ｵ・ｺ郢晢ｽｻ;
         listEl.innerHTML = buildStoryRankItems([], "price");
         return;
       }
@@ -1303,9 +1375,9 @@
 
     function fillStoryRankings({ priceRows, growthRows, surgeRows }) {
       window.__storyRankingStages = [
-        { mode: "price", title: "価格ランキング", sub: "価格が高い順（最新週）", rows: priceRows },
-        { mode: "growth", title: "高騰率ランキング", sub: "上昇率が高い順（30日）", rows: growthRows },
-        { mode: "surge", title: "急上昇ランキング", sub: "前回比の上昇額が大きい順", rows: surgeRows }
+        { mode: "price", title: "髣憺屮・ｽ・｡髫ｴ・ｬ繝ｻ・ｼ驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ", sub: "髣憺屮・ｽ・｡髫ｴ・ｬ繝ｻ・ｼ驍ｵ・ｺ驕偵・・ｽ・ｫ陋滂ｽ･繝ｻ讓｣・ｬ繝ｻ繝ｻ繝ｻ・ｼ陜捺ｻ督蜻ｵ・ｭ繝ｻ・ｽ・ｰ鬯ｨ・ｾ繝ｻ・ｱ郢晢ｽｻ郢晢ｽｻ, rows: priceRows },
+        { mode: "growth", title: "鬯ｯ・ｮ陋滂ｽｬ繝ｻ・ｨ繝ｻ・ｰ鬩阪・繝ｻ・主ｸｷ・ｹ譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ", sub: "髣包ｽｳ鬯・ｻ｣繝ｻ鬩阪・繝ｻ遯ｶ・ｲ鬯ｯ・ｮ陋滂ｽ･繝ｻ讓｣・ｬ繝ｻ繝ｻ繝ｻ・ｼ郢晢ｽｻ0髫ｴ魃会ｽｽ・･郢晢ｽｻ郢晢ｽｻ, rows: growthRows },
+        { mode: "surge", title: "髫ｲ・､繝ｻ・･髣包ｽｳ鬯・ｻ｣繝ｻ驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｭ驛｢譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｰ", sub: "髯ｷ隨ｬ・ｦ髮・ｽｱ讌｢・ｱ蝓滄ｱ堤ｹ晢ｽｻ髣包ｽｳ鬯・ｻ｣繝ｻ鬯ｯ蛟ｬ莠らｪｶ・ｲ髯樊ｻゑｽｽ・ｧ驍ｵ・ｺ鬮ｦ・ｪ繝ｻ讓｣・ｬ繝ｻ繝ｻ, rows: surgeRows }
       ];
       renderStoryRankingStage(0);
     }
@@ -1334,11 +1406,11 @@
           signal: controller.signal,
           headers: { "Accept": "application/json" }
         });
-        if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
+        if (!res.ok) throw new Error(`驛｢譏ｴ繝ｻ郢晢ｽｻ驛｢・ｧ繝ｻ・ｿ髯ｷ・ｿ鬮｢ﾂ繝ｻ・ｾ陷会ｽｱ遶頑･｢譽斐・・ｱ髫ｰ・ｨ陷会ｽｱ繝ｻ・ｰ驍ｵ・ｺ繝ｻ・ｾ驍ｵ・ｺ陷会ｽｱ隨ｳ繝ｻ繝ｻ郢晢ｽｻTTP ${res.status}郢晢ｽｻ髣輔・;
         return await res.json();
       } catch (e) {
         if (e && e.name === "AbortError") {
-          throw new Error("データ取得がタイムアウトしました。時間をおいて再度お試しください。");
+          throw new Error("驛｢譏ｴ繝ｻ郢晢ｽｻ驛｢・ｧ繝ｻ・ｿ髯ｷ・ｿ鬮｢ﾂ繝ｻ・ｾ陷会ｽｱ遯ｶ・ｲ驛｢・ｧ繝ｻ・ｿ驛｢・ｧ繝ｻ・､驛｢譎｢・｣・ｰ驛｢・ｧ繝ｻ・｢驛｢・ｧ繝ｻ・ｦ驛｢譎冗樟繝ｻ・ｰ驍ｵ・ｺ繝ｻ・ｾ驍ｵ・ｺ陷会ｽｱ隨ｳ繝ｻ・ｸ・ｲ郢ｧ莠･繝ｻ鬯ｮ・｢髦ｮ蜻ｻ・ｽ蝣､・ｸ・ｺ驗呻ｽｫ繝ｻ讓抵ｽｸ・ｺ繝ｻ・ｦ髯ｷﾂ隶主･・ｽｽ・ｺ繝ｻ・ｦ驍ｵ・ｺ鬯伜∞・ｽ・ｩ繝ｻ・ｦ驍ｵ・ｺ陷会ｽｱ繝ｻ・･驍ｵ・ｺ繝ｻ・ｰ驍ｵ・ｺ髴郁ｲｻ・ｼ讓抵ｽｸ・ｲ郢晢ｽｻ);
         }
         throw e;
       } finally {
@@ -1348,7 +1420,7 @@
 
     async function loadData() {
       if (!GAS_URL || GAS_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
-        throw new Error("GAS_URL が未設定です。index.html の GAS_URL に WebアプリURL を貼ってください。");
+        throw new Error("GAS_URL 驍ｵ・ｺ隴ｴ・ｧ隰費ｽｴ鬮ｫ・ｪ繝ｻ・ｭ髯橸ｽｳ陞｢・ｹ邵ｲ蝣､・ｸ・ｺ陷ｷ・ｶ・つ繝ｻ・ｪndex.html 驍ｵ・ｺ繝ｻ・ｮ GAS_URL 驍ｵ・ｺ繝ｻ・ｫ Web驛｢・ｧ繝ｻ・｢驛｢譎丞ｹｲ・主ｼ然L 驛｢・ｧ陞ｳ螟ｲ・ｽ・ｲ繝ｻ・ｼ驍ｵ・ｺ繝ｻ・｣驍ｵ・ｺ繝ｻ・ｦ驍ｵ・ｺ闕ｳ蟯ｩ蜻ｳ驍ｵ・ｺ髴郁ｲｻ・ｼ讓抵ｽｸ・ｲ郢晢ｽｻ);
       }
       const url = GAS_URL + "?v=" + Date.now();
       return await fetchJsonWithTimeout(url, { timeoutMs: 12000 });
@@ -1419,54 +1491,54 @@
 
     function formatDelta(pair) {
       if (!pair) {
-        return `<div class="delta"><span class="flat">直近の取引なし</span></div>`;
+        return `<div class="delta"><span class="flat">鬨ｾ・ｶ繝ｻ・ｴ鬮ｴ蜿ｰ・ｻ・｣郢晢ｽｻ髯ｷ・ｿ鬮｢ﾂ繝ｻ・ｼ髴域喚繝ｻ驍ｵ・ｺ郢晢ｽｻ/span></div>`;
       }
 
       const { latest, prev } = pair;
 
       if (!prev) {
-        const cntText = Number.isFinite(latest.count) ? ` / ${latest.count}件` : "";
+        const cntText = Number.isFinite(latest.count) ? ` / ${latest.count}髣比ｼ夲ｽｽ・ｶ` : "";
         return `
           <div class="delta">
-            <span class="flat">比較できる前回データなし</span>
-            <span class="chip">直近 ${latest.price.toLocaleString()}円${cntText}</span>
+            <span class="flat">髮手ご・｢謇假ｽｽ・ｼ郢晢ｽｻ邵ｲ蝣､・ｸ・ｺ鬮ｦ・ｪ繝ｻ邇匁≧隶朱宦・ｱ骰具ｽｹ譏ｴ繝ｻ郢晢ｽｻ驛｢・ｧ繝ｻ・ｿ驍ｵ・ｺ繝ｻ・ｪ驍ｵ・ｺ郢晢ｽｻ/span>
+            <span class="chip">鬨ｾ・ｶ繝ｻ・ｴ鬮ｴ莉｣繝ｻ${latest.price.toLocaleString()}髯ｷﾂ郢晢ｽｻ{cntText}</span>
           </div>
         `;
       }
 
       const diff = latest.price - prev.price;
 
-      const sign = diff > 0 ? "+" : diff < 0 ? "−" : "±";
+      const sign = diff > 0 ? "+" : diff < 0 ? "驕ｶ荳翫・ : "繝ｻ繧托ｽｽ・ｱ";
       const abs = Math.abs(diff);
 
       let cls = "flat";
-      let arrow = "→";
-      if (diff > 0) { cls = "up"; arrow = "↑"; }
-      if (diff < 0) { cls = "down"; arrow = "↓"; }
+      let arrow = "驕ｶ鄙ｫ繝ｻ;
+      if (diff > 0) { cls = "up"; arrow = "驕ｶ鄙ｫ繝ｻ; }
+      if (diff < 0) { cls = "down"; arrow = "驕ｶ鄙ｫ繝ｻ; }
 
       let pct = "";
       if (prev.price !== 0) {
         const rate = (diff / prev.price) * 100;
         if (Number.isFinite(rate)) {
           const r = Math.abs(rate).toFixed(1);
-          pct = `（${diff > 0 ? "+" : diff < 0 ? "-" : ""}${r}%）`;
+          pct = `郢晢ｽｻ郢晢ｽｻ{diff > 0 ? "+" : diff < 0 ? "-" : ""}${r}%郢晢ｽｻ髣輔・
         }
       }
 
-      const prevCnt = Number.isFinite(prev.count) ? `${prev.count}件` : "—";
-      const latestCnt = Number.isFinite(latest.count) ? `${latest.count}件` : "—";
+      const prevCnt = Number.isFinite(prev.count) ? `${prev.count}髣比ｼ夲ｽｽ・ｶ` : "驕ｯ・ｶ郢晢ｽｻ;
+      const latestCnt = Number.isFinite(latest.count) ? `${latest.count}髣比ｼ夲ｽｽ・ｶ` : "驕ｯ・ｶ郢晢ｽｻ;
 
       return `
         <div class="delta">
-          <span class="delta-main ${cls}">${arrow} 前回取引週比 ${sign}${abs.toLocaleString()}円 ${escapeHtml(pct)}</span>
-          <span class="chip">前回 ${prev.price.toLocaleString()}円 / ${prevCnt}</span>
-          <span class="chip">直近 ${latest.price.toLocaleString()}円 / ${latestCnt}</span>
+          <span class="delta-main ${cls}">${arrow} 髯ｷ隨ｬ・ｦ髮・ｽｱ讌｢諢ｾ鬮｢ﾂ繝ｻ・ｼ隴会ｽｮ・つ繝ｻ・ｱ髮主現繝ｻ${sign}${abs.toLocaleString()}髯ｷﾂ郢晢ｽｻ${escapeHtml(pct)}</span>
+          <span class="chip">髯ｷ隨ｬ・ｦ髮・ｽｱ繝ｻ${prev.price.toLocaleString()}髯ｷﾂ郢晢ｽｻ/ ${prevCnt}</span>
+          <span class="chip">鬨ｾ・ｶ繝ｻ・ｴ鬮ｴ莉｣繝ｻ${latest.price.toLocaleString()}髯ｷﾂ郢晢ｽｻ/ ${latestCnt}</span>
         </div>
       `;
     }
 
     // -----------------------------
-    // growth (30日) helper
+    // growth (30髫ｴ魃会ｽｽ・･) helper
     // -----------------------------
     function isoToDate(iso) {
       const d = new Date(iso);
@@ -1534,7 +1606,7 @@
         ? `<img class="tile-img" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
              onerror="this.onerror=null; this.style.display='none';">`
         : `<div class="tile-img"></div>`;
-      const rankBadge = Number.isFinite(rank) ? `<span class="tile-rank-badge">${rank}位</span>` : "";
+      const rankBadge = Number.isFinite(rank) ? `<span class="tile-rank-badge">${rank}髣厄ｽｴ郢晢ｽｻ/span>` : "";
       const delay = Number.isFinite(popIndex) ? Math.max(0, popIndex) : 0;
 
       return `
@@ -1548,11 +1620,38 @@
       `;
     }
 
+    function setRankingLoadingState(mode, message = "") {
+      const root = document.getElementById("rankingSections");
+      const status = document.getElementById("rankingStatus");
+      if (!root) return;
+
+      root.classList.remove("is-loading", "is-ready", "is-error");
+      root.classList.add(`is-${mode}`);
+      root.setAttribute("aria-busy", mode === "loading" ? "true" : "false");
+
+      if (status) {
+        if (mode === "error") {
+          status.hidden = false;
+          status.textContent = message || "Ranking data is unavailable right now.";
+        } else {
+          status.hidden = true;
+          status.textContent = "";
+        }
+      }
+    }
+
+    function hideIfEmpty(sectionEl, railEl, hasRows) {
+      if (!sectionEl || !railEl) return false;
+      sectionEl.hidden = !hasRows;
+      if (!hasRows) railEl.innerHTML = "";
+      return !!hasRows;
+    }
+
     // -----------------------------
     // main
     // -----------------------------
     async function main() {
-      // header差し込みが遅いと #search が無いことがあるので待つ
+      // header髯晢ｽｾ繝ｻ・ｮ驍ｵ・ｺ髣埼屮・ｽ・ｾ繝ｻ・ｼ驍ｵ・ｺ繝ｻ・ｿ驍ｵ・ｺ驕停沖隘夜し・ｺ郢晢ｽｻ遶翫・#search 驍ｵ・ｺ隶吝ｯゆｼｯ驍ｵ・ｺ郢晢ｽｻ繝ｻ繝ｻ・ｸ・ｺ繝ｻ・ｨ驍ｵ・ｺ陟募ｨｯ譌ｺ驛｢・ｧ闕ｵ譏ｴ繝ｻ驍ｵ・ｺ繝ｻ・ｧ髯溯ｼ斐・隨・ｽｽ
       const waitForSearch = async () => {
         for (let i = 0; i < 20; i++) {
           const s = document.getElementById("search");
@@ -1562,13 +1661,15 @@
         return null;
       };
 
+      setRankingLoadingState("loading");
       wireRailButtons();
 
       let data;
       try {
         data = await loadData();
       } catch (e) {
-        showError(e.message || "不明なエラーが発生しました");
+        setRankingLoadingState("error", "Ranking data could not be loaded.");
+        showError(e.message || "髣包ｽｳ髢ｧ・ｴ郢晢ｽｻ驍ｵ・ｺ繝ｻ・ｪ驛｢・ｧ繝ｻ・ｨ驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｼ驍ｵ・ｺ隶吩ｸｻ鬨馴ｨｾ蠅難ｽｺ蛛・ｽｼ・ｰ驍ｵ・ｺ繝ｻ・ｾ驍ｵ・ｺ陷会ｽｱ隨ｳ繝ｻ);
         return;
       }
       hideError();
@@ -1576,15 +1677,15 @@
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
 
-      // ★URLクエリ ?q= を検索に反映（detail/index-market から戻る導線用）
+      // 髫ｨ蛟･繝ｻRL驛｢・ｧ繝ｻ・ｯ驛｢・ｧ繝ｻ・ｨ驛｢譎｢・ｽ・ｪ ?q= 驛｢・ｧ陷ｻ闌ｨ・ｽ・､隲帙・・ｽ・ｴ繝ｻ・｢驍ｵ・ｺ繝ｻ・ｫ髯ｷ・ｿ髢ｧ・ｴ闕ｳ闊後・郢晢ｽｻetail/index-market 驍ｵ・ｺ闕ｵ譎｢・ｽ闃ｽ・ｬ魃会ｽｽ・ｻ驛｢・ｧ陷ｿ・･繝ｻ・ｰ陞ｳ闌ｨ・ｽ・ｷ陞溘ｉ闊樒ｹ晢ｽｻ郢晢ｽｻ
       const url = new URL(location.href);
       const qParam = (url.searchParams.get("q") || "").trim();
 
-      // searchInput は header 由来
+      // searchInput 驍ｵ・ｺ繝ｻ・ｯ header 鬨ｾ蛹・ｽｽ・ｱ髫ｴ螟ｲ・ｽ・･
       const searchInput = document.getElementById("search") || await waitForSearch();
       const heroSearchInput = document.getElementById("heroSearch");
       if (!searchInput) {
-        showError("検索欄の初期化に失敗しました（headerが読み込めていません）");
+        showError("髫ｶﾂ隲帙・・ｽ・ｴ繝ｻ・｢髫ｹ・ｺ郢晢ｽｻ郢晢ｽｻ髯具ｽｻ隴弱・・・刹・ｹ隰費ｽｶ遶頑･｢譽斐・・ｱ髫ｰ・ｨ陷会ｽｱ繝ｻ・ｰ驍ｵ・ｺ繝ｻ・ｾ驍ｵ・ｺ陷会ｽｱ隨ｳ繝ｻ繝ｻ郢晢ｽｻeader驍ｵ・ｺ霑ｹ螟ｲ・ｽ・ｪ繝ｻ・ｭ驍ｵ・ｺ繝ｻ・ｿ鬮ｴ雜｣・ｽ・ｼ驛｢・ｧ遶丞｣ｺﾂ・ｻ驍ｵ・ｺ郢晢ｽｻ遶擾ｽｪ驍ｵ・ｺ陝ｶ蜻ｻ・ｽ阮吶・郢晢ｽｻ);
         return;
       }
       if (qParam) searchInput.value = qParam;
@@ -1594,7 +1695,7 @@
           searchInput.value = heroSearchInput.value;
         });
       }
-// セレクト初期化
+// 驛｢・ｧ繝ｻ・ｻ驛｢譎｢・ｽ・ｬ驛｢・ｧ繝ｻ・ｯ驛｢譏懶ｽｺ・･郢晢ｽｻ髫ｴ蟶ｶ・ｺ・ｷ陜滂ｽｧ
       const releaseYearSel = document.getElementById("releaseYear");
       const seriesSel = document.getElementById("series");
       const priceBandSel = document.getElementById("priceBand");
@@ -1621,7 +1722,7 @@
         }
       }
 
-      // ---- 棚データ作成 ----
+      // ---- 髫ｴ・ｽ陞｢・ｹ郢晢ｽｧ驛｢譎｢・ｽ・ｼ驛｢・ｧ繝ｻ・ｿ髣厄ｽｴ隲帛現繝ｻ ----
       const priceRank = sleeves
         .map(s => ({ s, p: getLatestWeeklyPrice(s) }))
         .filter(x => x.p != null)
@@ -1656,32 +1757,36 @@
       const storySurgeRows = surgeRank.map(({ s, diff }) => ({ name: s.name, imageUrl: s.imageUrl, diff }));
       fillStoryRankings({ priceRows: storyPriceRows, growthRows: storyGrowthRows, surgeRows: storySurgeRows });
 
-      // ---- 棚描画 ----
+      // ---- 髫ｴ・ｽ陞｢・ｽ驍ｱ蟶敖蛹・ｽｽ・ｻ ----
       const railSurge = document.getElementById("rail-surge");
       const railGrowth = document.getElementById("rail-growth");
       const railPrice = document.getElementById("rail-price");
+      const sectionSurge = document.getElementById("section-surge");
+      const sectionGrowth = document.getElementById("section-growth");
+      const sectionPrice = document.getElementById("section-price");
+      const rankingRoot = document.getElementById("rankingSections");
 
       railSurge.innerHTML = surgeRank.length ? surgeRank.map(({ s, pair, diff }, i) => {
         const cls = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
-        const sign = diff > 0 ? "+" : diff < 0 ? "−" : "±";
+        const sign = diff > 0 ? "+" : diff < 0 ? "-" : "0";
         const pct = (pair.prev.price !== 0) ? ((diff / pair.prev.price) * 100) : null;
-        const pctText = (pct == null || !Number.isFinite(pct)) ? "" : `（${pct.toFixed(1)}%）`;
+        const pctText = (pct == null || !Number.isFinite(pct)) ? "" : `(${pct.toFixed(1)}%)`;
 
         const subHtml = `
           <p class="tile-price">${pair.latest.price.toLocaleString()}円</p>
-          <p class="tile-sub"><span class="${cls}">↑ 前回比 ${sign}${Math.abs(diff).toLocaleString()}円</span> ${escapeHtml(pctText)}</p>
+          <p class="tile-sub"><span class="${cls}">前回比 ${sign}${Math.abs(diff).toLocaleString()}円</span> ${escapeHtml(pctText)}</p>
         `;
 
         const chipsHtml = `
-          <span class="chip">直近 ${pair.latest.week}</span>
+          <span class="chip">最新 ${pair.latest.week}</span>
           <span class="chip">前回 ${pair.prev.week}</span>
         `;
         return buildTileHTML(s, subHtml, chipsHtml, i + 1, i);
-      }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
+      }).join("") : "";
 
       railGrowth.innerHTML = growthRank.length ? growthRank.map(({ s, g }, i) => {
         const cls = g.diff > 0 ? "up" : g.diff < 0 ? "down" : "flat";
-        const sign = g.diff > 0 ? "+" : g.diff < 0 ? "−" : "±";
+        const sign = g.diff > 0 ? "+" : g.diff < 0 ? "-" : "0";
         const rateAbs = Math.abs(g.rate).toFixed(1);
 
         const subHtml = `
@@ -1691,10 +1796,10 @@
 
         const chipsHtml = `
           <span class="chip">基準 ${g.base.week}</span>
-          <span class="chip">直近 ${g.latest.week}</span>
+          <span class="chip">最新 ${g.latest.week}</span>
         `;
         return buildTileHTML(s, subHtml, chipsHtml, i + 1, i);
-      }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
+      }).join("") : "";
 
       railPrice.innerHTML = priceRank.length ? priceRank.map((s, i) => {
         const pair = getWeeklyPair(s);
@@ -1705,13 +1810,20 @@
         `;
         const totalTrades = getTotalTradeCount(s);
         const chipsHtml = `
-          <span class="chip">総取引 ${totalTrades == null ? "—" : totalTrades.toLocaleString() + "件"}</span>
+          <span class="chip">取引回数 ${totalTrades == null ? "—" : totalTrades.toLocaleString() + "件"}</span>
           <span class="chip">発売年 ${escapeHtml(s.releaseYear ?? "—")}</span>
         `;
         return buildTileHTML(s, subHtml, chipsHtml, i + 1, i);
-      }).join("") : `<div class="meta" style="padding:8px 2px;">データが増えると表示されます</div>`;
+      }).join("") : "";
 
-      // ---- 一覧（検索・絞り込み） ----
+      const shownSurge = hideIfEmpty(sectionSurge, railSurge, surgeRank.length > 0);
+      const shownGrowth = hideIfEmpty(sectionGrowth, railGrowth, growthRank.length > 0);
+      const shownPrice = hideIfEmpty(sectionPrice, railPrice, priceRank.length > 0);
+      const hasRankingData = shownSurge || shownGrowth || shownPrice;
+
+      if (rankingRoot) rankingRoot.hidden = !hasRankingData;
+      setRankingLoadingState(hasRankingData ? "ready" : "error", hasRankingData ? "" : "No ranking data available.");
+
       if (!hasCatalogUI) return;
 
       function getCardPrice(s) {
@@ -1754,7 +1866,7 @@
         });
 
         if (filtered.length === 0) {
-          list.innerHTML = `<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>`;
+          list.innerHTML = `<div class="card"><div class="title">鬮ｫ・ｧ繝ｻ・ｲ髯溷・萓ｭ遶企・・ｸ・ｺ郢晢ｽｻ/div><div class="meta">髫ｴ螟ｲ・ｽ・｡髣比ｼ夲ｽｽ・ｶ驍ｵ・ｺ繝ｻ・ｫ髣包ｽｳ・つ鬮｢・ｾ繝ｻ・ｴ驍ｵ・ｺ陷ｷ・ｶ繝ｻ迢暦ｽｹ・ｧ繝ｻ・ｹ驛｢譎｢・ｽ・ｪ驛｢譎｢・ｽ・ｼ驛｢譎・§遯ｶ・ｲ驍ｵ・ｺ郢ｧ繝ｻ・ｽ鬘費ｽｸ・ｺ繝ｻ・ｾ驍ｵ・ｺ陝ｶ蜻ｻ・ｽ繝ｻ/div></div>`;
           return;
         }
 
@@ -1762,18 +1874,18 @@
 
         for (const s of filtered) {
           const p = getCardPrice(s);
-          const priceText = (p == null) ? "—" : `${p.toLocaleString()}円`;
+          const priceText = (p == null) ? "驕ｯ・ｶ郢晢ｽｻ : `${p.toLocaleString()}髯ｷﾂ郢晢ｽｻ;
 
           const weeklyPair = getWeeklyPair(s);
           const weeklyHtml = formatDelta(weeklyPair);
 
           const totalTrades = getTotalTradeCount(s);
-          const totalTradesText = (totalTrades == null) ? "—" : `${totalTrades.toLocaleString()}件`;
+          const totalTradesText = (totalTrades == null) ? "驕ｯ・ｶ郢晢ｽｻ : `${totalTrades.toLocaleString()}髣比ｼ夲ｽｽ・ｶ`;
 
           const imgSrc = String(s.imageUrl || "").trim();
           const detailHref = `./detail.html?id=${encodeURIComponent(s.id ?? "")}`;
           const imgHtml = imgSrc
-            ? `<a class="thumb-link" href="${detailHref}" aria-label="${escapeHtml(s.name ?? "")}の詳細を見る">
+            ? `<a class="thumb-link" href="${detailHref}" aria-label="${escapeHtml(s.name ?? "")}驍ｵ・ｺ繝ｻ・ｮ鬮ｫ・ｧ繝ｻ・ｳ鬩肴得・ｽ・ｰ驛｢・ｧ陞ｳ螟ｲ・ｽ・ｦ闕ｵ譎｢・ｽ繝ｻ>
                 <img class="thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
                   onerror="this.onerror=null; this.style.display='none';">
               </a>`
@@ -1785,18 +1897,18 @@
             ${imgHtml}
             <div class="title">${escapeHtml(s.name ?? "")}</div>
 
-            <div class="price">${escapeHtml(priceText)} <span class="meta">（最新週次）</span></div>
+            <div class="price">${escapeHtml(priceText)} <span class="meta">郢晢ｽｻ陜捺ｻ督蜻ｵ・ｭ繝ｻ・ｽ・ｰ鬯ｨ・ｾ繝ｻ・ｱ髫ｹ・ｺ繝ｻ・｡郢晢ｽｻ郢晢ｽｻ/span></div>
 
             ${weeklyHtml}
 
             <div class="badges">
-              <span class="badge">総取引：${escapeHtml(totalTradesText)}</span>
-              <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
+              <span class="badge">鬩搾ｽｱ闕ｳ讒ｫ蠕宣辧螟ｧ譯√・・ｼ郢晢ｽｻ{escapeHtml(totalTradesText)}</span>
+              <span class="badge">鬨ｾ蜈ｷ・ｽ・ｺ髯橸ｽ｢繝ｻ・ｲ髯晢ｽｷ繝ｻ・ｴ郢晢ｽｻ郢晢ｽｻ{escapeHtml(s.releaseYear ?? "")}</span>
               <span class="badge">${escapeHtml(s.condition ?? "")}</span>
               <span class="badge">${escapeHtml(s.series ?? "")}</span>
             </div>
 
-            <a class="btn" href="${detailHref}">価格推移を見る →</a>
+            <a class="btn" href="${detailHref}">髣憺屮・ｽ・｡髫ｴ・ｬ繝ｻ・ｼ髫ｰ證ｦ・ｽ・ｨ鬩募∞・ｽ・ｻ驛｢・ｧ陞ｳ螟ｲ・ｽ・ｦ闕ｵ譎｢・ｽ繝ｻ驕ｶ鄙ｫ繝ｻ/a>
           `;
           frag.appendChild(div);
         }
@@ -1804,7 +1916,7 @@
         list.appendChild(frag);
       }
 
-      // イベント（入力は軽くデバウンス）
+      // 驛｢・ｧ繝ｻ・､驛｢譎冗函・趣ｽｦ驛｢譎∬か繝ｻ・ｼ闔・･郢晢ｽｻ髯ｷ迚呻ｽｸ蜷ｶ繝ｻ鬮ｴ繝ｻ・ｽ・ｽ驍ｵ・ｺ闕ｳ鄙ｫﾎ咎Δ譎√・邵ｺ閧ｲ・ｹ譎｢・ｽ・ｳ驛｢・ｧ繝ｻ・ｹ郢晢ｽｻ郢晢ｽｻ
       let t = null;
       searchInput.addEventListener("input", () => {
         if (heroSearchInput) heroSearchInput.value = searchInput.value;
