@@ -846,7 +846,11 @@
       return { min: a, max: b };
     }
 
-    let __headerTabVisibilityWired = false;`r`n    function setupHeaderTabVisibility() {`r`n      if (__headerTabVisibilityWired) return;`r`n      __headerTabVisibilityWired = true;
+    let __headerTabVisibilityWired = false;
+    function setupHeaderTabVisibility() {
+      if (__headerTabVisibilityWired) return;
+      __headerTabVisibilityWired = true;
+
       const hero = document.querySelector(".home-hero");
       if (!hero) return;
 
@@ -857,17 +861,18 @@
       };
 
       let rafId = null;
-      let shown = false; // 初期はヒーローを優先して非表示
+      let shown = false;
       const hysteresis = 56;
 
       const update = () => {
         rafId = null;
-        const rect = hero.getBoundingClientRect();
         const headerH = parseFloat(
           getComputedStyle(document.documentElement).getPropertyValue("--site-header-h")
         ) || 64;
-        const showLine = headerH + 8;
-        const hideLine = showLine + hysteresis;
+        const heroBottomY = hero.offsetTop + hero.offsetHeight;
+        const showAtY = Math.max(0, heroBottomY - headerH);
+        const hideAtY = Math.max(0, showAtY - hysteresis);
+        const y = window.scrollY || window.pageYOffset || 0;
 
         if (!shown && y >= showAtY) {
           shown = true;
