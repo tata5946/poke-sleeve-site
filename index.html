@@ -694,14 +694,12 @@
       // searchInput は header 由来
       const searchInput = document.getElementById("search") || await waitForSearch();
       const heroSearchInput = document.getElementById("heroSearch");
-      if (!searchInput) {
-        setRankingLoadingState("error", "検索欄の初期化に失敗しました。");
+      if (!searchInput && !heroSearchInput) {
         showError("検索欄の初期化に失敗しました（headerが読み込めていません）");
-        return;
       }
-      if (qParam) searchInput.value = qParam;
+      if (qParam && searchInput) searchInput.value = qParam;
       if (qParam && heroSearchInput) heroSearchInput.value = qParam;
-      if (heroSearchInput) {
+      if (heroSearchInput && searchInput) {
         heroSearchInput.addEventListener("input", () => {
           searchInput.value = heroSearchInput.value;
         });
@@ -710,7 +708,7 @@
       if (heroSearchForm && heroSearchInput) {
         heroSearchForm.addEventListener("submit", (ev) => {
           ev.preventDefault();
-          searchInput.value = heroSearchInput.value.trim();
+          if (searchInput) searchInput.value = heroSearchInput.value.trim();
           render();
           const target = document.querySelector(".main");
           if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -843,7 +841,8 @@
       }
 
       function render() {
-        const kw = searchInput.value.trim().toLowerCase();
+        const kwSource = (searchInput && searchInput.value) || (heroSearchInput && heroSearchInput.value) || "";
+        const kw = kwSource.trim().toLowerCase();
         const releaseYear = releaseYearSel.value;
         const series = seriesSel.value;
         const band = parseBand(priceBandSel.value);
@@ -927,11 +926,18 @@
 
       // イベント（入力は軽くデバウンス）
       let t = null;
-      searchInput.addEventListener("input", () => {
-        if (heroSearchInput) heroSearchInput.value = searchInput.value;
-        clearTimeout(t);
-        t = setTimeout(render, 80);
-      });
+      if (searchInput) {
+        searchInput.addEventListener("input", () => {
+          if (heroSearchInput) heroSearchInput.value = searchInput.value;
+          clearTimeout(t);
+          t = setTimeout(render, 80);
+        });
+      } else if (heroSearchInput) {
+        heroSearchInput.addEventListener("input", () => {
+          clearTimeout(t);
+          t = setTimeout(render, 80);
+        });
+      }
 
       releaseYearSel.addEventListener("change", render);
       seriesSel.addEventListener("change", render);
@@ -939,7 +945,7 @@
       sortOrderSel.addEventListener("change", render);
 
       clearBtn.addEventListener("click", () => {
-        searchInput.value = "";
+        if (searchInput) searchInput.value = "";
         if (heroSearchInput) heroSearchInput.value = "";
         releaseYearSel.value = "";
         seriesSel.value = "";
