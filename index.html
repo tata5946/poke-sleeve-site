@@ -54,6 +54,12 @@
     .home-display { margin: 0; font-family: "Noto Sans JP", "M PLUS Rounded 1c", sans-serif; font-size: clamp(22px, 3.4vw, 34px); line-height: 1.28; letter-spacing: .01em; color: #1f2f47; font-weight: 800; }
     .home-hero-search { margin: 18px auto 0; width: min(680px, 100%); display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
     .home-hero-search .hero-search-field { position: relative; min-width: 0; }
+    /* ヒーロー内サジェストは重ねず、下にレイアウトを押し出す */
+    .home-hero-search .hero-search-field .search-autocomplete {
+      position: static;
+      margin-top: 8px;
+      max-height: min(44vh, 360px);
+    }
     .home-hero-search input { width: 100%; height: 48px; border-radius: 12px; border: 1px solid #bcc9da; background: rgba(255, 255, 255, 0.95); padding: 0 14px; font-size: 15px; color: #1e2f48; outline: none; }
     .home-hero-search input:focus { border-color: #5b7aa3; box-shadow: 0 0 0 3px rgba(91, 122, 163, 0.18); }
     .home-hero-search .btn { height: 48px; border-radius: 12px; padding: 0 18px; font-size: 15px; font-weight: 800; white-space: nowrap; margin-top: 0; }
@@ -116,6 +122,7 @@
       .home-hero-search { grid-template-columns: 1fr; }
       .home-hero-search input { font-size: 16px; }
       .home-hero-search .hero-search-field { min-width: 0; }
+      .home-hero-search .hero-search-field .search-autocomplete { max-height: min(38vh, 300px); }
       .home-hero-search .btn, .home-cta .btn { width: 100%; }
       .home-cta-row { width: 100%; flex-wrap: wrap; }
     }
