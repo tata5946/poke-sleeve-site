@@ -758,6 +758,7 @@
         heroSearchForm.addEventListener("submit", (ev) => {
           ev.preventDefault();
           const q = heroSearchInput.value.trim();
+          if (window.common && typeof window.common.recordSearchHistory === "function") window.common.recordSearchHistory(q);
           location.href = q ? `./zukan.html?q=${encodeURIComponent(q)}` : "./zukan.html";
         });
       }

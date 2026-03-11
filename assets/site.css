@@ -305,6 +305,52 @@ a:hover {
     font-size: 13px;
 }
 
+.search-suggest-history {
+    border-top: 1px solid #e8eef8;
+    background: #fbfdff;
+    padding: 6px 8px;
+}
+
+.search-suggest-history-title {
+    font-size: 11px;
+    color: #7a879c;
+    font-weight: 700;
+    padding: 2px 4px 6px;
+}
+
+.search-suggest-history-item {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    padding: 7px 6px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.search-suggest-history-item:hover {
+    background: #f2f7ff;
+}
+
+.search-suggest-history-icon {
+    color: #7a8da9;
+    font-size: 12px;
+    flex: 0 0 auto;
+}
+
+.search-suggest-history-text {
+    font-size: 12px;
+    color: #2a3b56;
+    font-weight: 700;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* header bottom nav */
 .header-bottom {
     position: relative;

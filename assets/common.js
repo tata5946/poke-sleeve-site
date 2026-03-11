@@ -12,6 +12,8 @@ const FAVICON_PATH = "./assets/favicon.svg";
 const DATA_CACHE_KEY = "pokeSleeve:dataCache:v1";
 const DATA_CACHE_TTL_MS = 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
+const SEARCH_HISTORY_KEY = "pokeSleeve:searchHistory:v1";
+const SEARCH_HISTORY_MAX = 8;
 const AUTOCOMPLETE_MIN_CHARS = 1;
 const AUTOCOMPLETE_MAX_ITEMS = 8;
 let __dataCacheMem = null;
@@ -94,6 +96,41 @@ function uniq(arr) {
     if (t) s.add(t);
   }
   return Array.from(s);
+}
+
+function readSearchHistory() {
+  try {
+    const raw = localStorage.getItem(SEARCH_HISTORY_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return [];
+    return arr
+      .map((x) => String(x || "").trim())
+      .filter(Boolean)
+      .slice(0, SEARCH_HISTORY_MAX);
+  } catch (_) {
+    return [];
+  }
+}
+
+function writeSearchHistory(items) {
+  try {
+    localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(items.slice(0, SEARCH_HISTORY_MAX)));
+  } catch (_) { }
+}
+
+function recordSearchHistory(query) {
+  const q = String(query || "").trim();
+  if (!q) return;
+  const current = readSearchHistory();
+  const norm = normalizeSearchText(q);
+  const next = [q];
+  for (const item of current) {
+    if (normalizeSearchText(item) === norm) continue;
+    next.push(item);
+    if (next.length >= SEARCH_HISTORY_MAX) break;
+  }
+  writeSearchHistory(next);
 }
 
 function normalizeSearchText(value) {
@@ -290,6 +327,7 @@ function defaultNavigateToDetail(item) {
 
 function defaultNavigateToZukan(query) {
   const q = String(query || "").trim();
+  recordSearchHistory(q);
   location.href = q ? `./zukan.html?q=${encodeURIComponent(q)}` : "./zukan.html";
 }
 
@@ -372,11 +410,6 @@ function wireSleeveAutocomplete(input, options = {}) {
 
   const render = () => {
     list.innerHTML = "";
-    if (!currentItems.length) {
-      close();
-      return;
-    }
-
     const frag = document.createDocumentFragment();
     for (let i = 0; i < currentItems.length; i += 1) {
       const item = currentItems[i];
@@ -410,6 +443,35 @@ function wireSleeveAutocomplete(input, options = {}) {
     }
 
     const q = String(input.value || "").trim();
+    const historyCandidates = readSearchHistory()
+      .filter((h) => normalizeSearchText(h).includes(normalizeSearchText(q)))
+      .slice(0, 3);
+    if (historyCandidates.length) {
+      const historyWrap = document.createElement("div");
+      historyWrap.className = "search-suggest-history";
+      const title = document.createElement("div");
+      title.className = "search-suggest-history-title";
+      title.textContent = "最近の検索";
+      historyWrap.appendChild(title);
+      for (const h of historyCandidates) {
+        const hb = document.createElement("button");
+        hb.type = "button";
+        hb.className = "search-suggest-history-item";
+        hb.innerHTML = `
+          <span class="search-suggest-history-icon" aria-hidden="true">↺</span>
+          <span class="search-suggest-history-text">${escapeHtml(h)}</span>
+        `;
+        hb.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          input.value = h;
+          const onAction = typeof options.onAction === "function" ? options.onAction : defaultNavigateToZukan;
+          onAction(h);
+        });
+        historyWrap.appendChild(hb);
+      }
+      frag.appendChild(historyWrap);
+    }
+
     if (q) {
       const actionBtn = document.createElement("button");
       actionBtn.type = "button";
@@ -425,6 +487,12 @@ function wireSleeveAutocomplete(input, options = {}) {
       });
       frag.appendChild(actionBtn);
     }
+
+    if (!frag.childNodes.length) {
+      close();
+      return;
+    }
+
     list.appendChild(frag);
     openList();
     setActive(activeIndex);
@@ -687,6 +755,7 @@ function wireHeaderSearch() {
     if (e.key !== "Enter") return;
     if (e.defaultPrevented) return;
     const q = search.value.trim();
+    recordSearchHistory(q);
     if (!q) { location.href = "./zukan.html"; return; }
     location.href = "./zukan.html?q=" + encodeURIComponent(q);
   });
@@ -784,6 +853,7 @@ window.common = {
   setActiveNav,
   wireHeaderSearch,
   wireSleeveAutocomplete,
+  recordSearchHistory,
   wireSleeveSelectionFeedback,
   waitForInjected,
   GAS_URL
