@@ -41,10 +41,10 @@
       border: 0;
       border-radius: 0;
       background:
-        radial-gradient(circle at 86% 16%, rgba(238, 84, 175, 0.38) 0 120px, transparent 121px),
-        radial-gradient(circle at 14% 84%, rgba(238, 84, 175, 0.22) 0 78px, transparent 79px),
-        radial-gradient(circle at 68% 72%, rgba(255, 255, 255, 0.52) 0 86px, transparent 87px),
-        linear-gradient(168deg, #eff2f7 0%, #e6ebf2 52%, #e2e8f0 100%);
+        radial-gradient(circle at 12% 14%, rgba(214, 231, 255, 0.55) 0 26%, transparent 42%),
+        radial-gradient(circle at 86% 18%, rgba(235, 245, 255, 0.48) 0 22%, transparent 38%),
+        radial-gradient(circle at 74% 76%, rgba(194, 216, 247, 0.18) 0 18%, transparent 34%),
+        linear-gradient(162deg, #eef5ff 0%, #e7f0fd 44%, #e1ebfa 100%);
       box-shadow: none;
     }
 
@@ -67,13 +67,13 @@
       position: absolute;
       --rot: 0deg;
       border-radius: 14px;
-      border: 1px solid rgba(41, 61, 92, 0.12);
+      border: 1px solid rgba(78, 107, 149, 0.2);
       background:
-        linear-gradient(155deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.02) 100%);
+        linear-gradient(155deg, rgba(247, 251, 255, 0.22) 0%, rgba(228, 239, 255, 0.08) 100%);
       box-shadow:
-        0 12px 26px rgba(25, 38, 58, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.22);
-      opacity: .92;
+        0 12px 24px rgba(25, 44, 74, 0.07),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      opacity: .94;
       transform: rotate(var(--rot));
     }
 
@@ -82,7 +82,7 @@
       position: absolute;
       inset: 8px;
       border-radius: 10px;
-      border: 1px dashed rgba(57, 81, 114, 0.1);
+      border: 1px dashed rgba(96, 125, 169, 0.22);
     }
 
     .sleeve-shape::after {
@@ -93,7 +93,7 @@
       top: 0;
       height: 22%;
       border-radius: 14px 14px 0 0;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0));
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.36), rgba(255, 255, 255, 0));
     }
 
     .sleeve-shape.s1 { --rot: -11deg; width: 166px; height: 224px; left: 7%; top: 13%; z-index: 0; animation: ornamentFloatA 9.6s ease-in-out infinite alternate; }
@@ -106,8 +106,8 @@
     .home-bubble {
       position: absolute;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.22);
-      opacity: .35;
+      background: rgba(255, 255, 255, 0.18);
+      opacity: .28;
       will-change: transform, opacity;
       animation: none;
     }
@@ -116,8 +116,8 @@
     .home-bubble.b2 { width: 66px; height: 66px; top: 40px; right: 22px; animation: ornamentFloatB 7.8s ease-in-out infinite alternate .9s; }
     .home-bubble.b3 { width: 34px; height: 34px; bottom: 28px; right: 12%; animation: ornamentFloatC 9.6s ease-in-out infinite alternate 1.6s; }
     .home-bubble.b4 { width: 20px; height: 20px; top: 58%; left: 28%; animation: ornamentFloatA 8.4s ease-in-out infinite alternate .6s; }
-    .home-bubble.b5 { width: 170px; height: 170px; top: 9%; right: 14%; background: rgba(245, 77, 186, .22); animation: ornamentFloatB 11.6s ease-in-out infinite alternate .3s; }
-    .home-bubble.b6 { width: 104px; height: 104px; bottom: 8%; left: 8%; background: rgba(245, 77, 186, .16); animation: ornamentFloatC 9.1s ease-in-out infinite alternate 1.2s; }
+    .home-bubble.b5 { width: 170px; height: 170px; top: 9%; right: 14%; background: rgba(245, 77, 186, .12); animation: ornamentFloatB 11.6s ease-in-out infinite alternate .3s; }
+    .home-bubble.b6 { width: 104px; height: 104px; bottom: 8%; left: 8%; background: rgba(245, 77, 186, .09); animation: ornamentFloatC 9.1s ease-in-out infinite alternate 1.2s; }
 
     .home-feed {
       position: absolute;
@@ -175,11 +175,11 @@
       margin-inline: auto;
       text-align: center;
       padding: clamp(22px, 3.2vw, 36px) clamp(16px, 2.4vw, 28px);
-      border: 1px solid rgba(205, 214, 227, 0.92);
+      border: 1px solid rgba(199, 214, 237, 0.9);
       border-radius: 18px;
-      background: rgba(255, 255, 255, 0.46);
-      backdrop-filter: blur(3px);
-      box-shadow: 0 12px 30px rgba(31, 45, 65, 0.08);
+      background: rgba(248, 252, 255, 0.62);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 12px 30px rgba(40, 63, 98, 0.09);
     }
 
     .hero-brand {
