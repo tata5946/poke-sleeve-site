@@ -705,6 +705,34 @@ function wireHeaderOffsetSync() {
   }
 }
 
+function shouldSkipPageShortcuts() {
+  const path = (location.pathname.split("/").pop() || "").toLowerCase();
+  return (path === "" || path === "index.html");
+}
+
+function injectPageShortcuts() {
+  if (shouldSkipPageShortcuts()) return;
+  const heroCard = document.querySelector(".hero .hero-card");
+  if (!heroCard) return;
+  if (heroCard.querySelector(".page-shortcuts")) return;
+
+  const root = document.createElement("div");
+  root.className = "page-shortcuts";
+  root.innerHTML = `
+    <div class="page-shortcuts-row">
+      <a class="btn" href="./zukan.html">図鑑で探す</a>
+      <a class="btn ghost" href="./surge.html">急上昇ランキングをみる</a>
+      <a class="btn ghost" href="./growth.html">高騰率ランキングをみる</a>
+      <a class="btn ghost" href="./ranking.html">価格ランキングをみる</a>
+    </div>
+    <div class="page-shortcuts-row">
+      <a class="btn ghost" href="./index-market.html">スリーブ指数</a>
+      <a class="btn ghost" href="./contact.html">お問い合わせ</a>
+    </div>
+  `;
+  heroCard.appendChild(root);
+}
+
 function ensureFavicon() {
   const href = new URL(FAVICON_PATH, location.href).href;
   const rels = ["icon", "shortcut icon", "apple-touch-icon"];
@@ -865,6 +893,7 @@ window.GAS_URL = GAS_URL;
 document.addEventListener("DOMContentLoaded", () => {
   try { ensureFavicon(); } catch (e) { console.error(e); }
   injectHeaderFooter();
+  injectPageShortcuts();
 
   try { setActiveNav(); } catch (e) { console.error(e); }
   try { wireHeaderSearch(); } catch (e) { console.error(e); }

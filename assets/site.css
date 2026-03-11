@@ -482,6 +482,49 @@ a:hover {
     transition: transform .2s ease;
 }
 
+.page-shortcuts {
+    width: 100%;
+    margin-top: 12px;
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+}
+
+.page-shortcuts-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+
+.page-shortcuts .btn {
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-size: clamp(11px, 1.05vw, 14px);
+    font-weight: 900;
+    line-height: 1.2;
+    margin-top: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.page-shortcuts .btn::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    border-radius: 999px;
+    background: center / contain no-repeat url("./favicon.svg");
+}
+
+.page-shortcuts .btn.ghost {
+    background: rgba(255, 255, 255, 0.75);
+    color: #172033;
+    border: 1px solid #c9ced8;
+}
+
 .thumb-link {
     display: block;
     border-radius: 14px;
@@ -805,6 +848,16 @@ footer.site-footer {
         white-space: nowrap;
         font-size: 12px;
         padding: 7px 9px;
+    }
+
+    .page-shortcuts-row {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .page-shortcuts .btn {
+        width: 100%;
+        justify-content: center;
     }
 }
 
