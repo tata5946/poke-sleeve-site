@@ -690,6 +690,7 @@
       const searchInput = document.getElementById("search") || await waitForSearch();
       const heroSearchInput = document.getElementById("heroSearch");
       if (!searchInput) {
+        setRankingLoadingState("error", "検索欄の初期化に失敗しました。");
         showError("検索欄の初期化に失敗しました（headerが読み込めていません）");
         return;
       }
@@ -828,7 +829,7 @@
       const shownGrowth = hideIfEmpty(sectionGrowth, railGrowth, growthRank.length > 0);
       const shownPrice = hideIfEmpty(sectionPrice, railPrice, priceRank.length > 0);
       const hasRankingData = shownSurge || shownGrowth || shownPrice;
-      if (rankingRoot) rankingRoot.hidden = !hasRankingData;
+      if (rankingRoot) rankingRoot.hidden = false;
       setRankingLoadingState(hasRankingData ? "ready" : "error", hasRankingData ? "" : "ランキングデータがありません。");
 
       // ---- 一覧（検索・絞り込み） ----
