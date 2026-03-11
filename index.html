@@ -673,12 +673,25 @@
       };
 
       setRankingLoadingState("loading");
+      let rankingLoadWatchdog = setTimeout(() => {
+        setRankingLoadingState("error", "ランキングデータの読み込みに時間がかかっています。ページを再読み込みしてください。");
+      }, 15000);
       wireRailButtons();
 
       let data;
       try {
-        data = await loadData();
+        if (window.common && typeof window.common.loadData === "function") {
+          data = await window.common.loadData();
+        } else {
+          data = await loadData();
+        }
+        clearTimeout(rankingLoadWatchdog);
+        rankingLoadWatchdog = null;
       } catch (e) {
+        if (rankingLoadWatchdog) {
+          clearTimeout(rankingLoadWatchdog);
+          rankingLoadWatchdog = null;
+        }
         setRankingLoadingState("error", "ランキングデータの読み込みに失敗しました。");
         showError(e.message || "不明なエラーが発生しました");
         return;
