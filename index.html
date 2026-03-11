@@ -134,6 +134,10 @@
       box-shadow: 0 12px 30px rgba(31, 45, 65, 0.08);
     }
 
+    .home-bubbles {
+      animation: heroBgFloat 18s ease-in-out infinite alternate;
+    }
+
     .home-kicker {
       margin: 0 0 10px;
       font-size: 12px;
@@ -141,6 +145,33 @@
       font-weight: 800;
       color: #4f607c;
     }
+
+    body.js-hero-anim .home-kicker,
+    body.js-hero-anim .home-display,
+    body.js-hero-anim .home-hero-search,
+    body.js-hero-anim .home-copy,
+    body.js-hero-anim .home-hero .data-note,
+    body.js-hero-anim .home-cta {
+      opacity: 0;
+      transform: translate3d(0, 10px, 0);
+    }
+
+    .home-hero-main.is-enter .home-kicker,
+    .home-hero-main.is-enter .home-display,
+    .home-hero-main.is-enter .home-hero-search,
+    .home-hero-main.is-enter .home-copy,
+    .home-hero-main.is-enter .data-note,
+    .home-hero-main.is-enter .home-cta {
+      animation: heroFadeUp .56s cubic-bezier(.22, 1, .36, 1) forwards;
+      will-change: transform, opacity;
+    }
+
+    .home-hero-main.is-enter .home-kicker { animation-delay: .03s; }
+    .home-hero-main.is-enter .home-display { animation-delay: .14s; }
+    .home-hero-main.is-enter .home-hero-search { animation-delay: .26s; }
+    .home-hero-main.is-enter .home-copy { animation-delay: .38s; }
+    .home-hero-main.is-enter .data-note { animation-delay: .50s; }
+    .home-hero-main.is-enter .home-cta { animation-delay: .62s; }
 
     .home-display {
       margin: 0;
@@ -383,6 +414,16 @@
     @keyframes rankTilePop {
       from { opacity: 0; transform: translate3d(0, 14px, 0) scale(.96); }
       to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    }
+
+    @keyframes heroFadeUp {
+      from { opacity: 0; transform: translate3d(0, 10px, 0); }
+      to { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+
+    @keyframes heroBgFloat {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(0, -6px, 0); }
     }
 
     @keyframes introDrift {
@@ -688,6 +729,21 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+      .home-bubbles {
+        animation: none;
+      }
+
+      body.js-hero-anim .home-kicker,
+      body.js-hero-anim .home-display,
+      body.js-hero-anim .home-hero-search,
+      body.js-hero-anim .home-copy,
+      body.js-hero-anim .home-hero .data-note,
+      body.js-hero-anim .home-cta {
+        opacity: 1;
+        transform: none;
+        animation: none !important;
+      }
+
       .rail .tile.tile-pop {
         animation: none;
         opacity: 1;
@@ -849,6 +905,24 @@
       const [a, b] = v.split("-").map(Number);
       if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
       return { min: a, max: b };
+    }
+
+    function runHeroIntro() {
+      const heroMain = document.querySelector(".home-hero-main");
+      if (!heroMain) return;
+
+      document.body.classList.add("js-hero-anim");
+      const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduced) {
+        heroMain.classList.add("is-enter");
+        return;
+      }
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          heroMain.classList.add("is-enter");
+        });
+      });
     }
 
     let __headerTabVisibilityWired = false;
@@ -1524,6 +1598,7 @@
       render();
     }
 
+    runHeroIntro();
     document.addEventListener("site:injected", setupHeaderTabVisibility, { once: true });
     setupHeaderTabVisibility();
     main();
