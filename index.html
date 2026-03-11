@@ -284,7 +284,7 @@
   <script src="./assets/common.js"></script>
 
   <script>
-    const GAS_URL = window.GAS_URL || "PASTE_YOUR_WEB_APP_URL_HERE";
+    const GAS_URL_ENDPOINT = window.GAS_URL || "PASTE_YOUR_WEB_APP_URL_HERE";
 
     // -----------------------------
     // utils
@@ -365,10 +365,10 @@
     }
 
     async function loadData() {
-      if (!GAS_URL || GAS_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
+      if (!GAS_URL_ENDPOINT || GAS_URL_ENDPOINT.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
         throw new Error("GAS_URL が未設定です。index.html の GAS_URL に WebアプリURL を貼ってください。");
       }
-      const url = GAS_URL + "?v=" + Date.now();
+      const url = GAS_URL_ENDPOINT + "?v=" + Date.now();
       return await fetchJsonWithTimeout(url, { timeoutMs: 12000 });
     }
 
