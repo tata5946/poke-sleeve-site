@@ -130,6 +130,7 @@ async function getAutocompleteIndex() {
         return {
           id,
           name,
+          series: String(s && s.series || "").trim(),
           nameNorm: normalizeSearchText(name),
           detailHref: `./detail.html?id=${encodeURIComponent(id)}`,
           imageUrl: String(s && s.imageUrl || "").trim(),
@@ -179,6 +180,11 @@ function defaultNavigateToDetail(item) {
   if (!item || !item.id) return;
   try { sessionStorage.setItem(LAST_SELECTED_SLEEVE_ID_KEY, item.id); } catch (_) { }
   location.href = item.detailHref || (`./detail.html?id=${encodeURIComponent(item.id)}`);
+}
+
+function defaultNavigateToZukan(query) {
+  const q = String(query || "").trim();
+  location.href = q ? `./zukan.html?q=${encodeURIComponent(q)}` : "./zukan.html";
 }
 
 function wireSleeveAutocomplete(input, options = {}) {
@@ -274,12 +280,20 @@ function wireSleeveAutocomplete(input, options = {}) {
       btn.id = `${listId}-opt-${i}`;
       btn.setAttribute("role", "option");
       btn.setAttribute("aria-selected", i === activeIndex ? "true" : "false");
+      const thumbHtml = item.imageUrl
+        ? `<img class="search-suggest-thumb" src="${escapeHtml(item.imageUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer"
+             onerror="this.onerror=null; this.closest('.search-suggest-thumb-wrap')?.classList.add('is-empty'); this.remove();">`
+        : "";
+      const subInfo = item.series ? escapeHtml(item.series) : "シリーズ情報なし";
       btn.innerHTML = `
+        <span class="search-suggest-thumb-wrap${item.imageUrl ? "" : " is-empty"}" aria-hidden="true">${thumbHtml}</span>
         <span class="search-suggest-main">
           <span class="search-suggest-name">${escapeHtml(item.name)}</span>
-          <span class="search-suggest-meta">${item.latestPrice == null ? "" : `${Number(item.latestPrice).toLocaleString()}円`}</span>
+          <span class="search-suggest-sub">${subInfo}</span>
         </span>
+        <span class="search-suggest-price">${item.latestPrice == null ? "—" : `${Number(item.latestPrice).toLocaleString()}円`}</span>
       `;
+      btn.setAttribute("aria-label", `${item.name} の詳細ページへ移動`);
       btn.addEventListener("mouseenter", () => setActive(i));
       btn.addEventListener("mousedown", (e) => {
         e.preventDefault();
@@ -287,6 +301,23 @@ function wireSleeveAutocomplete(input, options = {}) {
         onPick(item);
       });
       frag.appendChild(btn);
+    }
+
+    const q = String(input.value || "").trim();
+    if (q) {
+      const actionBtn = document.createElement("button");
+      actionBtn.type = "button";
+      actionBtn.className = "search-suggest-action";
+      actionBtn.innerHTML = `
+        <span class="search-suggest-action-label">「${escapeHtml(q)}」で図鑑を検索する</span>
+        <span class="search-suggest-action-arrow" aria-hidden="true">↗</span>
+      `;
+      actionBtn.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        const onAction = typeof options.onAction === "function" ? options.onAction : defaultNavigateToZukan;
+        onAction(q);
+      });
+      frag.appendChild(actionBtn);
     }
     list.appendChild(frag);
     openList();
