@@ -353,12 +353,38 @@
       font-weight: 700;
     }
 
-    .rail .tile.tile-pop {
+    body.js-rank-anim .sections .section {
       opacity: 0;
-      transform: translate3d(0, 14px, 0) scale(.96);
-      animation: rankTilePop .55s cubic-bezier(.22, 1, .36, 1) forwards;
-      animation-delay: calc(var(--pop-delay, 0) * 90ms);
+      transform: translate3d(0, 24px, 0);
       will-change: transform, opacity;
+    }
+
+    body.js-rank-anim .sections .section.is-inview {
+      animation: rankSectionIn .55s ease-out forwards;
+    }
+
+    body.js-rank-anim .sections .section .rail .tile.tile-pop {
+      opacity: 0;
+      transform: translate3d(0, 20px, 0) scale(.98);
+      animation: none;
+      will-change: transform, opacity;
+    }
+
+    body.js-rank-anim .sections .section.is-inview .rail .tile.tile-pop {
+      animation: rankTilePop .5s cubic-bezier(.22, 1, .36, 1) forwards;
+      animation-delay: calc(80ms + var(--pop-delay, 0) * 60ms);
+    }
+
+    body.js-rank-anim .sections .section .tile-rank-badge {
+      opacity: 0;
+      transform: scale(.85) translateY(4px);
+      transform-origin: 50% 50%;
+      will-change: transform, opacity;
+    }
+
+    body.js-rank-anim .sections .section.is-inview .tile.tile-pop .tile-rank-badge {
+      animation: rankBadgePop .42s cubic-bezier(.2, .8, .2, 1) forwards;
+      animation-delay: calc(180ms + var(--pop-delay, 0) * 60ms);
     }
 
     body.home-header-hidden #site-header .header {
@@ -511,6 +537,17 @@
     @keyframes rankTilePop {
       from { opacity: 0; transform: translate3d(0, 14px, 0) scale(.96); }
       to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    }
+
+    @keyframes rankSectionIn {
+      from { opacity: 0; transform: translate3d(0, 24px, 0); }
+      to { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+
+    @keyframes rankBadgePop {
+      0% { opacity: 0; transform: scale(.85) translateY(4px); }
+      72% { opacity: 1; transform: scale(1.03) translateY(0); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     @keyframes heroFadeUp {
@@ -897,6 +934,14 @@
         opacity: 1;
         transform: none;
       }
+
+      body.js-rank-anim .sections .section,
+      body.js-rank-anim .sections .section .rail .tile.tile-pop,
+      body.js-rank-anim .sections .section .tile-rank-badge {
+        opacity: 1;
+        transform: none;
+        animation: none !important;
+      }
     }
   </style>
 </head>
@@ -1132,6 +1177,33 @@
       window.addEventListener("scroll", onScrollLike, { passive: true });
       window.addEventListener("resize", onScrollLike, { passive: true });
       onScrollLike();
+    }
+
+    function setupRankingReveal() {
+      const sections = Array.from(document.querySelectorAll(".sections .section"));
+      if (!sections.length) return;
+
+      document.body.classList.add("js-rank-anim");
+      const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduced || !("IntersectionObserver" in window)) {
+        sections.forEach((section) => section.classList.add("is-inview"));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          if (entry.intersectionRatio < 0.18) return;
+          const section = entry.target;
+          section.classList.add("is-inview");
+          observer.unobserve(section);
+        });
+      }, {
+        threshold: [0, 0.18, 0.25],
+        rootMargin: "0px 0px -6% 0px"
+      });
+
+      sections.forEach((section) => observer.observe(section));
     }
 
     function clamp01(v) {
@@ -1761,6 +1833,7 @@
     runHeroIntro();
     document.addEventListener("site:injected", setupHeaderTabVisibility, { once: true });
     setupHeaderTabVisibility();
+    setupRankingReveal();
     main();
   </script>
 </body>
