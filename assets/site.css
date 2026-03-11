@@ -198,6 +198,7 @@ a:hover {
     padding: 10px 12px;
     color: #172033;
     cursor: pointer;
+    min-height: 44px;
 }
 
 .search-suggest-item:last-child {
@@ -638,19 +639,31 @@ footer.site-footer {
 
     .search-wrap {
         width: 100%;
+        border-radius: 12px;
+        padding: 10px 12px;
+    }
+
+    .search-wrap input {
+        font-size: 16px;
     }
 
     .search-autocomplete {
-        border-radius: 10px;
-        max-height: min(46vh, 320px);
+        top: calc(100% + 6px);
+        border-radius: 12px;
+        max-height: min(52vh, 360px);
     }
 
     .search-suggest-item {
-        padding: 11px 10px;
+        padding: 12px 10px;
+        min-height: 48px;
     }
 
     .search-suggest-name {
-        font-size: 13px;
+        font-size: 14px;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
 
     .header-bottom-inner {
