@@ -32,10 +32,10 @@
     .sleeve-shape { position: absolute; --rot: 0deg; border-radius: 14px; border: 1px solid rgba(78, 107, 149, 0.2); background: linear-gradient(155deg, rgba(247, 251, 255, 0.22) 0%, rgba(228, 239, 255, 0.08) 100%); box-shadow: 0 12px 24px rgba(25, 44, 74, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.4); opacity: .94; transform: rotate(var(--rot)); }
     .sleeve-shape::before { content: ""; position: absolute; inset: 8px; border-radius: 10px; border: 1px dashed rgba(96, 125, 169, 0.22); }
     .sleeve-shape::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 22%; border-radius: 14px 14px 0 0; background: linear-gradient(180deg, rgba(255, 255, 255, 0.36), rgba(255, 255, 255, 0)); }
-    .sleeve-shape.s1 { --rot: -11deg; width: 166px; height: 224px; left: 7%; top: 13%; z-index: 0; animation: ornamentFloatA 9.6s ease-in-out infinite alternate; }
-    .sleeve-shape.s2 { --rot: 8deg; width: 138px; height: 192px; left: 17%; bottom: 10%; z-index: 1; animation: ornamentFloatB 8.8s ease-in-out infinite alternate .7s; }
-    .sleeve-shape.s3 { --rot: 10deg; width: 172px; height: 232px; right: 8%; top: 26%; z-index: 0; animation: ornamentFloatC 10.8s ease-in-out infinite alternate .4s; }
-    .sleeve-shape.s4 { --rot: -7deg; width: 124px; height: 174px; right: 24%; bottom: 13%; z-index: 1; animation: ornamentFloatA 7.9s ease-in-out infinite alternate 1.1s; }
+    .sleeve-shape.s1 { --rot: -11deg; width: 166px; height: 224px; left: 7%; top: 13%; z-index: 0; animation: sleeveFloatGentle 14s ease-in-out infinite; animation-delay: 0s; }
+    .sleeve-shape.s2 { --rot: 8deg; width: 138px; height: 192px; left: 17%; bottom: 10%; z-index: 1; animation: sleeveFloatGentle 16s ease-in-out infinite; animation-delay: -4s; }
+    .sleeve-shape.s3 { --rot: 10deg; width: 172px; height: 232px; right: 8%; top: 26%; z-index: 0; animation: sleeveFloatGentle 18s ease-in-out infinite; animation-delay: -7s; }
+    .sleeve-shape.s4 { --rot: -7deg; width: 124px; height: 174px; right: 24%; bottom: 13%; z-index: 1; animation: sleeveFloatGentle 13s ease-in-out infinite; animation-delay: -2s; }
     .sleeve-shape.s5, .sleeve-shape.s6 { display: none; }
     .home-bubble { position: absolute; border-radius: 999px; background: rgba(255, 255, 255, 0.18); opacity: .28; }
     .home-bubble.b1 { width: 120px; height: 120px; top: -22px; left: -26px; animation: ornamentFloatA 10.2s ease-in-out infinite alternate .1s; }
@@ -127,6 +127,10 @@
     body.home-page .main { display: none; }
     @keyframes heroFadeUp { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
     @keyframes heroCardIn { from { opacity: 0; transform: translate3d(0, 8px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+    @keyframes sleeveFloatGentle {
+      0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+      50% { transform: translateY(-10px) rotate(var(--rot, 0deg)); }
+    }
     @keyframes ornamentFloatA { from { transform: translate3d(0, 0, 0) rotate(var(--rot, 0deg)); } to { transform: translate3d(4px, -6px, 0) rotate(var(--rot, 0deg)); } }
     @keyframes ornamentFloatB { from { transform: translate3d(0, 0, 0) rotate(var(--rot, 0deg)); } to { transform: translate3d(-5px, -8px, 0) rotate(var(--rot, 0deg)); } }
     @keyframes ornamentFloatC { from { transform: translate3d(0, 0, 0) rotate(var(--rot, 0deg)); } to { transform: translate3d(3px, -5px, 0) rotate(var(--rot, 0deg)); } }
