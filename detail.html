@@ -544,9 +544,9 @@
           <div class="panel">
             <h3 id="priceSectionTitle" style="margin:0;">価格推移（観測ベース）</h3>
             <div class="chart-period-switch" role="tablist" aria-label="表示期間">
-              <button type="button" class="chart-period-btn is-active" id="period3mBtn" data-period="3m">直近3か月</button>
+              <button type="button" class="chart-period-btn" id="period3mBtn" data-period="3m">直近3か月</button>
               <button type="button" class="chart-period-btn" id="period1yBtn" data-period="1y">1年</button>
-              <button type="button" class="chart-period-btn" id="periodAllBtn" data-period="all">全期間</button>
+              <button type="button" class="chart-period-btn is-active" id="periodAllBtn" data-period="all">全期間</button>
             </div>
             <div id="chartModeNote" class="chart-subnote"></div>
             <div id="chartLegend" class="chart-legend" aria-label="凡例"></div>
@@ -1811,7 +1811,7 @@
       const period3mBtn = document.getElementById("period3mBtn");
       const period1yBtn = document.getElementById("period1yBtn");
       const periodAllBtn = document.getElementById("periodAllBtn");
-      let currentPeriod = "3m";
+      let currentPeriod = "all";
 
       renderObservationLegend();
       renderObservationFootnotes();
