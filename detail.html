@@ -921,7 +921,7 @@
         <span class="legend-item"><span class="legend-mark">●</span>週次データ</span>
         <span class="legend-item"><span class="legend-mark">○</span>月次データ</span>
         <span class="legend-item"><span class="legend-mark">△</span>年次データ</span>
-        <span class="legend-item">線が切れている箇所: 取引記録なし</span>
+        <span class="legend-item">◎ 最新観測データ（強調）</span>
       `;
     }
 
@@ -992,7 +992,6 @@
     function renderObservationChart(containerId, title, rows, options = {}) {
       const el = document.getElementById(containerId);
       if (!el) return;
-      const simple = options.simple === true;
       const traded = (Array.isArray(rows) ? rows : []).filter((r) => r.hasTrade && Number.isFinite(r.avgPrice));
       if (!traded.length) {
         el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">観測データがありません</div></div>`;
@@ -1045,9 +1044,9 @@
       }
 
       const styles = {
-        week: { stroke: "#1d4ed8", fill: "#1d4ed8", dash: "", maxGapDays: 10, marker: "circle", drawLine: true },
-        month: { stroke: "#2563eb", fill: "#fff", dash: "4 4", maxGapDays: 45, marker: "square", drawLine: false },
-        year: { stroke: "#60a5fa", fill: "#fff", dash: "2 6", maxGapDays: 400, marker: "triangle", drawLine: false }
+        week: { stroke: "#1d4ed8", fill: "#1d4ed8" },
+        month: { stroke: "#2563eb", fill: "#93c5fd" },
+        year: { stroke: "#60a5fa", fill: "#dbeafe" }
       };
 
       const tradedByG = {
@@ -1056,54 +1055,28 @@
         year: traded.filter((r) => r.granularity === "year")
       };
 
-      const lineParts = [];
       const markerParts = [];
       const hitParts = [];
       const hitMeta = [];
       let hitIdx = 0;
+      const latest = traded[traded.length - 1];
+      const latestKey = latest ? `${latest.granularity}|${latest.periodStart}` : "";
 
       for (const g of ["week", "month", "year"]) {
         const st = styles[g];
         const pts = tradedByG[g].slice().sort((a, b) => a.timestamp - b.timestamp);
         if (!pts.length) continue;
-        if (st.drawLine) {
-          let seg = [];
-          for (let i = 0; i < pts.length; i++) {
-            const p = pts[i];
-            if (!seg.length) {
-              seg.push(p);
-              continue;
-            }
-            const prev = seg[seg.length - 1];
-            const gapDays = Math.abs(p.timestamp - prev.timestamp) / (24 * 60 * 60 * 1000);
-            if (gapDays > st.maxGapDays) {
-              if (seg.length >= 2) {
-                const d = seg.map((x, idx) => `${idx === 0 ? "M" : "L"} ${xToPx(x.timestamp)} ${yToPx(x.avgPrice)}`).join(" ");
-                lineParts.push(`<path d="${d}" fill="none" stroke="${st.stroke}" stroke-width="${simple ? 1.1 : 1.4}" stroke-linecap="round" stroke-dasharray="${st.dash}" opacity="${simple ? 0.45 : 0.8}"></path>`);
-              }
-              seg = [p];
-            } else {
-              seg.push(p);
-            }
-          }
-          if (seg.length >= 2) {
-            const d = seg.map((x, idx) => `${idx === 0 ? "M" : "L"} ${xToPx(x.timestamp)} ${yToPx(x.avgPrice)}`).join(" ");
-            lineParts.push(`<path d="${d}" fill="none" stroke="${st.stroke}" stroke-width="${simple ? 1.1 : 1.4}" stroke-linecap="round" stroke-dasharray="${st.dash}" opacity="${simple ? 0.45 : 0.8}"></path>`);
-          }
-        }
 
         for (const p of pts) {
           const cx = xToPx(p.timestamp);
           const cy = yToPx(p.avgPrice);
-          if (st.marker === "circle") {
-            markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${simple ? 5 : 6}" fill="${st.fill}" stroke="${st.stroke}" stroke-width="1.5"></circle>`);
-          } else if (st.marker === "square") {
-            const s = simple ? 9 : 10;
-            markerParts.push(`<rect x="${cx - s / 2}" y="${cy - s / 2}" width="${s}" height="${s}" rx="1.5" fill="${st.fill}" stroke="${st.stroke}" stroke-width="1.5"></rect>`);
-          } else {
-            const size = simple ? 9 : 10;
-            markerParts.push(`<path d="M ${cx} ${cy - size / 2} L ${cx - size / 2} ${cy + size / 2} L ${cx + size / 2} ${cy + size / 2} Z" fill="${st.fill}" stroke="${st.stroke}" stroke-width="1.5"></path>`);
+          const key = `${p.granularity}|${p.periodStart}`;
+          const isLatest = key === latestKey;
+          const radius = isLatest ? 8 : 6;
+          if (isLatest) {
+            markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${radius + 3}" fill="rgba(29,78,216,0.15)" stroke="none"></circle>`);
           }
+          markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${st.fill}" stroke="${st.stroke}" stroke-width="${isLatest ? 2.2 : 1.6}"></circle>`);
           hitParts.push(`<circle class="obs-hit" data-hit="${hitIdx}" cx="${cx}" cy="${cy}" r="14" fill="transparent"></circle>`);
           hitMeta.push(p);
           hitIdx += 1;
@@ -1119,7 +1092,6 @@
               <g>${yGrid.join("")}</g>
               <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#98a2b3"></line>
               <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#98a2b3"></line>
-              <g>${lineParts.join("")}</g>
               <g>${markerParts.join("")}</g>
               <g>${hitParts.join("")}</g>
               <g>${yLabels.join("")}</g>
@@ -1134,10 +1106,9 @@
       const hits = Array.from(el.querySelectorAll(".obs-hit"));
       const showTip = (ev, obs) => {
         if (!tip || !wrap || !obs) return;
-        const g = granularityJa(obs.granularity);
         const avg = Number.isFinite(obs.avgPrice) ? `${obs.avgPrice.toLocaleString()}円` : "-";
         const cnt = Number.isFinite(obs.tradeCount) ? `${obs.tradeCount}件` : "-";
-        tip.textContent = `${obs.periodLabel} / ${g}平均 ${avg} / 取引 ${cnt}`;
+        tip.textContent = `${obs.periodLabel} / 観測価格 ${avg} / 取引 ${cnt}`;
         tip.style.display = "block";
         const wrapRect = wrap.getBoundingClientRect();
         const x = Math.min(Math.max(ev.clientX - wrapRect.left, 70), wrapRect.width - 70);
