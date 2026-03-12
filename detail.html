@@ -828,6 +828,22 @@
       return "年次";
     }
 
+    function isLegacy2025DisplayPeriod(periodStart) {
+      const m = String(periodStart || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return false;
+      const y = Number(m[1]);
+      const month = Number(m[2]);
+      return y === 2025 && month >= 1 && month <= 12;
+    }
+
+    function toDisplayPeriodLabel(obs) {
+      if (!obs) return "";
+      if (isLegacy2025DisplayPeriod(obs.periodStart)) {
+        return String(obs.periodStart || "");
+      }
+      return String(obs.periodLabel || obs.periodStart || "");
+    }
+
     function normalizeObservationRows(arr) {
       const rows = Array.isArray(arr) ? arr : [];
       const buckets = new Map();
@@ -938,16 +954,20 @@
     function renderObservationTable(rows) {
       const list = Array.isArray(rows) ? rows.slice() : [];
       if (!list.length) return `<div class="meta">観測データがありません</div>`;
+      const hideGranularityColumn = list.length > 0 && list.every((r) => isLegacy2025DisplayPeriod(r.periodStart));
       const html = list.reverse().map((r) => {
         const g = granularityJa(r.granularity);
+        const periodText = toDisplayPeriodLabel(r);
         const priceCell = (r.hasTrade && Number.isFinite(r.avgPrice)) ? `${Number(r.avgPrice).toLocaleString()}円` : "-";
         const countCell = Number.isFinite(r.tradeCount) ? `${r.tradeCount}件` : "-";
-        return `<tr><td>${escapeHtml(r.periodLabel)}</td><td>${escapeHtml(g)}</td><td>${priceCell}</td><td>${countCell}</td></tr>`;
+        const granCell = hideGranularityColumn ? "" : `<td>${isLegacy2025DisplayPeriod(r.periodStart) ? "" : escapeHtml(g)}</td>`;
+        return `<tr><td>${escapeHtml(periodText)}</td>${granCell}<td>${priceCell}</td><td>${countCell}</td></tr>`;
       }).join("");
+      const granHead = hideGranularityColumn ? "" : "<th>粒度</th>";
       return `
         <div class="table-wrap">
           <table>
-            <thead><tr><th>期間</th><th>粒度</th><th>平均価格</th><th>件数</th></tr></thead>
+            <thead><tr><th>期間</th>${granHead}<th>平均価格</th><th>件数</th></tr></thead>
             <tbody>${html}</tbody>
           </table>
         </div>
@@ -1106,9 +1126,10 @@
       const hits = Array.from(el.querySelectorAll(".obs-hit"));
       const showTip = (ev, obs) => {
         if (!tip || !wrap || !obs) return;
+        const periodText = toDisplayPeriodLabel(obs);
         const avg = Number.isFinite(obs.avgPrice) ? `${obs.avgPrice.toLocaleString()}円` : "-";
         const cnt = Number.isFinite(obs.tradeCount) ? `${obs.tradeCount}件` : "-";
-        tip.textContent = `${obs.periodLabel} / 観測価格 ${avg} / 取引 ${cnt}`;
+        tip.textContent = `${periodText} / 観測価格 ${avg} / 取引 ${cnt}`;
         tip.style.display = "block";
         const wrapRect = wrap.getBoundingClientRect();
         const x = Math.min(Math.max(ev.clientX - wrapRect.left, 70), wrapRect.width - 70);
