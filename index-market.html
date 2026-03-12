@@ -103,6 +103,76 @@
       gap: 14px;
     }
 
+    .contrib-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .contrib-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .contrib-item {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #fff;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .contrib-item:hover {
+      border-color: #b9cdfb;
+      background: #f7faff;
+    }
+
+    .contrib-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: #111827;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .contrib-rate {
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .contrib-rate.up {
+      color: #0f766e;
+    }
+
+    .contrib-rate.down {
+      color: #b42318;
+    }
+
+    .contrib-weight {
+      font-size: 11px;
+      color: #667085;
+      font-weight: 700;
+    }
+
+    .quick-links {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .quick-links .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
     .table-wrap {
       margin-top: 10px;
       border: 1px solid var(--border);
@@ -201,6 +271,14 @@
       .market-grid {
         grid-template-columns: 1fr;
       }
+
+      .contrib-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-links {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -290,6 +368,29 @@
           <div class="meta" style="margin-top:10px;">
             ※ スリーブ市場が拡大したら、クリップ範囲は見直し推奨です。
           </div>
+        </div>
+      </div>
+
+      <div class="contrib-grid">
+        <div class="panel">
+          <h3 style="margin:0 0 10px;">上昇寄与スリーブ</h3>
+          <div class="meta" style="margin-bottom:10px;">指数変動への寄与度（今週）</div>
+          <div id="contribUp" class="contrib-list"></div>
+        </div>
+        <div class="panel">
+          <h3 style="margin:0 0 10px;">下落寄与スリーブ</h3>
+          <div class="meta" style="margin-bottom:10px;">指数変動への寄与度（今週）</div>
+          <div id="contribDown" class="contrib-list"></div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:14px;">
+        <h3 style="margin:0 0 10px;">関連ページ</h3>
+        <div class="quick-links">
+          <a class="btn" href="./surge.html">急騰ランキング</a>
+          <a class="btn" href="./growth.html">上昇率ランキング</a>
+          <a class="btn" href="./ranking.html">価格ランキング</a>
+          <a class="btn" href="./zukan.html">図鑑で探す</a>
         </div>
       </div>
     </div>
@@ -1196,6 +1297,103 @@
       return out;
     }
 
+    function buildLatestContributors(sleeves, weeks, opts) {
+      const minPrice = opts?.minPrice ?? 300;
+      const minCount = opts?.minCount ?? 2;
+      const weightCap = opts?.weightCap ?? 20;
+      const maxRatio = opts?.maxRatio ?? 2.5;
+      const hardLo = -Math.log(maxRatio);
+      const hardHi = Math.log(maxRatio);
+      const hasValidPrice = (v) => Number.isFinite(v) && v > 0;
+      const percentile = (sorted, p) => {
+        if (!sorted.length) return null;
+        const idx = Math.max(0, Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * p)));
+        return sorted[idx];
+      };
+
+      if (!Array.isArray(weeks) || weeks.length < 2) {
+        return { prevWeek: null, curWeek: null, up: [], down: [] };
+      }
+      const curWeek = weeks[weeks.length - 1];
+      const prevWeek = weeks[weeks.length - 2];
+
+      const items = [];
+      for (const s of (Array.isArray(sleeves) ? sleeves : [])) {
+        const map = new Map();
+        for (const r of normalizeWeekly(s.weeklyPrices)) {
+          if (periodKind(r.week) !== "week") continue;
+          map.set(r.week, { price: r.price, count: r.count });
+        }
+        const p = map.get(prevWeek);
+        const c = map.get(curWeek);
+        if (!p || !c) continue;
+        if (!hasValidPrice(p.price) || !hasValidPrice(c.price)) continue;
+        if (p.price < minPrice) continue;
+
+        const c0 = Number(p.count);
+        const c1 = Number(c.count);
+        if (!Number.isFinite(c0) || !Number.isFinite(c1)) continue;
+        if (c0 < minCount || c1 < minCount) continue;
+
+        let logR = Math.log(c.price / p.price);
+        logR = clip(logR, hardLo, hardHi);
+        const w = Math.min(Math.sqrt(c0 * c1), weightCap);
+        if (!(w > 0)) continue;
+
+        items.push({
+          id: s.id ?? "",
+          name: String(s.name ?? "不明スリーブ"),
+          logR,
+          w
+        });
+      }
+
+      if (!items.length) return { prevWeek, curWeek, up: [], down: [] };
+
+      let lo = -Infinity;
+      let hi = Infinity;
+      if (items.length >= 20) {
+        const sorted = items.map((x) => x.logR).sort((a, b) => a - b);
+        lo = percentile(sorted, 0.05);
+        hi = percentile(sorted, 0.95);
+      }
+
+      const enriched = items.map((x) => {
+        const logR = clip(x.logR, lo, hi);
+        const rate = (Math.exp(logR) - 1) * 100;
+        const contrib = x.w * logR;
+        return { id: x.id, name: x.name, rate, contrib };
+      });
+
+      const up = enriched
+        .filter((x) => x.contrib > 0)
+        .sort((a, b) => b.contrib - a.contrib)
+        .slice(0, 8);
+      const down = enriched
+        .filter((x) => x.contrib < 0)
+        .sort((a, b) => a.contrib - b.contrib)
+        .slice(0, 8);
+
+      return { prevWeek, curWeek, up, down };
+    }
+
+    function renderContribList(items, direction) {
+      if (!Array.isArray(items) || !items.length) {
+        return `<div class="meta">該当データがありません</div>`;
+      }
+      return items.map((x) => {
+        const cls = direction === "up" ? "up" : "down";
+        const sign = x.rate > 0 ? "+" : "";
+        return `
+          <a class="contrib-item" href="./detail.html?id=${encodeURIComponent(x.id ?? "")}">
+            <span class="contrib-name">${escapeHtml(x.name ?? "")}</span>
+            <span class="contrib-rate ${cls}">${sign}${Number(x.rate).toFixed(1)}%</span>
+            <span class="contrib-weight">寄与 ${(Math.abs(Number(x.contrib)) * 100).toFixed(1)}</span>
+          </a>
+        `;
+      }).join("");
+    }
+
     async function main() {
       // header差し込みが遅いと #search が無いことがあるので待つ
       const waitForSearch = async () => {
@@ -1299,6 +1497,15 @@
       document.getElementById("distSummary").textContent =
         last ? `最新週（${formatPeriodLabel(last.week)}）の上昇/下落/横ばい割合` : "—";
       document.getElementById("distTable").innerHTML = renderTableDist(last);
+
+      const contrib = buildLatestContributors(sleeves, weeks, {
+        minPrice: 300,
+        minCount: 2,
+        weightCap: 20,
+        maxRatio: 2.5
+      });
+      document.getElementById("contribUp").innerHTML = renderContribList(contrib.up, "up");
+      document.getElementById("contribDown").innerHTML = renderContribList(contrib.down, "down");
 
       renderAiComment(last?.week || null);
     }
