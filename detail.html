@@ -838,6 +838,9 @@
 
     function toDisplayPeriodLabel(obs) {
       if (!obs) return "";
+      if (String(obs.periodStart || "") === "2025-01-01") {
+        return "発売日〜2025年8月（観測）";
+      }
       if (isLegacy2025DisplayPeriod(obs.periodStart)) {
         return String(obs.periodStart || "");
       }
