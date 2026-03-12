@@ -1000,11 +1000,11 @@
       }
 
       const W = 920;
-      const H = 420;
-      const padL = 64;
+      const H = 320;
+      const padL = 60;
       const padR = 18;
-      const padT = 16;
-      const padB = 52;
+      const padT = 14;
+      const padB = 42;
       const chartW = W - padL - padR;
       const chartH = H - padT - padB;
 
@@ -1014,14 +1014,14 @@
       const yMinRaw = Math.min(...traded.map((p) => p.avgPrice));
       const yMaxRaw = Math.max(...traded.map((p) => p.avgPrice));
       const ySpanRaw = Math.max(1, yMaxRaw - yMinRaw);
-      const yPad = Math.max(1, Math.round(ySpanRaw * 0.12));
+      const yPad = Math.max(20, Math.round(ySpanRaw * 0.08));
       const yMin = Math.max(0, yMinRaw - yPad);
       const yMax = yMaxRaw + yPad;
 
       const xToPx = (ts) => padL + ((ts - xMin) / safeSpanX) * chartW;
       const yToPx = (v) => padT + (1 - ((v - yMin) / Math.max(1, yMax - yMin))) * chartH;
 
-      const yTicks = 4;
+      const yTicks = 3;
       const yGrid = [];
       const yLabels = [];
       for (let i = 0; i <= yTicks; i++) {
@@ -1045,9 +1045,9 @@
       }
 
       const styles = {
-        week: { stroke: "#1d4ed8", fill: "#1d4ed8", dash: "", maxGapDays: 10, marker: "circle" },
-        month: { stroke: "#2563eb", fill: "#fff", dash: "4 4", maxGapDays: 45, marker: "square" },
-        year: { stroke: "#60a5fa", fill: "#fff", dash: "2 6", maxGapDays: 400, marker: "triangle" }
+        week: { stroke: "#1d4ed8", fill: "#1d4ed8", dash: "", maxGapDays: 10, marker: "circle", drawLine: true },
+        month: { stroke: "#2563eb", fill: "#fff", dash: "4 4", maxGapDays: 45, marker: "square", drawLine: false },
+        year: { stroke: "#60a5fa", fill: "#fff", dash: "2 6", maxGapDays: 400, marker: "triangle", drawLine: false }
       };
 
       const tradedByG = {
@@ -1066,43 +1066,45 @@
         const st = styles[g];
         const pts = tradedByG[g].slice().sort((a, b) => a.timestamp - b.timestamp);
         if (!pts.length) continue;
-        let seg = [];
-        for (let i = 0; i < pts.length; i++) {
-          const p = pts[i];
-          if (!seg.length) {
-            seg.push(p);
-            continue;
-          }
-          const prev = seg[seg.length - 1];
-          const gapDays = Math.abs(p.timestamp - prev.timestamp) / (24 * 60 * 60 * 1000);
-          if (gapDays > st.maxGapDays) {
-            if (seg.length >= 2) {
-              const d = seg.map((x, idx) => `${idx === 0 ? "M" : "L"} ${xToPx(x.timestamp)} ${yToPx(x.avgPrice)}`).join(" ");
-              lineParts.push(`<path d="${d}" fill="none" stroke="${st.stroke}" stroke-width="${simple ? 1.5 : 2.3}" stroke-linecap="round" stroke-dasharray="${st.dash}" opacity="${simple ? 0.55 : 0.95}"></path>`);
+        if (st.drawLine) {
+          let seg = [];
+          for (let i = 0; i < pts.length; i++) {
+            const p = pts[i];
+            if (!seg.length) {
+              seg.push(p);
+              continue;
             }
-            seg = [p];
-          } else {
-            seg.push(p);
+            const prev = seg[seg.length - 1];
+            const gapDays = Math.abs(p.timestamp - prev.timestamp) / (24 * 60 * 60 * 1000);
+            if (gapDays > st.maxGapDays) {
+              if (seg.length >= 2) {
+                const d = seg.map((x, idx) => `${idx === 0 ? "M" : "L"} ${xToPx(x.timestamp)} ${yToPx(x.avgPrice)}`).join(" ");
+                lineParts.push(`<path d="${d}" fill="none" stroke="${st.stroke}" stroke-width="${simple ? 1.1 : 1.4}" stroke-linecap="round" stroke-dasharray="${st.dash}" opacity="${simple ? 0.45 : 0.8}"></path>`);
+              }
+              seg = [p];
+            } else {
+              seg.push(p);
+            }
           }
-        }
-        if (seg.length >= 2) {
-          const d = seg.map((x, idx) => `${idx === 0 ? "M" : "L"} ${xToPx(x.timestamp)} ${yToPx(x.avgPrice)}`).join(" ");
-          lineParts.push(`<path d="${d}" fill="none" stroke="${st.stroke}" stroke-width="${simple ? 1.5 : 2.3}" stroke-linecap="round" stroke-dasharray="${st.dash}" opacity="${simple ? 0.55 : 0.95}"></path>`);
+          if (seg.length >= 2) {
+            const d = seg.map((x, idx) => `${idx === 0 ? "M" : "L"} ${xToPx(x.timestamp)} ${yToPx(x.avgPrice)}`).join(" ");
+            lineParts.push(`<path d="${d}" fill="none" stroke="${st.stroke}" stroke-width="${simple ? 1.1 : 1.4}" stroke-linecap="round" stroke-dasharray="${st.dash}" opacity="${simple ? 0.45 : 0.8}"></path>`);
+          }
         }
 
         for (const p of pts) {
           const cx = xToPx(p.timestamp);
           const cy = yToPx(p.avgPrice);
           if (st.marker === "circle") {
-            markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${simple ? 3 : 4}" fill="${st.fill}" stroke="${st.stroke}" stroke-width="1.5"></circle>`);
+            markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${simple ? 5 : 6}" fill="${st.fill}" stroke="${st.stroke}" stroke-width="1.5"></circle>`);
           } else if (st.marker === "square") {
-            const s = simple ? 6 : 7;
+            const s = simple ? 9 : 10;
             markerParts.push(`<rect x="${cx - s / 2}" y="${cy - s / 2}" width="${s}" height="${s}" rx="1.5" fill="${st.fill}" stroke="${st.stroke}" stroke-width="1.5"></rect>`);
           } else {
-            const size = simple ? 6 : 7;
+            const size = simple ? 9 : 10;
             markerParts.push(`<path d="M ${cx} ${cy - size / 2} L ${cx - size / 2} ${cy + size / 2} L ${cx + size / 2} ${cy + size / 2} Z" fill="${st.fill}" stroke="${st.stroke}" stroke-width="1.5"></path>`);
           }
-          hitParts.push(`<circle class="obs-hit" data-hit="${hitIdx}" cx="${cx}" cy="${cy}" r="12" fill="transparent"></circle>`);
+          hitParts.push(`<circle class="obs-hit" data-hit="${hitIdx}" cx="${cx}" cy="${cy}" r="14" fill="transparent"></circle>`);
           hitMeta.push(p);
           hitIdx += 1;
         }
