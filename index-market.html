@@ -14,6 +14,11 @@
   <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
   <style>
+    .hero {
+      display: grid;
+      gap: 14px;
+    }
+
     .hero .panel {
       background: #fff;
     }
@@ -29,7 +34,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       background: linear-gradient(180deg, #fff 0%, #fbfcff 100%);
-      padding: 12px;
+      padding: 10px 12px;
       box-shadow: 0 4px 14px rgba(16, 24, 40, .05);
       min-width: 0;
     }
@@ -43,7 +48,7 @@
 
     .hero .box .value {
       margin-top: 6px;
-      font-size: clamp(26px, 3vw, 34px);
+      font-size: clamp(22px, 2.6vw, 30px);
       font-weight: 900;
       line-height: 1.1;
       letter-spacing: .2px;
@@ -68,19 +73,66 @@
     }
 
     .hero .ai-comment {
-      margin-top: 10px;
-      border: 1px solid #b9cdfb;
-      border-left: 4px solid #1e5bd7;
+      margin-top: 0;
+      border: 1px solid #d7deea;
+      border-left: 4px solid #9fb4d8;
       border-radius: 10px;
-      background: #f5f8ff;
+      background: #f7f9fc;
       padding: 10px 12px;
     }
 
     .hero .ai-comment-title {
       font-size: 12px;
       font-weight: 900;
-      color: #1e3a8a;
+      color: #32445f;
       margin: 0 0 4px;
+    }
+
+    .summary-panel .meta {
+      margin-top: 4px;
+    }
+
+    .chart-panel {
+      box-shadow: 0 8px 22px rgba(16, 24, 40, .06);
+    }
+
+    .section-title {
+      margin: 0 0 8px;
+    }
+
+    .section-subtle {
+      margin: 0 0 10px;
+      font-size: 12px;
+      color: #5e6676;
+      font-weight: 700;
+    }
+
+    .settings-details summary {
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 900;
+      color: #1f2937;
+      list-style: none;
+    }
+
+    .settings-details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .settings-details summary::after {
+      content: "詳細を表示";
+      margin-left: 10px;
+      font-size: 12px;
+      color: #667085;
+      font-weight: 700;
+    }
+
+    .settings-details[open] summary::after {
+      content: "閉じる";
+    }
+
+    .settings-body {
+      margin-top: 10px;
     }
 
     .hero .ai-comment-meta {
@@ -290,102 +342,93 @@
   <div class="container">
     <div id="error" class="error"></div>
 
-    <div class="hero">
-      <div class="panel">
+        <div class="hero">
+      <div class="panel summary-panel">
         <h2 class="title">スリーブ指数（週次）</h2>
-        <div id="subtitle" class="meta">読み込み中…</div>
+        <div id="subtitle" class="meta">読み込み中...</div>
 
         <div class="kpi" style="margin-top:14px;">
           <div class="box">
             <div class="label">今週の市場上昇率（平均）</div>
-            <div id="kpiRate" class="value">—</div>
-            <div id="kpiRateDelta" class="delta flat">—</div>
+            <div id="kpiRate" class="value">-</div>
+            <div id="kpiRateDelta" class="delta flat">-</div>
           </div>
 
           <div class="box">
             <div class="label">上昇スリーブ割合</div>
-            <div id="kpiUpShare" class="value">—</div>
-            <div class="meta" id="kpiUpShareMeta" style="margin-top:6px;">—</div>
+            <div id="kpiUpShare" class="value">-</div>
+            <div class="meta" id="kpiUpShareMeta" style="margin-top:6px;">-</div>
           </div>
 
           <div class="box">
-            <div class="label">指数（基準=100）</div>
-            <div id="kpiIndex" class="value">—</div>
-            <div class="meta" id="kpiIndexMeta" style="margin-top:6px;">基準週：—</div>
+            <div class="label">指数（基準値100）</div>
+            <div id="kpiIndex" class="value">-</div>
+            <div class="meta" id="kpiIndexMeta" style="margin-top:6px;">基準週 = 100</div>
           </div>
         </div>
+      </div>
 
-        <div class="note" style="margin-top:12px;">
-          週次指数は、前週と今週の両方にデータがあるスリーブのみを対象に、取引件数を考慮した加重平均で算出します。<br>
-          ※ データ仕様上、2025年以前の「月次（毎月1日）」や「まとめ（2025/01/01）」は週次指数の計算対象から除外します。
-        </div>
+      <div class="panel chart-panel">
+        <h3 class="section-title">指数チャート</h3>
+        <p class="section-subtle">基準値100を起点とした週次推移</p>
+        <div id="indexChart"></div>
+      </div>
 
+      <div class="panel market-comment-panel">
+        <h3 class="section-title">今週の市場コメント</h3>
         <div class="ai-comment">
           <p class="ai-comment-title">AIコメント（手動更新）</p>
           <p id="aiCommentWeek" class="ai-comment-meta">対象週: -</p>
-          <p id="aiCommentBody" class="ai-comment-body">コメント未設定</p>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div id="indexChart"></div>
-        <div id="indexTable"></div>
-      </div>
-
-      <div class="market-grid">
-        <div class="panel">
-          <h3 style="margin:0 0 10px;">最新週の分布（上昇率）</h3>
-          <div id="distSummary" class="meta" style="margin-bottom:10px;">—</div>
-          <div id="distTable"></div>
-        </div>
-
-        <div class="panel">
-          <h3 style="margin:0 0 10px;">指数の設定</h3>
-          <table>
-            <tbody>
-              <tr>
-                <th>頻度</th>
-                <td>週次</td>
-              </tr>
-              <tr>
-                <th>計算対象</th>
-                <td>週次価格が「今週」と「前週」に存在するスリーブ</td>
-              </tr>
-              <tr>
-                <th>集計</th>
-                <td>上昇率（%）の単純平均（価格水準に引っ張られない）</td>
-              </tr>
-              <tr>
-                <th>外れ値抑制</th>
-                <td>対数リターンをハードクリップ（比率2.5倍相当）し、サンプル十分時はp5-p95でwinsorize</td>
-              </tr>
-              <tr>
-                <th>指数化</th>
-                <td>基準週=100の累積指数。各週の市場変化率を積み上げ</td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="meta" style="margin-top:10px;">
-            ※ スリーブ市場が拡大したら、クリップ範囲は見直し推奨です。
-          </div>
+          <p id="aiCommentBody" class="ai-comment-body">コメントを読み込み中です。</p>
         </div>
       </div>
 
       <div class="contrib-grid">
         <div class="panel">
-          <h3 style="margin:0 0 10px;">上昇寄与スリーブ</h3>
+          <h3 class="section-title">上昇寄与スリーブ</h3>
           <div class="meta" style="margin-bottom:10px;">指数変動への寄与度（今週）</div>
           <div id="contribUp" class="contrib-list"></div>
         </div>
         <div class="panel">
-          <h3 style="margin:0 0 10px;">下落寄与スリーブ</h3>
+          <h3 class="section-title">下落寄与スリーブ</h3>
           <div class="meta" style="margin-bottom:10px;">指数変動への寄与度（今週）</div>
           <div id="contribDown" class="contrib-list"></div>
         </div>
       </div>
 
-      <div class="panel" style="margin-top:14px;">
-        <h3 style="margin:0 0 10px;">関連ページ</h3>
+      <div class="panel dist-panel">
+        <h3 class="section-title">今週の分布</h3>
+        <div id="distSummary" class="meta" style="margin-bottom:10px;">-</div>
+        <div id="distTable"></div>
+      </div>
+
+      <div class="panel table-panel">
+        <h3 class="section-title">週次データ表</h3>
+        <div id="indexTable"></div>
+      </div>
+
+      <details class="panel settings-details">
+        <summary>算出方法 / 指数の設定</summary>
+        <div class="settings-body">
+          <div class="note" style="margin-top:0;">
+            指数は観測データベースをもとに、前週比の変化率を週次で積み上げた参考指標です。<br>
+            2025年1月1日を起点に連鎖指数として算出しています。
+          </div>
+          <table style="margin-top:10px;">
+            <tbody>
+              <tr><th>粒度</th><td>週次</td></tr>
+              <tr><th>比較対象</th><td>前週と今週の両方にデータがあるスリーブ</td></tr>
+              <tr><th>重み付け</th><td>取引件数の幾何平均で加重（偏り抑制）</td></tr>
+              <tr><th>外れ値補正</th><td>最大比率2.5倍でクリップし、サンプル十分時はp5-p95でwinsorize</td></tr>
+              <tr><th>指数方式</th><td>基準週=100の連鎖指数（週次積み上げ）</td></tr>
+            </tbody>
+          </table>
+          <div class="meta" style="margin-top:10px;">※ 参考指標であり、厳密な金融指数ではありません。</div>
+        </div>
+      </details>
+
+      <div class="panel">
+        <h3 class="section-title">関連ページ</h3>
         <div class="quick-links">
           <a class="btn" href="./surge.html">急騰ランキング</a>
           <a class="btn" href="./growth.html">上昇率ランキング</a>
