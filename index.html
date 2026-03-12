@@ -133,6 +133,7 @@
       .home-hero-search .hero-search-field .search-autocomplete { max-height: min(38vh, 300px); }
       .home-hero-search .btn, .home-cta .btn { width: 100%; }
       .home-cta-row { width: 100%; flex-wrap: wrap; }
+      .home-cta { display: none; }
     }
     @media (prefers-reduced-motion: reduce) {
       .home-bubble, .sleeve-shape, .sections .skeleton-tile { animation: none !important; }
@@ -171,14 +172,14 @@
             <h1 class="hero-brand-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
           </div>
           <p class="home-kicker">POKE SLEEVE SEARCH</p>
-          <p class="home-display">ポケモンスリーブ（デッキシールド）の<br>データサイト</p>
+          <p class="home-display">ポケモンスリーブ（デッキシールド）のデータサイト</p>
           <form class="home-hero-search" id="heroSearchForm" action="./zukan.html" method="get" role="search" aria-label="スリーブ検索">
             <div class="hero-search-field">
               <input type="text" id="heroSearch" name="q" placeholder="キーワードでスリーブを検索" autocomplete="off">
             </div>
             <button class="btn" type="submit">検索</button>
           </form>
-          <p class="home-copy">ポケモンスリーブ（デッキシールド）の図鑑と価格相場を掲載するデータサイト。<br>コレクションや相場チェックに役立つ情報をまとめています。</p>
+          <p class="home-copy">ポケモンスリーブ（デッキシールド）の図鑑と価格相場を掲載するデータサイト。コレクションや相場チェックに役立つ情報をまとめています。</p>
           <p class="data-note">※価格はフリマアプリ等の売却履歴をもとに独自集計しています。</p>
           <div class="home-cta">
             <div class="home-cta-row">
@@ -614,13 +615,20 @@
       __headerTabVisibilityWired = true;
       const hero = document.querySelector(".home-hero");
       if (!hero) return;
-      document.body.classList.add("home-header-hidden");
       const apply = (showHeader) => document.body.classList.toggle("home-header-hidden", !showHeader);
+      const mobileMq = window.matchMedia("(max-width: 740px)");
+      if (mobileMq.matches) apply(true);
+      else document.body.classList.add("home-header-hidden");
       let rafId = null;
       let shown = false;
       const hysteresis = 56;
       const update = () => {
         rafId = null;
+        if (mobileMq.matches) {
+          shown = true;
+          apply(true);
+          return;
+        }
         const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--site-header-h")) || 64;
         const heroBottomY = hero.offsetTop + hero.offsetHeight;
         const showAtY = Math.max(0, heroBottomY - headerH);
