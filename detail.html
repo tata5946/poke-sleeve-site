@@ -342,6 +342,115 @@
       box-shadow: 0 2px 8px rgba(16, 24, 40, .1);
     }
 
+    .chart-period-switch {
+      margin-top: 10px;
+      display: inline-flex;
+      gap: 6px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    .chart-period-btn {
+      border: 1px solid transparent;
+      background: transparent;
+      color: #475467;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .chart-period-btn.is-active {
+      background: #fff;
+      color: #111;
+      border-color: var(--border);
+      box-shadow: 0 2px 8px rgba(16, 24, 40, .1);
+    }
+
+    .chart-subnote {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #667085;
+      line-height: 1.6;
+    }
+
+    .chart-legend {
+      margin-top: 8px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: #475467;
+      font-weight: 700;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .legend-mark {
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .chart-footnotes {
+      margin-top: 10px;
+      display: grid;
+      gap: 4px;
+      font-size: 12px;
+      color: #667085;
+      line-height: 1.6;
+    }
+
+    .single-observation-card {
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 6px 16px rgba(16, 24, 40, .06);
+      padding: 12px;
+    }
+
+    .single-observation-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin: 0 0 10px;
+    }
+
+    .single-observation-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .single-observation-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fbfcff;
+      padding: 8px;
+    }
+
+    .single-observation-item .label {
+      font-size: 11px;
+      color: #667085;
+      font-weight: 800;
+    }
+
+    .single-observation-item .value {
+      margin-top: 4px;
+      font-size: 14px;
+      color: #101828;
+      font-weight: 900;
+    }
+
     @media (max-width: 900px) {
       .detail-wrap {
         grid-template-columns: 1fr;
@@ -369,6 +478,10 @@
 
       .chart-wrap {
         padding: 8px 8px 6px;
+      }
+
+      .single-observation-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -429,12 +542,16 @@
 
         <div class="detail-price-grid">
           <div class="panel">
-            <h3 id="priceSectionTitle" style="margin:0;">月次価格（monthly）</h3>
-            <div class="granularity-switch" role="tablist" aria-label="表示粒度">
-              <button type="button" class="granularity-btn is-active" id="granularityMonthBtn" data-granularity="monthly">月次</button>
-              <button type="button" class="granularity-btn" id="granularityWeekBtn" data-granularity="weekly">週次</button>
+            <h3 id="priceSectionTitle" style="margin:0;">価格推移（観測ベース）</h3>
+            <div class="chart-period-switch" role="tablist" aria-label="表示期間">
+              <button type="button" class="chart-period-btn is-active" id="period3mBtn" data-period="3m">直近3か月</button>
+              <button type="button" class="chart-period-btn" id="period1yBtn" data-period="1y">1年</button>
+              <button type="button" class="chart-period-btn" id="periodAllBtn" data-period="all">全期間</button>
             </div>
+            <div id="chartModeNote" class="chart-subnote"></div>
+            <div id="chartLegend" class="chart-legend" aria-label="凡例"></div>
             <div id="weeklyChart"></div>
+            <div id="chartFootnotes" class="chart-footnotes"></div>
             <div id="weeklyTable"></div>
           </div>
         </div>
@@ -671,6 +788,413 @@
       return `${year}年${month}月`;
     }
 
+    function parseNumberLike(v) {
+      if (v == null) return null;
+      if (typeof v === "number") return Number.isFinite(v) ? v : null;
+      const s = String(v).trim();
+      if (!s || s === "-") return null;
+      const cleaned = s.replace(/[^\d.\-]/g, "");
+      if (!cleaned) return null;
+      const n = Number(cleaned);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function parseObservationPeriod(raw) {
+      const s = String(raw ?? "").trim();
+      if (!s) return null;
+      const week = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (week) {
+        const iso = `${week[1]}-${week[2]}-${week[3]}`;
+        return { granularity: "week", periodStart: iso, periodLabel: `${iso}週` };
+      }
+      const month = s.match(/^(\d{4})-(\d{2})$/);
+      if (month) {
+        const ym = `${month[1]}-${month[2]}`;
+        return { granularity: "month", periodStart: `${ym}-01`, periodLabel: ym };
+      }
+      const year = s.match(/^(\d{4})$/);
+      if (year) {
+        return { granularity: "year", periodStart: `${year[1]}-01-01`, periodLabel: `${year[1]}年` };
+      }
+      const d = new Date(s);
+      const iso = toISODate(d);
+      if (iso) return { granularity: "week", periodStart: iso, periodLabel: `${iso}週` };
+      return null;
+    }
+
+    function granularityJa(g) {
+      if (g === "week") return "週次";
+      if (g === "month") return "月次";
+      return "年次";
+    }
+
+    function normalizeObservationRows(arr) {
+      const rows = Array.isArray(arr) ? arr : [];
+      const buckets = new Map();
+      for (const x of rows) {
+        const period = parseObservationPeriod(x?.week ?? x?.period ?? x?.date);
+        if (!period) continue;
+        const priceNum = parseNumberLike(x?.price);
+        const countNum = parseNumberLike(x?.count);
+        const price = Number.isFinite(priceNum) && priceNum > 0 ? priceNum : null;
+        const count = Number.isFinite(countNum) ? Math.max(0, Math.round(countNum)) : null;
+        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        const key = `${period.granularity}|${period.periodStart}`;
+        if (!buckets.has(key)) {
+          const ts = new Date(period.periodStart).getTime();
+          buckets.set(key, {
+            granularity: period.granularity,
+            periodStart: period.periodStart,
+            periodLabel: period.periodLabel,
+            timestamp: Number.isFinite(ts) ? ts : NaN,
+            weightedPriceSum: 0,
+            weightedCount: 0,
+            simplePriceSum: 0,
+            simpleCount: 0,
+            tradeCount: 0,
+            hasCount: false
+          });
+        }
+        const b = buckets.get(key);
+        if (!hasTrade || price == null) continue;
+        if (Number.isFinite(count) && count > 0) {
+          b.weightedPriceSum += price * count;
+          b.weightedCount += count;
+          b.tradeCount += count;
+          b.hasCount = true;
+        } else {
+          b.simplePriceSum += price;
+          b.simpleCount += 1;
+        }
+      }
+
+      return Array.from(buckets.values())
+        .map((b) => {
+          let avgPrice = null;
+          if (b.weightedCount > 0) avgPrice = Math.round(b.weightedPriceSum / b.weightedCount);
+          else if (b.simpleCount > 0) avgPrice = Math.round(b.simplePriceSum / b.simpleCount);
+          const tradeCount = b.hasCount ? b.tradeCount : null;
+          const hasTrade = Number.isFinite(avgPrice) && avgPrice > 0 && (tradeCount == null || tradeCount > 0);
+          return {
+            granularity: b.granularity,
+            periodStart: b.periodStart,
+            periodLabel: b.periodLabel,
+            timestamp: b.timestamp,
+            avgPrice: hasTrade ? avgPrice : null,
+            tradeCount,
+            hasTrade
+          };
+        })
+        .filter((r) => Number.isFinite(r.timestamp))
+        .sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function classifyObservationMode(rows) {
+      const tradedCount = (Array.isArray(rows) ? rows : []).filter((r) => r.hasTrade && Number.isFinite(r.avgPrice)).length;
+      if (tradedCount <= 0) return "empty";
+      if (tradedCount === 1) return "single";
+      if (tradedCount <= 3) return "few";
+      return "normal";
+    }
+
+    function filterObservationsByPeriod(rows, periodKey) {
+      const list = Array.isArray(rows) ? rows : [];
+      if (!list.length) return [];
+      const maxTs = Math.max(...list.map((r) => Number(r.timestamp)).filter((v) => Number.isFinite(v)));
+      if (!Number.isFinite(maxTs)) return [];
+      if (periodKey === "all") return list.slice();
+      const dayMs = 24 * 60 * 60 * 1000;
+      const startTs = periodKey === "3m" ? (maxTs - 92 * dayMs) : (maxTs - 366 * dayMs);
+      return list.filter((r) => {
+        if (!Number.isFinite(r.timestamp)) return false;
+        if (r.timestamp < startTs || r.timestamp > maxTs) return false;
+        if (periodKey === "3m") return r.granularity === "week";
+        if (periodKey === "1y") return r.granularity !== "year";
+        return true;
+      });
+    }
+
+    function renderObservationLegend() {
+      const el = document.getElementById("chartLegend");
+      if (!el) return;
+      el.innerHTML = `
+        <span class="legend-item"><span class="legend-mark">●</span>週次データ</span>
+        <span class="legend-item"><span class="legend-mark">○</span>月次データ</span>
+        <span class="legend-item"><span class="legend-mark">△</span>年次データ</span>
+        <span class="legend-item">線が切れている箇所: 取引記録なし</span>
+      `;
+    }
+
+    function renderObservationFootnotes() {
+      const el = document.getElementById("chartFootnotes");
+      if (!el) return;
+      el.innerHTML = `
+        <div>※ 2026年1月以降は週次、2025年8月〜12月は月次、それ以前は年次ベースの観測データです。</div>
+        <div>※ 取引記録がない期間はグラフを表示していません。</div>
+        <div>※ 観測件数が少ない場合は参考値としてご覧ください。</div>
+      `;
+    }
+
+    function renderObservationTable(rows) {
+      const list = Array.isArray(rows) ? rows.slice() : [];
+      if (!list.length) return `<div class="meta">観測データがありません</div>`;
+      const html = list.reverse().map((r) => {
+        const g = granularityJa(r.granularity);
+        const priceCell = (r.hasTrade && Number.isFinite(r.avgPrice)) ? `${Number(r.avgPrice).toLocaleString()}円` : "-";
+        const countCell = Number.isFinite(r.tradeCount) ? `${r.tradeCount}件` : "-";
+        return `<tr><td>${escapeHtml(r.periodLabel)}</td><td>${escapeHtml(g)}</td><td>${priceCell}</td><td>${countCell}</td></tr>`;
+      }).join("");
+      return `
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>期間</th><th>粒度</th><th>平均価格</th><th>件数</th></tr></thead>
+            <tbody>${html}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderSingleObservationCard(containerId, obs) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      if (!obs) {
+        el.innerHTML = `<div class="chart-wrap"><div class="meta">観測データがありません</div></div>`;
+        return;
+      }
+      const priceText = Number.isFinite(obs.avgPrice) ? `${obs.avgPrice.toLocaleString()}円` : "-";
+      const countText = Number.isFinite(obs.tradeCount) ? `${obs.tradeCount}件` : "1件";
+      el.innerHTML = `
+        <div class="single-observation-card">
+          <p class="single-observation-title">現在確認できる価格</p>
+          <div class="single-observation-grid">
+            <div class="single-observation-item">
+              <div class="label">観測価格</div>
+              <div class="value">${priceText}</div>
+            </div>
+            <div class="single-observation-item">
+              <div class="label">観測件数</div>
+              <div class="value">${countText}</div>
+            </div>
+            <div class="single-observation-item">
+              <div class="label">最終観測時期</div>
+              <div class="value">${escapeHtml(obs.periodLabel)}</div>
+            </div>
+            <div class="single-observation-item">
+              <div class="label">粒度</div>
+              <div class="value">${granularityJa(obs.granularity)}</div>
+            </div>
+          </div>
+          <div class="chart-subnote">観測データが1件のみのため、価格推移チャートではなく最新観測価格を表示しています。</div>
+        </div>
+      `;
+    }
+
+    function renderObservationChart(containerId, title, rows, options = {}) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      const simple = options.simple === true;
+      const traded = (Array.isArray(rows) ? rows : []).filter((r) => r.hasTrade && Number.isFinite(r.avgPrice));
+      if (!traded.length) {
+        el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">観測データがありません</div></div>`;
+        return;
+      }
+
+      const W = 920;
+      const H = 420;
+      const padL = 64;
+      const padR = 18;
+      const padT = 16;
+      const padB = 52;
+      const chartW = W - padL - padR;
+      const chartH = H - padT - padB;
+
+      const xMin = Math.min(...traded.map((p) => p.timestamp));
+      const xMax = Math.max(...traded.map((p) => p.timestamp));
+      const safeSpanX = Math.max(24 * 60 * 60 * 1000, xMax - xMin);
+      const yMinRaw = Math.min(...traded.map((p) => p.avgPrice));
+      const yMaxRaw = Math.max(...traded.map((p) => p.avgPrice));
+      const ySpanRaw = Math.max(1, yMaxRaw - yMinRaw);
+      const yPad = Math.max(1, Math.round(ySpanRaw * 0.12));
+      const yMin = Math.max(0, yMinRaw - yPad);
+      const yMax = yMaxRaw + yPad;
+
+      const xToPx = (ts) => padL + ((ts - xMin) / safeSpanX) * chartW;
+      const yToPx = (v) => padT + (1 - ((v - yMin) / Math.max(1, yMax - yMin))) * chartH;
+
+      const yTicks = 4;
+      const yGrid = [];
+      const yLabels = [];
+      for (let i = 0; i <= yTicks; i++) {
+        const v = yMin + (i / yTicks) * (yMax - yMin);
+        const y = yToPx(v);
+        yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e4e7ec"></line>`);
+        yLabels.push(`<text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#667085">${Math.round(v).toLocaleString()}</text>`);
+      }
+
+      const xTicks = 4;
+      const xLabels = [];
+      for (let i = 0; i <= xTicks; i++) {
+        const ts = xMin + (i / xTicks) * safeSpanX;
+        const d = new Date(ts);
+        const yy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        const label = safeSpanX > (550 * 24 * 60 * 60 * 1000) ? `${yy}/${mm}` : `${mm}/${dd}`;
+        const x = xToPx(ts);
+        xLabels.push(`<text x="${x}" y="${H - 16}" text-anchor="middle" font-size="11" fill="#667085">${label}</text>`);
+      }
+
+      const styles = {
+        week: { stroke: "#1d4ed8", fill: "#1d4ed8", dash: "", maxGapDays: 10, marker: "circle" },
+        month: { stroke: "#2563eb", fill: "#fff", dash: "4 4", maxGapDays: 45, marker: "square" },
+        year: { stroke: "#60a5fa", fill: "#fff", dash: "2 6", maxGapDays: 400, marker: "triangle" }
+      };
+
+      const tradedByG = {
+        week: traded.filter((r) => r.granularity === "week"),
+        month: traded.filter((r) => r.granularity === "month"),
+        year: traded.filter((r) => r.granularity === "year")
+      };
+
+      const lineParts = [];
+      const markerParts = [];
+      const hitParts = [];
+      const hitMeta = [];
+      let hitIdx = 0;
+
+      for (const g of ["week", "month", "year"]) {
+        const st = styles[g];
+        const pts = tradedByG[g].slice().sort((a, b) => a.timestamp - b.timestamp);
+        if (!pts.length) continue;
+        let seg = [];
+        for (let i = 0; i < pts.length; i++) {
+          const p = pts[i];
+          if (!seg.length) {
+            seg.push(p);
+            continue;
+          }
+          const prev = seg[seg.length - 1];
+          const gapDays = Math.abs(p.timestamp - prev.timestamp) / (24 * 60 * 60 * 1000);
+          if (gapDays > st.maxGapDays) {
+            if (seg.length >= 2) {
+              const d = seg.map((x, idx) => `${idx === 0 ? "M" : "L"} ${xToPx(x.timestamp)} ${yToPx(x.avgPrice)}`).join(" ");
+              lineParts.push(`<path d="${d}" fill="none" stroke="${st.stroke}" stroke-width="${simple ? 1.5 : 2.3}" stroke-linecap="round" stroke-dasharray="${st.dash}" opacity="${simple ? 0.55 : 0.95}"></path>`);
+            }
+            seg = [p];
+          } else {
+            seg.push(p);
+          }
+        }
+        if (seg.length >= 2) {
+          const d = seg.map((x, idx) => `${idx === 0 ? "M" : "L"} ${xToPx(x.timestamp)} ${yToPx(x.avgPrice)}`).join(" ");
+          lineParts.push(`<path d="${d}" fill="none" stroke="${st.stroke}" stroke-width="${simple ? 1.5 : 2.3}" stroke-linecap="round" stroke-dasharray="${st.dash}" opacity="${simple ? 0.55 : 0.95}"></path>`);
+        }
+
+        for (const p of pts) {
+          const cx = xToPx(p.timestamp);
+          const cy = yToPx(p.avgPrice);
+          if (st.marker === "circle") {
+            markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${simple ? 3 : 4}" fill="${st.fill}" stroke="${st.stroke}" stroke-width="1.5"></circle>`);
+          } else if (st.marker === "square") {
+            const s = simple ? 6 : 7;
+            markerParts.push(`<rect x="${cx - s / 2}" y="${cy - s / 2}" width="${s}" height="${s}" rx="1.5" fill="${st.fill}" stroke="${st.stroke}" stroke-width="1.5"></rect>`);
+          } else {
+            const size = simple ? 6 : 7;
+            markerParts.push(`<path d="M ${cx} ${cy - size / 2} L ${cx - size / 2} ${cy + size / 2} L ${cx + size / 2} ${cy + size / 2} Z" fill="${st.fill}" stroke="${st.stroke}" stroke-width="1.5"></path>`);
+          }
+          hitParts.push(`<circle class="obs-hit" data-hit="${hitIdx}" cx="${cx}" cy="${cy}" r="12" fill="transparent"></circle>`);
+          hitMeta.push(p);
+          hitIdx += 1;
+        }
+      }
+
+      el.innerHTML = `
+        <div class="chart-wrap">
+          <div class="chart-title">${escapeHtml(title)}</div>
+          <div class="chart-tooltip"></div>
+          <div class="chart-viewport">
+            <svg class="chart" viewBox="0 0 ${W} ${H}">
+              <g>${yGrid.join("")}</g>
+              <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#98a2b3"></line>
+              <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#98a2b3"></line>
+              <g>${lineParts.join("")}</g>
+              <g>${markerParts.join("")}</g>
+              <g>${hitParts.join("")}</g>
+              <g>${yLabels.join("")}</g>
+              <g>${xLabels.join("")}</g>
+            </svg>
+          </div>
+        </div>
+      `;
+
+      const wrap = el.querySelector(".chart-wrap");
+      const tip = el.querySelector(".chart-tooltip");
+      const hits = Array.from(el.querySelectorAll(".obs-hit"));
+      const showTip = (ev, obs) => {
+        if (!tip || !wrap || !obs) return;
+        const g = granularityJa(obs.granularity);
+        const avg = Number.isFinite(obs.avgPrice) ? `${obs.avgPrice.toLocaleString()}円` : "-";
+        const cnt = Number.isFinite(obs.tradeCount) ? `${obs.tradeCount}件` : "-";
+        tip.textContent = `${obs.periodLabel} / ${g}平均 ${avg} / 取引 ${cnt}`;
+        tip.style.display = "block";
+        const wrapRect = wrap.getBoundingClientRect();
+        const x = Math.min(Math.max(ev.clientX - wrapRect.left, 70), wrapRect.width - 70);
+        tip.style.left = `${x}px`;
+        tip.style.top = `8px`;
+      };
+      const hideTip = () => {
+        if (tip) tip.style.display = "none";
+      };
+
+      hits.forEach((node) => {
+        const idx = Number(node.getAttribute("data-hit"));
+        const obs = Number.isFinite(idx) ? hitMeta[idx] : null;
+        node.addEventListener("mousemove", (ev) => showTip(ev, obs));
+        node.addEventListener("mouseenter", (ev) => showTip(ev, obs));
+        node.addEventListener("click", (ev) => showTip(ev, obs));
+      });
+
+      if (wrap) wrap.addEventListener("mouseleave", hideTip);
+    }
+
+    function setPriceKpiFromObservations(rows) {
+      const latestEl = document.getElementById("latestWeekly");
+      const deltaEl = document.getElementById("weeklyDelta");
+      const countEl = document.getElementById("weeklyCount");
+      const labelEl = document.getElementById("latestPriceLabel");
+      if (labelEl) labelEl.textContent = "最新観測価格";
+
+      const traded = (Array.isArray(rows) ? rows : []).filter((r) => r.hasTrade && Number.isFinite(r.avgPrice));
+      if (!traded.length) {
+        latestEl.textContent = "-";
+        deltaEl.textContent = "比較できるデータがありません";
+        deltaEl.className = "delta flat";
+        countEl.textContent = "取引件数: -";
+        return;
+      }
+
+      const latest = traded[traded.length - 1];
+      latestEl.textContent = `${latest.avgPrice.toLocaleString()}円`;
+      countEl.textContent = `取引件数: ${Number.isFinite(latest.tradeCount) ? `${latest.tradeCount}件` : "-"}`;
+
+      const prev = traded.slice(0, -1).reverse().find((r) => r.granularity === latest.granularity) || null;
+      if (!prev) {
+        deltaEl.textContent = "同粒度の比較データがありません";
+        deltaEl.className = "delta flat";
+        return;
+      }
+
+      const diff = latest.avgPrice - prev.avgPrice;
+      const abs = Math.abs(diff);
+      let cls = "flat";
+      let arrow = "→";
+      let sign = "±";
+      if (diff > 0) { cls = "up"; arrow = "↑"; sign = "+"; }
+      if (diff < 0) { cls = "down"; arrow = "↓"; sign = "-"; }
+      deltaEl.className = "delta " + cls;
+      deltaEl.textContent = `${arrow} 前回${granularityJa(latest.granularity)}観測比 ${sign}${abs.toLocaleString()}円`;
+    }
+
     function currentShareUrl() {
       const u = new URL(location.href);
       u.hash = "";
@@ -694,16 +1218,16 @@
       return ok;
     }
 
-    function setupShare(sleeve, weeklyRows) {
+    function setupShare(sleeve, observationRows) {
       const shareXBtn = document.getElementById("shareXBtn");
       const shareInstagramBtn = document.getElementById("shareInstagramBtn");
       const statusEl = document.getElementById("shareStatus");
       if (!shareXBtn || !shareInstagramBtn || !statusEl) return;
 
-      const pair = latestTwoTradedWeeks(weeklyRows);
-      const priceText = (pair && pair.latest && Number.isFinite(pair.latest.price))
-        ? `最新週次価格: ${pair.latest.price.toLocaleString()}円`
-        : "最新週次価格: -";
+      const pair = latestTwoTradedObservations(observationRows);
+      const priceText = (pair && pair.latest && Number.isFinite(pair.latest.avgPrice))
+        ? `最新観測価格: ${pair.latest.avgPrice.toLocaleString()}円`
+        : "最新観測価格: -";
       const shareUrl = currentShareUrl();
       const shareText = `【${sleeve.name || "ポケカスリーブ"}】${priceText} #ポケカ #ポケモンカード`;
 
@@ -730,19 +1254,22 @@
       });
     }
 
-    function latestTwoTradedWeeks(rows) {
-      const traded = (Array.isArray(rows) ? rows : []).filter(r => Number.isFinite(r.price) && r.price > 0);
+    function latestTwoTradedObservations(rows) {
+      const traded = (Array.isArray(rows) ? rows : []).filter((r) => r.hasTrade && Number.isFinite(r.avgPrice) && r.avgPrice > 0);
       if (traded.length === 0) return null;
+      const latest = traded[traded.length - 1];
+      const prev = traded.length >= 2 ? traded[traded.length - 2] : null;
+      return { latest, prev };
+    }
 
-      const uniq = [];
-      const seen = new Set();
-      for (let i = traded.length - 1; i >= 0; i--) {
-        if (seen.has(traded[i].week)) continue;
-        seen.add(traded[i].week);
-        uniq.push(traded[i]);
-        if (uniq.length === 2) break;
-      }
-      return { latest: uniq[0], prev: uniq[1] || null };
+    // Backward-compatible helper for legacy functions kept in this file.
+    function latestTwoTradedWeeks(rows) {
+      const traded = (Array.isArray(rows) ? rows : []).filter((r) => Number.isFinite(r?.price) && r.price > 0);
+      if (!traded.length) return null;
+      return {
+        latest: traded[traded.length - 1],
+        prev: traded.length >= 2 ? traded[traded.length - 2] : null
+      };
     }
 
     function renderTableWeekly(rows) {
@@ -1276,34 +1803,56 @@
       const mercariLink = document.getElementById("mercariLink");
       if (mercariLink) mercariLink.href = buildMercariSearchUrl(s.name);
 
-      const weeklyRows = normalizeWeekly(s.weeklyPrices);
-      const monthlyRows = toMonthlyFromWeekly(weeklyRows);
-
+      const observationRows = normalizeObservationRows(s.weeklyPrices);
       const chartTitleEl = document.getElementById("priceSectionTitle");
-      const monthBtn = document.getElementById("granularityMonthBtn");
-      const weekBtn = document.getElementById("granularityWeekBtn");
-      let granularity = "monthly";
+      const modeNoteEl = document.getElementById("chartModeNote");
+      const period3mBtn = document.getElementById("period3mBtn");
+      const period1yBtn = document.getElementById("period1yBtn");
+      const periodAllBtn = document.getElementById("periodAllBtn");
+      let currentPeriod = "3m";
 
-      const applyGranularity = (next) => {
-        granularity = next === "weekly" ? "weekly" : "monthly";
-        const rows = granularity === "monthly" ? monthlyRows : weeklyRows;
-        const labelJa = granularity === "monthly" ? "月次" : "週次";
-        const labelEn = granularity === "monthly" ? "monthly" : "weekly";
+      renderObservationLegend();
+      renderObservationFootnotes();
+      setPriceKpiFromObservations(observationRows);
 
-        if (chartTitleEl) chartTitleEl.textContent = `${labelJa}価格（${labelEn}）`;
-        renderLineChart("weeklyChart", `${labelJa}価格 推移`, rows, "week", "price", { mode: granularity });
-        document.getElementById("weeklyTable").innerHTML = renderTableWeekly(rows);
-        setPriceKpi(rows, `最新${labelJa}価格`);
-
-        if (monthBtn) monthBtn.classList.toggle("is-active", granularity === "monthly");
-        if (weekBtn) weekBtn.classList.toggle("is-active", granularity === "weekly");
+      const setPeriodButtons = (period) => {
+        if (period3mBtn) period3mBtn.classList.toggle("is-active", period === "3m");
+        if (period1yBtn) period1yBtn.classList.toggle("is-active", period === "1y");
+        if (periodAllBtn) periodAllBtn.classList.toggle("is-active", period === "all");
       };
 
-      if (monthBtn) monthBtn.addEventListener("click", () => applyGranularity("monthly"));
-      if (weekBtn) weekBtn.addEventListener("click", () => applyGranularity("weekly"));
+      const applyPeriod = (period) => {
+        currentPeriod = (period === "1y" || period === "all") ? period : "3m";
+        const scoped = filterObservationsByPeriod(observationRows, currentPeriod);
+        const mode = classifyObservationMode(scoped);
+        const titleSuffix = currentPeriod === "3m" ? "（直近3か月）" : currentPeriod === "1y" ? "（1年）" : "（全期間）";
+        if (chartTitleEl) chartTitleEl.textContent = `価格推移（観測ベース）${titleSuffix}`;
 
-      applyGranularity("monthly");
-      setupShare(s, weeklyRows);
+        if (mode === "empty") {
+          document.getElementById("weeklyChart").innerHTML = `<div class="chart-wrap"><div class="meta">選択期間に観測データがありません</div></div>`;
+          if (modeNoteEl) modeNoteEl.textContent = "";
+        } else if (mode === "single") {
+          const only = scoped.find((r) => r.hasTrade && Number.isFinite(r.avgPrice)) || null;
+          renderSingleObservationCard("weeklyChart", only);
+          if (modeNoteEl) modeNoteEl.textContent = "";
+        } else if (mode === "few") {
+          renderObservationChart("weeklyChart", "観測価格（参考表示）", scoped, { simple: true });
+          if (modeNoteEl) modeNoteEl.textContent = "観測件数が少ないため、価格推移は参考表示です。";
+        } else {
+          renderObservationChart("weeklyChart", "観測価格 推移", scoped, { simple: false });
+          if (modeNoteEl) modeNoteEl.textContent = "";
+        }
+
+        document.getElementById("weeklyTable").innerHTML = renderObservationTable(scoped);
+        setPeriodButtons(currentPeriod);
+      };
+
+      if (period3mBtn) period3mBtn.addEventListener("click", () => applyPeriod("3m"));
+      if (period1yBtn) period1yBtn.addEventListener("click", () => applyPeriod("1y"));
+      if (periodAllBtn) periodAllBtn.addEventListener("click", () => applyPeriod("all"));
+
+      applyPeriod(currentPeriod);
+      setupShare(s, observationRows);
     }
 
     document.addEventListener("DOMContentLoaded", () => main());
