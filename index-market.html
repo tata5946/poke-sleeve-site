@@ -238,7 +238,7 @@
         </div>
 
         <div class="note" style="margin-top:12px;">
-          週次指数は「全スリーブの週次上昇率（%）の平均」を用いて、毎週「12週間前=100」とするローリング基準で算出します。<br>
+          週次指数は、前週と今週の両方にデータがあるスリーブのみを対象に、取引件数を考慮した加重平均で算出します。<br>
           ※ データ仕様上、2025年以前の「月次（毎月1日）」や「まとめ（2025/01/01）」は週次指数の計算対象から除外します。
         </div>
 
@@ -279,11 +279,11 @@
               </tr>
               <tr>
                 <th>外れ値抑制</th>
-                <td>週次上昇率を -60%〜+100% にクリップ（調整可）</td>
+                <td>対数リターンをハードクリップ（比率2.5倍相当）し、サンプル十分時はp5-p95でwinsorize</td>
               </tr>
               <tr>
                 <th>指数化</th>
-                <td>毎週「12週間前=100」。直近12週の週次平均上昇率を乗算</td>
+                <td>基準週=100の累積指数。各週の市場変化率を積み上げ</td>
               </tr>
             </tbody>
           </table>
@@ -1082,6 +1082,120 @@
       updateRange(initialStart, data.length - 1);
     }
 
+    // ---- v2: market index logic (overrides legacy implementations) ----
+    function percentileV2(sorted, p) {
+      if (!Array.isArray(sorted) || !sorted.length) return null;
+      const idx = Math.max(0, Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * p)));
+      return sorted[idx];
+    }
+
+    function buildWeeklyMarketSeries(sleeves, weeks, opts) {
+      const minPrice = opts?.minPrice ?? 300;
+      const minCount = opts?.minCount ?? 2;
+      const weightCap = opts?.weightCap ?? 20;
+      const maxRatio = opts?.maxRatio ?? 2.5;
+      const hardLo = -Math.log(maxRatio);
+      const hardHi = Math.log(maxRatio);
+      const hasValidPrice = (v) => Number.isFinite(v) && v > 0;
+
+      const maps = sleeves.map((s) => {
+        const m = new Map();
+        for (const r of normalizeWeekly(s.weeklyPrices)) {
+          if (periodKind(r.week) !== "week") continue;
+          m.set(r.week, { price: r.price, count: r.count });
+        }
+        return m;
+      });
+
+      const rows = [];
+      for (let i = 1; i < weeks.length; i++) {
+        const cur = weeks[i];
+        const prev = weeks[i - 1];
+        if (periodKind(cur) !== "week" || periodKind(prev) !== "week") continue;
+
+        const items = [];
+        let up = 0, down = 0, flat = 0;
+
+        for (const mp of maps) {
+          const p = mp.get(prev);
+          const c = mp.get(cur);
+          if (!p || !c) continue;
+          if (!hasValidPrice(p.price) || !hasValidPrice(c.price)) continue;
+          if (p.price < minPrice) continue;
+
+          const c0 = Number(p.count);
+          const c1 = Number(c.count);
+          if (!Number.isFinite(c0) || !Number.isFinite(c1)) continue;
+          if (c0 < minCount || c1 < minCount) continue;
+
+          let logR = Math.log(c.price / p.price);
+          logR = clip(logR, hardLo, hardHi);
+          const w = Math.min(Math.sqrt(c0 * c1), weightCap);
+          if (!(w > 0)) continue;
+
+          items.push({ logR, w });
+          if (logR > 0) up++;
+          else if (logR < 0) down++;
+          else flat++;
+        }
+
+        if (!items.length) {
+          rows.push({ week: cur, avgLogReturn: null, avgRate: null, sample: 0, up: 0, down: 0, flat: 0, confidence: "low" });
+          continue;
+        }
+
+        let lo = -Infinity;
+        let hi = Infinity;
+        if (items.length >= 20) {
+          const sorted = items.map((x) => x.logR).sort((a, b) => a - b);
+          lo = percentileV2(sorted, 0.05);
+          hi = percentileV2(sorted, 0.95);
+        }
+
+        let sw = 0;
+        let swr = 0;
+        for (const it of items) {
+          const rr = clip(it.logR, lo, hi);
+          sw += it.w;
+          swr += it.w * rr;
+        }
+        const avgLogReturn = sw > 0 ? (swr / sw) : null;
+        const avgRate = Number.isFinite(avgLogReturn) ? ((Math.exp(avgLogReturn) - 1) * 100) : null;
+        rows.push({
+          week: cur,
+          avgLogReturn,
+          avgRate,
+          sample: items.length,
+          up, down, flat,
+          confidence: items.length < 10 ? "low" : "normal"
+        });
+      }
+      return rows;
+    }
+
+    function buildCumulativeIndexFromRates(rateRows, baseIndex = 100) {
+      let indexVal = null;
+      let baseWeek = null;
+      const out = [];
+      for (let i = 0; i < rateRows.length; i++) {
+        const row = rateRows[i];
+        const hasRate = Number.isFinite(row?.avgLogReturn);
+        if (!hasRate) {
+          out.push({ ...row, index: indexVal, baseWeek });
+          continue;
+        }
+        if (indexVal == null) {
+          indexVal = baseIndex;
+          baseWeek = row.week;
+          out.push({ ...row, index: indexVal, baseWeek });
+          continue;
+        }
+        indexVal = indexVal * Math.exp(row.avgLogReturn);
+        out.push({ ...row, index: indexVal, baseWeek });
+      }
+      return out;
+    }
+
     async function main() {
       // header差し込みが遅いと #search が無いことがあるので待つ
       const waitForSearch = async () => {
@@ -1119,9 +1233,13 @@
       }
 
       // 市場系列（平均上昇率%）
-      const rateRows = buildWeeklyMarketSeries(sleeves, weeks, { clipLo: -60, clipHi: 100 });
-      const LOOKBACK_WEEKS = 12;
-      const series = buildRollingIndexFromRates(rateRows, LOOKBACK_WEEKS, 100);
+      const rateRows = buildWeeklyMarketSeries(sleeves, weeks, {
+        minPrice: 300,
+        minCount: 2,
+        weightCap: 20,
+        maxRatio: 2.5
+      });
+      const series = buildCumulativeIndexFromRates(rateRows, 100);
 
       // KPI表示用
       document.getElementById("subtitle").textContent =
@@ -1160,8 +1278,8 @@
       const kpiIndexMeta = document.getElementById("kpiIndexMeta");
       if (pairIdx) {
         kpiIndex.textContent = `${pairIdx.latest.index.toFixed(1)}`;
-        const baseRef = addDays(pairIdx.latest.week, -(LOOKBACK_WEEKS * 7));
-        kpiIndexMeta.textContent = `基準週：${baseRef ? formatPeriodLabel(baseRef) : "12週間前"} = 100`;
+        const baseRef = pairIdx.latest.baseWeek || null;
+        kpiIndexMeta.textContent = `基準週：${baseRef ? formatPeriodLabel(baseRef) : "—"} = 100`;
       }
 
       // チャート（指数）
