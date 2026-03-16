@@ -172,11 +172,12 @@
 
       const body = {
         action: "contact",
+        time: new Date().toISOString(),
         name: payload.name,
         subject: payload.subject,
         message: payload.message,
         page: location.href,
-        sentAt: new Date().toISOString()
+        status: "new"
       };
 
       const res = await fetch(endpoint, {
