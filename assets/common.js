@@ -8,6 +8,7 @@
 
 /* ----- Config ----- */
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxhonFM8hQmpcc3BzAoWVBMjHJbIU1i0QpxdqN9u9x7Gbyg8cLfgRb2Fiw7M-W7qz5Z/exec";
+const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
 const DATA_CACHE_KEY = "pokeSleeve:dataCache:v1";
 const DATA_CACHE_TTL_MS = 60 * 1000;
@@ -21,6 +22,23 @@ let __dataCachePromise = null;
 let __sleeveFeedbackWired = false;
 let __headerOffsetWired = false;
 let __autocompleteIndexPromise = null;
+
+function initGoogleAnalytics() {
+  if (!GA_MEASUREMENT_ID || typeof document === "undefined") return;
+  if (document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"]`)) return;
+
+  const externalScript = document.createElement("script");
+  externalScript.async = true;
+  externalScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_MEASUREMENT_ID)}`;
+  document.head.appendChild(externalScript);
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function gtag() { window.dataLayer.push(arguments); };
+  window.gtag("js", new Date());
+  window.gtag("config", GA_MEASUREMENT_ID);
+}
+
+initGoogleAnalytics();
 
 /* ----- Header / Footer HTML ----- */
 const HEADER_HTML = `
