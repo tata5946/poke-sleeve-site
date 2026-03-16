@@ -66,6 +66,7 @@ const HEADER_HTML = `
         <a href="./index.html" data-nav="index"><span class="ico" aria-hidden="true">🏠</span>ホーム</a>
         <a href="./zukan.html" data-nav="zukan"><span class="ico" aria-hidden="true">📚</span>図鑑</a>
         <a href="./ranking.html" data-nav="ranking"><span class="ico" aria-hidden="true">📊</span>価格ランキング</a>
+        <a href="./access-ranking.html" data-nav="access-ranking"><span class="ico" aria-hidden="true">👀</span>アクセスランキング</a>
         <a href="./growth.html" data-nav="growth"><span class="ico" aria-hidden="true">📈</span>高騰率</a>
         <a href="./surge.html" data-nav="surge"><span class="ico" aria-hidden="true">🔥</span>急上昇</a>
         <a href="./index-market.html" data-nav="market"><span class="ico" aria-hidden="true">🧭</span>スリーブ指数</a>
@@ -742,7 +743,8 @@ function ensureFavicon() {
 function setActiveNav() {
   const path = (location.pathname.split("/").pop() || "").toLowerCase();
   let key = "index";
-  if (path.includes("ranking")) key = "ranking";
+  if (path.includes("access-ranking")) key = "access-ranking";
+  else if (path.includes("ranking")) key = "ranking";
   else if (path.includes("zukan")) key = "zukan";
   else if (path.includes("growth")) key = "growth";
   else if (path.includes("surge")) key = "surge";
