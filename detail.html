@@ -828,6 +828,30 @@
       return "年次";
     }
 
+    function isIsoDateString(value) {
+      return /^\d{4}-\d{2}-\d{2}$/.test(String(value || ""));
+    }
+
+    function formatDateSlash(iso) {
+      const m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return String(iso || "");
+      return `${m[1]}/${m[2]}/${m[3]}`;
+    }
+
+    function formatMonthSlash(periodStart) {
+      const m = String(periodStart || "").match(/^(\d{4})-(\d{2})-\d{2}$/);
+      if (!m) return String(periodStart || "");
+      return `${m[1]}/${m[2]}`;
+    }
+
+    function resolveObservationGranularity(defaultGranularity, periodStart) {
+      const start = String(periodStart || "");
+      if (start === "2025-01-01") return "year";
+      if (isIsoDateString(start) && start >= "2025-08-01" && start <= "2025-12-31") return "month";
+      if (isIsoDateString(start) && start >= "2025-01-01") return "week";
+      return defaultGranularity || "year";
+    }
+
     function isLegacy2025DisplayPeriod(periodStart) {
       const m = String(periodStart || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
       if (!m) return false;
@@ -841,8 +865,11 @@
       if (String(obs.periodStart || "") === "2025-01-01") {
         return "発売日〜2025年8月（観測）";
       }
-      if (isLegacy2025DisplayPeriod(obs.periodStart)) {
-        return String(obs.periodStart || "");
+      if (obs.granularity === "month") {
+        return formatMonthSlash(obs.periodStart);
+      }
+      if (obs.granularity === "week" && isLegacy2025DisplayPeriod(obs.periodStart)) {
+        return formatDateSlash(obs.periodStart);
       }
       return String(obs.periodLabel || obs.periodStart || "");
     }
@@ -853,16 +880,17 @@
       for (const x of rows) {
         const period = parseObservationPeriod(x?.week ?? x?.period ?? x?.date);
         if (!period) continue;
+        const granularity = resolveObservationGranularity(period.granularity, period.periodStart);
         const priceNum = parseNumberLike(x?.price);
         const countNum = parseNumberLike(x?.count);
         const price = Number.isFinite(priceNum) && priceNum > 0 ? priceNum : null;
         const count = Number.isFinite(countNum) ? Math.max(0, Math.round(countNum)) : null;
         const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
-        const key = `${period.granularity}|${period.periodStart}`;
+        const key = `${granularity}|${period.periodStart}`;
         if (!buckets.has(key)) {
           const ts = new Date(period.periodStart).getTime();
           buckets.set(key, {
-            granularity: period.granularity,
+            granularity,
             periodStart: period.periodStart,
             periodLabel: period.periodLabel,
             timestamp: Number.isFinite(ts) ? ts : NaN,
@@ -948,7 +976,7 @@
       const el = document.getElementById("chartFootnotes");
       if (!el) return;
       el.innerHTML = `
-        <div>※ 2026年1月以降は週次、2025年8月〜12月は月次、それ以前は年次ベースの観測データです。</div>
+        <div>※ 年次: 発売日〜2025年8月（観測） / 月次: 2025/08〜2025/12 / 週次: 2025/01/01以降</div>
         <div>※ 取引記録がない期間はグラフを表示していません。</div>
         <div>※ 観測件数が少ない場合は参考値としてご覧ください。</div>
       `;
@@ -986,6 +1014,7 @@
       }
       const priceText = Number.isFinite(obs.avgPrice) ? `${obs.avgPrice.toLocaleString()}円` : "-";
       const countText = Number.isFinite(obs.tradeCount) ? `${obs.tradeCount}件` : "1件";
+      const periodText = toDisplayPeriodLabel(obs);
       el.innerHTML = `
         <div class="single-observation-card">
           <p class="single-observation-title">現在確認できる価格</p>
@@ -1000,7 +1029,7 @@
             </div>
             <div class="single-observation-item">
               <div class="label">最終観測時期</div>
-              <div class="value">${escapeHtml(obs.periodLabel)}</div>
+              <div class="value">${escapeHtml(periodText)}</div>
             </div>
             <div class="single-observation-item">
               <div class="label">粒度</div>
@@ -1067,9 +1096,9 @@
       }
 
       const styles = {
-        week: { stroke: "#1d4ed8", fill: "#1d4ed8" },
-        month: { stroke: "#2563eb", fill: "#93c5fd" },
-        year: { stroke: "#60a5fa", fill: "#dbeafe" }
+        week: { stroke: "#475467", fill: "#475467" },
+        month: { stroke: "#667085", fill: "#ffffff" },
+        year: { stroke: "#98a2b3", fill: "#ffffff" }
       };
 
       const tradedByG = {
@@ -1086,6 +1115,22 @@
       const latestKey = latest ? `${latest.granularity}|${latest.periodStart}` : "";
       const latestPriceY = latest ? yToPx(latest.avgPrice) : null;
 
+      function buildMarkerShape(point, cx, cy, radius, style, isLatest) {
+        if (isLatest) {
+          markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${radius + 3}" fill="rgba(71,84,103,0.12)" stroke="none"></circle>`);
+        }
+        if (point.granularity === "year") {
+          const triangle = [
+            `${cx},${cy - radius}`,
+            `${cx - radius * 0.88},${cy + radius * 0.72}`,
+            `${cx + radius * 0.88},${cy + radius * 0.72}`
+          ].join(" ");
+          markerParts.push(`<polygon points="${triangle}" fill="${style.fill}" stroke="${style.stroke}" stroke-width="${isLatest ? 2.2 : 1.6}"></polygon>`);
+          return;
+        }
+        markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${style.fill}" stroke="${style.stroke}" stroke-width="${isLatest ? 2.2 : 1.6}"></circle>`);
+      }
+
       for (const g of ["week", "month", "year"]) {
         const st = styles[g];
         const pts = tradedByG[g].slice().sort((a, b) => a.timestamp - b.timestamp);
@@ -1097,10 +1142,7 @@
           const key = `${p.granularity}|${p.periodStart}`;
           const isLatest = key === latestKey;
           const radius = isLatest ? 8 : 6;
-          if (isLatest) {
-            markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${radius + 3}" fill="rgba(29,78,216,0.15)" stroke="none"></circle>`);
-          }
-          markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${st.fill}" stroke="${st.stroke}" stroke-width="${isLatest ? 2.2 : 1.6}"></circle>`);
+          buildMarkerShape(p, cx, cy, radius, st, isLatest);
           hitParts.push(`<circle class="obs-hit" data-hit="${hitIdx}" cx="${cx}" cy="${cy}" r="14" fill="transparent"></circle>`);
           hitMeta.push(p);
           hitIdx += 1;
