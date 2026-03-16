@@ -592,6 +592,50 @@
       return await window.common.loadData();
     }
 
+    const ACCESS_USER_ID_KEY = "pokeSleeve:accessUserId";
+
+    function getOrCreateAccessUserId() {
+      try {
+        const saved = String(localStorage.getItem(ACCESS_USER_ID_KEY) || "").trim();
+        if (saved) return saved;
+      } catch (_) { }
+
+      let next = "";
+      try {
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          next = window.crypto.randomUUID();
+        }
+      } catch (_) { }
+      if (!next) next = `u_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+
+      try { localStorage.setItem(ACCESS_USER_ID_KEY, next); } catch (_) { }
+      return next;
+    }
+
+    async function logAccess(pageUrl) {
+      const endpoint = (window.common && window.common.GAS_URL) || window.GAS_URL || "";
+      if (!endpoint) return;
+
+      const body = {
+        action: "access",
+        page: String(pageUrl || location.href),
+        userAgent: navigator.userAgent || "",
+        userId: getOrCreateAccessUserId()
+      };
+
+      try {
+        await fetch(endpoint, {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(body)
+        });
+      } catch (_) { }
+    }
+
     function toISODate(d) {
       const dd = new Date(d);
       if (Number.isNaN(dd.getTime())) return null;
@@ -1824,6 +1868,8 @@
         showError("指定されたスリーブが見つかりませんでした。");
         return;
       }
+
+      logAccess(location.href);
 
       document.title = `${s.name || "スリーブ相場"} - ポケスリ相場ナビ`;
 
