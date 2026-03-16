@@ -7,7 +7,7 @@
  */
 
 /* ----- Config ----- */
-const GAS_URL = "https://script.google.com/macros/s/AKfycbyHClv8iWWD4MQaWjeeR6v7Ip73KmvqyWMcLTUQyM_IrbVY3sm47rGm_XfmADWxt0lL/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxbrASuygvCY3TesVz2KKYErb3VsoqmkHvB5FhHg0eQLL0FCTdkFI2fGAMNA4kZOyUu/exec";
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
 const DATA_CACHE_KEY = "pokeSleeve:dataCache:v1";
