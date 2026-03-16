@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>人気スリーブランキング｜ポケスリ相場ナビ</title>
+  <meta name="description" content="アクセス数ベースで人気スリーブをランキング表示します。" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/site.css" />
+  <style>
+    .ranking-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .ranking-item {
+      display: grid;
+      grid-template-columns: 72px 140px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+    }
+
+    .ranking-item .thumb-link {
+      width: 140px;
+    }
+
+    .ranking-item .thumb {
+      height: 96px;
+      width: 140px;
+    }
+
+    .rank {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 60px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: #111;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .count {
+      font-size: 16px;
+      font-weight: 900;
+      color: #111;
+      white-space: nowrap;
+    }
+
+    .ranking-main {
+      display: grid;
+      gap: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .ranking-item {
+        grid-template-columns: 64px 1fr;
+      }
+
+      .ranking-item .thumb-link,
+      .ranking-item .thumb {
+        width: 100%;
+      }
+
+      .ranking-item .thumb {
+        height: 180px;
+      }
+
+      .count {
+        grid-column: 2;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="site-header"></div>
+
+  <div class="container">
+    <div class="hero">
+      <div class="hero-card">
+        <div>
+          <p class="hero-title">人気スリーブランキング</p>
+          <p class="hero-desc">アクセスログから集計した、閲覧数の多いスリーブランキングです。</p>
+          <p id="countInfo" class="data-note" style="display:none;"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ranking-main">
+      <div id="error" class="error"></div>
+      <div id="list" class="ranking-list"></div>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="./assets/common.js"></script>
+  <script>
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function showError(msg) {
+      const el = document.getElementById("error");
+      if (!el) return;
+      el.style.display = "block";
+      el.textContent = msg;
+    }
+
+    function hideError() {
+      const el = document.getElementById("error");
+      if (!el) return;
+      el.style.display = "none";
+      el.textContent = "";
+    }
+
+    async function fetchRanking() {
+      const baseUrl = (window.common && window.common.GAS_URL) || window.GAS_URL || "";
+      if (!baseUrl) throw new Error("GAS_URL が未設定です。assets/common.js を確認してください。");
+      const url = baseUrl + "?mode=ranking&v=" + Date.now();
+      const res = await fetch(url, {
+        cache: "no-store",
+        headers: { "Accept": "application/json" }
+      });
+      if (!res.ok) throw new Error(`ランキング取得に失敗しました（HTTP ${res.status}）`);
+      return await res.json();
+    }
+
+    function buildSleeveMap(data) {
+      const sleeves = Array.isArray(data && data.sleeves) ? data.sleeves : [];
+      return new Map(sleeves.map((s) => [String(s.id || ""), s]));
+    }
+
+    function renderRanking(list, sleeveMap) {
+      const root = document.getElementById("list");
+      if (!root) return;
+
+      if (!list.length) {
+        root.innerHTML = '<div class="card"><div class="title">データなし</div><div class="meta">ランキングデータがありません。</div></div>';
+        return;
+      }
+
+      root.innerHTML = "";
+      list.forEach((item, index) => {
+        const id = String(item && item.id || "");
+        const access = Number(item && item.access);
+        const sleeve = sleeveMap.get(id);
+        const name = sleeve && sleeve.name ? sleeve.name : `ID: ${id}`;
+        const imageUrl = sleeve && sleeve.imageUrl ? String(sleeve.imageUrl) : "";
+        const detailHref = `./detail.html?id=${encodeURIComponent(id)}`;
+
+        const div = document.createElement("div");
+        div.className = "card ranking-item";
+        div.innerHTML = `
+          <div class="rank">${index + 1}位</div>
+          ${imageUrl
+            ? `<a class="thumb-link" href="${detailHref}" aria-label="${escapeHtml(name)}の詳細を見る">
+                 <img class="thumb" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(name)}" loading="lazy" referrerpolicy="no-referrer"
+                   onerror="this.onerror=null; this.style.display='none';">
+               </a>`
+            : `<a class="thumb-link" href="${detailHref}" aria-label="${escapeHtml(name)}の詳細を見る"><div class="thumb"></div></a>`}
+          <div>
+            <div class="title"><a href="${detailHref}">${escapeHtml(name)}</a></div>
+            <div class="meta">スリーブID: ${escapeHtml(id)}</div>
+          </div>
+          <div class="count">${Number.isFinite(access) ? access.toLocaleString() : 0}アクセス</div>
+        `;
+        root.appendChild(div);
+      });
+    }
+
+    async function main() {
+      try {
+        const [rankingData, masterData] = await Promise.all([
+          fetchRanking(),
+          window.common.loadData({ forceRefresh: true })
+        ]);
+
+        const ranking = Array.isArray(rankingData && rankingData.ranking) ? rankingData.ranking : [];
+        const sleeveMap = buildSleeveMap(masterData);
+        renderRanking(ranking, sleeveMap);
+
+        const countInfo = document.getElementById("countInfo");
+        if (countInfo) {
+          countInfo.textContent = `表示件数: ${ranking.length}件`;
+          countInfo.style.display = "block";
+        }
+
+        hideError();
+      } catch (err) {
+        showError(err && err.message ? err.message : "ランキングの読み込みに失敗しました。");
+      }
+    }
+
+    main();
+  </script>
+</body>
+
+</html>
