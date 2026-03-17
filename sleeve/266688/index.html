@@ -24,6 +24,35 @@
       align-items: start;
     }
 
+    .breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin: 0 0 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .breadcrumb a {
+      color: #1e5bd7;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .breadcrumb-sep {
+      color: #98a2b3;
+    }
+
+    .breadcrumb-current {
+      color: #344054;
+      font-weight: 800;
+    }
+
     .detail-left,
     .detail-right {
       min-width: 0;
@@ -497,6 +526,13 @@
 
     <div class="detail-wrap">
       <div class="detail-left">
+        <nav class="breadcrumb" aria-label="パンくず">
+          <a href="./index.html">ホーム</a>
+          <span class="breadcrumb-sep" aria-hidden="true">></span>
+          <a href="./zukan.html">スリーブ</a>
+          <span class="breadcrumb-sep" aria-hidden="true">></span>
+          <span id="breadcrumbCurrent" class="breadcrumb-current" aria-current="page">読み込み中...</span>
+        </nav>
         <div class="panel">
           <div class="detail-hero">
             <img id="img" class="thumb" alt="" />
@@ -1954,6 +1990,8 @@
       img.alt = s.name || "";
 
       const releaseDateText = getReleaseDateText(s);
+      const breadcrumbCurrent = document.getElementById("breadcrumbCurrent");
+      if (breadcrumbCurrent) breadcrumbCurrent.textContent = s.name || "";
       document.getElementById("name").textContent = s.name || "";
       document.getElementById("meta").innerHTML =
         `発売日: ${escapeHtml(releaseDateText)} / シリーズ: ${escapeHtml(s.series)} / 状態: ${escapeHtml(s.condition)}`;
