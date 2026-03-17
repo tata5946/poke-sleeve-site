@@ -50,40 +50,6 @@
       box-shadow: 0 16px 36px rgba(15, 23, 42, .08);
     }
 
-    .sort-explorer-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-
-    .sort-explorer-title {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 900;
-      color: #14213d;
-    }
-
-    .sort-explorer-copy {
-      margin: 4px 0 0;
-      font-size: 12px;
-      color: #5d6b82;
-      line-height: 1.65;
-    }
-
-    .sort-explorer-current {
-      flex: 0 0 auto;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: #111827;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 900;
-      white-space: nowrap;
-      box-shadow: 0 8px 18px rgba(17, 24, 39, .18);
-    }
-
     .sort-tabs {
       display: flex;
       gap: 10px;
@@ -375,10 +341,6 @@
         border-radius: 18px;
       }
 
-      .sort-explorer-head {
-        flex-direction: column;
-      }
-
       .sort-tabs {
         gap: 8px;
         margin-inline: -2px;
@@ -403,7 +365,6 @@
         min-height: 36px;
       }
 
-      .sort-explorer-current,
       .results-meta {
         width: fit-content;
       }
@@ -578,13 +539,6 @@
 
       <main class="catalog-main">
         <section class="sort-explorer" aria-label="図鑑の並び替え">
-          <div class="sort-explorer-head">
-            <div>
-              <p class="sort-explorer-title">気分でめくる図鑑ソート</p>
-              <p class="sort-explorer-copy">タブを切り替えると、見つけやすい切り口で一覧が並び替わります。</p>
-            </div>
-            <div id="sortExplorerCurrent" class="sort-explorer-current">新作をチェック</div>
-          </div>
           <div id="sortTabs" class="sort-tabs" role="tablist" aria-label="並び替えタブ"></div>
           <div class="sort-chip-row">
             <div id="sortChips" class="sort-chip-group" aria-live="polite"></div>
@@ -773,7 +727,6 @@
       const sortTabs = document.getElementById("sortTabs");
       const sortChips = document.getElementById("sortChips");
       const sortChipNote = document.getElementById("sortChipNote");
-      const sortExplorerCurrent = document.getElementById("sortExplorerCurrent");
       const resultsMeta = document.getElementById("resultsMeta");
       const resultsSubcopy = document.getElementById("resultsSubcopy");
 
@@ -885,9 +838,7 @@
           label: "おすすめ",
           accent: "発見しやすい順",
           defaultSort: "recommended",
-          chips: [
-            { key: "recommended", label: "全体" }
-          ]
+          chips: []
         },
         {
           key: "popular",
@@ -1126,6 +1077,7 @@
         const chips = Array.isArray(primary.chips) ? primary.chips : [];
         if (!sortChips || !sortChipNote) return;
 
+        sortChips.style.display = chips.length ? "flex" : "none";
         sortChips.innerHTML = chips.map((chip) => `
           <button type="button" class="sort-chip${chip.key === currentSort ? " is-active" : ""}" data-sort-chip="${escapeHtml(chip.key)}">
             ${escapeHtml(chip.label)}
@@ -1139,7 +1091,6 @@
 
       function updateSortExplorerCopy(sortOrder) {
         const config = getSortLabelConfig(sortOrder);
-        if (sortExplorerCurrent) sortExplorerCurrent.textContent = config.label;
         if (resultsSubcopy) resultsSubcopy.textContent = config.helper || "気になるスリーブを見つけやすい順で並び替えています。";
       }
 
@@ -1256,6 +1207,8 @@
         const series = seriesSel.value;
         const band = parseBand(priceBandSel.value);
         const sortOrder = sortOrderSel.value;
+
+        list.innerHTML = "";
 
         const filtered = [];
         for (const s of sleeves) {
