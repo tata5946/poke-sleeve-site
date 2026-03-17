@@ -729,8 +729,11 @@
 
     function buildTileHTML(s, subHtml, chipsHtml, rank = null, popIndex = 0) {
       const imgSrc = String(s.imageUrl || "").trim();
+      const shouldPrioritizeImage = Number.isFinite(popIndex) && popIndex < 4;
+      const loadingAttr = shouldPrioritizeImage ? "eager" : "lazy";
+      const fetchPriorityAttr = shouldPrioritizeImage ? "high" : "low";
       const img = imgSrc
-        ? `<img class="tile-img" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
+        ? `<img class="tile-img" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="${loadingAttr}" fetchpriority="${fetchPriorityAttr}" decoding="async" referrerpolicy="no-referrer"
              onerror="this.onerror=null; this.style.display='none';">`
         : `<div class="tile-img"></div>`;
       const rankBadge = Number.isFinite(rank) ? `<span class="tile-rank-badge">${rank}位</span>` : "";
@@ -861,18 +864,22 @@
       };
 
       setRankingLoadingState("loading");
+      const searchReadyPromise = waitForSearch();
       let rankingLoadWatchdog = setTimeout(() => {
         setRankingLoadingState("error", "ランキングデータの読み込みに時間がかかっています。ページを再読み込みしてください。");
       }, 15000);
       wireRailButtons();
 
+      let dataPromise;
+      if (window.common && typeof window.common.loadData === "function") {
+        dataPromise = window.common.loadData();
+      } else {
+        dataPromise = loadData();
+      }
+
       let data;
       try {
-        if (window.common && typeof window.common.loadData === "function") {
-          data = await window.common.loadData();
-        } else {
-          data = await loadData();
-        }
+        data = await dataPromise;
         clearTimeout(rankingLoadWatchdog);
         rankingLoadWatchdog = null;
       } catch (e) {
@@ -895,7 +902,7 @@
       const qParam = (url.searchParams.get("q") || "").trim();
 
       // searchInput は header 由来
-      const searchInput = document.getElementById("search") || await waitForSearch();
+      const searchInput = document.getElementById("search") || await searchReadyPromise;
       const heroSearchInput = document.getElementById("heroSearch");
       if (!searchInput && !heroSearchInput) {
         showError("検索欄の初期化に失敗しました（headerが読み込めていません）");

@@ -886,6 +886,13 @@ document.addEventListener("DOMContentLoaded", () => {
   try { ensureFavicon(); } catch (e) { console.error(e); }
   injectHeaderFooter();
 
+  try {
+    // Warm the shared data cache as early as possible for pages that render sleeves immediately.
+    loadData().catch(() => {});
+  } catch (e) {
+    console.error(e);
+  }
+
   try { setActiveNav(); } catch (e) { console.error(e); }
   try { wireHeaderSearch(); } catch (e) { console.error(e); }
   try { wireSleeveSelectionFeedback(); } catch (e) { console.error(e); }
