@@ -665,6 +665,15 @@
       return hasAny ? total : null;
     }
 
+    function isDisplayableSleeve(sleeve) {
+      if (!sleeve || typeof sleeve !== "object") return false;
+      const id = String(sleeve.id ?? "").trim();
+      const name = String(sleeve.name ?? "").trim();
+      if (!id || !name) return false;
+      if (name === "-" || name === "—") return false;
+      return true;
+    }
+
     function formatDelta(pair) {
       if (!pair) {
         return '<div class="delta flat">比較データがありません</div>';
@@ -743,7 +752,7 @@
       }
       hideError();
 
-      const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
+      const sleeves = (Array.isArray(data.sleeves) ? data.sleeves : []).filter(isDisplayableSleeve);
 
       let maxWeek = null;
       for (const s of sleeves) {
