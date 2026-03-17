@@ -771,8 +771,18 @@
         );
       }
 
-      const xFirst = formatPeriodLabel(data[0].x);
-      const xLast = formatPeriodLabel(data[data.length - 1].x);
+      function formatMonthAxisLabel(value) {
+        const matched = String(value || "").match(/^(\d{4})[\/\-](\d{2})/);
+        if (matched) return `${Number(matched[2])}月`;
+        return formatPeriodLabel(value);
+      }
+
+      const midIdx = Math.floor((data.length - 1) / 2);
+      const xGuides = [
+        { x: xToPx(0), text: formatMonthAxisLabel(data[0].x), anchor: "start" },
+        { x: xToPx(midIdx), text: formatMonthAxisLabel(data[midIdx].x), anchor: "middle" },
+        { x: xToPx(data.length - 1), text: formatMonthAxisLabel(data[data.length - 1].x), anchor: "end" }
+      ].filter((guide, index, arr) => arr.findIndex((item) => item.text === guide.text) === index || index === arr.length - 1);
 
       const lastIdx = data.length - 1;
       const lastX = xToPx(lastIdx);
@@ -799,6 +809,7 @@
               </defs>
 
               ${tickLines.join("")}
+              ${xGuides.map((guide) => `<line x1="${guide.x}" y1="${padT}" x2="${guide.x}" y2="${H - padB}" stroke="#eef2f7" stroke-dasharray="4 4"></line>`).join("")}
               ${tickLabels.join("")}
 
               <rect x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="url(#bgGrad-${escapeHtml(containerId)})" />
@@ -813,8 +824,7 @@
               <circle cx="${lastX}" cy="${lastY}" r="5" fill="#1e5bd7"/>
               <text x="${lastX + 8}" y="${lastY - 8}" font-size="12" font-weight="800" fill="#111">${escapeHtml(lastLabel)}</text>
 
-              <text x="${padL}" y="${H - 10}" font-size="14" fill="#667085">${escapeHtml(xFirst)}</text>
-              <text x="${W - padR}" y="${H - 10}" font-size="14" fill="#667085" text-anchor="end">${escapeHtml(xLast)}</text>
+              ${xGuides.map((guide) => `<text x="${guide.x}" y="${H - 10}" font-size="14" fill="#667085" text-anchor="${guide.anchor}">${escapeHtml(guide.text)}</text>`).join("")}
             </svg>
           </div>
         </div>
@@ -918,6 +928,12 @@
       const navBottom = 372;
       const ticks = 4;
       const minWindow = Math.min(Math.max(2, Math.ceil(data.length * 0.12)), data.length);
+
+      function formatMonthAxisLabel(value) {
+        const matched = String(value || "").match(/^(\d{4})[\/\-](\d{2})/);
+        if (matched) return `${Number(matched[2])}月`;
+        return formatPeriodLabel(value);
+      }
 
       function niceStep(range, t) {
         const rough = range / t;
@@ -1107,10 +1123,13 @@
 
         const midIdx = Math.floor((visible.length - 1) / 2);
         const xLabels = [
-          { x: xToPxMain(0), text: formatPeriodLabel(visible[0].x), anchor: "start" },
-          { x: xToPxMain(midIdx), text: formatPeriodLabel(visible[midIdx].x), anchor: "middle" },
-          { x: xToPxMain(visible.length - 1), text: formatPeriodLabel(visible[visible.length - 1].x), anchor: "end" }
-        ];
+          { x: xToPxMain(0), text: formatMonthAxisLabel(visible[0].x), anchor: "start" },
+          { x: xToPxMain(midIdx), text: formatMonthAxisLabel(visible[midIdx].x), anchor: "middle" },
+          { x: xToPxMain(visible.length - 1), text: formatMonthAxisLabel(visible[visible.length - 1].x), anchor: "end" }
+        ].filter((label, index, arr) => arr.findIndex((item) => item.text === label.text) === index || index === arr.length - 1);
+        xLabels.forEach((label) => {
+          gridLines.push(`<line x1="${label.x}" y1="${mainTop}" x2="${label.x}" y2="${mainBottom}" stroke="#eef2f7" stroke-dasharray="4 4"/>`);
+        });
         mainXLabels.innerHTML = xLabels.map(l =>
           `<text x="${l.x}" y="${xLabelY}" font-size="13" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
         ).join("");
