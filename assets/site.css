@@ -64,6 +64,35 @@ a:hover {
     padding: 20px;
 }
 
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin: 0 0 12px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 800;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-sep {
+    color: #98a2b3;
+}
+
+.breadcrumb-current {
+    color: #344054;
+    font-weight: 800;
+}
+
 /* logo (ball-like) */
 .logo {
     width: 38px;
