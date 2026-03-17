@@ -198,10 +198,13 @@
       font-size: 12px;
       font-weight: 900;
       padding: 6px 10px;
-      border-radius: 999px;
+      border-radius: 14px;
       display: none;
       pointer-events: none;
-      white-space: nowrap;
+      white-space: normal;
+      line-height: 1.45;
+      text-align: center;
+      max-width: min(240px, calc(100% - 16px));
       box-shadow: 0 10px 24px rgba(16, 24, 40, .24);
     }
 
@@ -1682,10 +1685,11 @@
         const periodText = toDisplayPeriodLabel(obs);
         const avg = Number.isFinite(obs.avgPrice) ? `${obs.avgPrice.toLocaleString()}円` : "-";
         const cnt = Number.isFinite(obs.tradeCount) ? `${obs.tradeCount}件` : "-";
-        tip.textContent = `${periodText} / 観測価格 ${avg} / 取引 ${cnt}`;
+        tip.innerHTML = `${escapeHtml(periodText)} / 観測価格 ${escapeHtml(avg)}<br>取引件数 ${escapeHtml(cnt)}`;
         tip.style.display = "block";
         const wrapRect = wrap.getBoundingClientRect();
-        const x = Math.min(Math.max(ev.clientX - wrapRect.left, 70), wrapRect.width - 70);
+        const half = Math.max((tip.offsetWidth || 0) / 2, 70);
+        const x = Math.min(Math.max(ev.clientX - wrapRect.left, half + 8), wrapRect.width - half - 8);
         tip.style.left = `${x}px`;
         tip.style.top = `8px`;
       };
