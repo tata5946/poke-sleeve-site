@@ -703,18 +703,18 @@
 
         <div class="related-sections" id="relatedSections" hidden>
           <section class="panel related-panel">
-            <h3>同キャラクター</h3>
-            <p class="related-note">スリーブ名の共通ワードから近いものを表示します。</p>
+            <h3>同じキャラクターのスリーブ</h3>
+            <p class="related-note">character が一致するスリーブを優先して表示します。</p>
             <div id="relatedCharacter" class="related-list"></div>
           </section>
           <section class="panel related-panel">
-            <h3>同シリーズ</h3>
+            <h3>同シリーズのスリーブ</h3>
             <p class="related-note">同じシリーズに含まれるスリーブを表示します。</p>
             <div id="relatedSeries" class="related-list"></div>
           </section>
           <section class="panel related-panel">
-            <h3>価格帯近い</h3>
-            <p class="related-note">最新観測価格が近いスリーブを表示します。</p>
+            <h3>価格が近いスリーブ</h3>
+            <p class="related-note">current.price の前後 30% を目安に表示します。</p>
             <div id="relatedPriceBand" class="related-list"></div>
           </section>
         </div>
@@ -1049,69 +1049,25 @@
       return "不明";
     }
 
-    const RELATED_NAME_STOP_WORDS = new Set([
-      "スリーブ", "デッキシールド", "カードスリーブ", "ポケモンカード", "ポケモン", "ポケカ", "カード",
-      "サプライ", "公式", "限定", "仕様", "版", "ver", "version", "vol", "collection", "pokemon"
-    ]);
-
-    function normalizeRelatedText(value) {
-      return String(value || "")
-        .normalize("NFKC")
-        .toLowerCase()
-        .replace(/[【】\[\]（）()]/g, " ")
-        .replace(/[・\/\\|,，、。!！?？:：]/g, " ")
-        .replace(/[&＆+＋]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
+    function getSleeveCharacter(sleeve) {
+      return String(
+        sleeve?.character ??
+        sleeve?.characters ??
+        sleeve?.chara ??
+        sleeve?.["character"] ??
+        ""
+      ).trim();
     }
 
-    function extractCharacterTokens(name) {
-      const normalized = normalizeRelatedText(name);
-      if (!normalized) return [];
-
-      const compact = normalized.replace(/\s+/g, "");
-      const tokens = new Set();
-
-      for (const raw of normalized.split(" ")) {
-        const token = raw.trim();
-        if (!token) continue;
-        if (token.length < 2) continue;
-        if (/^\d+$/.test(token)) continue;
-        if (RELATED_NAME_STOP_WORDS.has(token)) continue;
-        tokens.add(token);
-      }
-
-      const fragments = compact.match(/[ぁ-んァ-ヴー一-龠a-z0-9]{3,}/g) || [];
-      for (const fragment of fragments) {
-        if (fragment.length < 3) continue;
-        if (/^\d+$/.test(fragment)) continue;
-        if (RELATED_NAME_STOP_WORDS.has(fragment)) continue;
-        tokens.add(fragment);
-      }
-
-      return Array.from(tokens);
-    }
-
-    function getCharacterSimilarityScore(baseSleeve, candidateSleeve) {
-      const baseTokens = extractCharacterTokens(baseSleeve?.name);
-      const candidateTokens = extractCharacterTokens(candidateSleeve?.name);
-      if (!baseTokens.length || !candidateTokens.length) return 0;
-
-      const candidateSet = new Set(candidateTokens);
-      let score = 0;
-      for (const token of baseTokens) {
-        if (candidateSet.has(token)) {
-          score += token.length >= 5 ? 3 : 2;
-          continue;
-        }
-        for (const other of candidateTokens) {
-          if (token.length >= 4 && (token.includes(other) || other.includes(token))) {
-            score += 1;
-            break;
-          }
-        }
-      }
-      return score;
+    function getSleeveCurrentPrice(sleeve) {
+      const direct = Number(
+        sleeve?.current?.price ??
+        sleeve?.currentPrice ??
+        sleeve?.price ??
+        NaN
+      );
+      if (Number.isFinite(direct) && direct > 0) return direct;
+      return getLatestComparablePrice(sleeve);
     }
 
     function getLatestComparablePrice(sleeve) {
@@ -1168,56 +1124,92 @@
       return true;
     }
 
+    function uniqueSleeves(items) {
+      const seen = new Set();
+      const out = [];
+      for (const item of (Array.isArray(items) ? items : [])) {
+        const id = String(item?.id || "");
+        if (!id || seen.has(id)) continue;
+        seen.add(id);
+        out.push(item);
+      }
+      return out;
+    }
+
+    function fillRelatedItems(primaryItems, fallbackGroups, limit) {
+      const filled = uniqueSleeves(primaryItems).slice(0, limit);
+      const seen = new Set(filled.map((item) => String(item?.id || "")));
+      for (const group of fallbackGroups) {
+        for (const item of uniqueSleeves(group)) {
+          const id = String(item?.id || "");
+          if (!id || seen.has(id)) continue;
+          filled.push(item);
+          seen.add(id);
+          if (filled.length >= limit) return filled;
+        }
+      }
+      return filled;
+    }
+
     function renderRelatedSleeves(currentSleeve, sleeves) {
       const wrap = document.getElementById("relatedSections");
       if (!wrap || !currentSleeve || !Array.isArray(sleeves)) return;
 
       const currentId = String(currentSleeve.id || "");
+      const currentCharacter = getSleeveCharacter(currentSleeve);
       const currentSeries = String(currentSleeve.series || "").trim();
-      const currentPrice = getLatestComparablePrice(currentSleeve);
+      const currentPrice = getSleeveCurrentPrice(currentSleeve);
       const candidates = sleeves.filter((item) => item && String(item.id || "") && String(item.id) !== currentId);
-
-      const sameCharacter = candidates
-        .map((item) => ({ item, score: getCharacterSimilarityScore(currentSleeve, item) }))
-        .filter((entry) => entry.score > 0)
+      const sortedByPriceDistance = candidates
+        .map((item) => ({ item, price: getSleeveCurrentPrice(item) }))
         .sort((a, b) => {
-          if (b.score !== a.score) return b.score - a.score;
-          return (getLatestComparablePrice(b.item) ?? -1) - (getLatestComparablePrice(a.item) ?? -1);
+          const ap = a.price;
+          const bp = b.price;
+          if (Number.isFinite(currentPrice) && Number.isFinite(ap) && Number.isFinite(bp)) {
+            const diff = Math.abs(ap - currentPrice) - Math.abs(bp - currentPrice);
+            if (diff !== 0) return diff;
+          }
+          if (Number.isFinite(bp) && Number.isFinite(ap) && bp !== ap) return bp - ap;
+          return String(a.item?.name || "").localeCompare(String(b.item?.name || ""), "ja");
         })
-        .slice(0, 4)
         .map((entry) => entry.item);
 
-      const sameSeries = candidates
+      const sameCharacterPrimary = candidates
+        .filter((item) => currentCharacter && getSleeveCharacter(item) === currentCharacter);
+
+      const sameSeriesPrimary = candidates
         .filter((item) => String(item.series || "").trim() && String(item.series || "").trim() === currentSeries)
         .sort((a, b) => {
-          const ap = getLatestComparablePrice(a) ?? -1;
-          const bp = getLatestComparablePrice(b) ?? -1;
+          const ap = getSleeveCurrentPrice(a) ?? -1;
+          const bp = getSleeveCurrentPrice(b) ?? -1;
           if (bp !== ap) return bp - ap;
           return String(a.name || "").localeCompare(String(b.name || ""), "ja");
-        })
-        .slice(0, 4);
+        });
 
-      const closePrice = Number.isFinite(currentPrice)
+      const closePricePrimary = Number.isFinite(currentPrice)
         ? candidates
-          .map((item) => ({ item, price: getLatestComparablePrice(item) }))
-          .filter((entry) => Number.isFinite(entry.price))
+          .map((item) => ({ item, price: getSleeveCurrentPrice(item) }))
+          .filter((entry) => Number.isFinite(entry.price) && entry.price >= currentPrice * 0.7 && entry.price <= currentPrice * 1.3)
           .sort((a, b) => {
             const diff = Math.abs(a.price - currentPrice) - Math.abs(b.price - currentPrice);
             if (diff !== 0) return diff;
             return a.price - b.price;
           })
-          .slice(0, 4)
           .map((entry) => entry.item)
         : [];
 
-      const hasCharacter = renderRelatedList("relatedCharacter", sameCharacter, "同キャラクター候補はまだありません。");
+      const sameCharacter = fillRelatedItems(sameCharacterPrimary, [sameSeriesPrimary, closePricePrimary, sortedByPriceDistance], 6);
+      const sameSeries = fillRelatedItems(sameSeriesPrimary, [sameCharacterPrimary, closePricePrimary, sortedByPriceDistance], 6);
+      const closePrice = fillRelatedItems(closePricePrimary, [sameCharacterPrimary, sameSeriesPrimary, sortedByPriceDistance], 6);
+
+      const hasCharacter = renderRelatedList("relatedCharacter", sameCharacter, "同じキャラクターのスリーブはまだありません。");
       const hasSeries = renderRelatedList("relatedSeries", sameSeries, "同シリーズのスリーブはまだありません。");
       const hasPrice = renderRelatedList(
         "relatedPriceBand",
         closePrice,
-        "比較できる価格帯の近いスリーブはまだありません。",
+        "価格が近いスリーブはまだありません。",
         (item) => {
-          const price = getLatestComparablePrice(item);
+          const price = getSleeveCurrentPrice(item);
           if (!Number.isFinite(price) || !Number.isFinite(currentPrice)) return null;
           const diff = Math.round(price - currentPrice);
           const prefix = diff > 0 ? "+" : "";
