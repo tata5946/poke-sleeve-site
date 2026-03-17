@@ -93,6 +93,66 @@ a:hover {
     font-weight: 800;
 }
 
+.page-title-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+.page-title-row .logo {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+}
+
+.page-title-row .hero-title,
+.page-title-row .title,
+.page-title-row .policy-h1 {
+    margin: 0;
+}
+
+.page-title-row::before,
+.detail-hero .name::before,
+.summary-panel > .title::before,
+.contact-wrap > .panel > .title::before,
+.done-wrap > .panel > .title::before,
+.policy-h1::before {
+    content: "";
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    margin-right: 12px;
+    vertical-align: middle;
+    border-radius: 999px;
+    background:
+        radial-gradient(circle at 50% 50%, #fff 0 18%, #111 19% 25%, transparent 26%),
+        linear-gradient(#111 0 0) center / 100% 3px no-repeat,
+        linear-gradient(#e53935 0 50%, #ffffff 50% 100%);
+    border: 2px solid #111;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.summary-panel > .title::before,
+.contact-wrap > .panel > .title::before,
+.done-wrap > .panel > .title::before,
+.policy-h1::before,
+.detail-hero .name::before {
+    top: -1px;
+}
+
+.page-title-row,
+.summary-panel > .title,
+.contact-wrap > .panel > .title,
+.done-wrap > .panel > .title,
+.policy-h1,
+.detail-hero .name {
+    position: relative;
+}
+
 /* logo (ball-like) */
 .logo {
     width: 38px;
