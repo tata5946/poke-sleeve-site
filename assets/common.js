@@ -64,7 +64,7 @@ const HEADER_HTML = `
     <div class="header-bottom-inner">
       <nav class="nav" aria-label="メインメニュー">
         <a href="./index.html" data-nav="index"><span class="ico" aria-hidden="true">🏠</span>ホーム</a>
-        <a href="./zukan.html" data-nav="zukan"><span class="ico" aria-hidden="true">📚</span>図鑑</a>
+        <a href="./sleeves/" data-nav="zukan"><span class="ico" aria-hidden="true">📚</span>図鑑</a>
         <a href="./ranking.html" data-nav="ranking"><span class="ico" aria-hidden="true">📊</span>価格ランキング</a>
         <a href="./access-ranking.html" data-nav="access-ranking"><span class="ico" aria-hidden="true">👀</span>アクセスランキング</a>
         <a href="./growth.html" data-nav="growth"><span class="ico" aria-hidden="true">📈</span>高騰率</a>
@@ -124,7 +124,7 @@ function buildSiteHref(path) {
 
 function buildSleeveDetailHref(id) {
   const sleeveId = String(id || "").trim();
-  if (!sleeveId) return buildSiteHref("zukan.html");
+  if (!sleeveId) return buildSiteHref("sleeves/");
   return buildSiteHref(`sleeve/${encodeURIComponent(sleeveId)}/`);
 }
 
@@ -358,7 +358,7 @@ function defaultNavigateToDetail(item) {
 function defaultNavigateToZukan(query) {
   const q = String(query || "").trim();
   recordSearchHistory(q);
-  location.href = q ? `./zukan.html?q=${encodeURIComponent(q)}` : "./zukan.html";
+  location.href = q ? `./sleeves/?q=${encodeURIComponent(q)}` : "./sleeves/";
 }
 
 function wireSleeveAutocomplete(input, options = {}) {
@@ -752,11 +752,11 @@ function ensureFavicon() {
 
 /* ----- Navigation active handling ----- */
 function setActiveNav() {
-  const path = (location.pathname.split("/").pop() || "").toLowerCase();
+  const path = String(location.pathname || "").toLowerCase();
   let key = "index";
   if (path.includes("access-ranking")) key = "access-ranking";
   else if (path.includes("ranking")) key = "ranking";
-  else if (path.includes("zukan")) key = "zukan";
+  else if (path.includes("zukan") || path.includes("sleeves")) key = "zukan";
   else if (path.includes("growth")) key = "growth";
   else if (path.includes("surge")) key = "surge";
   else if (path.includes("market")) key = "market";
@@ -787,8 +787,8 @@ function wireHeaderSearch() {
     if (e.defaultPrevented) return;
     const q = search.value.trim();
     recordSearchHistory(q);
-    if (!q) { location.href = "./zukan.html"; return; }
-    location.href = "./zukan.html?q=" + encodeURIComponent(q);
+    if (!q) { location.href = "./sleeves/"; return; }
+    location.href = "./sleeves/?q=" + encodeURIComponent(q);
   });
 }
 

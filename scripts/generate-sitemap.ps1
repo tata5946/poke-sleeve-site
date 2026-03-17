@@ -25,7 +25,7 @@ $data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Jso
 $staticPages = @(
   "",
   "index.html",
-  "zukan.html",
+  "sleeves/",
   "ranking.html",
   "access-ranking.html",
   "growth.html",

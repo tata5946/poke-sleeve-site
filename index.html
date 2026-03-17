@@ -203,7 +203,7 @@
           </div>
           <p class="home-kicker">POKE SLEEVE SEARCH</p>
           <p class="home-display">ポケモンスリーブ（デッキシールド）のデータサイト</p>
-          <form class="home-hero-search" id="heroSearchForm" action="./zukan.html" method="get" role="search" aria-label="スリーブ検索">
+          <form class="home-hero-search" id="heroSearchForm" action="./sleeves/" method="get" role="search" aria-label="スリーブ検索">
             <div class="hero-search-field">
               <input type="text" id="heroSearch" name="q" placeholder="キーワードでスリーブを検索" autocomplete="off">
             </div>
@@ -213,7 +213,7 @@
           <p class="data-note">※価格はフリマアプリ等の売却履歴をもとに独自集計しています。</p>
           <div class="home-cta">
             <div class="home-cta-row">
-              <a class="btn" href="./zukan.html">図鑑で探す</a>
+              <a class="btn" href="./sleeves/">図鑑で探す</a>
               <a class="btn ghost" href="./surge.html">急上昇ランキングをみる</a>
               <a class="btn ghost" href="./growth.html">高騰率ランキングをみる</a>
               <a class="btn ghost" href="./ranking.html">価格ランキングをみる</a>
@@ -934,7 +934,7 @@
           ev.preventDefault();
           const q = heroSearchInput.value.trim();
           if (window.common && typeof window.common.recordSearchHistory === "function") window.common.recordSearchHistory(q);
-          location.href = q ? `./zukan.html?q=${encodeURIComponent(q)}` : "./zukan.html";
+          location.href = q ? `./sleeves/?q=${encodeURIComponent(q)}` : "./sleeves/";
         });
       }
 

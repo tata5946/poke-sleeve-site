@@ -442,7 +442,7 @@
           <a class="btn" href="./surge.html">急騰ランキング</a>
           <a class="btn" href="./growth.html">上昇率ランキング</a>
           <a class="btn" href="./ranking.html">価格ランキング</a>
-          <a class="btn" href="./zukan.html">図鑑で探す</a>
+          <a class="btn" href="./sleeves/">図鑑で探す</a>
         </div>
       </div>
     </div>
@@ -1465,8 +1465,8 @@
         search.addEventListener("keydown", (e) => {
           if (e.key !== "Enter") return;
           const q = search.value.trim();
-          if (!q) { location.href = "./zukan.html"; return; }
-          location.href = "./zukan.html?q=" + encodeURIComponent(q);
+          if (!q) { location.href = "./sleeves/"; return; }
+          location.href = "./sleeves/?q=" + encodeURIComponent(q);
         });
       }
 

@@ -531,7 +531,7 @@
         <nav class="breadcrumb" aria-label="パンくず">
           <a href="./index.html">ホーム</a>
           <span class="breadcrumb-sep" aria-hidden="true">></span>
-          <a href="./zukan.html">スリーブ</a>
+          <a href="./sleeves/">スリーブ</a>
           <span class="breadcrumb-sep" aria-hidden="true">></span>
           <span id="breadcrumbCurrent" class="breadcrumb-current" aria-current="page">読み込み中...</span>
         </nav>
@@ -554,7 +554,7 @@
               </div>
 
               <div class="btn-row">
-                <a class="btn primary" id="backLink" href="./zukan.html">← 図鑑へ戻る</a>
+                <a class="btn primary" id="backLink" href="./sleeves/">← 図鑑へ戻る</a>
                 <a class="btn" id="mercariLink" href="https://jp.mercari.com/search" target="_blank" rel="noopener noreferrer nofollow">メルカリで最安値を見る</a>
               </div>
 
@@ -1942,10 +1942,10 @@
           if (e.key !== "Enter") return;
           const q = search.value.trim();
           if (!q) {
-            location.href = "./zukan.html";
+            location.href = "./sleeves/";
             return;
           }
-          location.href = "./zukan.html?q=" + encodeURIComponent(q);
+          location.href = "./sleeves/?q=" + encodeURIComponent(q);
         });
         return true;
       };
@@ -2002,7 +2002,7 @@
         <span class="badge">${escapeHtml(s.series)}</span>
       `;
 
-      document.getElementById("backLink").href = "./zukan.html";
+      document.getElementById("backLink").href = "./sleeves/";
       const mercariLink = document.getElementById("mercariLink");
       if (mercariLink) mercariLink.href = buildMercariSearchUrl(s.name);
 
