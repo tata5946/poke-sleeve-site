@@ -96,6 +96,65 @@
       margin-top: 4px;
     }
 
+    .share-block {
+      margin-top: 14px;
+    }
+
+    .share-title {
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+    }
+
+    .share-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .share-row .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform .14s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease;
+    }
+
+    .share-row .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(16, 24, 40, .14);
+    }
+
+    .share-row .btn:focus-visible {
+      outline: 2px solid #7aa2ff;
+      outline-offset: 2px;
+    }
+
+    .share-icon {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      flex: 0 0 14px;
+    }
+
+    .btn.share-x {
+      border-color: #111;
+      color: #111;
+      background: #fff;
+    }
+
+    .btn.share-x:hover {
+      background: #f3f4f6;
+    }
+
+    .share-status {
+      margin-top: 6px;
+      min-height: 1.2em;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
     .chart-panel {
       box-shadow: 0 8px 22px rgba(16, 24, 40, .06);
     }
@@ -374,6 +433,18 @@
             <div id="kpiIndex" class="value">-</div>
             <div class="meta" id="kpiIndexMeta" style="margin-top:6px;">基準週 = 100</div>
           </div>
+        </div>
+        <div class="share-block">
+          <div class="share-title">シェア</div>
+          <div class="share-row">
+            <button type="button" class="btn share-x" id="shareXBtn">
+              <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M18.244 2H21.5l-7.112 8.129L22 22h-5.953l-4.661-6.108L6.04 22H2.78l7.606-8.695L2 2h6.105l4.213 5.566zM17.1 20h1.803L7.127 3.895H5.19z"></path>
+              </svg>
+              X(Twitter)で共有
+            </button>
+          </div>
+          <div id="shareStatus" class="share-status"></div>
         </div>
       </div>
 
@@ -1467,6 +1538,33 @@
       }).join("");
     }
 
+    function currentShareUrl() {
+      const u = new URL(location.href);
+      u.hash = "";
+      return u.toString();
+    }
+
+    function setupMarketShare(latestRow, latestIndex) {
+      const shareXBtn = document.getElementById("shareXBtn");
+      const statusEl = document.getElementById("shareStatus");
+      if (!shareXBtn || !statusEl) return;
+
+      const weekText = latestRow?.week ? formatPeriodLabel(latestRow.week) : "最新週";
+      const indexText = Number.isFinite(latestIndex) ? latestIndex.toFixed(1) : "-";
+      const avgRateText = Number.isFinite(latestRow?.avgRate) ? `${latestRow.avgRate.toFixed(2)}%` : "-";
+      const shareUrl = currentShareUrl();
+      const shareText = `【スリーブ指数】${weekText}時点で指数 ${indexText} / 今週の市場上昇率 ${avgRateText} #ポケカ #ポケモンカード`;
+
+      shareXBtn.addEventListener("click", () => {
+        const intent = new URL("https://twitter.com/intent/tweet");
+        intent.searchParams.set("text", shareText);
+        intent.searchParams.set("url", shareUrl);
+        window.open(intent.toString(), "_blank", "noopener,noreferrer");
+      });
+
+      statusEl.textContent = `${weekText} 時点の指数を共有できます。`;
+    }
+
     async function main() {
       // header差し込みが遅いと #search が無いことがあるので待つ
       const waitForSearch = async () => {
@@ -1552,6 +1650,7 @@
         const baseRef = pairIdx.latest.baseWeek || null;
         kpiIndexMeta.textContent = `基準週：${baseRef ? formatPeriodLabel(baseRef) : "—"} = 100`;
       }
+      setupMarketShare(pairRate?.latest || null, pairIdx?.latest?.index ?? null);
 
       // チャート（指数）
       const indexSeries = series;
