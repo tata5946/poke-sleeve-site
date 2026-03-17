@@ -93,26 +93,6 @@ a:hover {
     font-weight: 800;
 }
 
-.page-title-row {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: nowrap;
-    min-width: 0;
-}
-
-.page-title-row .logo {
-    flex: 0 0 auto;
-    width: 34px;
-    height: 34px;
-}
-
-.page-title-row .hero-title,
-.page-title-row .title,
-.page-title-row .policy-h1 {
-    margin: 0;
-}
-
 /* logo (ball-like) */
 .logo {
     width: 38px;
