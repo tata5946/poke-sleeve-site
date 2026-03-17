@@ -1,0 +1,2031 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <base href="../../" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>スリーブ相場 - ポケスリ相場ナビ</title>
+  <meta name="description" content="ポケカスリーブの週次価格推移を確認できる詳細ページです。" />
+  <link rel="canonical" href="/sleeve/462318/" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./assets/site.css" />
+
+  <style>
+    .detail-wrap {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .detail-left,
+    .detail-right {
+      min-width: 0;
+    }
+
+    .detail-right {
+      display: none;
+    }
+
+    .detail-price-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .detail-hero {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .detail-hero .thumb {
+      height: 240px;
+      border: 1px solid var(--border);
+    }
+
+    .name {
+      font-size: 18px;
+      font-weight: 900;
+      margin: 0 0 6px;
+      line-height: 1.25;
+    }
+
+    .meta-line {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .kpi {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .box {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fff 0%, #fbfcff 100%);
+      box-shadow: 0 6px 16px rgba(16, 24, 40, .06);
+      padding: 12px;
+    }
+
+    .box .label {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+    }
+
+    .box .value {
+      margin-top: 6px;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 6px 16px rgba(16, 24, 40, .06);
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    .chart-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin: 2px 0 8px;
+    }
+
+    .chart-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      margin: 0 0 8px;
+    }
+
+    .chart-zoom-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 4px 8px;
+      cursor: pointer;
+      color: #111;
+    }
+
+    .chart-zoom-label {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+      min-width: 44px;
+      text-align: right;
+    }
+
+    .chart-viewport {
+      width: 100%;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
+    }
+
+    svg.chart {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      transform: translateX(-50%);
+      background: rgba(17, 17, 17, .92);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 10px;
+      border-radius: 999px;
+      display: none;
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 10px 24px rgba(16, 24, 40, .24);
+    }
+
+    .chart-main-hit {
+      cursor: crosshair;
+    }
+
+    .chart-nav-hit {
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .chart-range {
+      fill: rgba(30, 91, 215, .15);
+      stroke: #1e5bd7;
+      stroke-width: 1;
+      pointer-events: none;
+    }
+
+    .chart-handle {
+      fill: #fff;
+      stroke: #1e5bd7;
+      stroke-width: 1.5;
+      cursor: ew-resize;
+      pointer-events: none;
+    }
+
+    .table-wrap {
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: auto;
+      max-height: min(46vh, 420px);
+      background: #fff;
+      box-shadow: 0 6px 16px rgba(16, 24, 40, .06);
+    }
+
+    .table-wrap table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 12px;
+    }
+
+    .table-wrap th,
+    .table-wrap td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .table-wrap thead th {
+      font-weight: 900;
+      background: #fbfcff;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .table-wrap tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .btn-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn.primary {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
+    .btn.primary:hover {
+      opacity: .92;
+    }
+
+    .share-block {
+      margin-top: 10px;
+    }
+
+    .share-title {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .share-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .share-row .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform .14s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease;
+    }
+
+    .share-icon {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      flex: 0 0 14px;
+    }
+
+    .btn.share-x {
+      border-color: #111;
+      color: #111;
+    }
+
+    .btn.share-ig {
+      border-color: #e1306c;
+      color: #e1306c;
+    }
+
+    .share-row .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(16, 24, 40, .14);
+    }
+
+    .share-row .btn:focus-visible {
+      outline: 2px solid #7aa2ff;
+      outline-offset: 2px;
+    }
+
+    .btn.share-x:hover {
+      background: #f3f4f6;
+      border-color: #111;
+    }
+
+    .btn.share-ig:hover {
+      background: #fff1f6;
+      border-color: #d91b5c;
+      color: #d91b5c;
+    }
+
+    .share-status {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      min-height: 1.2em;
+    }
+
+    .granularity-switch {
+      margin-top: 10px;
+      display: inline-flex;
+      gap: 6px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    .granularity-btn {
+      border: 1px solid transparent;
+      background: transparent;
+      color: #475467;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .granularity-btn.is-active {
+      background: #fff;
+      color: #111;
+      border-color: var(--border);
+      box-shadow: 0 2px 8px rgba(16, 24, 40, .1);
+    }
+
+    .chart-period-switch {
+      margin-top: 10px;
+      display: inline-flex;
+      gap: 6px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    .chart-period-btn {
+      border: 1px solid transparent;
+      background: transparent;
+      color: #475467;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .chart-period-btn.is-active {
+      background: #fff;
+      color: #111;
+      border-color: var(--border);
+      box-shadow: 0 2px 8px rgba(16, 24, 40, .1);
+    }
+
+    .chart-subnote {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #667085;
+      line-height: 1.6;
+    }
+
+    .chart-legend {
+      margin-top: 8px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: #475467;
+      font-weight: 700;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .legend-mark {
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .chart-footnotes {
+      margin-top: 10px;
+      display: grid;
+      gap: 4px;
+      font-size: 12px;
+      color: #667085;
+      line-height: 1.6;
+    }
+
+    .single-observation-card {
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 6px 16px rgba(16, 24, 40, .06);
+      padding: 12px;
+    }
+
+    .single-observation-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin: 0 0 10px;
+    }
+
+    .single-observation-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .single-observation-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fbfcff;
+      padding: 8px;
+    }
+
+    .single-observation-item .label {
+      font-size: 11px;
+      color: #667085;
+      font-weight: 800;
+    }
+
+    .single-observation-item .value {
+      margin-top: 4px;
+      font-size: 14px;
+      color: #101828;
+      font-weight: 900;
+    }
+
+    @media (max-width: 900px) {
+      .detail-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-price-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-hero {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-hero .thumb {
+        height: 220px;
+      }
+
+      .chart-viewport {
+        overflow: hidden;
+      }
+
+      svg.chart {
+        min-width: 0;
+      }
+
+      .chart-wrap {
+        padding: 8px 8px 6px;
+      }
+
+      .single-observation-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="site-header"></div>
+
+  <div class="container">
+    <div id="error" class="error"></div>
+
+    <div class="detail-wrap">
+      <div class="detail-left">
+        <div class="panel">
+          <div class="detail-hero">
+            <img id="img" class="thumb" alt="" />
+
+            <div>
+              <h2 id="name" class="name">読み込み中...</h2>
+              <div id="meta" class="meta-line"></div>
+              <div id="badges" class="badges" style="margin-top:8px;"></div>
+
+              <div class="kpi">
+                <div class="box">
+                  <div id="latestPriceLabel" class="label">最新月次価格</div>
+                  <div id="latestWeekly" class="value">-</div>
+                  <div id="weeklyDelta" class="delta" style="margin-top:6px;"></div>
+                  <div id="weeklyCount" class="meta" style="margin-top:6px;">取引件数: -</div>
+                </div>
+              </div>
+
+              <div class="btn-row">
+                <a class="btn primary" id="backLink" href="./zukan.html">← 図鑑へ戻る</a>
+                <a class="btn" id="mercariLink" href="https://jp.mercari.com/search" target="_blank" rel="noopener noreferrer nofollow">メルカリで最安値を見る</a>
+              </div>
+
+              <div class="share-block">
+                <div class="share-title">シェア</div>
+                <div class="share-row">
+                  <button type="button" class="btn share-x" id="shareXBtn">
+                    <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="currentColor" d="M18.244 2H21.5l-7.112 8.129L22 22h-5.953l-4.661-6.108L6.04 22H2.78l7.606-8.695L2 2h6.105l4.213 5.566zM17.1 20h1.803L7.127 3.895H5.19z"></path>
+                    </svg>
+                    X(Twitter)で共有
+                  </button>
+                  <button type="button" class="btn share-ig" id="shareInstagramBtn">
+                    <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="currentColor" d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2m0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95zm9.12 1.37a1.08 1.08 0 1 1 0 2.16 1.08 1.08 0 0 1 0-2.16M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10m0 1.8A3.2 3.2 0 1 0 12 15.2 3.2 3.2 0 0 0 12 8.8"></path>
+                    </svg>
+                    Instagram用にコピー
+                  </button>
+                </div>
+                <div id="shareStatus" class="share-status"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-price-grid">
+          <div class="panel">
+            <h3 id="priceSectionTitle" style="margin:0;">価格推移（観測ベース）</h3>
+            <div class="chart-period-switch" role="tablist" aria-label="表示期間">
+              <button type="button" class="chart-period-btn" id="period3mBtn" data-period="3m">直近3か月</button>
+              <button type="button" class="chart-period-btn" id="period1yBtn" data-period="1y">1年</button>
+              <button type="button" class="chart-period-btn is-active" id="periodAllBtn" data-period="all">全期間</button>
+            </div>
+            <div id="chartModeNote" class="chart-subnote"></div>
+            <div id="chartLegend" class="chart-legend" aria-label="凡例"></div>
+            <div id="weeklyChart"></div>
+            <div id="chartFootnotes" class="chart-footnotes"></div>
+            <div id="weeklyTable"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="site-footer"></div>
+  </div>
+
+    <script>window.__SLEEVE_PAGE_ID = "462318";</script>
+
+  <script src="./assets/common.js"></script>
+
+  <script>
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function showError(msg) {
+      const el = document.getElementById("error");
+      if (!el) return;
+      el.style.display = "block";
+      el.textContent = msg;
+    }
+
+    function getParam(name) {
+      const u = new URL(location.href);
+      return u.searchParams.get(name);
+    }
+
+    function getSleeveIdFromPath() {
+      const segments = location.pathname.split("/").filter(Boolean);
+      const sleeveIndex = segments.findIndex((segment) => segment === "sleeve");
+      if (sleeveIndex < 0 || sleeveIndex >= segments.length - 1) return "";
+      try {
+        return decodeURIComponent(segments[sleeveIndex + 1] || "").trim();
+      } catch (_) {
+        return String(segments[sleeveIndex + 1] || "").trim();
+      }
+    }
+
+    function getSleeveId() {
+      const embeddedId = String(window.__SLEEVE_PAGE_ID || "").trim();
+      if (embeddedId) return embeddedId;
+      const pathId = getSleeveIdFromPath();
+      if (pathId) return pathId;
+      return String(getParam("id") || "").trim();
+    }
+
+    async function loadData() {
+      if (!window.common || typeof window.common.loadData !== "function") {
+        throw new Error("共通データローダーの初期化に失敗しました（assets/common.js）");
+      }
+      return await window.common.loadData();
+    }
+
+    function getStructuredDataScript() {
+      let el = document.getElementById("productStructuredData");
+      if (el) return el;
+      el = document.createElement("script");
+      el.type = "application/ld+json";
+      el.id = "productStructuredData";
+      document.head.appendChild(el);
+      return el;
+    }
+
+    function updateProductStructuredData(sleeve, latestPrice, releaseDateText) {
+      if (!sleeve || typeof sleeve !== "object") return;
+      const name = String(sleeve.name || "").trim();
+      if (!name) return;
+
+      const imageUrl = String(sleeve.imageUrl || "").trim();
+      const price = Number.isFinite(latestPrice) ? latestPrice : null;
+      const descriptionParts = [
+        name,
+        releaseDateText ? `発売日 ${releaseDateText}` : "",
+        sleeve.series ? `シリーズ ${String(sleeve.series).trim()}` : "",
+        sleeve.condition ? `状態 ${String(sleeve.condition).trim()}` : ""
+      ].filter(Boolean);
+
+      const product = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name,
+        description: descriptionParts.join(" / "),
+        image: imageUrl || undefined
+      };
+
+      if (price != null) {
+        product.offers = {
+          "@type": "Offer",
+          price,
+          priceCurrency: "JPY"
+        };
+      }
+
+      const script = getStructuredDataScript();
+      script.textContent = JSON.stringify(product);
+    }
+
+    const ACCESS_USER_ID_KEY = "pokeSleeve:accessUserId";
+
+    function getOrCreateAccessUserId() {
+      try {
+        const saved = String(localStorage.getItem(ACCESS_USER_ID_KEY) || "").trim();
+        if (saved) return saved;
+      } catch (_) { }
+
+      let next = "";
+      try {
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          next = window.crypto.randomUUID();
+        }
+      } catch (_) { }
+      if (!next) next = `u_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+
+      try { localStorage.setItem(ACCESS_USER_ID_KEY, next); } catch (_) { }
+      return next;
+    }
+
+    async function logAccess(pageUrl) {
+      const endpoint = (window.common && window.common.GAS_URL) || window.GAS_URL || "";
+      if (!endpoint) return;
+
+      const body = {
+        action: "access",
+        page: String(pageUrl || location.href),
+        userAgent: navigator.userAgent || "",
+        userId: getOrCreateAccessUserId()
+      };
+
+      try {
+        await fetch(endpoint, {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(body)
+        });
+      } catch (_) { }
+    }
+
+    function toISODate(d) {
+      const dd = new Date(d);
+      if (Number.isNaN(dd.getTime())) return null;
+      const y = dd.getFullYear();
+      const m = String(dd.getMonth() + 1).padStart(2, "0");
+      const day = String(dd.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function formatPeriodLabel(iso) {
+      const s = String(iso || "").trim();
+      const month = s.match(/^(\d{4})-(\d{2})$/);
+      if (month) return `${month[1]}/${Number(month[2])}`;
+      const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return s;
+      return `${m[1]}/${m[2]}/${m[3]}`;
+    }
+
+    function formatReleaseDate(rawValue) {
+      if (rawValue == null) return "";
+
+      // Google Sheets serial date (e.g. 45234 -> 2023/10/05)
+      if (typeof rawValue === "number" && Number.isFinite(rawValue)) {
+        const serial = rawValue;
+        if (serial > 20000 && serial < 80000) {
+          const epoch = Date.UTC(1899, 11, 30); // Sheets/Excel serial origin
+          const ms = epoch + Math.round(serial * 86400000);
+          const d = new Date(ms);
+          if (!Number.isNaN(d.getTime())) {
+            const y = d.getUTCFullYear();
+            const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+            const day = String(d.getUTCDate()).padStart(2, "0");
+            return `${y}/${m}/${day}`;
+          }
+        }
+      }
+
+      const raw = String(rawValue ?? "").trim();
+      if (!raw) return "";
+
+      const ymd = raw.match(/^(\d{4})[\/\-\.年](\d{1,2})[\/\-\.月](\d{1,2})(?:日)?$/);
+      if (ymd) {
+        return `${ymd[1]}/${String(Number(ymd[2])).padStart(2, "0")}/${String(Number(ymd[3])).padStart(2, "0")}`;
+      }
+
+      const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})(?:T.*)?$/);
+      if (iso) return `${iso[1]}/${iso[2]}/${iso[3]}`;
+
+      const d = new Date(raw);
+      if (!Number.isNaN(d.getTime())) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${y}/${m}/${day}`;
+      }
+
+      return raw;
+    }
+
+    function buildReleaseDateFromParts(sleeve) {
+      const y = Number(sleeve?.releaseYear ?? sleeve?.release_year ?? sleeve?.["発売年"]);
+      const m = Number(sleeve?.releaseMonth ?? sleeve?.release_month ?? sleeve?.["発売月"]);
+      const d = Number(sleeve?.releaseDay ?? sleeve?.release_day ?? sleeve?.["発売日"]);
+      if (Number.isFinite(y) && Number.isFinite(m) && Number.isFinite(d) && y > 1900 && m >= 1 && m <= 12 && d >= 1 && d <= 31) {
+        return `${String(y).padStart(4, "0")}/${String(m).padStart(2, "0")}/${String(d).padStart(2, "0")}`;
+      }
+      return "";
+    }
+
+    function findReleaseDateByKeyHeuristic(sleeve) {
+      if (!sleeve || typeof sleeve !== "object") return "";
+      for (const [k, v] of Object.entries(sleeve)) {
+        const key = String(k || "");
+        const isDateLikeKey = /release.*(date|at)|released.*(date|at)|発売.*(日|年月日|日付)|発売年月日/i.test(key);
+        if (!isDateLikeKey) continue;
+        const text = formatReleaseDate(v);
+        if (/^\d{4}\/\d{2}\/\d{2}$/.test(text)) return text;
+      }
+      return "";
+    }
+
+    function getReleaseDateText(sleeve) {
+      const candidates = [
+        sleeve?.releaseDate,
+        sleeve?.release_date,
+        sleeve?.releaseAt,
+        sleeve?.releasedAt,
+        sleeve?.releasedDate,
+        sleeve?.released_date,
+        sleeve?.release_dt,
+        sleeve?.releaseDatetime,
+        sleeve?.releasedDatetime,
+        sleeve?.["発売日"],
+        sleeve?.["発売年月日"],
+        sleeve?.["発売日付"],
+        sleeve?.["リリース日"]
+      ];
+
+      for (const c of candidates) {
+        const text = formatReleaseDate(c);
+        if (/^\d{4}\/\d{2}\/\d{2}$/.test(text)) return text;
+      }
+
+      const fromParts = buildReleaseDateFromParts(sleeve);
+      if (fromParts) return fromParts;
+
+      const byHeuristic = findReleaseDateByKeyHeuristic(sleeve);
+      if (byHeuristic) return byHeuristic;
+
+      for (const c of candidates) {
+        const text = formatReleaseDate(c);
+        if (text) return text;
+      }
+
+      const y = String(sleeve?.releaseYear ?? "").trim();
+      if (y) return y;
+      return "不明";
+    }
+
+    function buildMercariSearchUrl(name) {
+      const baseName = String(name || "").trim();
+      const keyword = baseName ? `${baseName} デッキシールド` : "";
+      if (!keyword) return "https://jp.mercari.com/search";
+      return `https://jp.mercari.com/search?keyword=${encodeURIComponent(keyword)}`;
+    }
+
+    function normalizeWeekly(arr) {
+      return (Array.isArray(arr) ? arr : [])
+        .map(x => {
+          const week = toISODate(x.week);
+          const toNum = (v) => {
+            if (v == null) return null;
+            if (typeof v === "number") return Number.isFinite(v) ? v : null;
+            const s = String(v).trim();
+            if (!s || s === "-") return null;
+            const cleaned = s.replace(/[^\d.\-]/g, "");
+            if (!cleaned) return null;
+            const n = Number(cleaned);
+            return Number.isFinite(n) ? n : null;
+          };
+
+          const rawPrice = toNum(x.price);
+          const price = (Number.isFinite(rawPrice) && rawPrice > 0) ? rawPrice : null;
+          const count = toNum(x.count);
+          const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+
+          return { week, price: hasTrade ? price : null, count: count == null ? null : count };
+        })
+        .filter(x => x.week)
+        .sort((a, b) => String(a.week).localeCompare(String(b.week)));
+    }
+
+    function toMonthlyFromWeekly(weeklyRows) {
+      const buckets = new Map();
+      for (const r of (Array.isArray(weeklyRows) ? weeklyRows : [])) {
+        const week = String(r?.week || "");
+        const m = week.match(/^(\d{4})-(\d{2})-\d{2}$/);
+        if (!m) continue;
+        const key = `${m[1]}-${m[2]}`;
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(r);
+      }
+
+      const monthKeys = Array.from(buckets.keys()).sort((a, b) => a.localeCompare(b));
+      const endBase = monthKeys.length ? monthKeys[monthKeys.length - 1] : toISODate(new Date()).slice(0, 7);
+      const endDate = new Date(`${endBase}-01T00:00:00`);
+      if (Number.isNaN(endDate.getTime())) return [];
+
+      const targetMonths = [];
+      const startDate = new Date(endDate.getFullYear() - 1, 0, 1);
+      for (let d = new Date(startDate); d <= endDate; d.setMonth(d.getMonth() + 1)) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        targetMonths.push(`${y}-${m}`);
+      }
+
+      return targetMonths.map((month) => {
+        const rows = buckets.get(month) || [];
+        const prices = rows.map(x => x.price).filter(v => Number.isFinite(v));
+        const price = prices.length ? Math.round(prices.reduce((sum, v) => sum + v, 0) / prices.length) : null;
+        const counts = rows.map(x => x.count).filter(v => Number.isFinite(v));
+        const count = counts.length ? counts.reduce((sum, v) => sum + v, 0) : null;
+        return { week: month, price, count };
+      });
+    }
+
+    function formatMonthAxisLabel(isoMonth) {
+      const s = String(isoMonth || "");
+      const m = s.match(/^(\d{4})-(\d{2})$/);
+      if (!m) return formatPeriodLabel(s);
+      const year = Number(m[1]);
+      const month = Number(m[2]);
+      if (month === 1) return `${year}年`;
+      return `${year}年${month}月`;
+    }
+
+    function parseNumberLike(v) {
+      if (v == null) return null;
+      if (typeof v === "number") return Number.isFinite(v) ? v : null;
+      const s = String(v).trim();
+      if (!s || s === "-") return null;
+      const cleaned = s.replace(/[^\d.\-]/g, "");
+      if (!cleaned) return null;
+      const n = Number(cleaned);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function parseObservationPeriod(raw) {
+      const s = String(raw ?? "").trim();
+      if (!s) return null;
+      const week = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (week) {
+        const iso = `${week[1]}-${week[2]}-${week[3]}`;
+        return { granularity: "week", periodStart: iso, periodLabel: `${iso}週` };
+      }
+      const month = s.match(/^(\d{4})-(\d{2})$/);
+      if (month) {
+        const ym = `${month[1]}-${month[2]}`;
+        return { granularity: "month", periodStart: `${ym}-01`, periodLabel: ym };
+      }
+      const year = s.match(/^(\d{4})$/);
+      if (year) {
+        return { granularity: "year", periodStart: `${year[1]}-01-01`, periodLabel: `${year[1]}年` };
+      }
+      const d = new Date(s);
+      const iso = toISODate(d);
+      if (iso) return { granularity: "week", periodStart: iso, periodLabel: `${iso}週` };
+      return null;
+    }
+
+    function granularityJa(g) {
+      if (g === "week") return "週次";
+      if (g === "month") return "月次";
+      return "年次";
+    }
+
+    function isIsoDateString(value) {
+      return /^\d{4}-\d{2}-\d{2}$/.test(String(value || ""));
+    }
+
+    function formatDateSlash(iso) {
+      const m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return String(iso || "");
+      return `${m[1]}/${m[2]}/${m[3]}`;
+    }
+
+    function formatMonthSlash(periodStart) {
+      const m = String(periodStart || "").match(/^(\d{4})-(\d{2})-\d{2}$/);
+      if (!m) return String(periodStart || "");
+      return `${m[1]}/${m[2]}`;
+    }
+
+    function resolveObservationGranularity(defaultGranularity, periodStart) {
+      const start = String(periodStart || "");
+      if (start === "2025-01-01") return "year";
+      if (isIsoDateString(start) && start >= "2025-08-01" && start <= "2025-12-31") return "month";
+      if (isIsoDateString(start) && start >= "2025-01-01") return "week";
+      return defaultGranularity || "year";
+    }
+
+    function isLegacy2025DisplayPeriod(periodStart) {
+      const m = String(periodStart || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return false;
+      const y = Number(m[1]);
+      const month = Number(m[2]);
+      return y === 2025 && month >= 1 && month <= 12;
+    }
+
+    function toDisplayPeriodLabel(obs) {
+      if (!obs) return "";
+      if (String(obs.periodStart || "") === "2025-01-01") {
+        return "発売日〜2025年8月（観測）";
+      }
+      if (obs.granularity === "month") {
+        return formatMonthSlash(obs.periodStart);
+      }
+      if (obs.granularity === "week" && isLegacy2025DisplayPeriod(obs.periodStart)) {
+        return formatDateSlash(obs.periodStart);
+      }
+      return String(obs.periodLabel || obs.periodStart || "");
+    }
+
+    function normalizeObservationRows(arr) {
+      const rows = Array.isArray(arr) ? arr : [];
+      const buckets = new Map();
+      for (const x of rows) {
+        const period = parseObservationPeriod(x?.week ?? x?.period ?? x?.date);
+        if (!period) continue;
+        const granularity = resolveObservationGranularity(period.granularity, period.periodStart);
+        const priceNum = parseNumberLike(x?.price);
+        const countNum = parseNumberLike(x?.count);
+        const price = Number.isFinite(priceNum) && priceNum > 0 ? priceNum : null;
+        const count = Number.isFinite(countNum) ? Math.max(0, Math.round(countNum)) : null;
+        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        const key = `${granularity}|${period.periodStart}`;
+        if (!buckets.has(key)) {
+          const ts = new Date(period.periodStart).getTime();
+          buckets.set(key, {
+            granularity,
+            periodStart: period.periodStart,
+            periodLabel: period.periodLabel,
+            timestamp: Number.isFinite(ts) ? ts : NaN,
+            weightedPriceSum: 0,
+            weightedCount: 0,
+            simplePriceSum: 0,
+            simpleCount: 0,
+            tradeCount: 0,
+            hasCount: false
+          });
+        }
+        const b = buckets.get(key);
+        if (!hasTrade || price == null) continue;
+        if (Number.isFinite(count) && count > 0) {
+          b.weightedPriceSum += price * count;
+          b.weightedCount += count;
+          b.tradeCount += count;
+          b.hasCount = true;
+        } else {
+          b.simplePriceSum += price;
+          b.simpleCount += 1;
+        }
+      }
+
+      return Array.from(buckets.values())
+        .map((b) => {
+          let avgPrice = null;
+          if (b.weightedCount > 0) avgPrice = Math.round(b.weightedPriceSum / b.weightedCount);
+          else if (b.simpleCount > 0) avgPrice = Math.round(b.simplePriceSum / b.simpleCount);
+          const tradeCount = b.hasCount ? b.tradeCount : null;
+          const hasTrade = Number.isFinite(avgPrice) && avgPrice > 0 && (tradeCount == null || tradeCount > 0);
+          return {
+            granularity: b.granularity,
+            periodStart: b.periodStart,
+            periodLabel: b.periodLabel,
+            timestamp: b.timestamp,
+            avgPrice: hasTrade ? avgPrice : null,
+            tradeCount,
+            hasTrade
+          };
+        })
+        .filter((r) => Number.isFinite(r.timestamp))
+        .sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function classifyObservationMode(rows) {
+      const tradedCount = (Array.isArray(rows) ? rows : []).filter((r) => r.hasTrade && Number.isFinite(r.avgPrice)).length;
+      if (tradedCount <= 0) return "empty";
+      if (tradedCount === 1) return "single";
+      if (tradedCount <= 3) return "few";
+      return "normal";
+    }
+
+    function filterObservationsByPeriod(rows, periodKey) {
+      const list = Array.isArray(rows) ? rows : [];
+      if (!list.length) return [];
+      const maxTs = Math.max(...list.map((r) => Number(r.timestamp)).filter((v) => Number.isFinite(v)));
+      if (!Number.isFinite(maxTs)) return [];
+      if (periodKey === "all") return list.slice();
+      const dayMs = 24 * 60 * 60 * 1000;
+      const startTs = periodKey === "3m" ? (maxTs - 92 * dayMs) : (maxTs - 366 * dayMs);
+      return list.filter((r) => {
+        if (!Number.isFinite(r.timestamp)) return false;
+        if (r.timestamp < startTs || r.timestamp > maxTs) return false;
+        if (periodKey === "3m") return r.granularity === "week";
+        if (periodKey === "1y") return r.granularity !== "year";
+        return true;
+      });
+    }
+
+    function renderObservationLegend() {
+      const el = document.getElementById("chartLegend");
+      if (!el) return;
+      el.innerHTML = `
+        <span class="legend-item"><span class="legend-mark">●</span>週次データ</span>
+        <span class="legend-item"><span class="legend-mark">○</span>月次データ</span>
+        <span class="legend-item"><span class="legend-mark">△</span>年次データ</span>
+        <span class="legend-item">◎ 最新観測データ（強調）</span>
+      `;
+    }
+
+    function renderObservationFootnotes() {
+      const el = document.getElementById("chartFootnotes");
+      if (!el) return;
+      el.innerHTML = `
+        <div>※ 年次: 発売日〜2025年8月（観測） / 月次: 2025/08〜2025/12 / 週次: 2025/01/01以降</div>
+        <div>※ 取引記録がない期間はグラフを表示していません。</div>
+        <div>※ 観測件数が少ない場合は参考値としてご覧ください。</div>
+      `;
+    }
+
+    function renderObservationTable(rows) {
+      const list = Array.isArray(rows) ? rows.slice() : [];
+      if (!list.length) return `<div class="meta">観測データがありません</div>`;
+      const hideGranularityColumn = list.length > 0 && list.every((r) => isLegacy2025DisplayPeriod(r.periodStart));
+      const html = list.reverse().map((r) => {
+        const g = granularityJa(r.granularity);
+        const periodText = toDisplayPeriodLabel(r);
+        const priceCell = (r.hasTrade && Number.isFinite(r.avgPrice)) ? `${Number(r.avgPrice).toLocaleString()}円` : "-";
+        const countCell = Number.isFinite(r.tradeCount) ? `${r.tradeCount}件` : "-";
+        const granCell = hideGranularityColumn ? "" : `<td>${isLegacy2025DisplayPeriod(r.periodStart) ? "" : escapeHtml(g)}</td>`;
+        return `<tr><td>${escapeHtml(periodText)}</td>${granCell}<td>${priceCell}</td><td>${countCell}</td></tr>`;
+      }).join("");
+      const granHead = hideGranularityColumn ? "" : "<th>粒度</th>";
+      return `
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>期間</th>${granHead}<th>平均価格</th><th>件数</th></tr></thead>
+            <tbody>${html}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderSingleObservationCard(containerId, obs) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      if (!obs) {
+        el.innerHTML = `<div class="chart-wrap"><div class="meta">観測データがありません</div></div>`;
+        return;
+      }
+      const priceText = Number.isFinite(obs.avgPrice) ? `${obs.avgPrice.toLocaleString()}円` : "-";
+      const countText = Number.isFinite(obs.tradeCount) ? `${obs.tradeCount}件` : "1件";
+      const periodText = toDisplayPeriodLabel(obs);
+      el.innerHTML = `
+        <div class="single-observation-card">
+          <p class="single-observation-title">現在確認できる価格</p>
+          <div class="single-observation-grid">
+            <div class="single-observation-item">
+              <div class="label">観測価格</div>
+              <div class="value">${priceText}</div>
+            </div>
+            <div class="single-observation-item">
+              <div class="label">観測件数</div>
+              <div class="value">${countText}</div>
+            </div>
+            <div class="single-observation-item">
+              <div class="label">最終観測時期</div>
+              <div class="value">${escapeHtml(periodText)}</div>
+            </div>
+            <div class="single-observation-item">
+              <div class="label">粒度</div>
+              <div class="value">${granularityJa(obs.granularity)}</div>
+            </div>
+          </div>
+          <div class="chart-subnote">観測データが1件のみのため、価格推移チャートではなく最新観測価格を表示しています。</div>
+        </div>
+      `;
+    }
+
+    function renderObservationChart(containerId, title, rows, options = {}) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      const traded = (Array.isArray(rows) ? rows : []).filter((r) => r.hasTrade && Number.isFinite(r.avgPrice));
+      if (!traded.length) {
+        el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">観測データがありません</div></div>`;
+        return;
+      }
+
+      const W = 920;
+      const H = 320;
+      const padL = 60;
+      const padR = 18;
+      const padT = 14;
+      const padB = 42;
+      const chartW = W - padL - padR;
+      const chartH = H - padT - padB;
+
+      const xMin = Math.min(...traded.map((p) => p.timestamp));
+      const xMax = Math.max(...traded.map((p) => p.timestamp));
+      const safeSpanX = Math.max(24 * 60 * 60 * 1000, xMax - xMin);
+      const yMinRaw = Math.min(...traded.map((p) => p.avgPrice));
+      const yMaxRaw = Math.max(...traded.map((p) => p.avgPrice));
+      const ySpanRaw = Math.max(1, yMaxRaw - yMinRaw);
+      const yPad = Math.max(20, Math.round(ySpanRaw * 0.08));
+      const yMin = Math.max(0, yMinRaw - yPad);
+      const yMax = yMaxRaw + yPad;
+
+      const xToPx = (ts) => padL + ((ts - xMin) / safeSpanX) * chartW;
+      const yToPx = (v) => padT + (1 - ((v - yMin) / Math.max(1, yMax - yMin))) * chartH;
+
+      const yTicks = 3;
+      const yGrid = [];
+      const yLabels = [];
+      for (let i = 0; i <= yTicks; i++) {
+        const v = yMin + (i / yTicks) * (yMax - yMin);
+        const y = yToPx(v);
+        yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e4e7ec"></line>`);
+        yLabels.push(`<text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#667085">${Math.round(v).toLocaleString()}</text>`);
+      }
+
+      const xTicks = 4;
+      const xLabels = [];
+      for (let i = 0; i <= xTicks; i++) {
+        const ts = xMin + (i / xTicks) * safeSpanX;
+        const d = new Date(ts);
+        const yy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        const label = safeSpanX > (550 * 24 * 60 * 60 * 1000) ? `${yy}/${mm}` : `${mm}/${dd}`;
+        const x = xToPx(ts);
+        xLabels.push(`<text x="${x}" y="${H - 16}" text-anchor="middle" font-size="11" fill="#667085">${label}</text>`);
+      }
+
+      const styles = {
+        week: { stroke: "#475467", fill: "#475467" },
+        month: { stroke: "#667085", fill: "#ffffff" },
+        year: { stroke: "#98a2b3", fill: "#ffffff" }
+      };
+
+      const tradedByG = {
+        week: traded.filter((r) => r.granularity === "week"),
+        month: traded.filter((r) => r.granularity === "month"),
+        year: traded.filter((r) => r.granularity === "year")
+      };
+
+      const markerParts = [];
+      const hitParts = [];
+      const hitMeta = [];
+      let hitIdx = 0;
+      const latest = traded[traded.length - 1];
+      const latestKey = latest ? `${latest.granularity}|${latest.periodStart}` : "";
+      const latestPriceY = latest ? yToPx(latest.avgPrice) : null;
+
+      function buildMarkerShape(point, cx, cy, radius, style, isLatest) {
+        if (isLatest) {
+          markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${radius + 3}" fill="rgba(71,84,103,0.12)" stroke="none"></circle>`);
+        }
+        if (point.granularity === "year") {
+          const triangle = [
+            `${cx},${cy - radius}`,
+            `${cx - radius * 0.88},${cy + radius * 0.72}`,
+            `${cx + radius * 0.88},${cy + radius * 0.72}`
+          ].join(" ");
+          markerParts.push(`<polygon points="${triangle}" fill="${style.fill}" stroke="${style.stroke}" stroke-width="${isLatest ? 2.2 : 1.6}"></polygon>`);
+          return;
+        }
+        markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${style.fill}" stroke="${style.stroke}" stroke-width="${isLatest ? 2.2 : 1.6}"></circle>`);
+      }
+
+      for (const g of ["week", "month", "year"]) {
+        const st = styles[g];
+        const pts = tradedByG[g].slice().sort((a, b) => a.timestamp - b.timestamp);
+        if (!pts.length) continue;
+
+        for (const p of pts) {
+          const cx = xToPx(p.timestamp);
+          const cy = yToPx(p.avgPrice);
+          const key = `${p.granularity}|${p.periodStart}`;
+          const isLatest = key === latestKey;
+          const radius = isLatest ? 8 : 6;
+          buildMarkerShape(p, cx, cy, radius, st, isLatest);
+          hitParts.push(`<circle class="obs-hit" data-hit="${hitIdx}" cx="${cx}" cy="${cy}" r="14" fill="transparent"></circle>`);
+          hitMeta.push(p);
+          hitIdx += 1;
+        }
+      }
+
+      el.innerHTML = `
+        <div class="chart-wrap">
+          <div class="chart-title">${escapeHtml(title)}</div>
+          <div class="chart-tooltip"></div>
+          <div class="chart-viewport">
+            <svg class="chart" viewBox="0 0 ${W} ${H}">
+              <g>${yGrid.join("")}</g>
+              <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#98a2b3"></line>
+              <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#98a2b3"></line>
+              ${latest && Number.isFinite(latestPriceY)
+          ? `<line x1="${padL}" y1="${latestPriceY}" x2="${W - padR}" y2="${latestPriceY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"></line>
+                 <text x="${W - padR - 4}" y="${latestPriceY - 6}" text-anchor="end" font-size="11" font-weight="800" fill="#64748b">現在 ¥${latest.avgPrice.toLocaleString()}</text>`
+          : ""}
+              <g>${markerParts.join("")}</g>
+              <g>${hitParts.join("")}</g>
+              <g>${yLabels.join("")}</g>
+              <g>${xLabels.join("")}</g>
+            </svg>
+          </div>
+        </div>
+      `;
+
+      const wrap = el.querySelector(".chart-wrap");
+      const tip = el.querySelector(".chart-tooltip");
+      const hits = Array.from(el.querySelectorAll(".obs-hit"));
+      const showTip = (ev, obs) => {
+        if (!tip || !wrap || !obs) return;
+        const periodText = toDisplayPeriodLabel(obs);
+        const avg = Number.isFinite(obs.avgPrice) ? `${obs.avgPrice.toLocaleString()}円` : "-";
+        const cnt = Number.isFinite(obs.tradeCount) ? `${obs.tradeCount}件` : "-";
+        tip.textContent = `${periodText} / 観測価格 ${avg} / 取引 ${cnt}`;
+        tip.style.display = "block";
+        const wrapRect = wrap.getBoundingClientRect();
+        const x = Math.min(Math.max(ev.clientX - wrapRect.left, 70), wrapRect.width - 70);
+        tip.style.left = `${x}px`;
+        tip.style.top = `8px`;
+      };
+      const hideTip = () => {
+        if (tip) tip.style.display = "none";
+      };
+
+      hits.forEach((node) => {
+        const idx = Number(node.getAttribute("data-hit"));
+        const obs = Number.isFinite(idx) ? hitMeta[idx] : null;
+        node.addEventListener("mousemove", (ev) => showTip(ev, obs));
+        node.addEventListener("mouseenter", (ev) => showTip(ev, obs));
+        node.addEventListener("click", (ev) => showTip(ev, obs));
+      });
+
+      if (wrap) wrap.addEventListener("mouseleave", hideTip);
+    }
+
+    function setPriceKpiFromObservations(rows) {
+      const latestEl = document.getElementById("latestWeekly");
+      const deltaEl = document.getElementById("weeklyDelta");
+      const countEl = document.getElementById("weeklyCount");
+      const labelEl = document.getElementById("latestPriceLabel");
+      if (labelEl) labelEl.textContent = "最新観測価格";
+
+      const traded = (Array.isArray(rows) ? rows : []).filter((r) => r.hasTrade && Number.isFinite(r.avgPrice));
+      if (!traded.length) {
+        latestEl.textContent = "-";
+        deltaEl.textContent = "比較できるデータがありません";
+        deltaEl.className = "delta flat";
+        countEl.textContent = "取引件数: -";
+        return;
+      }
+
+      const latest = traded[traded.length - 1];
+      latestEl.textContent = `${latest.avgPrice.toLocaleString()}円`;
+      countEl.textContent = `取引件数: ${Number.isFinite(latest.tradeCount) ? `${latest.tradeCount}件` : "-"}`;
+
+      const prev = traded.slice(0, -1).reverse().find((r) => r.granularity === latest.granularity) || null;
+      if (!prev) {
+        deltaEl.textContent = "同粒度の比較データがありません";
+        deltaEl.className = "delta flat";
+        return;
+      }
+
+      const diff = latest.avgPrice - prev.avgPrice;
+      const abs = Math.abs(diff);
+      let cls = "flat";
+      let arrow = "→";
+      let sign = "±";
+      if (diff > 0) { cls = "up"; arrow = "↑"; sign = "+"; }
+      if (diff < 0) { cls = "down"; arrow = "↓"; sign = "-"; }
+      deltaEl.className = "delta " + cls;
+      deltaEl.textContent = `${arrow} 前回${granularityJa(latest.granularity)}観測比 ${sign}${abs.toLocaleString()}円`;
+    }
+
+    function currentShareUrl() {
+      const u = new URL(location.href);
+      u.hash = "";
+      return u.toString();
+    }
+
+    async function copyToClipboard(text) {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    }
+
+    function setupShare(sleeve, observationRows) {
+      const shareXBtn = document.getElementById("shareXBtn");
+      const shareInstagramBtn = document.getElementById("shareInstagramBtn");
+      const statusEl = document.getElementById("shareStatus");
+      if (!shareXBtn || !shareInstagramBtn || !statusEl) return;
+
+      const pair = latestTwoTradedObservations(observationRows);
+      const priceText = (pair && pair.latest && Number.isFinite(pair.latest.avgPrice))
+        ? `最新観測価格: ${pair.latest.avgPrice.toLocaleString()}円`
+        : "最新観測価格: -";
+      const shareUrl = currentShareUrl();
+      const shareText = `【${sleeve.name || "ポケカスリーブ"}】${priceText} #ポケカ #ポケモンカード`;
+
+      const setStatus = (msg) => {
+        statusEl.textContent = msg;
+      };
+
+      shareXBtn.addEventListener("click", () => {
+        const intent = new URL("https://twitter.com/intent/tweet");
+        intent.searchParams.set("text", shareText);
+        intent.searchParams.set("url", shareUrl);
+        window.open(intent.toString(), "_blank", "noopener,noreferrer");
+      });
+
+      shareInstagramBtn.addEventListener("click", async () => {
+        const text = `${shareText}\n${shareUrl}`;
+        try {
+          await copyToClipboard(text);
+          setStatus("コピーしました。Instagramアプリで貼り付けて投稿してください。");
+          window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+        } catch (_) {
+          setStatus("コピーに失敗しました。ブラウザ設定をご確認ください。");
+        }
+      });
+    }
+
+    function latestTwoTradedObservations(rows) {
+      const traded = (Array.isArray(rows) ? rows : []).filter((r) => r.hasTrade && Number.isFinite(r.avgPrice) && r.avgPrice > 0);
+      if (traded.length === 0) return null;
+      const latest = traded[traded.length - 1];
+      const prev = traded.length >= 2 ? traded[traded.length - 2] : null;
+      return { latest, prev };
+    }
+
+    // Backward-compatible helper for legacy functions kept in this file.
+    function latestTwoTradedWeeks(rows) {
+      const traded = (Array.isArray(rows) ? rows : []).filter((r) => Number.isFinite(r?.price) && r.price > 0);
+      if (!traded.length) return null;
+      return {
+        latest: traded[traded.length - 1],
+        prev: traded.length >= 2 ? traded[traded.length - 2] : null
+      };
+    }
+
+    function renderTableWeekly(rows) {
+      if (!rows.length) return `<div class="meta">週次データがまだありません</div>`;
+
+      const hasCount = rows.some(r => Number.isFinite(r.count));
+      const html = rows.slice().reverse().map(r => {
+        const priceCell = (Number.isFinite(r.price) && r.price > 0) ? `${Number(r.price).toLocaleString()}円` : "-";
+        const countCell = hasCount ? `<td>${Number.isFinite(r.count) ? `${r.count}件` : "-"}</td>` : "";
+        return `<tr><td>${escapeHtml(formatPeriodLabel(r.week))}</td><td>${priceCell}</td>${countCell}</tr>`;
+      }).join("");
+
+      const headCount = hasCount ? `<th>件数</th>` : "";
+
+      return `
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>期間</th><th>価格</th>${headCount}</tr></thead>
+            <tbody>${html}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function setPriceKpi(rows, labelText) {
+      const latestEl = document.getElementById("latestWeekly");
+      const deltaEl = document.getElementById("weeklyDelta");
+      const countEl = document.getElementById("weeklyCount");
+      const labelEl = document.getElementById("latestPriceLabel");
+      if (labelEl) labelEl.textContent = labelText;
+
+      const pair = latestTwoTradedWeeks(rows);
+
+      if (!pair) {
+        latestEl.textContent = "-";
+        deltaEl.textContent = "比較できるデータがありません";
+        deltaEl.className = "delta flat";
+        countEl.textContent = "取引件数: -";
+        return;
+      }
+
+      latestEl.textContent = `${pair.latest.price.toLocaleString()}円`;
+
+      const cnt = Number.isFinite(pair.latest.count) ? pair.latest.count : null;
+      countEl.textContent = `取引件数: ${cnt != null ? `${cnt}件` : "-"}`;
+
+      if (!pair.prev) {
+        deltaEl.textContent = "比較できる前週データがありません";
+        deltaEl.className = "delta flat";
+        return;
+      }
+
+      const diff = pair.latest.price - pair.prev.price;
+      const abs = Math.abs(diff);
+      let cls = "flat";
+      let arrow = "→";
+      let sign = "±";
+      if (diff > 0) { cls = "up"; arrow = "↑"; sign = "+"; }
+      if (diff < 0) { cls = "down"; arrow = "↓"; sign = "-"; }
+
+      let pct = "";
+      if (pair.prev.price !== 0) {
+        const rate = (diff / pair.prev.price) * 100;
+        if (Number.isFinite(rate)) {
+          pct = `（${diff > 0 ? "+" : diff < 0 ? "-" : ""}${Math.abs(rate).toFixed(1)}%）`;
+        }
+      }
+
+      deltaEl.className = "delta " + cls;
+      deltaEl.textContent = `${arrow} 前週比 ${sign}${abs.toLocaleString()}円 ${pct}`;
+    }
+
+    function renderLineChart(containerId, title, rows, xKey, yKey, options = {}) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      const mode = String(options.mode || "weekly");
+      const isMonthlyMode = mode === "monthly";
+      const hasValidPrice = (v) => Number.isFinite(v) && v > 0;
+
+      const data = (Array.isArray(rows) ? rows : [])
+        .map(r => {
+          const x = String(r?.[xKey] ?? "");
+          const rawY = r?.[yKey];
+          const n = Number(rawY);
+          return { x, y: hasValidPrice(n) ? n : null };
+        })
+        .filter(p => p.x);
+
+      const finiteData = data.filter(p => hasValidPrice(p.y));
+      if (finiteData.length < 1 || data.length < 2) {
+        el.innerHTML = `
+          <div class="chart-wrap">
+            <div class="chart-title">${escapeHtml(title)}</div>
+            <div class="meta">データが不足しています</div>
+          </div>`;
+        return;
+      }
+
+      const isMobileView = window.matchMedia("(max-width: 900px)").matches;
+      const W = 1200;
+      const H = 680;
+      const axisFontSize = isMobileView ? 19 : 12;
+      const xAxisFontSize = isMobileView ? 18 : 13;
+      const padL = isMobileView ? 110 : 80;
+      const padR = 24;
+      const mainTop = 24;
+      const mainBottom = isMobileView ? 420 : 430;
+      const xLabelY = isMobileView ? 476 : 458;
+      const navTop = 540;
+      const navBottom = 628;
+      const ticks = 4;
+      const minWindow = Math.min(Math.max(2, Math.ceil(data.length * 0.12)), data.length);
+
+      function niceStep(range, t) {
+        const rough = range / t;
+        const pow = Math.pow(10, Math.floor(Math.log10(Math.max(rough, 1))));
+        const candidates = [1, 2, 5, 10].map(m => m * pow);
+        return candidates.reduce((best, v) => Math.abs(v - rough) < Math.abs(best - rough) ? v : best, candidates[0]);
+      }
+
+      const xToPxAll = (i) => {
+        if (data.length <= 1) return padL;
+        return padL + (i / (data.length - 1)) * (W - padL - padR);
+      };
+
+      function rangeLabel(start, end) {
+        if (start === 0 && end === data.length - 1) {
+          if (isMonthlyMode) {
+            return `${formatPeriodLabel(data[0].x)} 〜 ${formatPeriodLabel(data[data.length - 1].x)}`;
+          }
+          return "全期間";
+        }
+        return `${formatPeriodLabel(data[start].x)} 〜 ${formatPeriodLabel(data[end].x)}`;
+      }
+
+      function clampRange(start, end) {
+        let s = Math.max(0, Math.min(data.length - 1, Math.round(start)));
+        let e = Math.max(0, Math.min(data.length - 1, Math.round(end)));
+        if (s > e) [s, e] = [e, s];
+        if ((e - s + 1) < minWindow) {
+          const need = minWindow - (e - s + 1);
+          s -= Math.ceil(need / 2);
+          e += Math.floor(need / 2);
+          if (s < 0) {
+            e += -s;
+            s = 0;
+          }
+          if (e > data.length - 1) {
+            const over = e - (data.length - 1);
+            s = Math.max(0, s - over);
+            e = data.length - 1;
+          }
+        }
+        return [s, e];
+      }
+
+      el.innerHTML = `
+        <div class="chart-wrap">
+          <div class="chart-title">${escapeHtml(title)}</div>
+          <div class="chart-toolbar">
+            <button type="button" class="chart-zoom-btn" data-zoom="out">-</button>
+            <button type="button" class="chart-zoom-btn" data-zoom="in">+</button>
+            <button type="button" class="chart-zoom-btn" data-zoom="reset">全期間</button>
+            <span class="chart-zoom-label">全期間</span>
+          </div>
+          <div class="chart-tooltip"></div>
+          <div class="chart-viewport">
+            <svg class="chart" viewBox="0 0 ${W} ${H}">
+              <defs>
+                <linearGradient id="bgGrad-${escapeHtml(containerId)}" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1e5bd7" stop-opacity="0.11" />
+                  <stop offset="100%" stop-color="#1e5bd7" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <g class="main-grid"></g>
+              <g class="main-labels"></g>
+              <path class="main-fill" fill="url(#bgGrad-${escapeHtml(containerId)})"></path>
+              <path class="main-line" fill="none" stroke="#1e5bd7" stroke-width="3" stroke-linecap="round"></path>
+              <line class="hover-line" stroke="#94a3b8" stroke-width="1" style="display:none;"></line>
+              <circle class="hover-dot" r="5" fill="#1e5bd7" style="display:none;"></circle>
+              <rect class="chart-main-hit" x="${padL}" y="${mainTop}" width="${W - padL - padR}" height="${mainBottom - mainTop}" fill="transparent"></rect>
+              <g class="main-x-labels"></g>
+              <path class="nav-line" fill="none" stroke="#8aa1d6" stroke-width="2"></path>
+              <rect class="chart-nav-hit" x="${padL}" y="${navTop}" width="${W - padL - padR}" height="${navBottom - navTop}" fill="transparent"></rect>
+              <rect class="chart-range" y="${navTop}" height="${navBottom - navTop}"></rect>
+              <rect class="chart-handle chart-handle-left" y="${navTop}" width="14" height="${navBottom - navTop}"></rect>
+              <rect class="chart-handle chart-handle-right" y="${navTop}" width="14" height="${navBottom - navTop}"></rect>
+            </svg>
+          </div>
+        </div>
+      `;
+
+      const wrap = el.querySelector(".chart-wrap");
+      const svg = el.querySelector("svg.chart");
+      const tip = el.querySelector(".chart-tooltip");
+      const hitMain = el.querySelector(".chart-main-hit");
+      const hitNav = el.querySelector(".chart-nav-hit");
+      const hLine = el.querySelector(".hover-line");
+      const hDot = el.querySelector(".hover-dot");
+      const mainGrid = el.querySelector(".main-grid");
+      const mainLabels = el.querySelector(".main-labels");
+      const mainXLabels = el.querySelector(".main-x-labels");
+      const mainFill = el.querySelector(".main-fill");
+      const mainLine = el.querySelector(".main-line");
+      const navLine = el.querySelector(".nav-line");
+      const rangeRect = el.querySelector(".chart-range");
+      const leftHandle = el.querySelector(".chart-handle-left");
+      const rightHandle = el.querySelector(".chart-handle-right");
+      const zoomLabel = el.querySelector(".chart-zoom-label");
+      const zoomBtns = Array.from(el.querySelectorAll(".chart-zoom-btn"));
+
+      const yAllMin = Math.min(...finiteData.map(d => d.y));
+      const yAllMax = Math.max(...finiteData.map(d => d.y));
+      const yAllSpan = (yAllMax - yAllMin) || 1;
+      const yNavMin = yAllMin - yAllSpan * 0.08;
+      const yNavMax = yAllMax + yAllSpan * 0.08;
+
+      const yToPxNav = (v) => navTop + (1 - (v - yNavMin) / (yNavMax - yNavMin)) * (navBottom - navTop);
+      const navPath = (() => {
+        let d = "";
+        let penDown = false;
+        for (let i = 0; i < data.length; i++) {
+          if (!hasValidPrice(data[i].y)) {
+            penDown = false;
+            continue;
+          }
+          d += `${penDown ? " L" : " M"} ${xToPxAll(i)} ${yToPxNav(data[i].y)}`;
+          penDown = true;
+        }
+        return d.trim();
+      })();
+      navLine.setAttribute("d", navPath);
+
+      let rangeStart = 0;
+      let rangeEnd = data.length - 1;
+      let activeRange = [0, data.length - 1];
+      let dragMode = null;
+      let dragAnchor = 0;
+      let dragLength = data.length;
+
+      function toSvgX(clientX) {
+        const rect = svg.getBoundingClientRect();
+        const x = clientX - rect.left;
+        return (x / rect.width) * W;
+      }
+
+      function idxFromClientX(clientX) {
+        const vbX = toSvgX(clientX);
+        const t = (vbX - padL) / (W - padL - padR);
+        const idx = Math.round(t * (data.length - 1));
+        return Math.max(0, Math.min(data.length - 1, idx));
+      }
+
+      function renderRange() {
+        const [s, e] = activeRange;
+        const visible = data.slice(s, e + 1);
+        if (!visible.length) return;
+
+        const xToPxMain = (i) => {
+          if (visible.length <= 1) return padL;
+          return padL + (i / (visible.length - 1)) * (W - padL - padR);
+        };
+
+        const ys = visible.map(v => v.y).filter(v => hasValidPrice(v));
+        if (!ys.length) return;
+        let yMin = Math.min(...ys);
+        let yMax = Math.max(...ys);
+        const margin = (yMax - yMin) * 0.12 || 1;
+        yMin -= margin;
+        yMax += margin;
+        const step = niceStep(yMax - yMin, ticks);
+        yMin = Math.floor(yMin / step) * step;
+        yMax = Math.ceil(yMax / step) * step;
+
+        const yToPxMain = (v) => mainTop + (1 - (v - yMin) / (yMax - yMin)) * (mainBottom - mainTop);
+        let pathD = "";
+        let penDown = false;
+        for (let i = 0; i < visible.length; i++) {
+          const y = visible[i].y;
+          if (!hasValidPrice(y)) {
+            penDown = false;
+            continue;
+          }
+          pathD += `${penDown ? " L" : " M"} ${xToPxMain(i)} ${yToPxMain(y)}`;
+          penDown = true;
+        }
+        mainLine.setAttribute("d", pathD);
+        mainFill.setAttribute("d", "");
+
+        const gridLines = [];
+        const yLabels = [];
+        for (let i = 0; i <= ticks; i++) {
+          const v = yMin + (i / ticks) * (yMax - yMin);
+          const y = yToPxMain(v);
+          const gridColor = isMobileView ? "#d7deea" : "#e6e8ef";
+          const yLabelColor = isMobileView ? "#344054" : "#475467";
+          gridLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="${gridColor}"/>`);
+          yLabels.push(`<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="${yLabelColor}" font-weight="800">${Math.round(v).toLocaleString()}</text>`);
+        }
+        gridLines.push(`<line x1="${padL}" y1="${mainTop}" x2="${padL}" y2="${mainBottom}" stroke="#9aa4b2" stroke-width="1.2"/>`);
+        gridLines.push(`<line x1="${padL}" y1="${mainBottom}" x2="${W - padR}" y2="${mainBottom}" stroke="#9aa4b2" stroke-width="1.2"/>`);
+        mainGrid.innerHTML = gridLines.join("");
+        mainLabels.innerHTML = yLabels.join("");
+
+        if (isMobileView) {
+          const mobileIdx = isMonthlyMode
+            ? visible.map((_, i) => i)
+            : (() => {
+              const labelCount = Math.min(4, visible.length);
+              const idxSet = new Set();
+              for (let i = 0; i < labelCount; i++) {
+                const ratio = labelCount === 1 ? 0 : i / (labelCount - 1);
+                idxSet.add(Math.round((visible.length - 1) * ratio));
+              }
+              return Array.from(idxSet).sort((a, b) => a - b);
+            })();
+          mainXLabels.innerHTML = mobileIdx.map((i, idx) => {
+            const x = xToPxMain(i);
+            const text = escapeHtml(isMonthlyMode ? formatMonthAxisLabel(visible[i].x) : formatPeriodLabel(visible[i].x));
+            if (isMonthlyMode) {
+              const y = xLabelY + ((idx % 2) ? 16 : 0);
+              return `<text x="${x}" y="${y}" font-size="12" fill="#475467" text-anchor="middle" font-weight="700">${text}</text>`;
+            }
+            const anchor = idx === 0 ? "start" : (idx === mobileIdx.length - 1 ? "end" : "middle");
+            return `<text x="${x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#475467" text-anchor="${anchor}" font-weight="700">${text}</text>`;
+          }).join("");
+        } else {
+          if (isMonthlyMode) {
+            mainXLabels.innerHTML = visible.map((p, i) => {
+              const x = xToPxMain(i);
+              const y = xLabelY + ((i % 2) ? 12 : 0);
+              return `<text x="${x}" y="${y}" font-size="12" fill="#475467" text-anchor="middle" font-weight="700">${escapeHtml(formatMonthAxisLabel(p.x))}</text>`;
+            }).join("");
+          } else {
+            const midIdx = Math.floor((visible.length - 1) / 2);
+            const xLabels = [
+              { x: xToPxMain(0), text: formatPeriodLabel(visible[0].x), anchor: "start" },
+              { x: xToPxMain(midIdx), text: formatPeriodLabel(visible[midIdx].x), anchor: "middle" },
+              { x: xToPxMain(visible.length - 1), text: formatPeriodLabel(visible[visible.length - 1].x), anchor: "end" }
+            ];
+            mainXLabels.innerHTML = xLabels.map(l =>
+              `<text x="${l.x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
+            ).join("");
+          }
+        }
+
+        const rangeX1 = xToPxAll(s);
+        const rangeX2 = xToPxAll(e);
+        rangeRect.setAttribute("x", rangeX1);
+        rangeRect.setAttribute("width", Math.max(2, rangeX2 - rangeX1));
+        leftHandle.setAttribute("x", rangeX1 - 7);
+        rightHandle.setAttribute("x", rangeX2 - 7);
+        zoomLabel.textContent = rangeLabel(s, e);
+
+        hitMain.onmousemove = (ev) => {
+          const vbX = toSvgX(ev.clientX);
+          const t = (vbX - padL) / (W - padL - padR);
+          const visIdx = Math.max(0, Math.min(visible.length - 1, Math.round(t * (visible.length - 1))));
+          const point = visible[visIdx];
+          const px = xToPxMain(visIdx);
+          const hasValue = hasValidPrice(point?.y);
+          const py = hasValue ? yToPxMain(point.y) : null;
+
+          hLine.style.display = "block";
+          hDot.style.display = hasValue ? "block" : "none";
+          tip.style.display = "block";
+          hLine.setAttribute("x1", px);
+          hLine.setAttribute("x2", px);
+          hLine.setAttribute("y1", mainTop);
+          hLine.setAttribute("y2", mainBottom);
+          if (hasValue) {
+            hDot.setAttribute("cx", px);
+            hDot.setAttribute("cy", py);
+          }
+
+          tip.textContent = `${formatPeriodLabel(point.x)} / ${hasValue ? `${point.y.toLocaleString()}円` : "-"}`;
+          const wrapRect = wrap.getBoundingClientRect();
+          tip.style.left = `${Math.min(Math.max(ev.clientX - wrapRect.left, 56), wrapRect.width - 56)}px`;
+          const tipY = Math.max(ev.clientY - wrapRect.top - tip.offsetHeight - 12, 8);
+          tip.style.top = `${tipY}px`;
+        };
+      }
+
+      function updateRange(start, end) {
+        const [s, e] = clampRange(start, end);
+        activeRange = [s, e];
+        rangeStart = s;
+        rangeEnd = e;
+        renderRange();
+      }
+
+      function hideHover() {
+        hLine.style.display = "none";
+        hDot.style.display = "none";
+        tip.style.display = "none";
+      }
+
+      hitMain.addEventListener("mouseleave", hideHover);
+
+      hitNav.addEventListener("pointerdown", (ev) => {
+        const idx = idxFromClientX(ev.clientX);
+        const leftX = xToPxAll(rangeStart);
+        const rightX = xToPxAll(rangeEnd);
+        const downX = toSvgX(ev.clientX);
+        const nearLeft = Math.abs(downX - leftX) <= 20;
+        const nearRight = Math.abs(downX - rightX) <= 20;
+
+        if (nearLeft) dragMode = "left";
+        else if (nearRight) dragMode = "right";
+        else if (idx >= rangeStart && idx <= rangeEnd) {
+          dragMode = "move";
+          dragAnchor = idx - rangeStart;
+          dragLength = rangeEnd - rangeStart + 1;
+        } else {
+          dragMode = null;
+          const span = rangeEnd - rangeStart;
+          const nextStart = Math.max(0, Math.min(data.length - 1 - span, idx - Math.floor(span / 2)));
+          updateRange(nextStart, nextStart + span);
+        }
+        hitNav.setPointerCapture(ev.pointerId);
+      });
+
+      hitNav.addEventListener("pointermove", (ev) => {
+        if (!dragMode) return;
+        const idx = idxFromClientX(ev.clientX);
+        if (dragMode === "left") updateRange(idx, rangeEnd);
+        if (dragMode === "right") updateRange(rangeStart, idx);
+        if (dragMode === "move") {
+          let nextStart = idx - dragAnchor;
+          nextStart = Math.max(0, Math.min(data.length - dragLength, nextStart));
+          updateRange(nextStart, nextStart + dragLength - 1);
+        }
+      });
+
+      hitNav.addEventListener("pointerup", (ev) => {
+        dragMode = null;
+        if (hitNav.hasPointerCapture(ev.pointerId)) hitNav.releasePointerCapture(ev.pointerId);
+      });
+
+      hitNav.addEventListener("pointercancel", (ev) => {
+        dragMode = null;
+        if (hitNav.hasPointerCapture(ev.pointerId)) hitNav.releasePointerCapture(ev.pointerId);
+      });
+
+      zoomBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const mode = btn.getAttribute("data-zoom");
+          const span = rangeEnd - rangeStart + 1;
+          const center = Math.round((rangeStart + rangeEnd) / 2);
+          if (mode === "in") {
+            const nextSpan = Math.max(minWindow, Math.floor(span * 0.75));
+            const half = Math.floor(nextSpan / 2);
+            updateRange(center - half, center - half + nextSpan - 1);
+          }
+          if (mode === "out") {
+            const nextSpan = Math.min(data.length, Math.ceil(span * 1.3));
+            const half = Math.floor(nextSpan / 2);
+            updateRange(center - half, center - half + nextSpan - 1);
+          }
+          if (mode === "reset") updateRange(0, data.length - 1);
+        });
+      });
+
+      if (isMonthlyMode) {
+        updateRange(0, data.length - 1);
+      } else {
+        const initialSpan = Math.max(minWindow, Math.min(data.length, Math.round(data.length * 0.7)));
+        const initialStart = Math.max(0, data.length - initialSpan);
+        updateRange(initialStart, data.length - 1);
+      }
+    }
+
+    async function main() {
+      const applySearchBehavior = () => {
+        const search = document.getElementById("search");
+        if (!search) return false;
+        search.placeholder = "図鑑へ戻って検索...";
+        search.addEventListener("keydown", (e) => {
+          if (e.key !== "Enter") return;
+          const q = search.value.trim();
+          if (!q) {
+            location.href = "./zukan.html";
+            return;
+          }
+          location.href = "./zukan.html?q=" + encodeURIComponent(q);
+        });
+        return true;
+      };
+      if (!applySearchBehavior()) setTimeout(applySearchBehavior, 200);
+
+      const id = getSleeveId();
+      if (!id) {
+        showError("id が指定されていません。一覧ページから開いてください。");
+        return;
+      }
+
+      if (!window.__SLEEVE_PAGE_ID && !getSleeveIdFromPath()) {
+        const nextHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
+          ? window.common.buildSleeveDetailHref(id)
+          : `./sleeve/${encodeURIComponent(id)}/`;
+        location.replace(nextHref);
+        return;
+      }
+
+      let data;
+      try {
+        data = await loadData();
+      } catch (e) {
+        showError(e.message || "データ読み込みに失敗しました");
+        return;
+      }
+
+      const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
+      const s = sleeves.find(x => String(x.id) === String(id));
+      if (!s) {
+        showError("指定されたスリーブが見つかりませんでした。");
+        return;
+      }
+
+      logAccess(location.href);
+
+      document.title = `${s.name || "スリーブ相場"} - ポケスリ相場ナビ`;
+
+      const img = document.getElementById("img");
+      img.referrerPolicy = "no-referrer";
+      img.src = String(s.imageUrl || "").trim();
+      img.alt = s.name || "";
+
+      const releaseDateText = getReleaseDateText(s);
+      document.getElementById("name").textContent = s.name || "";
+      document.getElementById("meta").innerHTML =
+        `発売日: ${escapeHtml(releaseDateText)} / シリーズ: ${escapeHtml(s.series)} / 状態: ${escapeHtml(s.condition)}`;
+
+      document.getElementById("badges").innerHTML = `
+        <span class="badge">発売日: ${escapeHtml(releaseDateText)}</span>
+        <span class="badge">${escapeHtml(s.condition)}</span>
+        <span class="badge">${escapeHtml(s.series)}</span>
+      `;
+
+      document.getElementById("backLink").href = "./zukan.html";
+      const mercariLink = document.getElementById("mercariLink");
+      if (mercariLink) mercariLink.href = buildMercariSearchUrl(s.name);
+
+      const observationRows = normalizeObservationRows(s.weeklyPrices);
+      const latestObservation = observationRows.filter((row) => row.hasTrade && Number.isFinite(row.avgPrice)).slice(-1)[0] || null;
+      updateProductStructuredData(s, latestObservation ? latestObservation.avgPrice : null, releaseDateText);
+      const chartTitleEl = document.getElementById("priceSectionTitle");
+      const modeNoteEl = document.getElementById("chartModeNote");
+      const period3mBtn = document.getElementById("period3mBtn");
+      const period1yBtn = document.getElementById("period1yBtn");
+      const periodAllBtn = document.getElementById("periodAllBtn");
+      let currentPeriod = "all";
+
+      renderObservationLegend();
+      renderObservationFootnotes();
+      setPriceKpiFromObservations(observationRows);
+
+      const setPeriodButtons = (period) => {
+        if (period3mBtn) period3mBtn.classList.toggle("is-active", period === "3m");
+        if (period1yBtn) period1yBtn.classList.toggle("is-active", period === "1y");
+        if (periodAllBtn) periodAllBtn.classList.toggle("is-active", period === "all");
+      };
+
+      const applyPeriod = (period) => {
+        currentPeriod = (period === "1y" || period === "all") ? period : "3m";
+        const scoped = filterObservationsByPeriod(observationRows, currentPeriod);
+        const mode = classifyObservationMode(scoped);
+        const titleSuffix = currentPeriod === "3m" ? "（直近3か月）" : currentPeriod === "1y" ? "（1年）" : "（全期間）";
+        if (chartTitleEl) chartTitleEl.textContent = `価格推移（観測ベース）${titleSuffix}`;
+
+        if (mode === "empty") {
+          document.getElementById("weeklyChart").innerHTML = `<div class="chart-wrap"><div class="meta">選択期間に観測データがありません</div></div>`;
+          if (modeNoteEl) modeNoteEl.textContent = "";
+        } else if (mode === "single") {
+          const only = scoped.find((r) => r.hasTrade && Number.isFinite(r.avgPrice)) || null;
+          renderSingleObservationCard("weeklyChart", only);
+          if (modeNoteEl) modeNoteEl.textContent = "";
+        } else if (mode === "few") {
+          renderObservationChart("weeklyChart", "観測価格（参考表示）", scoped, { simple: true });
+          if (modeNoteEl) modeNoteEl.textContent = "観測件数が少ないため、価格推移は参考表示です。";
+        } else {
+          renderObservationChart("weeklyChart", "観測価格 推移", scoped, { simple: false });
+          if (modeNoteEl) modeNoteEl.textContent = "";
+        }
+
+        document.getElementById("weeklyTable").innerHTML = renderObservationTable(scoped);
+        setPeriodButtons(currentPeriod);
+      };
+
+      if (period3mBtn) period3mBtn.addEventListener("click", () => applyPeriod("3m"));
+      if (period1yBtn) period1yBtn.addEventListener("click", () => applyPeriod("1y"));
+      if (periodAllBtn) periodAllBtn.addEventListener("click", () => applyPeriod("all"));
+
+      applyPeriod(currentPeriod);
+      setupShare(s, observationRows);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => main());
+  </script>
+</body>
+
+</html>
+
+
