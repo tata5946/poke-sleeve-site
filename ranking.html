@@ -13,6 +13,36 @@
 
   <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
+  <style>
+    .breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin: 0 0 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .breadcrumb a {
+      color: #1e5bd7;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .breadcrumb-sep {
+      color: #98a2b3;
+    }
+
+    .breadcrumb-current {
+      color: #344054;
+      font-weight: 800;
+    }
+  </style>
 </head>
 
   <!-- 共通JS（ヘッダー/フッター注入 + Active Nav） -->
@@ -23,6 +53,11 @@
   <div id="site-header"></div>
 
   <div class="container">
+    <nav class="breadcrumb" aria-label="パンくず">
+      <a href="./index.html">ホーム</a>
+      <span class="breadcrumb-sep" aria-hidden="true">></span>
+      <span class="breadcrumb-current" aria-current="page">価格ランキング</span>
+    </nav>
     <div class="hero">
       <div class="hero-card">
         <div>
