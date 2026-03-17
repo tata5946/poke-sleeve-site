@@ -1074,6 +1074,7 @@
 
     function buildRelatedSleeveCardHtml(sleeve, options = {}) {
       if (!sleeve || !sleeve.id) return "";
+      const safeOptions = options && typeof options === "object" ? options : {};
       const latestPrice = getLatestComparablePrice(sleeve);
       const href = buildRelatedSleeveHref(sleeve.id);
       const imgSrc = String(sleeve.imageUrl || "").trim();
@@ -1082,7 +1083,7 @@
         sleeve.releaseYear ? `${sleeve.releaseYear}年` : "",
         String(sleeve.condition || "").trim()
       ].filter(Boolean);
-      const extraMeta = String(options.extraMeta || "").trim();
+      const extraMeta = String(safeOptions.extraMeta || "").trim();
       if (extraMeta) metaParts.push(extraMeta);
 
       return `
@@ -1105,7 +1106,7 @@
         container.innerHTML = `<div class="related-empty">${escapeHtml(emptyText)}</div>`;
         return false;
       }
-      container.innerHTML = items.map((item) => buildRelatedSleeveCardHtml(item, decorateItem ? decorateItem(item) : null)).join("");
+      container.innerHTML = items.map((item) => buildRelatedSleeveCardHtml(item, decorateItem ? decorateItem(item) : undefined)).join("");
       return true;
     }
 
