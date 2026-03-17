@@ -615,6 +615,50 @@
       return await window.common.loadData();
     }
 
+    function getStructuredDataScript() {
+      let el = document.getElementById("productStructuredData");
+      if (el) return el;
+      el = document.createElement("script");
+      el.type = "application/ld+json";
+      el.id = "productStructuredData";
+      document.head.appendChild(el);
+      return el;
+    }
+
+    function updateProductStructuredData(sleeve, latestPrice, releaseDateText) {
+      if (!sleeve || typeof sleeve !== "object") return;
+      const name = String(sleeve.name || "").trim();
+      if (!name) return;
+
+      const imageUrl = String(sleeve.imageUrl || "").trim();
+      const price = Number.isFinite(latestPrice) ? latestPrice : null;
+      const descriptionParts = [
+        name,
+        releaseDateText ? `発売日 ${releaseDateText}` : "",
+        sleeve.series ? `シリーズ ${String(sleeve.series).trim()}` : "",
+        sleeve.condition ? `状態 ${String(sleeve.condition).trim()}` : ""
+      ].filter(Boolean);
+
+      const product = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name,
+        description: descriptionParts.join(" / "),
+        image: imageUrl || undefined
+      };
+
+      if (price != null) {
+        product.offers = {
+          "@type": "Offer",
+          price,
+          priceCurrency: "JPY"
+        };
+      }
+
+      const script = getStructuredDataScript();
+      script.textContent = JSON.stringify(product);
+    }
+
     const ACCESS_USER_ID_KEY = "pokeSleeve:accessUserId";
 
     function getOrCreateAccessUserId() {
@@ -1925,6 +1969,8 @@
       if (mercariLink) mercariLink.href = buildMercariSearchUrl(s.name);
 
       const observationRows = normalizeObservationRows(s.weeklyPrices);
+      const latestObservation = observationRows.filter((row) => row.hasTrade && Number.isFinite(row.avgPrice)).slice(-1)[0] || null;
+      updateProductStructuredData(s, latestObservation ? latestObservation.avgPrice : null, releaseDateText);
       const chartTitleEl = document.getElementById("priceSectionTitle");
       const modeNoteEl = document.getElementById("chartModeNote");
       const period3mBtn = document.getElementById("period3mBtn");
