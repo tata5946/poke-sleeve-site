@@ -531,34 +531,34 @@ a:hover {
     position: relative;
 }
 
-a[href*="detail.html?id="] {
+a[data-sleeve-link="1"] {
     transition: transform .16s ease, box-shadow .22s ease, border-color .22s ease, background-color .22s ease;
     transform: translateZ(0);
 }
 
-a.tile[href*="detail.html?id="]:hover,
-a.btn[href*="detail.html?id="]:hover {
+a.tile[data-sleeve-link="1"]:hover,
+a.btn[data-sleeve-link="1"]:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 24px rgba(30, 91, 215, .18);
 }
 
-a[href*="detail.html?id="]:focus-visible {
+a[data-sleeve-link="1"]:focus-visible {
     outline: 2px solid #7aa2ff;
     outline-offset: 2px;
 }
 
-a[href*="detail.html?id="].is-selected-sleeve {
+a[data-sleeve-link="1"].is-selected-sleeve {
     border-color: #86abff;
     box-shadow: 0 0 0 2px rgba(30, 91, 215, .18), 0 12px 28px rgba(30, 91, 215, .22);
 }
 
-a[href*="detail.html?id="].is-picked {
+a[data-sleeve-link="1"].is-picked {
     transform: translateY(-7px) scale(1.02);
     box-shadow: 0 16px 34px rgba(30, 91, 215, .30);
 }
 
 @media (prefers-reduced-motion: reduce) {
-    a[href*="detail.html?id="] {
+    a[data-sleeve-link="1"] {
         transition: none;
     }
 }

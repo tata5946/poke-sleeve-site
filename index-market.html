@@ -1430,7 +1430,7 @@
         const cls = direction === "up" ? "up" : "down";
         const sign = x.rate > 0 ? "+" : "";
         return `
-          <a class="contrib-item" href="./detail.html?id=${encodeURIComponent(x.id ?? "")}">
+          <a class="contrib-item" data-sleeve-link="1" href="${window.common && typeof window.common.buildSleeveDetailHref === 'function' ? window.common.buildSleeveDetailHref(x.id ?? '') : `./sleeve/${encodeURIComponent(x.id ?? "")}/`}">
             <span class="contrib-name">${escapeHtml(x.name ?? "")}</span>
             <span class="contrib-rate ${cls}">${sign}${Number(x.rate).toFixed(1)}%</span>
             <span class="contrib-weight">寄与 ${(Math.abs(Number(x.contrib)) * 100).toFixed(1)}</span>

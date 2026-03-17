@@ -117,6 +117,17 @@ function uniq(arr) {
   return Array.from(s);
 }
 
+function buildSiteHref(path) {
+  const trimmed = String(path || "").replace(/^\.?\//, "");
+  return new URL(trimmed, document.baseURI).toString();
+}
+
+function buildSleeveDetailHref(id) {
+  const sleeveId = String(id || "").trim();
+  if (!sleeveId) return buildSiteHref("zukan.html");
+  return buildSiteHref(`sleeve/${encodeURIComponent(sleeveId)}/`);
+}
+
 function readSearchHistory() {
   try {
     const raw = localStorage.getItem(SEARCH_HISTORY_KEY);
@@ -281,7 +292,7 @@ async function getAutocompleteIndex() {
           name,
           series: String(s && s.series || "").trim(),
           searchKeys: buildSearchVariants(name),
-          detailHref: `./detail.html?id=${encodeURIComponent(id)}`,
+          detailHref: buildSleeveDetailHref(id),
           imageUrl: String(s && s.imageUrl || "").trim(),
           latestPrice: getLatestPositivePrice(s)
         };
@@ -341,7 +352,7 @@ function findAutocompleteCandidates(indexItems, query, maxItems = AUTOCOMPLETE_M
 function defaultNavigateToDetail(item) {
   if (!item || !item.id) return;
   try { sessionStorage.setItem(LAST_SELECTED_SLEEVE_ID_KEY, item.id); } catch (_) { }
-  location.href = item.detailHref || (`./detail.html?id=${encodeURIComponent(item.id)}`);
+  location.href = item.detailHref || buildSleeveDetailHref(item.id);
 }
 
 function defaultNavigateToZukan(query) {
@@ -803,9 +814,12 @@ async function waitForInjected(timeoutMs = 2000) {
 function getDetailIdFromHref(href) {
   try {
     const u = new URL(href, location.href);
-    const filename = (u.pathname.split("/").pop() || "").toLowerCase();
-    if (filename !== "detail.html") return null;
-    const id = (u.searchParams.get("id") || "").trim();
+    const legacyId = (u.searchParams.get("id") || "").trim();
+    if (legacyId) return legacyId;
+    const segments = u.pathname.split("/").filter(Boolean);
+    const sleeveIndex = segments.findIndex((segment) => segment === "sleeve");
+    if (sleeveIndex < 0 || sleeveIndex >= segments.length - 1) return null;
+    const id = decodeURIComponent(segments[sleeveIndex + 1] || "").trim();
     return id || null;
   } catch (_) {
     return null;
@@ -820,7 +834,7 @@ function markSelectedSleeveLinks() {
     selectedId = null;
   }
 
-  const links = document.querySelectorAll('a[href*="detail.html?id="]');
+  const links = document.querySelectorAll('a[data-sleeve-link="1"]');
   for (const a of links) {
     const id = getDetailIdFromHref(a.href);
     a.classList.toggle("is-selected-sleeve", !!selectedId && id === selectedId);
@@ -834,7 +848,7 @@ function wireSleeveSelectionFeedback() {
   markSelectedSleeveLinks();
 
   document.addEventListener("click", (e) => {
-    const a = e.target && e.target.closest ? e.target.closest('a[href*="detail.html?id="]') : null;
+    const a = e.target && e.target.closest ? e.target.closest('a[data-sleeve-link="1"]') : null;
     if (!a) return;
 
     const id = getDetailIdFromHref(a.href);
@@ -869,6 +883,8 @@ window.common = {
   uniq,
   fetchJsonWithTimeout,
   loadData,
+  buildSiteHref,
+  buildSleeveDetailHref,
   injectHeaderFooter,
   setActiveNav,
   wireHeaderSearch,

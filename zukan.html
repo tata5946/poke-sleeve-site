@@ -344,9 +344,11 @@
           const totalTradesText = (totalTrades == null) ? "-" : `${totalTrades.toLocaleString()}件`;
 
           const imgSrc = String(s.imageUrl || "").trim();
-          const detailHref = `./detail.html?id=${encodeURIComponent(s.id ?? "")}`;
+          const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
+            ? window.common.buildSleeveDetailHref(s.id ?? "")
+            : `./sleeve/${encodeURIComponent(s.id ?? "")}/`;
           const imgHtml = imgSrc
-            ? `<a class="thumb-link" href="${detailHref}" aria-label="${escapeHtml(s.name ?? "")}の詳細を見る">
+            ? `<a class="thumb-link" data-sleeve-link="1" href="${detailHref}" aria-label="${escapeHtml(s.name ?? "")}の詳細を見る">
                 <img class="thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
                   onerror="this.onerror=null; this.style.display='none';">
               </a>`
@@ -365,7 +367,7 @@
               <span class="badge">${escapeHtml(s.condition ?? "")}</span>
               <span class="badge">${escapeHtml(s.series ?? "")}</span>
             </div>
-            <a class="btn" href="${detailHref}">価格詳細を見る →</a>
+            <a class="btn" data-sleeve-link="1" href="${detailHref}">価格詳細を見る →</a>
           `;
           frag.appendChild(div);
         }
