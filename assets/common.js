@@ -736,7 +736,7 @@ function wireHeaderOffsetSync() {
 }
 
 function ensureFavicon() {
-  const href = new URL(FAVICON_PATH, location.href).href;
+  const href = new URL(FAVICON_PATH, document.baseURI || location.href).href;
   const rels = ["icon", "shortcut icon", "apple-touch-icon"];
   for (const rel of rels) {
     let link = document.querySelector(`link[rel="${rel}"]`);
