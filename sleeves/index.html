@@ -72,10 +72,14 @@
 
           <label>並び替え
             <select id="sortOrder">
+              <option value="recommended">おすすめ順</option>
+              <option value="popular">人気順</option>
+              <option value="releaseDesc">発売が新しい順</option>
+              <option value="releaseAsc">発売が古い順</option>
               <option value="priceDesc">価格が高い順</option>
               <option value="priceAsc">価格が安い順</option>
-              <option value="nameAsc">名前順</option>
-              <option value="releaseDesc">発売年が新しい順</option>
+              <option value="nameAsc">五十音順</option>
+              <option value="tradeDesc">取引件数が多い順</option>
             </select>
           </label>
 
@@ -301,6 +305,155 @@
         return getLatestWeeklyPrice(s);
       }
 
+      function compareNullableNumbers(a, b, dir = "asc") {
+        const aValid = Number.isFinite(a);
+        const bValid = Number.isFinite(b);
+        if (aValid && !bValid) return -1;
+        if (!aValid && bValid) return 1;
+        if (!aValid && !bValid) return 0;
+        return dir === "desc" ? b - a : a - b;
+      }
+
+      function toHiragana(value) {
+        return String(value || "").replace(/[ァ-ヶ]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0x60));
+      }
+
+      function normalizeSortName(sleeve) {
+        const raw = String(sleeve?.kana || sleeve?.name || "").normalize("NFKC");
+        return toHiragana(raw)
+          .replace(/^[\s"'`~!！?？#＃$＄%％&＆*＊+＋,，.。\/／:：;<=>＞@＠[\]「」『』()（）{}｛｝|｜^＾_-]+/, "")
+          .trim()
+          .toLowerCase();
+      }
+
+      function compareByNameJa(a, b) {
+        const an = normalizeSortName(a);
+        const bn = normalizeSortName(b);
+        return an.localeCompare(bn, "ja", { sensitivity: "base", numeric: true });
+      }
+
+      function parseReleaseSortValue(sleeve) {
+        const candidates = [
+          sleeve?.releaseDate,
+          sleeve?.release_date,
+          sleeve?.releaseAt,
+          sleeve?.releasedAt,
+          sleeve?.releasedDate,
+          sleeve?.released_date,
+          sleeve?.["発売日"],
+          sleeve?.["発売年月日"]
+        ];
+
+        for (const raw of candidates) {
+          const iso = toISODate(raw);
+          if (iso) return iso;
+          const text = String(raw ?? "").trim();
+          const ymd = text.match(/^(\d{4})[\/\-\.年](\d{1,2})[\/\-\.月](\d{1,2})(?:日)?$/);
+          if (ymd) {
+            return `${ymd[1]}-${String(Number(ymd[2])).padStart(2, "0")}-${String(Number(ymd[3])).padStart(2, "0")}`;
+          }
+        }
+
+        const y = Number(sleeve?.releaseYear);
+        if (Number.isFinite(y) && y > 1900) {
+          return `${String(y).padStart(4, "0")}-01-01`;
+        }
+        return null;
+      }
+
+      function getTradeCountForSort(sleeve) {
+        return getTotalTradeCount(sleeve);
+      }
+
+      function compareWithTieBreakers(a, b, primaryResult, indexedA, indexedB) {
+        if (primaryResult !== 0) return primaryResult;
+
+        const tradeCmp = compareNullableNumbers(getTradeCountForSort(a), getTradeCountForSort(b), "desc");
+        if (tradeCmp !== 0) return tradeCmp;
+
+        const nameCmp = compareByNameJa(a, b);
+        if (nameCmp !== 0) return nameCmp;
+
+        const idCmp = String(a.id ?? "").localeCompare(String(b.id ?? ""));
+        if (idCmp !== 0) return idCmp;
+
+        return indexedA.__index - indexedB.__index;
+      }
+
+      function sortSleeves(items, sortOrder) {
+        const indexed = items.map((item, index) => ({ item, __index: index }));
+
+        indexed.sort((left, right) => {
+          const a = left.item;
+          const b = right.item;
+
+          switch (sortOrder) {
+            case "priceAsc": {
+              const priceCmp = compareNullableNumbers(getCardPrice(a), getCardPrice(b), "asc");
+              return compareWithTieBreakers(a, b, priceCmp, left, right);
+            }
+            case "priceDesc": {
+              const priceCmp = compareNullableNumbers(getCardPrice(a), getCardPrice(b), "desc");
+              return compareWithTieBreakers(a, b, priceCmp, left, right);
+            }
+            case "releaseAsc": {
+              const releaseCmp = compareNullableNumbers(
+                parseReleaseSortValue(a) ? Date.parse(parseReleaseSortValue(a)) : null,
+                parseReleaseSortValue(b) ? Date.parse(parseReleaseSortValue(b)) : null,
+                "asc"
+              );
+              return compareWithTieBreakers(a, b, releaseCmp, left, right);
+            }
+            case "releaseDesc": {
+              const releaseCmp = compareNullableNumbers(
+                parseReleaseSortValue(a) ? Date.parse(parseReleaseSortValue(a)) : null,
+                parseReleaseSortValue(b) ? Date.parse(parseReleaseSortValue(b)) : null,
+                "desc"
+              );
+              return compareWithTieBreakers(a, b, releaseCmp, left, right);
+            }
+            case "nameAsc": {
+              const nameCmp = compareByNameJa(a, b);
+              return compareWithTieBreakers(a, b, nameCmp, left, right);
+            }
+            case "tradeDesc": {
+              const tradeCmp = compareNullableNumbers(getTradeCountForSort(a), getTradeCountForSort(b), "desc");
+              return compareWithTieBreakers(a, b, tradeCmp, left, right);
+            }
+            case "popular": {
+              // TODO: PV/人気スコア等の実データが入ったら popularity 系に差し替える
+              const releaseCmp = compareNullableNumbers(
+                parseReleaseSortValue(a) ? Date.parse(parseReleaseSortValue(a)) : null,
+                parseReleaseSortValue(b) ? Date.parse(parseReleaseSortValue(b)) : null,
+                "desc"
+              );
+              return compareWithTieBreakers(a, b, releaseCmp, left, right);
+            }
+            case "recommended":
+            default: {
+              const releaseCmp = compareNullableNumbers(
+                parseReleaseSortValue(a) ? Date.parse(parseReleaseSortValue(a)) : null,
+                parseReleaseSortValue(b) ? Date.parse(parseReleaseSortValue(b)) : null,
+                "desc"
+              );
+              if (releaseCmp !== 0) return releaseCmp;
+
+              const tradeCmp = compareNullableNumbers(getTradeCountForSort(a), getTradeCountForSort(b), "desc");
+              if (tradeCmp !== 0) return tradeCmp;
+
+              const pricePresenceCmp = compareNullableNumbers(
+                Number.isFinite(getCardPrice(a)) ? 1 : null,
+                Number.isFinite(getCardPrice(b)) ? 1 : null,
+                "desc"
+              );
+              return compareWithTieBreakers(a, b, pricePresenceCmp, left, right);
+            }
+          }
+        });
+
+        return indexed.map((entry) => entry.item);
+      }
+
       function render() {
         const kw = searchInput.value.trim().toLowerCase();
         const releaseYear = releaseYearSel.value;
@@ -324,26 +477,16 @@
           filtered.push(s);
         }
 
-        filtered.sort((a, b) => {
-          const pa = getCardPrice(a) ?? -1;
-          const pb = getCardPrice(b) ?? -1;
+        const sorted = sortSleeves(filtered, sortOrder);
 
-          switch (sortOrder) {
-            case "priceAsc": return pa - pb;
-            case "nameAsc": return String(a.name ?? "").localeCompare(String(b.name ?? ""));
-            case "releaseDesc": return (Number(b.releaseYear) || 0) - (Number(a.releaseYear) || 0);
-            default: return pb - pa;
-          }
-        });
-
-        if (!filtered.length) {
+        if (!sorted.length) {
           list.innerHTML = '<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>';
           return;
         }
 
         const frag = document.createDocumentFragment();
 
-        for (const s of filtered) {
+        for (const s of sorted) {
           const p = getCardPrice(s);
           const priceText = (p == null) ? "-" : `${p.toLocaleString()}円`;
 
@@ -401,7 +544,7 @@
         releaseYearSel.value = "";
         seriesSel.value = "";
         priceBandSel.value = "";
-        sortOrderSel.value = "priceDesc";
+        sortOrderSel.value = "recommended";
         render();
       });
 
