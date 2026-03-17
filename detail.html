@@ -484,6 +484,106 @@
       font-weight: 900;
     }
 
+    .related-sections {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .related-panel h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .related-note {
+      margin: 6px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .related-list {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .related-card {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fff 0%, #fbfcff 100%);
+      color: inherit;
+      text-decoration: none;
+      transition: transform .16s ease, box-shadow .18s ease, border-color .18s ease;
+      box-shadow: 0 6px 16px rgba(16, 24, 40, .06);
+    }
+
+    .related-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(16, 24, 40, .12);
+      border-color: #b9cdf7;
+    }
+
+    .related-card:focus-visible {
+      outline: 2px solid #7aa2ff;
+      outline-offset: 2px;
+    }
+
+    .related-thumb {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #f2f4f7;
+      box-shadow: 0 4px 10px rgba(16, 24, 40, .08);
+    }
+
+    .related-card-body {
+      min-width: 0;
+    }
+
+    .related-card-name {
+      font-size: 13px;
+      font-weight: 900;
+      color: #101828;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .related-card-price {
+      margin-top: 6px;
+      font-size: 13px;
+      font-weight: 900;
+      color: #1e5bd7;
+    }
+
+    .related-card-meta {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #667085;
+      line-height: 1.5;
+    }
+
+    .related-empty {
+      padding: 12px;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      background: #fbfcff;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
     @media (max-width: 900px) {
       .detail-wrap {
         grid-template-columns: 1fr;
@@ -514,6 +614,10 @@
       }
 
       .single-observation-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .related-sections {
         grid-template-columns: 1fr;
       }
     }
@@ -594,6 +698,24 @@
             <div id="chartFootnotes" class="chart-footnotes"></div>
             <div id="weeklyTable"></div>
           </div>
+        </div>
+
+        <div class="related-sections" id="relatedSections" hidden>
+          <section class="panel related-panel">
+            <h3>同キャラクター</h3>
+            <p class="related-note">スリーブ名の共通ワードから近いものを表示します。</p>
+            <div id="relatedCharacter" class="related-list"></div>
+          </section>
+          <section class="panel related-panel">
+            <h3>同シリーズ</h3>
+            <p class="related-note">同じシリーズに含まれるスリーブを表示します。</p>
+            <div id="relatedSeries" class="related-list"></div>
+          </section>
+          <section class="panel related-panel">
+            <h3>価格帯近い</h3>
+            <p class="related-note">最新観測価格が近いスリーブを表示します。</p>
+            <div id="relatedPriceBand" class="related-list"></div>
+          </section>
         </div>
       </div>
     </div>
@@ -910,6 +1032,185 @@
       const y = String(sleeve?.releaseYear ?? "").trim();
       if (y) return y;
       return "不明";
+    }
+
+    const RELATED_NAME_STOP_WORDS = new Set([
+      "スリーブ", "デッキシールド", "カードスリーブ", "ポケモンカード", "ポケモン", "ポケカ", "カード",
+      "サプライ", "公式", "限定", "仕様", "版", "ver", "version", "vol", "collection", "pokemon"
+    ]);
+
+    function normalizeRelatedText(value) {
+      return String(value || "")
+        .normalize("NFKC")
+        .toLowerCase()
+        .replace(/[【】\[\]（）()]/g, " ")
+        .replace(/[・\/\\|,，、。!！?？:：]/g, " ")
+        .replace(/[&＆+＋]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function extractCharacterTokens(name) {
+      const normalized = normalizeRelatedText(name);
+      if (!normalized) return [];
+
+      const compact = normalized.replace(/\s+/g, "");
+      const tokens = new Set();
+
+      for (const raw of normalized.split(" ")) {
+        const token = raw.trim();
+        if (!token) continue;
+        if (token.length < 2) continue;
+        if (/^\d+$/.test(token)) continue;
+        if (RELATED_NAME_STOP_WORDS.has(token)) continue;
+        tokens.add(token);
+      }
+
+      const fragments = compact.match(/[ぁ-んァ-ヴー一-龠a-z0-9]{3,}/g) || [];
+      for (const fragment of fragments) {
+        if (fragment.length < 3) continue;
+        if (/^\d+$/.test(fragment)) continue;
+        if (RELATED_NAME_STOP_WORDS.has(fragment)) continue;
+        tokens.add(fragment);
+      }
+
+      return Array.from(tokens);
+    }
+
+    function getCharacterSimilarityScore(baseSleeve, candidateSleeve) {
+      const baseTokens = extractCharacterTokens(baseSleeve?.name);
+      const candidateTokens = extractCharacterTokens(candidateSleeve?.name);
+      if (!baseTokens.length || !candidateTokens.length) return 0;
+
+      const candidateSet = new Set(candidateTokens);
+      let score = 0;
+      for (const token of baseTokens) {
+        if (candidateSet.has(token)) {
+          score += token.length >= 5 ? 3 : 2;
+          continue;
+        }
+        for (const other of candidateTokens) {
+          if (token.length >= 4 && (token.includes(other) || other.includes(token))) {
+            score += 1;
+            break;
+          }
+        }
+      }
+      return score;
+    }
+
+    function getLatestComparablePrice(sleeve) {
+      const rows = normalizeObservationRows(sleeve?.weeklyPrices);
+      const latest = rows.filter((row) => row.hasTrade && Number.isFinite(row.avgPrice)).slice(-1)[0] || null;
+      return latest && Number.isFinite(latest.avgPrice) ? latest.avgPrice : null;
+    }
+
+    function formatRelatedPrice(price) {
+      return Number.isFinite(price) ? `${Math.round(price).toLocaleString()}円` : "価格データなし";
+    }
+
+    function buildRelatedSleeveHref(id) {
+      if (window.common && typeof window.common.buildSleeveDetailHref === "function") {
+        return window.common.buildSleeveDetailHref(id ?? "");
+      }
+      return `./sleeve/${encodeURIComponent(id ?? "")}/`;
+    }
+
+    function buildRelatedSleeveCardHtml(sleeve, options = {}) {
+      if (!sleeve || !sleeve.id) return "";
+      const latestPrice = getLatestComparablePrice(sleeve);
+      const href = buildRelatedSleeveHref(sleeve.id);
+      const imgSrc = String(sleeve.imageUrl || "").trim();
+      const metaParts = [
+        String(sleeve.series || "").trim(),
+        sleeve.releaseYear ? `${sleeve.releaseYear}年` : "",
+        String(sleeve.condition || "").trim()
+      ].filter(Boolean);
+      const extraMeta = String(options.extraMeta || "").trim();
+      if (extraMeta) metaParts.push(extraMeta);
+
+      return `
+        <a class="related-card" data-sleeve-link="1" href="${escapeHtml(href)}" aria-label="${escapeHtml(sleeve.name || "")}の詳細を見る">
+          <img class="related-thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(sleeve.name || "")}" loading="lazy" referrerpolicy="no-referrer"
+            onerror="this.onerror=null; this.style.visibility='hidden';">
+          <div class="related-card-body">
+            <div class="related-card-name">${escapeHtml(sleeve.name || "")}</div>
+            <div class="related-card-price">${escapeHtml(formatRelatedPrice(latestPrice))}</div>
+            <div class="related-card-meta">${escapeHtml(metaParts.join(" / ") || "シリーズ情報なし")}</div>
+          </div>
+        </a>
+      `;
+    }
+
+    function renderRelatedList(containerId, items, emptyText, decorateItem) {
+      const container = document.getElementById(containerId);
+      if (!container) return false;
+      if (!Array.isArray(items) || !items.length) {
+        container.innerHTML = `<div class="related-empty">${escapeHtml(emptyText)}</div>`;
+        return false;
+      }
+      container.innerHTML = items.map((item) => buildRelatedSleeveCardHtml(item, decorateItem ? decorateItem(item) : null)).join("");
+      return true;
+    }
+
+    function renderRelatedSleeves(currentSleeve, sleeves) {
+      const wrap = document.getElementById("relatedSections");
+      if (!wrap || !currentSleeve || !Array.isArray(sleeves)) return;
+
+      const currentId = String(currentSleeve.id || "");
+      const currentSeries = String(currentSleeve.series || "").trim();
+      const currentPrice = getLatestComparablePrice(currentSleeve);
+      const candidates = sleeves.filter((item) => item && String(item.id || "") && String(item.id) !== currentId);
+
+      const sameCharacter = candidates
+        .map((item) => ({ item, score: getCharacterSimilarityScore(currentSleeve, item) }))
+        .filter((entry) => entry.score > 0)
+        .sort((a, b) => {
+          if (b.score !== a.score) return b.score - a.score;
+          return (getLatestComparablePrice(b.item) ?? -1) - (getLatestComparablePrice(a.item) ?? -1);
+        })
+        .slice(0, 4)
+        .map((entry) => entry.item);
+
+      const sameSeries = candidates
+        .filter((item) => String(item.series || "").trim() && String(item.series || "").trim() === currentSeries)
+        .sort((a, b) => {
+          const ap = getLatestComparablePrice(a) ?? -1;
+          const bp = getLatestComparablePrice(b) ?? -1;
+          if (bp !== ap) return bp - ap;
+          return String(a.name || "").localeCompare(String(b.name || ""), "ja");
+        })
+        .slice(0, 4);
+
+      const closePrice = Number.isFinite(currentPrice)
+        ? candidates
+          .map((item) => ({ item, price: getLatestComparablePrice(item) }))
+          .filter((entry) => Number.isFinite(entry.price))
+          .sort((a, b) => {
+            const diff = Math.abs(a.price - currentPrice) - Math.abs(b.price - currentPrice);
+            if (diff !== 0) return diff;
+            return a.price - b.price;
+          })
+          .slice(0, 4)
+          .map((entry) => entry.item)
+        : [];
+
+      const hasCharacter = renderRelatedList("relatedCharacter", sameCharacter, "同キャラクター候補はまだありません。");
+      const hasSeries = renderRelatedList("relatedSeries", sameSeries, "同シリーズのスリーブはまだありません。");
+      const hasPrice = renderRelatedList(
+        "relatedPriceBand",
+        closePrice,
+        "比較できる価格帯の近いスリーブはまだありません。",
+        (item) => {
+          const price = getLatestComparablePrice(item);
+          if (!Number.isFinite(price) || !Number.isFinite(currentPrice)) return null;
+          const diff = Math.round(price - currentPrice);
+          const prefix = diff > 0 ? "+" : "";
+          return { extraMeta: `差額 ${prefix}${diff.toLocaleString()}円` };
+        }
+      );
+
+      wrap.hidden = !(hasCharacter || hasSeries || hasPrice);
     }
 
     function buildMercariSearchUrl(name) {
@@ -2074,6 +2375,7 @@
       renderObservationLegend();
       renderObservationFootnotes();
       setPriceKpiFromObservations(observationRows);
+      renderRelatedSleeves(s, sleeves);
 
       const setPeriodButtons = (period) => {
         if (period3mBtn) period3mBtn.classList.toggle("is-active", period === "3m");
