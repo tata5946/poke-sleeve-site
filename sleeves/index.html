@@ -323,6 +323,51 @@
     }
 
     @media (max-width: 720px) {
+      .hero-card {
+        padding: 14px;
+      }
+
+      .hero-title {
+        font-size: 17px;
+      }
+
+      .hero-desc,
+      .data-note {
+        font-size: 12px;
+      }
+
+      .catalog-main {
+        order: 1;
+      }
+
+      .catalog-sidebar {
+        order: 2;
+      }
+
+      .catalog-sidebar h2 {
+        font-size: 15px;
+      }
+
+      .catalog-sidebar .small {
+        margin-bottom: 10px;
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .controls label {
+        min-width: 0;
+      }
+
+      .controls button#clear {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-height: 42px;
+      }
+
       .sort-explorer {
         top: 8px;
         margin-bottom: 12px;
@@ -332,6 +377,30 @@
 
       .sort-explorer-head {
         flex-direction: column;
+      }
+
+      .sort-tabs {
+        gap: 8px;
+        margin-inline: -2px;
+        padding-inline: 2px;
+      }
+
+      .sort-tab {
+        min-height: 40px;
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+
+      .sort-chip-row {
+        align-items: flex-start;
+      }
+
+      .sort-chip-group {
+        width: 100%;
+      }
+
+      .sort-chip {
+        min-height: 36px;
       }
 
       .sort-explorer-current,
@@ -357,6 +426,83 @@
 
       .sort-select-fallback select {
         margin-top: 6px;
+      }
+
+      .results-title {
+        font-size: 16px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .catalog-card {
+        padding: 10px;
+        border-radius: 14px;
+      }
+
+      .catalog-card .thumb {
+        height: 138px;
+      }
+
+      .catalog-card .title {
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .catalog-card .price {
+        font-size: 15px;
+      }
+
+      .catalog-card .badges {
+        gap: 5px;
+      }
+
+      .catalog-card .badge {
+        font-size: 10px;
+        padding: 4px 7px;
+      }
+
+      .catalog-card .btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .container {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .catalog-card .thumb {
+        height: 180px;
+      }
+
+      .sort-explorer {
+        border-radius: 16px;
+      }
+
+      .sort-tab {
+        min-height: 38px;
+        padding: 9px 12px;
+      }
+
+      .sort-tab-accent {
+        font-size: 10px;
+      }
+
+      .results-meta {
+        border-radius: 12px;
       }
     }
   </style>
