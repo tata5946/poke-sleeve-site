@@ -17,6 +17,349 @@
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="./assets/site.css" />
+  <style>
+    .catalog-layout {
+      display: grid;
+      grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .catalog-sidebar {
+      position: sticky;
+      top: 16px;
+    }
+
+    .catalog-main {
+      min-width: 0;
+    }
+
+    .sort-explorer {
+      position: sticky;
+      top: 12px;
+      z-index: 5;
+      margin-bottom: 14px;
+      padding: 14px;
+      border: 1px solid rgba(30, 91, 215, .12);
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at top left, rgba(58, 123, 213, .10), transparent 36%),
+        radial-gradient(circle at top right, rgba(255, 196, 0, .12), transparent 34%),
+        rgba(255, 255, 255, .92);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 16px 36px rgba(15, 23, 42, .08);
+    }
+
+    .sort-explorer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .sort-explorer-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 900;
+      color: #14213d;
+    }
+
+    .sort-explorer-copy {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: #5d6b82;
+      line-height: 1.65;
+    }
+
+    .sort-explorer-current {
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #111827;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+      box-shadow: 0 8px 18px rgba(17, 24, 39, .18);
+    }
+
+    .sort-tabs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .sort-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sort-tab,
+    .sort-chip {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: #fff;
+      color: #344054;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease, color .18s ease;
+    }
+
+    .sort-tab {
+      min-height: 42px;
+      padding: 10px 14px;
+      box-shadow: 0 6px 18px rgba(17, 24, 39, .06);
+    }
+
+    .sort-chip-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .sort-chip-group {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .sort-chip-group::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sort-chip {
+      min-height: 34px;
+      padding: 8px 12px;
+      font-size: 12px;
+      border-color: rgba(148, 163, 184, .28);
+    }
+
+    .sort-tab:hover,
+    .sort-chip:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(17, 24, 39, .12);
+    }
+
+    .sort-tab:active,
+    .sort-chip:active {
+      transform: scale(.98);
+    }
+
+    .sort-tab.is-active,
+    .sort-chip.is-active {
+      color: #0f172a;
+      border-color: rgba(30, 91, 215, .28);
+      background: linear-gradient(135deg, #fff 0%, #eef4ff 100%);
+      box-shadow: 0 12px 26px rgba(30, 91, 215, .16);
+    }
+
+    .sort-tab-accent {
+      display: block;
+      font-size: 11px;
+      color: #7b8798;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .sort-chip-note {
+      font-size: 12px;
+      color: #667085;
+      line-height: 1.6;
+    }
+
+    .sort-chip-note.is-fallback {
+      color: #8b5c00;
+      font-weight: 800;
+    }
+
+    .sort-select-fallback {
+      display: none;
+      margin-top: 12px;
+    }
+
+    .results-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 0 10px;
+    }
+
+    .results-copy {
+      min-width: 0;
+    }
+
+    .results-title {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 900;
+      color: #111827;
+    }
+
+    .results-subcopy {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: #667085;
+      line-height: 1.6;
+    }
+
+    .results-meta {
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      border-radius: 14px;
+      background: #f8fafc;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid rgba(148, 163, 184, .22);
+    }
+
+    .grid.is-animating {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity .22s ease, transform .22s ease;
+    }
+
+    .grid.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .28s ease, transform .28s ease;
+    }
+
+    .catalog-card {
+      overflow: hidden;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .catalog-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 26px rgba(15, 23, 42, .14);
+      border-color: rgba(30, 91, 215, .22);
+    }
+
+    .catalog-card:active {
+      transform: scale(.99);
+    }
+
+    .card-media {
+      position: relative;
+    }
+
+    .card-badge-stack {
+      position: absolute;
+      inset: 10px 10px auto;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      pointer-events: none;
+    }
+
+    .card-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .02em;
+      color: #0f172a;
+      background: rgba(255, 255, 255, .94);
+      border: 1px solid rgba(255, 255, 255, .8);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, .14);
+    }
+
+    .card-badge-pill.new {
+      background: rgba(225, 255, 238, .96);
+      color: #116149;
+    }
+
+    .card-badge-pill.hot {
+      background: rgba(255, 244, 221, .96);
+      color: #9a3412;
+    }
+
+    .card-badge-pill.price {
+      background: rgba(237, 242, 255, .96);
+      color: #1d4ed8;
+    }
+
+    .card-badge-pill.pick {
+      background: rgba(249, 244, 255, .96);
+      color: #6b21a8;
+    }
+
+    .catalog-card.is-price-focus .price {
+      color: #155eef;
+      font-size: 19px;
+    }
+
+    .catalog-card.is-release-focus {
+      border-color: rgba(34, 197, 94, .22);
+    }
+
+    .catalog-card .btn {
+      margin-top: 10px;
+    }
+
+    @media (max-width: 960px) {
+      .catalog-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .catalog-sidebar {
+        position: static;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .sort-explorer {
+        top: 8px;
+        margin-bottom: 12px;
+        padding: 12px;
+        border-radius: 18px;
+      }
+
+      .sort-explorer-head {
+        flex-direction: column;
+      }
+
+      .sort-explorer-current,
+      .results-meta {
+        width: fit-content;
+      }
+
+      .results-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .sort-select-fallback {
+        display: block;
+      }
+
+      .sort-select-fallback label {
+        display: block;
+        font-size: 12px;
+        color: #667085;
+        font-weight: 800;
+      }
+
+      .sort-select-fallback select {
+        margin-top: 6px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -39,8 +382,8 @@
       </div>
     </div>
 
-    <div class="main">
-      <aside class="panel">
+    <div class="catalog-layout">
+      <aside class="panel catalog-sidebar">
         <h2>絞り込み</h2>
         <p class="small">フィルタと並び替えを変更すると一覧が更新されます。</p>
 
@@ -87,7 +430,33 @@
         </div>
       </aside>
 
-      <main>
+      <main class="catalog-main">
+        <section class="sort-explorer" aria-label="図鑑の並び替え">
+          <div class="sort-explorer-head">
+            <div>
+              <p class="sort-explorer-title">気分でめくる図鑑ソート</p>
+              <p class="sort-explorer-copy">タブを切り替えると、見つけやすい切り口で一覧が並び替わります。</p>
+            </div>
+            <div id="sortExplorerCurrent" class="sort-explorer-current">新作をチェック</div>
+          </div>
+          <div id="sortTabs" class="sort-tabs" role="tablist" aria-label="並び替えタブ"></div>
+          <div class="sort-chip-row">
+            <div id="sortChips" class="sort-chip-group" aria-live="polite"></div>
+            <div id="sortChipNote" class="sort-chip-note"></div>
+          </div>
+          <div class="sort-select-fallback">
+            <label>プルダウンでも並び替えできます
+              <select id="sortOrderMobile" aria-label="並び替えの補助セレクト"></select>
+            </label>
+          </div>
+        </section>
+        <div class="results-head">
+          <div class="results-copy">
+            <h2 class="results-title">一覧から気になるスリーブを探す</h2>
+            <p id="resultsSubcopy" class="results-subcopy">新作や人気どころから、気になるスリーブを見つけやすくしています。</p>
+          </div>
+          <div id="resultsMeta" class="results-meta">表示件数: -件</div>
+        </div>
         <div id="list" class="grid"></div>
       </main>
     </div>
@@ -252,8 +621,15 @@
       const seriesSel = document.getElementById("series");
       const priceBandSel = document.getElementById("priceBand");
       const sortOrderSel = document.getElementById("sortOrder");
+      const sortOrderMobileSel = document.getElementById("sortOrderMobile");
       const clearBtn = document.getElementById("clear");
       const list = document.getElementById("list");
+      const sortTabs = document.getElementById("sortTabs");
+      const sortChips = document.getElementById("sortChips");
+      const sortChipNote = document.getElementById("sortChipNote");
+      const sortExplorerCurrent = document.getElementById("sortExplorerCurrent");
+      const resultsMeta = document.getElementById("resultsMeta");
+      const resultsSubcopy = document.getElementById("resultsSubcopy");
 
       const url = new URL(location.href);
       const qParam = (url.searchParams.get("q") || "").trim();
@@ -303,6 +679,115 @@
 
       function getCardPrice(s) {
         return getLatestWeeklyPrice(s);
+      }
+
+      const SORT_UI_CONFIG = {
+        recommended: {
+          primary: "recommended",
+          label: "おすすめ",
+          accent: "迷ったらここから",
+          helper: "新作・価格あり・取引件数をバランスよく見せます。"
+        },
+        popular: {
+          primary: "popular",
+          label: "人気",
+          accent: "いま見られていそう",
+          helper: "人気スコアの実データがないため、現在は新作寄りの並びで代用しています。",
+          fallback: true
+        },
+        releaseDesc: {
+          primary: "release",
+          label: "新作",
+          accent: "最近出た順",
+          helper: "発売日の新しいスリーブからチェックできます。"
+        },
+        releaseAsc: {
+          primary: "release",
+          label: "年代",
+          accent: "古い順も見られる",
+          helper: "年代でたどりたいときに使いやすい並びです。"
+        },
+        priceDesc: {
+          primary: "price",
+          label: "高額",
+          accent: "コレクター向け",
+          helper: "高額帯のスリーブを先に見られます。"
+        },
+        priceAsc: {
+          primary: "price",
+          label: "価格で探す",
+          accent: "手に取りやすい順",
+          helper: "価格不明は末尾に回したうえで安い順にしています。"
+        },
+        nameAsc: {
+          primary: "kana",
+          label: "あいうえお",
+          accent: "名前から探す",
+          helper: "日本語の並びを自然に寄せた五十音順です。"
+        },
+        tradeDesc: {
+          primary: "popular",
+          label: "取引多い順",
+          accent: "動きの多い順",
+          helper: "取引件数の合計が多いスリーブを先頭にしています。"
+        }
+      };
+
+      const PRIMARY_TAB_CONFIG = [
+        {
+          key: "recommended",
+          label: "おすすめ",
+          accent: "発見しやすい順",
+          defaultSort: "recommended",
+          chips: [
+            { key: "recommended", label: "全体" }
+          ]
+        },
+        {
+          key: "popular",
+          label: "人気",
+          accent: "いま見たい",
+          defaultSort: "tradeDesc",
+          chips: [
+            { key: "tradeDesc", label: "取引多い順" },
+            { key: "popular", label: "注目順" }
+          ],
+          note: "人気スコアの実データがないため、取引件数ベースと新作寄り表示を使っています。"
+        },
+        {
+          key: "release",
+          label: "年代",
+          accent: "新旧で見る",
+          defaultSort: "releaseDesc",
+          chips: [
+            { key: "releaseDesc", label: "新しい順" },
+            { key: "releaseAsc", label: "古い順" }
+          ]
+        },
+        {
+          key: "price",
+          label: "高額",
+          accent: "価格で発見",
+          defaultSort: "priceDesc",
+          chips: [
+            { key: "priceDesc", label: "高い順" },
+            { key: "priceAsc", label: "安い順" }
+          ]
+        },
+        {
+          key: "kana",
+          label: "あいうえお",
+          accent: "名前から探す",
+          defaultSort: "nameAsc",
+          chips: []
+        }
+      ];
+
+      let currentPrimaryTab = "recommended";
+      let renderToken = 0;
+
+      function isMissingValue(value) {
+        return value == null || value === "" || (typeof value === "number" && !Number.isFinite(value));
       }
 
       function compareNullableNumbers(a, b, dir = "asc") {
@@ -365,6 +850,29 @@
         return getTotalTradeCount(sleeve);
       }
 
+      function getReleaseTimestamp(sleeve) {
+        const value = parseReleaseSortValue(sleeve);
+        if (!value) return null;
+        const ts = Date.parse(value);
+        return Number.isFinite(ts) ? ts : null;
+      }
+
+      function getPopularityScore(sleeve) {
+        // TODO: PV や人気スコアがデータに追加されたらここで優先利用する
+        return getTradeCountForSort(sleeve);
+      }
+
+      function getRecommendedScore(sleeve) {
+        const releaseTs = getReleaseTimestamp(sleeve);
+        const latestPrice = getCardPrice(sleeve);
+        const tradeCount = getTradeCountForSort(sleeve);
+        let score = 0;
+        if (Number.isFinite(releaseTs)) score += releaseTs / 100000000;
+        if (Number.isFinite(tradeCount)) score += tradeCount * 1000;
+        if (Number.isFinite(latestPrice)) score += 10000000;
+        return score;
+      }
+
       function compareWithTieBreakers(a, b, primaryResult, indexedA, indexedB) {
         if (primaryResult !== 0) return primaryResult;
 
@@ -398,16 +906,16 @@
             }
             case "releaseAsc": {
               const releaseCmp = compareNullableNumbers(
-                parseReleaseSortValue(a) ? Date.parse(parseReleaseSortValue(a)) : null,
-                parseReleaseSortValue(b) ? Date.parse(parseReleaseSortValue(b)) : null,
+                getReleaseTimestamp(a),
+                getReleaseTimestamp(b),
                 "asc"
               );
               return compareWithTieBreakers(a, b, releaseCmp, left, right);
             }
             case "releaseDesc": {
               const releaseCmp = compareNullableNumbers(
-                parseReleaseSortValue(a) ? Date.parse(parseReleaseSortValue(a)) : null,
-                parseReleaseSortValue(b) ? Date.parse(parseReleaseSortValue(b)) : null,
+                getReleaseTimestamp(a),
+                getReleaseTimestamp(b),
                 "desc"
               );
               return compareWithTieBreakers(a, b, releaseCmp, left, right);
@@ -421,32 +929,24 @@
               return compareWithTieBreakers(a, b, tradeCmp, left, right);
             }
             case "popular": {
-              // TODO: PV/人気スコア等の実データが入ったら popularity 系に差し替える
-              const releaseCmp = compareNullableNumbers(
-                parseReleaseSortValue(a) ? Date.parse(parseReleaseSortValue(a)) : null,
-                parseReleaseSortValue(b) ? Date.parse(parseReleaseSortValue(b)) : null,
+              // TODO: PV/人気スコア等の実データが入ったら getPopularityScore() を差し替える
+              const popCmp = compareNullableNumbers(
+                getPopularityScore(a),
+                getPopularityScore(b),
                 "desc"
               );
+              if (popCmp !== 0) return compareWithTieBreakers(a, b, popCmp, left, right);
+              const releaseCmp = compareNullableNumbers(getReleaseTimestamp(a), getReleaseTimestamp(b), "desc");
               return compareWithTieBreakers(a, b, releaseCmp, left, right);
             }
             case "recommended":
             default: {
-              const releaseCmp = compareNullableNumbers(
-                parseReleaseSortValue(a) ? Date.parse(parseReleaseSortValue(a)) : null,
-                parseReleaseSortValue(b) ? Date.parse(parseReleaseSortValue(b)) : null,
+              const scoreCmp = compareNullableNumbers(
+                getRecommendedScore(a),
+                getRecommendedScore(b),
                 "desc"
               );
-              if (releaseCmp !== 0) return releaseCmp;
-
-              const tradeCmp = compareNullableNumbers(getTradeCountForSort(a), getTradeCountForSort(b), "desc");
-              if (tradeCmp !== 0) return tradeCmp;
-
-              const pricePresenceCmp = compareNullableNumbers(
-                Number.isFinite(getCardPrice(a)) ? 1 : null,
-                Number.isFinite(getCardPrice(b)) ? 1 : null,
-                "desc"
-              );
-              return compareWithTieBreakers(a, b, pricePresenceCmp, left, right);
+              return compareWithTieBreakers(a, b, scoreCmp, left, right);
             }
           }
         });
@@ -454,14 +954,162 @@
         return indexed.map((entry) => entry.item);
       }
 
-      function render() {
+      function getSortLabelConfig(sortOrder) {
+        return SORT_UI_CONFIG[sortOrder] || SORT_UI_CONFIG.recommended;
+      }
+
+      function syncSortFallbackSelect() {
+        if (!sortOrderMobileSel) return;
+        sortOrderMobileSel.innerHTML = sortOrderSel.innerHTML;
+        sortOrderMobileSel.value = sortOrderSel.value;
+      }
+
+      function renderSortTabs() {
+        if (!sortTabs) return;
+        sortTabs.innerHTML = PRIMARY_TAB_CONFIG.map((tab) => `
+          <button type="button" class="sort-tab${tab.key === currentPrimaryTab ? " is-active" : ""}" data-primary-tab="${escapeHtml(tab.key)}" role="tab" aria-selected="${tab.key === currentPrimaryTab ? "true" : "false"}">
+            ${escapeHtml(tab.label)}
+            <span class="sort-tab-accent">${escapeHtml(tab.accent)}</span>
+          </button>
+        `).join("");
+      }
+
+      function renderSortChips() {
+        const primary = PRIMARY_TAB_CONFIG.find((tab) => tab.key === currentPrimaryTab) || PRIMARY_TAB_CONFIG[0];
+        const currentSort = sortOrderSel.value;
+        const chips = Array.isArray(primary.chips) ? primary.chips : [];
+        if (!sortChips || !sortChipNote) return;
+
+        sortChips.innerHTML = chips.map((chip) => `
+          <button type="button" class="sort-chip${chip.key === currentSort ? " is-active" : ""}" data-sort-chip="${escapeHtml(chip.key)}">
+            ${escapeHtml(chip.label)}
+          </button>
+        `).join("");
+
+        const currentConfig = getSortLabelConfig(currentSort);
+        sortChipNote.textContent = currentConfig.helper || primary.note || "";
+        sortChipNote.classList.toggle("is-fallback", Boolean(currentConfig.fallback));
+      }
+
+      function updateSortExplorerCopy(sortOrder) {
+        const config = getSortLabelConfig(sortOrder);
+        if (sortExplorerCurrent) sortExplorerCurrent.textContent = config.label;
+        if (resultsSubcopy) resultsSubcopy.textContent = config.helper || "気になるスリーブを見つけやすい順で並び替えています。";
+      }
+
+      function applyPrimaryTab(primaryKey) {
+        const primary = PRIMARY_TAB_CONFIG.find((tab) => tab.key === primaryKey) || PRIMARY_TAB_CONFIG[0];
+        currentPrimaryTab = primary.key;
+        const currentSort = sortOrderSel.value;
+        const chipKeys = (primary.chips || []).map((chip) => chip.key);
+        if (primary.defaultSort && !chipKeys.includes(currentSort) && primary.key !== "popular" && primary.key !== "recommended" && primary.key !== "kana") {
+          sortOrderSel.value = primary.defaultSort;
+        } else if (primary.key === "kana") {
+          sortOrderSel.value = "nameAsc";
+        } else if (primary.key === "recommended") {
+          sortOrderSel.value = "recommended";
+        } else if (primary.key === "popular" && !chipKeys.includes(currentSort)) {
+          sortOrderSel.value = primary.defaultSort;
+        }
+        if (sortOrderMobileSel) sortOrderMobileSel.value = sortOrderSel.value;
+        renderSortTabs();
+        renderSortChips();
+      }
+
+      function getCardBadges(sleeve) {
+        const badges = [];
+        const releaseTs = getReleaseTimestamp(sleeve);
+        const price = getCardPrice(sleeve);
+        const trades = getTradeCountForSort(sleeve);
+        const now = Date.now();
+        const oneYearMs = 365 * 24 * 60 * 60 * 1000;
+
+        if (Number.isFinite(releaseTs) && (now - releaseTs) <= oneYearMs * 1.3) {
+          badges.push({ label: "NEW", className: "new" });
+        }
+        if (Number.isFinite(price) && price >= 3000) {
+          badges.push({ label: "高額", className: "price" });
+        }
+        if (Number.isFinite(trades) && trades >= 20) {
+          badges.push({ label: "人気", className: "hot" });
+        }
+        if (getRecommendedScore(sleeve) > 10000000) {
+          badges.push({ label: "注目", className: "pick" });
+        }
+        return badges.slice(0, 3);
+      }
+
+      async function applySortWithAnimation(callback) {
+        renderToken += 1;
+        const token = renderToken;
+        list.classList.remove("is-visible");
+        list.classList.add("is-animating");
+        await new Promise((resolve) => setTimeout(resolve, 120));
+        if (token !== renderToken) return;
+        callback();
+        requestAnimationFrame(() => {
+          list.classList.remove("is-animating");
+          list.classList.add("is-visible");
+        });
+      }
+
+      function buildCardMarkup(s, activeSort) {
+        const p = getCardPrice(s);
+        const priceText = (p == null) ? "-" : `${p.toLocaleString()}円`;
+
+        const weeklyPair = getWeeklyPair(s);
+        const weeklyHtml = formatDelta(weeklyPair);
+
+        const totalTrades = getTotalTradeCount(s);
+        const totalTradesText = (totalTrades == null) ? "-" : `${totalTrades.toLocaleString()}件`;
+
+        const imgSrc = String(s.imageUrl || "").trim();
+        const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
+          ? window.common.buildSleeveDetailHref(s.id ?? "")
+          : `./sleeve/${encodeURIComponent(s.id ?? "")}/`;
+        const badges = getCardBadges(s);
+        const badgeHtml = badges.length ? `
+          <div class="card-badge-stack">
+            ${badges.map((badge) => `<span class="card-badge-pill ${escapeHtml(badge.className)}">${escapeHtml(badge.label)}</span>`).join("")}
+          </div>
+        ` : "";
+        const imgHtml = imgSrc
+          ? `<div class="card-media">
+              ${badgeHtml}
+              <a class="thumb-link" data-sleeve-link="1" href="${detailHref}" aria-label="${escapeHtml(s.name ?? "")}の詳細を見る">
+                <img class="thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
+                  onerror="this.onerror=null; this.style.display='none';">
+              </a>
+            </div>`
+          : badgeHtml;
+
+        const focusClass = activeSort === "priceDesc" || activeSort === "priceAsc"
+          ? " is-price-focus"
+          : activeSort === "releaseDesc" || activeSort === "releaseAsc"
+            ? " is-release-focus"
+            : "";
+
+        return `
+          ${imgHtml}
+          <div class="title">${escapeHtml(s.name ?? "")}</div>
+          <div class="price">${escapeHtml(priceText)} <span class="meta">（最新週次）</span></div>
+          ${weeklyHtml}
+          <div class="badges">
+            <span class="badge">取引件数：${escapeHtml(totalTradesText)}</span>
+            <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
+            <span class="badge">${escapeHtml(s.condition ?? "")}</span>
+            <span class="badge">${escapeHtml(s.series ?? "")}</span>
+          </div>
+          <a class="btn" data-sleeve-link="1" href="${detailHref}">価格詳細を見る →</a>
+        `;
+      }
+
+      function renderResults() {
         const kw = searchInput.value.trim().toLowerCase();
         const releaseYear = releaseYearSel.value;
         const series = seriesSel.value;
         const band = parseBand(priceBandSel.value);
         const sortOrder = sortOrderSel.value;
-
-        list.innerHTML = "";
 
         const filtered = [];
         for (const s of sleeves) {
@@ -478,6 +1126,8 @@
         }
 
         const sorted = sortSleeves(filtered, sortOrder);
+        updateSortExplorerCopy(sortOrder);
+        if (resultsMeta) resultsMeta.textContent = `表示件数: ${sorted.length.toLocaleString()}件`;
 
         if (!sorted.length) {
           list.innerHTML = '<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>';
@@ -487,45 +1137,17 @@
         const frag = document.createDocumentFragment();
 
         for (const s of sorted) {
-          const p = getCardPrice(s);
-          const priceText = (p == null) ? "-" : `${p.toLocaleString()}円`;
-
-          const weeklyPair = getWeeklyPair(s);
-          const weeklyHtml = formatDelta(weeklyPair);
-
-          const totalTrades = getTotalTradeCount(s);
-          const totalTradesText = (totalTrades == null) ? "-" : `${totalTrades.toLocaleString()}件`;
-
-          const imgSrc = String(s.imageUrl || "").trim();
-          const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
-            ? window.common.buildSleeveDetailHref(s.id ?? "")
-            : `./sleeve/${encodeURIComponent(s.id ?? "")}/`;
-          const imgHtml = imgSrc
-            ? `<a class="thumb-link" data-sleeve-link="1" href="${detailHref}" aria-label="${escapeHtml(s.name ?? "")}の詳細を見る">
-                <img class="thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
-                  onerror="this.onerror=null; this.style.display='none';">
-              </a>`
-            : "";
-
           const div = document.createElement("div");
-          div.className = "card";
-          div.innerHTML = `
-            ${imgHtml}
-            <div class="title">${escapeHtml(s.name ?? "")}</div>
-            <div class="price">${escapeHtml(priceText)} <span class="meta">（最新週次）</span></div>
-            ${weeklyHtml}
-            <div class="badges">
-              <span class="badge">取引件数：${escapeHtml(totalTradesText)}</span>
-              <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
-              <span class="badge">${escapeHtml(s.condition ?? "")}</span>
-              <span class="badge">${escapeHtml(s.series ?? "")}</span>
-            </div>
-            <a class="btn" data-sleeve-link="1" href="${detailHref}">価格詳細を見る →</a>
-          `;
+          div.className = "card catalog-card";
+          div.innerHTML = buildCardMarkup(s, sortOrder);
           frag.appendChild(div);
         }
 
         list.appendChild(frag);
+      }
+
+      function render() {
+        applySortWithAnimation(renderResults);
       }
 
       let t = null;
@@ -537,7 +1159,43 @@
       releaseYearSel.addEventListener("change", render);
       seriesSel.addEventListener("change", render);
       priceBandSel.addEventListener("change", render);
-      sortOrderSel.addEventListener("change", render);
+      sortOrderSel.addEventListener("change", () => {
+        const currentConfig = getSortLabelConfig(sortOrderSel.value);
+        currentPrimaryTab = currentConfig.primary || "recommended";
+        if (sortOrderMobileSel) sortOrderMobileSel.value = sortOrderSel.value;
+        renderSortTabs();
+        renderSortChips();
+        render();
+      });
+
+      if (sortOrderMobileSel) {
+        syncSortFallbackSelect();
+        sortOrderMobileSel.addEventListener("change", () => {
+          sortOrderSel.value = sortOrderMobileSel.value;
+          sortOrderSel.dispatchEvent(new Event("change"));
+        });
+      }
+
+      if (sortTabs) {
+        sortTabs.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-primary-tab]");
+          if (!button) return;
+          applyPrimaryTab(button.getAttribute("data-primary-tab") || "");
+          render();
+        });
+      }
+
+      if (sortChips) {
+        sortChips.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-sort-chip]");
+          if (!button) return;
+          sortOrderSel.value = button.getAttribute("data-sort-chip") || "recommended";
+          if (sortOrderMobileSel) sortOrderMobileSel.value = sortOrderSel.value;
+          renderSortTabs();
+          renderSortChips();
+          render();
+        });
+      }
 
       clearBtn.addEventListener("click", () => {
         searchInput.value = "";
@@ -545,10 +1203,15 @@
         seriesSel.value = "";
         priceBandSel.value = "";
         sortOrderSel.value = "recommended";
+        if (sortOrderMobileSel) sortOrderMobileSel.value = "recommended";
+        applyPrimaryTab("recommended");
         render();
       });
 
-      render();
+      applyPrimaryTab("recommended");
+      syncSortFallbackSelect();
+      renderResults();
+      requestAnimationFrame(() => list.classList.add("is-visible"));
     }
 
     main();
