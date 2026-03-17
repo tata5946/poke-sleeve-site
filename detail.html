@@ -661,6 +661,16 @@
       return el;
     }
 
+    function getFaqStructuredDataScript() {
+      let el = document.getElementById("faqStructuredData");
+      if (el) return el;
+      el = document.createElement("script");
+      el.type = "application/ld+json";
+      el.id = "faqStructuredData";
+      document.head.appendChild(el);
+      return el;
+    }
+
     function updateProductStructuredData(sleeve, latestPrice, releaseDateText) {
       if (!sleeve || typeof sleeve !== "object") return;
       const name = String(sleeve.name || "").trim();
@@ -693,6 +703,50 @@
 
       const script = getStructuredDataScript();
       script.textContent = JSON.stringify(product);
+    }
+
+    function updateFaqStructuredData(sleeve, latestPrice, releaseDateText) {
+      if (!sleeve || typeof sleeve !== "object") return;
+      const name = String(sleeve.name || "").trim();
+      if (!name) return;
+
+      const priceText = Number.isFinite(latestPrice) ? `${latestPrice.toLocaleString()}円` : "現在は掲載データを確認してください";
+      const releaseText = releaseDateText || "不明";
+      const mercariUrl = buildMercariSearchUrl(name);
+
+      const faq = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "このスリーブの相場は？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": `${name} の最新相場は ${priceText} です。詳細な価格推移はこのページのチャートをご確認ください。`
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "発売日は？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": `${name} の発売日は ${releaseText} です。`
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "どこで買える？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": `${name} はフリマアプリや中古ショップなどで購入できます。参考としてメルカリ検索ページは ${mercariUrl} です。`
+            }
+          }
+        ]
+      };
+
+      const script = getFaqStructuredDataScript();
+      script.textContent = JSON.stringify(faq);
     }
 
     const ACCESS_USER_ID_KEY = "pokeSleeve:accessUserId";
@@ -2009,6 +2063,7 @@
       const observationRows = normalizeObservationRows(s.weeklyPrices);
       const latestObservation = observationRows.filter((row) => row.hasTrade && Number.isFinite(row.avgPrice)).slice(-1)[0] || null;
       updateProductStructuredData(s, latestObservation ? latestObservation.avgPrice : null, releaseDateText);
+      updateFaqStructuredData(s, latestObservation ? latestObservation.avgPrice : null, releaseDateText);
       const chartTitleEl = document.getElementById("priceSectionTitle");
       const modeNoteEl = document.getElementById("chartModeNote");
       const period3mBtn = document.getElementById("period3mBtn");
