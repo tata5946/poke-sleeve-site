@@ -782,6 +782,9 @@
       color: #475467;
       font-weight: 500;
     }
+    .daily-pick-note .up { color: #dc2626; }
+    .daily-pick-note .down { color: #2563eb; }
+    .daily-pick-note .flat { color: #475467; }
     .daily-pick-tag {
       display: inline-flex;
       align-items: center;
@@ -960,7 +963,7 @@
       background: #162238; color: #fff; font-size: 15px; font-weight: 900;
       cursor: pointer; box-shadow: 0 12px 24px rgba(24, 40, 62, 0.14);
     }
-    .quick-links { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; }
+    .quick-links { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
     .quick-link {
       padding: 24px;
       text-decoration: none;
@@ -1232,8 +1235,8 @@
         <div class="today-hero-head">
           <div>
             <span class="home-category-pill is-hot">今日のスリーブ市場</span>
-            <h1 class="hero-title">今これが熱い</h1>
-            <p id="marketSnapshotText" class="hero-subcopy">今日の相場で最初に見るべき1枚を、ここで大きく見せます。</p>
+            <h1 class="hero-title">今、一番動いているスリーブ</h1>
+            <p id="marketSnapshotText" class="hero-subcopy">直近の値動きが最も大きいスリーブです。</p>
           </div>
         </div>
         <div id="todayHeroCard" class="today-hero-card">
@@ -1252,63 +1255,29 @@
         </div>
       </section>
 
-      <section class="live-now home-section is-hot reveal-on-scroll" aria-label="今動いてるスリーブ">
-        <span class="home-category-pill is-hot">今動いてるスリーブ</span>
-        <div class="home-section-head">
-          <div>
-            <h2 class="home-section-title">更新中の相場を追う</h2>
-            <p class="home-section-copy">数秒ごとに入れ替わる注目カードで、いま市場が動いている感覚をそのまま見せます。</p>
-          </div>
-        </div>
-        <div class="live-now-card home-card">
-          <div class="live-now-toolbar">
-            <span class="live-status-chip"><span class="live-status-dot" aria-hidden="true"></span>更新中…</span>
-            <div class="live-now-controls">
-              <button id="liveNowToggle" class="live-now-toggle" type="button" aria-pressed="false">自動更新を停止</button>
-            </div>
-          </div>
-          <div id="liveNowCard" class="live-now-stage">
-            <div class="live-skeleton">
-              <div class="live-skeleton-media skeleton-block"></div>
-              <div class="live-skeleton-body">
-                <div class="live-skeleton-title skeleton-block"></div>
-                <div class="live-skeleton-copy skeleton-block"></div>
-                <div class="live-skeleton-metrics">
-                  <div class="live-skeleton-metric skeleton-block"></div>
-                  <div class="live-skeleton-metric skeleton-block"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section class="home-section is-hot reveal-on-scroll" aria-label="今日の注目">
-        <span class="home-category-pill is-hot">今日の注目</span>
+        <span class="home-category-pill is-hot">ランキング要約</span>
         <div class="home-section-head">
           <div>
-            <h2 class="home-section-title">トレンドをまとめて見る</h2>
-            <p class="home-section-copy">急上昇・高騰率・人気を要約して、次の1クリックへつなげます。</p>
+            <h2 class="home-section-title">上位3件をすぐ確認</h2>
+            <p class="home-section-copy">急上昇・高騰率・価格ランキングを上位3件だけ表示します。</p>
           </div>
         </div>
         <div class="trend-grid">
           <section class="trend-panel home-card">
-            <div class="highlight-head"><h3 class="highlight-title">急上昇 TOP5</h3><a class="home-section-more" href="./surge.html">もっと見る</a></div>
-            <div class="trend-rail-shell">
-              <div class="trend-rail-controls">
-                <p class="ranking-section-note">自動で流れる注目銘柄</p>
-                <div class="trend-rail-buttons">
-                  <button id="surgePrev" class="trend-rail-btn" type="button" aria-label="前へ">‹</button>
-                  <button id="surgeNext" class="trend-rail-btn" type="button" aria-label="次へ">›</button>
+            <div class="highlight-head"><h3 class="highlight-title">急上昇</h3><a class="home-section-more" href="./surge.html">もっと見る</a></div>
+            <div id="highlightSurge" class="trend-list">
+              <div class="trend-item">
+                <div class="trend-thumb skeleton-block"></div>
+                <div class="trend-body">
+                  <div class="hero-skeleton-copy skeleton-block"></div>
+                  <div class="hero-skeleton-copy skeleton-block" style="width:120px;"></div>
                 </div>
-              </div>
-              <div id="surgeViewport" class="trend-rail-viewport">
-                <div id="highlightSurge" class="trend-rail"></div>
               </div>
             </div>
           </section>
           <section class="trend-panel home-card">
-            <div class="highlight-head"><h3 class="highlight-title">高騰率 TOP5</h3><a class="home-section-more" href="./growth.html">もっと見る</a></div>
+            <div class="highlight-head"><h3 class="highlight-title">高騰率</h3><a class="home-section-more" href="./growth.html">もっと見る</a></div>
             <div id="highlightGrowth" class="trend-list">
               <div class="trend-item">
                 <div class="trend-thumb skeleton-block"></div>
@@ -1320,8 +1289,8 @@
             </div>
           </section>
           <section class="trend-panel home-card">
-            <div class="highlight-head"><h3 class="highlight-title">人気 TOP5</h3><a class="home-section-more" href="./access-ranking.html">もっと見る</a></div>
-            <div id="highlightPopular" class="trend-list">
+            <div class="highlight-head"><h3 class="highlight-title">価格ランキング</h3><a class="home-section-more" href="./ranking.html">もっと見る</a></div>
+            <div id="highlightPrice" class="trend-list">
               <div class="trend-item">
                 <div class="trend-thumb skeleton-block"></div>
                 <div class="trend-body">
@@ -1335,30 +1304,30 @@
       </section>
 
       <section class="home-section is-search reveal-on-scroll" aria-label="目的別ナビゲーション">
-        <span class="home-category-pill is-search">目的別ナビゲーション</span>
+        <span class="home-category-pill is-search">探す</span>
         <div class="home-section-head">
           <div>
-            <h2 class="home-section-title">次に見るものを選ぶ</h2>
-            <p class="home-section-copy">トップは入口に絞って、気になった行き先へ迷わず進めるようにしています。</p>
+            <h2 class="home-section-title">目的からページを選ぶ</h2>
+            <p class="home-section-copy">見たい情報に合わせて各ページへ移動できます。</p>
           </div>
         </div>
         <div class="quick-links">
-          <a class="quick-link quick-link--value home-card" href="./ranking.html"><span class="quick-link-icon">👑</span><h3 class="quick-link-title">価格が高いスリーブを見る</h3><p class="quick-link-copy">価値の高い順にまとめて確認する。</p></a>
-          <a class="quick-link quick-link--hot home-card" href="./surge.html"><span class="quick-link-icon">🔥</span><h3 class="quick-link-title">急上昇をチェック</h3><p class="quick-link-copy">今伸びた銘柄から追いかける。</p></a>
-          <a class="quick-link quick-link--search home-card" href="./sleeves/"><span class="quick-link-icon">🗂️</span><h3 class="quick-link-title">図鑑から探す</h3><p class="quick-link-copy">名前やシリーズから見つける。</p></a>
-          <a class="quick-link quick-link--value home-card" href="./index-market.html"><span class="quick-link-icon">📈</span><h3 class="quick-link-title">スリーブ指数を見る</h3><p class="quick-link-copy">市場全体の温度感をつかむ。</p></a>
+          <a class="quick-link quick-link--search home-card" href="./sleeves/"><span class="quick-link-icon">🗂️</span><h3 class="quick-link-title">図鑑から探す</h3><p class="quick-link-copy">名前やシリーズでスリーブを検索</p></a>
+          <a class="quick-link quick-link--hot home-card" href="./surge.html"><span class="quick-link-icon">🔥</span><h3 class="quick-link-title">急上昇を見る</h3><p class="quick-link-copy">直近で値動きが大きい順に確認</p></a>
+          <a class="quick-link quick-link--value home-card" href="./ranking.html"><span class="quick-link-icon">👑</span><h3 class="quick-link-title">高額スリーブを見る</h3><p class="quick-link-copy">価格が高いスリーブを順位で確認</p></a>
+          <a class="quick-link quick-link--value home-card" href="./index-market.html"><span class="quick-link-icon">📈</span><h3 class="quick-link-title">スリーブ指数を見る</h3><p class="quick-link-copy">市場全体の前週比と指数を確認</p></a>
         </div>
       </section>
 
-      <section class="pickup-section home-card reveal-on-scroll" aria-label="今日の1枚">
+      <section class="pickup-section home-card reveal-on-scroll" aria-label="スリーブ指数">
         <div class="home-section-head">
           <div>
-            <span class="home-category-pill is-value">今日の1枚</span>
-            <h2 class="home-section-title">毎日見たくなるピックアップ</h2>
-            <p class="home-section-copy">その日の入口になる1枚を、シンプルに置いています。</p>
+            <span class="home-category-pill is-value">スリーブ指数</span>
+            <h2 class="home-section-title">市場の温度感を確認</h2>
+            <p class="home-section-copy">指数・前週比・コメントを簡潔に表示します。</p>
           </div>
         </div>
-        <div id="dailyPickCard" class="daily-pick-card">
+        <div id="marketSnapshotCard" class="daily-pick-card">
           <div class="daily-pick-skeleton">
             <div class="daily-pick-skeleton-media skeleton-block"></div>
             <div class="daily-pick-skeleton-body">
@@ -1787,6 +1756,19 @@
       `;
     }
 
+    function buildRankSummaryItem({ sleeve, priceText, deltaText, deltaClass, rank }) {
+      return `
+        <a class="trend-item" href="${escapeHtml(getDetailHref(sleeve.id ?? ""))}" aria-label="${escapeHtml(sleeve.name ?? "")}">
+          <div class="trend-thumb">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
+          <div class="trend-body">
+            <p class="trend-name">${escapeHtml(`${rank}位 ${sleeve.name ?? ""}`)}</p>
+            <div class="trend-price">${escapeHtml(priceText)}</div>
+            <div class="trend-delta ${escapeHtml(deltaClass)}">${escapeHtml(deltaText)}</div>
+          </div>
+        </a>
+      `;
+    }
+
     function buildRailItem({ sleeve, priceText, deltaText, deltaValue, deltaClass, note }) {
       const priceValue = Number(String(priceText).replace(/[^\d.-]/g, ""));
       return `
@@ -2067,7 +2049,7 @@
       start();
     }
 
-    function renderTodayHero(topRow, marketSeries) {
+    function renderTodayHero(topRow) {
       const el = document.getElementById("todayHeroCard");
       if (!el) return;
       if (!topRow) {
@@ -2078,9 +2060,7 @@
       const deltaClass = getDeltaClass(pct);
       const textEl = document.getElementById("marketSnapshotText");
       if (textEl) {
-        textEl.textContent = marketSeries.length && marketSeries[marketSeries.length - 1].rate > 0
-          ? "市場全体も上向きです。まずは急上昇1位から見ていくのが早いです。"
-          : "今日いちばん大きく動いた1枚を、入口にしています。";
+        textEl.textContent = "直近の値動きが最も大きいスリーブです。";
       }
       el.innerHTML = `
         <a class="today-hero-link" href="${escapeHtml(getDetailHref(topRow.s.id ?? ""))}">
@@ -2098,7 +2078,7 @@
                 <div class="today-hero-value ${escapeHtml(deltaClass)}"${getCountupAttrs(pct, "percent", deltaClass)}>${escapeHtml(formatPercent(pct))}</div>
               </div>
             </div>
-            <p id="todayHeroSummary" class="today-hero-summary">直近で最も強く動いたスリーブです。まずはここから、今日のトレンドをつかめます。</p>
+            <p class="today-hero-summary">前週比で最も上昇したため注目されています。</p>
             <div class="today-hero-actions">
               <span class="today-hero-cta">詳細を見る</span>
             </div>
@@ -2108,58 +2088,80 @@
       animateCountups(el);
     }
 
-    function renderTrendLists({ surgeRank, growthRank, popularRows }) {
+    function renderTrendLists({ surgeRank, growthRank, priceRank }) {
       const surgeEl = document.getElementById("highlightSurge");
       const growthEl = document.getElementById("highlightGrowth");
-      const popularEl = document.getElementById("highlightPopular");
-      if (!surgeEl || !growthEl || !popularEl) return;
+      const priceEl = document.getElementById("highlightPrice");
+      if (!surgeEl || !growthEl || !priceEl) return;
 
-      surgeEl.innerHTML = surgeRank.slice(0, 5).map(({ s, pair, diff }) => {
+      surgeEl.innerHTML = surgeRank.slice(0, 3).map(({ s, pair, diff }, index) => {
         const rate = pair.prev?.price ? (diff / pair.prev.price) * 100 : null;
-        return buildRailItem({
+        return buildRankSummaryItem({
           sleeve: s,
+          rank: index + 1,
           priceText: `${pair.latest.price.toLocaleString()}円`,
-          deltaValue: rate,
           deltaText: formatPercent(rate),
-          deltaClass: getDeltaClass(rate),
-          note: "スワイプして次を見る"
+          deltaClass: getDeltaClass(rate)
         });
       }).join("") || `<div class="home-empty">急上昇データがありません。</div>`;
 
-      growthEl.innerHTML = growthRank.slice(0, 5).map(({ s, g }) => buildTrendItem({
+      growthEl.innerHTML = growthRank.slice(0, 3).map(({ s, g }, index) => buildRankSummaryItem({
         sleeve: s,
+        rank: index + 1,
         priceText: `${g.latest.price.toLocaleString()}円`,
         deltaText: formatPercent(g.rate),
         deltaClass: getDeltaClass(g.rate)
       })).join("") || `<div class="home-empty">高騰率データがありません。</div>`;
 
-      popularEl.innerHTML = popularRows.slice(0, 5).map(({ sleeve, count }) => {
+      priceEl.innerHTML = (priceRank || []).slice(0, 3).map((sleeve, index) => {
         const pair = getWeeklyPair(sleeve);
-        return buildTrendItem({
+        const prevPrice = pair?.prev?.price ?? null;
+        const rate = prevPrice ? ((pair.latest.price - prevPrice) / prevPrice) * 100 : null;
+        return buildRankSummaryItem({
           sleeve,
+          rank: index + 1,
           priceText: pair?.latest?.price == null ? "—" : `${pair.latest.price.toLocaleString()}円`,
-          deltaText: count != null ? `閲覧 ${count.toLocaleString()}回` : "注目度上位",
-          deltaClass: "flat"
+          deltaText: formatPercent(rate),
+          deltaClass: getDeltaClass(rate)
         });
-      }).join("") || `<div class="home-empty">人気データがありません。</div>`;
-      animateCountups(surgeEl);
+      }).join("") || `<div class="home-empty">価格ランキングデータがありません。</div>`;
     }
 
-    function renderDailyPick(sleeve) {
-      const el = document.getElementById("dailyPickCard");
+    function renderMarketSnapshot(marketSeries) {
+      const el = document.getElementById("marketSnapshotCard");
       if (!el) return;
-      if (!sleeve) {
-        el.innerHTML = `<div class="home-empty">今日の1枚を表示できませんでした。</div>`;
+      if (!Array.isArray(marketSeries) || !marketSeries.length) {
+        el.innerHTML = `<div class="home-empty">スリーブ指数を表示できませんでした。</div>`;
         return;
       }
-      const pair = getWeeklyPair(sleeve);
+      const latest = marketSeries[marketSeries.length - 1];
+      const rateClass = getDeltaClass(latest.rate);
+      const recent = marketSeries.slice(-16);
+      const values = recent.map((row) => row.index);
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const points = values.map((value, index) => {
+        const x = values.length === 1 ? 0 : (index / (values.length - 1)) * 220;
+        const y = max === min ? 32 : 64 - ((value - min) / (max - min)) * 64;
+        return `${x},${y}`;
+      }).join(" ");
+      const comment = latest.rate > 1
+        ? "前週比で上昇。市場は強めです。"
+        : latest.rate < -1
+          ? "前週比で下落。やや落ち着いています。"
+          : "前週比は小幅。市場は横ばいです。";
       el.innerHTML = `
-        <a class="daily-pick-link" href="${escapeHtml(getDetailHref(sleeve.id ?? ""))}">
-          <div class="daily-pick-media">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
+        <a class="daily-pick-link" href="./index-market.html">
+          <div class="daily-pick-media">
+            <svg viewBox="0 0 220 64" width="100%" height="100%" aria-hidden="true">
+              <polyline fill="none" stroke="#dbe5f2" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" points="${escapeHtml(points)}"></polyline>
+              <polyline fill="none" stroke="#1e5bd7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" points="${escapeHtml(points)}"></polyline>
+            </svg>
+          </div>
           <div class="daily-pick-copy">
-            <span class="daily-pick-tag">今日の1枚</span>
-            <h3 class="daily-pick-title">${escapeHtml(sleeve.name ?? "")}</h3>
-            <p class="daily-pick-note">${pair?.latest?.price == null ? "今日はこの1枚から見始める。" : `現在価格は ${pair.latest.price.toLocaleString()}円。気になったらそのまま推移を確認できます。`}</p>
+            <span class="daily-pick-tag">市場全体</span>
+            <h3 class="daily-pick-title">スリーブ指数 ${escapeHtml(latest.index.toFixed(1))}</h3>
+            <p class="daily-pick-note"><strong class="${escapeHtml(rateClass)}">${escapeHtml(formatPercent(latest.rate))}</strong> ${escapeHtml(comment)}</p>
           </div>
         </a>
       `;
@@ -2187,7 +2189,6 @@
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
       const marketSeries = buildHomeMarketIndexSeries(sleeves);
-      const accessRanking = await loadAccessRanking();
 
       const priceRank = sleeves.map((s) => ({ s, price: getLatestWeeklyPrice(s) })).filter((row) => row.price != null).sort((a, b) => b.price - a.price).slice(0, 10).map((row) => row.s);
       const surgeRank = sleeves.map((s) => {
@@ -2202,39 +2203,16 @@
         const g = get30dGrowth(s, latestWeek);
         return g ? { s, g } : null;
       }).filter(Boolean).sort((a, b) => b.g.rate - a.g.rate).slice(0, 10);
-      const newestSleeves = sleeves.filter((s) => Number.isFinite(Number(s.releaseYear))).sort((a, b) => {
-        const yearDiff = (Number(b.releaseYear) || 0) - (Number(a.releaseYear) || 0);
-        if (yearDiff !== 0) return yearDiff;
-        return String(b.id ?? "").localeCompare(String(a.id ?? ""));
-      }).slice(0, 8);
 
-      const sleeveMap = new Map(sleeves.map((s) => [String(s.id ?? ""), s]));
-      const popularRows = (Array.isArray(accessRanking) ? accessRanking : [])
-        .map((row) => {
-          const sleeve = sleeveMap.get(String(row?.id ?? ""));
-          return sleeve ? { sleeve, count: numOrNull(row?.count) } : null;
-        })
-        .filter(Boolean);
-
-      renderTodayHero(surgeRank[0] || null, marketSeries);
-      renderTrendLists({ surgeRank, growthRank, popularRows });
-      const dailyPickPool = [surgeRank[0]?.s, growthRank[0]?.s, priceRank[0], ...newestSleeves.slice(0, 4)].filter(Boolean);
-      const dailyPick = dailyPickPool.length ? dailyPickPool[Math.floor(Math.random() * dailyPickPool.length)] : (sleeves[0] || null);
-      renderDailyPick(dailyPick);
-      initLiveNowRotator(buildLiveNowRows({ surgeRank, growthRank, priceRank, popularRows }));
-      initSurgeRailAutoplay();
+      renderTodayHero(surgeRank[0] || null);
+      renderTrendLists({ surgeRank, growthRank, priceRank });
+      renderMarketSnapshot(marketSeries);
       initScrollReveal();
-      const heroSummaryEl = document.getElementById("todayHeroSummary");
-      startTypewriter(heroSummaryEl, [
-        "直近で最も強く動いたスリーブです。まずはここから、今日のトレンドをつかめます。",
-        "価格の変化が出ている銘柄から見ると、市場の空気が一気に読めます。",
-        "気になったら詳細へ。週次の推移までそのまま追いかけられます。"
-      ]);
     }
 
     main().catch((error) => {
       console.error(error);
-      ["todayHeroCard", "liveNowCard", "highlightSurge", "highlightGrowth", "highlightPopular", "dailyPickCard"].forEach((id) => {
+      ["todayHeroCard", "highlightSurge", "highlightGrowth", "highlightPrice", "marketSnapshotCard"].forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = `<div class="home-empty">トップページのデータ読み込みに失敗しました。時間をおいて再度お試しください。</div>`;
       });
