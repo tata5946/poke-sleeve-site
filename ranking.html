@@ -91,33 +91,31 @@
       position: relative;
       overflow: hidden;
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, .55);
+      border: 1px solid #f0dca7;
       box-shadow: 0 12px 28px rgba(15, 23, 42, .10);
-      background: linear-gradient(180deg, #fffdf8 0%, #ffffff 100%);
+      background: linear-gradient(180deg, #fff7de 0%, #fffdf8 100%);
       padding: 12px;
     }
 
     .podium-card--rank1 {
       display: grid;
-      grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+      grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
       align-items: center;
       gap: 14px;
       padding: 14px;
       background:
-        radial-gradient(circle at top right, rgba(255, 214, 102, .34), transparent 34%),
-        linear-gradient(145deg, #fff5cf 0%, #fffef7 46%, #ffffff 100%);
+        radial-gradient(circle at top right, rgba(255, 214, 102, .28), transparent 32%),
+        linear-gradient(145deg, #fff4cd 0%, #fff9ea 44%, #fffdf8 100%);
     }
 
     .podium-card--rank2 {
       background:
-        radial-gradient(circle at top right, rgba(176, 190, 197, .26), transparent 34%),
-        linear-gradient(150deg, #f5f7fa 0%, #ffffff 72%);
+        linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
     }
 
     .podium-card--rank3 {
       background:
-        radial-gradient(circle at top right, rgba(205, 127, 50, .18), transparent 34%),
-        linear-gradient(150deg, #fff3ea 0%, #ffffff 72%);
+        linear-gradient(180deg, #fffaf5 0%, #ffffff 100%);
     }
 
     .podium-badge {
@@ -141,8 +139,8 @@
       display: block;
       border-radius: 16px;
       overflow: hidden;
-      background: rgba(255, 255, 255, .72);
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .4);
+      background: rgba(255, 255, 255, .84);
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .04);
     }
 
     .podium-media img {
@@ -157,8 +155,16 @@
       height: 280px;
     }
 
+    .podium-card--rank1 .podium-media {
+      padding: 10px;
+    }
+
     .podium-card:not(.podium-card--rank1) .podium-media img {
-      height: 130px;
+      height: 150px;
+    }
+
+    .podium-card:not(.podium-card--rank1) .podium-media {
+      padding: 10px;
     }
 
     .podium-content {
@@ -169,6 +175,10 @@
 
     .podium-card--rank1 .podium-content {
       margin-top: 0;
+    }
+
+    .podium-card:not(.podium-card--rank1) .podium-content {
+      gap: 10px;
     }
 
     .podium-kicker {
@@ -195,7 +205,7 @@
     }
 
     .podium-card:not(.podium-card--rank1) .podium-title {
-      font-size: 15px;
+      font-size: 16px;
     }
 
     .podium-metrics {
@@ -274,6 +284,12 @@
       gap: 6px;
     }
 
+    .podium-card:not(.podium-card--rank1) .podium-chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
     .podium-actions {
       display: flex;
       align-items: center;
@@ -290,8 +306,21 @@
       display: none;
     }
 
+    .podium-card:not(.podium-card--rank1) .podium-metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .podium-card:not(.podium-card--rank1) .podium-metric {
+      background: #fff;
+    }
+
     .podium-card:not(.podium-card--rank1) .podium-meta {
       gap: 6px;
+    }
+
+    .podium-card:not(.podium-card--rank1) .podium-meta .podium-chip:last-child {
+      display: none;
     }
 
     .ranking-card-note {
@@ -313,6 +342,10 @@
 
       .podium-card--rank1 .podium-media img {
         height: 220px;
+      }
+
+       .podium-card:not(.podium-card--rank1) .podium-media img {
+        height: 130px;
       }
 
       .podium-metrics {
@@ -610,6 +643,35 @@
       const rateClass = getDeltaClass(deltaInfo && deltaInfo.rate);
       const weekText = row.week ? `対象週 ${escapeHtml(row.week)}` : "対象週データなし";
       const tagHtml = tagLabels.map((tag) => `<span class="podium-chip">${escapeHtml(tag)}</span>`).join("");
+
+      if (rank !== 1) {
+        return `
+          <article class="podium-card podium-card--rank${rank}">
+            <div class="podium-badge">${getPodiumBadge(rank)}</div>
+            <a class="podium-media" data-sleeve-link="1" href="${row.detailHref}">
+              <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
+                onerror="this.onerror=null; this.style.display='none';">
+            </a>
+            <div class="podium-content">
+              <h3 class="podium-title">${escapeHtml(s.name ?? "")}</h3>
+              <div class="podium-metrics">
+                <div class="podium-metric">
+                  <span class="podium-metric-label">最新価格</span>
+                  <div class="podium-price">${row.price.toLocaleString()}円</div>
+                </div>
+                <div class="podium-metric">
+                  <span class="podium-metric-label">前週比</span>
+                  <div class="podium-rate ${rateClass}">${formatRateText(deltaInfo && deltaInfo.rate)}</div>
+                </div>
+              </div>
+              <div class="podium-meta">
+                <div class="podium-chip-group">${tagHtml}</div>
+                <span class="podium-chip">${weekText}</span>
+              </div>
+            </div>
+          </article>
+        `;
+      }
 
       return `
         <article class="podium-card podium-card--rank${rank}">
