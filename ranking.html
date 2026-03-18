@@ -52,17 +52,13 @@
     .ranking-top3 {
       display: grid;
       gap: 14px;
+      grid-template-columns: minmax(0, 1.7fr) minmax(240px, .85fr) minmax(240px, .85fr);
+      align-items: stretch;
     }
 
     .ranking-top3[hidden],
     .ranking-rest-section[hidden] {
       display: none;
-    }
-
-    .ranking-top23 {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .ranking-section-head {
@@ -332,7 +328,7 @@
     }
 
     @media (max-width: 700px) {
-      .ranking-top23 {
+      .ranking-top3 {
         grid-template-columns: 1fr;
       }
 
@@ -419,7 +415,8 @@
         <div class="ranking-main">
           <section id="top3" class="ranking-top3" aria-label="ランキング上位3件" hidden>
             <div id="top1"></div>
-            <div id="top23" class="ranking-top23"></div>
+            <div id="top2"></div>
+            <div id="top3Card"></div>
           </section>
 
           <section id="restSection" class="ranking-rest-section">
@@ -749,7 +746,8 @@
       const list = document.getElementById("list");
       const top3 = document.getElementById("top3");
       const top1 = document.getElementById("top1");
-      const top23 = document.getElementById("top23");
+      const top2 = document.getElementById("top2");
+      const top3Card = document.getElementById("top3Card");
       const restSection = document.getElementById("restSection");
       const searchInput = document.getElementById("search");
       const releaseYearSel = document.getElementById("releaseYear");
@@ -807,7 +805,8 @@
 
         list.innerHTML = "";
         top1.innerHTML = "";
-        top23.innerHTML = "";
+        top2.innerHTML = "";
+        top3Card.innerHTML = "";
         top3.hidden = true;
         restSection.hidden = false;
 
@@ -853,8 +852,8 @@
         if (topRows.length > 0) {
           top3.hidden = false;
           top1.innerHTML = buildPodiumCard(topRows[0], 1);
-          if (topRows[1]) top23.insertAdjacentHTML("beforeend", buildPodiumCard(topRows[1], 2));
-          if (topRows[2]) top23.insertAdjacentHTML("beforeend", buildPodiumCard(topRows[2], 3));
+          if (topRows[1]) top2.innerHTML = buildPodiumCard(topRows[1], 2);
+          if (topRows[2]) top3Card.innerHTML = buildPodiumCard(topRows[2], 3);
         }
 
         const normalRows = rows.slice(3);
