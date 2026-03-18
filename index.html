@@ -192,6 +192,249 @@
       transform: translateY(-2px);
       box-shadow: 0 16px 28px rgba(255,255,255,.18);
     }
+    .today-hero {
+      padding: 28px;
+      display: grid;
+      gap: 24px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 207, 122, 0.22), transparent 30%),
+        linear-gradient(180deg, #ffffff 0%, #fff9ee 100%);
+    }
+    .today-hero-head {
+      display: grid;
+      gap: 10px;
+    }
+    .today-hero-card {
+      min-height: 380px;
+    }
+    .today-hero-link {
+      display: grid;
+      grid-template-columns: minmax(220px, 340px) minmax(0, 1fr);
+      gap: 24px;
+      align-items: center;
+      text-decoration: none;
+      color: #162238;
+    }
+    .today-hero-media {
+      min-height: 300px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #f5f7fb 0%, #eef2f8 100%);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: 18px;
+    }
+    .today-hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .today-hero-content {
+      display: grid;
+      gap: 18px;
+    }
+    .today-hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #ffd0c2;
+      color: #b9381f;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .today-hero-name {
+      margin: 0;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: clamp(28px, 3.6vw, 42px);
+      line-height: 1.14;
+      font-weight: 900;
+      color: #101828;
+    }
+    .today-hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .today-hero-metric {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.86);
+      border: 1px solid #ebeef4;
+    }
+    .today-hero-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      color: #7a879c;
+    }
+    .today-hero-value {
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      font-size: clamp(26px, 3vw, 36px);
+      line-height: 1.06;
+      font-weight: 900;
+      color: #111827;
+    }
+    .today-hero-summary {
+      margin: 0;
+      color: #475467;
+      font-size: 14px;
+      line-height: 1.7;
+      font-weight: 500;
+    }
+    .today-hero-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .today-hero-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 20px;
+      border-radius: 999px;
+      background: #162238;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 900;
+      text-decoration: none;
+      box-shadow: 0 12px 24px rgba(22,34,56,.14);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .today-hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 30px rgba(22,34,56,.2);
+    }
+    .trend-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+    .trend-panel {
+      padding: 24px;
+      display: grid;
+      gap: 20px;
+    }
+    .trend-list {
+      display: grid;
+      gap: 12px;
+    }
+    .trend-item {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid #e8edf5;
+      background: #fbfcfe;
+      text-decoration: none;
+      color: #162238;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .trend-item:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 14px 24px rgba(15,23,42,.08);
+      border-color: #d5dfed;
+    }
+    .trend-thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #f4f7fb 0%, #eef3f9 100%);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .trend-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .trend-body {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+    .trend-name {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 900;
+      color: #111827;
+    }
+    .trend-price {
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      font-size: 20px;
+      line-height: 1.1;
+      font-weight: 900;
+      color: #111827;
+    }
+    .trend-delta {
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 900;
+    }
+    .pickup-section {
+      padding: 28px;
+      display: grid;
+      gap: 24px;
+    }
+    .daily-pick-card {
+      min-height: 240px;
+    }
+    .daily-pick-link {
+      display: grid;
+      grid-template-columns: 160px minmax(0, 1fr);
+      gap: 24px;
+      align-items: center;
+      text-decoration: none;
+      color: #162238;
+    }
+    .daily-pick-media {
+      height: 160px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #f4f7fb 0%, #eef3f9 100%);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: 16px;
+    }
+    .daily-pick-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .daily-pick-copy {
+      display: grid;
+      gap: 10px;
+    }
+    .daily-pick-kicker {
+      font-size: 12px;
+      font-weight: 900;
+      color: #7b8aa2;
+      letter-spacing: .08em;
+    }
+    .daily-pick-title {
+      margin: 0;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: clamp(24px, 3vw, 32px);
+      line-height: 1.2;
+      font-weight: 900;
+      color: #111827;
+    }
+    .daily-pick-note {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #475467;
+      font-weight: 500;
+    }
     .hero-status,
     .hero-status-chip { display: none; }
     .hero-status-label, .market-snapshot-label {
@@ -515,41 +758,31 @@
       font-weight: 700;
     }
     @media (max-width: 1120px) {
-      .quick-links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .spotlight-grid,
-      .new-arrivals-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .spotlight-card.is-lead { grid-column: span 3; }
-      .ranking-highlight-grid { grid-template-columns: 1fr; }
-      .carousel-slide { flex-basis: calc(50% - 8px); }
-      .hero-carousel-head { grid-template-columns: 1fr; }
+      .trend-grid,
+      .quick-links {
+        grid-template-columns: 1fr 1fr;
+      }
+      .today-hero-link,
+      .daily-pick-link,
+      .hero-carousel-head {
+        grid-template-columns: 1fr;
+      }
     }
     @media (max-width: 740px) {
       body.home-page .container { padding-top: 6px; padding-bottom: 32px; }
       .home-shell { gap: 48px; }
       .home-section-head,
-      .hero-carousel-head,
-      .carousel-controls,
+      .today-hero-link,
+      .daily-pick-link,
       .market-snapshot { grid-template-columns: 1fr; display: grid; }
-      .hero-carousel,
-      .home-search-card,
-      .highlight-panel,
-      .market-snapshot,
+      .today-hero,
+      .trend-panel,
+      .pickup-section,
       .quick-link { padding: 24px; }
-      .carousel-slide { flex-basis: 100%; min-height: 360px; }
-      .carousel-slide-content { padding: 24px; }
-      .home-search-form { grid-template-columns: 1fr; }
-      .home-search-submit { width: 100%; }
       .quick-links,
-      .spotlight-grid,
-      .new-arrivals-grid { grid-template-columns: 1fr; }
-      .spotlight-card.is-lead { grid-column: span 1; }
-      .highlight-item { grid-template-columns: auto 56px 1fr; }
-      .highlight-value { grid-column: 2 / 4; text-align: left; padding-left: 50px; }
-      .market-snapshot-metrics { grid-template-columns: 1fr; }
-      .hero-status { justify-content: stretch; }
-      .hero-status-chip { min-width: 0; }
-      .carousel-arrows { justify-content: flex-start; }
-      .hero-primary-action { padding: 20px; }
+      .trend-grid,
+      .today-hero-metrics { grid-template-columns: 1fr; }
+      .today-hero-media { min-height: 220px; }
     }
   </style>
 </head>
@@ -563,105 +796,66 @@
     </nav>
 
     <div class="home-shell">
-      <section class="hero-carousel home-card" aria-label="注目コンテンツ">
-        <div class="hero-carousel-head">
-          <div class="hero-carousel-copy">
-            <span class="hero-kicker">HOT SLEEVE WATCH</span>
-            <h1 class="hero-title">今、価値が動いているスリーブを見逃すな</h1>
-            <p class="hero-subcopy">上がった、跳ねた、欲しくなった。そのままランキングと図鑑へ飛べるトップにしています。</p>
-          </div>
-          <div class="hero-primary-action">
-            <span class="hero-primary-label">Pick Up</span>
-            <p id="heroPrimaryCopy" class="hero-primary-copy">まずは、今いちばん熱い1枚を見る。</p>
-            <p id="heroPrimaryNote" class="hero-primary-note">直近で大きく動いたスリーブから、最初の1クリックをつくります。</p>
-            <a id="heroPrimaryLink" class="hero-primary-link" href="./surge.html">急上昇を見る</a>
+      <section class="today-hero home-card" aria-label="今日のスリーブ市場">
+        <div class="today-hero-head">
+          <div>
+            <span class="home-category-pill is-hot">今日のスリーブ市場</span>
+            <h1 class="hero-title">今これが熱い</h1>
+            <p id="marketSnapshotText" class="hero-subcopy">今日の相場で最初に見るべき1枚を、ここで大きく見せます。</p>
           </div>
         </div>
-        <div class="carousel-viewport" id="homeCarouselViewport"><div class="carousel-track" id="homeCarouselTrack"></div></div>
-        <div class="carousel-controls">
-          <div class="carousel-arrows">
-            <button class="carousel-arrow" id="carouselPrev" type="button" aria-label="前のスライド">‹</button>
-            <button class="carousel-arrow" id="carouselNext" type="button" aria-label="次のスライド">›</button>
-          </div>
-          <div class="carousel-dots" id="homeCarouselDots" aria-label="カルーセルインジケータ"></div>
-        </div>
+        <div id="todayHeroCard" class="today-hero-card"></div>
       </section>
 
-      <section class="home-search-card home-card home-section is-search" aria-label="検索導線">
-        <span class="home-category-pill is-search">3. 探す</span>
-        <p class="home-search-kicker">SEARCH DIRECT</p>
+      <section class="home-section is-hot" aria-label="今日の注目">
+        <span class="home-category-pill is-hot">今日の注目</span>
         <div class="home-section-head">
           <div>
-            <h2 class="home-section-title">スリーブ名・ポケモン名から探す</h2>
-            <p class="home-section-copy">見たい名前が決まっている人は、ここから詳細ページや図鑑一覧へすぐに進めます。</p>
+            <h2 class="home-section-title">トレンドをまとめて見る</h2>
+            <p class="home-section-copy">急上昇・高騰率・人気を要約して、次の1クリックへつなげます。</p>
           </div>
         </div>
-        <form class="home-search-form" id="heroSearchForm" action="./sleeves/" method="get" role="search" aria-label="スリーブ検索">
-          <div class="home-search-field">
-            <input class="home-search-input" type="text" id="heroSearch" name="q" placeholder="スリーブ名・ポケモン名で検索" autocomplete="off">
-          </div>
-          <button class="home-search-submit" type="submit">検索する</button>
-        </form>
+        <div class="trend-grid">
+          <section class="trend-panel home-card">
+            <div class="highlight-head"><h3 class="highlight-title">急上昇 TOP5</h3><a class="home-section-more" href="./surge.html">もっと見る</a></div>
+            <div id="highlightSurge" class="trend-list"></div>
+          </section>
+          <section class="trend-panel home-card">
+            <div class="highlight-head"><h3 class="highlight-title">高騰率 TOP5</h3><a class="home-section-more" href="./growth.html">もっと見る</a></div>
+            <div id="highlightGrowth" class="trend-list"></div>
+          </section>
+          <section class="trend-panel home-card">
+            <div class="highlight-head"><h3 class="highlight-title">人気 TOP5</h3><a class="home-section-more" href="./access-ranking.html">もっと見る</a></div>
+            <div id="highlightPopular" class="trend-list"></div>
+          </section>
+        </div>
       </section>
 
-      <section class="home-section is-search" aria-label="クイック導線">
-        <span class="home-category-pill is-search">3. 探す</span>
-        <div class="home-section-head"><div><h2 class="home-section-title">次の1クリックをつくるショートカット</h2><p class="home-section-copy">迷ったときでも、図鑑・ランキング・指数へ自然に流れられる入口を並べています。</p></div></div>
+      <section class="home-section is-search" aria-label="目的別ナビゲーション">
+        <span class="home-category-pill is-search">目的別ナビゲーション</span>
+        <div class="home-section-head">
+          <div>
+            <h2 class="home-section-title">次に見るものを選ぶ</h2>
+            <p class="home-section-copy">トップは入口に絞って、気になった行き先へ迷わず進めるようにしています。</p>
+          </div>
+        </div>
         <div class="quick-links">
-          <a class="quick-link quick-link--search home-card" href="./sleeves/"><span class="quick-link-icon">🗂️</span><h3 class="quick-link-title">図鑑で探す</h3><p class="quick-link-copy">気になる名前から、すぐ候補を絞る。</p></a>
-          <a class="quick-link quick-link--hot home-card" href="./surge.html"><span class="quick-link-icon">🔥</span><h3 class="quick-link-title">急上昇ランキング</h3><p class="quick-link-copy">今すぐ跳ねた銘柄を見る。</p></a>
-          <a class="quick-link quick-link--hot home-card" href="./growth.html"><span class="quick-link-icon">🚀</span><h3 class="quick-link-title">高騰率ランキング</h3><p class="quick-link-copy">大きく伸びた順に追う。</p></a>
-          <a class="quick-link quick-link--value home-card" href="./ranking.html"><span class="quick-link-icon">👑</span><h3 class="quick-link-title">価格ランキング</h3><p class="quick-link-copy">価値が高い順に眺める。</p></a>
-          <a class="quick-link quick-link--value home-card" href="./index-market.html"><span class="quick-link-icon">🌈</span><h3 class="quick-link-title">スリーブ指数</h3><p class="quick-link-copy">市場の空気を先につかむ。</p></a>
+          <a class="quick-link quick-link--value home-card" href="./ranking.html"><span class="quick-link-icon">👑</span><h3 class="quick-link-title">価格が高いスリーブを見る</h3><p class="quick-link-copy">価値の高い順にまとめて確認する。</p></a>
+          <a class="quick-link quick-link--hot home-card" href="./surge.html"><span class="quick-link-icon">🔥</span><h3 class="quick-link-title">急上昇をチェック</h3><p class="quick-link-copy">今伸びた銘柄から追いかける。</p></a>
+          <a class="quick-link quick-link--search home-card" href="./sleeves/"><span class="quick-link-icon">🗂️</span><h3 class="quick-link-title">図鑑から探す</h3><p class="quick-link-copy">名前やシリーズから見つける。</p></a>
+          <a class="quick-link quick-link--value home-card" href="./index-market.html"><span class="quick-link-icon">📈</span><h3 class="quick-link-title">スリーブ指数を見る</h3><p class="quick-link-copy">市場全体の温度感をつかむ。</p></a>
         </div>
       </section>
 
-      <section class="home-section is-hot" aria-label="人気コンテンツ">
-        <span class="home-category-pill is-hot">1. 今アツい</span>
+      <section class="pickup-section home-card" aria-label="今日の1枚">
         <div class="home-section-head">
-          <div><h2 class="home-section-title">今人気のスリーブ TOP10</h2><p class="home-section-copy">「みんなが見ている」を入口にして、まず1枚クリックしたくなる見せ方にしています。</p></div>
-          <a class="home-section-more" href="./access-ranking.html">アクセスランキングを見る</a>
+          <div>
+            <span class="home-category-pill is-value">今日の1枚</span>
+            <h2 class="home-section-title">毎日見たくなるピックアップ</h2>
+            <p class="home-section-copy">その日の入口になる1枚を、シンプルに置いています。</p>
+          </div>
         </div>
-        <div id="spotlightGrid" class="spotlight-grid"></div>
-      </section>
-
-      <section class="market-snapshot home-card" aria-label="スリーブ指数">
-        <div class="market-snapshot-copy">
-          <p class="market-snapshot-kicker">MARKET SNAPSHOT</p>
-          <h2 class="market-snapshot-title">市場全体のムードも、トップから一緒に見えるように。</h2>
-          <p id="marketSnapshotText" class="market-snapshot-text">週次データから算出した指数で、全体の上向き・横ばい・調整をざっくり確認できます。</p>
-        </div>
-        <div class="market-snapshot-metrics">
-          <div class="market-snapshot-metric"><span class="market-snapshot-label">スリーブ指数</span><span id="marketSnapshotValue" class="market-snapshot-value">—</span></div>
-          <div class="market-snapshot-metric"><span class="market-snapshot-label">前週比</span><span id="marketSnapshotDelta" class="market-snapshot-value flat">—</span></div>
-        </div>
-      </section>
-      <section class="home-section is-value" aria-label="新着スリーブ">
-        <span class="home-category-pill is-value">2. 価値</span>
-        <div class="home-section-head">
-          <div><h2 class="home-section-title">新着スリーブ</h2><p class="home-section-copy">新しく見つけたい人向けに、比較的新しい発売年から順に並べています。</p></div>
-          <a class="home-section-more" href="./sleeves/">図鑑を開く</a>
-        </div>
-        <div id="newArrivalsGrid" class="new-arrivals-grid"></div>
-      </section>
-
-      <section class="home-section is-hot" aria-label="ランキングハイライト">
-        <span class="home-category-pill is-hot">1. 今アツい</span>
-        <div class="home-section-head"><div><h2 class="home-section-title">ランキングハイライト</h2><p class="home-section-copy">上位だけまず眺めてから、気になったジャンルへ深く潜れるようにしています。</p></div></div>
-        <div class="ranking-highlight-grid">
-          <section class="highlight-panel highlight-panel--lead home-card">
-            <div class="highlight-head"><h3 class="highlight-title">急上昇</h3><a class="home-section-more" href="./surge.html">もっと見る</a></div>
-            <div id="highlightSurge" class="highlight-list"></div>
-          </section>
-          <section class="highlight-panel home-card">
-            <div class="highlight-head"><h3 class="highlight-title">高騰率</h3><a class="home-section-more" href="./growth.html">もっと見る</a></div>
-            <div id="highlightGrowth" class="highlight-list"></div>
-          </section>
-          <section class="highlight-panel home-card">
-            <div class="highlight-head"><h3 class="highlight-title">価格ランキング</h3><a class="home-section-more" href="./ranking.html">もっと見る</a></div>
-            <div id="highlightPrice" class="highlight-list"></div>
-          </section>
-        </div>
+        <div id="dailyPickCard" class="daily-pick-card"></div>
       </section>
     </div>
 
@@ -1062,81 +1256,108 @@
       return `<a class="spotlight-card home-card${lead ? " is-lead" : ""}" href="${escapeHtml(detailHref)}" aria-label="${escapeHtml(sleeve.name ?? "")}"><div class="spotlight-media">${imageHtml}</div><div class="spotlight-body">${Number.isFinite(rank) ? `<span class="spotlight-rank">${rankLabel}</span>` : ""}<h3 class="spotlight-name">${escapeHtml(sleeve.name ?? "")}</h3><p class="spotlight-price">${latestPrice == null ? "—" : `${latestPrice.toLocaleString()}円`}</p><div class="spotlight-meta">${deltaHtml}${extraChip || ""}${lead ? `<span class="home-chip">今人気の主役</span>` : ""}</div></div></a>`;
     }
 
-    function renderSpotlight(accessRanking, sleeves, fallbackRank) {
-      const el = document.getElementById("spotlightGrid");
+    function buildTrendItem({ sleeve, priceText, deltaText, deltaClass }) {
+      return `
+        <a class="trend-item" href="${escapeHtml(getDetailHref(sleeve.id ?? ""))}" aria-label="${escapeHtml(sleeve.name ?? "")}">
+          <div class="trend-thumb">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
+          <div class="trend-body">
+            <p class="trend-name">${escapeHtml(sleeve.name ?? "")}</p>
+            <div class="trend-price">${escapeHtml(priceText)}</div>
+            <div class="trend-delta ${escapeHtml(deltaClass)}">${escapeHtml(deltaText)}</div>
+          </div>
+        </a>
+      `;
+    }
+
+    function renderTodayHero(topRow, marketSeries) {
+      const el = document.getElementById("todayHeroCard");
       if (!el) return;
-      const sleeveMap = new Map(sleeves.map((s) => [String(s.id ?? ""), s]));
-      let rows = [];
-      if (Array.isArray(accessRanking) && accessRanking.length) {
-        rows = accessRanking.map((row) => {
-          const sleeve = sleeveMap.get(String(row?.id ?? ""));
-          return sleeve ? { sleeve, count: numOrNull(row?.count) } : null;
-        }).filter(Boolean).slice(0, 10);
-      }
-      if (!rows.length) rows = fallbackRank.slice(0, 10).map((sleeve) => ({ sleeve, count: null }));
-      if (!rows.length) {
-        el.innerHTML = `<div class="home-empty">人気スリーブを表示できませんでした。</div>`;
+      if (!topRow) {
+        el.innerHTML = `<div class="home-empty">今日の市場データを表示できませんでした。</div>`;
         return;
       }
-      el.innerHTML = rows.map((row, index) => buildSleeveCard(row.sleeve, {
-        rank: index + 1,
-        extraChip: `<span class="home-chip">${row.count != null ? `閲覧 ${row.count.toLocaleString()}回` : `注目度 ${index + 1}位`}</span>`,
-        lead: index === 0
-      })).join("");
-    }
-    function renderNewArrivals(sleeves) {
-      const el = document.getElementById("newArrivalsGrid");
-      if (!el) return;
-      const rows = sleeves.filter((s) => Number.isFinite(Number(s.releaseYear))).sort((a, b) => {
-        const yearDiff = (Number(b.releaseYear) || 0) - (Number(a.releaseYear) || 0);
-        if (yearDiff !== 0) return yearDiff;
-        return String(b.id ?? "").localeCompare(String(a.id ?? ""));
-      }).slice(0, 8);
-      if (!rows.length) {
-        el.innerHTML = `<div class="home-empty">新着スリーブを表示できませんでした。</div>`;
-        return;
-      }
-      el.innerHTML = rows.map((sleeve) => {
-        const pair = getWeeklyPair(sleeve);
-        const detailHref = getDetailHref(sleeve.id ?? "");
-        const totalTrades = getTotalTradeCount(sleeve);
-        return `<a class="new-arrival-card home-card" href="${escapeHtml(detailHref)}" aria-label="${escapeHtml(sleeve.name ?? "")}"><div class="new-arrival-media">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div><div class="new-arrival-body"><div class="new-arrival-meta"><span class="new-chip new-chip--accent">NEW</span><span class="new-chip">発売年 ${escapeHtml(sleeve.releaseYear ?? "—")}</span></div><h3 class="new-arrival-name">${escapeHtml(sleeve.name ?? "")}</h3><p class="new-arrival-price">${pair?.latest?.price == null ? "—" : `${pair.latest.price.toLocaleString()}円`}</p><div class="new-arrival-meta"><span class="new-chip">${escapeHtml(sleeve.series ?? "シリーズ未設定")}</span><span class="new-chip">総取引 ${totalTrades == null ? "—" : `${totalTrades.toLocaleString()}件`}</span></div></div></a>`;
-      }).join("");
-    }
-
-    function buildHighlightItem({ href, rank, name, imageUrl, subText, valueText, valueClass }) {
-      return `<a class="highlight-item" href="${escapeHtml(href)}" aria-label="${escapeHtml(name)}"><span class="highlight-rank">${rank}</span>${imageUrl ? `<img class="highlight-thumb" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(name)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : `<span class="highlight-thumb"></span>`}<div><p class="highlight-name">${escapeHtml(name)}</p><p class="highlight-sub">${escapeHtml(subText)}</p></div><div class="highlight-value ${escapeHtml(valueClass)}">${escapeHtml(valueText)}</div></a>`;
-    }
-
-    function renderHighlights({ surgeRank, growthRank, priceRank }) {
-      const surgeEl = document.getElementById("highlightSurge");
-      const growthEl = document.getElementById("highlightGrowth");
-      const priceEl = document.getElementById("highlightPrice");
-      if (!surgeEl || !growthEl || !priceEl) return;
-      surgeEl.innerHTML = surgeRank.slice(0, 3).map(({ s, pair, diff }, index) => buildHighlightItem({ href: getDetailHref(s.id ?? ""), rank: index + 1, name: s.name ?? "", imageUrl: s.imageUrl || "", subText: `最新 ${pair.latest.week}`, valueText: `${diff > 0 ? "+" : ""}${Math.abs(diff).toLocaleString()}円`, valueClass: getDeltaClass(pair.prev?.price ? (diff / pair.prev.price) * 100 : null) })).join("") || `<div class="home-empty">急上昇データがありません。</div>`;
-      growthEl.innerHTML = growthRank.slice(0, 3).map(({ s, g }, index) => buildHighlightItem({ href: getDetailHref(s.id ?? ""), rank: index + 1, name: s.name ?? "", imageUrl: s.imageUrl || "", subText: `基準 ${g.base.week}`, valueText: formatPercent(g.rate), valueClass: getDeltaClass(g.rate) })).join("") || `<div class="home-empty">高騰率データがありません。</div>`;
-      priceEl.innerHTML = priceRank.slice(0, 3).map((s, index) => {
-        const pair = getWeeklyPair(s);
-        return buildHighlightItem({ href: getDetailHref(s.id ?? ""), rank: index + 1, name: s.name ?? "", imageUrl: s.imageUrl || "", subText: `発売年 ${s.releaseYear ?? "—"}`, valueText: pair?.latest?.price == null ? "—" : `${pair.latest.price.toLocaleString()}円`, valueClass: "flat" });
-      }).join("") || `<div class="home-empty">価格ランキングデータがありません。</div>`;
-    }
-
-    function renderMarketSnapshot(series) {
-      if (!series.length) return;
-      const latest = series[series.length - 1];
-      const deltaClass = getDeltaClass(latest.rate);
-      setText("marketSnapshotValue", latest.index.toFixed(1));
-      setText("marketSnapshotDelta", formatPercent(latest.rate, 2));
-      const deltaEl = document.getElementById("marketSnapshotDelta");
-      if (deltaEl) deltaEl.className = `market-snapshot-value ${deltaClass}`;
+      const pct = topRow.pair?.prev?.price ? (topRow.diff / topRow.pair.prev.price) * 100 : null;
+      const deltaClass = getDeltaClass(pct);
       const textEl = document.getElementById("marketSnapshotText");
       if (textEl) {
-        textEl.textContent = latest.rate > 0
-          ? "今週は市場全体で上向きの動きが優勢です。ランキングを見る前に全体感もつかめます。"
-          : latest.rate < 0
-            ? "今週はやや調整気味です。下がった銘柄と伸びた銘柄をランキングで見比べやすくしています。"
-            : "今週は横ばい圏です。細かな動きは急上昇・高騰率ランキングから追えます。";
+        textEl.textContent = marketSeries.length && marketSeries[marketSeries.length - 1].rate > 0
+          ? "市場全体も上向きです。まずは急上昇1位から見ていくのが早いです。"
+          : "今日いちばん大きく動いた1枚を、入口にしています。";
       }
+      el.innerHTML = `
+        <a class="today-hero-link" href="${escapeHtml(getDetailHref(topRow.s.id ?? ""))}">
+          <div class="today-hero-media">${topRow.s.imageUrl ? `<img src="${escapeHtml(topRow.s.imageUrl)}" alt="${escapeHtml(topRow.s.name ?? "")}" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
+          <div class="today-hero-content">
+            <span class="today-hero-kicker">🔥 急上昇 1位</span>
+            <h2 class="today-hero-name">${escapeHtml(topRow.s.name ?? "")}</h2>
+            <div class="today-hero-metrics">
+              <div class="today-hero-metric">
+                <span class="today-hero-label">現在価格</span>
+                <div class="today-hero-value">${escapeHtml(`${topRow.pair.latest.price.toLocaleString()}円`)}</div>
+              </div>
+              <div class="today-hero-metric">
+                <span class="today-hero-label">上昇率</span>
+                <div class="today-hero-value ${escapeHtml(deltaClass)}">${escapeHtml(formatPercent(pct))}</div>
+              </div>
+            </div>
+            <p class="today-hero-summary">直近で最も強く動いたスリーブです。まずはここから、今日のトレンドをつかめます。</p>
+            <div class="today-hero-actions">
+              <span class="today-hero-cta">詳細を見る</span>
+            </div>
+          </div>
+        </a>
+      `;
+    }
+
+    function renderTrendLists({ surgeRank, growthRank, popularRows }) {
+      const surgeEl = document.getElementById("highlightSurge");
+      const growthEl = document.getElementById("highlightGrowth");
+      const popularEl = document.getElementById("highlightPopular");
+      if (!surgeEl || !growthEl || !popularEl) return;
+
+      surgeEl.innerHTML = surgeRank.slice(0, 5).map(({ s, pair, diff }) => buildTrendItem({
+        sleeve: s,
+        priceText: `${pair.latest.price.toLocaleString()}円`,
+        deltaText: formatPercent(pair.prev?.price ? (diff / pair.prev.price) * 100 : null),
+        deltaClass: getDeltaClass(pair.prev?.price ? (diff / pair.prev.price) * 100 : null)
+      })).join("") || `<div class="home-empty">急上昇データがありません。</div>`;
+
+      growthEl.innerHTML = growthRank.slice(0, 5).map(({ s, g }) => buildTrendItem({
+        sleeve: s,
+        priceText: `${g.latest.price.toLocaleString()}円`,
+        deltaText: formatPercent(g.rate),
+        deltaClass: getDeltaClass(g.rate)
+      })).join("") || `<div class="home-empty">高騰率データがありません。</div>`;
+
+      popularEl.innerHTML = popularRows.slice(0, 5).map(({ sleeve, count }) => {
+        const pair = getWeeklyPair(sleeve);
+        return buildTrendItem({
+          sleeve,
+          priceText: pair?.latest?.price == null ? "—" : `${pair.latest.price.toLocaleString()}円`,
+          deltaText: count != null ? `閲覧 ${count.toLocaleString()}回` : "注目度上位",
+          deltaClass: "flat"
+        });
+      }).join("") || `<div class="home-empty">人気データがありません。</div>`;
+    }
+
+    function renderDailyPick(sleeve) {
+      const el = document.getElementById("dailyPickCard");
+      if (!el) return;
+      if (!sleeve) {
+        el.innerHTML = `<div class="home-empty">今日の1枚を表示できませんでした。</div>`;
+        return;
+      }
+      const pair = getWeeklyPair(sleeve);
+      el.innerHTML = `
+        <a class="daily-pick-link" href="${escapeHtml(getDetailHref(sleeve.id ?? ""))}">
+          <div class="daily-pick-media">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
+          <div class="daily-pick-copy">
+            <span class="daily-pick-kicker">DAILY PICK</span>
+            <h3 class="daily-pick-title">${escapeHtml(sleeve.name ?? "")}</h3>
+            <p class="daily-pick-note">${pair?.latest?.price == null ? "今日はこの1枚から見始める。" : `現在価格は ${pair.latest.price.toLocaleString()}円。気になったらそのまま推移を確認できます。`}</p>
+          </div>
+        </a>
+      `;
     }
 
     function syncHeaderSearch(heroSearchInput) {
@@ -1155,35 +1376,11 @@
     }
 
     async function main() {
-      const searchReadyPromise = waitForHeaderSearch();
-      const heroSearchInput = document.getElementById("heroSearch");
-      const heroSearchForm = document.getElementById("heroSearchForm");
-      if (heroSearchInput && window.common && typeof window.common.wireSleeveAutocomplete === "function") {
-        window.common.wireSleeveAutocomplete(heroSearchInput, { minChars: 1, maxItems: 8, anchorEl: heroSearchInput.closest(".home-search-field") });
-      }
-      const url = new URL(location.href);
-      const qParam = (url.searchParams.get("q") || "").trim();
-      if (qParam && heroSearchInput) heroSearchInput.value = qParam;
-      if (heroSearchForm && heroSearchInput) {
-        heroSearchForm.addEventListener("submit", (ev) => {
-          ev.preventDefault();
-          const q = heroSearchInput.value.trim();
-          if (window.common && typeof window.common.recordSearchHistory === "function") window.common.recordSearchHistory(q);
-          location.href = q ? `./sleeves/?q=${encodeURIComponent(q)}` : "./sleeves/";
-        });
-      }
-      const headerSearch = document.getElementById("search") || await searchReadyPromise;
-      if (headerSearch && qParam) headerSearch.value = qParam;
-      syncHeaderSearch(heroSearchInput);
-
       const data = window.common && typeof window.common.loadData === "function" ? await window.common.loadData() : await loadData();
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
       const marketSeries = buildHomeMarketIndexSeries(sleeves);
       const accessRanking = await loadAccessRanking();
-      setText("heroUpdatedAt", latestWeek ? `${latestWeek}（週次）` : "データ未取得");
-      setText("heroSleeveCount", `${sleeves.length.toLocaleString()}件`);
-      renderMarketSnapshot(marketSeries);
 
       const priceRank = sleeves.map((s) => ({ s, price: getLatestWeeklyPrice(s) })).filter((row) => row.price != null).sort((a, b) => b.price - a.price).slice(0, 10).map((row) => row.s);
       const surgeRank = sleeves.map((s) => {
@@ -1204,22 +1401,25 @@
         return String(b.id ?? "").localeCompare(String(a.id ?? ""));
       }).slice(0, 8);
 
-      configureHeroPrimaryAction({ surgeRank, growthRank, priceRank });
-      renderCarousel(buildCarouselSlides({ priceRank, surgeRank, growthRank, newestSleeves, marketSeries }));
-      renderSpotlight(accessRanking, sleeves, priceRank);
-      renderNewArrivals(sleeves);
-      renderHighlights({ surgeRank, growthRank, priceRank });
+      const sleeveMap = new Map(sleeves.map((s) => [String(s.id ?? ""), s]));
+      const popularRows = (Array.isArray(accessRanking) ? accessRanking : [])
+        .map((row) => {
+          const sleeve = sleeveMap.get(String(row?.id ?? ""));
+          return sleeve ? { sleeve, count: numOrNull(row?.count) } : null;
+        })
+        .filter(Boolean);
+
+      renderTodayHero(surgeRank[0] || null, marketSeries);
+      renderTrendLists({ surgeRank, growthRank, popularRows });
+      renderDailyPick(newestSleeves[0] || priceRank[0] || sleeves[0] || null);
     }
 
     main().catch((error) => {
       console.error(error);
-      setText("heroUpdatedAt", "読み込み失敗");
-      setText("heroSleeveCount", "読み込み失敗");
-      ["spotlightGrid", "newArrivalsGrid", "highlightSurge", "highlightGrowth", "highlightPrice"].forEach((id) => {
+      ["todayHeroCard", "highlightSurge", "highlightGrowth", "highlightPopular", "dailyPickCard"].forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = `<div class="home-empty">トップページのデータ読み込みに失敗しました。時間をおいて再度お試しください。</div>`;
       });
-      renderCarousel([]);
     });
   </script>
 </body>
