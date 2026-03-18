@@ -1,39 +1,147 @@
-﻿{
-  "sleeves": [
-    {
-      "id": "pikachu-2022",
-      "name": "ピカチュウスリーブ2022",
-      "releaseYear": 2022,
-      "condition": "未開封",
-      "series": "公式",
-      "pricesByYear": {
-        "2022": 800,
-        "2023": 1200,
-        "2024": 1800,
-        "2025": 1600
-      },
-      "weeklyPrices": [
-        { "week": "2026-02-09", "price": 1580, "count": 2 },
-        { "week": "2026-02-16", "price": 1620, "count": 3 },
-        { "week": "2026-02-23", "price": 1680, "count": 4 }
-      ]
-    },
-    {
-      "id": "charizard-2023",
-      "name": "リザードンスリーブ2023",
-      "releaseYear": 2023,
-      "condition": "未開封",
-      "series": "公式",
-      "pricesByYear": {
-        "2023": 1500,
-        "2024": 2200,
-        "2025": 2100
-      },
-      "weeklyPrices": [
-        { "week": "2026-02-09", "price": 1580, "count": 1 },
-        { "week": "2026-02-16", "price": 1620, "count": 1 },
-        { "week": "2026-02-23", "price": 1888, "count": 3 }
-      ]
-    }
-  ]
+{
+    "sleeves":  [
+                    {
+                        "id":  "pikachu-2022",
+                        "name":  "ピカチュウスリーブ2022",
+                        "releaseYear":  2022,
+                        "condition":  "未開封",
+                        "series":  "公式",
+                        "pricesByYear":  {
+                                             "2022":  800,
+                                             "2023":  1200,
+                                             "2024":  1800,
+                                             "2025":  1600
+                                         },
+                        "weeklyPrices":  [
+                                             {
+                                                 "week":  "2026-02-09",
+                                                 "price":  1580,
+                                                 "count":  2
+                                             },
+                                             {
+                                                 "week":  "2026-02-16",
+                                                 "price":  1620,
+                                                 "count":  3
+                                             },
+                                             {
+                                                 "week":  "2026-02-23",
+                                                 "price":  1680,
+                                                 "count":  4
+                                             }
+                                         ]
+                    },
+                    {
+                        "id":  "charizard-2023",
+                        "name":  "リザードンスリーブ2023",
+                        "releaseYear":  2023,
+                        "condition":  "未開封",
+                        "series":  "公式",
+                        "pricesByYear":  {
+                                             "2023":  1500,
+                                             "2024":  2200,
+                                             "2025":  2100
+                                         },
+                        "weeklyPrices":  [
+                                             {
+                                                 "week":  "2026-02-09",
+                                                 "price":  1580,
+                                                 "count":  1
+                                             },
+                                             {
+                                                 "week":  "2026-02-16",
+                                                 "price":  1620,
+                                                 "count":  1
+                                             },
+                                             {
+                                                 "week":  "2026-02-23",
+                                                 "price":  1888,
+                                                 "count":  3
+                                             }
+                                         ]
+                    },
+                    {
+                        "id":  "292120",
+                        "name":  "墨絵列伝 スイクン",
+                        "releaseYear":  2020,
+                        "condition":  "未開封",
+                        "series":  "公式",
+                        "imageUrl":  "",
+                        "pricesByYear":  {
+
+                                         },
+                        "weeklyPrices":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "292113",
+                        "name":  "墨絵列伝 エンテイ",
+                        "releaseYear":  2020,
+                        "condition":  "未開封",
+                        "series":  "公式",
+                        "imageUrl":  "",
+                        "pricesByYear":  {
+
+                                         },
+                        "weeklyPrices":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "292137",
+                        "name":  "墨絵列伝 ライコウ",
+                        "releaseYear":  2020,
+                        "condition":  "未開封",
+                        "series":  "公式",
+                        "imageUrl":  "",
+                        "pricesByYear":  {
+
+                                         },
+                        "weeklyPrices":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "186528",
+                        "name":  "メガヤドランのポンチョを着たピカチュウ",
+                        "releaseYear":  2016,
+                        "condition":  "未開封",
+                        "series":  "公式",
+                        "imageUrl":  "",
+                        "pricesByYear":  {
+
+                                         },
+                        "weeklyPrices":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "2016003",
+                        "name":  "メガリザードンXのポンチョを着たピカチュウ",
+                        "releaseYear":  2016,
+                        "condition":  "未開封",
+                        "series":  "公式",
+                        "imageUrl":  "",
+                        "pricesByYear":  {
+
+                                         },
+                        "weeklyPrices":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "2016004",
+                        "name":  "メガリザードンYのポンチョを着たピカチュウ",
+                        "releaseYear":  2016,
+                        "condition":  "未開封",
+                        "series":  "公式",
+                        "imageUrl":  "",
+                        "pricesByYear":  {
+
+                                         },
+                        "weeklyPrices":  [
+
+                                         ]
+                    }
+                ]
 }
