@@ -16,6 +16,212 @@
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="./assets/site.css" />
+  <style>
+    body {
+      background: #f5f7fb;
+    }
+
+    .ranking-page-top {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .ranking-header-card,
+    .ranking-filter-card {
+      background: #fff;
+      border: 1px solid #e6eaf2;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
+    }
+
+    .ranking-header-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .ranking-page-title {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      color: #0f172a;
+      font-weight: 900;
+    }
+
+    .ranking-page-desc {
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #475467;
+      font-weight: 700;
+    }
+
+    .ranking-status {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .ranking-status-card {
+      min-width: 144px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid #e7ebf3;
+    }
+
+    .ranking-status-label {
+      display: block;
+      font-size: 11px;
+      line-height: 1.3;
+      color: #667085;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .ranking-status-value {
+      display: block;
+      font-size: 15px;
+      line-height: 1.35;
+      color: #101828;
+      font-weight: 900;
+    }
+
+    .ranking-filter-card {
+      padding: 18px 20px 20px;
+    }
+
+    .ranking-filter-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .ranking-filter-title {
+      margin: 0;
+      font-size: 13px;
+      color: #344054;
+      font-weight: 900;
+      letter-spacing: .04em;
+    }
+
+    .ranking-filter-sub {
+      margin: 0;
+      font-size: 12px;
+      color: #98a2b3;
+      font-weight: 700;
+    }
+
+    .ranking-filter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .ranking-filter-field {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .ranking-filter-label {
+      font-size: 12px;
+      color: #475467;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .ranking-filter-field select,
+    .ranking-filter-actions button {
+      width: 100%;
+      height: 50px;
+      border-radius: 16px;
+      border: 1px solid #d7deea;
+      background: #fff;
+      color: #101828;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 0 16px;
+      transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+    }
+
+    .ranking-filter-field select:hover,
+    .ranking-filter-actions button:hover {
+      border-color: #b9c5d9;
+      background: #fbfcfe;
+    }
+
+    .ranking-filter-field select:focus,
+    .ranking-filter-actions button:focus {
+      outline: none;
+      border-color: #9db5ff;
+      box-shadow: 0 0 0 4px rgba(71, 122, 255, .12);
+    }
+
+    .ranking-filter-actions {
+      min-width: 132px;
+    }
+
+    .ranking-filter-actions button {
+      background: #f8fafc;
+      color: #344054;
+      cursor: pointer;
+    }
+
+    .ranking-error {
+      margin-top: 12px;
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 900px) {
+      .ranking-header-card {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+
+      .ranking-status {
+        justify-content: flex-start;
+      }
+
+      .ranking-status-card {
+        min-width: 0;
+        flex: 1 1 140px;
+      }
+
+      .ranking-filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .ranking-filter-actions {
+        min-width: 0;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .ranking-filter-card {
+        padding: 16px;
+      }
+
+      .ranking-filter-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .ranking-filter-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -27,38 +233,49 @@
       <span class="breadcrumb-sep" aria-hidden="true">></span>
       <span class="breadcrumb-current" aria-current="page">ポケモンカード スリーブ図鑑</span>
     </nav>
-    <div class="hero">
-      <div class="hero-card">
+    <div class="ranking-page-top">
+      <section class="ranking-header-card" aria-label="ページヘッダー">
         <div>
-          <p class="hero-title">ポケモンカード スリーブ図鑑</p>
-          <p class="hero-desc">検索・絞り込みで目的のスリーブを見つけて、価格推移を比較できます。</p>
-          <p class="data-note">価格はフリマアプリ取引履歴をもとに算出しています。</p>
-          <p id="updatedAt" class="data-note" style="display:none;"></p>
+          <h1 class="ranking-page-title">ポケモンカード スリーブ図鑑</h1>
+          <p class="ranking-page-desc">検索と絞り込みで目的のスリーブを見つけて、価格推移や相場感を一覧で比較できます。</p>
         </div>
-      </div>
-    </div>
+        <div class="ranking-status" aria-label="集計状況">
+          <div class="ranking-status-card">
+            <span class="ranking-status-label">最終更新</span>
+            <span id="updatedAt" class="ranking-status-value">読み込み中</span>
+          </div>
+          <div class="ranking-status-card">
+            <span class="ranking-status-label">表示件数</span>
+            <span id="countInfo" class="ranking-status-value">集計中</span>
+          </div>
+        </div>
+      </section>
 
-    <div class="main">
-      <aside class="panel">
-        <h2>絞り込み</h2>
-        <p class="small">フィルタと並び替えを変更すると一覧が更新されます。</p>
+      <section class="ranking-filter-card" aria-label="フィルタバー">
+        <div class="ranking-filter-head">
+          <div>
+            <h2 class="ranking-filter-title">絞り込み</h2>
+            <p class="ranking-filter-sub">条件や並び替えを変えると図鑑一覧をすぐに更新できます</p>
+          </div>
+        </div>
 
-        <div id="error" class="error"></div>
-
-        <div class="controls">
-          <label>発売年
+        <div class="ranking-filter-grid">
+          <label class="ranking-filter-field">
+            <span class="ranking-filter-label">発売年</span>
             <select id="releaseYear">
               <option value="">全部</option>
             </select>
           </label>
 
-          <label>シリーズ
+          <label class="ranking-filter-field">
+            <span class="ranking-filter-label">シリーズ</span>
             <select id="series">
               <option value="">全部</option>
             </select>
           </label>
 
-          <label>価格帯
+          <label class="ranking-filter-field">
+            <span class="ranking-filter-label">価格帯</span>
             <select id="priceBand">
               <option value="">全部</option>
               <option value="0-999">〜999円</option>
@@ -69,7 +286,8 @@
             </select>
           </label>
 
-          <label>並び替え
+          <label class="ranking-filter-field">
+            <span class="ranking-filter-label">並び替え</span>
             <select id="sortOrder">
               <option value="priceDesc">価格が高い順</option>
               <option value="priceAsc">価格が安い順</option>
@@ -78,14 +296,18 @@
             </select>
           </label>
 
-          <button id="clear" type="button">クリア</button>
+          <div class="ranking-filter-actions">
+            <button id="clear" type="button">条件をクリア</button>
+          </div>
         </div>
-      </aside>
 
-      <main>
-        <div id="list" class="grid"></div>
-      </main>
+        <div id="error" class="error ranking-error"></div>
+      </section>
     </div>
+
+    <main>
+      <div id="list" class="grid"></div>
+    </main>
 
     <div id="site-footer"></div>
   </div>
@@ -275,8 +497,7 @@
       if (maxWeek) {
         const u = document.getElementById("updatedAt");
         if (u) {
-          u.textContent = `最終更新: ${maxWeek}（週次）`;
-          u.style.display = "block";
+          u.textContent = `${maxWeek}（週次）`;
         }
       }
 
@@ -336,9 +557,14 @@
         });
 
         if (!filtered.length) {
+          const c = document.getElementById("countInfo");
+          if (c) c.textContent = "0件";
           list.innerHTML = '<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>';
           return;
         }
+
+        const c = document.getElementById("countInfo");
+        if (c) c.textContent = `${filtered.length.toLocaleString()}件`;
 
         const frag = document.createDocumentFragment();
 
