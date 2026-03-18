@@ -13,25 +13,26 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800&family=Noto+Sans+JP:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&family=M+PLUS+Rounded+1c:wght@700;800&family=Noto+Sans+JP:wght@500;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="./assets/site.css" />
   <style>
     body.home-page {
       background:
-        radial-gradient(circle at top, rgba(255, 218, 121, 0.18), transparent 34%),
-        linear-gradient(180deg, #f6f8fc 0%, #eef2f8 100%);
+        radial-gradient(circle at top, rgba(255, 198, 72, 0.2), transparent 30%),
+        radial-gradient(circle at 82% 8%, rgba(96, 165, 250, 0.16), transparent 26%),
+        linear-gradient(180deg, #f7f9fd 0%, #eef3fb 100%);
       background-attachment: scroll;
     }
-    body.home-page .container { max-width: 1220px; padding-top: 12px; padding-bottom: 48px; }
+    body.home-page .container { max-width: 1240px; padding-top: 12px; padding-bottom: 56px; }
     .home-shell, .home-section { display: grid; }
-    .home-shell { gap: 24px; }
-    .home-section { gap: 16px; }
+    .home-shell { gap: 30px; }
+    .home-section { gap: 18px; }
     .home-card {
       background: #fff;
-      border: 1px solid #dde5f0;
-      border-radius: 20px;
-      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+      border: 1px solid #d7e0ee;
+      border-radius: 22px;
+      box-shadow: 0 16px 34px rgba(15, 23, 42, 0.07);
     }
     .home-section-head {
       display: flex;
@@ -48,10 +49,39 @@
     }
     .home-section-copy {
       margin: 6px 0 0;
-      color: #5a6a82;
+      color: #4e607a;
       font-size: 14px;
       line-height: 1.7;
       font-weight: 700;
+    }
+    .home-category-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #fff3d5, #fff);
+      border: 1px solid #f6d985;
+      color: #815c00;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      width: fit-content;
+    }
+    .home-category-pill.is-hot {
+      background: linear-gradient(135deg, #ffe2de, #fff);
+      border-color: #ffb7ab;
+      color: #a1331f;
+    }
+    .home-category-pill.is-value {
+      background: linear-gradient(135deg, #fff1bf, #fff);
+      border-color: #f0d26b;
+      color: #8a6400;
+    }
+    .home-category-pill.is-search {
+      background: linear-gradient(135deg, #dff0ff, #fff);
+      border-color: #b7d8ff;
+      color: #0f4c81;
     }
     .home-section-more {
       display: inline-flex;
@@ -78,8 +108,8 @@
       padding: 20px;
       overflow: hidden;
       background:
-        radial-gradient(circle at top right, rgba(255, 214, 102, 0.22), transparent 30%),
-        radial-gradient(circle at left center, rgba(100, 149, 237, 0.11), transparent 30%),
+        radial-gradient(circle at top right, rgba(255, 201, 80, 0.22), transparent 30%),
+        radial-gradient(circle at left center, rgba(75, 145, 255, 0.14), transparent 30%),
         #fff;
     }
     .hero-carousel-head {
@@ -87,7 +117,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 14px;
-      margin-bottom: 18px;
+      margin-bottom: 22px;
     }
     .hero-carousel-copy { display: grid; gap: 8px; }
     .hero-kicker, .home-search-kicker, .market-snapshot-kicker {
@@ -106,21 +136,22 @@
     }
     .hero-subcopy {
       margin: 0;
-      color: #5a6a82;
-      font-size: 15px;
-      line-height: 1.7;
+      color: #51637d;
+      font-size: 13px;
+      line-height: 1.65;
       font-weight: 700;
-      max-width: 760px;
+      max-width: 520px;
     }
-    .hero-status { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+    .hero-status { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
     .hero-status-chip {
-      min-width: 148px;
-      padding: 12px 14px;
-      border: 1px solid #dbe3ef;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.96);
+      min-width: 122px;
+      padding: 10px 12px;
+      border: 1px solid #e4eaf4;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.82);
       display: grid;
-      gap: 4px;
+      gap: 2px;
+      opacity: .86;
     }
     .hero-status-label, .market-snapshot-label {
       font-size: 11px;
@@ -128,7 +159,7 @@
       color: #7b8aa2;
       letter-spacing: .05em;
     }
-    .hero-status-value { font-size: 14px; line-height: 1.45; color: #162238; font-weight: 800; }
+    .hero-status-value { font-size: 12px; line-height: 1.4; color: #24344d; font-weight: 800; }
     .carousel-viewport { overflow: hidden; margin: 0 -6px; }
     .carousel-track {
       display: flex;
@@ -145,15 +176,15 @@
       overflow: hidden;
       text-decoration: none;
       color: #fff;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+      box-shadow: 0 20px 42px rgba(15, 23, 42, 0.18);
       transform: scale(0.95);
       opacity: 0.68;
       transition: transform .35s ease, opacity .35s ease, box-shadow .35s ease;
       background: #182235;
     }
     .carousel-slide.is-active { transform: scale(1); opacity: 1; box-shadow: 0 24px 48px rgba(15, 23, 42, 0.2); }
-    .carousel-slide:hover { transform: scale(0.985); opacity: 1; }
-    .carousel-slide.is-active:hover { transform: scale(1.01); }
+    .carousel-slide:hover { transform: scale(0.995); opacity: 1; }
+    .carousel-slide.is-active:hover { transform: scale(1.03); }
     .carousel-slide::before {
       content: "";
       position: absolute;
@@ -165,9 +196,15 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at top right, rgba(255, 219, 92, 0.3), transparent 28%);
+      background: radial-gradient(circle at top right, rgba(255, 219, 92, 0.35), transparent 28%);
       z-index: 1;
     }
+    .carousel-slide.tone-hot { background: #3a1110; }
+    .carousel-slide.tone-hot::after { background: radial-gradient(circle at top right, rgba(255, 103, 87, 0.44), transparent 30%); }
+    .carousel-slide.tone-value { background: #3c2b07; }
+    .carousel-slide.tone-value::after { background: radial-gradient(circle at top right, rgba(255, 214, 87, 0.42), transparent 30%); }
+    .carousel-slide.tone-new { background: #112843; }
+    .carousel-slide.tone-new::after { background: radial-gradient(circle at top right, rgba(77, 169, 255, 0.42), transparent 30%); }
     .carousel-slide-media {
       position: absolute;
       inset: 0;
@@ -179,7 +216,7 @@
       position: absolute;
       inset: auto 0 0;
       z-index: 2;
-      padding: 24px;
+      padding: 26px;
       display: grid;
       gap: 12px;
     }
@@ -201,7 +238,7 @@
       font-size: clamp(24px, 2.7vw, 34px);
       line-height: 1.14;
       font-weight: 900;
-      color: #fff6de;
+      color: #fff9e8;
     }
     .carousel-slide-text {
       margin: 0;
@@ -209,7 +246,7 @@
       font-size: 14px;
       line-height: 1.7;
       font-weight: 700;
-      max-width: 34ch;
+      max-width: 30ch;
     }
     .carousel-slide-meta { display: flex; flex-wrap: wrap; gap: 8px; }
     .carousel-slide-pill {
@@ -264,7 +301,7 @@
       transition: width .22s ease, background-color .22s ease, transform .22s ease;
     }
     .carousel-dot.is-active { width: 28px; background: #162238; transform: scale(1.02); }
-    .home-search-card { padding: 22px; display: grid; gap: 14px; }
+    .home-search-card { padding: 26px; display: grid; gap: 16px; }
     .home-search-form { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; }
     .home-search-field { position: relative; min-width: 0; }
     .home-search-field .search-autocomplete { position: static; margin-top: 8px; max-height: min(42vh, 320px); }
@@ -285,17 +322,30 @@
       color: #162238;
       display: grid;
       gap: 10px;
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .quick-link::before {
+      content: "";
+      position: absolute;
+      inset: auto -20% -60% auto;
+      width: 110px;
+      height: 110px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255, 212, 78, 0.26), transparent 70%);
+      pointer-events: none;
     }
     .quick-link:hover { transform: translateY(-2px); border-color: #c5d2e6; box-shadow: 0 16px 28px rgba(15, 23, 42, 0.08); }
     .quick-link-icon {
-      width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center;
-      background: linear-gradient(135deg, #fef3c7, #fff); font-size: 20px;
+      width: 54px; height: 54px; border-radius: 18px; display: grid; place-items: center;
+      background: linear-gradient(135deg, #fff0bf, #ffe1f0 55%, #fff); font-size: 24px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
     }
     .quick-link-title { margin: 0; font-size: 18px; font-weight: 900; line-height: 1.3; }
     .quick-link-copy { margin: 0; font-size: 13px; color: #5b6b83; line-height: 1.7; font-weight: 700; }
     .spotlight-grid,
-    .new-arrivals-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+    .new-arrivals-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
     .spotlight-card,
     .new-arrival-card {
       overflow: hidden;
@@ -305,6 +355,18 @@
       gap: 14px;
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
+    .spotlight-card.is-lead {
+      grid-column: span 2;
+      background:
+        radial-gradient(circle at top right, rgba(255, 223, 122, 0.26), transparent 28%),
+        #fff;
+    }
+    .spotlight-card.is-lead .spotlight-name { font-size: 24px; }
+    .spotlight-card.is-lead .spotlight-price {
+      font-size: 34px;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+    }
+    .spotlight-card.is-lead .spotlight-media { aspect-ratio: 16 / 10; }
     .spotlight-card:hover,
     .new-arrival-card:hover { transform: translateY(-2px); border-color: #c4d1e4; box-shadow: 0 16px 28px rgba(15, 23, 42, 0.08); }
     .spotlight-media,
@@ -328,7 +390,7 @@
     .spotlight-name,
     .new-arrival-name { margin: 0; font-size: 18px; line-height: 1.35; font-weight: 900; }
     .spotlight-price,
-    .new-arrival-price { margin: 0; font-size: 25px; line-height: 1.1; font-weight: 900; color: #15243b; }
+    .new-arrival-price { margin: 0; font-size: 25px; line-height: 1.1; font-weight: 900; color: #15243b; font-family: "Inter", "Noto Sans JP", sans-serif; }
     .spotlight-meta,
     .new-arrival-meta { display: flex; flex-wrap: wrap; gap: 8px; }
     .home-chip,
@@ -367,7 +429,7 @@
     .highlight-item:hover { transform: translateY(-1px); border-color: #c4d1e4; box-shadow: 0 14px 24px rgba(15, 23, 42, 0.06); }
     .highlight-rank {
       width: 38px; height: 38px; border-radius: 999px; display: grid; place-items: center;
-      background: #18283e; color: #fff; font-size: 13px; font-weight: 900;
+      background: linear-gradient(135deg, #18283e, #334766); color: #fff; font-size: 13px; font-weight: 900;
     }
     .highlight-thumb { width: 64px; height: 64px; border-radius: 14px; object-fit: contain; background: linear-gradient(180deg, #f3f7fb 0%, #eef3f9 100%); }
     .highlight-name { margin: 0; font-size: 15px; line-height: 1.45; font-weight: 900; }
@@ -406,6 +468,7 @@
       .quick-links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .spotlight-grid,
       .new-arrivals-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .spotlight-card.is-lead { grid-column: span 3; }
       .ranking-highlight-grid { grid-template-columns: 1fr; }
       .carousel-slide { flex-basis: calc(50% - 8px); }
     }
@@ -428,6 +491,7 @@
       .quick-links,
       .spotlight-grid,
       .new-arrivals-grid { grid-template-columns: 1fr; }
+      .spotlight-card.is-lead { grid-column: span 1; }
       .highlight-item { grid-template-columns: auto 56px 1fr; }
       .highlight-value { grid-column: 2 / 4; text-align: left; padding-left: 50px; }
       .market-snapshot-metrics { grid-template-columns: 1fr; }
@@ -450,9 +514,9 @@
       <section class="hero-carousel home-card" aria-label="注目コンテンツ">
         <div class="hero-carousel-head">
           <div class="hero-carousel-copy">
-            <span class="hero-kicker">DATA NAVIGATION TOP</span>
-            <h1 class="hero-title">ポケモンスリーブ相場を、見て回れるトップへ。</h1>
-            <p class="hero-subcopy">急上昇・高騰率・価格帯・新着をひと目でつかみながら、そのままランキングや図鑑へ流れていける導線に変えています。</p>
+            <span class="hero-kicker">HOT SLEEVE WATCH</span>
+            <h1 class="hero-title">今、価値が動いているスリーブを見逃すな</h1>
+            <p class="hero-subcopy">上がった、跳ねた、欲しくなった。そのままランキングと図鑑へ飛べるトップにしています。</p>
           </div>
           <div class="hero-status">
             <div class="hero-status-chip">
@@ -476,6 +540,7 @@
       </section>
 
       <section class="home-search-card home-card" aria-label="検索導線">
+        <span class="home-category-pill is-search">3. 探す</span>
         <p class="home-search-kicker">SEARCH DIRECT</p>
         <div class="home-section-head">
           <div>
@@ -492,19 +557,21 @@
       </section>
 
       <section class="home-section" aria-label="クイック導線">
+        <span class="home-category-pill is-search">3. 探す</span>
         <div class="home-section-head"><div><h2 class="home-section-title">次の1クリックをつくるショートカット</h2><p class="home-section-copy">迷ったときでも、図鑑・ランキング・指数へ自然に流れられる入口を並べています。</p></div></div>
         <div class="quick-links">
-          <a class="quick-link home-card" href="./sleeves/"><span class="quick-link-icon">📚</span><h3 class="quick-link-title">図鑑で探す</h3><p class="quick-link-copy">名前やシリーズから一覧で比較しながら探せます。</p></a>
-          <a class="quick-link home-card" href="./surge.html"><span class="quick-link-icon">📈</span><h3 class="quick-link-title">急上昇ランキング</h3><p class="quick-link-copy">直近の値動きが大きいスリーブをすぐ確認できます。</p></a>
-          <a class="quick-link home-card" href="./growth.html"><span class="quick-link-icon">🚀</span><h3 class="quick-link-title">高騰率ランキング</h3><p class="quick-link-copy">一定期間で大きく伸びたスリーブを追えます。</p></a>
-          <a class="quick-link home-card" href="./ranking.html"><span class="quick-link-icon">💴</span><h3 class="quick-link-title">価格ランキング</h3><p class="quick-link-copy">相場が高いスリーブを上位から見比べられます。</p></a>
-          <a class="quick-link home-card" href="./index-market.html"><span class="quick-link-icon">📊</span><h3 class="quick-link-title">スリーブ指数</h3><p class="quick-link-copy">市場全体の温度感をチャートとコメントで把握できます。</p></a>
+          <a class="quick-link home-card" href="./sleeves/"><span class="quick-link-icon">🗂️</span><h3 class="quick-link-title">図鑑で探す</h3><p class="quick-link-copy">シリーズや名前から、お気に入り候補を一気に見つける。</p></a>
+          <a class="quick-link home-card" href="./surge.html"><span class="quick-link-icon">🔥</span><h3 class="quick-link-title">急上昇ランキング</h3><p class="quick-link-copy">今いちばん値が跳ねたスリーブをのぞく。</p></a>
+          <a class="quick-link home-card" href="./growth.html"><span class="quick-link-icon">🚀</span><h3 class="quick-link-title">高騰率ランキング</h3><p class="quick-link-copy">じわ伸びではなく、大きく伸びた銘柄から見る。</p></a>
+          <a class="quick-link home-card" href="./ranking.html"><span class="quick-link-icon">👑</span><h3 class="quick-link-title">価格ランキング</h3><p class="quick-link-copy">価値が高いスリーブを上位から眺める。</p></a>
+          <a class="quick-link home-card" href="./index-market.html"><span class="quick-link-icon">🌈</span><h3 class="quick-link-title">スリーブ指数</h3><p class="quick-link-copy">市場全体の熱量をざっくりつかむ。</p></a>
         </div>
       </section>
 
       <section class="home-section" aria-label="人気コンテンツ">
+        <span class="home-category-pill is-hot">1. 今アツい</span>
         <div class="home-section-head">
-          <div><h2 class="home-section-title">人気スリーブ TOP10</h2><p class="home-section-copy">トップページでいま気になるスリーブを拾って、そのまま詳細へ流せる導線です。</p></div>
+          <div><h2 class="home-section-title">今人気のスリーブ TOP10</h2><p class="home-section-copy">「みんなが見ている」を入口にして、まず1枚クリックしたくなる見せ方にしています。</p></div>
           <a class="home-section-more" href="./access-ranking.html">アクセスランキングを見る</a>
         </div>
         <div id="spotlightGrid" class="spotlight-grid"></div>
@@ -522,6 +589,7 @@
         </div>
       </section>
       <section class="home-section" aria-label="新着スリーブ">
+        <span class="home-category-pill is-value">2. 価値</span>
         <div class="home-section-head">
           <div><h2 class="home-section-title">新着スリーブ</h2><p class="home-section-copy">新しく見つけたい人向けに、比較的新しい発売年から順に並べています。</p></div>
           <a class="home-section-more" href="./sleeves/">図鑑を開く</a>
@@ -530,6 +598,7 @@
       </section>
 
       <section class="home-section" aria-label="ランキングハイライト">
+        <span class="home-category-pill is-hot">1. 今アツい</span>
         <div class="home-section-head"><div><h2 class="home-section-title">ランキングハイライト</h2><p class="home-section-copy">上位だけまず眺めてから、気になったジャンルへ深く潜れるようにしています。</p></div></div>
         <div class="ranking-highlight-grid">
           <section class="highlight-panel home-card">
@@ -792,10 +861,11 @@
         slides.push({
           href: "./surge.html",
           imageUrl: surgeRank[0].s.imageUrl || "",
+          tone: "tone-hot",
           badge: "TREND PICK",
           title: "今週の急上昇ランキング",
-          text: `${surgeRank[0].s.name || "注目スリーブ"} が ${Math.abs(surgeRank[0].diff).toLocaleString()}円動いています。まずは直近の勢いから見て回れます。`,
-          meta: [`1位 ${surgeRank[0].s.name || "—"}`, `前週比 ${formatPercent((surgeRank[0].diff / Math.max(1, surgeRank[0].pair.prev?.price || 1)) * 100)}`]
+          text: `${surgeRank[0].s.name || "注目スリーブ"} の跳ね方を今すぐチェック。値動きが大きい順に、そのまま見比べられます。`,
+          meta: ["今すぐ見る", `前週比 ${formatPercent((surgeRank[0].diff / Math.max(1, surgeRank[0].pair.prev?.price || 1)) * 100)}`]
         });
       }
       if (priceRank[0]) {
@@ -803,30 +873,33 @@
         slides.push({
           href: "./ranking.html",
           imageUrl: priceRank[0].imageUrl || "",
+          tone: "tone-value",
           badge: "HIGH PRICE",
           title: "高額スリーブランキング",
-          text: `${priceRank[0].name || "注目スリーブ"} を起点に、高価格帯のスリーブをまとめて比較できます。`,
-          meta: [pair ? `${pair.latest.price.toLocaleString()}円` : "価格未集計", "価格上位をチェック"]
+          text: `${priceRank[0].name || "注目スリーブ"} を起点に、価値が高いスリーブを一気に見にいく。`,
+          meta: ["高額帯を見る", pair ? `${pair.latest.price.toLocaleString()}円` : "価格未集計"]
         });
       }
       if (growthRank[0]) {
         slides.push({
           href: "./growth.html",
           imageUrl: growthRank[0].s.imageUrl || "",
+          tone: "tone-hot",
           badge: "GROWTH RATE",
           title: "高騰率ランキング",
-          text: `${growthRank[0].s.name || "注目スリーブ"} を起点に、30日で大きく伸びたスリーブを追えます。`,
-          meta: [`30日 ${formatPercent(growthRank[0].g.rate)}`, `基準 ${growthRank[0].g.base.week}`]
+          text: `${growthRank[0].s.name || "注目スリーブ"} の伸び率から、次に気になる銘柄を掘りにいく。`,
+          meta: ["伸び率を見る", `30日 ${formatPercent(growthRank[0].g.rate)}`]
         });
       }
       if (newestSleeves[0]) {
         slides.push({
           href: "./sleeves/",
           imageUrl: newestSleeves[0].imageUrl || "",
+          tone: "tone-new",
           badge: "NEW ARRIVAL",
           title: "新着スリーブをチェック",
-          text: "比較的新しい発売年から順に並べて、最近追加されたスリーブを流し見できます。",
-          meta: [`${newestSleeves[0].name || "新着"}`, `発売年 ${newestSleeves[0].releaseYear || "—"}`]
+          text: "最近追加されたスリーブを先に見て、まだ知らない1枚を見つけにいく。",
+          meta: ["新着を探す", `発売年 ${newestSleeves[0].releaseYear || "—"}`]
         });
       }
       if (marketSeries.length) {
@@ -834,10 +907,11 @@
         slides.push({
           href: "./index-market.html",
           imageUrl: "",
+          tone: "tone-new",
           badge: "MARKET INDEX",
           title: "スリーブ指数",
-          text: "市場全体が上向きか、横ばいか、調整気味かをトップからすぐ確認できます。",
-          meta: [`指数 ${latest.index.toFixed(1)}`, `前週比 ${formatPercent(latest.rate, 2)}`]
+          text: "いま市場全体が熱いのか落ち着いているのか、先に空気感をつかみにいく。",
+          meta: ["指数を見る", `前週比 ${formatPercent(latest.rate, 2)}`]
         });
       }
       return slides;
@@ -861,7 +935,7 @@
         const bg = slide.imageUrl
           ? `style="background-image:url('${escapeHtml(slide.imageUrl)}');"`
           : `style="background-image:linear-gradient(135deg,#162238,#334766);"`;
-        return `<a class="carousel-slide" href="${escapeHtml(slide.href)}" data-slide-index="${index}" aria-label="${escapeHtml(slide.title)}"><div class="carousel-slide-media" ${bg}></div><div class="carousel-slide-content"><span class="carousel-slide-badge">${escapeHtml(slide.badge)}</span><h2 class="carousel-slide-title">${escapeHtml(slide.title)}</h2><p class="carousel-slide-text">${escapeHtml(slide.text)}</p><div class="carousel-slide-meta">${(Array.isArray(slide.meta) ? slide.meta : []).map((meta) => `<span class="carousel-slide-pill">${escapeHtml(meta)}</span>`).join("")}</div></div></a>`;
+        return `<a class="carousel-slide ${escapeHtml(slide.tone || "")}" href="${escapeHtml(slide.href)}" data-slide-index="${index}" aria-label="${escapeHtml(slide.title)}"><div class="carousel-slide-media" ${bg}></div><div class="carousel-slide-content"><span class="carousel-slide-badge">${escapeHtml(slide.badge)}</span><h2 class="carousel-slide-title">${escapeHtml(slide.title)}</h2><p class="carousel-slide-text">${escapeHtml(slide.text)}</p><div class="carousel-slide-meta">${(Array.isArray(slide.meta) ? slide.meta : []).map((meta) => `<span class="carousel-slide-pill">${escapeHtml(meta)}</span>`).join("")}</div></div></a>`;
       }).join("");
       dots.innerHTML = slides.map((slide, index) => `<button class="carousel-dot${index === 0 ? " is-active" : ""}" type="button" aria-label="${index + 1}枚目へ" data-dot-index="${index}"></button>`).join("");
 
@@ -902,13 +976,14 @@
       startAuto();
     }
 
-    function buildSleeveCard(sleeve, { rank = null, extraChip = "", deltaRate = null } = {}) {
+    function buildSleeveCard(sleeve, { rank = null, extraChip = "", deltaRate = null, lead = false } = {}) {
       const pair = getWeeklyPair(sleeve);
       const latestPrice = pair?.latest?.price;
       const detailHref = getDetailHref(sleeve.id ?? "");
       const imageHtml = sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : "";
       const deltaHtml = Number.isFinite(deltaRate) ? `<span class="home-chip spotlight-delta ${getDeltaClass(deltaRate)}">${escapeHtml(formatPercent(deltaRate))}</span>` : "";
-      return `<a class="spotlight-card home-card" href="${escapeHtml(detailHref)}" aria-label="${escapeHtml(sleeve.name ?? "")}"><div class="spotlight-media">${imageHtml}</div><div class="spotlight-body">${Number.isFinite(rank) ? `<span class="spotlight-rank">🏆 ${rank}位</span>` : ""}<h3 class="spotlight-name">${escapeHtml(sleeve.name ?? "")}</h3><p class="spotlight-price">${latestPrice == null ? "—" : `${latestPrice.toLocaleString()}円`}</p><div class="spotlight-meta">${deltaHtml}${extraChip || ""}</div></div></a>`;
+      const rankLabel = rank === 1 ? "🥇 1位" : rank === 2 ? "🥈 2位" : rank === 3 ? "🥉 3位" : Number.isFinite(rank) ? `🏆 ${rank}位` : "";
+      return `<a class="spotlight-card home-card${lead ? " is-lead" : ""}" href="${escapeHtml(detailHref)}" aria-label="${escapeHtml(sleeve.name ?? "")}"><div class="spotlight-media">${imageHtml}</div><div class="spotlight-body">${Number.isFinite(rank) ? `<span class="spotlight-rank">${rankLabel}</span>` : ""}<h3 class="spotlight-name">${escapeHtml(sleeve.name ?? "")}</h3><p class="spotlight-price">${latestPrice == null ? "—" : `${latestPrice.toLocaleString()}円`}</p><div class="spotlight-meta">${deltaHtml}${extraChip || ""}${lead ? `<span class="home-chip">今人気の主役</span>` : ""}</div></div></a>`;
     }
 
     function renderSpotlight(accessRanking, sleeves, fallbackRank) {
@@ -927,7 +1002,11 @@
         el.innerHTML = `<div class="home-empty">人気スリーブを表示できませんでした。</div>`;
         return;
       }
-      el.innerHTML = rows.map((row, index) => buildSleeveCard(row.sleeve, { rank: index + 1, extraChip: `<span class="home-chip">${row.count != null ? `閲覧 ${row.count.toLocaleString()}回` : `注目度 ${index + 1}位`}</span>` })).join("");
+      el.innerHTML = rows.map((row, index) => buildSleeveCard(row.sleeve, {
+        rank: index + 1,
+        extraChip: `<span class="home-chip">${row.count != null ? `閲覧 ${row.count.toLocaleString()}回` : `注目度 ${index + 1}位`}</span>`,
+        lead: index === 0
+      })).join("");
     }
     function renderNewArrivals(sleeves) {
       const el = document.getElementById("newArrivalsGrid");
