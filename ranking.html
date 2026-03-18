@@ -56,6 +56,14 @@
       align-items: stretch;
     }
 
+    .ranking-top3 > div {
+      display: flex;
+    }
+
+    .ranking-top3 > div > .podium-card {
+      width: 100%;
+    }
+
     .ranking-top3[hidden],
     .ranking-rest-section[hidden] {
       display: none;
@@ -84,6 +92,7 @@
     }
 
     .podium-card {
+      display: grid;
       position: relative;
       overflow: hidden;
       border-radius: 20px;
@@ -91,6 +100,7 @@
       box-shadow: 0 12px 28px rgba(15, 23, 42, .10);
       background: linear-gradient(180deg, #fff7de 0%, #fffdf8 100%);
       padding: 12px;
+      height: 100%;
     }
 
     .podium-card--rank1 {
@@ -296,12 +306,6 @@
       margin-top: 0;
     }
 
-    .podium-card:not(.podium-card--rank1) .podium-summary,
-    .podium-card:not(.podium-card--rank1) .podium-actions,
-    .podium-card:not(.podium-card--rank1) .podium-kicker {
-      display: none;
-    }
-
     .podium-card:not(.podium-card--rank1) .podium-metrics {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
@@ -313,10 +317,6 @@
 
     .podium-card:not(.podium-card--rank1) .podium-meta {
       gap: 6px;
-    }
-
-    .podium-card:not(.podium-card--rank1) .podium-meta .podium-chip:last-child {
-      display: none;
     }
 
     .ranking-card-note {
@@ -657,43 +657,6 @@
       const minText = range.min == null ? "—" : `${Number(range.min).toLocaleString()}円`;
       const maxText = range.max == null ? "—" : `${Number(range.max).toLocaleString()}円`;
 
-      if (rank !== 1) {
-        return `
-          <article class="podium-card podium-card--rank${rank}">
-            <div class="podium-badge">${getPodiumBadge(rank)}</div>
-            <a class="podium-media" data-sleeve-link="1" href="${row.detailHref}">
-              <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
-                onerror="this.onerror=null; this.style.display='none';">
-            </a>
-            <div class="podium-content">
-              <h3 class="podium-title">${escapeHtml(s.name ?? "")}</h3>
-              <div class="podium-metrics">
-                <div class="podium-metric">
-                  <span class="podium-metric-label">最新価格</span>
-                  <div class="podium-price">${row.price.toLocaleString()}円</div>
-                </div>
-                <div class="podium-metric">
-                  <span class="podium-metric-label">前週比</span>
-                  <div class="podium-rate ${rateClass}">${formatRateText(deltaInfo && deltaInfo.rate)}</div>
-                </div>
-                <div class="podium-metric">
-                  <span class="podium-metric-label">最安値</span>
-                  <div class="podium-rate">${minText}</div>
-                </div>
-                <div class="podium-metric">
-                  <span class="podium-metric-label">最高値</span>
-                  <div class="podium-rate">${maxText}</div>
-                </div>
-              </div>
-              <div class="podium-meta">
-                <div class="podium-chip-group">${tagHtml}</div>
-                <span class="podium-chip">${weekText}</span>
-              </div>
-            </div>
-          </article>
-        `;
-      }
-
       return `
         <article class="podium-card podium-card--rank${rank}">
           <div class="podium-badge">${getPodiumBadge(rank)}</div>
@@ -703,7 +666,7 @@
           </a>
           <div class="podium-content">
             <div class="podium-kicker">Top ${rank} Sleeve</div>
-            <h2 class="podium-title">${escapeHtml(s.name ?? "")}</h2>
+            <h${rank === 1 ? "2" : "3"} class="podium-title">${escapeHtml(s.name ?? "")}</h${rank === 1 ? "2" : "3"}>
             <div class="podium-metrics">
               <div class="podium-metric">
                 <span class="podium-metric-label">最新価格</span>
