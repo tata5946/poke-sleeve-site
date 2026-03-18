@@ -238,6 +238,9 @@
 
   <script src="./assets/common.js"></script>
   <script>
+    const ACCESS_RANKING_CACHE_KEY = "access-ranking-cache-v1";
+    const ACCESS_RANKING_CACHE_TTL_MS = 5 * 60 * 1000;
+
     function escapeHtml(str) {
       return String(str ?? "")
         .replaceAll("&", "&amp;")
@@ -264,13 +267,33 @@
     async function fetchRanking() {
       const baseUrl = (window.common && window.common.GAS_URL) || window.GAS_URL || "";
       if (!baseUrl) throw new Error("GAS_URL が未設定です。assets/common.js を確認してください。");
-      const url = baseUrl + "?mode=ranking&v=" + Date.now();
+
+      try {
+        const raw = sessionStorage.getItem(ACCESS_RANKING_CACHE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Number.isFinite(parsed.cachedAt) && (Date.now() - parsed.cachedAt) <= ACCESS_RANKING_CACHE_TTL_MS) {
+            return parsed.data;
+          }
+        }
+      } catch (_) { }
+
+      const url = baseUrl + "?mode=ranking";
       const res = await fetch(url, {
-        cache: "no-store",
+        cache: "default",
         headers: { "Accept": "application/json" }
       });
       if (!res.ok) throw new Error(`ランキング取得に失敗しました（HTTP ${res.status}）`);
-      return await res.json();
+      const data = await res.json();
+
+      try {
+        sessionStorage.setItem(ACCESS_RANKING_CACHE_KEY, JSON.stringify({
+          cachedAt: Date.now(),
+          data
+        }));
+      } catch (_) { }
+
+      return data;
     }
 
     function buildSleeveMap(data) {
@@ -322,7 +345,7 @@
       try {
         const [rankingData, masterData] = await Promise.all([
           fetchRanking(),
-          window.common.loadData({ forceRefresh: true })
+          window.common.loadData()
         ]);
 
         const ranking = Array.isArray(rankingData && rankingData.ranking) ? rankingData.ranking : [];
