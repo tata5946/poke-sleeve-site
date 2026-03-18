@@ -69,6 +69,18 @@
       letter-spacing: .04em;
       width: fit-content;
     }
+    .home-section.is-hot .home-category-pill,
+    .home-section.is-hot .home-section-more {
+      border-color: #ffd1c8;
+    }
+    .home-section.is-value .home-category-pill,
+    .home-section.is-value .home-section-more {
+      border-color: #efdca1;
+    }
+    .home-section.is-search .home-category-pill,
+    .home-section.is-search .home-section-more {
+      border-color: #cfdef5;
+    }
     .home-section-more {
       display: inline-flex;
       align-items: center;
@@ -99,10 +111,10 @@
         #fff;
     }
     .hero-carousel-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, .72fr);
+      align-items: end;
+      gap: 24px;
       margin-bottom: 22px;
     }
     .hero-carousel-copy { display: grid; gap: 10px; }
@@ -129,6 +141,56 @@
       line-height: 1.7;
       font-weight: 500;
       max-width: 420px;
+    }
+    .hero-primary-action {
+      display: grid;
+      gap: 12px;
+      align-self: stretch;
+      padding: 24px;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #121b2c 0%, #22314c 100%);
+      box-shadow: 0 22px 42px rgba(15, 23, 42, 0.18);
+    }
+    .hero-primary-label {
+      font-size: 11px;
+      letter-spacing: .12em;
+      font-weight: 900;
+      color: rgba(255,255,255,.68);
+      text-transform: uppercase;
+    }
+    .hero-primary-copy {
+      margin: 0;
+      color: #fff;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: clamp(22px, 2.2vw, 28px);
+      line-height: 1.18;
+      font-weight: 900;
+    }
+    .hero-primary-note {
+      margin: 0;
+      color: rgba(255,255,255,.78);
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+    .hero-primary-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 18px;
+      border-radius: 999px;
+      background: #fff;
+      color: #101828;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 900;
+      transition: transform .18s ease, box-shadow .18s ease;
+      box-shadow: 0 12px 24px rgba(255,255,255,.12);
+    }
+    .hero-primary-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 28px rgba(255,255,255,.18);
     }
     .hero-status,
     .hero-status-chip { display: none; }
@@ -306,6 +368,9 @@
       position: relative;
       overflow: hidden;
     }
+    .quick-link--hot { background: linear-gradient(180deg, #fff9f8 0%, #fff 100%); }
+    .quick-link--value { background: linear-gradient(180deg, #fffdf6 0%, #fff 100%); }
+    .quick-link--search { background: linear-gradient(180deg, #f9fbff 0%, #fff 100%); }
     .quick-link::before {
       content: "";
       position: absolute;
@@ -388,8 +453,13 @@
     .spotlight-delta.flat,
     .highlight-value.flat,
     .market-snapshot-value.flat { color: #64748b; }
-    .ranking-highlight-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .ranking-highlight-grid { display: grid; grid-template-columns: 1.25fr .9fr .9fr; gap: 24px; }
     .highlight-panel { padding: 24px; display: grid; gap: 24px; }
+    .highlight-panel--lead {
+      background:
+        radial-gradient(circle at top right, rgba(255, 199, 190, 0.34), transparent 30%),
+        #fff;
+    }
     .highlight-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .highlight-title { margin: 0; font-size: 20px; font-weight: 900; color: #162238; }
     .highlight-list { display: grid; gap: 16px; }
@@ -451,6 +521,7 @@
       .spotlight-card.is-lead { grid-column: span 3; }
       .ranking-highlight-grid { grid-template-columns: 1fr; }
       .carousel-slide { flex-basis: calc(50% - 8px); }
+      .hero-carousel-head { grid-template-columns: 1fr; }
     }
     @media (max-width: 740px) {
       body.home-page .container { padding-top: 6px; padding-bottom: 32px; }
@@ -478,6 +549,7 @@
       .hero-status { justify-content: stretch; }
       .hero-status-chip { min-width: 0; }
       .carousel-arrows { justify-content: flex-start; }
+      .hero-primary-action { padding: 20px; }
     }
   </style>
 </head>
@@ -498,6 +570,12 @@
             <h1 class="hero-title">今、価値が動いているスリーブを見逃すな</h1>
             <p class="hero-subcopy">上がった、跳ねた、欲しくなった。そのままランキングと図鑑へ飛べるトップにしています。</p>
           </div>
+          <div class="hero-primary-action">
+            <span class="hero-primary-label">Pick Up</span>
+            <p id="heroPrimaryCopy" class="hero-primary-copy">まずは、今いちばん熱い1枚を見る。</p>
+            <p id="heroPrimaryNote" class="hero-primary-note">直近で大きく動いたスリーブから、最初の1クリックをつくります。</p>
+            <a id="heroPrimaryLink" class="hero-primary-link" href="./surge.html">急上昇を見る</a>
+          </div>
         </div>
         <div class="carousel-viewport" id="homeCarouselViewport"><div class="carousel-track" id="homeCarouselTrack"></div></div>
         <div class="carousel-controls">
@@ -509,7 +587,7 @@
         </div>
       </section>
 
-      <section class="home-search-card home-card" aria-label="検索導線">
+      <section class="home-search-card home-card home-section is-search" aria-label="検索導線">
         <span class="home-category-pill is-search">3. 探す</span>
         <p class="home-search-kicker">SEARCH DIRECT</p>
         <div class="home-section-head">
@@ -526,19 +604,19 @@
         </form>
       </section>
 
-      <section class="home-section" aria-label="クイック導線">
+      <section class="home-section is-search" aria-label="クイック導線">
         <span class="home-category-pill is-search">3. 探す</span>
         <div class="home-section-head"><div><h2 class="home-section-title">次の1クリックをつくるショートカット</h2><p class="home-section-copy">迷ったときでも、図鑑・ランキング・指数へ自然に流れられる入口を並べています。</p></div></div>
         <div class="quick-links">
-          <a class="quick-link home-card" href="./sleeves/"><span class="quick-link-icon">🗂️</span><h3 class="quick-link-title">図鑑で探す</h3><p class="quick-link-copy">シリーズや名前から、お気に入り候補を一気に見つける。</p></a>
-          <a class="quick-link home-card" href="./surge.html"><span class="quick-link-icon">🔥</span><h3 class="quick-link-title">急上昇ランキング</h3><p class="quick-link-copy">今いちばん値が跳ねたスリーブをのぞく。</p></a>
-          <a class="quick-link home-card" href="./growth.html"><span class="quick-link-icon">🚀</span><h3 class="quick-link-title">高騰率ランキング</h3><p class="quick-link-copy">じわ伸びではなく、大きく伸びた銘柄から見る。</p></a>
-          <a class="quick-link home-card" href="./ranking.html"><span class="quick-link-icon">👑</span><h3 class="quick-link-title">価格ランキング</h3><p class="quick-link-copy">価値が高いスリーブを上位から眺める。</p></a>
-          <a class="quick-link home-card" href="./index-market.html"><span class="quick-link-icon">🌈</span><h3 class="quick-link-title">スリーブ指数</h3><p class="quick-link-copy">市場全体の熱量をざっくりつかむ。</p></a>
+          <a class="quick-link quick-link--search home-card" href="./sleeves/"><span class="quick-link-icon">🗂️</span><h3 class="quick-link-title">図鑑で探す</h3><p class="quick-link-copy">気になる名前から、すぐ候補を絞る。</p></a>
+          <a class="quick-link quick-link--hot home-card" href="./surge.html"><span class="quick-link-icon">🔥</span><h3 class="quick-link-title">急上昇ランキング</h3><p class="quick-link-copy">今すぐ跳ねた銘柄を見る。</p></a>
+          <a class="quick-link quick-link--hot home-card" href="./growth.html"><span class="quick-link-icon">🚀</span><h3 class="quick-link-title">高騰率ランキング</h3><p class="quick-link-copy">大きく伸びた順に追う。</p></a>
+          <a class="quick-link quick-link--value home-card" href="./ranking.html"><span class="quick-link-icon">👑</span><h3 class="quick-link-title">価格ランキング</h3><p class="quick-link-copy">価値が高い順に眺める。</p></a>
+          <a class="quick-link quick-link--value home-card" href="./index-market.html"><span class="quick-link-icon">🌈</span><h3 class="quick-link-title">スリーブ指数</h3><p class="quick-link-copy">市場の空気を先につかむ。</p></a>
         </div>
       </section>
 
-      <section class="home-section" aria-label="人気コンテンツ">
+      <section class="home-section is-hot" aria-label="人気コンテンツ">
         <span class="home-category-pill is-hot">1. 今アツい</span>
         <div class="home-section-head">
           <div><h2 class="home-section-title">今人気のスリーブ TOP10</h2><p class="home-section-copy">「みんなが見ている」を入口にして、まず1枚クリックしたくなる見せ方にしています。</p></div>
@@ -558,7 +636,7 @@
           <div class="market-snapshot-metric"><span class="market-snapshot-label">前週比</span><span id="marketSnapshotDelta" class="market-snapshot-value flat">—</span></div>
         </div>
       </section>
-      <section class="home-section" aria-label="新着スリーブ">
+      <section class="home-section is-value" aria-label="新着スリーブ">
         <span class="home-category-pill is-value">2. 価値</span>
         <div class="home-section-head">
           <div><h2 class="home-section-title">新着スリーブ</h2><p class="home-section-copy">新しく見つけたい人向けに、比較的新しい発売年から順に並べています。</p></div>
@@ -567,11 +645,11 @@
         <div id="newArrivalsGrid" class="new-arrivals-grid"></div>
       </section>
 
-      <section class="home-section" aria-label="ランキングハイライト">
+      <section class="home-section is-hot" aria-label="ランキングハイライト">
         <span class="home-category-pill is-hot">1. 今アツい</span>
         <div class="home-section-head"><div><h2 class="home-section-title">ランキングハイライト</h2><p class="home-section-copy">上位だけまず眺めてから、気になったジャンルへ深く潜れるようにしています。</p></div></div>
         <div class="ranking-highlight-grid">
-          <section class="highlight-panel home-card">
+          <section class="highlight-panel highlight-panel--lead home-card">
             <div class="highlight-head"><h3 class="highlight-title">急上昇</h3><a class="home-section-more" href="./surge.html">もっと見る</a></div>
             <div id="highlightSurge" class="highlight-list"></div>
           </section>
@@ -823,6 +901,34 @@
     function setText(id, value) {
       const el = document.getElementById(id);
       if (el) el.textContent = value;
+    }
+
+    function configureHeroPrimaryAction({ surgeRank, growthRank, priceRank }) {
+      const linkEl = document.getElementById("heroPrimaryLink");
+      const copyEl = document.getElementById("heroPrimaryCopy");
+      const noteEl = document.getElementById("heroPrimaryNote");
+      if (!linkEl || !copyEl || !noteEl) return;
+
+      if (surgeRank[0]) {
+        linkEl.href = "./surge.html";
+        linkEl.textContent = "急上昇を見にいく";
+        copyEl.textContent = `${surgeRank[0].s.name || "注目スリーブ"}が、今いちばん熱い。`;
+        noteEl.textContent = "まずは直近の値動きが大きいランキングから、気になる1枚を押す。";
+        return;
+      }
+      if (growthRank[0]) {
+        linkEl.href = "./growth.html";
+        linkEl.textContent = "高騰率を見にいく";
+        copyEl.textContent = `${growthRank[0].s.name || "注目スリーブ"}の伸びを追う。`;
+        noteEl.textContent = "一定期間で大きく伸びた銘柄から、次の候補を探しにいく。";
+        return;
+      }
+      if (priceRank[0]) {
+        linkEl.href = "./ranking.html";
+        linkEl.textContent = "価格ランキングを見る";
+        copyEl.textContent = `${priceRank[0].name || "注目スリーブ"}の価値を見る。`;
+        noteEl.textContent = "高価格帯のスリーブを上位から見て、価値のある1枚を探す。";
+      }
     }
 
     function buildCarouselSlides({ priceRank, surgeRank, growthRank, newestSleeves, marketSeries }) {
@@ -1098,6 +1204,7 @@
         return String(b.id ?? "").localeCompare(String(a.id ?? ""));
       }).slice(0, 8);
 
+      configureHeroPrimaryAction({ surgeRank, growthRank, priceRank });
       renderCarousel(buildCarouselSlides({ priceRank, surgeRank, growthRank, newestSleeves, marketSeries }));
       renderSpotlight(accessRanking, sleeves, priceRank);
       renderNewArrivals(sleeves);
