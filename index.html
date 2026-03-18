@@ -1228,6 +1228,13 @@
   <div class="container">
     <div class="home-shell">
       <section class="today-hero home-card reveal-on-scroll" aria-label="今日のスリーブ市場">
+        <div class="today-hero-head">
+          <div>
+            <span class="home-category-pill is-hot">急上昇のデッキシールド</span>
+            <h1 class="hero-title" style="font-size:clamp(28px, 4.2vw, 46px);">急上昇トップスリーブ</h1>
+            <p class="hero-subcopy" style="max-width:none;">直近の価格変動で注目度が急上昇</p>
+          </div>
+        </div>
         <div id="todayHeroCard" class="today-hero-card">
           <div class="hero-skeleton">
             <div class="hero-skeleton-media skeleton-block"></div>
@@ -2051,11 +2058,6 @@
         <a class="today-hero-link" href="${escapeHtml(getDetailHref(topRow.s.id ?? ""))}">
           <div class="today-hero-media">${topRow.s.imageUrl ? `<img src="${escapeHtml(topRow.s.imageUrl)}" alt="${escapeHtml(topRow.s.name ?? "")}" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
           <div class="today-hero-content">
-            <span class="today-hero-kicker">急上昇のデッキシールド</span>
-            <div>
-              <h3 class="hero-kicker" style="margin:0 0 6px;">急上昇トップスリーブ</h3>
-              <p class="home-section-copy" style="margin:0;">直近の価格変動で注目度が急上昇</p>
-            </div>
             <h2 class="today-hero-name">${escapeHtml(topRow.s.name ?? "")}</h2>
             <div class="today-hero-metrics">
               <div class="today-hero-metric">
