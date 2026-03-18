@@ -123,6 +123,73 @@
       gap: 12px;
     }
 
+    .ranking-top3 {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: minmax(0, 1.7fr) minmax(240px, .85fr) minmax(240px, .85fr);
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .ranking-top3 > div {
+      display: flex;
+    }
+
+    .ranking-top3 > div > .podium-card {
+      width: 100%;
+    }
+
+    .ranking-top3[hidden] {
+      display: none;
+    }
+
+    .podium-card {
+      display: grid;
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid #f0dca7;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .10);
+      background: linear-gradient(180deg, #fff7de 0%, #fffdf8 100%);
+      padding: 12px;
+      height: 100%;
+    }
+
+    .podium-card--rank1 {
+      display: grid;
+      grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 214, 102, .28), transparent 32%),
+        linear-gradient(145deg, #fff4cd 0%, #fff9ea 44%, #fffdf8 100%);
+    }
+
+    .podium-card--rank2 { background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%); }
+    .podium-card--rank3 { background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%); }
+    .podium-badge { position:absolute; top:12px; left:12px; z-index:2; display:inline-flex; align-items:center; gap:6px; padding:8px 10px; border-radius:999px; background:rgba(17,24,39,.84); color:#fff; font-size:12px; font-weight:900; }
+    .podium-media { display:block; border-radius:16px; overflow:hidden; background:rgba(255,255,255,.84); box-shadow: inset 0 0 0 1px rgba(15,23,42,.04); padding:10px; }
+    .podium-media img { width:100%; object-fit:contain; object-position:center; display:block; background:#f4f6fa; }
+    .podium-card--rank1 .podium-media img { height:280px; }
+    .podium-card:not(.podium-card--rank1) .podium-media img { height:150px; }
+    .podium-content { display:grid; gap:8px; margin-top:10px; }
+    .podium-card--rank1 .podium-content { margin-top:0; }
+    .podium-kicker { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:900; letter-spacing:.05em; color:#7a5b00; text-transform:uppercase; }
+    .podium-card:not(.podium-card--rank1) .podium-kicker { color:#52606d; }
+    .podium-title { margin:0; font-size:20px; line-height:1.3; font-weight:900; color:#101828; }
+    .podium-card:not(.podium-card--rank1) .podium-title { font-size:16px; }
+    .podium-metrics { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .podium-metric { padding:10px; border-radius:14px; background:rgba(255,255,255,.78); border:1px solid rgba(255,255,255,.72); }
+    .podium-metric-label { display:block; font-size:11px; color:#667085; font-weight:800; margin-bottom:4px; }
+    .podium-price { font-size:24px; font-weight:900; line-height:1.1; color:#111827; }
+    .podium-card:not(.podium-card--rank1) .podium-price { font-size:18px; }
+    .podium-meta { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+    .podium-chip-group { display:flex; flex-wrap:wrap; gap:6px; }
+    .podium-chip { display:inline-flex; align-items:center; min-height:24px; padding:0 8px; border-radius:999px; font-size:10px; font-weight:900; background:rgba(255,255,255,.82); border:1px solid rgba(16,24,40,.08); color:#344054; }
+    .podium-actions { display:flex; align-items:center; justify-content:flex-start; }
+    .podium-actions .btn { margin-top:0; }
+
     .ranking-item {
       display: grid;
       grid-template-columns: 72px 140px minmax(0, 1fr) auto;
@@ -180,6 +247,9 @@
         flex: 1 1 140px;
       }
 
+      .ranking-top3 { grid-template-columns: 1fr; }
+      .podium-card--rank1 { grid-template-columns: 1fr; }
+
       .ranking-item {
         grid-template-columns: 64px 1fr;
       }
@@ -230,6 +300,11 @@
 
     <div class="ranking-main">
       <div id="error" class="error"></div>
+      <section id="top3" class="ranking-top3" aria-label="ランキング上位3件" hidden>
+        <div id="top1"></div>
+        <div id="top2"></div>
+        <div id="top3Card"></div>
+      </section>
       <div id="list" class="ranking-list"></div>
     </div>
 
@@ -301,8 +376,110 @@
       return new Map(sleeves.map((s) => [String(s.id || ""), s]));
     }
 
+    function toISODate(d) {
+      const dd = new Date(d);
+      if (Number.isNaN(dd.getTime())) return null;
+      const y = dd.getFullYear();
+      const m = String(dd.getMonth() + 1).padStart(2, "0");
+      const day = String(dd.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function numOrNull(v) {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function getWeeklyPair(sleeve) {
+      const arr = Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      if (!arr.length) return null;
+      const map = new Map();
+      for (const x of arr) {
+        const week = toISODate(x.week);
+        const price = numOrNull(x.price);
+        const count = numOrNull(x.count);
+        if (!week || !(price > 0)) continue;
+        if (count != null && count <= 0) continue;
+        map.set(week, { week, price, count });
+      }
+      if (!map.size) return null;
+      const sorted = Array.from(map.values()).sort((a,b) => a.week.localeCompare(b.week));
+      return { latest: sorted[sorted.length - 1] };
+    }
+
+    function getMarketRange(sleeve) {
+      const arr = Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      const prices = arr.map((x) => numOrNull(x && x.price)).filter((v) => Number.isFinite(v) && v > 0);
+      if (!prices.length) return { min: null, max: null };
+      return { min: Math.min(...prices), max: Math.max(...prices) };
+    }
+
+    function getTagLabels(sleeve) {
+      const candidates = [];
+      if (typeof sleeve?.series === "string") candidates.push(sleeve.series);
+      if (typeof sleeve?.condition === "string") candidates.push(sleeve.condition);
+      if (typeof sleeve?.releaseYear === "number" || typeof sleeve?.releaseYear === "string") candidates.push(`${sleeve.releaseYear}`);
+      return candidates.filter(Boolean).slice(0, 3).map((tag) => tag.startsWith("#") ? tag : `#${tag}`);
+    }
+
+    function getPodiumBadge(rank) {
+      if (rank === 1) return "🥇 1位";
+      if (rank === 2) return "🥈 2位";
+      return "🥉 3位";
+    }
+
+    function buildPodiumCard(row, rank) {
+      const accessText = `${row.access.toLocaleString()}アクセス`;
+      const latestPriceText = row.latestPrice == null ? "—" : `${row.latestPrice.toLocaleString()}円`;
+      const minText = row.range.min == null ? "—" : `${row.range.min.toLocaleString()}円`;
+      const maxText = row.range.max == null ? "—" : `${row.range.max.toLocaleString()}円`;
+      const tagHtml = row.tags.map((tag) => `<span class="podium-chip">${escapeHtml(tag)}</span>`).join("");
+      return `
+        <article class="podium-card podium-card--rank${rank}">
+          <div class="podium-badge">${getPodiumBadge(rank)}</div>
+          <a class="podium-media" data-sleeve-link="1" href="${row.detailHref}">
+            <img src="${escapeHtml(row.imageUrl)}" alt="${escapeHtml(row.name)}" loading="${rank === 1 ? "eager" : "lazy"}" referrerpolicy="no-referrer"
+              onerror="this.onerror=null; this.style.display='none';">
+          </a>
+          <div class="podium-content">
+            <div class="podium-kicker">TOP ${rank} SLEEVE</div>
+            <h${rank === 1 ? "2" : "3"} class="podium-title">${escapeHtml(row.name)}</h${rank === 1 ? "2" : "3"}>
+            <div class="podium-metrics">
+              <div class="podium-metric">
+                <span class="podium-metric-label">アクセス数</span>
+                <div class="podium-price">${accessText}</div>
+              </div>
+              <div class="podium-metric">
+                <span class="podium-metric-label">最新価格</span>
+                <div class="podium-price">${latestPriceText}</div>
+              </div>
+              <div class="podium-metric">
+                <span class="podium-metric-label">最安値</span>
+                <div class="podium-price">${minText}</div>
+              </div>
+              <div class="podium-metric">
+                <span class="podium-metric-label">最高値</span>
+                <div class="podium-price">${maxText}</div>
+              </div>
+            </div>
+            <div class="podium-meta">
+              <div class="podium-chip-group">${tagHtml}</div>
+              <span class="podium-chip">ID ${escapeHtml(row.id)}</span>
+            </div>
+            <div class="podium-actions">
+              <a class="btn" data-sleeve-link="1" href="${row.detailHref}">価格推移を見る →</a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
     function renderRanking(list, sleeveMap) {
       const root = document.getElementById("list");
+      const top3 = document.getElementById("top3");
+      const top1 = document.getElementById("top1");
+      const top2 = document.getElementById("top2");
+      const top3Card = document.getElementById("top3Card");
       if (!root) return;
 
       if (!list.length) {
@@ -311,6 +488,12 @@
       }
 
       root.innerHTML = "";
+      if (top1) top1.innerHTML = "";
+      if (top2) top2.innerHTML = "";
+      if (top3Card) top3Card.innerHTML = "";
+      if (top3) top3.hidden = true;
+
+      const rows = [];
       list.forEach((item, index) => {
         const id = String(item && item.id || "");
         const access = Number(item && item.access);
@@ -320,7 +503,14 @@
         const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
           ? window.common.buildSleeveDetailHref(id)
           : `./sleeve/${encodeURIComponent(id)}/`;
+        const pair = getWeeklyPair(sleeve || {});
+        const latestPrice = pair && pair.latest ? pair.latest.price : null;
+        const range = getMarketRange(sleeve || {});
+        const tags = getTagLabels(sleeve || {});
 
+        rows.push({ id, access: Number.isFinite(access) ? access : 0, name, imageUrl, detailHref, latestPrice, range, tags });
+
+        if (index < 3) return;
         const div = document.createElement("div");
         div.className = "card ranking-item";
         div.innerHTML = `
@@ -339,6 +529,13 @@
         `;
         root.appendChild(div);
       });
+
+      if (rows.length && top3) {
+        top3.hidden = false;
+        if (rows[0]) top1.innerHTML = buildPodiumCard(rows[0], 1);
+        if (rows[1]) top2.innerHTML = buildPodiumCard(rows[1], 2);
+        if (rows[2]) top3Card.innerHTML = buildPodiumCard(rows[2], 3);
+      }
     }
 
     async function main() {
