@@ -553,6 +553,19 @@
       return { latest, prev, diff, rate };
     }
 
+    function getMarketRange(sleeve) {
+      const arr = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      const prices = arr
+        .map((x) => numOrNull(x && x.price))
+        .filter((price) => Number.isFinite(price) && price > 0);
+
+      if (!prices.length) return { min: null, max: null };
+      return {
+        min: Math.min(...prices),
+        max: Math.max(...prices)
+      };
+    }
+
     function formatRateText(rate) {
       if (!Number.isFinite(rate)) return "—";
       const sign = rate > 0 ? "+" : "";
@@ -634,12 +647,15 @@
     function buildPodiumCard(row, rank) {
       const s = row.s;
       const deltaInfo = row.deltaInfo;
+      const range = row.marketRange || { min: null, max: null };
       const imgSrc = String(s.imageUrl || "").trim();
       const tagLabels = getTagLabels(s, rank === 1 ? 3 : 2);
       const summary = buildHighlightCopy(s, rank, deltaInfo);
       const rateClass = getDeltaClass(deltaInfo && deltaInfo.rate);
       const weekText = row.week ? `対象週 ${escapeHtml(row.week)}` : "対象週データなし";
       const tagHtml = tagLabels.map((tag) => `<span class="podium-chip">${escapeHtml(tag)}</span>`).join("");
+      const minText = range.min == null ? "—" : `${Number(range.min).toLocaleString()}円`;
+      const maxText = range.max == null ? "—" : `${Number(range.max).toLocaleString()}円`;
 
       if (rank !== 1) {
         return `
@@ -659,6 +675,14 @@
                 <div class="podium-metric">
                   <span class="podium-metric-label">前週比</span>
                   <div class="podium-rate ${rateClass}">${formatRateText(deltaInfo && deltaInfo.rate)}</div>
+                </div>
+                <div class="podium-metric">
+                  <span class="podium-metric-label">最安値</span>
+                  <div class="podium-rate">${minText}</div>
+                </div>
+                <div class="podium-metric">
+                  <span class="podium-metric-label">最高値</span>
+                  <div class="podium-rate">${maxText}</div>
                 </div>
               </div>
               <div class="podium-meta">
@@ -689,12 +713,19 @@
                 <span class="podium-metric-label">前週比</span>
                 <div class="podium-rate ${rateClass}">${formatRateText(deltaInfo && deltaInfo.rate)}</div>
               </div>
+              <div class="podium-metric">
+                <span class="podium-metric-label">最安値</span>
+                <div class="podium-rate">${minText}</div>
+              </div>
+              <div class="podium-metric">
+                <span class="podium-metric-label">最高値</span>
+                <div class="podium-rate">${maxText}</div>
+              </div>
             </div>
             <div class="podium-meta">
               <div class="podium-chip-group">${tagHtml}</div>
               <span class="podium-chip">${weekText}</span>
             </div>
-            <p class="podium-summary">${escapeHtml(summary)}</p>
             <div class="podium-actions">
               <a class="btn" data-sleeve-link="1" href="${row.detailHref}">価格推移を見る →</a>
             </div>
@@ -707,6 +738,7 @@
       const s = row.s;
       const totalTrades = getTotalTradeCount(s);
       const totalTradesText = (totalTrades == null) ? "—" : `${totalTrades.toLocaleString()}件`;
+      const range = row.marketRange || { min: null, max: null };
       const imgSrc = String(s.imageUrl || "").trim();
       const imgHtml = imgSrc
         ? `<a class="thumb-link" href="${row.detailHref}">
@@ -718,6 +750,8 @@
       const rateClass = getDeltaClass(row.deltaInfo && row.deltaInfo.rate);
       const tagLabel = getTagLabel(s);
       const summary = buildHighlightCopy(s, rank, row.deltaInfo);
+      const minText = range.min == null ? "—" : `${Number(range.min).toLocaleString()}円`;
+      const maxText = range.max == null ? "—" : `${Number(range.max).toLocaleString()}円`;
 
       return `
         ${imgHtml}
@@ -729,6 +763,8 @@
         <div class="delta">
           <span class="chip ${rateClass}">前週比 ${formatRateText(row.deltaInfo && row.deltaInfo.rate)}</span>
           <span class="chip">${escapeHtml(tagLabel)}</span>
+          <span class="chip">最安値 ${escapeHtml(minText)}</span>
+          <span class="chip">最高値 ${escapeHtml(maxText)}</span>
         </div>
         <div class="meta" style="margin-top:4px;">${weekText}</div>
         <div class="ranking-card-note">${escapeHtml(summary)}</div>
@@ -830,7 +866,8 @@
             price: p,
             week: pair ? pair.latest.week : null,
             detailHref,
-            deltaInfo: getWeeklyDeltaInfo(s)
+            deltaInfo: getWeeklyDeltaInfo(s),
+            marketRange: getMarketRange(s)
           });
         }
 
