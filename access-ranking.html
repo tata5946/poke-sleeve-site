@@ -16,6 +16,108 @@
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/site.css" />
   <style>
+    body {
+      background: #f5f7fb;
+    }
+
+    .breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin: 0 0 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .breadcrumb a {
+      color: #1e5bd7;
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .breadcrumb-sep {
+      color: #98a2b3;
+    }
+
+    .breadcrumb-current {
+      color: #344054;
+      font-weight: 800;
+    }
+
+    .ranking-page-top {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .ranking-header-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 24px;
+      background: #fff;
+      border: 1px solid #e6eaf2;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
+    }
+
+    .ranking-page-title {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      color: #0f172a;
+      font-weight: 900;
+    }
+
+    .ranking-page-desc {
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #475467;
+      font-weight: 700;
+    }
+
+    .ranking-status {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .ranking-status-card {
+      min-width: 144px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid #e7ebf3;
+    }
+
+    .ranking-status-label {
+      display: block;
+      font-size: 11px;
+      line-height: 1.3;
+      color: #667085;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .ranking-status-value {
+      display: block;
+      font-size: 15px;
+      line-height: 1.35;
+      color: #101828;
+      font-weight: 900;
+    }
+
     .ranking-list {
       display: grid;
       gap: 12px;
@@ -64,6 +166,20 @@
     }
 
     @media (max-width: 760px) {
+      .ranking-header-card {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+
+      .ranking-status {
+        justify-content: flex-start;
+      }
+
+      .ranking-status-card {
+        min-width: 0;
+        flex: 1 1 140px;
+      }
+
       .ranking-item {
         grid-template-columns: 64px 1fr;
       }
@@ -93,14 +209,23 @@
       <span class="breadcrumb-sep" aria-hidden="true">></span>
       <span class="breadcrumb-current" aria-current="page">人気スリーブランキング</span>
     </nav>
-    <div class="hero">
-      <div class="hero-card">
+    <div class="ranking-page-top">
+      <section class="ranking-header-card" aria-label="ページヘッダー">
         <div>
-          <p class="hero-title">人気スリーブランキング</p>
-          <p class="hero-desc">アクセスログから集計した、閲覧数の多いスリーブランキングです。</p>
-          <p id="countInfo" class="data-note" style="display:none;"></p>
+          <h1 class="ranking-page-title">人気スリーブランキング</h1>
+          <p class="ranking-page-desc">アクセスログをもとに、今よく見られているスリーブを一覧で確認できます。</p>
         </div>
-      </div>
+        <div class="ranking-status" aria-label="集計状況">
+          <div class="ranking-status-card">
+            <span class="ranking-status-label">集計方式</span>
+            <span class="ranking-status-value">アクセスログ</span>
+          </div>
+          <div class="ranking-status-card">
+            <span class="ranking-status-label">表示件数</span>
+            <span id="countInfo" class="ranking-status-value">集計中</span>
+          </div>
+        </div>
+      </section>
     </div>
 
     <div class="ranking-main">
@@ -206,8 +331,7 @@
 
         const countInfo = document.getElementById("countInfo");
         if (countInfo) {
-          countInfo.textContent = `表示件数: ${ranking.length}件`;
-          countInfo.style.display = "block";
+          countInfo.textContent = `${ranking.length}件`;
         }
 
         hideError();

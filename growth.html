@@ -17,6 +17,212 @@
 
   <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
+  <style>
+    body {
+      background: #f5f7fb;
+    }
+
+    .ranking-page-top {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .ranking-header-card,
+    .ranking-filter-card {
+      background: #fff;
+      border: 1px solid #e6eaf2;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
+    }
+
+    .ranking-header-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .ranking-page-title {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      color: #0f172a;
+      font-weight: 900;
+    }
+
+    .ranking-page-desc {
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #475467;
+      font-weight: 700;
+    }
+
+    .ranking-status {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .ranking-status-card {
+      min-width: 144px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid #e7ebf3;
+    }
+
+    .ranking-status-label {
+      display: block;
+      font-size: 11px;
+      line-height: 1.3;
+      color: #667085;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .ranking-status-value {
+      display: block;
+      font-size: 15px;
+      line-height: 1.35;
+      color: #101828;
+      font-weight: 900;
+    }
+
+    .ranking-filter-card {
+      padding: 18px 20px 20px;
+    }
+
+    .ranking-filter-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .ranking-filter-title {
+      margin: 0;
+      font-size: 13px;
+      color: #344054;
+      font-weight: 900;
+      letter-spacing: .04em;
+    }
+
+    .ranking-filter-sub {
+      margin: 0;
+      font-size: 12px;
+      color: #98a2b3;
+      font-weight: 700;
+    }
+
+    .ranking-filter-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr)) auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .ranking-filter-field {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .ranking-filter-label {
+      font-size: 12px;
+      color: #475467;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .ranking-filter-field select,
+    .ranking-filter-actions button {
+      width: 100%;
+      height: 50px;
+      border-radius: 16px;
+      border: 1px solid #d7deea;
+      background: #fff;
+      color: #101828;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 0 16px;
+      transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+    }
+
+    .ranking-filter-field select:hover,
+    .ranking-filter-actions button:hover {
+      border-color: #b9c5d9;
+      background: #fbfcfe;
+    }
+
+    .ranking-filter-field select:focus,
+    .ranking-filter-actions button:focus {
+      outline: none;
+      border-color: #9db5ff;
+      box-shadow: 0 0 0 4px rgba(71, 122, 255, .12);
+    }
+
+    .ranking-filter-actions {
+      min-width: 132px;
+    }
+
+    .ranking-filter-actions button {
+      background: #f8fafc;
+      color: #344054;
+      cursor: pointer;
+    }
+
+    .ranking-error {
+      margin-bottom: 0;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .ranking-header-card {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+
+      .ranking-status {
+        justify-content: flex-start;
+      }
+
+      .ranking-status-card {
+        min-width: 0;
+        flex: 1 1 140px;
+      }
+
+      .ranking-filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .ranking-filter-actions {
+        min-width: 0;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .ranking-filter-card {
+        padding: 16px;
+      }
+
+      .ranking-filter-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .ranking-filter-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -29,34 +235,43 @@
       <span class="breadcrumb-sep" aria-hidden="true">></span>
       <span class="breadcrumb-current" aria-current="page">高騰率ランキング</span>
     </nav>
-    <div class="hero">
-      <div class="hero-card">
+    <div class="ranking-page-top">
+      <section class="ranking-header-card" aria-label="ページヘッダー">
         <div>
-          <p class="hero-title">高騰率ランキング</p>
-          <p class="hero-desc">直近の取引週から30日前時点の価格と比較し、上昇率が高い順にランキング表示します。</p>
-          <p class="data-note">※価格はフリマアプリ等の売却履歴をもとに独自集計しています。</p>
-          <p id="updatedAt" class="data-note" style="display:none;"></p>
-          <p id="countInfo" class="data-note" style="display:none;"></p>
+          <h1 class="ranking-page-title">高騰率ランキング</h1>
+          <p class="ranking-page-desc">直近の基準価格と比較して、上昇率や上昇額が大きいスリーブを見やすく比較できます。</p>
         </div>
-      </div>
-    </div>
+        <div class="ranking-status" aria-label="集計状況">
+          <div class="ranking-status-card">
+            <span class="ranking-status-label">最終更新</span>
+            <span id="updatedAt" class="ranking-status-value">読み込み中</span>
+          </div>
+          <div class="ranking-status-card">
+            <span class="ranking-status-label">表示件数</span>
+            <span id="countInfo" class="ranking-status-value">集計中</span>
+          </div>
+        </div>
+      </section>
 
-    <div class="main">
-      <aside class="panel">
-        <h2>絞り込み</h2>
-        <p class="small">条件を変更するとランキングが更新されます。</p>
+      <section class="ranking-filter-card" aria-label="フィルタバー">
+        <div class="ranking-filter-head">
+          <div>
+            <h2 class="ranking-filter-title">絞り込み</h2>
+            <p class="ranking-filter-sub">条件を変えるとランキングをすぐに更新できます</p>
+          </div>
+        </div>
 
-        <div id="error" class="error"></div>
-
-        <div class="controls">
-          <label>指標
+        <div class="ranking-filter-grid">
+          <label class="ranking-filter-field">
+            <span class="ranking-filter-label">指標</span>
             <select id="metric">
               <option value="rateDesc">上昇率（%）</option>
               <option value="diffDesc">上昇額（円）</option>
             </select>
           </label>
 
-          <label>期間
+          <label class="ranking-filter-field">
+            <span class="ranking-filter-label">期間</span>
             <select id="days">
               <option value="30">30日</option>
               <option value="14">14日</option>
@@ -65,19 +280,22 @@
             </select>
           </label>
 
-          <label>発売年
+          <label class="ranking-filter-field">
+            <span class="ranking-filter-label">発売年</span>
             <select id="releaseYear">
               <option value="">全部</option>
             </select>
           </label>
 
-          <label>シリーズ
+          <label class="ranking-filter-field">
+            <span class="ranking-filter-label">シリーズ</span>
             <select id="series">
               <option value="">全部</option>
             </select>
           </label>
 
-          <label>最低上昇率（%）
+          <label class="ranking-filter-field">
+            <span class="ranking-filter-label">最低上昇率（%）</span>
             <select id="minRate">
               <option value="-999">指定なし</option>
               <option value="0">0%以上</option>
@@ -89,14 +307,18 @@
             </select>
           </label>
 
-          <button id="clear" type="button">クリア</button>
+          <div class="ranking-filter-actions">
+            <button id="clear" type="button">条件をクリア</button>
+          </div>
         </div>
-      </aside>
 
-      <main>
-        <div id="list" class="grid"></div>
-      </main>
+        <div id="error" class="error ranking-error"></div>
+      </section>
     </div>
+
+    <main>
+      <div id="list" class="grid"></div>
+    </main>
 
     <!-- 共通フッター差し込み -->
     <div id="site-footer"></div>
@@ -347,8 +569,7 @@
       try {
         if (latestWeek) {
           const u = document.getElementById("updatedAt");
-          u.textContent = `最終更新：${latestWeek}（週次）`;
-          u.style.display = "block";
+          u.textContent = `${latestWeek}（週次）`;
         }
       } catch (_) { }
 
@@ -408,8 +629,7 @@
         });
 
         const c = document.getElementById("countInfo");
-        c.textContent = `表示件数：${rows.length.toLocaleString()}件（${days}日比較）`;
-        c.style.display = "block";
+        c.textContent = `${rows.length.toLocaleString()}件（${days}日比較）`;
 
         if (rows.length === 0) {
           list.innerHTML = `<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>`;
