@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>価格ランキング｜ポケスリ相場ナビ</title>
-  <meta name="description" content="ポケカスリーブの価格ランキング（最新週次）を掲載。検索・絞り込みで相場を比較できます。">
-  <meta property="og:title" content="価格ランキング｜ポケスリ相場ナビ" />
+  <title>価格ランキング | ポケスリ相場ナビ</title>
+  <meta name="description" content="ポケカスリーブの価格ランキング（最新週次）を掲載。検索・絞り込みで相場を比較できます。" />
+  <meta property="og:title" content="価格ランキング | ポケスリ相場ナビ" />
   <meta property="og:description" content="ポケカスリーブの価格ランキング（最新週次）を掲載。検索・絞り込みで相場を比較できます。" />
   <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
   <meta property="og:url" content="https://pokesuri-navi.com/ranking.html" />
@@ -14,8 +13,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
-
-  <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
   <style>
     .breadcrumb {
@@ -46,14 +43,261 @@
       color: #344054;
       font-weight: 800;
     }
+
+    .ranking-main {
+      display: grid;
+      gap: 18px;
+    }
+
+    .ranking-top3 {
+      display: grid;
+      gap: 14px;
+    }
+
+    .ranking-top3[hidden],
+    .ranking-rest-section[hidden] {
+      display: none;
+    }
+
+    .ranking-top23 {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ranking-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .ranking-section-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 900;
+      color: #101828;
+    }
+
+    .ranking-section-note {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .podium-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, .55);
+      box-shadow: 0 18px 36px rgba(15, 23, 42, .12);
+      background: linear-gradient(180deg, #fffdf8 0%, #ffffff 100%);
+      padding: 14px;
+    }
+
+    .podium-card--rank1 {
+      padding: 16px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 214, 102, .34), transparent 34%),
+        linear-gradient(145deg, #fff5cf 0%, #fffef7 46%, #ffffff 100%);
+    }
+
+    .podium-card--rank2 {
+      background:
+        radial-gradient(circle at top right, rgba(176, 190, 197, .26), transparent 34%),
+        linear-gradient(150deg, #f5f7fa 0%, #ffffff 72%);
+    }
+
+    .podium-card--rank3 {
+      background:
+        radial-gradient(circle at top right, rgba(205, 127, 50, .18), transparent 34%),
+        linear-gradient(150deg, #fff3ea 0%, #ffffff 72%);
+    }
+
+    .podium-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(17, 24, 39, .84);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      backdrop-filter: blur(8px);
+    }
+
+    .podium-media {
+      display: block;
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, .72);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .4);
+    }
+
+    .podium-media img {
+      width: 100%;
+      object-fit: cover;
+      display: block;
+      background: #f4f6fa;
+    }
+
+    .podium-card--rank1 .podium-media img {
+      height: 230px;
+    }
+
+    .podium-card:not(.podium-card--rank1) .podium-media img {
+      height: 160px;
+    }
+
+    .podium-content {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .podium-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .05em;
+      color: #7a5b00;
+      text-transform: uppercase;
+    }
+
+    .podium-card:not(.podium-card--rank1) .podium-kicker {
+      color: #52606d;
+    }
+
+    .podium-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.3;
+      font-weight: 900;
+      color: #101828;
+    }
+
+    .podium-card:not(.podium-card--rank1) .podium-title {
+      font-size: 17px;
+    }
+
+    .podium-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .podium-metric {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .78);
+      border: 1px solid rgba(255, 255, 255, .72);
+    }
+
+    .podium-metric-label {
+      display: block;
+      font-size: 11px;
+      color: #667085;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .podium-price {
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.1;
+      color: #111827;
+    }
+
+    .podium-card:not(.podium-card--rank1) .podium-price {
+      font-size: 22px;
+    }
+
+    .podium-rate {
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .podium-card:not(.podium-card--rank1) .podium-rate {
+      font-size: 20px;
+    }
+
+    .podium-summary {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #344054;
+      font-weight: 700;
+    }
+
+    .podium-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .podium-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      background: rgba(255, 255, 255, .82);
+      border: 1px solid rgba(16, 24, 40, .08);
+      color: #344054;
+    }
+
+    .podium-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .podium-actions .btn {
+      margin-top: 0;
+    }
+
+    .ranking-card-note {
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #475467;
+      font-weight: 700;
+    }
+
+    @media (max-width: 700px) {
+      .ranking-top23 {
+        grid-template-columns: 1fr;
+      }
+
+      .podium-card--rank1 .podium-media img {
+        height: 190px;
+      }
+
+      .podium-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .podium-title {
+        font-size: 20px;
+      }
+    }
   </style>
 </head>
-
-  <!-- 共通JS（ヘッダー/フッター注入 + Active Nav） -->
-  <script src="./assets/common.js"></script>
-
+<script src="./assets/common.js"></script>
 <body>
-  <!-- 共通ヘッダー差し込み -->
   <div id="site-header"></div>
 
   <div class="container">
@@ -67,7 +311,7 @@
         <div>
           <p class="hero-title">価格ランキング</p>
           <p class="hero-desc">最新の取引週（週次）価格が高い順にランキング表示します。</p>
-          <p class="data-note">※価格はフリマアプリ等の売却履歴をもとに独自集計しています。</p>
+          <p class="data-note">価格はプレミア価格の参考値です。取引状況により変動します。</p>
           <p id="updatedAt" class="data-note" style="display:none;"></p>
           <p id="countInfo" class="data-note" style="display:none;"></p>
         </div>
@@ -84,24 +328,24 @@
         <div class="controls">
           <label>発売年
             <select id="releaseYear">
-              <option value="">全部</option>
+              <option value="">すべて</option>
             </select>
           </label>
 
           <label>シリーズ
             <select id="series">
-              <option value="">全部</option>
+              <option value="">すべて</option>
             </select>
           </label>
 
           <label>価格帯
             <select id="priceBand">
-              <option value="">全部</option>
-              <option value="0-999">〜999円</option>
-              <option value="1000-1999">1,000〜1,999円</option>
-              <option value="2000-2999">2,000〜2,999円</option>
-              <option value="3000-4999">3,000〜4,999円</option>
-              <option value="5000-99999999">5,000円〜</option>
+              <option value="">すべて</option>
+              <option value="0-999">0-999円</option>
+              <option value="1000-1999">1,000-1,999円</option>
+              <option value="2000-2999">2,000-2,999円</option>
+              <option value="3000-4999">3,000-4,999円</option>
+              <option value="5000-99999999">5,000円以上</option>
             </select>
           </label>
 
@@ -110,19 +354,27 @@
       </aside>
 
       <main>
-        <div id="list" class="grid"></div>
+        <div class="ranking-main">
+          <section id="top3" class="ranking-top3" aria-label="ランキング上位3件" hidden>
+            <div id="top1"></div>
+            <div id="top23" class="ranking-top23"></div>
+          </section>
+
+          <section id="restSection" class="ranking-rest-section">
+            <div class="ranking-section-head">
+              <h2 class="ranking-section-title">4位以降のランキング</h2>
+              <p class="ranking-section-note">条件に一致したスリーブを一覧表示</p>
+            </div>
+            <div id="list" class="grid"></div>
+          </section>
+        </div>
       </main>
     </div>
 
-    <!-- 共通フッター差し込み -->
     <div id="site-footer"></div>
   </div>
 
   <script>
-
-    // -----------------------------
-    // utils
-    // -----------------------------
     function escapeHtml(str) {
       return String(str ?? "")
         .replaceAll("&", "&amp;")
@@ -176,52 +428,25 @@
       return Number.isFinite(n) ? n : null;
     }
 
-    async function fetchJsonWithTimeout(url, { timeoutMs = 12000 } = {}) {
-      const controller = new AbortController();
-      const t = setTimeout(() => controller.abort(), timeoutMs);
-
-      try {
-        const res = await fetch(url, {
-          cache: "no-store",
-          signal: controller.signal,
-          headers: { "Accept": "application/json" }
-        });
-        if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
-        return await res.json();
-      } catch (e) {
-        if (e && e.name === "AbortError") {
-          throw new Error("データ取得がタイムアウトしました。時間をおいて再度お試しください。");
-        }
-        throw e;
-      } finally {
-        clearTimeout(t);
-      }
-    }
-
     async function loadData() {
-      const url = window.GAS_URL;  // common.jsが同期読み込み済みなので確実に存在
-      if (!url) throw new Error("GAS_URL が未設定です（common.js を確認してください）");
+      const url = window.GAS_URL;
+      if (!url) throw new Error("GAS_URL が設定されていません。common.js を確認してください。");
       const res = await fetch(url + "?v=" + Date.now(), { cache: "no-store" });
       if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
       return await res.json();
     }
 
-    // -----------------------------
-    // weekly logic
-    // -----------------------------
     function getWeeklyPair(sleeve) {
       const arr = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
       if (arr.length === 0) return null;
 
       const map = new Map();
-
       for (const x of arr) {
         const weekISO = toISODate(x.week);
         if (!weekISO) continue;
 
         const price = numOrNull(x.price);
         const count = numOrNull(x.count);
-
         const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
         if (!hasTrade) continue;
 
@@ -229,11 +454,9 @@
       }
 
       if (map.size === 0) return null;
-
       const sorted = Array.from(map.values()).sort((a, b) => a.week.localeCompare(b.week));
       const latest = sorted[sorted.length - 1];
       const prev = sorted.length >= 2 ? sorted[sorted.length - 2] : null;
-
       return { latest, prev };
     }
 
@@ -257,13 +480,160 @@
       return hasAny ? sum : null;
     }
 
-    // -----------------------------
-    // main
-    // -----------------------------
+    function getWeeklyDeltaInfo(sleeve) {
+      const pair = getWeeklyPair(sleeve);
+      if (!pair || !pair.latest) return null;
+
+      const latest = numOrNull(pair.latest.price);
+      const prev = pair.prev ? numOrNull(pair.prev.price) : null;
+      if (latest == null) return null;
+      if (prev == null || prev <= 0) return { latest, prev: null, diff: null, rate: null };
+
+      const diff = latest - prev;
+      const rate = (diff / prev) * 100;
+      return { latest, prev, diff, rate };
+    }
+
+    function formatRateText(rate) {
+      if (!Number.isFinite(rate)) return "—";
+      const sign = rate > 0 ? "+" : "";
+      return `${sign}${rate.toFixed(1)}%`;
+    }
+
+    function getDeltaClass(rate) {
+      if (!Number.isFinite(rate)) return "flat";
+      if (rate > 0) return "up";
+      if (rate < 0) return "down";
+      return "flat";
+    }
+
+    function getTagLabel(sleeve) {
+      const candidates = [];
+      if (Array.isArray(sleeve.tags)) candidates.push(...sleeve.tags);
+      if (typeof sleeve.tag === "string") candidates.push(sleeve.tag);
+      if (typeof sleeve.badge === "string") candidates.push(sleeve.badge);
+      if (typeof sleeve.series === "string") candidates.push(sleeve.series);
+      if (typeof sleeve.condition === "string") candidates.push(sleeve.condition);
+
+      for (const raw of candidates) {
+        const tag = String(raw || "").trim();
+        if (!tag) continue;
+        return tag.startsWith("#") ? tag : `#${tag}`;
+      }
+      return "#注目";
+    }
+
+    function buildHighlightCopy(sleeve, rank, deltaInfo) {
+      const parts = [];
+      if (sleeve.series) parts.push(`${sleeve.series}の注目スリーブ`);
+      else parts.push("注目スリーブ");
+
+      if (Number.isFinite(deltaInfo && deltaInfo.rate)) {
+        const trend = deltaInfo.rate >= 0 ? "上昇が続く" : "変動幅に注目したい";
+        parts.push(`${trend}${rank === 1 ? "トップ銘柄" : "人気候補"}`);
+      } else if (sleeve.releaseYear) {
+        parts.push(`${sleeve.releaseYear}年発売の存在感ある1枚`);
+      } else {
+        parts.push("最新価格で存在感を示す1枚");
+      }
+
+      return parts.join("。");
+    }
+
+    function getPodiumBadge(rank) {
+      if (rank === 1) return "🥇 1位";
+      if (rank === 2) return "🥈 2位";
+      return "🥉 3位";
+    }
+
+    function buildPodiumCard(row, rank) {
+      const s = row.s;
+      const deltaInfo = row.deltaInfo;
+      const imgSrc = String(s.imageUrl || "").trim();
+      const tagLabel = getTagLabel(s);
+      const summary = buildHighlightCopy(s, rank, deltaInfo);
+      const rateClass = getDeltaClass(deltaInfo && deltaInfo.rate);
+      const weekText = row.week ? `対象週 ${escapeHtml(row.week)}` : "対象週データなし";
+
+      return `
+        <article class="podium-card podium-card--rank${rank}">
+          <div class="podium-badge">${getPodiumBadge(rank)}</div>
+          <a class="podium-media" data-sleeve-link="1" href="${row.detailHref}">
+            <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="${rank === 1 ? "eager" : "lazy"}" referrerpolicy="no-referrer"
+              onerror="this.onerror=null; this.style.display='none';">
+          </a>
+          <div class="podium-content">
+            <div class="podium-kicker">Top ${rank} Sleeve</div>
+            <h2 class="podium-title">${escapeHtml(s.name ?? "")}</h2>
+            <div class="podium-metrics">
+              <div class="podium-metric">
+                <span class="podium-metric-label">最新価格</span>
+                <div class="podium-price">${row.price.toLocaleString()}円</div>
+              </div>
+              <div class="podium-metric">
+                <span class="podium-metric-label">前週比</span>
+                <div class="podium-rate ${rateClass}">${formatRateText(deltaInfo && deltaInfo.rate)}</div>
+              </div>
+            </div>
+            <div class="podium-meta">
+              <span class="podium-chip">${escapeHtml(tagLabel)}</span>
+              <span class="podium-chip">${weekText}</span>
+            </div>
+            <p class="podium-summary">${escapeHtml(summary)}</p>
+            <div class="podium-actions">
+              <a class="btn" data-sleeve-link="1" href="${row.detailHref}">価格推移を見る →</a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function buildStandardCard(row, rank) {
+      const s = row.s;
+      const totalTrades = getTotalTradeCount(s);
+      const totalTradesText = (totalTrades == null) ? "—" : `${totalTrades.toLocaleString()}件`;
+      const imgSrc = String(s.imageUrl || "").trim();
+      const imgHtml = imgSrc
+        ? `<a class="thumb-link" href="${row.detailHref}">
+             <img class="thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
+               onerror="this.onerror=null; this.style.display='none';">
+           </a>`
+        : "";
+      const weekText = row.week ? `対象週 ${escapeHtml(row.week)}` : "対象週データなし";
+      const rateClass = getDeltaClass(row.deltaInfo && row.deltaInfo.rate);
+      const tagLabel = getTagLabel(s);
+      const summary = buildHighlightCopy(s, rank, row.deltaInfo);
+
+      return `
+        ${imgHtml}
+        <div class="rank-row">
+          <span class="rank-badge">${rank}位</span>
+          <div class="title" style="margin:0;">${escapeHtml(s.name ?? "")}</div>
+        </div>
+        <div class="price">${row.price.toLocaleString()}円 <span class="meta">（最新週次）</span></div>
+        <div class="delta">
+          <span class="chip ${rateClass}">前週比 ${formatRateText(row.deltaInfo && row.deltaInfo.rate)}</span>
+          <span class="chip">${escapeHtml(tagLabel)}</span>
+        </div>
+        <div class="meta" style="margin-top:4px;">${weekText}</div>
+        <div class="ranking-card-note">${escapeHtml(summary)}</div>
+        <div class="badges">
+          <span class="badge">総取引：${escapeHtml(totalTradesText)}</span>
+          <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
+          <span class="badge">${escapeHtml(s.condition ?? "")}</span>
+          <span class="badge">${escapeHtml(s.series ?? "")}</span>
+        </div>
+        <a class="btn" data-sleeve-link="1" href="${row.detailHref}">価格推移を見る →</a>
+      `;
+    }
+
     async function main() {
       const list = document.getElementById("list");
-      const searchInput = document.getElementById("search"); // header側にある想定
-
+      const top3 = document.getElementById("top3");
+      const top1 = document.getElementById("top1");
+      const top23 = document.getElementById("top23");
+      const restSection = document.getElementById("restSection");
+      const searchInput = document.getElementById("search");
       const releaseYearSel = document.getElementById("releaseYear");
       const seriesSel = document.getElementById("series");
       const priceBandSel = document.getElementById("priceBand");
@@ -280,7 +650,6 @@
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
 
-      // 最終更新（直近取引週の最大日付）
       try {
         let maxWeek = null;
         for (const s of sleeves) {
@@ -296,7 +665,6 @@
         }
       } catch (_) { }
 
-      // セレクト初期化
       const releaseYears = uniq(sleeves.map(s => s.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
       const seriesList = uniq(sleeves.map(s => s.series)).sort();
 
@@ -320,8 +688,11 @@
         const band = parseBand(priceBandSel.value);
 
         list.innerHTML = "";
+        top1.innerHTML = "";
+        top23.innerHTML = "";
+        top3.hidden = true;
+        restSection.hidden = false;
 
-        // 最新週次価格があるものだけ対象
         const rows = [];
         for (const s of sleeves) {
           if (kw && !String(s.name || "").toLowerCase().includes(kw)) continue;
@@ -330,23 +701,29 @@
 
           const p = getLatestWeeklyPrice(s);
           if (p == null) continue;
-
-          if (band) {
-            if (p < band.min || p > band.max) continue;
-          }
+          if (band && (p < band.min || p > band.max)) continue;
 
           const pair = getWeeklyPair(s);
-          rows.push({ s, price: p, week: pair ? pair.latest.week : null });
+          const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
+            ? window.common.buildSleeveDetailHref(s.id ?? "")
+            : `./sleeve/${encodeURIComponent(s.id ?? "")}/`;
+
+          rows.push({
+            s,
+            price: p,
+            week: pair ? pair.latest.week : null,
+            detailHref,
+            deltaInfo: getWeeklyDeltaInfo(s)
+          });
         }
 
-        // 価格が高い順
         rows.sort((a, b) => {
           if (b.price !== a.price) return b.price - a.price;
           return String(a.s.name ?? "").localeCompare(String(b.s.name ?? ""));
         });
 
         const c = document.getElementById("countInfo");
-        c.textContent = `表示件数：${rows.length.toLocaleString()}件（最新週次価格あり）`;
+        c.textContent = `表示件数：${rows.length.toLocaleString()}件（最新週次価格順）`;
         c.style.display = "block";
 
         if (rows.length === 0) {
@@ -354,60 +731,30 @@
           return;
         }
 
+        const topRows = rows.slice(0, 3);
+        if (topRows.length > 0) {
+          top3.hidden = false;
+          top1.innerHTML = buildPodiumCard(topRows[0], 1);
+          if (topRows[1]) top23.insertAdjacentHTML("beforeend", buildPodiumCard(topRows[1], 2));
+          if (topRows[2]) top23.insertAdjacentHTML("beforeend", buildPodiumCard(topRows[2], 3));
+        }
+
+        const normalRows = rows.slice(3);
+        restSection.hidden = normalRows.length === 0;
+
         const frag = document.createDocumentFragment();
-
-        for (let i = 0; i < rows.length; i++) {
-          const row = rows[i];
-          const rank = i + 1;
-
-          const s = row.s;
-          const p = row.price;
-
-          const totalTrades = getTotalTradeCount(s);
-          const totalTradesText = (totalTrades == null) ? "—" : `${totalTrades.toLocaleString()}件`;
-
-          const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
-            ? window.common.buildSleeveDetailHref(s.id ?? "")
-            : `./sleeve/${encodeURIComponent(s.id ?? "")}/`;
-          const imgSrc = String(s.imageUrl || "").trim();
-          const imgHtml = imgSrc
-            ? `<a class="thumb-link" href="${detailHref}">
-                 <img class="thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
-                   onerror="this.onerror=null; this.style.display='none';">
-               </a>`
-            : "";
-
-          const weekText = row.week ? `直近 ${escapeHtml(row.week)}` : "直近データなし";
-
+        for (let i = 0; i < normalRows.length; i++) {
+          const row = normalRows[i];
+          const rank = i + 4;
           const div = document.createElement("div");
           div.className = "card";
-          div.innerHTML = `
-            ${imgHtml}
-
-            <div class="rank-row">
-              <span class="rank-badge">${rank}位</span>
-              <div class="title" style="margin:0;">${escapeHtml(s.name ?? "")}</div>
-            </div>
-
-            <div class="price">${p.toLocaleString()}円 <span class="meta">（最新週次）</span></div>
-            <div class="meta" style="margin-top:4px;">${weekText}</div>
-
-            <div class="badges">
-              <span class="badge">総取引：${escapeHtml(totalTradesText)}</span>
-              <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
-              <span class="badge">${escapeHtml(s.condition ?? "")}</span>
-              <span class="badge">${escapeHtml(s.series ?? "")}</span>
-            </div>
-
-            <a class="btn" data-sleeve-link="1" href="${detailHref}">価格推移を見る →</a>
-          `;
+          div.innerHTML = buildStandardCard(row, rank);
           frag.appendChild(div);
         }
 
         list.appendChild(frag);
       }
 
-      // events（header検索が存在する前提）
       let t = null;
       if (searchInput) {
         searchInput.addEventListener("input", () => {
@@ -433,8 +780,5 @@
 
     main();
   </script>
-
-
 </body>
-
 </html>
