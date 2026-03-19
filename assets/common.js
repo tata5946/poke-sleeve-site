@@ -108,6 +108,102 @@ function numOrNull(v) {
   return Number.isFinite(n) ? n : null;
 }
 
+function sumWeeklyTradeCounts(sleeve) {
+  const arr = Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+  let total = 0;
+  let hasAny = false;
+  for (const row of arr) {
+    const count = numOrNull(row && row.count);
+    if (Number.isFinite(count) && count > 0) {
+      total += count;
+      hasAny = true;
+    }
+  }
+  return hasAny ? total : 0;
+}
+
+function sumRecentTradeCounts(sleeve, days) {
+  const windowDays = Number.isFinite(days) ? Math.max(1, Math.floor(days)) : 0;
+  if (!windowDays) return 0;
+  const arr = Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+  const rows = arr
+    .map((row) => {
+      const iso = toISODate(row && row.week);
+      const count = numOrNull(row && row.count);
+      if (!iso || !Number.isFinite(count) || count <= 0) return null;
+      const ts = Date.parse(iso);
+      if (!Number.isFinite(ts)) return null;
+      return { ts, count };
+    })
+    .filter(Boolean);
+
+  if (!rows.length) return 0;
+  const latestTs = Math.max(...rows.map((row) => row.ts));
+  const cutoffTs = latestTs - ((windowDays - 1) * 24 * 60 * 60 * 1000);
+  return rows.reduce((sum, row) => sum + (row.ts >= cutoffTs ? row.count : 0), 0);
+}
+
+function getFlowMetrics(sleeve) {
+  const explicitTotal = numOrNull(sleeve && sleeve.totalTrades);
+  const explicit30d = numOrNull(sleeve && sleeve.trades30d);
+  const explicit7d = numOrNull(sleeve && sleeve.trades7d);
+
+  const totalTrades = Math.max(0, explicitTotal != null ? explicitTotal : sumWeeklyTradeCounts(sleeve));
+  const trades30d = Math.max(0, explicit30d != null ? explicit30d : sumRecentTradeCounts(sleeve, 30));
+  const trades7d = Math.max(0, explicit7d != null ? explicit7d : sumRecentTradeCounts(sleeve, 7));
+  const flowScore = (totalTrades * 0.3) + (trades30d * 0.5) + (trades7d * 0.2);
+  const hasTrades = totalTrades > 0 || trades30d > 0 || trades7d > 0;
+
+  let label = "ほぼ流通なし";
+  let tone = "none";
+  if (hasTrades && flowScore >= 80) {
+    label = "🔥 取引活発";
+    tone = "active";
+  } else if (hasTrades && flowScore >= 40) {
+    label = "流通あり";
+    tone = "present";
+  } else if (hasTrades && flowScore >= 10) {
+    label = "流通少";
+    tone = "low";
+  }
+
+  let trendLabel = "";
+  let trendTone = "";
+  if (hasTrades) {
+    const expected7d = (trades30d / 30) * 7;
+    if (trades7d > expected7d) {
+      trendLabel = "取引増加中";
+      trendTone = "trend-up";
+    } else {
+      trendLabel = "流通減少中";
+      trendTone = "trend-down";
+    }
+  }
+
+  return {
+    totalTrades,
+    trades30d,
+    trades7d,
+    flowScore,
+    label,
+    tone,
+    trendLabel,
+    trendTone
+  };
+}
+
+function buildFlowBadgeHtml(sleeve, options = {}) {
+  const metrics = getFlowMetrics(sleeve);
+  const includeTrend = options.includeTrend !== false;
+  const badges = [
+    `<span class="flow-badge flow-badge--${escapeHtml(metrics.tone)}">${escapeHtml(metrics.label)}</span>`
+  ];
+  if (includeTrend && metrics.trendLabel) {
+    badges.push(`<span class="flow-badge flow-badge--${escapeHtml(metrics.trendTone)}">${escapeHtml(metrics.trendLabel)}</span>`);
+  }
+  return badges.join("");
+}
+
 function uniq(arr) {
   const s = new Set();
   for (const v of arr) {
@@ -880,6 +976,8 @@ window.common = {
   escapeHtml,
   toISODate,
   numOrNull,
+  getFlowMetrics,
+  buildFlowBadgeHtml,
   uniq,
   fetchJsonWithTimeout,
   loadData,

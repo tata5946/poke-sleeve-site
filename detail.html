@@ -2349,6 +2349,7 @@
         `発売日: ${escapeHtml(releaseDateText)} / シリーズ: ${escapeHtml(s.series)} / 状態: ${escapeHtml(s.condition)}`;
 
       document.getElementById("badges").innerHTML = `
+        ${window.common && typeof window.common.buildFlowBadgeHtml === "function" ? window.common.buildFlowBadgeHtml(s) : ""}
         <span class="badge">発売日: ${escapeHtml(releaseDateText)}</span>
         <span class="badge">${escapeHtml(s.condition)}</span>
         <span class="badge">${escapeHtml(s.series)}</span>

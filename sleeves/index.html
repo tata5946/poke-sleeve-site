@@ -1173,6 +1173,9 @@
         const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
           ? window.common.buildSleeveDetailHref(s.id ?? "")
           : `./sleeve/${encodeURIComponent(s.id ?? "")}/`;
+        const flowBadgeHtml = (window.common && typeof window.common.buildFlowBadgeHtml === "function")
+          ? window.common.buildFlowBadgeHtml(s)
+          : "";
         const badges = getCardBadges(s);
         const badgeHtml = badges.length ? `
           <div class="card-badge-stack">
@@ -1201,6 +1204,7 @@
           <div class="price">${escapeHtml(priceText)} <span class="meta">（最新週次）</span></div>
           ${weeklyHtml}
           <div class="badges">
+            ${flowBadgeHtml}
             <span class="badge">取引件数：${escapeHtml(totalTradesText)}</span>
             <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
             <span class="badge">${escapeHtml(s.condition ?? "")}</span>

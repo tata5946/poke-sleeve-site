@@ -897,6 +897,9 @@
       const imgSrc = String(s.imageUrl || "").trim();
       const tagLabels = getTagLabels(s, rank === 1 ? 3 : 2);
       const summary = buildHighlightCopy(s, rank, deltaInfo);
+      const flowBadgeHtml = (window.common && typeof window.common.buildFlowBadgeHtml === "function")
+        ? window.common.buildFlowBadgeHtml(s)
+        : "";
       const rateClass = getDeltaClass(deltaInfo && deltaInfo.rate);
       const weekText = row.week ? `対象週 ${escapeHtml(row.week)}` : "対象週データなし";
       const tagHtml = tagLabels.map((tag) => `<span class="podium-chip">${escapeHtml(tag)}</span>`).join("");
@@ -932,7 +935,7 @@
               </div>
             </div>
             <div class="podium-meta">
-              <div class="podium-chip-group">${tagHtml}</div>
+              <div class="podium-chip-group">${flowBadgeHtml}${tagHtml}</div>
               <span class="podium-chip">${weekText}</span>
             </div>
             <div class="podium-actions">
@@ -961,6 +964,9 @@
       const summary = buildHighlightCopy(s, rank, row.deltaInfo);
       const minText = range.min == null ? "—" : `${Number(range.min).toLocaleString()}円`;
       const maxText = range.max == null ? "—" : `${Number(range.max).toLocaleString()}円`;
+      const flowBadgeHtml = (window.common && typeof window.common.buildFlowBadgeHtml === "function")
+        ? window.common.buildFlowBadgeHtml(s)
+        : "";
 
       return `
         ${imgHtml}
@@ -978,6 +984,7 @@
         <div class="meta" style="margin-top:4px;">${weekText}</div>
         <div class="ranking-card-note">${escapeHtml(summary)}</div>
         <div class="badges">
+          ${flowBadgeHtml}
           <span class="badge">総取引：${escapeHtml(totalTradesText)}</span>
           <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
           <span class="badge">${escapeHtml(s.condition ?? "")}</span>

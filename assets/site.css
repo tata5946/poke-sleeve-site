@@ -619,6 +619,59 @@ a[data-sleeve-link="1"].is-picked {
     font-weight: 700;
 }
 
+.flow-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    line-height: 1.2;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.badge.flow-badge {
+    border-color: transparent;
+}
+
+.flow-badge--active {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #b42318;
+}
+
+.flow-badge--present {
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #166534;
+}
+
+.flow-badge--low {
+    background: #f2f4f7;
+    border-color: #d0d5dd;
+    color: #475467;
+}
+
+.flow-badge--none {
+    background: #f8fafc;
+    border-color: #e4e7ec;
+    color: #98a2b3;
+}
+
+.flow-badge--trend-up {
+    background: #fff1f3;
+    border-color: #fda4af;
+    color: #be123c;
+}
+
+.flow-badge--trend-down {
+    background: #f5f7fa;
+    border-color: #d0d5dd;
+    color: #667085;
+}
+
 /* small UI */
 .pill {
     font-size: 12px;
