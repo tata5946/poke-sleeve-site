@@ -1,21 +1,17 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 
 <head>
   <base href="../../" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>スリーブ相場 - ポケスリ相場ナビ</title>
-  <meta name="description" content="ポケカスリーブの週次価格推移を確認できる詳細ページです。" />
-  <meta property="og:title" content="メガヤドランのポンチョを着たピカチュウ | ポケスリ相場ナビ" />
-  <meta property="og:description" content="メガヤドランのポンチョを着たピカチュウ / 発売年 2016 / シリーズ 公式 / 状態 未開封 の価格推移ページです。" />
-  <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
-  <meta property="og:url" content="https://pokesuri-navi.com/sleeve/186528/" />
+    <title>メガヤドランのポンチョを着たピカチュウ | ポケスリ相場ナビ</title>
+    <meta name="description" content="メガヤドランのポンチョを着たピカチュウ / 発売年 2016 / シリーズ 公式 / 状態 未開封 の価格推移ページです。" />
+    <meta property="og:title" content="メガヤドランのポンチョを着たピカチュウ | ポケスリ相場ナビ" />
+    <meta property="og:description" content="メガヤドランのポンチョを着たピカチュウ / 発売年 2016 / シリーズ 公式 / 状態 未開封 の価格推移ページです。" />
+    <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
+    <meta property="og:url" content="https://pokesuri-navi.com/sleeve/186528/" />
   <link rel="canonical" href="/sleeve/186528/" />
-  <meta property="og:title" content="スリーブ相場 - ポケスリ相場ナビ" />
-  <meta property="og:description" content="ポケカスリーブの週次価格推移を確認できる詳細ページです。" />
-  <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
-  <meta property="og:url" content="https://pokesuri-navi.com/detail.html" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2357,6 +2353,7 @@
         `発売日: ${escapeHtml(releaseDateText)} / シリーズ: ${escapeHtml(s.series)} / 状態: ${escapeHtml(s.condition)}`;
 
       document.getElementById("badges").innerHTML = `
+        ${window.common && typeof window.common.buildFlowBadgeHtml === "function" ? window.common.buildFlowBadgeHtml(s) : ""}
         <span class="badge">発売日: ${escapeHtml(releaseDateText)}</span>
         <span class="badge">${escapeHtml(s.condition)}</span>
         <span class="badge">${escapeHtml(s.series)}</span>

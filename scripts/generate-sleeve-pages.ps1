@@ -45,33 +45,29 @@ foreach ($sleeve in @($data.sleeves)) {
   $ogImage = if ($rawImage) { $rawImage } else { $fallbackOgImage }
   $ogUrl = "https://pokesuri-navi.com/sleeve/$encodedId/"
   $canonicalTag = '  <link rel="canonical" href="/sleeve/' + $encodedId + '/" />'
-  $ogTags = @(
-    '  <meta property="og:title" content="' + ($ogTitle.Replace('"', '&quot;')) + '" />',
-    '  <meta property="og:description" content="' + ($ogDescription.Replace('"', '&quot;')) + '" />',
-    '  <meta property="og:image" content="' + ($ogImage.Replace('"', '&quot;')) + '" />',
-    '  <meta property="og:url" content="' + ($ogUrl.Replace('"', '&quot;')) + '" />'
-  ) -join "`r`n"
   $inlineIdScript = '  <script>window.__SLEEVE_PAGE_ID = ' + $jsId + ';</script>'
 
   $content = $template
   $content = $content -replace '<head>', ("<head>`r`n" + $baseTag)
-  $content = [regex]::Replace(
-    $content,
-    '<meta name="description" content="[^"]*" />',
-    {
-      param($match)
-      return $match.Value + "`r`n" + $ogTags + "`r`n" + $canonicalTag
-    },
-    1
-  )
-  $content = [regex]::Replace(
-    $content,
-    '"\s*/>\s*<meta property="og:',
-    {
-      param($match)
-      return '" />' + [Environment]::NewLine + '  <meta property="og:'
-    }
-  )
+  $content = [regex]::Replace($content, '<title>.*?</title>', ('  <title>' + ($ogTitle.Replace('$', '$$')) + '</title>'), 1)
+  $content = [regex]::Replace($content, '<meta name="description" content="[^"]*" />', ('  <meta name="description" content="' + ($ogDescription.Replace('"', '&quot;').Replace('$', '$$')) + '" />'), 1)
+  $content = [regex]::Replace($content, '<meta property="og:title" content="[^"]*" />', ('  <meta property="og:title" content="' + ($ogTitle.Replace('"', '&quot;').Replace('$', '$$')) + '" />'), 1)
+  $content = [regex]::Replace($content, '<meta property="og:description" content="[^"]*" />', ('  <meta property="og:description" content="' + ($ogDescription.Replace('"', '&quot;').Replace('$', '$$')) + '" />'), 1)
+  $content = [regex]::Replace($content, '<meta property="og:image" content="[^"]*" />', ('  <meta property="og:image" content="' + ($ogImage.Replace('"', '&quot;').Replace('$', '$$')) + '" />'), 1)
+  $content = [regex]::Replace($content, '<meta property="og:url" content="[^"]*" />', ('  <meta property="og:url" content="' + ($ogUrl.Replace('"', '&quot;').Replace('$', '$$')) + '" />'), 1)
+  if ($content -match '<link rel="canonical" href="[^"]*" />') {
+    $content = [regex]::Replace($content, '<link rel="canonical" href="[^"]*" />', ($canonicalTag.Replace('$', '$$')), 1)
+  } else {
+    $content = [regex]::Replace(
+      $content,
+      '<meta property="og:url" content="[^"]*" />',
+      {
+        param($match)
+        return $match.Value + "`r`n" + $canonicalTag
+      },
+      1
+    )
+  }
   $content = $content -replace '<script src="\./assets/common\.js"></script>', ($inlineIdScript + "`r`n`r`n" + '  <script src="./assets/common.js"></script>')
 
   $targetDir = Join-Path $OutputRoot $id
