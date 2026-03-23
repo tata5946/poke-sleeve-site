@@ -213,6 +213,57 @@ function uniq(arr) {
   return Array.from(s);
 }
 
+const SLEEVE_CATEGORY_FIELD_GROUPS = {
+  pokemon: ["category1", "category2", "category3"],
+  trainer: ["category4", "category5"],
+  category: ["category6", "category7", "category8", "category9"],
+  character: ["category4", "category5"],
+  other: ["category6", "category7", "category8", "category9"]
+};
+
+function normalizeSleeveTextValue(value) {
+  return String(value ?? "").trim();
+}
+
+function getSleeveCategoryValues(sleeve, keys) {
+  if (!sleeve || typeof sleeve !== "object") return [];
+  const sourceKeys = Array.isArray(keys) ? keys : [];
+  const values = [];
+  for (const key of sourceKeys) {
+    const value = normalizeSleeveTextValue(sleeve?.[key]);
+    if (value) values.push(value);
+  }
+  return uniq(values);
+}
+
+function getSleeveCategoryBuckets(sleeve) {
+  return {
+    pokemon: getSleeveCategoryValues(sleeve, SLEEVE_CATEGORY_FIELD_GROUPS.pokemon),
+    trainer: getSleeveCategoryValues(sleeve, SLEEVE_CATEGORY_FIELD_GROUPS.trainer),
+    category: getSleeveCategoryValues(sleeve, SLEEVE_CATEGORY_FIELD_GROUPS.category)
+  };
+}
+
+function sleeveMatchesGroup(sleeve, groupKey) {
+  const key = normalizeSleeveTextValue(groupKey).toLowerCase();
+  const fields = SLEEVE_CATEGORY_FIELD_GROUPS[key];
+  if (!fields) return false;
+  return getSleeveCategoryValues(sleeve, fields).length > 0;
+}
+
+function countSleevesByGroup(sleeves) {
+  const list = Array.isArray(sleeves) ? sleeves : [];
+  return {
+    pokemon: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "pokemon") ? 1 : 0), 0),
+    character: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "character") ? 1 : 0), 0),
+    other: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "other") ? 1 : 0), 0)
+  };
+}
+
+function buildSleeveGroupHref(groupKey) {
+  return buildSiteHref(`sleeves/?group=${encodeURIComponent(normalizeSleeveTextValue(groupKey).toLowerCase())}`);
+}
+
 function buildSiteHref(path) {
   const trimmed = String(path || "").replace(/^\.?\//, "");
   return new URL(trimmed, document.baseURI).toString();
@@ -979,6 +1030,12 @@ window.common = {
   getFlowMetrics,
   buildFlowBadgeHtml,
   uniq,
+  normalizeSleeveTextValue,
+  getSleeveCategoryValues,
+  getSleeveCategoryBuckets,
+  sleeveMatchesGroup,
+  countSleevesByGroup,
+  buildSleeveGroupHref,
   fetchJsonWithTimeout,
   loadData,
   buildSiteHref,

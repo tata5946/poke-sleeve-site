@@ -278,6 +278,18 @@
       margin-top: 10px;
     }
 
+    .group-notice {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid #d7e0ee;
+      background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+      color: #1f3a66;
+      font-size: 12px;
+      line-height: 1.6;
+      font-weight: 800;
+    }
+
     @media (max-width: 960px) {
       .catalog-layout {
         grid-template-columns: 1fr;
@@ -493,6 +505,7 @@
       <aside class="panel catalog-sidebar">
         <h2>絞り込み</h2>
         <p class="small">フィルタと並び替えを変更すると一覧が更新されます。</p>
+        <div id="groupNotice" class="group-notice" hidden></div>
 
         <div id="error" class="error"></div>
 
@@ -741,6 +754,22 @@
 
       const url = new URL(location.href);
       const qParam = (url.searchParams.get("q") || "").trim();
+      const rawGroupParam = String(url.searchParams.get("group") || "").trim().toLowerCase();
+      const GROUP_CONFIG = {
+        pokemon: {
+          label: "ポケモン",
+          description: "category1〜3 に値があるスリーブを表示しています。"
+        },
+        character: {
+          label: "キャラクター",
+          description: "category4〜5 に値があるスリーブを表示しています。"
+        },
+        other: {
+          label: "その他",
+          description: "category6〜9 に値があるスリーブを表示しています。"
+        }
+      };
+      let activeGroup = GROUP_CONFIG[rawGroupParam] ? rawGroupParam : "";
       if (qParam) searchInput.value = qParam;
 
       let data;
@@ -753,6 +782,34 @@
       hideError();
 
       const sleeves = (Array.isArray(data.sleeves) ? data.sleeves : []).filter(isDisplayableSleeve);
+      const groupNotice = document.getElementById("groupNotice");
+
+      function sleeveMatchesGroupFilter(sleeve) {
+        if (!activeGroup) return true;
+        if (window.common && typeof window.common.sleeveMatchesGroup === "function") {
+          return window.common.sleeveMatchesGroup(sleeve, activeGroup);
+        }
+        const fallbackGroups = {
+          pokemon: ["category1", "category2", "category3"],
+          character: ["category4", "category5"],
+          other: ["category6", "category7", "category8", "category9"]
+        };
+        const keys = fallbackGroups[activeGroup] || [];
+        return keys.some((key) => String(sleeve?.[key] ?? "").trim());
+      }
+
+      function syncGroupNotice() {
+        if (!groupNotice) return;
+        if (!activeGroup || !GROUP_CONFIG[activeGroup]) {
+          groupNotice.hidden = true;
+          groupNotice.textContent = "";
+          return;
+        }
+        groupNotice.hidden = false;
+        groupNotice.textContent = `カテゴリー: ${GROUP_CONFIG[activeGroup].label} / ${GROUP_CONFIG[activeGroup].description}`;
+      }
+
+      syncGroupNotice();
 
       let maxWeek = null;
       for (const s of sleeves) {
@@ -1100,7 +1157,10 @@
 
       function updateSortExplorerCopy(sortOrder) {
         const config = getSortLabelConfig(sortOrder);
-        if (resultsSubcopy) resultsSubcopy.textContent = config.helper || "気になるスリーブを見つけやすい順で並び替えています。";
+        const groupPrefix = activeGroup && GROUP_CONFIG[activeGroup]
+          ? `${GROUP_CONFIG[activeGroup].label}に該当するスリーブを表示中。 `
+          : "";
+        if (resultsSubcopy) resultsSubcopy.textContent = `${groupPrefix}${config.helper || "気になるスリーブを見つけやすい順で並び替えています。"}`;
       }
 
       function applyPrimaryTab(primaryKey) {
@@ -1226,6 +1286,7 @@
         const filtered = [];
         for (const s of sleeves) {
           if (kw && !String(s.name || "").toLowerCase().includes(kw)) continue;
+          if (!sleeveMatchesGroupFilter(s)) continue;
           if (releaseYear && String(s.releaseYear ?? "") !== releaseYear) continue;
           if (series && String(s.series || "") !== series) continue;
 
@@ -1316,6 +1377,10 @@
         priceBandSel.value = "";
         sortOrderSel.value = "recommended";
         if (sortOrderMobileSel) sortOrderMobileSel.value = "recommended";
+        activeGroup = "";
+        url.searchParams.delete("group");
+        history.replaceState({}, "", url.pathname + (url.searchParams.toString() ? `?${url.searchParams.toString()}` : ""));
+        syncGroupNotice();
         applyPrimaryTab("recommended");
         render();
       });

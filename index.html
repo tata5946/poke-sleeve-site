@@ -200,6 +200,105 @@
         radial-gradient(circle at top right, rgba(255, 207, 122, 0.22), transparent 30%),
         linear-gradient(180deg, #ffffff 0%, #fff9ee 100%);
     }
+    .today-hero-layout {
+      display: grid;
+      grid-template-columns: minmax(240px, 290px) minmax(0, 1fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+    .category-nav {
+      padding: 22px 20px;
+      border-radius: 22px;
+      border: 1px solid #dae3f1;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(243,247,255,.98) 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
+      display: grid;
+      align-content: start;
+      gap: 16px;
+    }
+    .category-nav[hidden] {
+      display: none;
+    }
+    .category-nav-head {
+      display: grid;
+      gap: 6px;
+    }
+    .category-nav-kicker {
+      margin: 0;
+      font-size: 11px;
+      letter-spacing: .12em;
+      color: #7d8ca3;
+      font-weight: 900;
+    }
+    .category-nav-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.1;
+      color: #162238;
+      font-weight: 900;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+    }
+    .category-nav-copy {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.65;
+      color: #607086;
+      font-weight: 700;
+    }
+    .category-nav-list {
+      display: grid;
+      gap: 10px;
+    }
+    .category-nav-link {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 14px 14px 14px 16px;
+      border-radius: 18px;
+      border: 1px solid #d7e1ef;
+      background: #fff;
+      color: #162238;
+      text-decoration: none;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background-color .18s ease;
+    }
+    .category-nav-link:hover {
+      transform: translateY(-2px);
+      border-color: #b9cbe4;
+      background: #f9fbff;
+      box-shadow: 0 14px 24px rgba(15, 23, 42, 0.08);
+    }
+    .category-nav-name {
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 900;
+      color: #101828;
+    }
+    .category-nav-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 62px;
+      min-height: 34px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #162238;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+    .category-nav-empty {
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px dashed #cfdaea;
+      color: #66768b;
+      font-size: 12px;
+      line-height: 1.65;
+      font-weight: 700;
+      background: rgba(255,255,255,.72);
+    }
     .today-hero-card,
     .live-now-card,
     .daily-pick-card,
@@ -1183,6 +1282,9 @@
       .quick-links {
         grid-template-columns: 1fr 1fr;
       }
+      .today-hero-layout {
+        grid-template-columns: 1fr;
+      }
       .today-hero-link,
       .live-now-link,
       .daily-pick-link,
@@ -1234,16 +1336,28 @@
             <p class="hero-subcopy" style="max-width:none;">直近の価格変動で注目度が急上昇</p>
           </div>
         </div>
-        <div id="todayHeroCard" class="today-hero-card">
-          <div class="hero-skeleton">
-            <div class="hero-skeleton-media skeleton-block"></div>
-            <div class="hero-skeleton-body">
-              <div class="hero-skeleton-pill skeleton-block"></div>
-              <div class="hero-skeleton-title skeleton-block"></div>
-              <div class="hero-skeleton-copy skeleton-block"></div>
-              <div class="hero-skeleton-metrics">
-                <div class="hero-skeleton-metric skeleton-block"></div>
-                <div class="hero-skeleton-metric skeleton-block"></div>
+        <div class="today-hero-layout">
+          <aside id="categoryNav" class="category-nav" aria-label="カテゴリー導線">
+            <div class="category-nav-head">
+              <p class="category-nav-kicker">CATEGORY</p>
+              <h2 class="category-nav-title">カテゴリー</h2>
+              <p class="category-nav-copy">気になる切り口から図鑑へ移動できます。</p>
+            </div>
+            <div class="category-nav-list">
+              <div class="category-nav-empty skeleton-block" style="min-height: 148px;"></div>
+            </div>
+          </aside>
+          <div id="todayHeroCard" class="today-hero-card">
+            <div class="hero-skeleton">
+              <div class="hero-skeleton-media skeleton-block"></div>
+              <div class="hero-skeleton-body">
+                <div class="hero-skeleton-pill skeleton-block"></div>
+                <div class="hero-skeleton-title skeleton-block"></div>
+                <div class="hero-skeleton-copy skeleton-block"></div>
+                <div class="hero-skeleton-metrics">
+                  <div class="hero-skeleton-metric skeleton-block"></div>
+                  <div class="hero-skeleton-metric skeleton-block"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1567,6 +1681,40 @@
     function setText(id, value) {
       const el = document.getElementById(id);
       if (el) el.textContent = value;
+    }
+
+    function renderCategoryNav(sleeves) {
+      const root = document.getElementById("categoryNav");
+      if (!root) return;
+
+      const configs = [
+        { key: "pokemon", label: "ポケモン" },
+        { key: "character", label: "キャラクター" },
+        { key: "other", label: "その他" }
+      ];
+      const counts = (window.common && typeof window.common.countSleevesByGroup === "function")
+        ? window.common.countSleevesByGroup(sleeves)
+        : { pokemon: 0, character: 0, other: 0 };
+      const items = configs
+        .map((config) => ({ ...config, count: Number(counts?.[config.key] || 0) }))
+        .filter((item) => item.count >= 2);
+      const listHtml = items.length
+        ? items.map((item) => {
+          const href = (window.common && typeof window.common.buildSleeveGroupHref === "function")
+            ? window.common.buildSleeveGroupHref(item.key)
+            : `./sleeves/?group=${encodeURIComponent(item.key)}`;
+          return `
+            <a class="category-nav-link" href="${escapeHtml(href)}">
+              <span class="category-nav-name">${escapeHtml(item.label)}</span>
+              <span class="category-nav-count">${escapeHtml(String(item.count))}件</span>
+            </a>
+          `;
+        }).join("")
+        : `<div class="category-nav-empty">表示できるカテゴリーはまだ十分に集計されていません。</div>`;
+
+      const list = root.querySelector(".category-nav-list");
+      if (list) list.innerHTML = listHtml;
+      root.hidden = !items.length;
     }
 
     function getCountupAttrs(value, format = "currency", trend = "") {
@@ -2190,6 +2338,7 @@
         return g ? { s, g } : null;
       }).filter(Boolean).sort((a, b) => b.g.rate - a.g.rate).slice(0, 10);
 
+      renderCategoryNav(sleeves);
       renderTodayHero(surgeRank[0] || null);
       renderTrendLists({ surgeRank, growthRank, priceRank });
       renderMarketSnapshot(marketSeries);
@@ -2198,7 +2347,7 @@
 
     main().catch((error) => {
       console.error(error);
-      ["todayHeroCard", "highlightSurge", "highlightGrowth", "highlightPrice", "marketSnapshotCard"].forEach((id) => {
+      ["todayHeroCard", "highlightSurge", "highlightGrowth", "highlightPrice", "marketSnapshotCard", "categoryNav"].forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = `<div class="home-empty">トップページのデータ読み込みに失敗しました。時間をおいて再度お試しください。</div>`;
       });
