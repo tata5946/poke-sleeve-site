@@ -986,7 +986,7 @@ function wireHeaderMenu() {
     : null;
   if (!header || !button || !nav || button.dataset.menuWired === "1") return;
 
-  const isHomeCategoryMode = () => window.innerWidth <= 740 && !!homeCategoryPanel && !homeCategoryPanel.hidden;
+  const isHomeCategoryMode = () => window.innerWidth <= 740 && !!homeCategoryPanel;
 
   const applyButtonState = (expanded) => {
     button.setAttribute("aria-expanded", expanded ? "true" : "false");

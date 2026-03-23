@@ -953,6 +953,10 @@ footer.site-footer {
         display: block;
     }
 
+    body.home-page .header.is-mobile-nav-open .header-bottom {
+        display: none;
+    }
+
     .header-bottom-inner {
         padding: 0 14px 12px;
         overflow: visible;
