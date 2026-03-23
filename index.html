@@ -1552,7 +1552,7 @@
 
   <script src="./assets/common.js"></script>
   <script>
-    const GAS_URL_ENDPOINT = window.GAS_URL || "PASTE_YOUR_WEB_APP_URL_HERE";
+    const ACCESS_RANKING_ENDPOINT = window.GAS_URL || "";
     const ACCESS_RANKING_CACHE_KEY = "home_access_ranking_cache_v1";
     const ACCESS_RANKING_CACHE_TTL_MS = 5 * 60 * 1000;
 
@@ -1579,7 +1579,7 @@
       return Number.isFinite(n) ? n : null;
     }
 
-    async function fetchJsonWithTimeout(url, { timeoutMs = 12000 } = {}) {
+    async function fetchRankingJsonWithTimeout(url, { timeoutMs = 12000 } = {}) {
       const controller = new AbortController();
       const t = setTimeout(() => controller.abort(), timeoutMs);
       try {
@@ -1598,13 +1598,6 @@
       }
     }
 
-    async function loadData() {
-      if (!GAS_URL_ENDPOINT || GAS_URL_ENDPOINT.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
-        throw new Error("GAS_URL が未設定です。index.html の GAS_URL に WebアプリURL を貼ってください。");
-      }
-      return fetchJsonWithTimeout(GAS_URL_ENDPOINT, { timeoutMs: 12000 });
-    }
-
     async function loadAccessRanking() {
       try {
         const raw = sessionStorage.getItem(ACCESS_RANKING_CACHE_KEY);
@@ -1615,9 +1608,9 @@
           }
         }
       } catch (_) {}
-      if (!GAS_URL_ENDPOINT || GAS_URL_ENDPOINT.includes("PASTE_YOUR_WEB_APP_URL_HERE")) return [];
+      if (!ACCESS_RANKING_ENDPOINT) return [];
       try {
-        const data = await fetchJsonWithTimeout(`${GAS_URL_ENDPOINT}?mode=ranking`, { timeoutMs: 10000 });
+        const data = await fetchRankingJsonWithTimeout(`${ACCESS_RANKING_ENDPOINT}?mode=ranking`, { timeoutMs: 10000 });
         const list = Array.isArray(data?.ranking) ? data.ranking : [];
         try { sessionStorage.setItem(ACCESS_RANKING_CACHE_KEY, JSON.stringify({ fetchedAt: Date.now(), data: list })); } catch (_) {}
         return list;
@@ -2479,7 +2472,10 @@
     initScrollReveal();
 
     async function main() {
-      const data = window.common && typeof window.common.loadData === "function" ? await window.common.loadData() : await loadData();
+      if (!(window.common && typeof window.common.loadData === "function")) {
+        throw new Error("共通データローダーの初期化に失敗しました。");
+      }
+      const data = await window.common.loadData();
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
       const marketSeries = buildHomeMarketIndexSeries(sleeves);
