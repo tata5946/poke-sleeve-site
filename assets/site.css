@@ -167,7 +167,8 @@ a:hover {
     margin: 0;
     line-height: 1.1;
     white-space: nowrap;
-    font-family: "M PLUS Rounded 1c", system-ui;
+    letter-spacing: -.02em;
+    font-family: "Noto Sans JP", "Yu Gothic", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
 }
 
 /* header search */
