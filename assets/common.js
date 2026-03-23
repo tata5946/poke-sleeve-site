@@ -264,6 +264,48 @@ function buildSleeveGroupHref(groupKey) {
   return buildSiteHref(`sleeves/?group=${encodeURIComponent(normalizeSleeveTextValue(groupKey).toLowerCase())}`);
 }
 
+function collectGroupDetailItems(sleeves, groupKey) {
+  const list = Array.isArray(sleeves) ? sleeves : [];
+  const key = normalizeSleeveTextValue(groupKey).toLowerCase();
+  const fields = SLEEVE_CATEGORY_FIELD_GROUPS[key];
+  if (!fields) return [];
+
+  const counts = new Map();
+  for (const sleeve of list) {
+    const values = getSleeveCategoryValues(sleeve, fields);
+    for (const value of values) {
+      counts.set(value, (counts.get(value) || 0) + 1);
+    }
+  }
+
+  return Array.from(counts.entries())
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => {
+      if (b.count !== a.count) return b.count - a.count;
+      return String(a.label).localeCompare(String(b.label), "ja", { sensitivity: "base", numeric: true });
+    });
+}
+
+function sleeveMatchesDetailTag(sleeve, tag) {
+  const target = normalizeSleeveTextValue(tag);
+  if (!target) return false;
+  const values = getSleeveCategoryValues(sleeve, [
+    "category1", "category2", "category3",
+    "category4", "category5",
+    "category6", "category7", "category8", "category9"
+  ]);
+  return values.includes(target);
+}
+
+function buildSleeveCategoryHref(groupKey, tag) {
+  const params = new URLSearchParams();
+  const group = normalizeSleeveTextValue(groupKey).toLowerCase();
+  const detailTag = normalizeSleeveTextValue(tag);
+  if (group) params.set("group", group);
+  if (detailTag) params.set("tag", detailTag);
+  return buildSiteHref(`sleeves/?${params.toString()}`);
+}
+
 function buildSiteHref(path) {
   const trimmed = String(path || "").replace(/^\.?\//, "");
   return new URL(trimmed, document.baseURI).toString();
@@ -1036,6 +1078,9 @@ window.common = {
   sleeveMatchesGroup,
   countSleevesByGroup,
   buildSleeveGroupHref,
+  collectGroupDetailItems,
+  sleeveMatchesDetailTag,
+  buildSleeveCategoryHref,
   fetchJsonWithTimeout,
   loadData,
   buildSiteHref,

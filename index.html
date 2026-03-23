@@ -207,6 +207,7 @@
         linear-gradient(180deg, #ffffff 0%, #fff9ee 100%);
     }
     .category-nav {
+      position: relative;
       padding: 26px 22px;
       border-radius: 22px;
       border: 1px solid #e6ebf2;
@@ -251,6 +252,9 @@
       display: grid;
       gap: 0;
     }
+    .category-nav-item {
+      position: relative;
+    }
     .category-nav-link {
       display: flex;
       align-items: center;
@@ -267,13 +271,19 @@
       color: #1e5bd7;
       padding-left: 4px;
     }
+    .category-nav-item.is-active .category-nav-link {
+      color: #1e5bd7;
+      padding-left: 4px;
+      background: #f7f8fa;
+    }
     .category-nav-name {
       font-size: 14px;
       line-height: 1.4;
       font-weight: 700;
       color: #101828;
     }
-    .category-nav-link:hover .category-nav-name {
+    .category-nav-link:hover .category-nav-name,
+    .category-nav-item.is-active .category-nav-name {
       color: #1e5bd7;
     }
     .category-nav-meta {
@@ -294,6 +304,56 @@
       line-height: 1;
       color: #a6afbb;
       transform: translateY(-1px);
+    }
+    .category-flyout {
+      position: absolute;
+      top: 0;
+      left: calc(100% + 18px);
+      width: min(320px, 42vw);
+      min-height: 100%;
+      padding: 18px 0;
+      border-radius: 18px;
+      background: rgba(255,255,255,.98);
+      border: 1px solid #e6ebf2;
+      box-shadow: 0 18px 36px rgba(15, 23, 42, 0.14);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-10px);
+      transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+      z-index: 5;
+    }
+    .category-nav-item.is-active .category-flyout {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+    .category-flyout-list {
+      display: grid;
+    }
+    .category-flyout-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 44px;
+      padding: 0 24px;
+      color: #101828;
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 500;
+      transition: background-color .18s ease, color .18s ease, padding-left .18s ease;
+    }
+    .category-flyout-link:hover {
+      background: #f7f8fa;
+      color: #1e5bd7;
+      padding-left: 28px;
+    }
+    .category-flyout-count {
+      color: #98a2b3;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
     }
     .category-nav-empty {
       padding: 14px 0 0;
@@ -1297,6 +1357,9 @@
       .hero-carousel-head {
         grid-template-columns: 1fr;
       }
+      .category-flyout {
+        display: none;
+      }
       .live-now-metrics {
         grid-template-columns: 1fr;
       }
@@ -1709,14 +1772,39 @@
           const href = (window.common && typeof window.common.buildSleeveGroupHref === "function")
             ? window.common.buildSleeveGroupHref(item.key)
             : `./sleeves/?group=${encodeURIComponent(item.key)}`;
+          const detailItems = (window.common && typeof window.common.collectGroupDetailItems === "function")
+            ? window.common.collectGroupDetailItems(sleeves, item.key).slice(0, 14)
+            : [];
+          const flyoutHtml = detailItems.length
+            ? `
+              <div class="category-flyout" aria-hidden="true">
+                <div class="category-flyout-list">
+                  ${detailItems.map((detailItem) => {
+                    const detailHref = (window.common && typeof window.common.buildSleeveCategoryHref === "function")
+                      ? window.common.buildSleeveCategoryHref(item.key, detailItem.label)
+                      : `./sleeves/?group=${encodeURIComponent(item.key)}&tag=${encodeURIComponent(detailItem.label)}`;
+                    return `
+                      <a class="category-flyout-link" href="${escapeHtml(detailHref)}">
+                        <span>${escapeHtml(detailItem.label)}</span>
+                        <span class="category-flyout-count">${escapeHtml(String(detailItem.count))}件</span>
+                      </a>
+                    `;
+                  }).join("")}
+                </div>
+              </div>
+            `
+            : "";
           return `
-            <a class="category-nav-link" href="${escapeHtml(href)}">
-              <span class="category-nav-name">${escapeHtml(item.label)}</span>
-              <span class="category-nav-meta">
-                <span class="category-nav-count">${escapeHtml(String(item.count))}件</span>
-                <span class="category-nav-arrow" aria-hidden="true">›</span>
-              </span>
-            </a>
+            <div class="category-nav-item">
+              <a class="category-nav-link" href="${escapeHtml(href)}">
+                <span class="category-nav-name">${escapeHtml(item.label)}</span>
+                <span class="category-nav-meta">
+                  <span class="category-nav-count">${escapeHtml(String(item.count))}件</span>
+                  <span class="category-nav-arrow" aria-hidden="true">›</span>
+                </span>
+              </a>
+              ${flyoutHtml}
+            </div>
           `;
         }).join("")
         : `<div class="category-nav-empty">表示できるカテゴリーはまだ十分に集計されていません。</div>`;
@@ -1724,6 +1812,37 @@
       const list = root.querySelector(".category-nav-list");
       if (list) list.innerHTML = listHtml;
       root.hidden = !items.length;
+      if (list) {
+        const navItems = Array.from(list.querySelectorAll(".category-nav-item"));
+        const clearActive = () => navItems.forEach((node) => node.classList.remove("is-active"));
+        navItems.forEach((node) => {
+          node.addEventListener("mouseenter", () => {
+            clearActive();
+            node.classList.add("is-active");
+          });
+          node.addEventListener("mouseleave", () => {
+            node.classList.remove("is-active");
+          });
+          const trigger = node.querySelector(".category-nav-link");
+          if (trigger) {
+            trigger.addEventListener("focus", () => {
+              clearActive();
+              node.classList.add("is-active");
+            });
+          }
+          node.querySelectorAll(".category-flyout-link").forEach((link) => {
+            link.addEventListener("focus", () => {
+              clearActive();
+              node.classList.add("is-active");
+            });
+          });
+        });
+        list.addEventListener("focusout", () => {
+          requestAnimationFrame(() => {
+            if (!list.contains(document.activeElement)) clearActive();
+          });
+        });
+      }
     }
 
     function getCountupAttrs(value, format = "currency", trend = "") {
