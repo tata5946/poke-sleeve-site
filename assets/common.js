@@ -306,6 +306,35 @@ function buildSleeveCategoryHref(groupKey, tag) {
   return buildSiteHref(`sleeves/?${params.toString()}`);
 }
 
+function collectSleeveTypes(sleeves) {
+  const list = Array.isArray(sleeves) ? sleeves : [];
+  const counts = new Map();
+  for (const sleeve of list) {
+    const value = normalizeSleeveTextValue(sleeve?.type);
+    if (!value) continue;
+    counts.set(value, (counts.get(value) || 0) + 1);
+  }
+  return Array.from(counts.entries())
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => {
+      if (b.count !== a.count) return b.count - a.count;
+      return String(a.label).localeCompare(String(b.label), "ja", { sensitivity: "base", numeric: true });
+    });
+}
+
+function sleeveMatchesType(sleeve, typeValue) {
+  const target = normalizeSleeveTextValue(typeValue);
+  if (!target) return false;
+  return normalizeSleeveTextValue(sleeve?.type) === target;
+}
+
+function buildSleeveTypeHref(typeValue) {
+  const params = new URLSearchParams();
+  const typeText = normalizeSleeveTextValue(typeValue);
+  if (typeText) params.set("type", typeText);
+  return buildSiteHref(`sleeves/?${params.toString()}`);
+}
+
 function buildSiteHref(path) {
   const trimmed = String(path || "").replace(/^\.?\//, "");
   return new URL(trimmed, document.baseURI).toString();
@@ -1081,6 +1110,9 @@ window.common = {
   collectGroupDetailItems,
   sleeveMatchesDetailTag,
   buildSleeveCategoryHref,
+  collectSleeveTypes,
+  sleeveMatchesType,
+  buildSleeveTypeHref,
   fetchJsonWithTimeout,
   loadData,
   buildSiteHref,

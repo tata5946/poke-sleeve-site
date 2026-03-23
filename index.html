@@ -1775,7 +1775,8 @@
         .map((config) => ({ ...config, count: Number(counts?.[config.key] || 0) }))
         .filter((item) => item.count >= 2);
       const listHtml = items.length
-        ? items.map((item) => {
+        ? (() => {
+          const sections = items.map((item) => {
           const href = (window.common && typeof window.common.buildSleeveGroupHref === "function")
             ? window.common.buildSleeveGroupHref(item.key)
             : `./sleeves/?group=${encodeURIComponent(item.key)}`;
@@ -1811,7 +1812,38 @@
               ${sublistHtml}
             </div>
           `;
-        }).join("")
+          });
+          const typeItems = (window.common && typeof window.common.collectSleeveTypes === "function")
+            ? window.common.collectSleeveTypes(sleeves).slice(0, 14)
+            : [];
+          if (typeItems.length) {
+            sections.push(`
+              <div class="category-nav-item">
+                <a class="category-nav-link" href="${escapeHtml((window.common && typeof window.common.buildSiteHref === "function") ? window.common.buildSiteHref("sleeves/") : "./sleeves/")}">
+                  <span class="category-nav-name">デッキシールド種類</span>
+                  <span class="category-nav-meta">
+                    <span class="category-nav-count">${escapeHtml(String(typeItems.reduce((sum, item) => sum + Number(item.count || 0), 0)))}件</span>
+                    <span class="category-nav-arrow" aria-hidden="true">›</span>
+                  </span>
+                </a>
+                <div class="category-sublist">
+                  ${typeItems.map((typeItem) => {
+                    const typeHref = (window.common && typeof window.common.buildSleeveTypeHref === "function")
+                      ? window.common.buildSleeveTypeHref(typeItem.label)
+                      : `./sleeves/?type=${encodeURIComponent(typeItem.label)}`;
+                    return `
+                      <a class="category-flyout-link" href="${escapeHtml(typeHref)}">
+                        <span>${escapeHtml(typeItem.label)}</span>
+                        <span class="category-flyout-count">${escapeHtml(String(typeItem.count))}件</span>
+                      </a>
+                    `;
+                  }).join("")}
+                </div>
+              </div>
+            `);
+          }
+          return sections.join("");
+        })()
         : `<div class="category-nav-empty">表示できるカテゴリーはまだ十分に集計されていません。</div>`;
 
       const list = root.querySelector(".category-nav-list");

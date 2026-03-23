@@ -756,6 +756,7 @@
       const qParam = (url.searchParams.get("q") || "").trim();
       const rawGroupParam = String(url.searchParams.get("group") || "").trim().toLowerCase();
       const rawTagParam = String(url.searchParams.get("tag") || "").trim();
+      const rawTypeParam = String(url.searchParams.get("type") || "").trim();
       const GROUP_CONFIG = {
         pokemon: {
           label: "ポケモン",
@@ -772,6 +773,7 @@
       };
       let activeGroup = GROUP_CONFIG[rawGroupParam] ? rawGroupParam : "";
       let activeTag = rawTagParam;
+      let activeType = rawTypeParam;
       if (qParam) searchInput.value = qParam;
 
       let data;
@@ -809,9 +811,17 @@
         return keys.some((key) => String(sleeve?.[key] ?? "").trim() === activeTag);
       }
 
+      function sleeveMatchesTypeFilter(sleeve) {
+        if (!activeType) return true;
+        if (window.common && typeof window.common.sleeveMatchesType === "function") {
+          return window.common.sleeveMatchesType(sleeve, activeType);
+        }
+        return String(sleeve?.type ?? "").trim() === activeType;
+      }
+
       function syncGroupNotice() {
         if (!groupNotice) return;
-        if ((!activeGroup || !GROUP_CONFIG[activeGroup]) && !activeTag) {
+        if ((!activeGroup || !GROUP_CONFIG[activeGroup]) && !activeTag && !activeType) {
           groupNotice.hidden = true;
           groupNotice.textContent = "";
           return;
@@ -824,6 +834,9 @@
         }
         if (activeTag) {
           parts.push(`細分類: ${activeTag}`);
+        }
+        if (activeType) {
+          parts.push(`デッキシールド種類: ${activeType}`);
         }
         groupNotice.textContent = parts.join(" / ");
       }
@@ -1179,6 +1192,7 @@
         const prefixes = [];
         if (activeGroup && GROUP_CONFIG[activeGroup]) prefixes.push(`${GROUP_CONFIG[activeGroup].label}に該当するスリーブを表示中。`);
         if (activeTag) prefixes.push(`「${activeTag}」でさらに絞り込み中。`);
+        if (activeType) prefixes.push(`種類「${activeType}」で絞り込み中。`);
         const prefixText = prefixes.length ? `${prefixes.join(" ")} ` : "";
         if (resultsSubcopy) resultsSubcopy.textContent = `${prefixText}${config.helper || "気になるスリーブを見つけやすい順で並び替えています。"}`;
       }
@@ -1308,6 +1322,7 @@
           if (kw && !String(s.name || "").toLowerCase().includes(kw)) continue;
           if (!sleeveMatchesGroupFilter(s)) continue;
           if (!sleeveMatchesTagFilter(s)) continue;
+          if (!sleeveMatchesTypeFilter(s)) continue;
           if (releaseYear && String(s.releaseYear ?? "") !== releaseYear) continue;
           if (series && String(s.series || "") !== series) continue;
 
@@ -1400,8 +1415,10 @@
         if (sortOrderMobileSel) sortOrderMobileSel.value = "recommended";
         activeGroup = "";
         activeTag = "";
+        activeType = "";
         url.searchParams.delete("group");
         url.searchParams.delete("tag");
+        url.searchParams.delete("type");
         history.replaceState({}, "", url.pathname + (url.searchParams.toString() ? `?${url.searchParams.toString()}` : ""));
         syncGroupNotice();
         applyPrimaryTab("recommended");
