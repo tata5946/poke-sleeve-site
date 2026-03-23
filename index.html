@@ -223,6 +223,10 @@
       grid-area: market;
     }
     .today-hero {
+      display: grid;
+      gap: 16px;
+    }
+    .today-hero-card-shell {
       padding: 28px;
       display: grid;
       gap: 24px;
@@ -891,6 +895,10 @@
       font-weight: 700;
     }
     .pickup-section {
+      display: grid;
+      gap: 16px;
+    }
+    .pickup-card-shell {
       padding: 28px;
       display: grid;
       gap: 24px;
@@ -1462,14 +1470,15 @@
               </section>
             </div>
           </section>
-          <section class="today-hero home-card" aria-label="今日のスリーブ市場">
+          <section class="today-hero" aria-label="今日のスリーブ市場">
             <div class="today-hero-head">
               <div>
                 <h1 class="hero-title" style="font-size:clamp(28px, 4.2vw, 46px);">急上昇トップスリーブ</h1>
                 <p class="hero-subcopy" style="max-width:none;">直近の価格変動で注目度が急上昇</p>
               </div>
             </div>
-            <div id="todayHeroCard" class="today-hero-card">
+            <div class="today-hero-card-shell home-card">
+              <div id="todayHeroCard" class="today-hero-card">
               <div class="hero-skeleton">
                 <div class="hero-skeleton-media skeleton-block"></div>
                 <div class="hero-skeleton-body">
@@ -1481,6 +1490,7 @@
                     <div class="hero-skeleton-metric skeleton-block"></div>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
           </section>
@@ -1499,20 +1509,22 @@
             </div>
           </section>
 
-          <section class="pickup-section home-card home-top-market" aria-label="スリーブ指数">
+          <section class="pickup-section home-top-market" aria-label="スリーブ指数">
             <div class="home-section-head">
               <div>
                 <h2 class="home-section-title">市場の温度感を確認</h2>
                 <p class="home-section-copy">指数・前週比・コメントを簡潔に表示します。</p>
               </div>
             </div>
-            <div id="marketSnapshotCard" class="daily-pick-card">
-              <div class="daily-pick-skeleton">
-                <div class="daily-pick-skeleton-media skeleton-block"></div>
-                <div class="daily-pick-skeleton-body">
-                  <div class="daily-pick-skeleton-pill skeleton-block"></div>
-                  <div class="daily-pick-skeleton-title skeleton-block"></div>
-                  <div class="daily-pick-skeleton-copy skeleton-block"></div>
+            <div class="pickup-card-shell home-card">
+              <div id="marketSnapshotCard" class="daily-pick-card">
+                <div class="daily-pick-skeleton">
+                  <div class="daily-pick-skeleton-media skeleton-block"></div>
+                  <div class="daily-pick-skeleton-body">
+                    <div class="daily-pick-skeleton-pill skeleton-block"></div>
+                    <div class="daily-pick-skeleton-title skeleton-block"></div>
+                    <div class="daily-pick-skeleton-copy skeleton-block"></div>
+                  </div>
                 </div>
               </div>
             </div>
