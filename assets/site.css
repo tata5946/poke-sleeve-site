@@ -161,6 +161,41 @@ a:hover {
     text-decoration: none;
 }
 
+.menu-toggle {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    flex: 0 0 auto;
+    box-shadow: 0 2px 10px rgba(16, 24, 40, .06);
+}
+
+.menu-toggle-bar {
+    width: 16px;
+    height: 2px;
+    border-radius: 999px;
+    background: #111;
+    transition: transform .18s ease, opacity .18s ease;
+}
+
+.header.is-mobile-nav-open .menu-toggle-bar:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.header.is-mobile-nav-open .menu-toggle-bar:nth-child(2) {
+    opacity: 0;
+}
+
+.header.is-mobile-nav-open .menu-toggle-bar:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
 .main-title {
     font-size: 22px;
     font-weight: 900;
@@ -825,11 +860,22 @@ footer.site-footer {
 @media (max-width:700px) {
     .header-top {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: auto minmax(0, 1fr) auto;
         align-items: center;
         column-gap: 10px;
         row-gap: 10px;
         padding: 10px 14px;
+    }
+
+    .menu-toggle {
+        display: inline-flex;
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .brand {
+        grid-column: 2;
+        grid-row: 1;
     }
 
     .logo {
@@ -896,18 +942,42 @@ footer.site-footer {
         font-size: 12px;
     }
 
+    .header-bottom {
+        display: none;
+        background: transparent;
+        border-top: 0;
+        box-shadow: none;
+    }
+
+    .header.is-mobile-nav-open .header-bottom {
+        display: block;
+    }
+
     .header-bottom-inner {
-        padding: 8px 14px;
+        padding: 0 14px 12px;
+        overflow: visible;
     }
 
     .nav {
+        width: 100%;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: 1fr;
         gap: 8px;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 10px 24px rgba(16, 24, 40, .12);
     }
 
     .nav a {
-        white-space: nowrap;
-        font-size: 12px;
-        padding: 7px 9px;
+        justify-content: flex-start;
+        white-space: normal;
+        font-size: 13px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: #111;
     }
 
 }

@@ -44,6 +44,11 @@ initGoogleAnalytics();
 const HEADER_HTML = `
 <div class="header">
   <div class="header-top">
+    <button type="button" class="menu-toggle" id="headerMenuBtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="headerMobileNav">
+      <span class="menu-toggle-bar" aria-hidden="true"></span>
+      <span class="menu-toggle-bar" aria-hidden="true"></span>
+      <span class="menu-toggle-bar" aria-hidden="true"></span>
+    </button>
     <a href="./index.html" class="brand">
       <div class="logo" aria-hidden="true"></div>
       <div>
@@ -60,7 +65,7 @@ const HEADER_HTML = `
       <a href="./policy.html">ポリシー</a>
     </div>
   </div>
-  <div class="header-bottom">
+  <div class="header-bottom" id="headerMobileNav">
     <div class="header-bottom-inner">
       <nav class="nav" aria-label="メインメニュー">
         <a href="./index.html" data-nav="index"><span class="nav-icon" aria-hidden="true">🏠</span>ホーム</a>
@@ -953,6 +958,49 @@ function wireHeaderOffsetSync() {
   }
 }
 
+function wireHeaderMenu() {
+  const header = document.querySelector("#site-header .header");
+  const button = document.getElementById("headerMenuBtn");
+  const nav = document.getElementById("headerMobileNav");
+  if (!header || !button || !nav || button.dataset.menuWired === "1") return;
+
+  const closeMenu = () => {
+    header.classList.remove("is-mobile-nav-open");
+    button.setAttribute("aria-expanded", "false");
+    syncHeaderOffset();
+  };
+
+  const toggleMenu = () => {
+    const isOpen = header.classList.toggle("is-mobile-nav-open");
+    button.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    syncHeaderOffset();
+  };
+
+  button.dataset.menuWired = "1";
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleMenu();
+  });
+
+  nav.addEventListener("click", (event) => {
+    const target = event.target instanceof Element ? event.target.closest("a") : null;
+    if (target) closeMenu();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Node)) return;
+    if (!header.contains(event.target)) closeMenu();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMenu();
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 700) closeMenu();
+  }, { passive: true });
+}
+
 function ensureFavicon() {
   const href = new URL(FAVICON_PATH, document.baseURI || location.href).href;
   const rels = ["icon", "shortcut icon", "apple-touch-icon"];
@@ -1142,11 +1190,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   try { setActiveNav(); } catch (e) { console.error(e); }
+  try { wireHeaderMenu(); } catch (e) { console.error(e); }
   try { wireHeaderSearch(); } catch (e) { console.error(e); }
   try { wireSleeveSelectionFeedback(); } catch (e) { console.error(e); }
 
   document.addEventListener("site:injected", () => {
     try { setActiveNav(); } catch (e) { console.error(e); }
+    try { wireHeaderMenu(); } catch (e) { console.error(e); }
     try { wireHeaderSearch(); } catch (e) { console.error(e); }
     try { markSelectedSleeveLinks(); } catch (e) { console.error(e); }
   }, { once: true });
