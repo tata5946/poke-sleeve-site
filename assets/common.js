@@ -67,7 +67,7 @@ const HEADER_HTML = `
         <a href="./sleeves/" data-nav="zukan"><span class="nav-icon" aria-hidden="true">🗂️</span>図鑑</a>
         <a href="./ranking.html" data-nav="ranking"><span class="nav-icon" aria-hidden="true">👑</span>価格ランキング</a>
         <a href="./access-ranking.html" data-nav="access-ranking"><span class="nav-icon" aria-hidden="true">👀</span>アクセスランキング</a>
-        <a href="./growth.html" data-nav="growth"><span class="nav-icon" aria-hidden="true">📈</span>高騰率</a>
+        <a href="./growth.html" data-nav="growth"><span class="nav-icon" aria-hidden="true">💹</span>高騰率</a>
         <a href="./surge.html" data-nav="surge"><span class="nav-icon" aria-hidden="true">🔥</span>急上昇</a>
         <a href="./index-market.html" data-nav="market"><span class="nav-icon" aria-hidden="true">📈</span>スリーブ指数</a>
         <a href="./contact.html" data-nav="contact"><span class="nav-icon" aria-hidden="true">✉️</span>お問い合わせ</a>
