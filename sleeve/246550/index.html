@@ -75,93 +75,79 @@
 
     .detail-hero {
       display: grid;
-      grid-template-columns: 184px minmax(0, 1fr);
-      gap: 14px;
+      grid-template-columns: 244px minmax(0, 1fr);
+      gap: 16px;
       align-items: start;
       padding: 14px;
-      border: 1px solid var(--border);
+      border: 1px solid #e4e7ec;
       border-radius: 12px;
       background:
-        radial-gradient(circle at top right, rgba(30, 91, 215, 0.08), transparent 34%),
-        linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+        radial-gradient(circle at top right, rgba(30, 91, 215, 0.07), transparent 36%),
+        linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+      box-shadow: 0 8px 20px rgba(16, 24, 40, 0.05);
       font-family: "Noto Sans JP", "Noto Sans", sans-serif;
     }
 
     .detail-hero .thumb {
-      width: 184px;
-      height: 184px;
+      width: 244px;
+      height: 244px;
+      padding: 6px;
       border: 1px solid #dbe5f2;
       border-radius: 10px;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
-      object-fit: cover;
-      background: linear-gradient(180deg, #f8fafc 0%, #eef4ff 100%);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+      object-fit: contain;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
     }
 
     .detail-hero-main {
       min-width: 0;
       display: grid;
-      gap: 12px;
+      gap: 10px;
       align-content: start;
     }
 
-    .detail-title-row {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-
     .name {
-      font-size: clamp(22px, 3vw, 28px);
+      font-size: clamp(24px, 3.1vw, 30px);
       font-weight: 900;
       margin: 0;
-      line-height: 1.2;
+      line-height: 1.18;
       color: #101828;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.015em;
     }
 
-    .meta-line {
+    .detail-info-card {
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(248, 250, 252, 0.9);
+      display: grid;
+      gap: 10px;
+    }
+
+    .detail-info-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px 12px;
-      padding: 12px;
-      border: 1px solid #dbe5f2;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.88);
+      gap: 10px 18px;
     }
 
-    .meta-item {
+    .detail-info-item {
       min-width: 0;
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 10px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(219, 229, 242, 0.8);
+      display: grid;
+      gap: 2px;
+      align-content: start;
     }
 
-    .meta-item:nth-last-child(-n+2) {
-      padding-bottom: 0;
-      border-bottom: 0;
-    }
-
-    .meta-label {
-      flex: 0 0 auto;
+    .detail-info-label {
       font-size: 11px;
-      line-height: 1.3;
+      line-height: 1.25;
       color: #667085;
       font-weight: 800;
-      letter-spacing: .05em;
-      text-transform: uppercase;
+      letter-spacing: .02em;
     }
 
-    .meta-value {
+    .detail-info-value {
       min-width: 0;
-      text-align: right;
       font-size: 14px;
-      line-height: 1.35;
+      line-height: 1.4;
       color: #101828;
       font-weight: 900;
       word-break: break-word;
@@ -172,20 +158,6 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 10px;
-    }
-
-    .detail-tags {
-      display: grid;
-      gap: 8px;
-    }
-
-    .detail-tags-label {
-      font-size: 11px;
-      line-height: 1.2;
-      color: #667085;
-      font-weight: 800;
-      letter-spacing: .05em;
-      text-transform: uppercase;
     }
 
     .detail-tag-list {
@@ -226,92 +198,10 @@
       color: #b54708;
     }
 
-    .detail-toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-    }
-
-    .detail-toggle {
-      padding: 0;
-      border: 0;
-      background: transparent;
-      color: #1d4ed8;
-      font-size: 12px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .detail-toggle:hover {
-      color: #1e40af;
-    }
-
-    .detail-toggle::before {
-      content: "▼";
-      display: inline-block;
-      margin-right: 6px;
-      font-size: 10px;
-      transition: transform .18s ease;
-    }
-
-    .detail-toggle[aria-expanded="true"]::before {
-      transform: rotate(180deg);
-    }
-
-    .detail-info-card {
-      padding: 12px;
-      border: 1px solid #dbe5f2;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.9);
-      display: grid;
-      gap: 12px;
-    }
-
-    .detail-info-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px 12px;
-    }
-
-    .detail-info-item {
-      min-width: 0;
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 10px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(219, 229, 242, 0.8);
-    }
-
-    .detail-info-item:last-child {
-      padding-bottom: 0;
-      border-bottom: 0;
-    }
-
-    .detail-info-label {
-      flex: 0 0 auto;
-      font-size: 11px;
-      line-height: 1.35;
-      color: #667085;
-      font-weight: 800;
-      letter-spacing: .04em;
-    }
-
-    .detail-info-value {
-      min-width: 0;
-      text-align: right;
-      font-size: 13px;
-      line-height: 1.45;
-      color: #101828;
-      font-weight: 900;
-      word-break: break-word;
-    }
-
     .detail-note {
       display: grid;
       gap: 4px;
       padding-top: 2px;
-      border-top: 1px dashed #dbe5f2;
     }
 
     .box {
@@ -807,35 +697,18 @@
       }
 
       .detail-hero {
-        grid-template-columns: 160px minmax(0, 1fr);
+        grid-template-columns: 204px minmax(0, 1fr);
         gap: 12px;
         padding: 12px;
       }
 
       .detail-hero .thumb {
-        width: 160px;
-        height: 160px;
+        width: 204px;
+        height: 204px;
       }
 
-      .meta-line,
       .detail-info-grid {
         grid-template-columns: 1fr;
-      }
-
-      .meta-item,
-      .detail-info-item {
-        padding-bottom: 8px;
-      }
-
-      .meta-item:nth-last-child(-n+2) {
-        padding-bottom: 8px;
-        border-bottom: 1px solid rgba(219, 229, 242, 0.8);
-      }
-
-      .meta-item:last-child,
-      .detail-info-item:last-child {
-        padding-bottom: 0;
-        border-bottom: 0;
       }
 
       .chart-viewport {
@@ -861,16 +734,12 @@
 
     @media (max-width: 560px) {
       .detail-hero {
-        grid-template-columns: 136px minmax(0, 1fr);
+        grid-template-columns: 148px minmax(0, 1fr);
       }
 
       .detail-hero .thumb {
-        width: 136px;
-        height: 136px;
-      }
-
-      .detail-title-row {
-        gap: 8px;
+        width: 148px;
+        height: 148px;
       }
     }
   </style>
@@ -896,16 +765,10 @@
             <img id="img" class="thumb" alt="" />
 
             <div class="detail-hero-main">
-              <div class="detail-title-row">
-                <h2 id="name" class="name">読み込み中...</h2>
-                <div id="badges" class="badges"></div>
-              </div>
-              <div id="meta" class="meta-line" hidden></div>
-              <div id="detailTags" class="detail-tags" hidden></div>
-              <div id="detailToggleRow" class="detail-toggle-row" hidden>
-                <button type="button" id="detailToggle" class="detail-toggle" aria-expanded="false" aria-controls="detailInfo">詳細を見る</button>
-              </div>
+              <h2 id="name" class="name">読み込み中...</h2>
+              <div id="badges" class="badges"></div>
               <div id="detailInfo" class="detail-info-card" hidden></div>
+              <div id="detailTags" class="detail-tag-list" hidden></div>
 
               <div class="kpi">
                 <div class="box">
@@ -1304,19 +1167,14 @@
       return year ? `${year}年` : "";
     }
 
-    function getPrimaryMetaRows(sleeve) {
+    function getDetailFieldRows(sleeve) {
       return [
         { label: "発売日", value: getReleaseDateText(sleeve) },
         { label: "状態", value: getTextValue(sleeve?.condition) },
         { label: "公式/非公式", value: getTextValue(sleeve?.series) },
-        { label: "種類", value: getTextValue(sleeve?.type) }
-      ].filter((row) => row.value && row.value !== "不明");
-    }
-
-    function getExtraDetailRows(sleeve) {
-      return [
+        { label: "種類", value: getTextValue(sleeve?.type) },
         { label: "販売元", value: getTextValue(sleeve?.acquisitionType) },
-        { label: "発売年", value: getReleaseYearText(sleeve) }
+        { label: "シリーズ", value: getTextValue(sleeve?.series) }
       ].filter((row) => row.value && row.value !== "不明");
     }
 
@@ -1369,26 +1227,6 @@
       return badges.join("");
     }
 
-    function renderPrimaryMeta(sleeve) {
-      const root = document.getElementById("meta");
-      if (!root) return;
-
-      const rows = getPrimaryMetaRows(sleeve);
-      if (!rows.length) {
-        root.hidden = true;
-        root.innerHTML = "";
-        return;
-      }
-
-      root.innerHTML = rows.map((row) => `
-        <div class="meta-item">
-          <span class="meta-label">${escapeHtml(row.label)}</span>
-          <span class="meta-value">${escapeHtml(row.value)}</span>
-        </div>
-      `).join("");
-      root.hidden = false;
-    }
-
     function renderDetailTags(sleeve) {
       const root = document.getElementById("detailTags");
       if (!root) return;
@@ -1422,29 +1260,20 @@
         return;
       }
 
-      root.innerHTML = `
-        <div class="detail-tags-label">タグ</div>
-        <div class="detail-tag-list">${uniqueChips.join("")}</div>
-      `;
+      root.innerHTML = uniqueChips.join("");
       root.hidden = false;
     }
 
     function renderDetailInfo(sleeve) {
       const root = document.getElementById("detailInfo");
-      const toggleRow = document.getElementById("detailToggleRow");
-      const toggle = document.getElementById("detailToggle");
-      if (!root || !toggleRow || !toggle) return;
+      if (!root) return;
 
-      const fieldRows = getExtraDetailRows(sleeve);
-      const categoryGroups = getDetailCategoryGroups(sleeve).filter((group) => Array.isArray(group.values) && group.values.length);
+      const fieldRows = getDetailFieldRows(sleeve);
       const note = getTextValue(sleeve?.note);
 
-      if (!fieldRows.length && !categoryGroups.length && !note) {
+      if (!fieldRows.length && !note) {
         root.hidden = true;
         root.innerHTML = "";
-        toggleRow.hidden = true;
-        toggle.setAttribute("aria-expanded", "false");
-        toggle.textContent = "詳細を見る";
         return;
       }
 
@@ -1459,17 +1288,6 @@
           </div>`
         : "";
 
-      const tagHtml = categoryGroups.length
-        ? `<div class="detail-info-grid">
-            ${categoryGroups.map((group) => `
-              <div class="detail-info-item">
-                <div class="detail-info-label">${escapeHtml(group.label)}</div>
-                <div class="detail-info-value">${escapeHtml(group.values.join(" / "))}</div>
-              </div>
-            `).join("")}
-          </div>`
-        : "";
-
       const noteHtml = note
         ? `<div class="detail-note">
             <div class="detail-info-label">備考</div>
@@ -1477,25 +1295,8 @@
           </div>`
         : "";
 
-      root.innerHTML = `${fieldHtml}${tagHtml}${noteHtml}`;
-      root.hidden = true;
-      toggleRow.hidden = false;
-      toggle.setAttribute("aria-expanded", "false");
-      toggle.textContent = "詳細を見る";
-    }
-
-    function setupDetailToggle() {
-      const root = document.getElementById("detailInfo");
-      const toggle = document.getElementById("detailToggle");
-      if (!root || !toggle || toggle.dataset.wired === "1") return;
-
-      toggle.dataset.wired = "1";
-      toggle.addEventListener("click", () => {
-        const nextExpanded = toggle.getAttribute("aria-expanded") !== "true";
-        toggle.setAttribute("aria-expanded", nextExpanded ? "true" : "false");
-        toggle.textContent = nextExpanded ? "詳細を閉じる" : "詳細を見る";
-        root.hidden = !nextExpanded;
-      });
+      root.innerHTML = `${fieldHtml}${noteHtml}`;
+      root.hidden = false;
     }
 
     function getSleeveCharacter(sleeve) {
@@ -2806,9 +2607,8 @@
       const breadcrumbCurrent = document.getElementById("breadcrumbCurrent");
       if (breadcrumbCurrent) breadcrumbCurrent.textContent = s.name || "";
       document.getElementById("name").textContent = s.name || "";
-      setupDetailToggle();
       document.getElementById("badges").innerHTML = buildHeaderBadges(s);
-      renderPrimaryMeta(s);
+      renderDetailInfo(s);
       renderDetailTags(s);
       renderDetailInfo(s);
 
@@ -2877,6 +2677,7 @@
 </body>
 
 </html>
+
 
 
 
