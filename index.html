@@ -197,7 +197,9 @@
       grid-template-columns: minmax(240px, 290px) minmax(0, 1fr);
       grid-template-areas:
         "sidebar hero"
-        "sidebar ranking";
+        "sidebar ranking"
+        "sidebar search"
+        "sidebar market";
       gap: 22px;
       align-items: start;
     }
@@ -213,6 +215,12 @@
     }
     .home-top-ranking {
       grid-area: ranking;
+    }
+    .home-top-search {
+      grid-area: search;
+    }
+    .home-top-market {
+      grid-area: market;
     }
     .today-hero {
       padding: 28px;
@@ -1343,7 +1351,9 @@
         grid-template-areas:
           "sidebar"
           "hero"
-          "ranking";
+          "ranking"
+          "search"
+          "market";
       }
       .home-top-main {
         display: contents;
@@ -1474,42 +1484,41 @@
               </section>
             </div>
           </section>
+          <section class="home-section is-search home-top-search" aria-label="目的別ナビゲーション">
+            <div class="home-section-head">
+              <div>
+                <h2 class="home-section-title">目的からページを選ぶ</h2>
+                <p class="home-section-copy">見たい情報に合わせて各ページへ移動できます。</p>
+              </div>
+            </div>
+            <div class="quick-links">
+              <a class="quick-link quick-link--search home-card" href="./sleeves/"><span class="quick-link-icon">🗂️</span><h3 class="quick-link-title">図鑑から探す</h3><p class="quick-link-copy">名前やシリーズでスリーブを検索</p></a>
+              <a class="quick-link quick-link--hot home-card" href="./surge.html"><span class="quick-link-icon">🔥</span><h3 class="quick-link-title">急上昇を見る</h3><p class="quick-link-copy">直近で値動きが大きい順に確認</p></a>
+              <a class="quick-link quick-link--value home-card" href="./ranking.html"><span class="quick-link-icon">👑</span><h3 class="quick-link-title">高額スリーブを見る</h3><p class="quick-link-copy">価格が高いスリーブを順位で確認</p></a>
+              <a class="quick-link quick-link--value home-card" href="./index-market.html"><span class="quick-link-icon">📈</span><h3 class="quick-link-title">スリーブ指数を見る</h3><p class="quick-link-copy">市場全体の前週比と指数を確認</p></a>
+            </div>
+          </section>
+
+          <section class="pickup-section home-card home-top-market" aria-label="スリーブ指数">
+            <div class="home-section-head">
+              <div>
+                <h2 class="home-section-title">市場の温度感を確認</h2>
+                <p class="home-section-copy">指数・前週比・コメントを簡潔に表示します。</p>
+              </div>
+            </div>
+            <div id="marketSnapshotCard" class="daily-pick-card">
+              <div class="daily-pick-skeleton">
+                <div class="daily-pick-skeleton-media skeleton-block"></div>
+                <div class="daily-pick-skeleton-body">
+                  <div class="daily-pick-skeleton-pill skeleton-block"></div>
+                  <div class="daily-pick-skeleton-title skeleton-block"></div>
+                  <div class="daily-pick-skeleton-copy skeleton-block"></div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
-
-      <section class="home-section is-search reveal-on-scroll" aria-label="目的別ナビゲーション">
-        <div class="home-section-head">
-          <div>
-            <h2 class="home-section-title">目的からページを選ぶ</h2>
-            <p class="home-section-copy">見たい情報に合わせて各ページへ移動できます。</p>
-          </div>
-        </div>
-        <div class="quick-links">
-          <a class="quick-link quick-link--search home-card" href="./sleeves/"><span class="quick-link-icon">🗂️</span><h3 class="quick-link-title">図鑑から探す</h3><p class="quick-link-copy">名前やシリーズでスリーブを検索</p></a>
-          <a class="quick-link quick-link--hot home-card" href="./surge.html"><span class="quick-link-icon">🔥</span><h3 class="quick-link-title">急上昇を見る</h3><p class="quick-link-copy">直近で値動きが大きい順に確認</p></a>
-          <a class="quick-link quick-link--value home-card" href="./ranking.html"><span class="quick-link-icon">👑</span><h3 class="quick-link-title">高額スリーブを見る</h3><p class="quick-link-copy">価格が高いスリーブを順位で確認</p></a>
-          <a class="quick-link quick-link--value home-card" href="./index-market.html"><span class="quick-link-icon">📈</span><h3 class="quick-link-title">スリーブ指数を見る</h3><p class="quick-link-copy">市場全体の前週比と指数を確認</p></a>
-        </div>
-      </section>
-
-      <section class="pickup-section home-card reveal-on-scroll" aria-label="スリーブ指数">
-        <div class="home-section-head">
-          <div>
-            <h2 class="home-section-title">市場の温度感を確認</h2>
-            <p class="home-section-copy">指数・前週比・コメントを簡潔に表示します。</p>
-          </div>
-        </div>
-        <div id="marketSnapshotCard" class="daily-pick-card">
-          <div class="daily-pick-skeleton">
-            <div class="daily-pick-skeleton-media skeleton-block"></div>
-            <div class="daily-pick-skeleton-body">
-              <div class="daily-pick-skeleton-pill skeleton-block"></div>
-              <div class="daily-pick-skeleton-title skeleton-block"></div>
-              <div class="daily-pick-skeleton-copy skeleton-block"></div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
 
     <div id="site-footer"></div>
