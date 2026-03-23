@@ -195,16 +195,24 @@
     .home-top-grid {
       display: grid;
       grid-template-columns: minmax(240px, 290px) minmax(0, 1fr);
+      grid-template-areas:
+        "sidebar hero"
+        "sidebar ranking";
       gap: 22px;
       align-items: start;
     }
     .home-top-sidebar {
+      grid-area: sidebar;
       align-self: stretch;
     }
     .home-top-main {
-      display: grid;
-      gap: 22px;
-      align-content: start;
+      display: contents;
+    }
+    .today-hero {
+      grid-area: hero;
+    }
+    .home-top-ranking {
+      grid-area: ranking;
     }
     .today-hero {
       padding: 28px;
@@ -1332,9 +1340,13 @@
       }
       .home-top-grid {
         grid-template-columns: 1fr;
+        grid-template-areas:
+          "sidebar"
+          "hero"
+          "ranking";
       }
       .home-top-main {
-        gap: 48px;
+        display: contents;
       }
       .today-hero-link,
       .live-now-link,
@@ -1416,7 +1428,7 @@
               </div>
             </div>
           </section>
-          <section class="home-section is-hot" aria-label="今日の注目">
+          <section class="home-section is-hot home-top-ranking" aria-label="今日の注目">
             <div class="home-section-head">
               <div>
                 <h2 class="home-section-title">最新ランキングTOP3</h2>
