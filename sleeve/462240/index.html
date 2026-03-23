@@ -11,11 +11,6 @@
   <meta property="og:description" content="チラーミィ&チラチーノ / 発売年 2026 / シリーズ 公式 / 状態 未開封 の価格推移ページです。" />
   <meta property="og:image" content="https://drive.google.com/thumbnail?id=1ji0YK_yE43fN-5o960mE4yKXPkD17Kst&sz=w1200" />
   <meta property="og:url" content="https://pokesuri-navi.com/sleeve/462240/" />
-  <link rel="canonical" href="/sleeve/462240/" />
-  <meta property="og:title" content="スリーブ相場 - ポケスリ相場ナビ" />
-  <meta property="og:description" content="ポケカスリーブの週次価格推移を確認できる詳細ページです。" />
-  <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
-  <meta property="og:url" content="https://pokesuri-navi.com/detail.html" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -108,6 +103,86 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 10px;
+    }
+
+    .detail-info-card {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fff 0%, #f9fbff 100%);
+      display: grid;
+      gap: 14px;
+    }
+
+    .detail-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 14px;
+    }
+
+    .detail-info-item {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .detail-info-label {
+      font-size: 11px;
+      line-height: 1.35;
+      color: #667085;
+      font-weight: 900;
+      letter-spacing: .04em;
+    }
+
+    .detail-info-value {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #101828;
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .detail-tag-sections {
+      display: grid;
+      gap: 10px;
+    }
+
+    .detail-tag-group {
+      display: grid;
+      gap: 7px;
+    }
+
+    .detail-tag-label {
+      font-size: 12px;
+      line-height: 1.4;
+      color: #344054;
+      font-weight: 900;
+    }
+
+    .detail-tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .detail-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid #d7e1f0;
+      background: #fff;
+      color: #1f3a66;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .detail-note {
+      padding-top: 2px;
+      border-top: 1px dashed #dbe5f2;
     }
 
     .box {
@@ -610,6 +685,10 @@
         height: 220px;
       }
 
+      .detail-info-grid {
+        grid-template-columns: 1fr;
+      }
+
       .chart-viewport {
         overflow: hidden;
       }
@@ -656,6 +735,7 @@
               <h2 id="name" class="name">読み込み中...</h2>
               <div id="meta" class="meta-line"></div>
               <div id="badges" class="badges" style="margin-top:8px;"></div>
+              <div id="detailInfo" class="detail-info-card" hidden></div>
 
               <div class="kpi">
                 <div class="box">
@@ -1043,6 +1123,95 @@
       const y = String(sleeve?.releaseYear ?? "").trim();
       if (y) return y;
       return "不明";
+    }
+
+    function getTextValue(value) {
+      return String(value ?? "").trim();
+    }
+
+    function getDetailFieldRows(sleeve) {
+      return [
+        { label: "発売日", value: getReleaseDateText(sleeve) },
+        { label: "公式/非公式", value: getTextValue(sleeve?.series) },
+        { label: "状態", value: getTextValue(sleeve?.condition) },
+        { label: "種類", value: getTextValue(sleeve?.type) },
+        { label: "販売元", value: getTextValue(sleeve?.acquisitionType) }
+      ].filter((row) => row.value && row.value !== "不明");
+    }
+
+    function getDetailCategoryGroups(sleeve) {
+      if (window.common && typeof window.common.getSleeveCategoryBuckets === "function") {
+        const buckets = window.common.getSleeveCategoryBuckets(sleeve);
+        return [
+          { label: "ポケモン", values: Array.isArray(buckets.pokemon) ? buckets.pokemon : [] },
+          { label: "トレーナー", values: Array.isArray(buckets.trainer) ? buckets.trainer : [] },
+          { label: "カテゴリー", values: Array.isArray(buckets.category) ? buckets.category : [] }
+        ];
+      }
+
+      const read = (keys) => {
+        const values = [];
+        for (const key of keys) {
+          const value = getTextValue(sleeve?.[key]);
+          if (value) values.push(value);
+        }
+        return Array.from(new Set(values));
+      };
+
+      return [
+        { label: "ポケモン", values: read(["category1", "category2", "category3"]) },
+        { label: "トレーナー", values: read(["category4", "category5"]) },
+        { label: "カテゴリー", values: read(["category6", "category7", "category8", "category9"]) }
+      ];
+    }
+
+    function renderDetailInfo(sleeve) {
+      const root = document.getElementById("detailInfo");
+      if (!root) return;
+
+      const fieldRows = getDetailFieldRows(sleeve);
+      const categoryGroups = getDetailCategoryGroups(sleeve).filter((group) => Array.isArray(group.values) && group.values.length);
+      const note = getTextValue(sleeve?.note);
+
+      if (!fieldRows.length && !categoryGroups.length && !note) {
+        root.hidden = true;
+        root.innerHTML = "";
+        return;
+      }
+
+      const fieldHtml = fieldRows.length
+        ? `<div class="detail-info-grid">
+            ${fieldRows.map((row) => `
+              <div class="detail-info-item">
+                <div class="detail-info-label">${escapeHtml(row.label)}</div>
+                <div class="detail-info-value">${escapeHtml(row.value)}</div>
+              </div>
+            `).join("")}
+          </div>`
+        : "";
+
+      const tagHtml = categoryGroups.length
+        ? `<div class="detail-tag-sections">
+            ${categoryGroups.map((group) => `
+              <div class="detail-tag-group">
+                <div class="detail-tag-label">${escapeHtml(group.label)}</div>
+                <div class="detail-tag-list">
+                  ${group.values.map((value) => `<span class="detail-tag">${escapeHtml(value)}</span>`).join("")}
+                </div>
+              </div>
+            `).join("")}
+          </div>`
+        : "";
+
+      const noteHtml = note
+        ? `<div class="detail-info-item detail-note">
+            <div class="detail-info-label">備考</div>
+            <div class="detail-info-value">${escapeHtml(note)}</div>
+          </div>`
+        : "";
+
+      root.innerHTML = `${fieldHtml}${tagHtml}${noteHtml}`;
+      root.hidden = false;
     }
 
     function getSleeveCharacter(sleeve) {
@@ -2362,6 +2531,7 @@
         <span class="badge">${escapeHtml(s.condition)}</span>
         <span class="badge">${escapeHtml(s.series)}</span>
       `;
+      renderDetailInfo(s);
 
       document.getElementById("backLink").href = "./sleeves/";
       const mercariLink = document.getElementById("mercariLink");
