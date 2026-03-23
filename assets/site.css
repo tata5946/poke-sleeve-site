@@ -914,7 +914,7 @@ footer.site-footer {
 
 @media (max-width:600px) {
     .container {
-        padding: 14px;
+        padding: 12px;
     }
 
     .thumb {
@@ -924,6 +924,56 @@ footer.site-footer {
     .grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
+    }
+
+    .panel,
+    .section,
+    .card {
+        border-radius: 14px;
+    }
+}
+
+@media (max-width:480px) {
+    .container {
+        padding: 10px;
+    }
+
+    .panel,
+    .section {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 9px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .thumb {
+        height: 148px;
+        border-radius: 12px;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .badges,
+    .delta,
+    .chipline {
+        gap: 6px;
+    }
+
+    .nav {
+        gap: 6px;
+    }
+
+    .nav a {
+        padding: 7px 8px;
     }
 }
 

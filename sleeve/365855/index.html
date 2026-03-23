@@ -742,6 +742,42 @@
         height: 168px;
       }
     }
+
+    @media (max-width: 420px) {
+      .detail-hero {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .detail-hero .thumb {
+        width: min(100%, 220px);
+        height: 220px;
+      }
+
+      .detail-info-card {
+        padding: 10px;
+      }
+
+      .btn-row,
+      .share-row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .btn-row .btn,
+      .share-row .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .chart-period-switch {
+        gap: 6px;
+      }
+
+      .chart-period-btn {
+        flex: 1 1 calc(50% - 6px);
+      }
+    }
   </style>
 </head>
 
@@ -2677,6 +2713,7 @@
 </body>
 
 </html>
+
 
 
 
