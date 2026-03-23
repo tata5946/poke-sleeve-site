@@ -1379,6 +1379,25 @@
     @media (max-width: 740px) {
       body.home-page .container { padding-top: 6px; padding-bottom: 32px; }
       .home-shell { gap: 28px; }
+      .home-top-sidebar {
+        display: contents;
+      }
+      .category-nav {
+        display: none;
+        position: fixed;
+        top: calc(var(--site-header-h) + 8px);
+        left: 10px;
+        right: 10px;
+        z-index: 95;
+        max-height: calc(100vh - var(--site-header-h) - 18px);
+        overflow: auto;
+        padding: 18px 16px;
+        border-radius: 18px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+      }
+      .category-nav.is-mobile-drawer-open {
+        display: grid;
+      }
       .home-section-head,
       .today-hero-link,
       .live-now-link,
