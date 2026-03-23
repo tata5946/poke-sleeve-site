@@ -10,8 +10,9 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyY73ta--ltwmcWMM8YhmVkJdvmJvZFPEmypN_hIoZboZg9FgUFvG6lxSN9ZiAmj5cT/exec";
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
-const DATA_CACHE_KEY = "pokeSleeve:dataCache:v1";
-const DATA_CACHE_TTL_MS = 60 * 1000;
+const LOCAL_DATA_URL = "./data.json";
+const DATA_CACHE_KEY = "pokeSleeve:dataCache:v2";
+const DATA_CACHE_TTL_MS = 5 * 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
 const SEARCH_HISTORY_KEY = "pokeSleeve:searchHistory:v1";
 const SEARCH_HISTORY_MAX = 8;
@@ -852,6 +853,28 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000, cacheMode = "defau
   }
 }
 
+async function fetchPrimaryData() {
+  const sources = [
+    { url: LOCAL_DATA_URL, timeoutMs: 2500, cacheMode: "force-cache" },
+    { url: GAS_URL, timeoutMs: 12000, cacheMode: "default" }
+  ];
+
+  let lastError = null;
+  for (const source of sources) {
+    const resolvedUrl = new URL(source.url, document.baseURI || location.href).href;
+    try {
+      return await fetchJsonWithTimeout(resolvedUrl, {
+        timeoutMs: source.timeoutMs,
+        cacheMode: source.cacheMode
+      });
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error("データ取得に失敗しました");
+}
+
 function readSessionCache() {
   try {
     const raw = sessionStorage.getItem(DATA_CACHE_KEY);
@@ -877,10 +900,6 @@ function writeSessionCache(data) {
 
 /* ----- central loadData() ----- */
 async function loadData({ forceRefresh = false, ttlMs = DATA_CACHE_TTL_MS } = {}) {
-  if (!GAS_URL || GAS_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
-    throw new Error("GAS_URL が未設定です。assets/common.js の GAS_URL を確認してください。");
-  }
-
   const withinTtl = (entry) => !!(entry && Number.isFinite(entry.cachedAt) && (Date.now() - entry.cachedAt) <= ttlMs);
 
   if (!forceRefresh && withinTtl(__dataCacheMem)) {
@@ -900,7 +919,7 @@ async function loadData({ forceRefresh = false, ttlMs = DATA_CACHE_TTL_MS } = {}
   }
 
   __dataCachePromise = (async () => {
-    const data = await fetchJsonWithTimeout(GAS_URL, { timeoutMs: 12000, cacheMode: "default" });
+    const data = await fetchPrimaryData();
     __dataCacheMem = { cachedAt: Date.now(), data };
     writeSessionCache(data);
     return data;
