@@ -229,8 +229,10 @@
       margin-top: 10px;
       border: 1px solid var(--border);
       border-radius: 14px;
-      background: #fff;
-      box-shadow: 0 6px 16px rgba(16, 24, 40, .06);
+      background:
+        radial-gradient(circle at top left, rgba(30, 91, 215, .07), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+      box-shadow: 0 8px 18px rgba(16, 24, 40, .07);
       padding: 10px;
       overflow: hidden;
     }
@@ -241,38 +243,9 @@
       margin: 2px 0 8px;
     }
 
-    .chart-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
-      margin: 0 0 8px;
-    }
-
-    .chart-zoom-btn {
-      border: 1px solid var(--border);
-      background: #fff;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 900;
-      padding: 4px 8px;
-      cursor: pointer;
-      color: #111;
-    }
-
-    .chart-zoom-label {
-      font-size: 12px;
-      font-weight: 900;
-      color: var(--muted);
-      min-width: 44px;
-      text-align: right;
-    }
-
     .chart-viewport {
       width: 100%;
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-x pan-y;
+      overflow: hidden;
     }
 
     svg.chart {
@@ -301,28 +274,8 @@
       box-shadow: 0 10px 24px rgba(16, 24, 40, .24);
     }
 
-    .chart-main-hit {
+    .chart-hit-area {
       cursor: crosshair;
-    }
-
-    .chart-nav-hit {
-      cursor: grab;
-      touch-action: none;
-    }
-
-    .chart-range {
-      fill: rgba(30, 91, 215, .15);
-      stroke: #1e5bd7;
-      stroke-width: 1;
-      pointer-events: none;
-    }
-
-    .chart-handle {
-      fill: #fff;
-      stroke: #1e5bd7;
-      stroke-width: 1.5;
-      cursor: ew-resize;
-      pointer-events: none;
     }
 
     .table-wrap {
@@ -479,7 +432,8 @@
 
     .chart-period-switch {
       margin-top: 10px;
-      display: inline-flex;
+      display: flex;
+      flex-wrap: wrap;
       gap: 6px;
       padding: 4px;
       border: 1px solid var(--border);
@@ -510,6 +464,46 @@
       font-size: 12px;
       color: #667085;
       line-height: 1.6;
+    }
+
+    .price-summary-grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .price-summary-card {
+      border: 1px solid #dbe5f2;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .98) 0%, rgba(246, 249, 255, .98) 100%);
+      box-shadow: 0 6px 16px rgba(16, 24, 40, .05);
+      padding: 12px 12px 10px;
+      min-width: 0;
+    }
+
+    .price-summary-label {
+      font-size: 11px;
+      line-height: 1.35;
+      color: #667085;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+
+    .price-summary-value {
+      margin-top: 8px;
+      font-size: clamp(16px, 2vw, 22px);
+      line-height: 1.12;
+      font-weight: 900;
+      color: #101828;
+      word-break: break-word;
+    }
+
+    .price-summary-meta {
+      margin-top: 6px;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #667085;
     }
 
     .chart-legend {
@@ -561,7 +555,7 @@
 
     .single-observation-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
       margin-bottom: 8px;
     }
@@ -722,6 +716,10 @@
         padding: 8px 8px 6px;
       }
 
+      .price-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .single-observation-grid {
         grid-template-columns: 1fr;
       }
@@ -776,6 +774,10 @@
       .chart-period-btn {
         flex: 1 1 calc(50% - 6px);
       }
+
+      .price-summary-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -807,10 +809,10 @@
 
               <div class="kpi">
                 <div class="box">
-                  <div id="latestPriceLabel" class="label">最新月次価格</div>
+                  <div id="latestPriceLabel" class="label">現在価格</div>
                   <div id="latestWeekly" class="value">-</div>
                   <div id="weeklyDelta" class="delta" style="margin-top:6px;"></div>
-                  <div id="weeklyCount" class="meta" style="margin-top:6px;">取引件数: -</div>
+                  <div id="weeklyCount" class="meta" style="margin-top:6px;">最終観測日: -</div>
                 </div>
               </div>
 
@@ -843,14 +845,15 @@
 
         <div class="detail-price-grid">
           <div class="panel">
-            <h3 id="priceSectionTitle" style="margin:0;">価格推移（観測ベース）</h3>
+            <h3 id="priceSectionTitle" style="margin:0;">価格推移</h3>
             <div class="chart-period-switch" role="tablist" aria-label="表示期間">
-              <button type="button" class="chart-period-btn" id="period3mBtn" data-period="3m">直近3か月</button>
-              <button type="button" class="chart-period-btn" id="period1yBtn" data-period="1y">1年</button>
               <button type="button" class="chart-period-btn is-active" id="periodAllBtn" data-period="all">全期間</button>
+              <button type="button" class="chart-period-btn" id="periodMonthlyBtn" data-period="monthly">月次</button>
+              <button type="button" class="chart-period-btn" id="period3mBtn" data-period="3m">直近3か月</button>
             </div>
             <div id="chartModeNote" class="chart-subnote"></div>
             <div id="chartLegend" class="chart-legend" aria-label="凡例"></div>
+            <div id="priceSummary" class="price-summary-grid" aria-label="価格サマリー"></div>
             <div id="weeklyChart"></div>
             <div id="chartFootnotes" class="chart-footnotes"></div>
             <div id="weeklyTable"></div>
@@ -2580,6 +2583,443 @@
       }
     }
 
+    function normalizeChartPrice(raw) {
+      return parseNumberLike(raw);
+    }
+
+    function normalizeDateFromInput(raw, fallbackDay = "01") {
+      const s = String(raw ?? "").trim();
+      if (!s) return "";
+      const day = String(fallbackDay || "01").padStart(2, "0");
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      if (/^\d{4}-\d{2}$/.test(s)) return `${s}-${day}`;
+      const iso = toISODate(s);
+      return iso || "";
+    }
+
+    function enrichSeries(points) {
+      return (Array.isArray(points) ? points : [])
+        .map((item) => {
+          const timestamp = Number.isFinite(item?.timestamp) ? item.timestamp : Date.parse(String(item?.date || ""));
+          const price = normalizeChartPrice(item?.price);
+          if (!Number.isFinite(timestamp) || !(Number.isFinite(price) && price > 0)) return null;
+          return {
+            type: String(item?.type || "").trim(),
+            date: String(item?.date || "").trim(),
+            price: Math.round(price),
+            timestamp
+          };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function buildYearlySeries(sleeve) {
+      const out = [];
+      const seen = new Set();
+      for (const item of (Array.isArray(sleeve?.yearlyPrices) ? sleeve.yearlyPrices : [])) {
+        const matched = String(item?.year ?? "").trim().match(/^\d{4}$/);
+        const price = normalizeChartPrice(item?.price);
+        if (!matched || !(Number.isFinite(price) && price > 0)) continue;
+        const date = `${matched[0]}-01-01`;
+        const key = `yearly|${date}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push({ type: "yearly", date, price: Math.round(price) });
+      }
+      const fallback = sleeve?.pricesByYear && typeof sleeve.pricesByYear === "object" ? sleeve.pricesByYear : null;
+      if (fallback) {
+        for (const [yearKey, rawPrice] of Object.entries(fallback)) {
+          const matched = String(yearKey || "").trim().match(/^\d{4}$/);
+          const price = normalizeChartPrice(rawPrice);
+          if (!matched || !(Number.isFinite(price) && price > 0)) continue;
+          const date = `${matched[0]}-01-01`;
+          const key = `yearly|${date}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          out.push({ type: "yearly", date, price: Math.round(price) });
+        }
+      }
+      return out.sort((a, b) => a.date.localeCompare(b.date));
+    }
+
+    function buildMonthlySeries(sleeve) {
+      const out = [];
+      const seen = new Set();
+      for (const item of (Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [])) {
+        const date = normalizeDateFromInput(item?.month, "01");
+        const price = normalizeChartPrice(item?.price);
+        if (!date || !(Number.isFinite(price) && price > 0)) continue;
+        const key = `monthly|${date}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push({ type: "monthly", date, price: Math.round(price) });
+      }
+      return out.sort((a, b) => a.date.localeCompare(b.date));
+    }
+
+    function buildWeeklySeries(sleeve) {
+      const out = [];
+      const seen = new Set();
+      for (const item of (Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [])) {
+        const date = normalizeDateFromInput(item?.week, "01");
+        const price = normalizeChartPrice(item?.price);
+        if (!date || !(Number.isFinite(price) && price > 0)) continue;
+        const key = `weekly|${date}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push({ type: "weekly", date, price: Math.round(price) });
+      }
+      return out.sort((a, b) => a.date.localeCompare(b.date));
+    }
+
+    function buildFullPeriodSeries(sleeve) {
+      return enrichSeries([
+        ...buildYearlySeries(sleeve),
+        ...buildMonthlySeries(sleeve),
+        ...buildWeeklySeries(sleeve)
+      ]);
+    }
+
+    function buildRecentWeeklySeries(sleeve, windowDays = 92) {
+      const weekly = enrichSeries(buildWeeklySeries(sleeve));
+      if (!weekly.length) return [];
+      const latestTs = weekly[weekly.length - 1].timestamp;
+      const cutoff = latestTs - (Math.max(1, windowDays) * 24 * 60 * 60 * 1000);
+      return weekly.filter((item) => item.timestamp >= cutoff);
+    }
+
+    function classifySeriesMode(points) {
+      const count = Array.isArray(points) ? points.length : 0;
+      if (count <= 0) return "empty";
+      if (count === 1) return "single";
+      if (count <= 3) return "few";
+      return "normal";
+    }
+
+    function formatPointTypeLabel(type) {
+      if (type === "yearly") return "年次";
+      if (type === "monthly") return "月次";
+      if (type === "weekly") return "週次";
+      return "観測";
+    }
+
+    function formatPointDate(point, mode) {
+      if (!point) return "-";
+      const date = String(point.date || "");
+      const m = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return date;
+      if (mode === "3m") return date;
+      if (mode === "monthly" || point.type === "monthly") return `${m[1]}年${Number(m[2])}月`;
+      if (point.type === "yearly") return `${m[1]}年`;
+      return date;
+    }
+
+    function renderPriceLegend(mode) {
+      const el = document.getElementById("chartLegend");
+      if (!el) return;
+      if (mode === "all") {
+        el.innerHTML = `
+          <span class="legend-item"><span class="legend-mark">●</span>週次</span>
+          <span class="legend-item"><span class="legend-mark">○</span>月次</span>
+          <span class="legend-item"><span class="legend-mark">△</span>年次</span>
+          <span class="legend-item">◎ 最新観測データ</span>
+        `;
+        return;
+      }
+      el.innerHTML = `
+        <span class="legend-item"><span class="legend-mark">●</span>${mode === "monthly" ? "月次データ" : "週次データ"}</span>
+        <span class="legend-item">◎ 最新観測データ</span>
+      `;
+    }
+
+    function renderPriceFootnotes(mode) {
+      const el = document.getElementById("chartFootnotes");
+      if (!el) return;
+      const lines = [
+        "※ 価格が有効な観測点のみを表示しています。",
+        "※ 観測がない期間は補完せず、取得できた点だけを結んでいます。"
+      ];
+      if (mode === "all") lines.unshift("※ 全期間は年次・月次・週次を1本の時系列として接続しています。");
+      if (mode === "monthly") lines.unshift("※ 月次タブは monthlyPrices のみを表示しています。");
+      if (mode === "3m") lines.unshift("※ 直近3か月タブは weeklyPrices のうち直近約3か月分を表示しています。");
+      el.innerHTML = lines.map((line) => `<div>${escapeHtml(line)}</div>`).join("");
+    }
+
+    function renderPriceSummary(points) {
+      const el = document.getElementById("priceSummary");
+      if (!el) return;
+      const list = enrichSeries(points);
+      if (!list.length) {
+        el.innerHTML = "";
+        return;
+      }
+      const first = list[0];
+      const latest = list[list.length - 1];
+      const prices = list.map((item) => item.price);
+      const ratio = first.price > 0 ? (latest.price / first.price) : null;
+      const cards = [
+        { label: "現在価格", value: `${latest.price.toLocaleString()}円`, meta: `最新観測: ${formatPointDate(latest, "all")}` },
+        { label: "初期観測価格", value: `${first.price.toLocaleString()}円`, meta: `初期観測: ${formatPointDate(first, "all")}` },
+        { label: "初期観測比", value: Number.isFinite(ratio) ? `${ratio.toFixed(ratio >= 10 ? 1 : 2)}倍` : "-", meta: Number.isFinite(ratio) ? "現在価格 ÷ 初期観測価格" : "算出不可" },
+        { label: "最高価格", value: `${Math.max(...prices).toLocaleString()}円`, meta: "" },
+        { label: "最安価格", value: `${Math.min(...prices).toLocaleString()}円`, meta: "" }
+      ];
+      el.innerHTML = cards.map((card) => `
+        <div class="price-summary-card">
+          <div class="price-summary-label">${escapeHtml(card.label)}</div>
+          <div class="price-summary-value">${escapeHtml(card.value)}</div>
+          <div class="price-summary-meta">${escapeHtml(card.meta || "")}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderPriceTable(points, mode) {
+      const list = enrichSeries(points);
+      if (!list.length) return `<div class="meta">観測データがありません</div>`;
+      const showType = mode === "all";
+      const typeHead = showType ? "<th>種別</th>" : "";
+      const rows = list.slice().reverse().map((point) => {
+        const typeCell = showType ? `<td>${escapeHtml(formatPointTypeLabel(point.type))}</td>` : "";
+        return `<tr><td>${escapeHtml(formatPointDate(point, mode))}</td>${typeCell}<td>${point.price.toLocaleString()}円</td></tr>`;
+      }).join("");
+      return `
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>期間</th>${typeHead}<th>価格</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderSinglePriceCard(containerId, point, mode) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      if (!point) {
+        el.innerHTML = `<div class="chart-wrap"><div class="meta">観測データがありません</div></div>`;
+        return;
+      }
+      el.innerHTML = `
+        <div class="single-observation-card">
+          <p class="single-observation-title">現在確認できる価格</p>
+          <div class="single-observation-grid">
+            <div class="single-observation-item">
+              <div class="label">観測価格</div>
+              <div class="value">${point.price.toLocaleString()}円</div>
+            </div>
+            <div class="single-observation-item">
+              <div class="label">観測日</div>
+              <div class="value">${escapeHtml(formatPointDate(point, mode))}</div>
+            </div>
+            <div class="single-observation-item">
+              <div class="label">種別</div>
+              <div class="value">${escapeHtml(formatPointTypeLabel(point.type))}</div>
+            </div>
+          </div>
+          <div class="chart-subnote">観測点が1件のみのため、価格推移チャートではなく単一観測カードを表示しています。</div>
+        </div>
+      `;
+    }
+
+    function setPriceKpiFromSeries(points) {
+      const latestEl = document.getElementById("latestWeekly");
+      const deltaEl = document.getElementById("weeklyDelta");
+      const countEl = document.getElementById("weeklyCount");
+      const labelEl = document.getElementById("latestPriceLabel");
+      if (labelEl) labelEl.textContent = "現在価格";
+      const list = enrichSeries(points);
+      if (!list.length) {
+        latestEl.textContent = "-";
+        deltaEl.textContent = "比較できるデータがありません";
+        deltaEl.className = "delta flat";
+        countEl.textContent = "最終観測日: -";
+        return;
+      }
+      const latest = list[list.length - 1];
+      latestEl.textContent = `${latest.price.toLocaleString()}円`;
+      countEl.textContent = `最終観測日: ${formatPointDate(latest, "all")}`;
+      const prev = list.length >= 2 ? list[list.length - 2] : null;
+      if (!prev) {
+        deltaEl.textContent = "比較できる過去データがありません";
+        deltaEl.className = "delta flat";
+        return;
+      }
+      const diff = latest.price - prev.price;
+      const abs = Math.abs(diff);
+      let cls = "flat";
+      let arrow = "→";
+      let sign = "±";
+      if (diff > 0) { cls = "up"; arrow = "↑"; sign = "+"; }
+      if (diff < 0) { cls = "down"; arrow = "↓"; sign = "-"; }
+      deltaEl.className = "delta " + cls;
+      deltaEl.textContent = `${arrow} 前回観測比 ${sign}${abs.toLocaleString()}円`;
+    }
+
+    function buildMarkerSvg(point, cx, cy, radius, isLatest, mode) {
+      const stroke = isLatest ? "#0f172a" : "#1e5bd7";
+      const fill = (mode === "all" && point.type !== "weekly") ? "#ffffff" : "#1e5bd7";
+      const halo = isLatest ? `<circle cx="${cx}" cy="${cy}" r="${radius + 5}" fill="rgba(30,91,215,0.14)"></circle>` : "";
+      if (mode === "all" && point.type === "yearly") {
+        const triangle = [
+          `${cx},${cy - radius}`,
+          `${cx - radius * 0.88},${cy + radius * 0.78}`,
+          `${cx + radius * 0.88},${cy + radius * 0.78}`
+        ].join(" ");
+        return `${halo}<polygon points="${triangle}" fill="${fill}" stroke="${stroke}" stroke-width="${isLatest ? 2.4 : 1.8}"></polygon>`;
+      }
+      const actualRadius = mode === "all" && point.type === "weekly" ? Math.max(3.6, radius - 1.2) : radius;
+      return `${halo}<circle cx="${cx}" cy="${cy}" r="${actualRadius}" fill="${fill}" stroke="${stroke}" stroke-width="${isLatest ? 2.4 : 1.8}"></circle>`;
+    }
+
+    function buildTooltipHtml(point, mode) {
+      if (!point) return "";
+      const dateText = formatPointDate(point, mode);
+      const priceText = `${point.price.toLocaleString()}円`;
+      if (mode === "all") return `${escapeHtml(formatPointTypeLabel(point.type))} / ${escapeHtml(dateText)} / ${escapeHtml(priceText)}`;
+      return `${escapeHtml(dateText)} / ${escapeHtml(priceText)}`;
+    }
+
+    function renderPriceAreaChart(containerId, title, points, mode) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      const data = enrichSeries(points);
+      if (!data.length) {
+        el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">観測データがありません</div></div>`;
+        return;
+      }
+
+      const W = 940;
+      const H = 340;
+      const padL = 64;
+      const padR = 84;
+      const padT = 20;
+      const padB = 52;
+      const chartW = W - padL - padR;
+      const chartH = H - padT - padB;
+      const xMin = Math.min(...data.map((item) => item.timestamp));
+      const xMax = Math.max(...data.map((item) => item.timestamp));
+      const spanX = Math.max(24 * 60 * 60 * 1000, xMax - xMin);
+      const prices = data.map((item) => item.price);
+      const yMinRaw = Math.min(...prices);
+      const yMaxRaw = Math.max(...prices);
+      const ySpanRaw = Math.max(1, yMaxRaw - yMinRaw);
+      const yPad = Math.max(20, Math.round(ySpanRaw * 0.08));
+      const yMin = yMinRaw - yPad;
+      const yMax = yMaxRaw + yPad;
+      const xToPx = (ts) => padL + ((ts - xMin) / spanX) * chartW;
+      const yToPx = (v) => padT + (1 - ((v - yMin) / Math.max(1, yMax - yMin))) * chartH;
+
+      const yGrid = [];
+      const yLabels = [];
+      for (let i = 0; i <= 3; i++) {
+        const v = yMin + (i / 3) * (yMax - yMin);
+        const y = yToPx(v);
+        yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#dce4f0"></line>`);
+        yLabels.push(`<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="11" fill="#667085">${Math.round(v).toLocaleString()}</text>`);
+      }
+
+      const labelIndexes = mode === "monthly"
+        ? (() => {
+          const maxLabels = Math.min(6, data.length);
+          const set = new Set();
+          for (let i = 0; i < maxLabels; i++) {
+            const ratio = maxLabels === 1 ? 0 : i / (maxLabels - 1);
+            set.add(Math.round((data.length - 1) * ratio));
+          }
+          return Array.from(set).sort((a, b) => a - b);
+        })()
+        : Array.from(new Set([0, Math.floor((data.length - 1) / 2), data.length - 1]));
+      const xLabels = labelIndexes.map((index) => {
+        const point = data[index];
+        const x = xToPx(point.timestamp);
+        const label = formatPointDate(point, mode);
+        const anchor = index === 0 ? "start" : (index === data.length - 1 ? "end" : "middle");
+        const y = mode === "monthly" ? (H - 16 + ((index % 2) ? 12 : 0)) : (H - 16);
+        return `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="11" fill="#667085">${escapeHtml(label)}</text>`;
+      });
+
+      const lineD = data.map((point, index) => `${index === 0 ? "M" : "L"} ${xToPx(point.timestamp)} ${yToPx(point.price)}`).join(" ");
+      const areaD = `${lineD} L ${xToPx(data[data.length - 1].timestamp)} ${H - padB} L ${xToPx(data[0].timestamp)} ${H - padB} Z`;
+      const first = data[0];
+      const latest = data[data.length - 1];
+      const firstX = xToPx(first.timestamp);
+      const firstY = yToPx(first.price);
+      const latestY = yToPx(latest.price);
+      const markers = data.map((point, index) => {
+        const cx = xToPx(point.timestamp);
+        const cy = yToPx(point.price);
+        const isLatest = index === data.length - 1;
+        const isFirst = index === 0;
+        const radius = isLatest || isFirst ? 7 : 5.5;
+        return `
+          ${buildMarkerSvg(point, cx, cy, radius, isLatest, mode)}
+          ${isFirst ? `<circle cx="${cx}" cy="${cy}" r="${radius + 3}" fill="none" stroke="rgba(15,23,42,0.16)" stroke-width="1.4"></circle>` : ""}
+          <circle class="chart-hit-point" data-hit="${index}" cx="${cx}" cy="${cy}" r="14" fill="transparent"></circle>
+        `;
+      }).join("");
+
+      el.innerHTML = `
+        <div class="chart-wrap">
+          <div class="chart-title">${escapeHtml(title)}</div>
+          <div class="chart-tooltip"></div>
+          <div class="chart-viewport">
+            <svg class="chart" viewBox="0 0 ${W} ${H}">
+              <defs>
+                <linearGradient id="priceAreaGrad-${escapeHtml(containerId)}" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1e5bd7" stop-opacity="0.32"></stop>
+                  <stop offset="100%" stop-color="#1e5bd7" stop-opacity="0.04"></stop>
+                </linearGradient>
+              </defs>
+              <g>${yGrid.join("")}</g>
+              <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
+              <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
+              <path d="${areaD}" fill="url(#priceAreaGrad-${escapeHtml(containerId)})"></path>
+              <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"></line>
+              <text x="${W - padR + 6}" y="${latestY + 4}" font-size="11" font-weight="900" fill="#1e293b">現在 ¥${latest.price.toLocaleString()}</text>
+              <text x="${firstX}" y="${Math.max(18, firstY - 14)}" text-anchor="start" font-size="11" font-weight="800" fill="#475467">開始</text>
+              <g>${markers}</g>
+              <g>${yLabels.join("")}</g>
+              <g>${xLabels.join("")}</g>
+              <rect class="chart-hit-area" x="${padL}" y="${padT}" width="${chartW}" height="${chartH}" fill="transparent"></rect>
+            </svg>
+          </div>
+        </div>
+      `;
+
+      const wrap = el.querySelector(".chart-wrap");
+      const tip = el.querySelector(".chart-tooltip");
+      const hitNodes = Array.from(el.querySelectorAll(".chart-hit-point"));
+      const showTip = (ev, index) => {
+        const point = data[index];
+        if (!wrap || !tip || !point) return;
+        tip.innerHTML = buildTooltipHtml(point, mode);
+        tip.style.display = "block";
+        const wrapRect = wrap.getBoundingClientRect();
+        const half = Math.max((tip.offsetWidth || 0) / 2, 70);
+        const x = Math.min(Math.max(ev.clientX - wrapRect.left, half + 8), wrapRect.width - half - 8);
+        tip.style.left = `${x}px`;
+        tip.style.top = "8px";
+      };
+      const hideTip = () => {
+        if (tip) tip.style.display = "none";
+      };
+      hitNodes.forEach((node) => {
+        const index = Number(node.getAttribute("data-hit"));
+        node.addEventListener("mouseenter", (ev) => showTip(ev, index));
+        node.addEventListener("mousemove", (ev) => showTip(ev, index));
+        node.addEventListener("click", (ev) => showTip(ev, index));
+      });
+      if (wrap) wrap.addEventListener("mouseleave", hideTip);
+    }
+
+    function getSeriesForMode(sleeve, mode) {
+      if (mode === "monthly") return buildMonthlySeries(sleeve);
+      if (mode === "3m") return buildRecentWeeklySeries(sleeve, 92);
+      return buildFullPeriodSeries(sleeve);
+    }
+
     async function main() {
       const applySearchBehavior = () => {
         const search = document.getElementById("search");
@@ -2648,60 +3088,66 @@
       const mercariLink = document.getElementById("mercariLink");
       if (mercariLink) mercariLink.href = buildMercariSearchUrl(s.name);
 
-      const observationRows = normalizeObservationRows(s.weeklyPrices);
-      const latestObservation = observationRows.filter((row) => row.hasTrade && Number.isFinite(row.avgPrice)).slice(-1)[0] || null;
-      updateProductStructuredData(s, latestObservation ? latestObservation.avgPrice : null, releaseDateText);
-      updateFaqStructuredData(s, latestObservation ? latestObservation.avgPrice : null, releaseDateText);
+      const fullPeriodSeries = buildFullPeriodSeries(s);
+      const latestObservation = fullPeriodSeries.length ? fullPeriodSeries[fullPeriodSeries.length - 1] : null;
+      updateProductStructuredData(s, latestObservation ? latestObservation.price : null, releaseDateText);
+      updateFaqStructuredData(s, latestObservation ? latestObservation.price : null, releaseDateText);
       const chartTitleEl = document.getElementById("priceSectionTitle");
       const modeNoteEl = document.getElementById("chartModeNote");
       const period3mBtn = document.getElementById("period3mBtn");
-      const period1yBtn = document.getElementById("period1yBtn");
+      const periodMonthlyBtn = document.getElementById("periodMonthlyBtn");
       const periodAllBtn = document.getElementById("periodAllBtn");
       let currentPeriod = "all";
 
-      renderObservationLegend();
-      renderObservationFootnotes();
-      setPriceKpiFromObservations(observationRows);
+      renderPriceSummary(fullPeriodSeries);
+      setPriceKpiFromSeries(fullPeriodSeries);
       renderRelatedSleeves(s, sleeves);
 
       const setPeriodButtons = (period) => {
         if (period3mBtn) period3mBtn.classList.toggle("is-active", period === "3m");
-        if (period1yBtn) period1yBtn.classList.toggle("is-active", period === "1y");
+        if (periodMonthlyBtn) periodMonthlyBtn.classList.toggle("is-active", period === "monthly");
         if (periodAllBtn) periodAllBtn.classList.toggle("is-active", period === "all");
       };
 
       const applyPeriod = (period) => {
-        currentPeriod = (period === "1y" || period === "all") ? period : "3m";
-        const scoped = filterObservationsByPeriod(observationRows, currentPeriod);
-        const mode = classifyObservationMode(scoped);
-        const titleSuffix = currentPeriod === "3m" ? "（直近3か月）" : currentPeriod === "1y" ? "（1年）" : "（全期間）";
-        if (chartTitleEl) chartTitleEl.textContent = `価格推移（観測ベース）${titleSuffix}`;
+        currentPeriod = (period === "monthly" || period === "all") ? period : "3m";
+        const scoped = enrichSeries(getSeriesForMode(s, currentPeriod));
+        const mode = classifySeriesMode(scoped);
+        const titleSuffix = currentPeriod === "3m" ? "（直近3か月）" : currentPeriod === "monthly" ? "（月次）" : "（全期間）";
+        if (chartTitleEl) chartTitleEl.textContent = `価格推移${titleSuffix}`;
+        renderPriceLegend(currentPeriod);
+        renderPriceFootnotes(currentPeriod);
 
         if (mode === "empty") {
           document.getElementById("weeklyChart").innerHTML = `<div class="chart-wrap"><div class="meta">選択期間に観測データがありません</div></div>`;
           if (modeNoteEl) modeNoteEl.textContent = "";
         } else if (mode === "single") {
-          const only = scoped.find((r) => r.hasTrade && Number.isFinite(r.avgPrice)) || null;
-          renderSingleObservationCard("weeklyChart", only);
+          renderSinglePriceCard("weeklyChart", scoped[0] || null, currentPeriod);
           if (modeNoteEl) modeNoteEl.textContent = "";
         } else if (mode === "few") {
-          renderObservationChart("weeklyChart", "観測価格（参考表示）", scoped, { simple: true });
-          if (modeNoteEl) modeNoteEl.textContent = "観測件数が少ないため、価格推移は参考表示です。";
+          renderPriceAreaChart("weeklyChart", "価格推移", scoped, currentPeriod);
+          if (modeNoteEl) modeNoteEl.textContent = "観測点が少ないため、価格推移は参考表示です。";
         } else {
-          renderObservationChart("weeklyChart", "観測価格 推移", scoped, { simple: false });
+          renderPriceAreaChart("weeklyChart", "価格推移", scoped, currentPeriod);
           if (modeNoteEl) modeNoteEl.textContent = "";
         }
 
-        document.getElementById("weeklyTable").innerHTML = renderObservationTable(scoped);
+        document.getElementById("weeklyTable").innerHTML = renderPriceTable(scoped, currentPeriod);
         setPeriodButtons(currentPeriod);
       };
 
       if (period3mBtn) period3mBtn.addEventListener("click", () => applyPeriod("3m"));
-      if (period1yBtn) period1yBtn.addEventListener("click", () => applyPeriod("1y"));
+      if (periodMonthlyBtn) periodMonthlyBtn.addEventListener("click", () => applyPeriod("monthly"));
       if (periodAllBtn) periodAllBtn.addEventListener("click", () => applyPeriod("all"));
 
       applyPeriod(currentPeriod);
-      setupShare(s, observationRows);
+      setupShare(s, fullPeriodSeries.map((point) => ({
+        avgPrice: point.price,
+        periodStart: point.date,
+        periodLabel: point.date,
+        granularity: point.type === "yearly" ? "year" : point.type === "monthly" ? "month" : "week",
+        hasTrade: true
+      })));
     }
 
     document.addEventListener("DOMContentLoaded", () => main());
