@@ -1356,14 +1356,11 @@
       }
       .home-top-grid {
         grid-template-columns: 1fr;
-        grid-template-areas:
-          "sidebar"
-          "ranking"
-          "hero"
-          "search"
-          "market";
+        grid-template-areas: none;
       }
+      .home-top-sidebar,
       .home-top-main {
+        grid-area: auto;
         display: grid;
         gap: 22px;
       }
