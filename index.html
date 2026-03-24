@@ -1364,7 +1364,14 @@
           "market";
       }
       .home-top-main {
-        display: contents;
+        display: grid;
+        gap: 22px;
+      }
+      .home-top-ranking,
+      .today-hero,
+      .home-top-search,
+      .home-top-market {
+        grid-area: auto;
       }
       .today-hero-link,
       .live-now-link,
