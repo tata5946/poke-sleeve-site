@@ -59,6 +59,25 @@
       color: #111;
     }
 
+    .hero .box .subvalue {
+      margin-top: 4px;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .hero .box .subvalue.up {
+      color: #d92d20;
+    }
+
+    .hero .box .subvalue.down {
+      color: #175cd3;
+    }
+
+    .hero .box .subvalue.flat {
+      color: #475467;
+    }
+
     .hero #subtitle {
       margin-top: 4px;
       font-size: 13px;
@@ -157,6 +176,55 @@
 
     .chart-panel {
       box-shadow: 0 8px 22px rgba(16, 24, 40, .06);
+    }
+
+    .market-state-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 10px 0 14px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid #dbe5f2;
+      background: linear-gradient(135deg, #f8fbff 0%, #eef4ff 100%);
+    }
+
+    .market-state-copy {
+      min-width: 0;
+    }
+
+    .market-state-label {
+      font-size: 12px;
+      font-weight: 900;
+      color: #667085;
+    }
+
+    .market-state-value {
+      margin-top: 4px;
+      font-size: clamp(20px, 2.3vw, 28px);
+      font-weight: 900;
+      line-height: 1.15;
+      color: #101828;
+    }
+
+    .market-state-value.up {
+      color: #c4320a;
+    }
+
+    .market-state-value.down {
+      color: #175cd3;
+    }
+
+    .market-state-value.flat {
+      color: #344054;
+    }
+
+    .market-state-note {
+      margin: 2px 0 0;
+      font-size: 13px;
+      color: #475467;
+      line-height: 1.5;
     }
 
     .section-title {
@@ -378,6 +446,30 @@
       pointer-events: none;
     }
 
+    .chart-callout-label {
+      font-size: 12px;
+      font-weight: 900;
+      fill: #101828;
+    }
+
+    .chart-callout-sub {
+      font-size: 11px;
+      font-weight: 800;
+      fill: #475467;
+    }
+
+    .chart-callout-sub.up {
+      fill: #d92d20;
+    }
+
+    .chart-callout-sub.down {
+      fill: #175cd3;
+    }
+
+    .chart-callout-sub.flat {
+      fill: #475467;
+    }
+
     @media (max-width: 900px) {
       .hero .kpi {
         grid-template-columns: 1fr;
@@ -431,7 +523,15 @@
           <div class="box">
             <div class="label">指数（基準値100）</div>
             <div id="kpiIndex" class="value">-</div>
+            <div id="kpiIndexBaseDiff" class="subvalue flat">-</div>
             <div class="meta" id="kpiIndexMeta" style="margin-top:6px;">基準週 = 100</div>
+          </div>
+        </div>
+        <div id="marketStateBanner" class="market-state-banner">
+          <div class="market-state-copy">
+            <div class="market-state-label">市場の状態</div>
+            <div id="marketStateValue" class="market-state-value flat">判定中</div>
+            <p id="marketStateNote" class="market-state-note">最新の指数推移から市場の温度感を整理します。</p>
           </div>
         </div>
         <div class="share-block">
@@ -450,7 +550,7 @@
 
       <div class="panel chart-panel">
         <h3 class="section-title">指数チャート</h3>
-        <p class="section-subtle">基準値100を起点とした週次推移</p>
+        <p class="section-subtle">市場が強いか弱いかを、基準値100からの動きで直感的に見られます</p>
         <div id="indexChart"></div>
       </div>
 
@@ -1064,6 +1164,7 @@
               </defs>
               <g class="main-grid"></g>
               <g class="main-labels"></g>
+              <g class="main-callouts"></g>
               <path class="main-fill" fill="url(#bgGrad2-${escapeHtml(containerId)})"></path>
               <path class="main-line" fill="none" stroke="#1e5bd7" stroke-width="3" stroke-linecap="round"></path>
               <line class="hover-line" stroke="#94a3b8" stroke-width="1" style="display:none;"></line>
@@ -1089,6 +1190,7 @@
       const hDot = el.querySelector(".hover-dot");
       const mainGrid = el.querySelector(".main-grid");
       const mainLabels = el.querySelector(".main-labels");
+      const mainCallouts = el.querySelector(".main-callouts");
       const mainXLabels = el.querySelector(".main-x-labels");
       const mainFill = el.querySelector(".main-fill");
       const mainLine = el.querySelector(".main-line");
@@ -1179,7 +1281,16 @@
           penDown = true;
         }
         mainLine.setAttribute("d", pathD);
-        mainFill.setAttribute("d", "");
+        const filledPoints = visible
+          .map((point, idx) => hasValidY(point?.y) ? `${xToPxMain(idx)} ${yToPxMain(point.y)}` : null)
+          .filter(Boolean);
+        if (filledPoints.length >= 2) {
+          const firstX = xToPxMain(visible.findIndex((point) => hasValidY(point?.y)));
+          const lastX = xToPxMain(visible.length - 1 - [...visible].reverse().findIndex((point) => hasValidY(point?.y)));
+          mainFill.setAttribute("d", `M ${firstX} ${mainBottom} L ${filledPoints.join(" L ")} L ${lastX} ${mainBottom} Z`);
+        } else {
+          mainFill.setAttribute("d", "");
+        }
 
         const gridLines = [];
         const yLabels = [];
@@ -1191,6 +1302,7 @@
         }
         mainGrid.innerHTML = gridLines.join("");
         mainLabels.innerHTML = yLabels.join("");
+        mainCallouts.innerHTML = "";
 
         const midIdx = Math.floor((visible.length - 1) / 2);
         const xLabels = [
@@ -1204,6 +1316,38 @@
         mainXLabels.innerHTML = xLabels.map(l =>
           `<text x="${l.x}" y="${xLabelY}" font-size="13" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
         ).join("");
+
+        const firstPointIdx = visible.findIndex((point) => hasValidY(point?.y));
+        const latestPointIdx = (() => {
+          for (let i = visible.length - 1; i >= 0; i--) {
+            if (hasValidY(visible[i]?.y)) return i;
+          }
+          return -1;
+        })();
+        if (firstPointIdx >= 0 && latestPointIdx >= 0) {
+          const firstPoint = visible[firstPointIdx];
+          const latestPoint = visible[latestPointIdx];
+          const firstX = xToPxMain(firstPointIdx);
+          const firstY = yToPxMain(firstPoint.y);
+          const latestX = xToPxMain(latestPointIdx);
+          const latestY = yToPxMain(latestPoint.y);
+          const baseDiff = Number.isFinite(latestPoint.y) ? latestPoint.y - 100 : null;
+          const basePct = Number.isFinite(baseDiff) ? baseDiff : null;
+          const diffCls = getTrendClass(basePct);
+          const latestAnchor = latestX > (W - padR - 90) ? "end" : "start";
+          const latestLabelX = latestAnchor === "end" ? latestX - 10 : latestX + 10;
+          const startAnchor = firstX < (padL + 90) ? "start" : "end";
+          const startLabelX = startAnchor === "start" ? firstX + 10 : firstX - 10;
+
+          mainGrid.innerHTML += `<line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#9bb4ea" stroke-dasharray="6 6"/>`;
+          mainCallouts.innerHTML = `
+            <circle cx="${firstX}" cy="${firstY}" r="5" fill="#ffffff" stroke="#1e5bd7" stroke-width="3"></circle>
+            <text x="${startLabelX}" y="${Math.max(mainTop + 14, firstY - 18)}" text-anchor="${startAnchor}" class="chart-callout-label">開始 ${escapeHtml(yFmt(firstPoint.y))}</text>
+            <circle cx="${latestX}" cy="${latestY}" r="7" fill="#1e5bd7" stroke="#ffffff" stroke-width="4"></circle>
+            <text x="${latestLabelX}" y="${Math.max(mainTop + 14, latestY - 20)}" text-anchor="${latestAnchor}" class="chart-callout-label">現在指数 ${escapeHtml(yFmt(latestPoint.y))}</text>
+            <text x="${latestLabelX}" y="${Math.max(mainTop + 28, latestY - 4)}" text-anchor="${latestAnchor}" class="chart-callout-sub ${escapeHtml(diffCls)}">${escapeHtml(formatSignedPercent(basePct, 1))}</text>
+          `;
+        }
 
         const rangeX1 = xToPxAll(s);
         const rangeX2 = xToPxAll(e);
@@ -1234,7 +1378,8 @@
             hDot.setAttribute("cy", py);
           }
 
-          tip.textContent = `${formatPeriodLabel(point.x)} / ${hasValue ? yFmt(point.y) : "-"}`;
+          const basePct = hasValue ? (point.y - 100) : null;
+          tip.textContent = `${formatPeriodLabel(point.x)} / 指数 ${hasValue ? yFmt(point.y) : "-"} / 基準比 ${hasValue ? formatSignedPercent(basePct, 1) : "-"}`;
           const wrapRect = wrap.getBoundingClientRect();
           tip.style.left = `${Math.min(Math.max(ev.clientX - wrapRect.left, 56), wrapRect.width - 56)}px`;
           const tipY = Math.max(ev.clientY - wrapRect.top - tip.offsetHeight - 12, 8);
@@ -1565,6 +1710,38 @@
       statusEl.textContent = `${weekText} 時点の指数を共有できます。`;
     }
 
+    function formatSignedPercent(value, digits = 1) {
+      if (!Number.isFinite(value)) return "—";
+      const sign = value > 0 ? "+" : value < 0 ? "-" : "±";
+      return `${sign}${Math.abs(value).toFixed(digits)}%`;
+    }
+
+    function getTrendClass(value) {
+      if (!Number.isFinite(value) || Math.abs(value) < 0.5) return "flat";
+      return value > 0 ? "up" : "down";
+    }
+
+    function describeMarketState(series, latestRow) {
+      const valid = (Array.isArray(series) ? series : []).filter((row) => Number.isFinite(row?.index));
+      const last = latestRow && Number.isFinite(latestRow.avgRate) ? latestRow : valid[valid.length - 1];
+      if (!last || !valid.length) {
+        return { label: "判定できません", note: "指数データが不足しています。", cls: "flat" };
+      }
+
+      const recent = valid.slice(-4);
+      const slope = recent.length >= 2 ? recent[recent.length - 1].index - recent[0].index : 0;
+      const weeklyRate = Number.isFinite(last.avgRate) ? last.avgRate : 0;
+      const strength = slope + (weeklyRate * 0.8);
+
+      if (strength >= 2.5 || weeklyRate >= 1.2) {
+        return { label: "上昇中", note: "指数は持ち直しつつあり、市場全体に買いが広がっています。", cls: "up" };
+      }
+      if (strength <= -2.5 || weeklyRate <= -1.2) {
+        return { label: "下落", note: "指数は弱含みで、全体としてやや慎重な値動きです。", cls: "down" };
+      }
+      return { label: "横ばい", note: "大きな方向感はまだ薄く、相場はもみ合いに近い状態です。", cls: "flat" };
+    }
+
     async function main() {
       // header差し込みが遅いと #search が無いことがあるので待つ
       const waitForSearch = async () => {
@@ -1644,11 +1821,30 @@
 
       // 指数
       const kpiIndex = document.getElementById("kpiIndex");
+      const kpiIndexBaseDiff = document.getElementById("kpiIndexBaseDiff");
       const kpiIndexMeta = document.getElementById("kpiIndexMeta");
       if (pairIdx) {
         kpiIndex.textContent = `${pairIdx.latest.index.toFixed(1)}`;
+        const baseDiff = pairIdx.latest.index - 100;
+        const diffCls = getTrendClass(baseDiff);
+        kpiIndexBaseDiff.className = `subvalue ${diffCls}`;
+        kpiIndexBaseDiff.textContent = `基準比 ${formatSignedPercent(baseDiff, 1)}`;
         const baseRef = pairIdx.latest.baseWeek || null;
         kpiIndexMeta.textContent = `基準週：${baseRef ? formatPeriodLabel(baseRef) : "—"} = 100`;
+      } else if (kpiIndexBaseDiff) {
+        kpiIndexBaseDiff.className = "subvalue flat";
+        kpiIndexBaseDiff.textContent = "基準比 —";
+      }
+
+      const marketState = describeMarketState(series, last);
+      const marketStateValue = document.getElementById("marketStateValue");
+      const marketStateNote = document.getElementById("marketStateNote");
+      if (marketStateValue) {
+        marketStateValue.className = `market-state-value ${marketState.cls}`;
+        marketStateValue.textContent = marketState.label;
+      }
+      if (marketStateNote) {
+        marketStateNote.textContent = marketState.note;
       }
       setupMarketShare(pairRate?.latest || null, pairIdx?.latest?.index ?? null);
 
@@ -1657,9 +1853,9 @@
       const validIndexCount = indexSeries.filter(r => Number.isFinite(r.index) && r.index > 0).length;
       if (validIndexCount < 2) {
         document.getElementById("indexChart").innerHTML =
-          `<div class="chart-wrap"><div class="chart-title">スリーブ指数 推移（週次）</div><div class="meta">指数データが不足しています</div></div>`;
+          `<div class="chart-wrap"><div class="chart-title">スリーブ指数 推移</div><div class="meta">指数データが不足しています</div></div>`;
       } else {
-        renderLineChartV2("indexChart", "スリーブ指数 推移（週次）", indexSeries, "week", "index", (v) => Number(v).toFixed(1));
+        renderLineChartV2("indexChart", "スリーブ指数 推移", indexSeries, "week", "index", (v) => Number(v).toFixed(1));
       }
 
       // テーブル
