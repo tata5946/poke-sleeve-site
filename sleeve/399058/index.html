@@ -135,6 +135,7 @@
       display: grid;
       gap: 2px;
       align-content: start;
+      text-align: right;
     }
 
     .detail-info-label {
@@ -481,11 +482,12 @@
 
     .price-summary-card {
       border: 1px solid #dbe5f2;
-      border-radius: 14px;
+      border-radius: 10px;
       background: linear-gradient(180deg, rgba(255, 255, 255, .98) 0%, rgba(246, 249, 255, .98) 100%);
       box-shadow: 0 6px 16px rgba(16, 24, 40, .05);
-      padding: 12px 12px 10px;
+      padding: 8px;
       min-width: 0;
+      text-align: right;
     }
 
     .price-summary-label {
@@ -497,7 +499,7 @@
     }
 
     .price-summary-value {
-      margin-top: 8px;
+      margin-top: 6px;
       font-size: clamp(16px, 2vw, 22px);
       line-height: 1.12;
       font-weight: 900;
@@ -506,10 +508,61 @@
     }
 
     .price-summary-meta {
-      margin-top: 6px;
+      margin-top: 4px;
       font-size: 11px;
       line-height: 1.45;
       color: #667085;
+    }
+
+    .price-summary-card.is-primary {
+      border-color: #c9d8f0;
+      background: linear-gradient(180deg, #ffffff 0%, #f3f8ff 100%);
+    }
+
+    .price-summary-card.is-primary .price-summary-value {
+      font-size: clamp(20px, 2.4vw, 26px);
+    }
+
+    .price-panel {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .price-panel-summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      cursor: pointer;
+    }
+
+    .price-panel-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .price-panel-summary-copy {
+      min-width: 0;
+    }
+
+    .price-panel-toggle {
+      flex: 0 0 auto;
+      font-size: 12px;
+      font-weight: 900;
+      color: #475467;
+    }
+
+    .price-panel[open] .price-panel-toggle::after {
+      content: "閉じる";
+    }
+
+    .price-panel:not([open]) .price-panel-toggle::after {
+      content: "開く";
+    }
+
+    .price-panel-body {
+      padding: 0 12px 12px;
     }
 
     .chart-legend {
@@ -749,16 +802,70 @@
     @media (max-width: 420px) {
       .detail-hero {
         grid-template-columns: 1fr;
-        gap: 10px;
+        gap: 8px;
+        padding: 8px;
+        border-radius: 10px;
       }
 
       .detail-hero .thumb {
-        width: min(100%, 220px);
-        height: 220px;
+        width: min(100%, 160px);
+        height: 160px;
+        margin: 0 auto;
       }
 
       .detail-info-card {
-        padding: 10px;
+        padding: 8px;
+        gap: 6px;
+      }
+
+      .name {
+        font-size: 20px;
+        text-align: center;
+      }
+
+      .detail-tag-list {
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .detail-tag {
+        min-height: 24px;
+        padding: 0 8px;
+        font-size: 11px;
+      }
+
+      .kpi {
+        margin-top: 6px;
+        gap: 6px;
+      }
+
+      .box {
+        padding: 8px;
+        border-radius: 10px;
+      }
+
+      .box .label,
+      .box .value,
+      #weeklyDelta,
+      #weeklyCount {
+        text-align: center;
+      }
+
+      .box .value {
+        font-size: 28px;
+      }
+
+      .detail-info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px 10px;
+      }
+
+      .detail-info-label {
+        font-size: 10px;
+      }
+
+      .detail-info-value {
+        font-size: 13px;
       }
 
       .btn-row,
@@ -783,7 +890,47 @@
       }
 
       .price-summary-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .price-summary-card {
+        padding: 7px 8px;
+        border-radius: 8px;
+      }
+
+      .price-summary-card.is-primary .price-summary-value {
+        font-size: 20px;
+      }
+
+      .price-summary-label {
+        font-size: 10px;
+      }
+
+      .price-summary-value {
+        margin-top: 4px;
+        font-size: 16px;
+      }
+
+      .price-summary-meta {
+        margin-top: 3px;
+        font-size: 10px;
+      }
+
+      .price-panel-summary {
+        padding: 10px 10px 8px;
+      }
+
+      .price-panel-body {
+        padding: 0 10px 10px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      #weeklyTable,
+      #chartLegend,
+      #chartFootnotes {
+        display: none;
       }
     }
   </style>
@@ -851,8 +998,14 @@
         </div>
 
         <div class="detail-price-grid">
-          <div class="panel">
-            <h3 id="priceSectionTitle" style="margin:0;">価格推移</h3>
+          <details class="panel price-panel" id="pricePanel" open>
+            <summary class="price-panel-summary">
+              <div class="price-panel-summary-copy">
+                <h3 id="priceSectionTitle" style="margin:0;">価格推移</h3>
+              </div>
+              <span class="price-panel-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="price-panel-body">
             <div class="chart-period-switch" role="tablist" aria-label="表示期間">
               <button type="button" class="chart-period-btn is-active" id="periodAllBtn" data-period="all">全期間</button>
               <button type="button" class="chart-period-btn" id="periodMonthlyBtn" data-period="monthly">月次</button>
@@ -864,7 +1017,8 @@
             <div id="weeklyChart"></div>
             <div id="chartFootnotes" class="chart-footnotes"></div>
             <div id="weeklyTable"></div>
-          </div>
+            </div>
+          </details>
         </div>
 
         <div class="related-sections" id="relatedSections" hidden>
@@ -1269,7 +1423,7 @@
       if (releaseYear) {
         badges.push(`<span class="badge">${escapeHtml(releaseYear)}</span>`);
       }
-      return badges.join("");
+      return badges.slice(0, 2).join("");
     }
 
     function renderDetailTags(sleeve) {
@@ -1305,7 +1459,7 @@
         return;
       }
 
-      root.innerHTML = uniqueChips.join("");
+      root.innerHTML = uniqueChips.slice(0, 2).join("");
       root.hidden = false;
     }
 
@@ -2784,19 +2938,37 @@
       const prices = list.map((item) => item.price);
       const ratio = first.price > 0 ? (latest.price / first.price) : null;
       const cards = [
-        { label: "現在価格", value: `${latest.price.toLocaleString()}円`, meta: `最新観測: ${formatPointDate(latest, "all")}` },
+        { label: "現在価格", value: `${latest.price.toLocaleString()}円`, meta: `最新観測: ${formatPointDate(latest, "all")}`, primary: true },
+        { label: "初期観測比", value: Number.isFinite(ratio) ? `${ratio.toFixed(ratio >= 10 ? 1 : 2)}倍` : "-", meta: Number.isFinite(ratio) ? "現在価格 ÷ 初期観測価格" : "算出不可", primary: true },
         { label: "初期観測価格", value: `${first.price.toLocaleString()}円`, meta: `初期観測: ${formatPointDate(first, "all")}` },
-        { label: "初期観測比", value: Number.isFinite(ratio) ? `${ratio.toFixed(ratio >= 10 ? 1 : 2)}倍` : "-", meta: Number.isFinite(ratio) ? "現在価格 ÷ 初期観測価格" : "算出不可" },
         { label: "最高価格", value: `${Math.max(...prices).toLocaleString()}円`, meta: "" },
         { label: "最安価格", value: `${Math.min(...prices).toLocaleString()}円`, meta: "" }
       ];
       el.innerHTML = cards.map((card) => `
-        <div class="price-summary-card">
+        <div class="price-summary-card${card.primary ? " is-primary" : ""}">
           <div class="price-summary-label">${escapeHtml(card.label)}</div>
           <div class="price-summary-value">${escapeHtml(card.value)}</div>
           <div class="price-summary-meta">${escapeHtml(card.meta || "")}</div>
         </div>
       `).join("");
+    }
+
+    function applyPricePanelBehavior() {
+      const panel = document.getElementById("pricePanel");
+      if (!panel || panel.dataset.wired === "1") return;
+      panel.dataset.wired = "1";
+
+      const syncOpen = () => {
+        if (panel.dataset.userToggled === "1") return;
+        panel.open = window.innerWidth > 700;
+      };
+
+      panel.addEventListener("toggle", () => {
+        panel.dataset.userToggled = "1";
+      });
+
+      syncOpen();
+      window.addEventListener("resize", syncOpen, { passive: true });
     }
 
     function renderPriceTable(points, mode) {
@@ -3161,6 +3333,7 @@
       document.getElementById("badges").innerHTML = buildHeaderBadges(s);
       renderDetailInfo(s);
       renderDetailTags(s);
+      applyPricePanelBehavior();
 
       document.getElementById("backLink").href = "./sleeves/";
       const mercariLink = document.getElementById("mercariLink");
