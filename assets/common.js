@@ -58,7 +58,7 @@ scheduleAnalyticsInit();
 const HEADER_HTML = `
 <div class="header">
   <div class="header-top">
-    <button type="button" class="menu-toggle" id="headerMenuBtn" aria-label="補助メニューを開く" aria-expanded="false" aria-controls="headerUtilityMenu">
+    <button type="button" class="menu-toggle" id="headerMenuBtn" aria-label="カテゴリーを開く" aria-expanded="false" aria-controls="categoryNav">
       <span class="menu-toggle-bar" aria-hidden="true"></span>
       <span class="menu-toggle-bar" aria-hidden="true"></span>
       <span class="menu-toggle-bar" aria-hidden="true"></span>
@@ -91,12 +91,6 @@ const HEADER_HTML = `
         <a href="./index-market.html" data-nav="market"><span class="nav-icon" aria-hidden="true">📈</span>スリーブ指数</a>
         <a href="./contact.html" data-nav="contact"><span class="nav-icon" aria-hidden="true">✉️</span>お問い合わせ</a>
       </nav>
-    </div>
-  </div>
-  <div class="header-utility" id="headerUtilityMenu">
-    <div class="header-utility-inner">
-      <a href="./policy.html">ポリシー</a>
-      <a href="./contact.html">お問い合わせ</a>
     </div>
   </div>
 </div>
@@ -1062,23 +1056,30 @@ function wireHeaderOffsetSync() {
 function wireHeaderMenu() {
   const header = document.querySelector("#site-header .header");
   const button = document.getElementById("headerMenuBtn");
-  const utility = document.getElementById("headerUtilityMenu");
-  if (!header || !button || !utility || button.dataset.menuWired === "1") return;
+  const homeCategoryPanel = document.body.classList.contains("home-page")
+    ? document.getElementById("categoryNav")
+    : null;
+  if (!header || !button || button.dataset.menuWired === "1") return;
+
+  if (!homeCategoryPanel) {
+    button.hidden = true;
+    return;
+  }
 
   const applyButtonState = (expanded) => {
     button.setAttribute("aria-expanded", expanded ? "true" : "false");
-    button.setAttribute("aria-controls", "headerUtilityMenu");
-    button.setAttribute("aria-label", expanded ? "補助メニューを閉じる" : "補助メニューを開く");
+    button.setAttribute("aria-controls", "categoryNav");
+    button.setAttribute("aria-label", expanded ? "カテゴリーを閉じる" : "カテゴリーを開く");
   };
 
   const closeMenu = () => {
-    header.classList.remove("is-mobile-nav-open");
+    homeCategoryPanel.classList.remove("is-mobile-drawer-open");
     applyButtonState(false);
     syncHeaderOffset();
   };
 
   const toggleMenu = () => {
-    const isOpen = header.classList.toggle("is-mobile-nav-open");
+    const isOpen = homeCategoryPanel.classList.toggle("is-mobile-drawer-open");
     applyButtonState(isOpen);
     syncHeaderOffset();
   };
@@ -1090,7 +1091,7 @@ function wireHeaderMenu() {
     toggleMenu();
   });
 
-  utility.addEventListener("click", (event) => {
+  homeCategoryPanel.addEventListener("click", (event) => {
     const target = event.target instanceof Element ? event.target.closest("a") : null;
     if (target) closeMenu();
   });
@@ -1098,6 +1099,7 @@ function wireHeaderMenu() {
   document.addEventListener("click", (event) => {
     if (!(event.target instanceof Node)) return;
     if (header.contains(event.target)) return;
+    if (homeCategoryPanel.contains(event.target)) return;
     closeMenu();
   });
 
@@ -1107,7 +1109,7 @@ function wireHeaderMenu() {
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 700) closeMenu();
-    else applyButtonState(header.classList.contains("is-mobile-nav-open"));
+    else applyButtonState(homeCategoryPanel.classList.contains("is-mobile-drawer-open"));
   }, { passive: true });
 }
 

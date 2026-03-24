@@ -1387,17 +1387,16 @@
         display: block;
       }
       .category-nav {
-        display: grid;
-        position: static;
-        top: auto;
-        left: auto;
-        right: auto;
-        z-index: auto;
+        display: none;
+        position: relative;
         max-height: none;
         overflow: visible;
         padding: 18px 16px;
         border-radius: 18px;
         box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+      }
+      .category-nav.is-mobile-drawer-open {
+        display: grid;
       }
       .home-section-head,
       .today-hero-link,
