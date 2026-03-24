@@ -41,7 +41,18 @@ function initGoogleAnalytics() {
   window.gtag("config", GA_MEASUREMENT_ID);
 }
 
-initGoogleAnalytics();
+function scheduleAnalyticsInit() {
+  const run = () => {
+    try { initGoogleAnalytics(); } catch (_) { }
+  };
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(run, { timeout: 2000 });
+    return;
+  }
+  window.addEventListener("load", run, { once: true });
+}
+
+scheduleAnalyticsInit();
 
 /* ----- Header / Footer HTML ----- */
 const HEADER_HTML = `
@@ -1046,36 +1057,21 @@ function wireHeaderMenu() {
   const header = document.querySelector("#site-header .header");
   const button = document.getElementById("headerMenuBtn");
   const nav = document.getElementById("headerMobileNav");
-  const homeCategoryPanel = document.body.classList.contains("home-page")
-    ? document.getElementById("categoryNav")
-    : null;
   if (!header || !button || !nav || button.dataset.menuWired === "1") return;
-
-  const isHomeCategoryMode = () => window.innerWidth <= 740 && !!homeCategoryPanel;
 
   const applyButtonState = (expanded) => {
     button.setAttribute("aria-expanded", expanded ? "true" : "false");
-    button.setAttribute("aria-controls", isHomeCategoryMode() ? "categoryNav" : "headerMobileNav");
-    button.setAttribute("aria-label", isHomeCategoryMode() ? "カテゴリーを開く" : "メニューを開く");
+    button.setAttribute("aria-controls", "headerMobileNav");
+    button.setAttribute("aria-label", "メニューを開く");
   };
 
   const closeMenu = () => {
     header.classList.remove("is-mobile-nav-open");
-    if (homeCategoryPanel) homeCategoryPanel.classList.remove("is-mobile-drawer-open");
     applyButtonState(false);
     syncHeaderOffset();
   };
 
   const toggleMenu = () => {
-    if (isHomeCategoryMode()) {
-      header.classList.remove("is-mobile-nav-open");
-      const isOpen = homeCategoryPanel.classList.toggle("is-mobile-drawer-open");
-      applyButtonState(isOpen);
-      syncHeaderOffset();
-      return;
-    }
-
-    if (homeCategoryPanel) homeCategoryPanel.classList.remove("is-mobile-drawer-open");
     const isOpen = header.classList.toggle("is-mobile-nav-open");
     applyButtonState(isOpen);
     syncHeaderOffset();
@@ -1096,7 +1092,6 @@ function wireHeaderMenu() {
   document.addEventListener("click", (event) => {
     if (!(event.target instanceof Node)) return;
     if (header.contains(event.target)) return;
-    if (homeCategoryPanel && homeCategoryPanel.contains(event.target)) return;
     closeMenu();
   });
 
@@ -1106,7 +1101,7 @@ function wireHeaderMenu() {
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 700) closeMenu();
-    else applyButtonState(header.classList.contains("is-mobile-nav-open") || !!(homeCategoryPanel && homeCategoryPanel.classList.contains("is-mobile-drawer-open")));
+    else applyButtonState(header.classList.contains("is-mobile-nav-open"));
   }, { passive: true });
 }
 
@@ -1292,8 +1287,12 @@ document.addEventListener("DOMContentLoaded", () => {
   injectHeaderFooter();
 
   try {
-    // Warm the shared data cache as early as possible for pages that render sleeves immediately.
-    loadData().catch(() => {});
+    const warmCache = () => { loadData().catch(() => {}); };
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(warmCache, { timeout: 1200 });
+    } else {
+      setTimeout(warmCache, 150);
+    }
   } catch (e) {
     console.error(e);
   }

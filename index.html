@@ -1378,25 +1378,22 @@
     }
     @media (max-width: 740px) {
       body.home-page .container { padding-top: 6px; padding-bottom: 32px; }
-      .home-shell { gap: 28px; }
+      .home-shell { gap: 20px; }
       .home-top-sidebar {
-        display: contents;
+        display: block;
       }
       .category-nav {
-        display: none;
-        position: fixed;
-        top: calc(var(--site-header-h) + 8px);
-        left: 10px;
-        right: 10px;
-        z-index: 95;
-        max-height: calc(100vh - var(--site-header-h) - 18px);
-        overflow: auto;
+        display: grid;
+        position: static;
+        top: auto;
+        left: auto;
+        right: auto;
+        z-index: auto;
+        max-height: none;
+        overflow: visible;
         padding: 18px 16px;
         border-radius: 18px;
-        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
-      }
-      .category-nav.is-mobile-drawer-open {
-        display: grid;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
       }
       .home-section-head,
       .today-hero-link,
@@ -1407,7 +1404,8 @@
       .live-now-card,
       .trend-panel,
       .pickup-section,
-      .quick-link { padding: 24px; }
+      .quick-link,
+      .highlight-panel { padding: 18px; }
       .quick-links,
       .trend-grid,
       .today-hero-metrics,
@@ -1415,11 +1413,41 @@
       .hero-skeleton-metrics,
       .live-now-metrics,
       .daily-pick-skeleton { grid-template-columns: 1fr; }
+      .highlight-item {
+        grid-template-columns: 38px 56px minmax(0, 1fr);
+        align-items: start;
+        gap: 10px;
+        padding: 12px;
+      }
+      .highlight-value {
+        grid-column: 2 / -1;
+        text-align: left;
+        font-size: 16px;
+      }
+      .highlight-thumb {
+        width: 56px;
+        height: 56px;
+      }
+      .highlight-name {
+        font-size: 14px;
+      }
+      .market-snapshot {
+        gap: 16px;
+      }
+      .market-snapshot-metrics {
+        grid-template-columns: 1fr;
+      }
+      .market-snapshot-metric {
+        padding: 16px;
+      }
       .trend-rail {
         grid-auto-columns: minmax(78vw, 1fr);
       }
-      .today-hero-media { min-height: 220px; }
-      .live-now-media { min-height: 200px; }
+      .today-hero-media { min-height: 180px; }
+      .live-now-media { min-height: 170px; }
+      .category-nav-list {
+        gap: 14px;
+      }
     }
   </style>
 </head>

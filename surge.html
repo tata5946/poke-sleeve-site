@@ -364,6 +364,44 @@
       .ranking-filter-grid {
         grid-template-columns: 1fr;
       }
+
+      .ranking-header-card {
+        padding: 16px;
+      }
+
+      .ranking-status {
+        justify-content: stretch;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+      }
+
+      .ranking-status-card {
+        min-width: 0;
+        flex: initial;
+      }
+
+      .podium-card,
+      .podium-card--rank1 {
+        padding: 12px;
+        gap: 10px;
+      }
+
+      .podium-card--rank1 .podium-media img {
+        height: 180px;
+      }
+
+      .podium-card:not(.podium-card--rank1) .podium-media img {
+        height: 120px;
+      }
+
+      .podium-title {
+        font-size: 17px;
+      }
+
+      .podium-actions .btn {
+        width: 100%;
+      }
     }
   </style>
 </head>

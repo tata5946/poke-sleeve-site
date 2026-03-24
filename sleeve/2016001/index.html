@@ -441,6 +441,8 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       background: #f8fafc;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .chart-period-btn {
@@ -452,6 +454,8 @@
       font-size: 12px;
       font-weight: 900;
       cursor: pointer;
+      white-space: nowrap;
+      flex: 0 0 auto;
     }
 
     .chart-period-btn.is-active {
@@ -771,10 +775,11 @@
 
       .chart-period-switch {
         gap: 6px;
+        flex-wrap: nowrap;
       }
 
       .chart-period-btn {
-        flex: 1 1 calc(50% - 6px);
+        flex: 0 0 auto;
       }
 
       .price-summary-grid {

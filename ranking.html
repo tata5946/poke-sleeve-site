@@ -530,16 +530,19 @@
     @media (max-width: 700px) {
       .ranking-header-card {
         grid-template-columns: 1fr;
-        padding: 20px;
+        padding: 16px;
       }
 
       .ranking-status {
-        justify-content: flex-start;
+        justify-content: stretch;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
       }
 
       .ranking-status-card {
         min-width: 0;
-        flex: 1 1 140px;
+        flex: initial;
       }
 
       .ranking-filter-card {
@@ -568,19 +571,34 @@
       }
 
       .podium-card--rank1 .podium-media img {
-        height: 220px;
+        height: 180px;
       }
 
        .podium-card:not(.podium-card--rank1) .podium-media img {
-        height: 130px;
+        height: 120px;
       }
 
       .podium-metrics {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .podium-title {
-        font-size: 18px;
+        font-size: 17px;
+      }
+
+      .podium-card,
+      .podium-card--rank1 {
+        padding: 12px;
+        gap: 10px;
+      }
+
+      .podium-actions .btn {
+        width: 100%;
+      }
+
+      .ranking-card-note,
+      .podium-summary {
+        font-size: 11px;
       }
     }
   </style>

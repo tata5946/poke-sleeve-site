@@ -860,21 +860,19 @@ footer.site-footer {
 @media (max-width:700px) {
     .header-top {
         display: grid;
-        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr);
         align-items: center;
-        column-gap: 10px;
+        column-gap: 0;
         row-gap: 10px;
         padding: 10px 14px;
     }
 
     .menu-toggle {
         display: none;
-        grid-column: 1;
-        grid-row: 1;
     }
 
     .brand {
-        grid-column: 2;
+        grid-column: 1;
         grid-row: 1;
     }
 
@@ -958,6 +956,11 @@ footer.site-footer {
         overflow-x: auto;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .header-bottom-inner::-webkit-scrollbar {
+        display: none;
     }
 
     .nav {
