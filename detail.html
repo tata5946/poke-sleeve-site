@@ -2603,11 +2603,13 @@
           const timestamp = Number.isFinite(item?.timestamp) ? item.timestamp : Date.parse(String(item?.date || ""));
           const price = normalizeChartPrice(item?.price);
           if (!Number.isFinite(timestamp) || !(Number.isFinite(price) && price > 0)) return null;
+          const countValue = parseNumberLike(item?.count);
           return {
             type: String(item?.type || "").trim(),
             date: String(item?.date || "").trim(),
             price: Math.round(price),
-            timestamp
+            timestamp,
+            count: Number.isFinite(countValue) && countValue >= 0 ? Math.round(countValue) : null
           };
         })
         .filter(Boolean)
@@ -2664,11 +2666,17 @@
       for (const item of (Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [])) {
         const date = normalizeDateFromInput(item?.week, "01");
         const price = normalizeChartPrice(item?.price);
+        const countValue = parseNumberLike(item?.count);
         if (!date || !(Number.isFinite(price) && price > 0)) continue;
         const key = `weekly|${date}`;
         if (seen.has(key)) continue;
         seen.add(key);
-        out.push({ type: "weekly", date, price: Math.round(price) });
+        out.push({
+          type: "weekly",
+          date,
+          price: Math.round(price),
+          count: Number.isFinite(countValue) && countValue >= 0 ? Math.round(countValue) : null
+        });
       }
       return out.sort((a, b) => a.date.localeCompare(b.date));
     }
@@ -2727,8 +2735,16 @@
         `;
         return;
       }
+      if (mode === "3m") {
+        el.innerHTML = `
+          <span class="legend-item"><span class="legend-mark">●</span>価格</span>
+          <span class="legend-item"><span class="legend-mark">▮</span>取引件数</span>
+          <span class="legend-item">◎ 最新観測データ</span>
+        `;
+        return;
+      }
       el.innerHTML = `
-        <span class="legend-item"><span class="legend-mark">●</span>${mode === "monthly" ? "月次データ" : "週次データ"}</span>
+        <span class="legend-item"><span class="legend-mark">●</span>月次データ</span>
         <span class="legend-item">◎ 最新観測データ</span>
       `;
     }
@@ -2812,10 +2828,6 @@
               <div class="label">観測日</div>
               <div class="value">${escapeHtml(formatPointDate(point, mode))}</div>
             </div>
-            <div class="single-observation-item">
-              <div class="label">種別</div>
-              <div class="value">${escapeHtml(formatPointTypeLabel(point.type))}</div>
-            </div>
           </div>
           <div class="chart-subnote">観測点が1件のみのため、価格推移チャートではなく単一観測カードを表示しています。</div>
         </div>
@@ -2877,7 +2889,23 @@
       const dateText = formatPointDate(point, mode);
       const priceText = `${point.price.toLocaleString()}円`;
       if (mode === "all") return `${escapeHtml(formatPointTypeLabel(point.type))} / ${escapeHtml(dateText)} / ${escapeHtml(priceText)}`;
+      if (mode === "3m") {
+        const countText = Number.isFinite(point.count) ? `${point.count}件` : "-";
+        return `${escapeHtml(dateText)}<br>価格: ${escapeHtml(priceText)}<br>取引件数: ${escapeHtml(countText)}`;
+      }
       return `${escapeHtml(dateText)} / ${escapeHtml(priceText)}`;
+    }
+
+    function formatDiffAmount(value) {
+      if (!Number.isFinite(value)) return "-";
+      const sign = value > 0 ? "+" : value < 0 ? "-" : "±";
+      return `${sign}${Math.abs(Math.round(value)).toLocaleString()}円`;
+    }
+
+    function formatDiffRate(value) {
+      if (!Number.isFinite(value)) return "-";
+      const sign = value > 0 ? "+" : value < 0 ? "-" : "±";
+      return `${sign}${Math.abs(value).toFixed(0)}%`;
     }
 
     function renderPriceAreaChart(containerId, title, points, mode) {
@@ -2945,7 +2973,40 @@
       const latest = data[data.length - 1];
       const firstX = xToPx(first.timestamp);
       const firstY = yToPx(first.price);
+      const latestX = xToPx(latest.timestamp);
       const latestY = yToPx(latest.price);
+      const diffPrice = latest.price - first.price;
+      const diffRate = first.price > 0 ? ((latest.price / first.price) - 1) * 100 : null;
+      const showVolumeBars = mode === "3m";
+      const maxCount = showVolumeBars
+        ? Math.max(0, ...data.map((item) => Number.isFinite(item.count) ? item.count : 0))
+        : 0;
+      const countAxisW = 36;
+      const countTop = padT + 10;
+      const countBottom = H - padB;
+      const countHeight = Math.max(1, countBottom - countTop);
+      const volumeBars = showVolumeBars && maxCount > 0
+        ? data.map((point, index) => {
+          if (!(Number.isFinite(point.count) && point.count > 0)) return "";
+          const cx = xToPx(point.timestamp);
+          const nextTs = index < data.length - 1 ? data[index + 1].timestamp : point.timestamp + ((spanX / Math.max(1, data.length - 1)) || (7 * 24 * 60 * 60 * 1000));
+          const prevTs = index > 0 ? data[index - 1].timestamp : point.timestamp - ((spanX / Math.max(1, data.length - 1)) || (7 * 24 * 60 * 60 * 1000));
+          const halfGap = Math.max(6, Math.min(24, Math.round((xToPx(nextTs) - xToPx(prevTs)) / 4)));
+          const width = Math.max(8, halfGap);
+          const h = (point.count / maxCount) * countHeight;
+          const x = cx - (width / 2);
+          const y = countBottom - h;
+          return `<rect x="${x}" y="${y}" width="${width}" height="${h}" rx="4" fill="rgba(100,116,139,0.18)"></rect>`;
+        }).join("")
+        : "";
+      const countAxis = showVolumeBars && maxCount > 0
+        ? `
+          <line x1="${W - padR + countAxisW}" y1="${countTop}" x2="${W - padR + countAxisW}" y2="${countBottom}" stroke="rgba(148,163,184,0.35)"></line>
+          <text x="${W - padR + countAxisW - 2}" y="${countTop + 4}" text-anchor="end" font-size="10" fill="rgba(100,116,139,0.72)">件数</text>
+          <text x="${W - padR + countAxisW - 2}" y="${countBottom + 4}" text-anchor="end" font-size="10" fill="rgba(100,116,139,0.56)">0</text>
+          <text x="${W - padR + countAxisW - 2}" y="${countTop + 18}" text-anchor="end" font-size="10" fill="rgba(100,116,139,0.56)">${maxCount}</text>
+        `
+        : "";
       const markers = data.map((point, index) => {
         const cx = xToPx(point.timestamp);
         const cy = yToPx(point.price);
@@ -2974,14 +3035,17 @@
               <g>${yGrid.join("")}</g>
               <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
               <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
+              <g>${volumeBars}</g>
               <path d="${areaD}" fill="url(#priceAreaGrad-${escapeHtml(containerId)})"></path>
               <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"></line>
-              <text x="${W - padR + 6}" y="${latestY + 4}" font-size="11" font-weight="900" fill="#1e293b">現在 ¥${latest.price.toLocaleString()}</text>
-              <text x="${firstX}" y="${Math.max(18, firstY - 14)}" text-anchor="start" font-size="11" font-weight="800" fill="#475467">開始</text>
+              ${mode === "all" ? `<line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"></line>` : ""}
+              <text x="${Math.min(firstX + 6, W - padR - 120)}" y="${Math.max(18, firstY - 14)}" text-anchor="start" font-size="11" font-weight="800" fill="#475467">開始 ¥${first.price.toLocaleString()}</text>
+              <text x="${Math.min(latestX + 8, W - padR - 8)}" y="${Math.max(20, latestY - 22)}" text-anchor="start" font-size="11" font-weight="900" fill="#1e293b">現在 ¥${latest.price.toLocaleString()}</text>
+              <text x="${Math.min(latestX + 8, W - padR - 8)}" y="${Math.max(34, latestY - 8)}" text-anchor="start" font-size="10.5" font-weight="800" fill="${diffPrice >= 0 ? "#0f766e" : "#b42318"}">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
               <g>${markers}</g>
               <g>${yLabels.join("")}</g>
               <g>${xLabels.join("")}</g>
+              ${countAxis}
               <rect class="chart-hit-area" x="${padL}" y="${padT}" width="${chartW}" height="${chartH}" fill="transparent"></rect>
             </svg>
           </div>
