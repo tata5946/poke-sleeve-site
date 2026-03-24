@@ -11,7 +11,7 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbxBTZHjJLxvPm66AlTLy47Y
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
 const LOCAL_DATA_URL = "./data.json";
-const DATA_CACHE_KEY = "pokeSleeve:dataCache:v2";
+const DATA_CACHE_KEY = "pokeSleeve:dataCache:v3";
 const DATA_CACHE_TTL_MS = 5 * 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
 const SEARCH_HISTORY_KEY = "pokeSleeve:searchHistory:v1";
@@ -855,8 +855,8 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000, cacheMode = "defau
 
 async function fetchPrimaryData() {
   const sources = [
-    { url: LOCAL_DATA_URL, timeoutMs: 2500, cacheMode: "force-cache" },
-    { url: GAS_URL, timeoutMs: 12000, cacheMode: "default" }
+    { url: GAS_URL, timeoutMs: 12000, cacheMode: "no-store" },
+    { url: LOCAL_DATA_URL, timeoutMs: 2500, cacheMode: "reload" }
   ];
 
   let lastError = null;
