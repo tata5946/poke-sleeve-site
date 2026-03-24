@@ -11,8 +11,10 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbxBTZHjJLxvPm66AlTLy47Y
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
 const LOCAL_DATA_URL = "./data.json";
-const DATA_CACHE_KEY = "pokeSleeve:dataCache:v3";
+const DATA_CACHE_KEY = "pokeSleeve:dataCache:v4";
+const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v4";
 const DATA_CACHE_TTL_MS = 5 * 60 * 1000;
+const DATA_STALE_MAX_MS = 24 * 60 * 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
 const SEARCH_HISTORY_KEY = "pokeSleeve:searchHistory:v1";
 const SEARCH_HISTORY_MAX = 8;
@@ -855,7 +857,7 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000, cacheMode = "defau
 
 async function fetchPrimaryData() {
   const sources = [
-    { url: GAS_URL, timeoutMs: 12000, cacheMode: "no-store" },
+    { url: GAS_URL, timeoutMs: 12000, cacheMode: "default" },
     { url: LOCAL_DATA_URL, timeoutMs: 2500, cacheMode: "reload" }
   ];
 
@@ -875,23 +877,60 @@ async function fetchPrimaryData() {
   throw lastError || new Error("データ取得に失敗しました");
 }
 
-function readSessionCache() {
+function readSessionCacheEntry() {
   try {
     const raw = sessionStorage.getItem(DATA_CACHE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (!parsed || typeof parsed !== "object") return null;
     if (!Number.isFinite(parsed.cachedAt)) return null;
-    if ((Date.now() - parsed.cachedAt) > DATA_CACHE_TTL_MS) return null;
-    return parsed.data ?? null;
+    if (parsed.data == null) return null;
+    return parsed;
   } catch (_) {
     return null;
   }
 }
 
+function readPersistentCacheEntry() {
+  try {
+    const raw = localStorage.getItem(DATA_PERSISTENT_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return null;
+    if (!Number.isFinite(parsed.cachedAt)) return null;
+    if (parsed.data == null) return null;
+    return parsed;
+  } catch (_) {
+    return null;
+  }
+}
+
+function readSessionCache() {
+  const entry = readSessionCacheEntry();
+  if (!entry) return null;
+  if ((Date.now() - entry.cachedAt) > DATA_CACHE_TTL_MS) return null;
+  return entry.data ?? null;
+}
+
+function readPersistentCache() {
+  const entry = readPersistentCacheEntry();
+  if (!entry) return null;
+  if ((Date.now() - entry.cachedAt) > DATA_CACHE_TTL_MS) return null;
+  return entry.data ?? null;
+}
+
 function writeSessionCache(data) {
   try {
     sessionStorage.setItem(DATA_CACHE_KEY, JSON.stringify({
+      cachedAt: Date.now(),
+      data
+    }));
+  } catch (_) { }
+}
+
+function writePersistentCache(data) {
+  try {
+    localStorage.setItem(DATA_PERSISTENT_CACHE_KEY, JSON.stringify({
       cachedAt: Date.now(),
       data
     }));
@@ -912,6 +951,31 @@ async function loadData({ forceRefresh = false, ttlMs = DATA_CACHE_TTL_MS } = {}
       __dataCacheMem = { cachedAt: Date.now(), data: cached };
       return cached;
     }
+
+    const persistentCached = readPersistentCache();
+    if (persistentCached != null) {
+      __dataCacheMem = { cachedAt: Date.now(), data: persistentCached };
+      writeSessionCache(persistentCached);
+      return persistentCached;
+    }
+
+    const staleEntry = readSessionCacheEntry() || readPersistentCacheEntry();
+    if (staleEntry && (Date.now() - staleEntry.cachedAt) <= DATA_STALE_MAX_MS) {
+      __dataCacheMem = { cachedAt: staleEntry.cachedAt, data: staleEntry.data };
+      if (!__dataCachePromise) {
+        __dataCachePromise = (async () => {
+          const fresh = await fetchPrimaryData();
+          __dataCacheMem = { cachedAt: Date.now(), data: fresh };
+          writeSessionCache(fresh);
+          writePersistentCache(fresh);
+          return fresh;
+        })();
+        __dataCachePromise.finally(() => {
+          __dataCachePromise = null;
+        });
+      }
+      return staleEntry.data;
+    }
   }
 
   if (!forceRefresh && __dataCachePromise) {
@@ -922,6 +986,7 @@ async function loadData({ forceRefresh = false, ttlMs = DATA_CACHE_TTL_MS } = {}
     const data = await fetchPrimaryData();
     __dataCacheMem = { cachedAt: Date.now(), data };
     writeSessionCache(data);
+    writePersistentCache(data);
     return data;
   })();
 

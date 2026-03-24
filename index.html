@@ -2454,6 +2454,14 @@
       `;
     }
 
+    function runDeferred(task) {
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(() => task(), { timeout: 800 });
+        return;
+      }
+      window.setTimeout(task, 32);
+    }
+
     function syncHeaderSearch(heroSearchInput) {
       const headerSearch = document.getElementById("search");
       if (!headerSearch || !heroSearchInput) return;
@@ -2478,7 +2486,6 @@
       const data = await window.common.loadData();
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
-      const marketSeries = buildHomeMarketIndexSeries(sleeves);
 
       const priceRank = sleeves.map((s) => ({ s, price: getLatestWeeklyPrice(s) })).filter((row) => row.price != null).sort((a, b) => b.price - a.price).slice(0, 10).map((row) => row.s);
       const surgeRank = sleeves.map((s) => {
@@ -2494,11 +2501,17 @@
         return g ? { s, g } : null;
       }).filter(Boolean).sort((a, b) => b.g.rate - a.g.rate).slice(0, 10);
 
-      renderCategoryNav(sleeves);
       renderTodayHero(surgeRank[0] || null);
       renderTrendLists({ surgeRank, growthRank, priceRank });
-      renderMarketSnapshot(marketSeries);
       initScrollReveal();
+
+      runDeferred(() => {
+        renderCategoryNav(sleeves);
+      });
+      runDeferred(() => {
+        const marketSeries = buildHomeMarketIndexSeries(sleeves);
+        renderMarketSnapshot(marketSeries);
+      });
     }
 
     main().catch((error) => {
