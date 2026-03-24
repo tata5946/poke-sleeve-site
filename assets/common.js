@@ -58,7 +58,7 @@ scheduleAnalyticsInit();
 const HEADER_HTML = `
 <div class="header">
   <div class="header-top">
-    <button type="button" class="menu-toggle" id="headerMenuBtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="headerMobileNav">
+    <button type="button" class="menu-toggle" id="headerMenuBtn" aria-label="補助メニューを開く" aria-expanded="false" aria-controls="headerUtilityMenu">
       <span class="menu-toggle-bar" aria-hidden="true"></span>
       <span class="menu-toggle-bar" aria-hidden="true"></span>
       <span class="menu-toggle-bar" aria-hidden="true"></span>
@@ -79,7 +79,7 @@ const HEADER_HTML = `
       <a href="./policy.html">ポリシー</a>
     </div>
   </div>
-  <div class="header-bottom" id="headerMobileNav">
+  <div class="header-bottom" id="headerPrimaryNav">
     <div class="header-bottom-inner">
       <nav class="nav" aria-label="メインメニュー">
         <a href="./index.html" data-nav="index"><span class="nav-icon" aria-hidden="true">🏠</span>ホーム</a>
@@ -91,6 +91,12 @@ const HEADER_HTML = `
         <a href="./index-market.html" data-nav="market"><span class="nav-icon" aria-hidden="true">📈</span>スリーブ指数</a>
         <a href="./contact.html" data-nav="contact"><span class="nav-icon" aria-hidden="true">✉️</span>お問い合わせ</a>
       </nav>
+    </div>
+  </div>
+  <div class="header-utility" id="headerUtilityMenu">
+    <div class="header-utility-inner">
+      <a href="./policy.html">ポリシー</a>
+      <a href="./contact.html">お問い合わせ</a>
     </div>
   </div>
 </div>
@@ -1056,13 +1062,13 @@ function wireHeaderOffsetSync() {
 function wireHeaderMenu() {
   const header = document.querySelector("#site-header .header");
   const button = document.getElementById("headerMenuBtn");
-  const nav = document.getElementById("headerMobileNav");
-  if (!header || !button || !nav || button.dataset.menuWired === "1") return;
+  const utility = document.getElementById("headerUtilityMenu");
+  if (!header || !button || !utility || button.dataset.menuWired === "1") return;
 
   const applyButtonState = (expanded) => {
     button.setAttribute("aria-expanded", expanded ? "true" : "false");
-    button.setAttribute("aria-controls", "headerMobileNav");
-    button.setAttribute("aria-label", "メニューを開く");
+    button.setAttribute("aria-controls", "headerUtilityMenu");
+    button.setAttribute("aria-label", expanded ? "補助メニューを閉じる" : "補助メニューを開く");
   };
 
   const closeMenu = () => {
@@ -1084,7 +1090,7 @@ function wireHeaderMenu() {
     toggleMenu();
   });
 
-  nav.addEventListener("click", (event) => {
+  utility.addEventListener("click", (event) => {
     const target = event.target instanceof Element ? event.target.closest("a") : null;
     if (target) closeMenu();
   });

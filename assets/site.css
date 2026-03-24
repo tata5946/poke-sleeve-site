@@ -486,6 +486,39 @@ a:hover {
     background: rgba(255, 255, 255, .18);
 }
 
+.header-utility {
+    display: none;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 8px 18px rgba(16, 24, 40, .08);
+}
+
+.header.is-mobile-nav-open .header-utility {
+    display: block;
+}
+
+.header-utility-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 10px 20px 12px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.header-utility-inner a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: #f8fafc;
+    color: #101828;
+    font-size: 13px;
+    font-weight: 800;
+}
+
 /* hero */
 .hero {
     margin-top: 18px;
@@ -943,41 +976,44 @@ footer.site-footer {
     }
 
     .header-bottom {
-        display: none;
-        background: transparent;
-        border-top: 0;
-        box-shadow: none;
-    }
-
-    .header.is-mobile-nav-open .header-bottom {
         display: block;
+        background: #111;
+        border-top: 1px solid rgba(255, 255, 255, .08);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, .18);
     }
 
     .header-bottom-inner {
-        padding: 0 14px 12px;
-        overflow: visible;
+        padding: 8px 14px 10px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
     }
 
     .nav {
-        width: 100%;
-        min-width: 0;
-        display: grid;
-        grid-template-columns: 1fr;
+        width: max-content;
+        min-width: max-content;
+        display: flex;
         gap: 8px;
-        padding: 12px;
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        background: #fff;
-        box-shadow: 0 10px 24px rgba(16, 24, 40, .12);
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
     }
 
     .nav a {
-        justify-content: flex-start;
-        white-space: normal;
-        font-size: 13px;
-        padding: 10px 12px;
+        justify-content: center;
+        white-space: nowrap;
+        font-size: 12px;
+        padding: 8px 10px;
         border-radius: 12px;
-        background: #111;
+        background: rgba(255, 255, 255, .08);
+    }
+
+    .header-utility-inner {
+        padding: 10px 14px 12px;
+        display: grid;
+        grid-template-columns: 1fr;
     }
 
 }
