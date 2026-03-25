@@ -1908,10 +1908,8 @@
       const el = document.getElementById("chartLegend");
       if (!el) return;
       el.innerHTML = `
-        <span class="legend-item"><span class="legend-mark">●</span>週次データ</span>
-        <span class="legend-item"><span class="legend-mark">○</span>月次データ</span>
-        <span class="legend-item"><span class="legend-mark">△</span>年次データ</span>
-        <span class="legend-item">◎ 最新観測データ（強調）</span>
+        <span class="legend-item"><span class="legend-mark">●</span>価格</span>
+        <span class="legend-item">◎ 最新観測データ</span>
       `;
     }
 
@@ -2878,9 +2876,7 @@
       if (!el) return;
       if (mode === "all") {
         el.innerHTML = `
-          <span class="legend-item"><span class="legend-mark">●</span>週次</span>
-          <span class="legend-item"><span class="legend-mark">○</span>月次</span>
-          <span class="legend-item"><span class="legend-mark">△</span>年次</span>
+          <span class="legend-item"><span class="legend-mark">●</span>価格</span>
           <span class="legend-item">◎ 最新観測データ</span>
         `;
         return;
