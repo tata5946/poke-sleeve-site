@@ -555,7 +555,6 @@
           <div id="sortTabs" class="sort-tabs" role="tablist" aria-label="並び替えタブ"></div>
           <div class="sort-chip-row">
             <div id="sortChips" class="sort-chip-group" aria-live="polite"></div>
-            <div id="sortChipNote" class="sort-chip-note"></div>
           </div>
           <div class="sort-select-fallback">
             <label>プルダウンでも並び替えできます
@@ -564,10 +563,6 @@
           </div>
         </section>
         <div class="results-head">
-          <div class="results-copy">
-            <h2 class="results-title">一覧から気になるスリーブを探す</h2>
-            <p id="resultsSubcopy" class="results-subcopy">新作や人気どころから、気になるスリーブを見つけやすくしています。</p>
-          </div>
           <div id="resultsMeta" class="results-meta">表示件数: -件</div>
         </div>
         <div id="list" class="grid"></div>
@@ -1173,7 +1168,7 @@
         const primary = PRIMARY_TAB_CONFIG.find((tab) => tab.key === currentPrimaryTab) || PRIMARY_TAB_CONFIG[0];
         const currentSort = sortOrderSel.value;
         const chips = Array.isArray(primary.chips) ? primary.chips : [];
-        if (!sortChips || !sortChipNote) return;
+        if (!sortChips) return;
 
         sortChips.style.display = chips.length ? "flex" : "none";
         sortChips.innerHTML = chips.map((chip) => `
@@ -1183,8 +1178,8 @@
         `).join("");
 
         const currentConfig = getSortLabelConfig(currentSort);
-        sortChipNote.textContent = currentConfig.helper || primary.note || "";
-        sortChipNote.classList.toggle("is-fallback", Boolean(currentConfig.fallback));
+        if (sortChipNote) sortChipNote.textContent = currentConfig.helper || primary.note || "";
+        if (sortChipNote) sortChipNote.classList.toggle("is-fallback", Boolean(currentConfig.fallback));
       }
 
       function updateSortExplorerCopy(sortOrder) {
