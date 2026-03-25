@@ -201,6 +201,32 @@
       margin-top: 12px;
     }
 
+    .ranking-active-filters {
+      display: none;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .ranking-active-filters.is-visible {
+      display: flex;
+    }
+
+    .ranking-filter-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: #eef4ff;
+      border: 1px solid #d8e5ff;
+      color: #274690;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
     .ranking-main {
       display: grid;
       gap: 10px;
@@ -538,6 +564,10 @@
         min-width: 0;
       }
 
+      .ranking-filter-chip {
+        font-size: 10px;
+      }
+
       .ranking-top3 {
         grid-template-columns: 1fr;
       }
@@ -630,6 +660,8 @@
             <button id="clear" type="button">条件をクリア</button>
           </div>
         </div>
+
+        <div id="activeFilters" class="ranking-active-filters" aria-label="選択中の絞り込み条件"></div>
 
         <div id="error" class="error ranking-error"></div>
       </section>
@@ -988,6 +1020,7 @@
       const releaseYearSel = document.getElementById("releaseYear");
       const seriesSel = document.getElementById("series");
       const priceBandSel = document.getElementById("priceBand");
+      const activeFilters = document.getElementById("activeFilters");
       const clearBtn = document.getElementById("clear");
 
       let data;
@@ -1034,6 +1067,23 @@
         seriesSel.appendChild(opt);
       }
 
+      function renderActiveFilters() {
+        if (!activeFilters) return;
+        const chips = [];
+        if (releaseYearSel.value) chips.push(`発売年: ${releaseYearSel.value}`);
+        if (seriesSel.value) chips.push(`シリーズ: ${seriesSel.value}`);
+        if (priceBandSel.value) {
+          const selected = priceBandSel.options[priceBandSel.selectedIndex];
+          const label = selected ? selected.textContent.trim() : "";
+          if (label) chips.push(`価格帯: ${label}`);
+        }
+
+        activeFilters.innerHTML = chips.map((text) =>
+          `<span class="ranking-filter-chip">${escapeHtml(text)}</span>`
+        ).join("");
+        activeFilters.classList.toggle("is-visible", chips.length > 0);
+      }
+
       function render() {
         const kw = (searchInput ? searchInput.value : "").trim().toLowerCase();
         const releaseYear = releaseYearSel.value;
@@ -1049,6 +1099,7 @@
         top3.hidden = true;
         restSection.hidden = false;
         if (sectionTitle) sectionTitle.textContent = "価格ランキング";
+        renderActiveFilters();
         const rows = [];
         for (const s of sleeves) {
           if (kw && !String(s.name || "").toLowerCase().includes(kw)) continue;
