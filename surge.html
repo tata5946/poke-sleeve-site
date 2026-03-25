@@ -280,8 +280,8 @@
       background: #f4f6fa;
     }
 
-    .podium-card--rank1 .podium-media img { height: 280px; }
-    .podium-card:not(.podium-card--rank1) .podium-media img { height: 150px; }
+    .podium-card--rank1 .podium-media img { height: 340px; }
+    .podium-card:not(.podium-card--rank1) .podium-media img { height: 190px; }
 
     .podium-content { display: grid; gap: 8px; margin-top: 10px; }
     .podium-card--rank1 .podium-content { margin-top: 0; }
@@ -352,11 +352,11 @@
       }
 
       .podium-card--rank1 .podium-media img {
-        height: 180px;
+        height: 220px;
       }
 
       .podium-card:not(.podium-card--rank1) .podium-media img {
-        height: 120px;
+        height: 150px;
       }
 
       .podium-title {
@@ -636,11 +636,8 @@
     function buildPodiumCard(row, rank) {
       const s = row.s;
       const pair = row.pair;
-      const range = row.marketRange || { min: null, max: null };
       const imgSrc = String(s.imageUrl || "").trim();
       const tagHtml = getTagLabels(s).map((tag) => `<span class="podium-chip">${escapeHtml(tag)}</span>`).join("");
-      const minText = range.min == null ? "—" : `${Number(range.min).toLocaleString()}円`;
-      const maxText = range.max == null ? "—" : `${Number(range.max).toLocaleString()}円`;
       const rate = row.rate;
       const rateClass = (rate ?? 0) > 0 ? "up" : (rate ?? 0) < 0 ? "down" : "flat";
       return `
@@ -661,14 +658,6 @@
               <div class="podium-metric">
                 <span class="podium-metric-label">前週比</span>
                 <div class="podium-rate ${rateClass}">${rate == null ? "—" : `${rate > 0 ? "+" : ""}${rate.toFixed(1)}%`}</div>
-              </div>
-              <div class="podium-metric">
-                <span class="podium-metric-label">最安値</span>
-                <div class="podium-rate">${minText}</div>
-              </div>
-              <div class="podium-metric">
-                <span class="podium-metric-label">最高値</span>
-                <div class="podium-rate">${maxText}</div>
               </div>
             </div>
             <div class="podium-meta">

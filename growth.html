@@ -291,11 +291,11 @@
     }
 
     .podium-card--rank1 .podium-media img {
-      height: 280px;
+      height: 340px;
     }
 
     .podium-card:not(.podium-card--rank1) .podium-media img {
-      height: 150px;
+      height: 190px;
     }
 
     .podium-content {
@@ -456,11 +456,11 @@
       }
 
       .podium-card--rank1 .podium-media img {
-        height: 180px;
+        height: 220px;
       }
 
       .podium-card:not(.podium-card--rank1) .podium-media img {
-        height: 120px;
+        height: 150px;
       }
 
       .podium-title {
@@ -769,12 +769,9 @@
     function buildPodiumCard(row, rank) {
       const s = row.s;
       const g = row.g;
-      const range = row.marketRange || { min: null, max: null };
       const imgSrc = String(s.imageUrl || "").trim();
       const tagHtml = getTagLabels(s).map((tag) => `<span class="podium-chip">${escapeHtml(tag)}</span>`).join("");
       const detailHref = row.detailHref;
-      const minText = range.min == null ? "—" : `${Number(range.min).toLocaleString()}円`;
-      const maxText = range.max == null ? "—" : `${Number(range.max).toLocaleString()}円`;
       const rateClass = (g.rate ?? 0) > 0 ? "up" : (g.rate ?? 0) < 0 ? "down" : "flat";
       const latestWeekText = g.latest && g.latest.week ? `対象週 ${escapeHtml(g.latest.week)}` : "対象週データなし";
       return `
@@ -795,14 +792,6 @@
               <div class="podium-metric">
                 <span class="podium-metric-label">上昇率</span>
                 <div class="podium-rate ${rateClass}">${(g.rate > 0 ? "+" : "") + g.rate.toFixed(1)}%</div>
-              </div>
-              <div class="podium-metric">
-                <span class="podium-metric-label">最安値</span>
-                <div class="podium-rate">${minText}</div>
-              </div>
-              <div class="podium-metric">
-                <span class="podium-metric-label">最高値</span>
-                <div class="podium-rate">${maxText}</div>
               </div>
             </div>
             <div class="podium-meta">
