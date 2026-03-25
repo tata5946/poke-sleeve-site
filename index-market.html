@@ -597,12 +597,43 @@
     }
 
     async function loadData() {
+      if (window.common && typeof window.common.loadData === "function") {
+        return await window.common.loadData();
+      }
+
       const gas = window.GAS_URL || (typeof GAS_URL !== "undefined" ? GAS_URL : "");
       if (!gas) throw new Error("GAS_URL が未設定です（common.js を確認してください）");
 
-      const res = await fetch(gas + "?v=" + Date.now(), { cache: "no-store" });
+      const cacheKey = "market-index:fallback-cache:v1";
+      const ttlMs = 5 * 60 * 1000;
+
+      try {
+        const raw = sessionStorage.getItem(cacheKey);
+        if (raw) {
+          const cached = JSON.parse(raw);
+          if (
+            cached &&
+            Number.isFinite(cached.savedAt) &&
+            (Date.now() - cached.savedAt) < ttlMs &&
+            cached.data
+          ) {
+            return cached.data;
+          }
+        }
+      } catch (_) { }
+
+      const res = await fetch(gas, { cache: "default" });
       if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
-      return await res.json();
+      const data = await res.json();
+
+      try {
+        sessionStorage.setItem(cacheKey, JSON.stringify({
+          savedAt: Date.now(),
+          data
+        }));
+      } catch (_) { }
+
+      return data;
     }
 
     function toISODate(d) {
@@ -659,14 +690,23 @@
         .sort((a, b) => String(a.week).localeCompare(String(b.week))); // asc
     }
 
+    function buildWeeklyEntries(sleeves) {
+      return (Array.isArray(sleeves) ? sleeves : []).map((sleeve) => {
+        const weekMap = new Map();
+        for (const row of normalizeWeekly(sleeve.weeklyPrices)) {
+          if (periodKind(row.week) !== "week") continue;
+          weekMap.set(row.week, { price: row.price, count: row.count });
+        }
+        return { sleeve, weekMap };
+      });
+    }
+
     // ★週リスト（週次指数は「週」だけ集める）
-    function collectWeeks(sleeves) {
+    function collectWeeks(entries) {
       const set = new Set();
-      for (const s of sleeves) {
-        const w = normalizeWeekly(s.weeklyPrices);
-        for (const r of w) {
-          if (periodKind(r.week) !== "week") continue; // ★月次/まとめを除外
-          set.add(r.week);
+      for (const entry of (Array.isArray(entries) ? entries : [])) {
+        for (const week of entry.weekMap.keys()) {
+          set.add(week);
         }
       }
       return Array.from(set).sort((a, b) => String(a).localeCompare(String(b)));
@@ -1426,7 +1466,7 @@
       return sorted[idx];
     }
 
-    function buildWeeklyMarketSeries(sleeves, weeks, opts) {
+    function buildWeeklyMarketSeries(entries, weeks, opts) {
       const minPrice = opts?.minPrice ?? 300;
       const minCount = opts?.minCount ?? 2;
       const weightCap = opts?.weightCap ?? 20;
@@ -1434,15 +1474,7 @@
       const hardLo = -Math.log(maxRatio);
       const hardHi = Math.log(maxRatio);
       const hasValidPrice = (v) => Number.isFinite(v) && v > 0;
-
-      const maps = sleeves.map((s) => {
-        const m = new Map();
-        for (const r of normalizeWeekly(s.weeklyPrices)) {
-          if (periodKind(r.week) !== "week") continue;
-          m.set(r.week, { price: r.price, count: r.count });
-        }
-        return m;
-      });
+      const maps = (Array.isArray(entries) ? entries : []).map((entry) => entry.weekMap);
 
       const rows = [];
       for (let i = 1; i < weeks.length; i++) {
@@ -1533,7 +1565,7 @@
       return out;
     }
 
-    function buildLatestContributors(sleeves, weeks, opts) {
+    function buildLatestContributors(entries, weeks, opts) {
       const minPrice = opts?.minPrice ?? 300;
       const minCount = opts?.minCount ?? 2;
       const weightCap = opts?.weightCap ?? 20;
@@ -1554,12 +1586,9 @@
       const prevWeek = weeks[weeks.length - 2];
 
       const items = [];
-      for (const s of (Array.isArray(sleeves) ? sleeves : [])) {
-        const map = new Map();
-        for (const r of normalizeWeekly(s.weeklyPrices)) {
-          if (periodKind(r.week) !== "week") continue;
-          map.set(r.week, { price: r.price, count: r.count });
-        }
+      for (const entry of (Array.isArray(entries) ? entries : [])) {
+        const s = entry.sleeve;
+        const map = entry.weekMap;
         const p = map.get(prevWeek);
         const c = map.get(curWeek);
         if (!p || !c) continue;
@@ -1634,6 +1663,20 @@
       const u = new URL(location.href);
       u.hash = "";
       return u.toString();
+    }
+
+    function runDeferred(task) {
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(() => task(), { timeout: 500 });
+        return;
+      }
+      if (typeof window.requestAnimationFrame === "function") {
+        window.requestAnimationFrame(() => {
+          window.setTimeout(task, 0);
+        });
+        return;
+      }
+      window.setTimeout(task, 0);
     }
 
     function setupMarketShare(latestRow, latestIndex) {
@@ -1717,16 +1760,17 @@
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
       if (!sleeves.length) { showError("スリーブデータがありません"); return; }
+      const weeklyEntries = buildWeeklyEntries(sleeves);
 
       // ★週一覧（週データのみ）
-      const weeks = collectWeeks(sleeves);
+      const weeks = collectWeeks(weeklyEntries);
       if (weeks.length < 2) {
         showError("週次データが不足しています（週データが2点以上必要）");
         return;
       }
 
       // 市場系列（平均上昇率%）
-      const rateRows = buildWeeklyMarketSeries(sleeves, weeks, {
+      const rateRows = buildWeeklyMarketSeries(weeklyEntries, weeks, {
         minPrice: 300,
         minCount: 2,
         weightCap: 20,
@@ -1816,32 +1860,32 @@
         renderLineChartV2("indexChart", "", indexSeries, "week", "index", (v) => Number(v).toFixed(1));
       }
 
-      // テーブル
-      const indexTable = document.getElementById("indexTable");
-      if (indexTable) indexTable.innerHTML = renderTableIndex(series);
+      runDeferred(() => {
+        const indexTable = document.getElementById("indexTable");
+        if (indexTable) indexTable.innerHTML = renderTableIndex(series);
 
-      // 分布
-      const distSummary = document.getElementById("distSummary");
-      const distTable = document.getElementById("distTable");
-      if (distSummary) {
-        distSummary.textContent = last ? `最新週（${formatPeriodLabel(last.week)}）の上昇/下落/横ばい割合` : "—";
-      }
-      if (distTable) {
-        distTable.innerHTML = renderTableDist(last);
-      }
+        const distSummary = document.getElementById("distSummary");
+        const distTable = document.getElementById("distTable");
+        if (distSummary) {
+          distSummary.textContent = last ? `最新週（${formatPeriodLabel(last.week)}）の上昇/下落/横ばい割合` : "—";
+        }
+        if (distTable) {
+          distTable.innerHTML = renderTableDist(last);
+        }
 
-      const contrib = buildLatestContributors(sleeves, weeks, {
-        minPrice: 300,
-        minCount: 2,
-        weightCap: 20,
-        maxRatio: 2.5
+        const contrib = buildLatestContributors(weeklyEntries, weeks, {
+          minPrice: 300,
+          minCount: 2,
+          weightCap: 20,
+          maxRatio: 2.5
+        });
+        const contribUp = document.getElementById("contribUp");
+        const contribDown = document.getElementById("contribDown");
+        if (contribUp) contribUp.innerHTML = renderContribList(contrib.up, "up");
+        if (contribDown) contribDown.innerHTML = renderContribList(contrib.down, "down");
+
+        renderAiComment(last?.week || null);
       });
-      const contribUp = document.getElementById("contribUp");
-      const contribDown = document.getElementById("contribDown");
-      if (contribUp) contribUp.innerHTML = renderContribList(contrib.up, "up");
-      if (contribDown) contribDown.innerHTML = renderContribList(contrib.down, "down");
-
-      renderAiComment(last?.week || null);
     }
 
     main();
