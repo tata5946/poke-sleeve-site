@@ -116,49 +116,50 @@
     }
 
     .ranking-filter-card {
-      padding: 12px 14px 14px;
+      padding: 10px 12px;
     }
 
     .ranking-filter-head {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
+      justify-content: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
     }
 
     .ranking-filter-title {
       margin: 0;
-      font-size: 13px;
+      font-size: 12px;
       color: #344054;
       font-weight: 900;
       letter-spacing: .04em;
     }
 
     .ranking-filter-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
       gap: 8px;
-      align-items: end;
+      padding-bottom: 2px;
+    }
+
+    .ranking-filter-grid::-webkit-scrollbar {
+      display: none;
     }
 
     .ranking-filter-field {
-      display: grid;
-      gap: 6px;
-      min-width: 0;
-    }
-
-    .ranking-filter-label {
-      font-size: 12px;
-      color: #475467;
-      font-weight: 800;
-      line-height: 1.3;
+      min-width: 120px;
+      flex: 0 0 auto;
     }
 
     .ranking-filter-field select,
     .ranking-filter-actions button {
-      width: 100%;
-      height: 42px;
+      width: auto;
+      min-width: 120px;
+      height: 38px;
       border-radius: 12px;
       border: 1px solid #d7deea;
       background: #fff;
@@ -166,6 +167,7 @@
       font-size: 14px;
       font-weight: 700;
       padding: 0 12px;
+      white-space: nowrap;
       transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
     }
 
@@ -183,13 +185,15 @@
     }
 
     .ranking-filter-actions {
-      min-width: 132px;
+      min-width: 0;
+      flex: 0 0 auto;
     }
 
     .ranking-filter-actions button {
       background: #f8fafc;
       color: #344054;
       cursor: pointer;
+      min-width: 92px;
     }
 
     .ranking-error {
@@ -516,12 +520,11 @@
       }
 
       .ranking-filter-grid {
-        grid-template-columns: 1fr;
         gap: 8px;
       }
 
-      .ranking-filter-actions {
-        min-width: 0;
+      .ranking-filter-field {
+        min-width: 112px;
       }
 
       .ranking-top3 {
@@ -589,31 +592,28 @@
         </div>
 
         <div class="ranking-filter-grid">
-          <label class="ranking-filter-field">
-            <span class="ranking-filter-label">発売年</span>
+          <div class="ranking-filter-field">
             <select id="releaseYear">
-              <option value="">すべて</option>
+              <option value="">発売年</option>
             </select>
-          </label>
+          </div>
 
-          <label class="ranking-filter-field">
-            <span class="ranking-filter-label">シリーズ</span>
+          <div class="ranking-filter-field">
             <select id="series">
-              <option value="">すべて</option>
+              <option value="">シリーズ</option>
             </select>
-          </label>
+          </div>
 
-          <label class="ranking-filter-field">
-            <span class="ranking-filter-label">価格帯</span>
+          <div class="ranking-filter-field">
             <select id="priceBand">
-              <option value="">すべて</option>
+              <option value="">価格帯</option>
               <option value="0-999">0-999円</option>
               <option value="1000-1999">1,000-1,999円</option>
               <option value="2000-2999">2,000-2,999円</option>
               <option value="3000-4999">3,000-4,999円</option>
               <option value="5000-99999999">5,000円以上</option>
             </select>
-          </label>
+          </div>
 
           <div class="ranking-filter-actions">
             <button id="clear" type="button">条件をクリア</button>
