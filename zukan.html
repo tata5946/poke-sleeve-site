@@ -306,7 +306,7 @@
     </div>
 
     <main>
-      <div id="list" class="grid"></div>
+      <div id="list" class="grid compact-grid"></div>
     </main>
 
     <div id="site-footer"></div>
@@ -413,39 +413,46 @@
       return hasAny ? total : null;
     }
 
-    function formatDelta(pair) {
-      if (!pair) {
-        return '<div class="delta flat">比較データがありません</div>';
-      }
-      if (!pair.prev) {
-        const cntText = Number.isFinite(pair.latest.count) ? ` / ${pair.latest.count}件` : "";
-        return `<div class="delta flat"><span class="chip">直近 ${pair.latest.price.toLocaleString()}円${cntText}</span></div>`;
+    function getDeltaDisplay(pair) {
+      if (!pair || !pair.latest || !pair.prev) {
+        return { className: "flat", text: "前週比 -", shortText: "比較なし" };
       }
 
-      const latest = pair.latest;
-      const prev = pair.prev;
-      const diff = latest.price - prev.price;
-      const abs = Math.abs(diff);
+      const diff = pair.latest.price - pair.prev.price;
       const cls = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
-      const arrow = diff > 0 ? "↑" : diff < 0 ? "↓" : "→";
       const sign = diff > 0 ? "+" : diff < 0 ? "-" : "±";
+      return {
+        className: cls,
+        text: `前週比 ${sign}${Math.abs(diff).toLocaleString()}円`,
+        shortText: `${sign}${Math.abs(diff).toLocaleString()}円`
+      };
+    }
 
-      let pctText = "";
-      if (prev.price !== 0) {
-        const rate = (diff / prev.price) * 100;
-        if (Number.isFinite(rate)) pctText = `（${diff > 0 ? "+" : diff < 0 ? "-" : ""}${Math.abs(rate).toFixed(1)}%）`;
+    function getSupplementaryInfo(sleeve) {
+      if (sleeve.releaseYear) return `${escapeHtml(sleeve.releaseYear)}年発売`;
+      if (sleeve.series) return escapeHtml(sleeve.series);
+      if (sleeve.condition) return escapeHtml(sleeve.condition);
+      return "詳細ページで相場推移を確認";
+    }
+
+    function getCardTags(sleeve, maxItems = 2) {
+      const candidates = [];
+      if (sleeve.series) candidates.push(sleeve.series);
+      if (sleeve.condition) candidates.push(sleeve.condition);
+      if (Array.isArray(sleeve.tags)) candidates.push(...sleeve.tags);
+      if (typeof sleeve.tag === "string") candidates.push(sleeve.tag);
+      if (typeof sleeve.badge === "string") candidates.push(sleeve.badge);
+
+      const result = [];
+      const seen = new Set();
+      for (const raw of candidates) {
+        const text = String(raw || "").trim();
+        if (!text || seen.has(text)) continue;
+        seen.add(text);
+        result.push(text);
+        if (result.length >= maxItems) break;
       }
-
-      const prevCnt = Number.isFinite(prev.count) ? `${prev.count}件` : "-";
-      const latestCnt = Number.isFinite(latest.count) ? `${latest.count}件` : "-";
-
-      return `
-        <div class="delta ${cls}">${arrow} 前週比 ${sign}${abs.toLocaleString()}円 ${pctText}</div>
-        <div class="delta flat">
-          <span class="chip">前回 ${prev.price.toLocaleString()}円 / ${prevCnt}</span>
-          <span class="chip">直近 ${latest.price.toLocaleString()}円 / ${latestCnt}</span>
-        </div>
-      `;
+      return result;
     }
 
     async function waitForSearch(maxWaitMs = 2000) {
@@ -573,38 +580,36 @@
           const priceText = (p == null) ? "-" : `${p.toLocaleString()}円`;
 
           const weeklyPair = getWeeklyPair(s);
-          const weeklyHtml = formatDelta(weeklyPair);
-
-          const totalTrades = getTotalTradeCount(s);
-          const totalTradesText = (totalTrades == null) ? "-" : `${totalTrades.toLocaleString()}件`;
+          const delta = getDeltaDisplay(weeklyPair);
+          const tags = getCardTags(s, 2);
+          const tagsHtml = tags.map(tag => `<span class="compact-tag">${escapeHtml(tag)}</span>`).join("");
 
           const imgSrc = String(s.imageUrl || "").trim();
           const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
             ? window.common.buildSleeveDetailHref(s.id ?? "")
             : `./sleeve/${encodeURIComponent(s.id ?? "")}/`;
-          const imgHtml = imgSrc
-            ? `<a class="thumb-link" data-sleeve-link="1" href="${detailHref}" aria-label="${escapeHtml(s.name ?? "")}の詳細を見る">
-                <img class="thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
-                  onerror="this.onerror=null; this.style.display='none';">
-              </a>`
-            : "";
 
-          const div = document.createElement("div");
-          div.className = "card";
-          div.innerHTML = `
-            ${imgHtml}
-            <div class="title">${escapeHtml(s.name ?? "")}</div>
-            <div class="price">${escapeHtml(priceText)} <span class="meta">（最新週次）</span></div>
-            ${weeklyHtml}
-            <div class="badges">
-              <span class="badge">取引件数：${escapeHtml(totalTradesText)}</span>
-              <span class="badge">発売年：${escapeHtml(s.releaseYear ?? "")}</span>
-              <span class="badge">${escapeHtml(s.condition ?? "")}</span>
-              <span class="badge">${escapeHtml(s.series ?? "")}</span>
+          const card = document.createElement("a");
+          card.className = "compact-card";
+          card.href = detailHref;
+          card.setAttribute("data-sleeve-link", "1");
+          card.setAttribute("aria-label", `${String(s.name ?? "")}の詳細を見る`);
+          card.innerHTML = `
+            <span class="compact-thumb-wrap">
+              ${imgSrc
+                ? `<img class="compact-thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
+                    onerror="this.onerror=null; this.style.display='none';">`
+                : ""}
+            </span>
+            <h2 class="compact-card-title">${escapeHtml(s.name ?? "")}</h2>
+            <div class="compact-price-row">
+              <div class="compact-price">${escapeHtml(priceText)}</div>
+              <div class="compact-delta ${delta.className}">${escapeHtml(delta.shortText)}</div>
             </div>
-            <a class="btn" data-sleeve-link="1" href="${detailHref}">価格詳細を見る →</a>
+            <div class="compact-meta">${getSupplementaryInfo(s)}</div>
+            ${tagsHtml ? `<div class="compact-tags">${tagsHtml}</div>` : ""}
           `;
-          frag.appendChild(div);
+          frag.appendChild(card);
         }
 
         list.appendChild(frag);
