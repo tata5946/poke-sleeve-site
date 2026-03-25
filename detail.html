@@ -1491,17 +1491,7 @@
     }
 
     function buildHeaderBadges(sleeve) {
-      const badges = [];
-      const series = getTextValue(sleeve?.series);
-      const releaseYear = getReleaseYearText(sleeve);
-
-      if (series && series !== "不明") {
-        badges.push(`<span class="badge">${escapeHtml(series)}</span>`);
-      }
-      if (releaseYear) {
-        badges.push(`<span class="badge">${escapeHtml(releaseYear)}</span>`);
-      }
-      return badges.slice(0, 2).join("");
+      return "";
     }
 
     function renderDetailTags(sleeve) {
