@@ -887,19 +887,19 @@
 
     function getCompactDeltaDisplay(deltaInfo) {
       if (!deltaInfo || !Number.isFinite(deltaInfo.diff)) {
-        return { className: "flat", text: "\u6bd4\u8f03\u306a\u3057" };
+        return { className: "flat", text: "比較なし" };
       }
       const diff = Number(deltaInfo.diff);
-      const sign = diff > 0 ? "+" : diff < 0 ? "-" : "\u00b1";
+      const sign = diff > 0 ? "+" : diff < 0 ? "-" : "±";
       const className = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
-      return { className, text: `${sign}${Math.abs(diff).toLocaleString()}\u5186` };
+      return { className, text: `${sign}${Math.abs(diff).toLocaleString()}円` };
     }
 
     function getCompactSupplementaryInfo(sleeve, week) {
-      if (sleeve.releaseYear) return `${escapeHtml(sleeve.releaseYear)}\u5e74\u767a\u58f2`;
-      if (week) return `\u6700\u65b0\u9031 ${escapeHtml(week)}`;
+      if (sleeve.releaseYear) return `${escapeHtml(sleeve.releaseYear)}年発売`;
+      if (week) return `最新週 ${escapeHtml(week)}`;
       if (sleeve.series) return escapeHtml(sleeve.series);
-      return "\u8a73\u7d30\u3067\u76f8\u5834\u63a8\u79fb\u3092\u78ba\u8a8d";
+      return "詳細で相場推移を確認";
     }
 
     function getCompactTagLabels(sleeve, maxItems = 2) {
@@ -940,9 +940,9 @@
     }
 
     function getPodiumBadge(rank) {
-      if (rank === 1) return "?? 1位";
-      if (rank === 2) return "?? 2位";
-      return "?? 3位";
+      if (rank === 1) return "1位";
+      if (rank === 2) return "2位";
+      return "3位";
     }
 
     function buildPodiumCard(row, rank) {
@@ -1009,7 +1009,7 @@
       const tagsHtml = tags.map((tag) => `<span class="compact-tag">${escapeHtml(tag)}</span>`).join("");
 
       return `
-        <span class="compact-rank-badge">${rank}\u4f4d</span>
+        <span class="compact-rank-badge">${rank}位</span>
         <span class="compact-thumb-wrap">
           ${imgSrc
             ? `<img class="compact-thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
@@ -1018,7 +1018,7 @@
         </span>
         <h3 class="compact-card-title">${escapeHtml(s.name ?? "")}</h3>
         <div class="compact-price-row">
-          <div class="compact-price">${row.price.toLocaleString()}\u5186</div>
+          <div class="compact-price">${row.price.toLocaleString()}円</div>
           <div class="compact-delta ${delta.className}">${escapeHtml(delta.text)}</div>
         </div>
         <div class="compact-meta">${getCompactSupplementaryInfo(s, row.week)}</div>
@@ -1096,8 +1096,8 @@
         top3Card.innerHTML = "";
         top3.hidden = true;
         restSection.hidden = false;
-        if (sectionTitle) sectionTitle.textContent = "\u4fa1\u683c\u30e9\u30f3\u30ad\u30f3\u30b0";
-        if (sectionNote) sectionNote.textContent = "\u6700\u65b0\u4fa1\u683c\u30922\u5217\u30b0\u30ea\u30c3\u30c9\u3067\u898b\u6bd4\u3079\u3084\u3059\u304f\u8868\u793a";
+        if (sectionTitle) sectionTitle.textContent = "価格ランキング";
+        if (sectionNote) sectionNote.textContent = "最新価格をコンパクトなグリッドで比較しやすく表示";
 
         const rows = [];
         for (const s of sleeves) {
@@ -1130,7 +1130,7 @@
         });
 
         const c = document.getElementById("countInfo");
-        c.textContent = `${rows.length.toLocaleString()}\u4ef6`;
+        c.textContent = `${rows.length.toLocaleString()}件`;
         c.style.display = "block";
 
         if (rows.length === 0) {
@@ -1148,7 +1148,7 @@
           card.className = "compact-card";
           card.href = row.detailHref;
           card.setAttribute("data-sleeve-link", "1");
-          card.setAttribute("aria-label", `${String(row.s.name ?? "")}\u306e\u8a73\u7d30\u3092\u898b\u308b`);
+          card.setAttribute("aria-label", `${String(row.s.name ?? "")}の詳細を見る`);
           card.innerHTML = buildStandardCard(row, i + 1);
           frag.appendChild(card);
         }
