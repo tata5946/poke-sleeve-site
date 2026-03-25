@@ -2042,7 +2042,7 @@
         const v = yMin + (i / yTicks) * (yMax - yMin);
         const y = yToPx(v);
         yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e4e7ec"></line>`);
-        yLabels.push(`<text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="#667085">${Math.round(v).toLocaleString()}</text>`);
+        yLabels.push(`<text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="#111827">${Math.round(v).toLocaleString()}</text>`);
       }
 
       const xTicks = 4;
@@ -2055,7 +2055,7 @@
         const dd = String(d.getDate()).padStart(2, "0");
         const label = safeSpanX > (550 * 24 * 60 * 60 * 1000) ? `${yy}/${mm}` : `${mm}/${dd}`;
         const x = xToPx(ts);
-        xLabels.push(`<text x="${x}" y="${H - 16}" text-anchor="middle" font-size="${xAxisFontSize}" fill="#667085">${label}</text>`);
+        xLabels.push(`<text x="${x}" y="${H - 16}" text-anchor="middle" font-size="${xAxisFontSize}" fill="#111827">${label}</text>`);
       }
 
       const markerParts = [];
@@ -2547,7 +2547,7 @@
           const v = yMin + (i / ticks) * (yMax - yMin);
           const y = yToPxMain(v);
           const gridColor = isMobileView ? "#d7deea" : "#e6e8ef";
-          const yLabelColor = isMobileView ? "#344054" : "#475467";
+          const yLabelColor = "#111827";
           gridLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="${gridColor}"/>`);
           yLabels.push(`<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="${yLabelColor}" font-weight="800">${Math.round(v).toLocaleString()}</text>`);
         }
@@ -2573,17 +2573,17 @@
             const text = escapeHtml(isMonthlyMode ? formatMonthAxisLabel(visible[i].x) : formatPeriodLabel(visible[i].x));
             if (isMonthlyMode) {
               const y = xLabelY + ((idx % 2) ? 16 : 0);
-              return `<text x="${x}" y="${y}" font-size="12" fill="#475467" text-anchor="middle" font-weight="700">${text}</text>`;
+              return `<text x="${x}" y="${y}" font-size="12" fill="#111827" text-anchor="middle" font-weight="700">${text}</text>`;
             }
             const anchor = idx === 0 ? "start" : (idx === mobileIdx.length - 1 ? "end" : "middle");
-            return `<text x="${x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#475467" text-anchor="${anchor}" font-weight="700">${text}</text>`;
+            return `<text x="${x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#111827" text-anchor="${anchor}" font-weight="700">${text}</text>`;
           }).join("");
         } else {
           if (isMonthlyMode) {
             mainXLabels.innerHTML = visible.map((p, i) => {
               const x = xToPxMain(i);
               const y = xLabelY + ((i % 2) ? 12 : 0);
-              return `<text x="${x}" y="${y}" font-size="12" fill="#475467" text-anchor="middle" font-weight="700">${escapeHtml(formatMonthAxisLabel(p.x))}</text>`;
+              return `<text x="${x}" y="${y}" font-size="12" fill="#111827" text-anchor="middle" font-weight="700">${escapeHtml(formatMonthAxisLabel(p.x))}</text>`;
             }).join("");
           } else {
             const midIdx = Math.floor((visible.length - 1) / 2);
@@ -2593,7 +2593,7 @@
               { x: xToPxMain(visible.length - 1), text: formatPeriodLabel(visible[visible.length - 1].x), anchor: "end" }
             ];
             mainXLabels.innerHTML = xLabels.map(l =>
-              `<text x="${l.x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
+          `<text x="${l.x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#111827" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
             ).join("");
           }
         }
@@ -3050,7 +3050,7 @@
         const v = yMin + (i / 3) * (yMax - yMin);
         const y = yToPx(v);
         yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#dce4f0"></line>`);
-        yLabels.push(`<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="#667085">${Math.round(v).toLocaleString()}</text>`);
+        yLabels.push(`<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="#111827">${Math.round(v).toLocaleString()}</text>`);
       }
 
       const labelIndexes = mode === "monthly"
@@ -3070,7 +3070,7 @@
         const label = formatPointDate(point, mode);
         const anchor = index === 0 ? "start" : (index === data.length - 1 ? "end" : "middle");
         const y = mode === "monthly" ? (H - 16 + ((index % 2) ? 12 : 0)) : (H - 16);
-        return `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="${xAxisFontSize}" fill="#667085">${escapeHtml(label)}</text>`;
+        return `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="${xAxisFontSize}" fill="#111827">${escapeHtml(label)}</text>`;
       });
 
       const lineD = data.map((point, index) => `${index === 0 ? "M" : "L"} ${xToPx(point.timestamp)} ${yToPx(point.price)}`).join(" ");

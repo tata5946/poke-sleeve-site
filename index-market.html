@@ -981,7 +981,7 @@
         const y = yToPx(v);
         tickLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef"/>`);
         tickLabels.push(
-          `<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="12" fill="#475467" font-weight="700">${escapeHtml(yFmt(v))}</text>`
+          `<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="12" fill="#111827" font-weight="700">${escapeHtml(yFmt(v))}</text>`
         );
       }
 
@@ -1038,7 +1038,7 @@
               <circle cx="${lastX}" cy="${lastY}" r="5" fill="#1e5bd7"/>
               <text x="${lastX + 8}" y="${lastY - 8}" font-size="12" font-weight="800" fill="#111">${escapeHtml(lastLabel)}</text>
 
-              ${xGuides.map((guide) => `<text x="${guide.x}" y="${H - 10}" font-size="14" fill="#667085" text-anchor="${guide.anchor}">${escapeHtml(guide.text)}</text>`).join("")}
+              ${xGuides.map((guide) => `<text x="${guide.x}" y="${H - 10}" font-size="14" fill="#111827" text-anchor="${guide.anchor}">${escapeHtml(guide.text)}</text>`).join("")}
             </svg>
           </div>
         </div>
@@ -1342,7 +1342,7 @@
           const v = yMin + (i / ticks) * (yMax - yMin);
           const y = yToPxMain(v);
           gridLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef"/>`);
-           yLabels.push(`<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="${isMobile ? 14 : 12}" fill="#475467" font-weight="700">${escapeHtml(yFmt(v))}</text>`);
+           yLabels.push(`<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="${isMobile ? 14 : 12}" fill="#111827" font-weight="700">${escapeHtml(yFmt(v))}</text>`);
         }
         mainGrid.innerHTML = gridLines.join("");
         mainLabels.innerHTML = yLabels.join("");
@@ -1358,7 +1358,7 @@
           gridLines.push(`<line x1="${label.x}" y1="${mainTop}" x2="${label.x}" y2="${mainBottom}" stroke="#eef2f7" stroke-dasharray="4 4"/>`);
         });
         mainXLabels.innerHTML = xLabels.map(l =>
-           `<text x="${l.x}" y="${xLabelY}" font-size="${isMobile ? 15 : 13}" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
+           `<text x="${l.x}" y="${xLabelY}" font-size="${isMobile ? 15 : 13}" fill="#111827" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
         ).join("");
 
         const firstPointIdx = visible.findIndex((point) => hasValidY(point?.y));
