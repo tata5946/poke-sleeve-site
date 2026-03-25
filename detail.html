@@ -122,32 +122,36 @@
       gap: 8px;
     }
 
-    .detail-info-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px 14px;
+    .detail-meta-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    .detail-info-item {
-      min-width: 0;
-      display: grid;
-      gap: 2px;
-      align-content: start;
-      text-align: right;
+    .detail-meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 28px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #d7e1f0;
+      background: #fff;
+      color: #1f2937;
+      line-height: 1.2;
     }
 
-    .detail-info-label {
-      font-size: 11px;
-      line-height: 1.25;
+    .detail-meta-chip-label {
+      font-size: 10px;
       color: #667085;
       font-weight: 800;
       letter-spacing: .02em;
     }
 
-    .detail-info-value {
+    .detail-meta-chip-value {
       min-width: 0;
-      font-size: 14px;
-      line-height: 1.4;
+      font-size: 12px;
+      line-height: 1.2;
       color: #101828;
       font-weight: 900;
       word-break: break-word;
@@ -202,6 +206,13 @@
       display: grid;
       gap: 4px;
       padding-top: 2px;
+    }
+
+    .detail-note-box {
+      padding: 10px 12px;
+      border: 1px solid #dbe5f2;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.88);
     }
 
     .box {
@@ -938,11 +949,13 @@
         gap: 6px 10px;
       }
 
-      .detail-info-label {
+      .detail-info-label,
+      .detail-meta-chip-label {
         font-size: 10px;
       }
 
-      .detail-info-value {
+      .detail-info-value,
+      .detail-meta-chip-value {
         font-size: 13px;
       }
 
@@ -1445,11 +1458,9 @@
     function getDetailFieldRows(sleeve) {
       return [
         { label: "発売日", value: getReleaseDateText(sleeve) },
-        { label: "状態", value: getTextValue(sleeve?.condition) },
         { label: "公式/非公式", value: getTextValue(sleeve?.series) },
         { label: "種類", value: getTextValue(sleeve?.type) },
-        { label: "販売元", value: getTextValue(sleeve?.acquisitionType) },
-        { label: "シリーズ", value: getTextValue(sleeve?.series) }
+        { label: "販売元", value: getTextValue(sleeve?.acquisitionType) }
       ].filter((row) => row.value && row.value !== "不明");
     }
 
@@ -1481,18 +1492,9 @@
 
     function buildHeaderBadges(sleeve) {
       const badges = [];
-      const flowHtml = window.common && typeof window.common.buildFlowBadgeHtml === "function"
-        ? window.common.buildFlowBadgeHtml(sleeve)
-        : "";
-      if (flowHtml) badges.push(flowHtml);
-
-      const condition = getTextValue(sleeve?.condition);
       const series = getTextValue(sleeve?.series);
       const releaseYear = getReleaseYearText(sleeve);
 
-      if (condition && condition !== "不明") {
-        badges.push(`<span class="badge">${escapeHtml(condition)}</span>`);
-      }
       if (series && series !== "不明") {
         badges.push(`<span class="badge">${escapeHtml(series)}</span>`);
       }
@@ -1535,7 +1537,7 @@
         return;
       }
 
-      root.innerHTML = uniqueChips.slice(0, 2).join("");
+      root.innerHTML = uniqueChips.join("");
       root.hidden = false;
     }
 
@@ -1553,18 +1555,18 @@
       }
 
       const fieldHtml = fieldRows.length
-        ? `<div class="detail-info-grid">
+        ? `<div class="detail-meta-chips">
             ${fieldRows.map((row) => `
-              <div class="detail-info-item">
-                <div class="detail-info-label">${escapeHtml(row.label)}</div>
-                <div class="detail-info-value">${escapeHtml(row.value)}</div>
-              </div>
+              <span class="detail-meta-chip">
+                <span class="detail-meta-chip-label">${escapeHtml(row.label)}</span>
+                <span class="detail-meta-chip-value">${escapeHtml(row.value)}</span>
+              </span>
             `).join("")}
           </div>`
         : "";
 
       const noteHtml = note
-        ? `<div class="detail-note">
+        ? `<div class="detail-note detail-note-box">
             <div class="detail-info-label">備考</div>
             <div class="detail-info-value">${escapeHtml(note)}</div>
           </div>`
