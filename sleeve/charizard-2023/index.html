@@ -2035,18 +2035,6 @@
         xLabels.push(`<text x="${x}" y="${H - 16}" text-anchor="middle" font-size="${xAxisFontSize}" fill="#667085">${label}</text>`);
       }
 
-      const styles = {
-        week: { stroke: "#475467", fill: "#475467" },
-        month: { stroke: "#667085", fill: "#ffffff" },
-        year: { stroke: "#98a2b3", fill: "#ffffff" }
-      };
-
-      const tradedByG = {
-        week: traded.filter((r) => r.granularity === "week"),
-        month: traded.filter((r) => r.granularity === "month"),
-        year: traded.filter((r) => r.granularity === "year")
-      };
-
       const markerParts = [];
       const hitParts = [];
       const hitMeta = [];
@@ -2055,38 +2043,24 @@
       const latestKey = latest ? `${latest.granularity}|${latest.periodStart}` : "";
       const latestPriceY = latest ? yToPx(latest.avgPrice) : null;
 
-      function buildMarkerShape(point, cx, cy, radius, style, isLatest) {
+      function buildMarkerShape(cx, cy, radius, isLatest) {
         if (isLatest) {
-          markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${radius + 3}" fill="rgba(71,84,103,0.12)" stroke="none"></circle>`);
+          markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${radius + 4}" fill="rgba(30,91,215,0.14)" stroke="none"></circle>`);
         }
-        if (point.granularity === "year") {
-          const triangle = [
-            `${cx},${cy - radius}`,
-            `${cx - radius * 0.88},${cy + radius * 0.72}`,
-            `${cx + radius * 0.88},${cy + radius * 0.72}`
-          ].join(" ");
-          markerParts.push(`<polygon points="${triangle}" fill="${style.fill}" stroke="${style.stroke}" stroke-width="${isLatest ? 2.2 : 1.6}"></polygon>`);
-          return;
-        }
-        markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${style.fill}" stroke="${style.stroke}" stroke-width="${isLatest ? 2.2 : 1.6}"></circle>`);
+        markerParts.push(`<circle cx="${cx}" cy="${cy}" r="${radius}" fill="#1e5bd7" stroke="${isLatest ? "#0f172a" : "#1e5bd7"}" stroke-width="${isLatest ? 2.4 : 1.8}"></circle>`);
       }
 
-      for (const g of ["week", "month", "year"]) {
-        const st = styles[g];
-        const pts = tradedByG[g].slice().sort((a, b) => a.timestamp - b.timestamp);
-        if (!pts.length) continue;
-
-        for (const p of pts) {
-          const cx = xToPx(p.timestamp);
-          const cy = yToPx(p.avgPrice);
-          const key = `${p.granularity}|${p.periodStart}`;
-          const isLatest = key === latestKey;
-          const radius = isLatest ? (isMobileView ? 9 : 8) : (isMobileView ? 7 : 6);
-          buildMarkerShape(p, cx, cy, radius, st, isLatest);
-          hitParts.push(`<circle class="obs-hit" data-hit="${hitIdx}" cx="${cx}" cy="${cy}" r="${isMobileView ? 18 : 14}" fill="transparent"></circle>`);
-          hitMeta.push(p);
-          hitIdx += 1;
-        }
+      const sortedTraded = traded.slice().sort((a, b) => a.timestamp - b.timestamp);
+      for (const p of sortedTraded) {
+        const cx = xToPx(p.timestamp);
+        const cy = yToPx(p.avgPrice);
+        const key = `${p.granularity}|${p.periodStart}`;
+        const isLatest = key === latestKey;
+        const radius = isLatest ? (isMobileView ? 9 : 8) : (isMobileView ? 7 : 6);
+        buildMarkerShape(cx, cy, radius, isLatest);
+        hitParts.push(`<circle class="obs-hit" data-hit="${hitIdx}" cx="${cx}" cy="${cy}" r="${isMobileView ? 18 : 14}" fill="transparent"></circle>`);
+        hitMeta.push(p);
+        hitIdx += 1;
       }
 
       el.innerHTML = `
@@ -3002,18 +2976,8 @@
 
     function buildMarkerSvg(point, cx, cy, radius, isLatest, mode) {
       const stroke = isLatest ? "#0f172a" : "#1e5bd7";
-      const fill = (mode === "all" && point.type !== "weekly") ? "#ffffff" : "#1e5bd7";
       const halo = isLatest ? `<circle cx="${cx}" cy="${cy}" r="${radius + 5}" fill="rgba(30,91,215,0.14)"></circle>` : "";
-      if (mode === "all" && point.type === "yearly") {
-        const triangle = [
-          `${cx},${cy - radius}`,
-          `${cx - radius * 0.88},${cy + radius * 0.78}`,
-          `${cx + radius * 0.88},${cy + radius * 0.78}`
-        ].join(" ");
-        return `${halo}<polygon points="${triangle}" fill="${fill}" stroke="${stroke}" stroke-width="${isLatest ? 2.4 : 1.8}"></polygon>`;
-      }
-      const actualRadius = mode === "all" && point.type === "weekly" ? Math.max(3.6, radius - 1.2) : radius;
-      return `${halo}<circle cx="${cx}" cy="${cy}" r="${actualRadius}" fill="${fill}" stroke="${stroke}" stroke-width="${isLatest ? 2.4 : 1.8}"></circle>`;
+      return `${halo}<circle cx="${cx}" cy="${cy}" r="${radius}" fill="#1e5bd7" stroke="${stroke}" stroke-width="${isLatest ? 2.4 : 1.8}"></circle>`;
     }
 
     function buildTooltipHtml(point, mode) {
@@ -3361,6 +3325,7 @@
 </body>
 
 </html>
+
 
 
 
