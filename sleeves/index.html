@@ -25,6 +25,21 @@
       align-items: start;
     }
 
+    .catalog-hero {
+      margin-bottom: 16px;
+      padding: 16px 18px;
+      background: #0f2b6f;
+      color: #fff;
+    }
+
+    .catalog-hero-title {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.15;
+      font-weight: 900;
+      letter-spacing: -.02em;
+    }
+
     .catalog-sidebar {
       position: sticky;
       top: 16px;
@@ -301,17 +316,13 @@
     }
 
     @media (max-width: 720px) {
-      .hero-card {
+      .catalog-hero {
+        margin-bottom: 12px;
         padding: 14px;
       }
 
-      .hero-title {
-        font-size: 17px;
-      }
-
-      .hero-desc,
-      .data-note {
-        font-size: 12px;
+      .catalog-hero-title {
+        font-size: 20px;
       }
 
       .catalog-main {
@@ -490,16 +501,9 @@
       <span class="breadcrumb-sep" aria-hidden="true">></span>
       <span class="breadcrumb-current" aria-current="page">ポケモンカード スリーブ図鑑</span>
     </nav>
-    <div class="hero">
-      <div class="hero-card">
-        <div>
-          <p class="hero-title">ポケモンカード スリーブ図鑑</p>
-          <p class="hero-desc">検索・絞り込みで目的のスリーブを見つけて、価格推移を比較できます。</p>
-          <p class="data-note">価格はフリマアプリ取引履歴をもとに算出しています。</p>
-          <p id="updatedAt" class="data-note" style="display:none;"></p>
-        </div>
-      </div>
-    </div>
+    <section class="catalog-hero" aria-label="ページ見出し">
+      <h1 class="catalog-hero-title">スリーブ図鑑</h1>
+    </section>
 
     <div class="catalog-layout">
       <aside class="panel catalog-sidebar">
