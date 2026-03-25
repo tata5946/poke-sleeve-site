@@ -521,9 +521,9 @@
       <section class="market-hero" aria-label="ページ見出し">
         <h1 class="market-hero-title">スリーブ指数</h1>
       </section>
-      <div class="panel summary-panel">
+      <div class="panel chart-panel">
+        <h3 class="section-title">指数チャート</h3>
         <div class="share-block">
-          <div class="share-title">シェア</div>
           <div class="share-row">
             <button type="button" class="btn share-x" id="shareXBtn">
               <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -534,11 +534,6 @@
           </div>
           <div id="shareStatus" class="share-status"></div>
         </div>
-      </div>
-
-      <div class="panel chart-panel">
-        <h3 class="section-title">指数チャート</h3>
-        <p class="section-subtle">市場が強いか弱いかを、基準値100からの動きで直感的に見られます</p>
         <div id="indexChart"></div>
       </div>
 
@@ -564,45 +559,9 @@
         </div>
       </div>
 
-      <div class="panel dist-panel">
-        <h3 class="section-title">今週の分布</h3>
-        <div id="distSummary" class="meta" style="margin-bottom:10px;">-</div>
-        <div id="distTable"></div>
-      </div>
-
       <div class="panel table-panel">
         <h3 class="section-title">週次データ表</h3>
         <div id="indexTable"></div>
-      </div>
-
-      <details class="panel settings-details">
-        <summary>算出方法 / 指数の設定</summary>
-        <div class="settings-body">
-          <div class="note" style="margin-top:0;">
-            指数は観測データベースをもとに、前週比の変化率を週次で積み上げた参考指標です。<br>
-            2025年1月1日を起点に連鎖指数として算出しています。
-          </div>
-          <table style="margin-top:10px;">
-            <tbody>
-              <tr><th>粒度</th><td>週次</td></tr>
-              <tr><th>比較対象</th><td>前週と今週の両方にデータがあるスリーブ</td></tr>
-              <tr><th>重み付け</th><td>取引件数の幾何平均で加重（偏り抑制）</td></tr>
-              <tr><th>外れ値補正</th><td>最大比率2.5倍でクリップし、サンプル十分時はp5-p95でwinsorize</td></tr>
-              <tr><th>指数方式</th><td>基準週=100の連鎖指数（週次積み上げ）</td></tr>
-            </tbody>
-          </table>
-          <div class="meta" style="margin-top:10px;">※ 参考指標であり、厳密な金融指数ではありません。</div>
-        </div>
-      </details>
-
-      <div class="panel">
-        <h3 class="section-title">関連ページ</h3>
-        <div class="quick-links">
-          <a class="btn" href="./surge.html">急騰ランキング</a>
-          <a class="btn" href="./growth.html">上昇率ランキング</a>
-          <a class="btn" href="./ranking.html">価格ランキング</a>
-          <a class="btn" href="./sleeves/">図鑑で探す</a>
-        </div>
       </div>
     </div>
 
@@ -884,7 +843,7 @@
         .filter(p => p.x && Number.isFinite(p.y));
 
       if (data.length < 2) {
-        el.innerHTML = `<div class="chart-wrap"><div class="chart-title">${escapeHtml(title)}</div><div class="meta">データが不足しています（週次データが2点以上必要）</div></div>`;
+        el.innerHTML = `<div class="chart-wrap">${title ? `<div class="chart-title">${escapeHtml(title)}</div>` : ""}<div class="meta">データが不足しています（週次データが2点以上必要）</div></div>`;
         return;
       }
 
@@ -950,7 +909,7 @@
 
       el.innerHTML = `
         <div class="chart-wrap">
-          <div class="chart-title">${escapeHtml(title)}</div>
+          ${title ? `<div class="chart-title">${escapeHtml(title)}</div>` : ""}
           <div class="chart-toolbar">
             <button type="button" class="chart-zoom-btn" data-zoom="out">-</button>
             <button type="button" class="chart-zoom-btn" data-zoom="in">+</button>
@@ -1852,18 +1811,24 @@
       const validIndexCount = indexSeries.filter(r => Number.isFinite(r.index) && r.index > 0).length;
       if (validIndexCount < 2) {
         document.getElementById("indexChart").innerHTML =
-          `<div class="chart-wrap"><div class="chart-title">スリーブ指数 推移</div><div class="meta">指数データが不足しています</div></div>`;
+          `<div class="chart-wrap"><div class="meta">指数データが不足しています</div></div>`;
       } else {
-        renderLineChartV2("indexChart", "スリーブ指数 推移", indexSeries, "week", "index", (v) => Number(v).toFixed(1));
+        renderLineChartV2("indexChart", "", indexSeries, "week", "index", (v) => Number(v).toFixed(1));
       }
 
       // テーブル
-      document.getElementById("indexTable").innerHTML = renderTableIndex(series);
+      const indexTable = document.getElementById("indexTable");
+      if (indexTable) indexTable.innerHTML = renderTableIndex(series);
 
       // 分布
-      document.getElementById("distSummary").textContent =
-        last ? `最新週（${formatPeriodLabel(last.week)}）の上昇/下落/横ばい割合` : "—";
-      document.getElementById("distTable").innerHTML = renderTableDist(last);
+      const distSummary = document.getElementById("distSummary");
+      const distTable = document.getElementById("distTable");
+      if (distSummary) {
+        distSummary.textContent = last ? `最新週（${formatPeriodLabel(last.week)}）の上昇/下落/横ばい割合` : "—";
+      }
+      if (distTable) {
+        distTable.innerHTML = renderTableDist(last);
+      }
 
       const contrib = buildLatestContributors(sleeves, weeks, {
         minPrice: 300,
@@ -1871,8 +1836,10 @@
         weightCap: 20,
         maxRatio: 2.5
       });
-      document.getElementById("contribUp").innerHTML = renderContribList(contrib.up, "up");
-      document.getElementById("contribDown").innerHTML = renderContribList(contrib.down, "down");
+      const contribUp = document.getElementById("contribUp");
+      const contribDown = document.getElementById("contribDown");
+      if (contribUp) contribUp.innerHTML = renderContribList(contrib.up, "up");
+      if (contribDown) contribDown.innerHTML = renderContribList(contrib.down, "down");
 
       renderAiComment(last?.week || null);
     }
