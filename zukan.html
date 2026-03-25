@@ -428,13 +428,6 @@
       };
     }
 
-    function getSupplementaryInfo(sleeve) {
-      if (sleeve.releaseYear) return `${escapeHtml(sleeve.releaseYear)}年発売`;
-      if (sleeve.series) return escapeHtml(sleeve.series);
-      if (sleeve.condition) return escapeHtml(sleeve.condition);
-      return "詳細ページで相場推移を確認";
-    }
-
     function getCardTags(sleeve, maxItems = 2) {
       const candidates = [];
       if (sleeve.series) candidates.push(sleeve.series);
@@ -606,7 +599,6 @@
               <div class="compact-price">${escapeHtml(priceText)}</div>
               <div class="compact-delta ${delta.className}">${escapeHtml(delta.shortText)}</div>
             </div>
-            <div class="compact-meta">${getSupplementaryInfo(s)}</div>
             ${tagsHtml ? `<div class="compact-tags">${tagsHtml}</div>` : ""}
           `;
           frag.appendChild(card);

@@ -548,7 +548,7 @@ a:hover {
 }
 
 .compact-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 10px;
 }
 
@@ -636,13 +636,6 @@ a:hover {
 
 .compact-delta.flat {
     color: #667085;
-}
-
-.compact-meta {
-    font-size: 10px;
-    line-height: 1.25;
-    color: #667085;
-    font-weight: 700;
 }
 
 .compact-tags {
@@ -1132,11 +1125,6 @@ footer.site-footer {
         gap: 10px;
     }
 
-    .compact-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 6px;
-    }
-
     .panel,
     .section,
     .card {
@@ -1163,11 +1151,6 @@ footer.site-footer {
         gap: 10px;
     }
 
-    .compact-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 6px;
-    }
-
     .compact-card {
         padding: 5px;
         gap: 5px;
@@ -1184,7 +1167,6 @@ footer.site-footer {
     }
 
     .compact-delta,
-    .compact-meta,
     .compact-tag {
         font-size: 9px;
     }
@@ -1218,7 +1200,13 @@ footer.site-footer {
     }
 }
 
-@media (max-width:380px) {
+@media (max-width:1023px) {
+    .compact-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width:767px) {
     .compact-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
