@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>人気スリーブランキング｜ポケスリ相場ナビ</title>
-  <meta name="description" content="アクセス数ベースで人気スリーブをランキング表示します。" />
-  <meta property="og:title" content="人気スリーブランキング｜ポケスリ相場ナビ" />
-  <meta property="og:description" content="アクセス数ベースで人気スリーブをランキング表示します。" />
+  <title>アクセスランキング｜ポケスリ相場ナビ</title>
+  <meta name="description" content="アクセス数ベースで注目されているスリーブをランキング表示します。" />
+  <meta property="og:title" content="アクセスランキング｜ポケスリ相場ナビ" />
+  <meta property="og:description" content="アクセス数ベースで注目されているスリーブをランキング表示します。" />
   <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
   <meta property="og:url" content="https://pokesuri-navi.com/access-ranking.html" />
 
@@ -51,76 +51,159 @@
 
     .ranking-page-top {
       display: grid;
-      gap: 16px;
-      margin-bottom: 20px;
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
-    .ranking-header-card {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 16px;
-      align-items: center;
-      padding: 24px;
+    .ranking-hero {
+      padding: 16px 18px;
+      background: #0f2b6f;
+      color: #fff;
+    }
+
+    .ranking-page-title {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .ranking-filter-card {
+      padding: 10px 12px;
       background: #fff;
       border: 1px solid #e6eaf2;
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
     }
 
-    .ranking-page-title {
-      margin: 0;
-      font-size: 28px;
-      line-height: 1.15;
-      letter-spacing: -.02em;
-      color: #0f172a;
-      font-weight: 900;
-    }
-
-    .ranking-page-desc {
-      margin: 10px 0 0;
-      font-size: 14px;
-      line-height: 1.6;
-      color: #475467;
-      font-weight: 700;
-    }
-
-    .ranking-status {
+    .ranking-filter-head {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      align-items: center;
+      justify-content: flex-start;
       gap: 10px;
+      margin-bottom: 8px;
     }
 
-    .ranking-status-card {
-      min-width: 144px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: #fff;
-      border: 1px solid #e7ebf3;
-    }
-
-    .ranking-status-label {
-      display: block;
-      font-size: 11px;
-      line-height: 1.3;
-      color: #667085;
-      font-weight: 800;
-      margin-bottom: 6px;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    .ranking-status-value {
-      display: block;
-      font-size: 15px;
-      line-height: 1.35;
-      color: #101828;
+    .ranking-filter-title {
+      margin: 0;
+      font-size: 12px;
+      color: #344054;
       font-weight: 900;
+      letter-spacing: .04em;
+    }
+
+    .ranking-filter-grid {
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 8px;
+      padding-bottom: 2px;
+    }
+
+    .ranking-filter-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ranking-filter-field {
+      min-width: 120px;
+      flex: 0 0 auto;
+    }
+
+    .ranking-filter-field select,
+    .ranking-filter-actions button {
+      width: auto;
+      min-width: 120px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1px solid #d7deea;
+      background: #fff;
+      color: #101828;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 0 12px;
+      white-space: nowrap;
+      transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+    }
+
+    .ranking-filter-field select:hover,
+    .ranking-filter-actions button:hover {
+      border-color: #b9c5d9;
+      background: #fbfcfe;
+    }
+
+    .ranking-filter-field select:focus,
+    .ranking-filter-actions button:focus {
+      outline: none;
+      border-color: #9db5ff;
+      box-shadow: 0 0 0 4px rgba(71, 122, 255, .12);
+    }
+
+    .ranking-filter-actions {
+      min-width: 0;
+      flex: 0 0 auto;
+    }
+
+    .ranking-filter-actions button {
+      min-width: 92px;
+      background: #f8fafc;
+      color: #344054;
+      cursor: pointer;
+    }
+
+    .ranking-active-filters {
+      display: none;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .ranking-active-filters.is-visible {
+      display: flex;
+    }
+
+    .ranking-filter-chip {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      min-height: 24px;
+      padding: 0 24px 0 8px;
+      border-radius: 999px;
+      background: #eef4ff;
+      border: 1px solid #d8e5ff;
+      color: #274690;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .ranking-filter-chip-remove {
+      position: absolute;
+      top: -4px;
+      right: -2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #274690;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1;
+      box-shadow: 0 2px 6px rgba(39, 70, 144, .18);
     }
 
     .ranking-list {
       display: grid;
-      gap: 12px;
+      gap: 10px;
     }
 
     .ranking-top3 {
@@ -190,82 +273,38 @@
     .podium-actions { display:flex; align-items:center; justify-content:flex-start; }
     .podium-actions .btn { margin-top:0; }
 
-    .ranking-item {
-      display: grid;
-      grid-template-columns: 72px 140px minmax(0, 1fr) auto;
-      gap: 12px;
-      align-items: center;
-      padding: 12px;
-    }
-
-    .ranking-item .thumb-link {
-      width: 140px;
-    }
-
-    .ranking-item .thumb {
-      height: 96px;
-      width: 140px;
-    }
-
-    .rank {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 60px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: #111;
-      color: #fff;
-      font-size: 18px;
-      font-weight: 900;
-    }
-
-    .count {
-      font-size: 16px;
-      font-weight: 900;
-      color: #111;
-      white-space: nowrap;
-    }
-
     .ranking-main {
       display: grid;
       gap: 12px;
     }
 
-    @media (max-width: 760px) {
-      .ranking-header-card {
-        grid-template-columns: 1fr;
-        padding: 20px;
+    @media (max-width: 960px) {
+      .ranking-filter-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        overflow: visible;
+        padding-bottom: 0;
       }
 
-      .ranking-status {
-        justify-content: flex-start;
-      }
-
-      .ranking-status-card {
+      .ranking-filter-field {
         min-width: 0;
-        flex: 1 1 140px;
       }
 
+      .ranking-filter-field select,
+      .ranking-filter-actions button {
+        width: 100%;
+        min-width: 0;
+      }
+    }
+
+    @media (max-width: 760px) {
       .ranking-top3 { grid-template-columns: 1fr; }
       .podium-card--rank1 { grid-template-columns: 1fr; }
-
-      .ranking-item {
-        grid-template-columns: 64px 1fr;
-      }
-
-      .ranking-item .thumb-link,
-      .ranking-item .thumb {
-        width: 100%;
-      }
-
-      .ranking-item .thumb {
-        height: 180px;
-      }
-
-      .count {
-        grid-column: 2;
-      }
+      .ranking-hero { padding: 14px; }
+      .ranking-page-title { font-size: 20px; }
+      .ranking-filter-card { padding: 10px 12px 12px; }
+      .ranking-filter-chip { font-size: 10px; }
+      .ranking-filter-chip-remove { width: 14px; height: 14px; font-size: 9px; }
     }
   </style>
 </head>
@@ -277,35 +316,53 @@
     <nav class="breadcrumb" aria-label="パンくず">
       <a href="./index.html">ホーム</a>
       <span class="breadcrumb-sep" aria-hidden="true">></span>
-      <span class="breadcrumb-current" aria-current="page">人気スリーブランキング</span>
+      <span class="breadcrumb-current" aria-current="page">アクセスランキング</span>
     </nav>
     <div class="ranking-page-top">
-      <section class="ranking-header-card" aria-label="ページヘッダー">
-        <div>
-          <h1 class="ranking-page-title">人気スリーブランキング</h1>
-          <p class="ranking-page-desc">アクセスログをもとに、今よく見られているスリーブを一覧で確認できます。</p>
+      <section class="ranking-hero" aria-label="ページ見出し">
+        <h1 class="ranking-page-title">アクセスランキング</h1>
+      </section>
+      <section class="ranking-filter-card" aria-label="フィルタバー">
+        <div class="ranking-filter-head">
+          <h2 class="ranking-filter-title">絞り込み</h2>
         </div>
-        <div class="ranking-status" aria-label="集計状況">
-          <div class="ranking-status-card">
-            <span class="ranking-status-label">集計方式</span>
-            <span class="ranking-status-value">アクセスログ</span>
+        <div id="error" class="error"></div>
+        <div class="ranking-filter-grid">
+          <div class="ranking-filter-field">
+            <select id="releaseYear">
+              <option value="">発売年</option>
+            </select>
           </div>
-          <div class="ranking-status-card">
-            <span class="ranking-status-label">表示件数</span>
-            <span id="countInfo" class="ranking-status-value">集計中</span>
+          <div class="ranking-filter-field">
+            <select id="series">
+              <option value="">シリーズ</option>
+            </select>
+          </div>
+          <div class="ranking-filter-field">
+            <select id="priceBand">
+              <option value="">価格帯</option>
+              <option value="0-999">〜999円</option>
+              <option value="1000-1999">1,000〜1,999円</option>
+              <option value="2000-2999">2,000〜2,999円</option>
+              <option value="3000-4999">3,000〜4,999円</option>
+              <option value="5000-99999999">5,000円〜</option>
+            </select>
+          </div>
+          <div class="ranking-filter-actions">
+            <button id="clear" type="button">条件をクリア</button>
           </div>
         </div>
+        <div id="activeFilters" class="ranking-active-filters" aria-label="選択中の絞り込み条件"></div>
       </section>
     </div>
 
     <div class="ranking-main">
-      <div id="error" class="error"></div>
       <section id="top3" class="ranking-top3" aria-label="ランキング上位3件" hidden>
         <div id="top1"></div>
         <div id="top2"></div>
         <div id="top3Card"></div>
       </section>
-      <div id="list" class="ranking-list"></div>
+      <div id="list" class="ranking-list compact-grid"></div>
     </div>
 
     <div id="site-footer"></div>
@@ -337,6 +394,22 @@
       if (!el) return;
       el.style.display = "none";
       el.textContent = "";
+    }
+
+    function uniq(arr) {
+      const set = new Set();
+      for (const value of arr) {
+        const text = value == null ? "" : String(value).trim();
+        if (text) set.add(text);
+      }
+      return Array.from(set);
+    }
+
+    function parseBand(v) {
+      if (!v) return null;
+      const [a, b] = v.split("-").map(Number);
+      if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+      return { min: a, max: b };
     }
 
     async function fetchRanking() {
@@ -418,8 +491,7 @@
       const candidates = [];
       if (typeof sleeve?.series === "string") candidates.push(sleeve.series);
       if (typeof sleeve?.condition === "string") candidates.push(sleeve.condition);
-      if (typeof sleeve?.releaseYear === "number" || typeof sleeve?.releaseYear === "string") candidates.push(`${sleeve.releaseYear}`);
-      return candidates.filter(Boolean).slice(0, 3).map((tag) => tag.startsWith("#") ? tag : `#${tag}`);
+      return candidates.filter(Boolean).slice(0, 2).map((tag) => tag.startsWith("#") ? tag : `#${tag}`);
     }
 
     function getPodiumBadge(rank) {
@@ -474,27 +546,60 @@
       `;
     }
 
-    function renderRanking(list, sleeveMap) {
+    function renderActiveFilters(releaseYearSel, seriesSel, priceBandSel) {
+      const activeFilters = document.getElementById("activeFilters");
+      if (!activeFilters) return;
+      const chips = [];
+      if (releaseYearSel.value) chips.push({ key: "releaseYear", text: `発売年: ${releaseYearSel.value}` });
+      if (seriesSel.value) chips.push({ key: "series", text: `シリーズ: ${seriesSel.value}` });
+      if (priceBandSel.value) {
+        const selected = priceBandSel.options[priceBandSel.selectedIndex];
+        const label = selected ? selected.textContent.trim() : "";
+        if (label) chips.push({ key: "priceBand", text: `価格帯: ${label}` });
+      }
+      activeFilters.innerHTML = chips.map((chip) =>
+        `<button class="ranking-filter-chip" type="button" data-filter-key="${escapeHtml(chip.key)}" aria-label="${escapeHtml(chip.text)} を解除">
+          <span>${escapeHtml(chip.text)}</span>
+          <span class="ranking-filter-chip-remove" aria-hidden="true">×</span>
+        </button>`
+      ).join("");
+      activeFilters.classList.toggle("is-visible", chips.length > 0);
+    }
+
+    function buildStandardCard(row, rank) {
+      const tagsHtml = row.tags.map((tag) => `<span class="compact-tag">${escapeHtml(tag.replace(/^#/, ""))}</span>`).join("");
+      return `
+        <span class="compact-rank-badge">${rank}位</span>
+        <span class="compact-thumb-wrap">
+          ${row.imageUrl
+            ? `<img class="compact-thumb" src="${escapeHtml(row.imageUrl)}" alt="${escapeHtml(row.name)}" loading="lazy" referrerpolicy="no-referrer"
+                onerror="this.onerror=null; this.style.display='none';">`
+            : ""}
+        </span>
+        <h3 class="compact-card-title">${escapeHtml(row.name)}</h3>
+        <div class="compact-price-row">
+          <div class="compact-price">${Number.isFinite(row.access) ? row.access.toLocaleString() : 0}アクセス</div>
+          <div class="compact-delta flat">${row.latestPrice == null ? "価格なし" : `${row.latestPrice.toLocaleString()}円`}</div>
+        </div>
+        ${tagsHtml ? `<div class="compact-tags">${tagsHtml}</div>` : ""}
+      `;
+    }
+
+    function renderRanking(list, sleeveMap, filters) {
       const root = document.getElementById("list");
       const top3 = document.getElementById("top3");
       const top1 = document.getElementById("top1");
       const top2 = document.getElementById("top2");
       const top3Card = document.getElementById("top3Card");
+      const countInfo = document.getElementById("countInfo");
       if (!root) return;
 
-      if (!list.length) {
-        root.innerHTML = '<div class="card"><div class="title">データなし</div><div class="meta">ランキングデータがありません。</div></div>';
-        return;
-      }
-
-      root.innerHTML = "";
-      if (top1) top1.innerHTML = "";
-      if (top2) top2.innerHTML = "";
-      if (top3Card) top3Card.innerHTML = "";
-      if (top3) top3.hidden = true;
+      const releaseYear = filters.releaseYearSel.value;
+      const series = filters.seriesSel.value;
+      const band = parseBand(filters.priceBandSel.value);
 
       const rows = [];
-      list.forEach((item, index) => {
+      list.forEach((item) => {
         const id = String(item && item.id || "");
         const access = Number(item && item.access);
         const sleeve = sleeveMap.get(id);
@@ -508,26 +613,45 @@
         const range = getMarketRange(sleeve || {});
         const tags = getTagLabels(sleeve || {});
 
-        rows.push({ id, access: Number.isFinite(access) ? access : 0, name, imageUrl, detailHref, latestPrice, range, tags });
+        if (releaseYear && String(sleeve?.releaseYear ?? "") !== releaseYear) return;
+        if (series && String(sleeve?.series ?? "") !== series) return;
+        if (band) {
+          if (latestPrice == null) return;
+          if (latestPrice < band.min || latestPrice > band.max) return;
+        }
 
+        rows.push({ id, access: Number.isFinite(access) ? access : 0, name, imageUrl, detailHref, latestPrice, range, tags });
+      });
+
+      rows.sort((a, b) => b.access - a.access || String(a.name).localeCompare(String(b.name)));
+
+      renderActiveFilters(filters.releaseYearSel, filters.seriesSel, filters.priceBandSel);
+      if (countInfo) countInfo.textContent = `${rows.length}件`;
+
+      if (!rows.length) {
+        root.innerHTML = '<div class="card"><div class="title">データなし</div><div class="meta">ランキングデータがありません。</div></div>';
+        if (top1) top1.innerHTML = "";
+        if (top2) top2.innerHTML = "";
+        if (top3Card) top3Card.innerHTML = "";
+        if (top3) top3.hidden = true;
+        return;
+      }
+
+      root.innerHTML = "";
+      if (top1) top1.innerHTML = "";
+      if (top2) top2.innerHTML = "";
+      if (top3Card) top3Card.innerHTML = "";
+      if (top3) top3.hidden = true;
+
+      rows.forEach((row, index) => {
         if (index < 3) return;
-        const div = document.createElement("div");
-        div.className = "card ranking-item";
-        div.innerHTML = `
-          <div class="rank">${index + 1}位</div>
-          ${imageUrl
-            ? `<a class="thumb-link" data-sleeve-link="1" href="${detailHref}" aria-label="${escapeHtml(name)}の詳細を見る">
-                 <img class="thumb" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(name)}" loading="lazy" referrerpolicy="no-referrer"
-                   onerror="this.onerror=null; this.style.display='none';">
-               </a>`
-            : `<a class="thumb-link" data-sleeve-link="1" href="${detailHref}" aria-label="${escapeHtml(name)}の詳細を見る"><div class="thumb"></div></a>`}
-          <div>
-            <div class="title"><a data-sleeve-link="1" href="${detailHref}">${escapeHtml(name)}</a></div>
-            <div class="meta">スリーブID: ${escapeHtml(id)}</div>
-          </div>
-          <div class="count">${Number.isFinite(access) ? access.toLocaleString() : 0}アクセス</div>
-        `;
-        root.appendChild(div);
+        const card = document.createElement("a");
+        card.className = "compact-card";
+        card.href = row.detailHref;
+        card.setAttribute("data-sleeve-link", "1");
+        card.setAttribute("aria-label", `${String(row.name ?? "")}の詳細を見る`);
+        card.innerHTML = buildStandardCard(row, index + 1);
+        root.appendChild(card);
       });
 
       if (rows.length && top3) {
@@ -540,6 +664,11 @@
 
     async function main() {
       try {
+        const releaseYearSel = document.getElementById("releaseYear");
+        const seriesSel = document.getElementById("series");
+        const priceBandSel = document.getElementById("priceBand");
+        const clearBtn = document.getElementById("clear");
+        const activeFilters = document.getElementById("activeFilters");
         const [rankingData, masterData] = await Promise.all([
           fetchRanking(),
           window.common.loadData()
@@ -547,11 +676,45 @@
 
         const ranking = Array.isArray(rankingData && rankingData.ranking) ? rankingData.ranking : [];
         const sleeveMap = buildSleeveMap(masterData);
-        renderRanking(ranking, sleeveMap);
+        const sleeves = Array.isArray(masterData && masterData.sleeves) ? masterData.sleeves : [];
+        const releaseYears = uniq(sleeves.map((s) => s.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
+        const seriesList = uniq(sleeves.map((s) => s.series)).sort();
 
-        const countInfo = document.getElementById("countInfo");
-        if (countInfo) {
-          countInfo.textContent = `${ranking.length}件`;
+        for (const y of releaseYears) {
+          const opt = document.createElement("option");
+          opt.value = String(y);
+          opt.textContent = String(y);
+          releaseYearSel.appendChild(opt);
+        }
+        for (const series of seriesList) {
+          const opt = document.createElement("option");
+          opt.value = series;
+          opt.textContent = series;
+          seriesSel.appendChild(opt);
+        }
+
+        const render = () => renderRanking(ranking, sleeveMap, { releaseYearSel, seriesSel, priceBandSel });
+        render();
+
+        releaseYearSel.addEventListener("change", render);
+        seriesSel.addEventListener("change", render);
+        priceBandSel.addEventListener("change", render);
+        clearBtn.addEventListener("click", () => {
+          releaseYearSel.value = "";
+          seriesSel.value = "";
+          priceBandSel.value = "";
+          render();
+        });
+        if (activeFilters) {
+          activeFilters.addEventListener("click", (event) => {
+            const button = event.target.closest("[data-filter-key]");
+            if (!button) return;
+            const key = button.getAttribute("data-filter-key");
+            if (key === "releaseYear") releaseYearSel.value = "";
+            if (key === "series") seriesSel.value = "";
+            if (key === "priceBand") priceBandSel.value = "";
+            render();
+          });
         }
 
         hideError();
