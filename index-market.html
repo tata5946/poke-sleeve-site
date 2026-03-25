@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>スリーブ指数（週次）｜ポケスリ相場ナビ</title>
+  <title>スリーブ指数｜ポケスリ相場ナビ</title>
   <meta name="description" content="ポケカスリーブ市場の週次指数（全体上昇率）と推移を表示します。" />
-  <meta property="og:title" content="スリーブ指数（週次）｜ポケスリ相場ナビ" />
+  <meta property="og:title" content="スリーブ指数｜ポケスリ相場ナビ" />
   <meta property="og:description" content="ポケカスリーブ市場の週次指数（全体上昇率）と推移を表示します。" />
   <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
   <meta property="og:url" content="https://pokesuri-navi.com/index-market.html" />
@@ -21,6 +21,21 @@
     .hero {
       display: grid;
       gap: 14px;
+    }
+
+    .market-hero {
+      padding: 16px 18px;
+      background: #0f2b6f;
+      color: #fff;
+    }
+
+    .market-hero-title {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.15;
+      font-weight: 900;
+      letter-spacing: -.02em;
+      color: #fff;
     }
 
     .hero .panel {
@@ -503,37 +518,10 @@
     <div id="error" class="error"></div>
 
         <div class="hero">
+      <section class="market-hero" aria-label="ページ見出し">
+        <h1 class="market-hero-title">スリーブ指数</h1>
+      </section>
       <div class="panel summary-panel">
-        <h2 class="title">スリーブ指数（週次）</h2>
-        <div id="subtitle" class="meta">読み込み中...</div>
-
-        <div class="kpi" style="margin-top:14px;">
-          <div class="box">
-            <div class="label">今週の市場上昇率（平均）</div>
-            <div id="kpiRate" class="value">-</div>
-            <div id="kpiRateDelta" class="delta flat">-</div>
-          </div>
-
-          <div class="box">
-            <div class="label">上昇スリーブ割合</div>
-            <div id="kpiUpShare" class="value">-</div>
-            <div class="meta" id="kpiUpShareMeta" style="margin-top:6px;">-</div>
-          </div>
-
-          <div class="box">
-            <div class="label">指数（基準値100）</div>
-            <div id="kpiIndex" class="value">-</div>
-            <div id="kpiIndexBaseDiff" class="subvalue flat">-</div>
-            <div class="meta" id="kpiIndexMeta" style="margin-top:6px;">基準週 = 100</div>
-          </div>
-        </div>
-        <div id="marketStateBanner" class="market-state-banner">
-          <div class="market-state-copy">
-            <div class="market-state-label">市場の状態</div>
-            <div id="marketStateValue" class="market-state-value flat">判定中</div>
-            <p id="marketStateNote" class="market-state-note">最新の指数推移から市場の温度感を整理します。</p>
-          </div>
-        </div>
         <div class="share-block">
           <div class="share-title">シェア</div>
           <div class="share-row">
@@ -1788,8 +1776,10 @@
       const series = buildCumulativeIndexFromRates(rateRows, 100);
 
       // KPI表示用
-      document.getElementById("subtitle").textContent =
-        `対象：${sleeves.length}件 / 期間：${formatPeriodLabel(weeks[0])}〜${formatPeriodLabel(weeks[weeks.length - 1])}`;
+      const subtitle = document.getElementById("subtitle");
+      if (subtitle) {
+        subtitle.textContent = `対象：${sleeves.length}件 / 期間：${formatPeriodLabel(weeks[0])}〜${formatPeriodLabel(weeks[weeks.length - 1])}`;
+      }
 
       const pairRate = latestTwoValid(series, "avgRate");
       const pairIdx = latestTwoValid(series, "index");
@@ -1798,16 +1788,18 @@
       const kpiRate = document.getElementById("kpiRate");
       const kpiRateDelta = document.getElementById("kpiRateDelta");
       if (pairRate) {
-        kpiRate.textContent = `${pairRate.latest.avgRate.toFixed(2)}%`;
-        if (pairRate.prev) {
-          const diff = pairRate.latest.avgRate - pairRate.prev.avgRate;
-          const cls = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
-          const arrow = diff > 0 ? "↑" : diff < 0 ? "↓" : "→";
-          kpiRateDelta.className = "delta " + cls;
-          kpiRateDelta.textContent = `${arrow} 前週比 ${diff > 0 ? "+" : ""}${diff.toFixed(2)}pt`;
-        } else {
-          kpiRateDelta.className = "delta flat";
-          kpiRateDelta.textContent = "比較できる前週データなし";
+        if (kpiRate) kpiRate.textContent = `${pairRate.latest.avgRate.toFixed(2)}%`;
+        if (kpiRateDelta) {
+          if (pairRate.prev) {
+            const diff = pairRate.latest.avgRate - pairRate.prev.avgRate;
+            const cls = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
+            const arrow = diff > 0 ? "↑" : diff < 0 ? "↓" : "→";
+            kpiRateDelta.className = "delta " + cls;
+            kpiRateDelta.textContent = `${arrow} 前週比 ${diff > 0 ? "+" : ""}${diff.toFixed(2)}pt`;
+          } else {
+            kpiRateDelta.className = "delta flat";
+            kpiRateDelta.textContent = "比較できる前週データなし";
+          }
         }
       }
 
@@ -1815,22 +1807,29 @@
       const last = pairRate?.latest || null;
       const total = last ? (last.up + last.down + last.flat) : 0;
       const upShare = total ? (last.up / total) * 100 : null;
-      document.getElementById("kpiUpShare").textContent = (upShare == null) ? "—" : `${upShare.toFixed(1)}%`;
-      document.getElementById("kpiUpShareMeta").textContent =
-        last ? `上昇${last.up} / 下落${last.down} / 横ばい${last.flat}（計${total}） / サンプル${last.sample}件` : "—";
+      const kpiUpShare = document.getElementById("kpiUpShare");
+      const kpiUpShareMeta = document.getElementById("kpiUpShareMeta");
+      if (kpiUpShare) kpiUpShare.textContent = (upShare == null) ? "—" : `${upShare.toFixed(1)}%`;
+      if (kpiUpShareMeta) {
+        kpiUpShareMeta.textContent = last ? `上昇${last.up} / 下落${last.down} / 横ばい${last.flat}（計${total}） / サンプル${last.sample}件` : "—";
+      }
 
       // 指数
       const kpiIndex = document.getElementById("kpiIndex");
       const kpiIndexBaseDiff = document.getElementById("kpiIndexBaseDiff");
       const kpiIndexMeta = document.getElementById("kpiIndexMeta");
       if (pairIdx) {
-        kpiIndex.textContent = `${pairIdx.latest.index.toFixed(1)}`;
+        if (kpiIndex) kpiIndex.textContent = `${pairIdx.latest.index.toFixed(1)}`;
         const baseDiff = pairIdx.latest.index - 100;
-        const diffCls = getTrendClass(baseDiff);
-        kpiIndexBaseDiff.className = `subvalue ${diffCls}`;
-        kpiIndexBaseDiff.textContent = `基準比 ${formatSignedPercent(baseDiff, 1)}`;
-        const baseRef = pairIdx.latest.baseWeek || null;
-        kpiIndexMeta.textContent = `基準週：${baseRef ? formatPeriodLabel(baseRef) : "—"} = 100`;
+        if (kpiIndexBaseDiff) {
+          const diffCls = getTrendClass(baseDiff);
+          kpiIndexBaseDiff.className = `subvalue ${diffCls}`;
+          kpiIndexBaseDiff.textContent = `基準比 ${formatSignedPercent(baseDiff, 1)}`;
+        }
+        if (kpiIndexMeta) {
+          const baseRef = pairIdx.latest.baseWeek || null;
+          kpiIndexMeta.textContent = `基準週：${baseRef ? formatPeriodLabel(baseRef) : "—"} = 100`;
+        }
       } else if (kpiIndexBaseDiff) {
         kpiIndexBaseDiff.className = "subvalue flat";
         kpiIndexBaseDiff.textContent = "基準比 —";
