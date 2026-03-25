@@ -272,21 +272,6 @@
       display: none;
     }
 
-    .ranking-section-head {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .ranking-section-title {
-      margin: 0;
-      font-size: 15px;
-      font-weight: 900;
-      color: #101828;
-    }
-
     .podium-card {
       display: grid;
       position: relative;
@@ -701,9 +686,6 @@
       </section>
 
       <section id="restSection" class="ranking-rest-section">
-        <div class="ranking-section-head">
-          <h2 class="ranking-section-title">ランキング一覧</h2>
-        </div>
         <div id="list" class="grid compact-grid"></div>
       </section>
     </main>
@@ -1119,15 +1101,12 @@
         const series = seriesSel.value;
         const band = parseBand(priceBandSel.value);
 
-        const sectionTitle = document.querySelector(".ranking-section-title");
-
         list.innerHTML = "";
         top1.innerHTML = "";
         top2.innerHTML = "";
         top3Card.innerHTML = "";
         top3.hidden = true;
         restSection.hidden = false;
-        if (sectionTitle) sectionTitle.textContent = "価格ランキング";
         renderActiveFilters();
         const rows = [];
         for (const s of sleeves) {
