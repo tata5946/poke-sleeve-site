@@ -520,11 +520,21 @@
       }
 
       .ranking-filter-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
+        overflow: visible;
+        padding-bottom: 0;
       }
 
       .ranking-filter-field {
-        min-width: 112px;
+        min-width: 0;
+      }
+
+      .ranking-filter-field select,
+      .ranking-filter-actions button {
+        width: 100%;
+        min-width: 0;
       }
 
       .ranking-top3 {
