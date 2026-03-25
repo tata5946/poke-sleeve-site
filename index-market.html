@@ -193,6 +193,10 @@
       box-shadow: 0 8px 22px rgba(16, 24, 40, .06);
     }
 
+    .chart-panel #indexChart {
+      margin-top: 10px;
+    }
+
     .market-state-banner {
       display: flex;
       align-items: center;
@@ -437,6 +441,12 @@
       touch-action: pan-x pan-y;
     }
 
+    .chart {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
     .chart-main-hit {
       cursor: crosshair;
     }
@@ -486,6 +496,52 @@
     }
 
     @media (max-width: 900px) {
+      .market-hero {
+        padding: 14px 14px;
+      }
+
+      .market-hero-title {
+        font-size: 22px;
+      }
+
+      .chart-panel {
+        padding: 14px;
+      }
+
+      .chart-panel .section-title {
+        margin-bottom: 6px;
+      }
+
+      .share-block {
+        margin-top: 8px;
+      }
+
+      .share-status {
+        font-size: 11px;
+      }
+
+      .chart-toolbar {
+        justify-content: space-between;
+        gap: 4px;
+        margin-bottom: 10px;
+      }
+
+      .chart-zoom-btn {
+        min-height: 34px;
+        padding: 6px 8px;
+        font-size: 11px;
+      }
+
+      .chart-zoom-label {
+        min-width: 0;
+        font-size: 11px;
+        text-align: left;
+      }
+
+      .chart-panel #indexChart {
+        margin-top: 12px;
+      }
+
       .hero .kpi {
         grid-template-columns: 1fr;
       }
@@ -1060,6 +1116,7 @@
       const el = document.getElementById(containerId);
       if (!el) return;
       const hasValidY = (v) => Number.isFinite(v) && v > 0;
+      const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
 
       const data = (Array.isArray(rows) ? rows : [])
         .map(r => {
@@ -1076,14 +1133,14 @@
       }
 
       const W = 980;
-      const H = 430;
-      const padL = 80;
-      const padR = 24;
-      const mainTop = 24;
-      const mainBottom = 246;
-      const xLabelY = 272;
-      const navTop = 312;
-      const navBottom = 372;
+      const H = isMobile ? 560 : 430;
+      const padL = isMobile ? 64 : 80;
+      const padR = isMobile ? 18 : 24;
+      const mainTop = isMobile ? 22 : 24;
+      const mainBottom = isMobile ? 344 : 246;
+      const xLabelY = isMobile ? 374 : 272;
+      const navTop = isMobile ? 452 : 312;
+      const navBottom = isMobile ? 516 : 372;
       const ticks = 4;
       const minWindow = Math.min(Math.max(2, Math.ceil(data.length * 0.12)), data.length);
 
@@ -1152,10 +1209,10 @@
               <g class="main-grid"></g>
               <g class="main-labels"></g>
               <g class="main-callouts"></g>
-              <path class="main-fill" fill="url(#bgGrad2-${escapeHtml(containerId)})"></path>
-              <path class="main-line" fill="none" stroke="#1e5bd7" stroke-width="3" stroke-linecap="round"></path>
+               <path class="main-fill" fill="url(#bgGrad2-${escapeHtml(containerId)})"></path>
+               <path class="main-line" fill="none" stroke="#1e5bd7" stroke-width="${isMobile ? 4 : 3}" stroke-linecap="round"></path>
               <line class="hover-line" stroke="#94a3b8" stroke-width="1" style="display:none;"></line>
-              <circle class="hover-dot" r="5" fill="#1e5bd7" style="display:none;"></circle>
+               <circle class="hover-dot" r="${isMobile ? 6 : 5}" fill="#1e5bd7" style="display:none;"></circle>
               <rect class="chart-main-hit" x="${padL}" y="${mainTop}" width="${W - padL - padR}" height="${mainBottom - mainTop}" fill="transparent"></rect>
               <g class="main-x-labels"></g>
               <path class="nav-line" fill="none" stroke="#8aa1d6" stroke-width="2"></path>
@@ -1285,7 +1342,7 @@
           const v = yMin + (i / ticks) * (yMax - yMin);
           const y = yToPxMain(v);
           gridLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef"/>`);
-          yLabels.push(`<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="12" fill="#475467" font-weight="700">${escapeHtml(yFmt(v))}</text>`);
+           yLabels.push(`<text x="${padL - 12}" y="${y + 4}" text-anchor="end" font-size="${isMobile ? 14 : 12}" fill="#475467" font-weight="700">${escapeHtml(yFmt(v))}</text>`);
         }
         mainGrid.innerHTML = gridLines.join("");
         mainLabels.innerHTML = yLabels.join("");
@@ -1301,7 +1358,7 @@
           gridLines.push(`<line x1="${label.x}" y1="${mainTop}" x2="${label.x}" y2="${mainBottom}" stroke="#eef2f7" stroke-dasharray="4 4"/>`);
         });
         mainXLabels.innerHTML = xLabels.map(l =>
-          `<text x="${l.x}" y="${xLabelY}" font-size="13" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
+           `<text x="${l.x}" y="${xLabelY}" font-size="${isMobile ? 15 : 13}" fill="#667085" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
         ).join("");
 
         const firstPointIdx = visible.findIndex((point) => hasValidY(point?.y));
@@ -1326,15 +1383,15 @@
           const startAnchor = firstX < (padL + 90) ? "start" : "end";
           const startLabelX = startAnchor === "start" ? firstX + 10 : firstX - 10;
 
-          mainGrid.innerHTML += `<line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#9bb4ea" stroke-dasharray="6 6"/>`;
-          mainCallouts.innerHTML = `
-            <circle cx="${firstX}" cy="${firstY}" r="5" fill="#ffffff" stroke="#1e5bd7" stroke-width="3"></circle>
-            <text x="${startLabelX}" y="${Math.max(mainTop + 14, firstY - 18)}" text-anchor="${startAnchor}" class="chart-callout-label">開始 ${escapeHtml(yFmt(firstPoint.y))}</text>
-            <circle cx="${latestX}" cy="${latestY}" r="7" fill="#1e5bd7" stroke="#ffffff" stroke-width="4"></circle>
-            <text x="${latestLabelX}" y="${Math.max(mainTop + 14, latestY - 20)}" text-anchor="${latestAnchor}" class="chart-callout-label">現在指数 ${escapeHtml(yFmt(latestPoint.y))}</text>
-            <text x="${latestLabelX}" y="${Math.max(mainTop + 28, latestY - 4)}" text-anchor="${latestAnchor}" class="chart-callout-sub ${escapeHtml(diffCls)}">${escapeHtml(formatSignedPercent(basePct, 1))}</text>
-          `;
-        }
+           mainGrid.innerHTML += `<line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#9bb4ea" stroke-dasharray="6 6"/>`;
+           mainCallouts.innerHTML = `
+             <circle cx="${firstX}" cy="${firstY}" r="${isMobile ? 6 : 5}" fill="#ffffff" stroke="#1e5bd7" stroke-width="3"></circle>
+             <text x="${startLabelX}" y="${Math.max(mainTop + 18, firstY - (isMobile ? 22 : 18))}" text-anchor="${startAnchor}" class="chart-callout-label">開始 ${escapeHtml(yFmt(firstPoint.y))}</text>
+             <circle cx="${latestX}" cy="${latestY}" r="${isMobile ? 8 : 7}" fill="#1e5bd7" stroke="#ffffff" stroke-width="4"></circle>
+             <text x="${latestLabelX}" y="${Math.max(mainTop + 18, latestY - (isMobile ? 24 : 20))}" text-anchor="${latestAnchor}" class="chart-callout-label">現在指数 ${escapeHtml(yFmt(latestPoint.y))}</text>
+             <text x="${latestLabelX}" y="${Math.max(mainTop + 36, latestY - (isMobile ? 6 : 4))}" text-anchor="${latestAnchor}" class="chart-callout-sub ${escapeHtml(diffCls)}">${escapeHtml(formatSignedPercent(basePct, 1))}</text>
+           `;
+         }
 
         const rangeX1 = xToPxAll(s);
         const rangeX2 = xToPxAll(e);
