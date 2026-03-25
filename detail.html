@@ -533,56 +533,6 @@
       line-height: 1.6;
     }
 
-    .price-summary-grid {
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .price-summary-card {
-      border: 1px solid #dbe5f2;
-      border-radius: 10px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, .98) 0%, rgba(246, 249, 255, .98) 100%);
-      box-shadow: 0 6px 16px rgba(16, 24, 40, .05);
-      padding: 8px;
-      min-width: 0;
-      text-align: right;
-    }
-
-    .price-summary-label {
-      font-size: 11px;
-      line-height: 1.35;
-      color: #667085;
-      font-weight: 800;
-      letter-spacing: .02em;
-    }
-
-    .price-summary-value {
-      margin-top: 6px;
-      font-size: clamp(16px, 2vw, 22px);
-      line-height: 1.12;
-      font-weight: 900;
-      color: #101828;
-      word-break: break-word;
-    }
-
-    .price-summary-meta {
-      margin-top: 4px;
-      font-size: 11px;
-      line-height: 1.45;
-      color: #667085;
-    }
-
-    .price-summary-card.is-primary {
-      border-color: #c9d8f0;
-      background: linear-gradient(180deg, #ffffff 0%, #f3f8ff 100%);
-    }
-
-    .price-summary-card.is-primary .price-summary-value {
-      font-size: clamp(20px, 2.4vw, 26px);
-    }
-
     .price-panel {
       padding: 0;
       overflow: hidden;
@@ -864,10 +814,6 @@
         max-width: min(280px, calc(100% - 16px));
       }
 
-      .price-summary-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
       .single-observation-grid {
         grid-template-columns: 1fr;
       }
@@ -980,34 +926,6 @@
         flex: 0 0 auto;
       }
 
-      .price-summary-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 6px;
-      }
-
-      .price-summary-card {
-        padding: 7px 8px;
-        border-radius: 8px;
-      }
-
-      .price-summary-card.is-primary .price-summary-value {
-        font-size: 20px;
-      }
-
-      .price-summary-label {
-        font-size: 10px;
-      }
-
-      .price-summary-value {
-        margin-top: 4px;
-        font-size: 16px;
-      }
-
-      .price-summary-meta {
-        margin-top: 3px;
-        font-size: 10px;
-      }
-
       .price-panel-summary {
         padding: 10px 10px 8px;
       }
@@ -1104,7 +1022,6 @@
             </div>
             <div id="chartModeNote" class="chart-subnote"></div>
             <div id="chartLegend" class="chart-legend" aria-label="凡例"></div>
-            <div id="priceSummary" class="price-summary-grid" aria-label="価格サマリー"></div>
             <div id="weeklyChart"></div>
             <div id="chartFootnotes" class="chart-footnotes"></div>
             <div id="weeklyTable"></div>
@@ -2995,34 +2912,6 @@
       el.innerHTML = lines.map((line) => `<div>${escapeHtml(line)}</div>`).join("");
     }
 
-    function renderPriceSummary(points) {
-      const el = document.getElementById("priceSummary");
-      if (!el) return;
-      const list = enrichSeries(points);
-      if (!list.length) {
-        el.innerHTML = "";
-        return;
-      }
-      const first = list[0];
-      const latest = list[list.length - 1];
-      const prices = list.map((item) => item.price);
-      const ratio = first.price > 0 ? (latest.price / first.price) : null;
-      const cards = [
-        { label: "現在価格", value: `${latest.price.toLocaleString()}円`, meta: `最新観測: ${formatPointDate(latest, "all")}`, primary: true },
-        { label: "初期観測比", value: Number.isFinite(ratio) ? `${ratio.toFixed(ratio >= 10 ? 1 : 2)}倍` : "-", meta: Number.isFinite(ratio) ? "現在価格 ÷ 初期観測価格" : "算出不可", primary: true },
-        { label: "初期観測価格", value: `${first.price.toLocaleString()}円`, meta: `初期観測: ${formatPointDate(first, "all")}` },
-        { label: "最高価格", value: `${Math.max(...prices).toLocaleString()}円`, meta: "" },
-        { label: "最安価格", value: `${Math.min(...prices).toLocaleString()}円`, meta: "" }
-      ];
-      el.innerHTML = cards.map((card) => `
-        <div class="price-summary-card${card.primary ? " is-primary" : ""}">
-          <div class="price-summary-label">${escapeHtml(card.label)}</div>
-          <div class="price-summary-value">${escapeHtml(card.value)}</div>
-          <div class="price-summary-meta">${escapeHtml(card.meta || "")}</div>
-        </div>
-      `).join("");
-    }
-
     function applyPricePanelBehavior() {
       const panel = document.getElementById("pricePanel");
       if (!panel || panel.dataset.wired === "1") return;
@@ -3425,7 +3314,6 @@
       const periodAllBtn = document.getElementById("periodAllBtn");
       let currentPeriod = "all";
 
-      renderPriceSummary(fullPeriodSeries);
       setPriceKpiFromSeries(fullPeriodSeries);
       renderRelatedSleeves(s, sleeves);
 
