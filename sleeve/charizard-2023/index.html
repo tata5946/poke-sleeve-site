@@ -535,45 +535,16 @@
     }
 
     .price-panel {
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .price-panel-summary {
-      list-style: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
       padding: 12px;
-      cursor: pointer;
-    }
-
-    .price-panel-summary::-webkit-details-marker {
-      display: none;
+      overflow: hidden;
     }
 
     .price-panel-summary-copy {
       min-width: 0;
     }
 
-    .price-panel-toggle {
-      flex: 0 0 auto;
-      font-size: 12px;
-      font-weight: 900;
-      color: #475467;
-    }
-
-    .price-panel[open] .price-panel-toggle::after {
-      content: "閉じる";
-    }
-
-    .price-panel:not([open]) .price-panel-toggle::after {
-      content: "開く";
-    }
-
     .price-panel-body {
-      padding: 0 12px 12px;
+      padding: 0;
     }
 
     .chart-legend {
@@ -927,12 +898,8 @@
         flex: 0 0 auto;
       }
 
-      .price-panel-summary {
-        padding: 10px 10px 8px;
-      }
-
       .price-panel-body {
-        padding: 0 10px 10px;
+        padding: 0;
       }
     }
 
@@ -2878,24 +2845,6 @@
       el.innerHTML = lines.map((line) => `<div>${escapeHtml(line)}</div>`).join("");
     }
 
-    function applyPricePanelBehavior() {
-      const panel = document.getElementById("pricePanel");
-      if (!panel || panel.dataset.wired === "1") return;
-      panel.dataset.wired = "1";
-
-      const syncOpen = () => {
-        if (panel.dataset.userToggled === "1") return;
-        panel.open = window.innerWidth > 700;
-      };
-
-      panel.addEventListener("toggle", () => {
-        panel.dataset.userToggled = "1";
-      });
-
-      syncOpen();
-      window.addEventListener("resize", syncOpen, { passive: true });
-    }
-
     function renderPriceTable(points, mode) {
       const list = enrichSeries(points);
       if (!list.length) return `<div class="meta">観測データがありません</div>`;
@@ -3253,8 +3202,6 @@
       document.getElementById("badges").innerHTML = buildHeaderBadges(s);
       renderDetailInfo(s);
       renderDetailTags(s);
-      applyPricePanelBehavior();
-
       document.getElementById("backLink").href = "./sleeves/";
       const mercariLink = document.getElementById("mercariLink");
       if (mercariLink) mercariLink.href = buildMercariSearchUrl(s.name);
@@ -3325,6 +3272,9 @@
 </body>
 
 </html>
+
+
+
 
 
 
