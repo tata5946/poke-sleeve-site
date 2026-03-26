@@ -2883,14 +2883,11 @@
     }
 
     function buildFullPeriodSeries(sleeve) {
-      const explicitYearly = buildYearlySeries(sleeve);
       const explicitMonthly = buildMonthlySeries(sleeve);
       const explicitWeekly = buildWeeklySeries(sleeve);
-      const legacyYearly = buildLegacyObservationSeries(sleeve, ["year"]);
       const legacyMonthly = buildLegacyObservationSeries(sleeve, ["month"]);
       const legacyWeekly = buildLegacyObservationSeries(sleeve, ["week"]);
       return dedupeSeriesByDate([
-        ...(explicitYearly.length ? explicitYearly : legacyYearly),
         ...(explicitMonthly.length ? explicitMonthly : legacyMonthly),
         ...(explicitWeekly.length ? explicitWeekly : legacyWeekly)
       ]);
