@@ -2858,8 +2858,9 @@
     }
 
     function buildFullPeriodSeries(sleeve) {
+      const legacy = buildLegacyObservationSeries(sleeve, ["year", "month", "week"]);
+      if (legacy.length) return enrichSeries(legacy);
       return enrichSeries([
-        ...buildLegacyObservationSeries(sleeve, ["year", "month", "week"]),
         ...buildYearlySeries(sleeve),
         ...buildMonthlySeries(sleeve),
         ...buildWeeklySeries(sleeve)
@@ -3227,10 +3228,9 @@
 
     function getSeriesForMode(sleeve, mode) {
       if (mode === "monthly") {
-        return enrichSeries([
-          ...buildLegacyObservationSeries(sleeve, ["year", "month"]),
-          ...buildMonthlySeries(sleeve)
-        ]);
+        const legacyMonthly = buildLegacyObservationSeries(sleeve, ["month"]);
+        if (legacyMonthly.length) return enrichSeries(legacyMonthly);
+        return buildMonthlySeries(sleeve);
       }
       if (mode === "3m") return buildRecentWeeklySeries(sleeve, 92);
       return buildFullPeriodSeries(sleeve);
