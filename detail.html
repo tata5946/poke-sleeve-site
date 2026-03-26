@@ -3180,9 +3180,22 @@
       const latestY = yToPx(latest.price);
       const diffPrice = latest.price - first.price;
       const diffRate = first.price > 0 ? ((latest.price / first.price) - 1) * 100 : null;
-      const latestLabelX = isMobileView ? Math.max(padL + 24, latestX - 120) : Math.min(latestX + 10, W - padR - 12);
-      const latestLabelAnchor = isMobileView ? "start" : "start";
       const firstLabelX = isMobileView ? Math.min(firstX + 8, W - padR - 180) : Math.min(firstX + 8, W - padR - 150);
+      const latestBoxW = isMobileView ? 210 : 230;
+      const latestBoxH = isMobileView ? 72 : 64;
+      const latestBoxX = Math.max(padL + 12, W - padR - latestBoxW);
+      const latestBoxY = padT + 8;
+      const latestBoxLine1Y = latestBoxY + (isMobileView ? 26 : 24);
+      const latestBoxLine2Y = latestBoxY + (isMobileView ? 50 : 46);
+      const latestAnchorX = latestBoxX;
+      const latestAnchorY = latestBoxY + (latestBoxH / 2);
+      const latestLeaderMidX = Math.max(latestX + 12, latestAnchorX - 28);
+      const latestCallout = `
+        <path d="M ${latestX} ${latestY} L ${latestLeaderMidX} ${latestY} L ${latestAnchorX} ${latestAnchorY}" fill="none" stroke="#1e3a5f" stroke-width="${isMobileView ? 2.4 : 2.1}" stroke-linecap="round" stroke-linejoin="round"></path>
+        <rect x="${latestBoxX}" y="${latestBoxY}" width="${latestBoxW}" height="${latestBoxH}" rx="10" fill="#175a7a" stroke="#10384d" stroke-width="1.4"></rect>
+        <text x="${latestBoxX + 14}" y="${latestBoxLine1Y}" text-anchor="start" font-size="${isMobileView ? 18 : 15}" font-weight="900" fill="#ffffff">現在 ¥${latest.price.toLocaleString()}</text>
+        <text x="${latestBoxX + 14}" y="${latestBoxLine2Y}" text-anchor="start" font-size="${isMobileView ? 16 : 13.5}" font-weight="800" fill="${diffPrice >= 0 ? "#d1fae5" : "#fee2e2"}">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
+      `;
       const showVolumeBars = mode === "3m";
       const maxCount = showVolumeBars
         ? Math.max(0, ...data.map((item) => Number.isFinite(item.count) ? item.count : 0))
@@ -3251,8 +3264,7 @@
               <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="${isMobileView ? 5.5 : 4.2}" stroke-linecap="round" stroke-linejoin="round"></path>
               ${mode === "all" ? `<line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"></line>` : ""}
               <text x="${firstLabelX}" y="${Math.max(24, firstY - 18)}" text-anchor="start" font-size="${labelFontSize}" font-weight="900" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">開始 ¥${first.price.toLocaleString()}</text>
-              <text x="${latestLabelX}" y="${Math.max(28, latestY - 28)}" text-anchor="${latestLabelAnchor}" font-size="${isMobileView ? labelFontSize + 3 : labelFontSize + 2}" font-weight="900" fill="#111827" style="paint-order:stroke;stroke:#ffffff;stroke-width:5px;stroke-linejoin:round;">現在 ¥${latest.price.toLocaleString()}</text>
-              <text x="${latestLabelX}" y="${Math.max(50, latestY - 8)}" text-anchor="${latestLabelAnchor}" font-size="${subLabelFontSize + 1}" font-weight="900" fill="${diffPrice >= 0 ? "#0f766e" : "#b42318"}" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
+              ${latestCallout}
               ${highLabel}
               ${lowLabel}
               <g>${markers}</g>
