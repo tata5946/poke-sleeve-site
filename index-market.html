@@ -1526,9 +1526,7 @@
         });
       });
 
-      const initialSpan = Math.max(minWindow, Math.min(data.length, Math.round(data.length * 0.7)));
-      const initialStart = Math.max(0, data.length - initialSpan);
-      updateRange(initialStart, data.length - 1);
+      updateRange(0, data.length - 1);
     }
 
     // ---- v2: market index logic (overrides legacy implementations) ----
