@@ -2841,8 +2841,22 @@
       return out.sort((a, b) => a.date.localeCompare(b.date));
     }
 
+    function buildLegacyObservationSeries(sleeve, granularities = ["year", "month", "week"]) {
+      const allow = new Set(Array.isArray(granularities) ? granularities : ["year", "month", "week"]);
+      return normalizeObservationRows(sleeve?.weeklyPrices)
+        .filter((row) => allow.has(String(row?.granularity || "")) && Number.isFinite(row?.avgPrice) && row.avgPrice > 0)
+        .map((row) => ({
+          type: row.granularity === "year" ? "yearly" : row.granularity === "month" ? "monthly" : "weekly",
+          date: String(row.periodStart || ""),
+          price: Math.round(row.avgPrice),
+          count: Number.isFinite(row.tradeCount) ? row.tradeCount : null,
+          timestamp: row.timestamp
+        }));
+    }
+
     function buildFullPeriodSeries(sleeve) {
       return enrichSeries([
+        ...buildLegacyObservationSeries(sleeve, ["year", "month", "week"]),
         ...buildYearlySeries(sleeve),
         ...buildMonthlySeries(sleeve),
         ...buildWeeklySeries(sleeve)
@@ -3209,7 +3223,12 @@
     }
 
     function getSeriesForMode(sleeve, mode) {
-      if (mode === "monthly") return buildMonthlySeries(sleeve);
+      if (mode === "monthly") {
+        return enrichSeries([
+          ...buildLegacyObservationSeries(sleeve, ["year", "month"]),
+          ...buildMonthlySeries(sleeve)
+        ]);
+      }
       if (mode === "3m") return buildRecentWeeklySeries(sleeve, 92);
       return buildFullPeriodSeries(sleeve);
     }
