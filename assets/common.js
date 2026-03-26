@@ -11,8 +11,8 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbxBTZHjJLxvPm66AlTLy47Y
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
 const LOCAL_DATA_URL = "./data.json";
-const DATA_CACHE_KEY = "pokeSleeve:dataCache:v4";
-const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v4";
+const DATA_CACHE_KEY = "pokeSleeve:dataCache:v5";
+const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v5";
 const DATA_CACHE_TTL_MS = 5 * 60 * 1000;
 const DATA_STALE_MAX_MS = 24 * 60 * 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
@@ -125,124 +125,6 @@ function toISODate(d) {
 function numOrNull(v) {
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
-}
-
-function parseLooseNumber(v) {
-  if (v == null) return null;
-  if (typeof v === "number") return Number.isFinite(v) ? v : null;
-  const s = String(v).trim();
-  if (!s || s === "-") return null;
-  const cleaned = s.replace(/[^\d.\-]/g, "");
-  if (!cleaned) return null;
-  const n = Number(cleaned);
-  return Number.isFinite(n) ? n : null;
-}
-
-function normalizeYearKey(value) {
-  const s = String(value ?? "").trim();
-  const matched = s.match(/^(\d{4})$/);
-  return matched ? matched[1] : null;
-}
-
-function normalizeMonthKey(value) {
-  const s = String(value ?? "").trim().replace(/[/.]/g, "-");
-  let matched = s.match(/^(\d{4})-(\d{1,2})$/);
-  if (matched) return `${matched[1]}-${String(Number(matched[2])).padStart(2, "0")}`;
-  matched = s.match(/^(\d{4})-(\d{1,2})-\d{1,2}$/);
-  if (matched) return `${matched[1]}-${String(Number(matched[2])).padStart(2, "0")}`;
-  return null;
-}
-
-function normalizeWeekKey(value) {
-  const s = String(value ?? "").trim().replace(/[/.]/g, "-");
-  const matched = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-  if (!matched) return null;
-  const year = matched[1];
-  const month = String(Number(matched[2])).padStart(2, "0");
-  const day = String(Number(matched[3])).padStart(2, "0");
-  const iso = `${year}-${month}-${day}`;
-  return /^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso : null;
-}
-
-function collectYearlyPriceRows(sleeve) {
-  const out = [];
-  const seen = new Set();
-  const pushYear = (yearValue, priceValue) => {
-    const year = normalizeYearKey(yearValue);
-    const price = parseLooseNumber(priceValue);
-    if (!year || !(Number.isFinite(price) && price > 0) || seen.has(year)) return;
-    seen.add(year);
-    out.push({ year, price: Math.round(price) });
-  };
-
-  for (const item of (Array.isArray(sleeve && sleeve.yearlyPrices) ? sleeve.yearlyPrices : [])) {
-    pushYear(item && item.year, item && item.price);
-  }
-
-  const byYear = sleeve && sleeve.pricesByYear && typeof sleeve.pricesByYear === "object"
-    ? sleeve.pricesByYear
-    : null;
-  if (byYear) {
-    for (const [year, price] of Object.entries(byYear)) {
-      pushYear(year, price);
-    }
-  }
-
-  for (const item of (Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [])) {
-    const week = normalizeWeekKey(item && item.week);
-    if (!week) continue;
-    const matched = week.match(/^(\d{4})-01-01$/);
-    if (!matched) continue;
-    pushYear(matched[1], item && item.price);
-  }
-
-  return out.sort((a, b) => String(a.year).localeCompare(String(b.year)));
-}
-
-function collectMonthlyPriceRows(sleeve) {
-  const out = [];
-  const seen = new Set();
-  const pushMonth = (monthValue, priceValue) => {
-    const month = normalizeMonthKey(monthValue);
-    const price = parseLooseNumber(priceValue);
-    if (!month || !(Number.isFinite(price) && price > 0) || seen.has(month)) return;
-    seen.add(month);
-    out.push({ month, price: Math.round(price) });
-  };
-
-  for (const item of (Array.isArray(sleeve && sleeve.monthlyPrices) ? sleeve.monthlyPrices : [])) {
-    pushMonth(item && item.month, item && item.price);
-  }
-
-  for (const item of (Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [])) {
-    const week = normalizeWeekKey(item && item.week);
-    if (!week) continue;
-    const matched = week.match(/^(\d{4})-(\d{2})-01$/);
-    if (!matched) continue;
-    pushMonth(`${matched[1]}-${matched[2]}`, item && item.price);
-  }
-
-  return out.sort((a, b) => String(a.month).localeCompare(String(b.month)));
-}
-
-function normalizeSleeveGraphData(sleeve) {
-  if (!sleeve || typeof sleeve !== "object") return sleeve;
-  const yearlyPrices = collectYearlyPriceRows(sleeve);
-  const monthlyPrices = collectMonthlyPriceRows(sleeve);
-  return {
-    ...sleeve,
-    yearlyPrices,
-    monthlyPrices
-  };
-}
-
-function normalizeLoadedDataPayload(data) {
-  if (!data || typeof data !== "object") return data;
-  const sleeves = Array.isArray(data.sleeves) ? data.sleeves.map(normalizeSleeveGraphData) : data.sleeves;
-  return {
-    ...data,
-    sleeves
-  };
 }
 
 function sumWeeklyTradeCounts(sleeve) {
@@ -994,11 +876,10 @@ async function fetchPrimaryData() {
   for (const source of sources) {
     const resolvedUrl = new URL(source.url, document.baseURI || location.href).href;
     try {
-      const payload = await fetchJsonWithTimeout(resolvedUrl, {
+      return await fetchJsonWithTimeout(resolvedUrl, {
         timeoutMs: source.timeoutMs,
         cacheMode: source.cacheMode
       });
-      return normalizeLoadedDataPayload(payload);
     } catch (error) {
       lastError = error;
     }
@@ -1078,23 +959,20 @@ async function loadData({ forceRefresh = false, ttlMs = DATA_CACHE_TTL_MS } = {}
   if (!forceRefresh) {
     const cached = readSessionCache();
     if (cached != null) {
-      const normalized = normalizeLoadedDataPayload(cached);
-      __dataCacheMem = { cachedAt: Date.now(), data: normalized };
-      return normalized;
+      __dataCacheMem = { cachedAt: Date.now(), data: cached };
+      return cached;
     }
 
     const persistentCached = readPersistentCache();
     if (persistentCached != null) {
-      const normalized = normalizeLoadedDataPayload(persistentCached);
-      __dataCacheMem = { cachedAt: Date.now(), data: normalized };
-      writeSessionCache(normalized);
-      return normalized;
+      __dataCacheMem = { cachedAt: Date.now(), data: persistentCached };
+      writeSessionCache(persistentCached);
+      return persistentCached;
     }
 
     const staleEntry = readSessionCacheEntry() || readPersistentCacheEntry();
     if (staleEntry && (Date.now() - staleEntry.cachedAt) <= DATA_STALE_MAX_MS) {
-      const normalized = normalizeLoadedDataPayload(staleEntry.data);
-      __dataCacheMem = { cachedAt: staleEntry.cachedAt, data: normalized };
+      __dataCacheMem = { cachedAt: staleEntry.cachedAt, data: staleEntry.data };
       if (!__dataCachePromise) {
         __dataCachePromise = (async () => {
           const fresh = await fetchPrimaryData();
@@ -1107,7 +985,7 @@ async function loadData({ forceRefresh = false, ttlMs = DATA_CACHE_TTL_MS } = {}
           __dataCachePromise = null;
         });
       }
-      return normalized;
+      return staleEntry.data;
     }
   }
 

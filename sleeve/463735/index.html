@@ -2773,28 +2773,29 @@
     function buildYearlySeries(sleeve) {
       const out = [];
       const seen = new Set();
-      for (const item of (Array.isArray(sleeve?.yearlyPrices) ? sleeve.yearlyPrices : [])) {
-        const matched = String(item?.year ?? "").trim().match(/^\d{4}$/);
-        const price = normalizeChartPrice(item?.price);
-        if (!matched || !(Number.isFinite(price) && price > 0)) continue;
+      const pushYearPoint = (yearValue, priceValue) => {
+        const matched = String(yearValue ?? "").trim().match(/^\d{4}$/);
+        const price = normalizeChartPrice(priceValue);
+        if (!matched || !(Number.isFinite(price) && price > 0)) return;
         const date = `${matched[0]}-01-01`;
         const key = `yearly|${date}`;
-        if (seen.has(key)) continue;
+        if (seen.has(key)) return;
         seen.add(key);
         out.push({ type: "yearly", date, price: Math.round(price) });
+      };
+      for (const item of (Array.isArray(sleeve?.yearlyPrices) ? sleeve.yearlyPrices : [])) {
+        pushYearPoint(item?.year, item?.price);
       }
       const fallback = sleeve?.pricesByYear && typeof sleeve.pricesByYear === "object" ? sleeve.pricesByYear : null;
       if (fallback) {
         for (const [yearKey, rawPrice] of Object.entries(fallback)) {
-          const matched = String(yearKey || "").trim().match(/^\d{4}$/);
-          const price = normalizeChartPrice(rawPrice);
-          if (!matched || !(Number.isFinite(price) && price > 0)) continue;
-          const date = `${matched[0]}-01-01`;
-          const key = `yearly|${date}`;
-          if (seen.has(key)) continue;
-          seen.add(key);
-          out.push({ type: "yearly", date, price: Math.round(price) });
+          pushYearPoint(yearKey, rawPrice);
         }
+      }
+      for (const item of (Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [])) {
+        const matched = String(item?.week ?? "").trim().match(/^(\d{4})-01-01$/);
+        if (!matched) continue;
+        pushYearPoint(matched[1], item?.price);
       }
       return out.sort((a, b) => a.date.localeCompare(b.date));
     }
@@ -2802,14 +2803,22 @@
     function buildMonthlySeries(sleeve) {
       const out = [];
       const seen = new Set();
-      for (const item of (Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [])) {
-        const date = normalizeDateFromInput(item?.month, "01");
-        const price = normalizeChartPrice(item?.price);
-        if (!date || !(Number.isFinite(price) && price > 0)) continue;
+      const pushMonthPoint = (monthValue, priceValue) => {
+        const date = normalizeDateFromInput(monthValue, "01");
+        const price = normalizeChartPrice(priceValue);
+        if (!date || !(Number.isFinite(price) && price > 0)) return;
         const key = `monthly|${date}`;
-        if (seen.has(key)) continue;
+        if (seen.has(key)) return;
         seen.add(key);
         out.push({ type: "monthly", date, price: Math.round(price) });
+      };
+      for (const item of (Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [])) {
+        pushMonthPoint(item?.month, item?.price);
+      }
+      for (const item of (Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [])) {
+        const matched = String(item?.week ?? "").trim().match(/^(\d{4})-(\d{2})-01$/);
+        if (!matched) continue;
+        pushMonthPoint(`${matched[1]}-${matched[2]}`, item?.price);
       }
       return out.sort((a, b) => a.date.localeCompare(b.date));
     }
