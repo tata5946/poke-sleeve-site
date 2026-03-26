@@ -2773,11 +2773,17 @@
     function buildYearlySeries(sleeve) {
       const out = [];
       const seen = new Set();
+      const releaseYear = Number(sleeve?.releaseYear ?? sleeve?.release_year ?? sleeve?.["発売年"]);
+      const releaseMonth = Number(sleeve?.releaseMonth ?? sleeve?.release_month ?? sleeve?.["発売月"]);
       const pushYearPoint = (yearValue, priceValue) => {
         const matched = String(yearValue ?? "").trim().match(/^\d{4}$/);
         const price = normalizeChartPrice(priceValue);
         if (!matched || !(Number.isFinite(price) && price > 0)) return;
-        const date = `${matched[0]}-01-01`;
+        const yearNum = Number(matched[0]);
+        const monthPart = (Number.isFinite(releaseYear) && Number.isFinite(releaseMonth) && yearNum === releaseYear && releaseMonth >= 1 && releaseMonth <= 12)
+          ? String(releaseMonth).padStart(2, "0")
+          : "01";
+        const date = `${matched[0]}-${monthPart}-01`;
         const key = `yearly|${date}`;
         if (seen.has(key)) return;
         seen.add(key);
