@@ -996,10 +996,10 @@
 
               <div class="kpi">
                 <div class="box">
-                  <div id="latestPriceLabel" class="label">最新月次価格</div>
+                  <div id="latestPriceLabel" class="label">現在価格</div>
                   <div id="latestWeekly" class="value">-</div>
                   <div id="weeklyDelta" class="delta" style="margin-top:6px;"></div>
-                  <div id="weeklyCount" class="meta" style="margin-top:6px;">取引件数: -</div>
+                  <div id="weeklyCount" class="meta" style="margin-top:6px;">最終観測日: -</div>
                 </div>
               </div>
 
@@ -1030,19 +1030,23 @@
         </div>
 
         <div class="detail-price-grid">
-          <div class="panel">
-            <h3 id="priceSectionTitle" style="margin:0;">価格推移（観測ベース）</h3>
-            <div class="chart-period-switch" role="tablist" aria-label="表示期間">
-              <button type="button" class="chart-period-btn" id="period3mBtn" data-period="3m">直近3か月</button>
-              <button type="button" class="chart-period-btn" id="period1yBtn" data-period="1y">1年</button>
-              <button type="button" class="chart-period-btn is-active" id="periodAllBtn" data-period="all">全期間</button>
+          <section class="panel price-panel" id="pricePanel">
+            <div class="price-panel-body">
+              <div class="price-panel-summary-copy">
+                <h3 id="priceSectionTitle" style="margin:0;">価格推移</h3>
+              </div>
+              <div class="chart-period-switch" role="tablist" aria-label="表示期間">
+                <button type="button" class="chart-period-btn is-active" id="periodAllBtn" data-period="all">全期間</button>
+                <button type="button" class="chart-period-btn" id="periodMonthlyBtn" data-period="monthly">月次</button>
+                <button type="button" class="chart-period-btn" id="period3mBtn" data-period="3m">直近3か月</button>
+              </div>
+              <div id="chartModeNote" class="chart-subnote"></div>
+              <div id="chartLegend" class="chart-legend" aria-label="凡例"></div>
+              <div id="weeklyChart"></div>
+              <div id="chartFootnotes" class="chart-footnotes"></div>
+              <div id="weeklyTable"></div>
             </div>
-            <div id="chartModeNote" class="chart-subnote"></div>
-            <div id="chartLegend" class="chart-legend" aria-label="凡例"></div>
-            <div id="weeklyChart"></div>
-            <div id="chartFootnotes" class="chart-footnotes"></div>
-            <div id="weeklyTable"></div>
-          </div>
+          </section>
         </div>
 
         <div class="related-sections" id="relatedSections" hidden>
@@ -1743,10 +1747,18 @@
       const s = String(isoMonth || "");
       const m = s.match(/^(\d{4})-(\d{2})$/);
       if (!m) return formatPeriodLabel(s);
-      const year = Number(m[1]);
-      const month = Number(m[2]);
-      if (month === 1) return `${year}年`;
-      return `${year}年${month}月`;
+      return `${String(m[1]).slice(-2)}/${Number(m[2])}`;
+    }
+
+    function formatCompactAxisDateLabel(raw) {
+      const s = String(raw || "");
+      let m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (m) return `${String(m[1]).slice(-2)}/${Number(m[2])}`;
+      m = s.match(/^(\d{4})-(\d{2})$/);
+      if (m) return `${String(m[1]).slice(-2)}/${Number(m[2])}`;
+      m = s.match(/^(\d{4})$/);
+      if (m) return String(m[1]).slice(-2);
+      return formatPeriodLabel(s);
     }
 
     function parseNumberLike(v) {
@@ -2052,7 +2064,9 @@
         const yy = d.getFullYear();
         const mm = String(d.getMonth() + 1).padStart(2, "0");
         const dd = String(d.getDate()).padStart(2, "0");
-        const label = safeSpanX > (550 * 24 * 60 * 60 * 1000) ? `${yy}/${mm}` : `${mm}/${dd}`;
+        const label = safeSpanX > (550 * 24 * 60 * 60 * 1000)
+          ? `${String(yy).slice(-2)}/${Number(mm)}`
+          : `${mm}/${dd}`;
         const x = xToPx(ts);
         xLabels.push(`<text x="${x}" y="${H - 16}" text-anchor="middle" font-size="${xAxisFontSize}" fill="#111827">${label}</text>`);
       }
@@ -2569,7 +2583,7 @@
             })();
           mainXLabels.innerHTML = mobileIdx.map((i, idx) => {
             const x = xToPxMain(i);
-            const text = escapeHtml(isMonthlyMode ? formatMonthAxisLabel(visible[i].x) : formatPeriodLabel(visible[i].x));
+            const text = escapeHtml(isMonthlyMode ? formatMonthAxisLabel(visible[i].x) : formatCompactAxisDateLabel(visible[i].x));
             if (isMonthlyMode) {
               const y = xLabelY + ((idx % 2) ? 16 : 0);
               return `<text x="${x}" y="${y}" font-size="12" fill="#111827" text-anchor="middle" font-weight="700">${text}</text>`;
@@ -2587,9 +2601,9 @@
           } else {
             const midIdx = Math.floor((visible.length - 1) / 2);
             const xLabels = [
-              { x: xToPxMain(0), text: formatPeriodLabel(visible[0].x), anchor: "start" },
-              { x: xToPxMain(midIdx), text: formatPeriodLabel(visible[midIdx].x), anchor: "middle" },
-              { x: xToPxMain(visible.length - 1), text: formatPeriodLabel(visible[visible.length - 1].x), anchor: "end" }
+              { x: xToPxMain(0), text: formatCompactAxisDateLabel(visible[0].x), anchor: "start" },
+              { x: xToPxMain(midIdx), text: formatCompactAxisDateLabel(visible[midIdx].x), anchor: "middle" },
+              { x: xToPxMain(visible.length - 1), text: formatCompactAxisDateLabel(visible[visible.length - 1].x), anchor: "end" }
             ];
             mainXLabels.innerHTML = xLabels.map(l =>
           `<text x="${l.x}" y="${xLabelY}" font-size="${xAxisFontSize}" fill="#111827" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
@@ -3066,7 +3080,7 @@
       const xLabels = labelIndexes.map((index) => {
         const point = data[index];
         const x = xToPx(point.timestamp);
-        const label = formatPointDate(point, mode);
+        const label = formatCompactAxisDateLabel(point.date);
         const anchor = index === 0 ? "start" : (index === data.length - 1 ? "end" : "middle");
         const y = mode === "monthly" ? (H - 16 + ((index % 2) ? 12 : 0)) : (H - 16);
         return `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="${xAxisFontSize}" fill="#111827">${escapeHtml(label)}</text>`;
@@ -3327,23 +3341,5 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
