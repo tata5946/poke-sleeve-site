@@ -3184,18 +3184,17 @@
       const diffPrice = latest.price - first.price;
       const diffRate = first.price > 0 ? ((latest.price / first.price) - 1) * 100 : null;
       const firstLabelX = isMobileView ? Math.min(firstX + 8, W - padR - 180) : Math.min(firstX + 8, W - padR - 150);
-      const latestInfoX = W - (isMobileView ? 8 : 14);
+      const latestInfoX = W - (isMobileView ? 98 : 136);
       const latestInfoY = H - padB + (isMobileView ? 44 : 34);
       const latestInfoLine2Y = latestInfoY + (isMobileView ? 22 : 18);
-      const latestLeaderEndX = latestInfoX - (isMobileView ? 120 : 145);
+      const latestLeaderEndX = latestInfoX - (isMobileView ? 10 : 12);
       const latestLeaderBottomY = latestInfoY - (isMobileView ? 20 : 18);
-      const latestLeaderTextX = latestInfoX - (isMobileView ? 150 : 175);
       const latestMarkerRadius = isMobileView ? 11 : 9;
       const latestLeaderStartX = latestX + latestMarkerRadius + 2;
       const latestCallout = `
         <path d="M ${latestLeaderStartX} ${latestY} L ${latestLeaderEndX} ${latestY} L ${latestLeaderEndX} ${latestLeaderBottomY}" fill="none" stroke="#1e3a5f" stroke-width="${isMobileView ? 2.2 : 2}" stroke-linecap="round" stroke-linejoin="round"></path>
-        <text x="${latestInfoX}" y="${latestInfoY}" text-anchor="end" font-size="${isMobileView ? 18 : 15}" font-weight="900" fill="#111827">現在 ¥${latest.price.toLocaleString()}</text>
-        <text x="${latestInfoX}" y="${latestInfoLine2Y}" text-anchor="end" font-size="${isMobileView ? 16 : 13.5}" font-weight="900" fill="${diffPrice >= 0 ? "#0f766e" : "#b42318"}">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
+        <text x="${latestInfoX}" y="${latestInfoY}" text-anchor="start" font-size="${isMobileView ? 18 : 15}" font-weight="900" fill="#111827">現在 ¥${latest.price.toLocaleString()}</text>
+        <text x="${latestInfoX}" y="${latestInfoLine2Y}" text-anchor="start" font-size="${isMobileView ? 16 : 13.5}" font-weight="900" fill="${diffPrice >= 0 ? "#0f766e" : "#b42318"}">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
       `;
       const showVolumeBars = mode === "3m";
       const maxCount = showVolumeBars
