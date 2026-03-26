@@ -2854,13 +2854,36 @@
         }));
     }
 
+    function dedupeSeriesByDate(points) {
+      const priorityOf = (type) => {
+        if (type === "yearly") return 3;
+        if (type === "monthly") return 2;
+        if (type === "weekly") return 1;
+        return 0;
+      };
+      const map = new Map();
+      for (const item of enrichSeries(points)) {
+        const key = String(item?.date || "");
+        if (!key) continue;
+        const prev = map.get(key);
+        if (!prev || priorityOf(item.type) >= priorityOf(prev.type)) {
+          map.set(key, item);
+        }
+      }
+      return Array.from(map.values()).sort((a, b) => a.timestamp - b.timestamp);
+    }
+
     function buildFullPeriodSeries(sleeve) {
-      const legacy = buildLegacyObservationSeries(sleeve, ["year", "month", "week"]);
-      if (legacy.length) return enrichSeries(legacy);
-      return enrichSeries([
-        ...buildYearlySeries(sleeve),
-        ...buildMonthlySeries(sleeve),
-        ...buildWeeklySeries(sleeve)
+      const explicitYearly = buildYearlySeries(sleeve);
+      const explicitMonthly = buildMonthlySeries(sleeve);
+      const explicitWeekly = buildWeeklySeries(sleeve);
+      const legacyYearly = buildLegacyObservationSeries(sleeve, ["year"]);
+      const legacyMonthly = buildLegacyObservationSeries(sleeve, ["month"]);
+      const legacyWeekly = buildLegacyObservationSeries(sleeve, ["week"]);
+      return dedupeSeriesByDate([
+        ...(explicitYearly.length ? explicitYearly : legacyYearly),
+        ...(explicitMonthly.length ? explicitMonthly : legacyMonthly),
+        ...(explicitWeekly.length ? explicitWeekly : legacyWeekly)
       ]);
     }
 
@@ -3225,9 +3248,9 @@
 
     function getSeriesForMode(sleeve, mode) {
       if (mode === "monthly") {
+        const explicitMonthly = buildMonthlySeries(sleeve);
         const legacyMonthly = buildLegacyObservationSeries(sleeve, ["month"]);
-        if (legacyMonthly.length) return enrichSeries(legacyMonthly);
-        return buildMonthlySeries(sleeve);
+        return dedupeSeriesByDate(explicitMonthly.length ? explicitMonthly : legacyMonthly);
       }
       if (mode === "3m") return buildRecentWeeklySeries(sleeve, 92);
       return buildFullPeriodSeries(sleeve);
