@@ -3105,15 +3105,15 @@
 
       const isMobileView = window.matchMedia("(max-width: 767px)").matches;
       const W = 940;
-      const H = isMobileView ? 460 : 340;
-      const padL = isMobileView ? 72 : 64;
-      const padR = isMobileView ? 30 : 84;
-      const padT = isMobileView ? 22 : 20;
-      const padB = (mode === "all" || mode === "monthly") ? (isMobileView ? 86 : 64) : (isMobileView ? 72 : 52);
-      const axisFontSize = isMobileView ? 13 : 11;
-      const xAxisFontSize = isMobileView ? 13 : 11;
-      const labelFontSize = isMobileView ? 13 : 11;
-      const subLabelFontSize = isMobileView ? 12 : 10.5;
+      const H = isMobileView ? 620 : 480;
+      const padL = isMobileView ? 90 : 86;
+      const padR = isMobileView ? 42 : 130;
+      const padT = isMobileView ? 28 : 26;
+      const padB = (mode === "all" || mode === "monthly") ? (isMobileView ? 120 : 92) : (isMobileView ? 98 : 76);
+      const axisFontSize = isMobileView ? 18 : 15;
+      const xAxisFontSize = isMobileView ? 19 : 16;
+      const labelFontSize = isMobileView ? 19 : 16;
+      const subLabelFontSize = isMobileView ? 16 : 13.5;
       const chartW = W - padL - padR;
       const chartH = H - padT - padB;
       const xMin = Math.min(...data.map((item) => item.timestamp));
@@ -3156,7 +3156,7 @@
           .map((tick) => {
             const x = xToPx(tick.ts);
             const line = `<line x1="${x}" y1="${padT}" x2="${x}" y2="${H - padB}" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"></line>`;
-            const text = `<text x="${Math.min(x + 4, W - padR - 4)}" y="${padT + 12}" text-anchor="start" font-size="${subLabelFontSize}" font-weight="700" fill="#64748b">${tick.year}</text>`;
+            const text = `<text x="${Math.min(x + 6, W - padR - 4)}" y="${padT + 14}" text-anchor="start" font-size="${subLabelFontSize}" font-weight="800" fill="#64748b">${tick.year}</text>`;
             return `${line}${text}`;
           });
       } else {
@@ -3219,11 +3219,11 @@
         const cy = yToPx(point.price);
         const isLatest = index === data.length - 1;
         const isFirst = index === 0;
-        const radius = isLatest || isFirst ? (isMobileView ? 8 : 7) : (isMobileView ? 6.5 : 5.5);
+        const radius = isLatest || isFirst ? (isMobileView ? 11 : 9) : (isMobileView ? 9 : 7);
         return `
           ${buildMarkerSvg(point, cx, cy, radius, isLatest, mode)}
-          ${isFirst ? `<circle cx="${cx}" cy="${cy}" r="${radius + 3}" fill="none" stroke="rgba(15,23,42,0.16)" stroke-width="1.4"></circle>` : ""}
-          <circle class="chart-hit-point" data-hit="${index}" cx="${cx}" cy="${cy}" r="${isMobileView ? 18 : 14}" fill="transparent"></circle>
+          ${isFirst ? `<circle cx="${cx}" cy="${cy}" r="${radius + 4}" fill="none" stroke="rgba(15,23,42,0.16)" stroke-width="1.8"></circle>` : ""}
+          <circle class="chart-hit-point" data-hit="${index}" cx="${cx}" cy="${cy}" r="${isMobileView ? 24 : 18}" fill="transparent"></circle>
         `;
       }).join("");
 
@@ -3245,11 +3245,11 @@
               <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
               <path d="${areaD}" fill="url(#priceAreaGrad-${escapeHtml(containerId)})"></path>
               <g>${volumeBars}</g>
-              <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="${isMobileView ? 4 : 3.2}" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="${isMobileView ? 5.5 : 4.2}" stroke-linecap="round" stroke-linejoin="round"></path>
               ${mode === "all" ? `<line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"></line>` : ""}
-              <text x="${Math.min(firstX + 6, W - padR - 120)}" y="${Math.max(18, firstY - 14)}" text-anchor="start" font-size="${labelFontSize}" font-weight="800" fill="#475467">開始 ¥${first.price.toLocaleString()}</text>
-              <text x="${Math.min(latestX + 8, W - padR - 8)}" y="${Math.max(20, latestY - 22)}" text-anchor="start" font-size="${labelFontSize}" font-weight="900" fill="#1e293b">現在 ¥${latest.price.toLocaleString()}</text>
-              <text x="${Math.min(latestX + 8, W - padR - 8)}" y="${Math.max(34, latestY - 8)}" text-anchor="start" font-size="${subLabelFontSize}" font-weight="800" fill="${diffPrice >= 0 ? "#0f766e" : "#b42318"}">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
+              <text x="${Math.min(firstX + 8, W - padR - 150)}" y="${Math.max(24, firstY - 18)}" text-anchor="start" font-size="${labelFontSize}" font-weight="900" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">開始 ¥${first.price.toLocaleString()}</text>
+              <text x="${Math.min(latestX + 10, W - padR - 12)}" y="${Math.max(28, latestY - 28)}" text-anchor="start" font-size="${isMobileView ? labelFontSize + 3 : labelFontSize + 2}" font-weight="900" fill="#111827" style="paint-order:stroke;stroke:#ffffff;stroke-width:5px;stroke-linejoin:round;">現在 ¥${latest.price.toLocaleString()}</text>
+              <text x="${Math.min(latestX + 10, W - padR - 12)}" y="${Math.max(50, latestY - 8)}" text-anchor="start" font-size="${subLabelFontSize + 1}" font-weight="900" fill="${diffPrice >= 0 ? "#0f766e" : "#b42318"}" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
               ${highLabel}
               ${lowLabel}
               <g>${markers}</g>
