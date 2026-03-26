@@ -2582,7 +2582,7 @@
             const x = xToPxMain(i);
             const text = escapeHtml(isMonthlyMode ? formatMonthAxisLabel(visible[i].x) : formatCompactAxisDateLabel(visible[i].x));
             if (isMonthlyMode) {
-              const y = xLabelY + ((idx % 2) ? 16 : 0);
+              const y = xLabelY;
               return `<text x="${x}" y="${y}" font-size="12" fill="#111827" text-anchor="middle" font-weight="700">${text}</text>`;
             }
             const anchor = idx === 0 ? "start" : (idx === mobileIdx.length - 1 ? "end" : "middle");
@@ -2592,7 +2592,7 @@
           if (isMonthlyMode) {
             mainXLabels.innerHTML = visible.map((p, i) => {
               const x = xToPxMain(i);
-              const y = xLabelY + ((i % 2) ? 12 : 0);
+              const y = xLabelY;
               return `<text x="${x}" y="${y}" font-size="12" fill="#111827" text-anchor="middle" font-weight="700">${escapeHtml(formatMonthAxisLabel(p.x))}</text>`;
             }).join("");
           } else {
@@ -3126,7 +3126,7 @@
         const x = xToPx(point.timestamp);
         const label = formatCompactAxisDateLabel(point.date);
         const anchor = index === 0 ? "start" : (index === data.length - 1 ? "end" : "middle");
-        const y = mode === "monthly" ? (H - 16 + ((index % 2) ? 12 : 0)) : (H - 16);
+        const y = H - 16;
         return `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="${xAxisFontSize}" fill="#111827">${escapeHtml(label)}</text>`;
       });
 
