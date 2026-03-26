@@ -1142,14 +1142,14 @@
       }
 
       const W = 980;
-      const H = isMobile ? 620 : 500;
-      const padL = isMobile ? 68 : 82;
-      const padR = isMobile ? 26 : 32;
+      const H = isMobile ? 700 : 580;
+      const padL = isMobile ? 70 : 84;
+      const padR = isMobile ? 28 : 34;
       const mainTop = isMobile ? 22 : 24;
-      const mainBottom = isMobile ? 360 : 280;
-      const xLabelY = isMobile ? 394 : 308;
-      const navTop = isMobile ? 500 : 372;
-      const navBottom = isMobile ? 576 : 448;
+      const mainBottom = isMobile ? 406 : 334;
+      const xLabelY = isMobile ? 444 : 368;
+      const navTop = isMobile ? 570 : 448;
+      const navBottom = isMobile ? 652 : 532;
       const ticks = 4;
       const minWindow = Math.min(Math.max(2, Math.ceil(data.length * 0.12)), data.length);
 
@@ -1351,7 +1351,7 @@
           const v = yMin + (i / ticks) * (yMax - yMin);
           const y = yToPxMain(v);
           gridLines.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e6e8ef"/>`);
-            yLabels.push(`<text x="${padL - 12}" y="${y + 5}" text-anchor="end" font-size="${isMobile ? 17 : 14}" fill="#111827" font-weight="800">${escapeHtml(yFmt(v))}</text>`);
+            yLabels.push(`<text x="${padL - 12}" y="${y + 6}" text-anchor="end" font-size="${isMobile ? 18 : 15}" fill="#111827" font-weight="800">${escapeHtml(yFmt(v))}</text>`);
         }
         mainGrid.innerHTML = gridLines.join("");
         mainLabels.innerHTML = yLabels.join("");
@@ -1367,7 +1367,7 @@
           gridLines.push(`<line x1="${label.x}" y1="${mainTop}" x2="${label.x}" y2="${mainBottom}" stroke="#eef2f7" stroke-dasharray="4 4"/>`);
         });
         mainXLabels.innerHTML = xLabels.map(l =>
-           `<text x="${l.x}" y="${xLabelY}" font-size="${isMobile ? 18 : 15}" font-weight="800" fill="#111827" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
+           `<text x="${l.x}" y="${xLabelY}" font-size="${isMobile ? 19 : 16}" font-weight="800" fill="#111827" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
         ).join("");
 
         const firstPointIdx = visible.findIndex((point) => hasValidY(point?.y));
@@ -1389,9 +1389,9 @@
           const diffCls = getTrendClass(basePct);
           const startAnchor = firstX < (padL + 90) ? "start" : "end";
           const startLabelX = startAnchor === "start" ? firstX + 10 : firstX - 10;
-          const latestInfoX = W - (isMobile ? 150 : 172);
-          const latestInfoY = xLabelY + (isMobile ? 36 : 28);
-          const latestInfoLine2Y = latestInfoY + (isMobile ? 26 : 20);
+          const latestInfoX = W - (isMobile ? 156 : 176);
+          const latestInfoY = xLabelY + (isMobile ? 42 : 32);
+          const latestInfoLine2Y = latestInfoY + (isMobile ? 28 : 22);
           const latestLeaderEndX = latestInfoX - (isMobile ? 12 : 14);
           const latestLeaderBottomY = latestInfoY - (isMobile ? 22 : 18);
           const latestMarkerRadius = isMobile ? 10 : 8;
