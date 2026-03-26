@@ -3191,8 +3191,10 @@
       const latestLeaderEndX = W - padR + (isMobileView ? 6 : 10);
       const latestLeaderBottomY = latestInfoY - (isMobileView ? 18 : 16);
       const latestLeaderTextX = latestInfoX - (isMobileView ? 150 : 175);
+      const latestMarkerRadius = isMobileView ? 11 : 9;
+      const latestLeaderStartX = latestX + latestMarkerRadius + 2;
       const latestCallout = `
-        <path d="M ${latestX} ${latestY} L ${latestX} ${latestLeaderMidY} L ${latestLeaderEndX} ${latestLeaderMidY} L ${latestLeaderEndX} ${latestLeaderBottomY} L ${latestLeaderTextX} ${latestLeaderBottomY}" fill="none" stroke="#1e3a5f" stroke-width="${isMobileView ? 2.2 : 2}" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M ${latestLeaderStartX} ${latestY} L ${latestLeaderEndX} ${latestY} L ${latestLeaderEndX} ${latestLeaderBottomY} L ${latestLeaderTextX} ${latestLeaderBottomY}" fill="none" stroke="#1e3a5f" stroke-width="${isMobileView ? 2.2 : 2}" stroke-linecap="round" stroke-linejoin="round"></path>
         <text x="${latestInfoX}" y="${latestInfoY}" text-anchor="end" font-size="${isMobileView ? 18 : 15}" font-weight="900" fill="#111827">現在 ¥${latest.price.toLocaleString()}</text>
         <text x="${latestInfoX}" y="${latestInfoLine2Y}" text-anchor="end" font-size="${isMobileView ? 16 : 13.5}" font-weight="900" fill="${diffPrice >= 0 ? "#0f766e" : "#b42318"}">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
       `;
