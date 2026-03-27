@@ -1243,6 +1243,7 @@ function wireHeaderMenu() {
 
   const closeMenu = () => {
     categoryPanel.classList.remove("is-mobile-drawer-open");
+    header.classList.remove("is-mobile-category-open");
     categoryPanel.hidden = true;
     applyButtonState(false);
     updatePanelPosition();
@@ -1251,6 +1252,7 @@ function wireHeaderMenu() {
 
   const toggleMenu = () => {
     const isOpen = categoryPanel.classList.toggle("is-mobile-drawer-open");
+    header.classList.toggle("is-mobile-category-open", isOpen);
     categoryPanel.hidden = !isOpen;
     applyButtonState(isOpen);
     updatePanelPosition();

@@ -1220,6 +1220,10 @@ footer.site-footer {
         display: grid;
     }
 
+    .header.is-mobile-category-open .category-nav--header {
+        display: grid;
+    }
+
     .search-suggest-item {
         grid-template-columns: 40px minmax(0, 1fr) auto;
         gap: 8px;
