@@ -1245,6 +1245,7 @@ function wireHeaderMenu() {
     categoryPanel.classList.remove("is-mobile-drawer-open");
     header.classList.remove("is-mobile-category-open");
     categoryPanel.hidden = true;
+    categoryPanel.style.display = "none";
     applyButtonState(false);
     updatePanelPosition();
     syncHeaderOffset();
@@ -1254,6 +1255,7 @@ function wireHeaderMenu() {
     const isOpen = categoryPanel.classList.toggle("is-mobile-drawer-open");
     header.classList.toggle("is-mobile-category-open", isOpen);
     categoryPanel.hidden = !isOpen;
+    categoryPanel.style.display = isOpen ? "grid" : "none";
     applyButtonState(isOpen);
     updatePanelPosition();
     syncHeaderOffset();
