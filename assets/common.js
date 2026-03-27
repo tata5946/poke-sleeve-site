@@ -467,6 +467,22 @@ function renderCategoryNav(sleeves, root) {
   return hasItems;
 }
 
+function syncHeaderCategoryFromHomeSidebar() {
+  if (!document.body.classList.contains("home-page")) return false;
+  const sidebarRoot = document.getElementById("categoryNav");
+  const headerRoot = document.getElementById("headerCategoryNav");
+  if (!(sidebarRoot instanceof Element) || !(headerRoot instanceof Element)) return false;
+
+  const sidebarList = sidebarRoot.querySelector(".category-nav-list");
+  const headerList = headerRoot.querySelector(".category-nav-list");
+  if (!(sidebarList instanceof Element) || !(headerList instanceof Element)) return false;
+  if (sidebarList.querySelector(".skeleton-block")) return false;
+  if (!sidebarList.children.length) return false;
+
+  headerList.innerHTML = sidebarList.innerHTML;
+  return true;
+}
+
 async function ensureCategoryNavsRendered(preloadedSleeves = null) {
   const roots = Array.from(document.querySelectorAll("[data-category-nav]"));
   if (!roots.length) return;
@@ -1289,7 +1305,9 @@ function wireHeaderMenu() {
     updatePanelPosition();
     syncHeaderOffset();
     if (isOpen) {
-      ensureCategoryNavsRendered().catch(() => {});
+      if (!syncHeaderCategoryFromHomeSidebar()) {
+        ensureCategoryNavsRendered().catch(() => {});
+      }
     }
   };
 

@@ -607,7 +607,6 @@
         </div>
       </div>
       <div id="activeFilters" class="catalog-active-filters" aria-label="選択中の絞り込み条件"></div>
-      <div id="groupNotice" class="group-notice" hidden></div>
       <select id="sortOrder" hidden aria-hidden="true">
         <option value="recommended">おすすめ順</option>
         <option value="popular">人気順</option>
@@ -849,8 +848,6 @@
       hideError();
 
       const sleeves = (Array.isArray(data.sleeves) ? data.sleeves : []).filter(isDisplayableSleeve);
-      const groupNotice = document.getElementById("groupNotice");
-
       function sleeveMatchesGroupFilter(sleeve) {
         if (!activeGroup) return true;
         if (window.common && typeof window.common.sleeveMatchesGroup === "function") {
@@ -881,30 +878,6 @@
         }
         return String(sleeve?.type ?? "").trim() === activeType;
       }
-
-      function syncGroupNotice() {
-        if (!groupNotice) return;
-        if ((!activeGroup || !GROUP_CONFIG[activeGroup]) && !activeTag && !activeType) {
-          groupNotice.hidden = true;
-          groupNotice.textContent = "";
-          return;
-        }
-        groupNotice.hidden = false;
-        const parts = [];
-        if (activeGroup && GROUP_CONFIG[activeGroup]) {
-          parts.push(`カテゴリー: ${GROUP_CONFIG[activeGroup].label}`);
-          parts.push(GROUP_CONFIG[activeGroup].description);
-        }
-        if (activeTag) {
-          parts.push(`細分類: ${activeTag}`);
-        }
-        if (activeType) {
-          parts.push(`デッキシールド種類: ${activeType}`);
-        }
-        groupNotice.textContent = parts.join(" / ");
-      }
-
-      syncGroupNotice();
 
       let maxWeek = null;
       for (const s of sleeves) {
@@ -1495,7 +1468,6 @@
         url.searchParams.delete("tag");
         url.searchParams.delete("type");
         history.replaceState({}, "", url.pathname + (url.searchParams.toString() ? `?${url.searchParams.toString()}` : ""));
-        syncGroupNotice();
         applyPrimaryTab("recommended");
         render();
       });
