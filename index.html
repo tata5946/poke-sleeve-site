@@ -2548,19 +2548,18 @@
       renderTrendLists({ surgeRank, growthRank, priceRank });
       initScrollReveal();
 
-      runDeferred(() => {
-        if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
-          window.common.ensureCategoryNavsRendered().catch(() => {});
-        }
+      if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
+        window.common.ensureCategoryNavsRendered(sleeves).catch(() => {});
+      }
 
-        const categoryRoot = document.getElementById("categoryNav");
-        if (categoryRoot && window.common && typeof window.common.renderCategoryNav === "function") {
-          const hasItems = window.common.renderCategoryNav(sleeves, categoryRoot);
-          categoryRoot.hidden = !hasItems;
-        } else {
-          renderCategoryNav(sleeves);
-        }
-      });
+      const categoryRoot = document.getElementById("categoryNav");
+      if (categoryRoot && window.common && typeof window.common.renderCategoryNav === "function") {
+        const hasItems = window.common.renderCategoryNav(sleeves, categoryRoot);
+        categoryRoot.hidden = !hasItems;
+      } else {
+        renderCategoryNav(sleeves);
+      }
+
       runDeferred(() => {
         const marketSeries = buildHomeMarketIndexSeries(sleeves);
         renderMarketSnapshot(marketSeries);

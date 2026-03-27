@@ -467,13 +467,16 @@ function renderCategoryNav(sleeves, root) {
   return hasItems;
 }
 
-async function ensureCategoryNavsRendered() {
+async function ensureCategoryNavsRendered(preloadedSleeves = null) {
   const roots = Array.from(document.querySelectorAll("[data-category-nav]"));
   if (!roots.length) return;
 
   try {
-    const data = await loadData();
-    const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
+    let sleeves = Array.isArray(preloadedSleeves) ? preloadedSleeves : null;
+    if (!Array.isArray(sleeves)) {
+      const data = await loadData();
+      sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
+    }
     for (const root of roots) {
       const hasItems = renderCategoryNav(sleeves, root);
       const isHeaderRoot = root.id === "headerCategoryNav";
