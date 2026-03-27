@@ -1474,7 +1474,7 @@
     <div class="home-shell">
       <div class="home-top-grid reveal-on-scroll">
         <div class="home-top-sidebar">
-          <aside id="categoryNav" class="category-nav" aria-label="カテゴリー導線">
+          <aside id="categoryNav" class="category-nav" data-category-nav aria-label="カテゴリー導線">
             <div class="category-nav-head">
               <p class="category-nav-kicker">CATEGORY</p>
               <h2 class="category-nav-title">カテゴリー</h2>
@@ -2549,7 +2549,11 @@
       initScrollReveal();
 
       runDeferred(() => {
-        renderCategoryNav(sleeves);
+        if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
+          window.common.ensureCategoryNavsRendered().catch(() => {});
+        } else {
+          renderCategoryNav(sleeves);
+        }
       });
       runDeferred(() => {
         const marketSeries = buildHomeMarketIndexSeries(sleeves);

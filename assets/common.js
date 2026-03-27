@@ -58,7 +58,7 @@ scheduleAnalyticsInit();
 const HEADER_HTML = `
 <div class="header">
   <div class="header-top">
-    <button type="button" class="menu-toggle" id="headerMenuBtn" aria-label="カテゴリーを開く" aria-expanded="false" aria-controls="categoryNav">
+    <button type="button" class="menu-toggle" id="headerMenuBtn" aria-label="カテゴリーを開く" aria-expanded="false" aria-controls="headerCategoryNav">
       <span class="menu-toggle-bar" aria-hidden="true"></span>
       <span class="menu-toggle-bar" aria-hidden="true"></span>
       <span class="menu-toggle-bar" aria-hidden="true"></span>
@@ -93,6 +93,15 @@ const HEADER_HTML = `
       </nav>
     </div>
   </div>
+  <aside id="headerCategoryNav" class="category-nav category-nav--header" data-category-nav aria-label="カテゴリー導線" hidden>
+    <div class="category-nav-head">
+      <p class="category-nav-kicker">CATEGORY</p>
+      <h2 class="category-nav-title">カテゴリー</h2>
+    </div>
+    <div class="category-nav-list">
+      <div class="category-nav-empty skeleton-block" style="min-height: 148px;"></div>
+    </div>
+  </aside>
 </div>
 `;
 
@@ -363,6 +372,124 @@ function buildSleeveDetailHref(id) {
   const sleeveId = String(id || "").trim();
   if (!sleeveId) return buildSiteHref("sleeves/");
   return buildSiteHref(`sleeve/${encodeURIComponent(sleeveId)}/`);
+}
+
+function buildCategoryNavMarkup(sleeves) {
+  const configs = [
+    { key: "pokemon", label: "ポケモン" },
+    { key: "character", label: "キャラクター" },
+    { key: "other", label: "その他" }
+  ];
+  const counts = countSleevesByGroup(sleeves);
+  const items = configs
+    .map((config) => ({ ...config, count: Number(counts?.[config.key] || 0) }))
+    .filter((item) => item.count >= 2);
+
+  if (!items.length) {
+    return {
+      hasItems: false,
+      listHtml: `<div class="category-nav-empty">表示できるカテゴリーはまだ十分に集計されていません。</div>`
+    };
+  }
+
+  const sections = items.map((item) => {
+    const href = buildSleeveGroupHref(item.key);
+    const detailItems = collectGroupDetailItems(sleeves, item.key).slice(0, 14);
+    const sublistHtml = detailItems.length
+      ? `
+        <div class="category-sublist">
+          ${detailItems.map((detailItem) => {
+            const detailHref = buildSleeveCategoryHref(item.key, detailItem.label);
+            return `
+              <a class="category-flyout-link" href="${escapeHtml(detailHref)}">
+                <span>${escapeHtml(detailItem.label)}</span>
+                <span class="category-flyout-count">${escapeHtml(String(detailItem.count))}件</span>
+              </a>
+            `;
+          }).join("")}
+        </div>
+      `
+      : "";
+
+    return `
+      <div class="category-nav-item">
+        <a class="category-nav-link" href="${escapeHtml(href)}">
+          <span class="category-nav-name">${escapeHtml(item.label)}</span>
+          <span class="category-nav-meta">
+            <span class="category-nav-count">${escapeHtml(String(item.count))}件</span>
+            <span class="category-nav-arrow" aria-hidden="true">›</span>
+          </span>
+        </a>
+        ${sublistHtml}
+      </div>
+    `;
+  });
+
+  const typeItems = collectSleeveTypes(sleeves).slice(0, 14);
+  if (typeItems.length) {
+    sections.push(`
+      <div class="category-nav-item">
+        <a class="category-nav-link" href="${escapeHtml(buildSiteHref("sleeves/"))}">
+          <span class="category-nav-name">デッキシールド種類</span>
+          <span class="category-nav-meta">
+            <span class="category-nav-count">${escapeHtml(String(typeItems.reduce((sum, item) => sum + Number(item.count || 0), 0)))}件</span>
+            <span class="category-nav-arrow" aria-hidden="true">›</span>
+          </span>
+        </a>
+        <div class="category-sublist">
+          ${typeItems.map((typeItem) => {
+            const typeHref = buildSleeveTypeHref(typeItem.label);
+            return `
+              <a class="category-flyout-link" href="${escapeHtml(typeHref)}">
+                <span>${escapeHtml(typeItem.label)}</span>
+                <span class="category-flyout-count">${escapeHtml(String(typeItem.count))}件</span>
+              </a>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `);
+  }
+
+  return {
+    hasItems: true,
+    listHtml: sections.join("")
+  };
+}
+
+function renderCategoryNav(sleeves, root) {
+  const target = root instanceof Element ? root : null;
+  if (!target) return false;
+
+  const { hasItems, listHtml } = buildCategoryNavMarkup(sleeves);
+  const list = target.querySelector(".category-nav-list");
+  if (list) list.innerHTML = listHtml;
+  target.hidden = !hasItems;
+  return hasItems;
+}
+
+async function ensureCategoryNavsRendered() {
+  const roots = Array.from(document.querySelectorAll("[data-category-nav]"));
+  if (!roots.length) return;
+
+  for (const root of roots) {
+    root.hidden = false;
+  }
+
+  try {
+    const data = await loadData();
+    const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
+    const hasAny = roots.map((root) => renderCategoryNav(sleeves, root)).some(Boolean);
+    if (!hasAny) {
+      for (const root of roots) root.hidden = true;
+    }
+  } catch (_) {
+    for (const root of roots) {
+      const list = root.querySelector(".category-nav-list");
+      if (list) list.innerHTML = `<div class="category-nav-empty">カテゴリー一覧の読み込みに失敗しました。</div>`;
+      root.hidden = false;
+    }
+  }
 }
 
 function readSearchHistory() {
@@ -1019,6 +1146,7 @@ function injectHeaderFooter() {
 
     wireHeaderOffsetSync();
     syncHeaderOffset();
+    ensureCategoryNavsRendered().catch(() => {});
     requestAnimationFrame(syncHeaderOffset);
     setTimeout(syncHeaderOffset, 120);
   } catch (e) {
@@ -1056,24 +1184,19 @@ function wireHeaderOffsetSync() {
 function wireHeaderMenu() {
   const header = document.querySelector("#site-header .header");
   const button = document.getElementById("headerMenuBtn");
-  const homeCategoryPanel = document.body.classList.contains("home-page")
-    ? document.getElementById("categoryNav")
-    : null;
+  const categoryPanel = document.getElementById("headerCategoryNav");
   if (!header || !button || button.dataset.menuWired === "1") return;
 
-  if (!homeCategoryPanel) {
+  if (!categoryPanel) {
     button.hidden = true;
     return;
   }
 
-  const originalParent = homeCategoryPanel.parentElement;
-  const originalNextSibling = homeCategoryPanel.nextElementSibling;
-
   const updatePanelPosition = () => {
-    if (window.innerWidth > 740 || homeCategoryPanel.parentElement !== header) {
-      homeCategoryPanel.style.removeProperty("--category-nav-top");
-      homeCategoryPanel.style.removeProperty("--category-nav-left");
-      homeCategoryPanel.style.removeProperty("--category-nav-width");
+    if (window.innerWidth > 740) {
+      categoryPanel.style.removeProperty("--category-nav-top");
+      categoryPanel.style.removeProperty("--category-nav-left");
+      categoryPanel.style.removeProperty("--category-nav-width");
       return;
     }
 
@@ -1086,60 +1209,40 @@ function wireHeaderMenu() {
     );
     const top = Math.max(12, buttonRect.bottom - headerRect.top + 8);
 
-    homeCategoryPanel.style.setProperty("--category-nav-top", `${Math.round(top)}px`);
-    homeCategoryPanel.style.setProperty("--category-nav-left", `${Math.round(left)}px`);
-    homeCategoryPanel.style.setProperty("--category-nav-width", `${Math.round(width)}px`);
-  };
-
-  const mountPanelForViewport = () => {
-    if (window.innerWidth <= 740) {
-      if (homeCategoryPanel.parentElement !== header) {
-        header.appendChild(homeCategoryPanel);
-      }
-      homeCategoryPanel.classList.add("is-header-anchored");
-      updatePanelPosition();
-      return;
-    }
-
-    homeCategoryPanel.classList.remove("is-header-anchored");
-    homeCategoryPanel.style.removeProperty("--category-nav-top");
-    homeCategoryPanel.style.removeProperty("--category-nav-left");
-    homeCategoryPanel.style.removeProperty("--category-nav-width");
-    if (originalParent && homeCategoryPanel.parentElement !== originalParent) {
-      originalParent.insertBefore(homeCategoryPanel, originalNextSibling || null);
-    }
+    categoryPanel.style.setProperty("--category-nav-top", `${Math.round(top)}px`);
+    categoryPanel.style.setProperty("--category-nav-left", `${Math.round(left)}px`);
+    categoryPanel.style.setProperty("--category-nav-width", `${Math.round(width)}px`);
   };
 
   const applyButtonState = (expanded) => {
     button.setAttribute("aria-expanded", expanded ? "true" : "false");
-    button.setAttribute("aria-controls", "categoryNav");
+    button.setAttribute("aria-controls", "headerCategoryNav");
     button.setAttribute("aria-label", expanded ? "カテゴリーを閉じる" : "カテゴリーを開く");
   };
 
   const closeMenu = () => {
-    homeCategoryPanel.classList.remove("is-mobile-drawer-open");
+    categoryPanel.classList.remove("is-mobile-drawer-open");
     applyButtonState(false);
     updatePanelPosition();
     syncHeaderOffset();
   };
 
   const toggleMenu = () => {
-    mountPanelForViewport();
-    const isOpen = homeCategoryPanel.classList.toggle("is-mobile-drawer-open");
+    ensureCategoryNavsRendered().catch(() => {});
+    const isOpen = categoryPanel.classList.toggle("is-mobile-drawer-open");
     applyButtonState(isOpen);
     updatePanelPosition();
     syncHeaderOffset();
   };
 
   button.dataset.menuWired = "1";
-  mountPanelForViewport();
   applyButtonState(false);
   button.addEventListener("click", (event) => {
     event.stopPropagation();
     toggleMenu();
   });
 
-  homeCategoryPanel.addEventListener("click", (event) => {
+  categoryPanel.addEventListener("click", (event) => {
     const target = event.target instanceof Element ? event.target.closest("a") : null;
     if (target) closeMenu();
   });
@@ -1147,7 +1250,7 @@ function wireHeaderMenu() {
   document.addEventListener("click", (event) => {
     if (!(event.target instanceof Node)) return;
     if (header.contains(event.target)) return;
-    if (homeCategoryPanel.contains(event.target)) return;
+    if (categoryPanel.contains(event.target)) return;
     closeMenu();
   });
 
@@ -1156,11 +1259,10 @@ function wireHeaderMenu() {
   });
 
   window.addEventListener("resize", () => {
-    mountPanelForViewport();
     if (window.innerWidth > 740) {
       closeMenu();
     } else {
-      applyButtonState(homeCategoryPanel.classList.contains("is-mobile-drawer-open"));
+      applyButtonState(categoryPanel.classList.contains("is-mobile-drawer-open"));
       updatePanelPosition();
     }
   }, { passive: true });
@@ -1332,6 +1434,9 @@ window.common = {
   loadData,
   buildSiteHref,
   buildSleeveDetailHref,
+  buildCategoryNavMarkup,
+  renderCategoryNav,
+  ensureCategoryNavsRendered,
   injectHeaderFooter,
   setActiveNav,
   wireHeaderSearch,
