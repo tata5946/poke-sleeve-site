@@ -423,7 +423,6 @@ a:hover {
     z-index: 1;
     background: #111;
     border-top: 1px solid rgba(255, 255, 255, .08);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, .18);
 }
 
 .header-bottom-inner {
@@ -479,7 +478,6 @@ a:hover {
 
 .nav a.is-active {
     background: rgba(255, 255, 255, .20);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, .18) inset;
 }
 
 .nav a:hover .nav-icon,
