@@ -2551,6 +2551,12 @@
       runDeferred(() => {
         if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
           window.common.ensureCategoryNavsRendered().catch(() => {});
+        }
+
+        const categoryRoot = document.getElementById("categoryNav");
+        if (categoryRoot && window.common && typeof window.common.renderCategoryNav === "function") {
+          const hasItems = window.common.renderCategoryNav(sleeves, categoryRoot);
+          categoryRoot.hidden = !hasItems;
         } else {
           renderCategoryNav(sleeves);
         }
