@@ -1066,6 +1066,50 @@ function wireHeaderMenu() {
     return;
   }
 
+  const originalParent = homeCategoryPanel.parentElement;
+  const originalNextSibling = homeCategoryPanel.nextElementSibling;
+
+  const updatePanelPosition = () => {
+    if (window.innerWidth > 740 || homeCategoryPanel.parentElement !== header) {
+      homeCategoryPanel.style.removeProperty("--category-nav-top");
+      homeCategoryPanel.style.removeProperty("--category-nav-left");
+      homeCategoryPanel.style.removeProperty("--category-nav-width");
+      return;
+    }
+
+    const headerRect = header.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+    const width = Math.min(320, Math.max(220, window.innerWidth - 24));
+    const left = Math.min(
+      Math.max(12, buttonRect.left - headerRect.left),
+      Math.max(12, header.clientWidth - width - 12)
+    );
+    const top = Math.max(12, buttonRect.bottom - headerRect.top + 8);
+
+    homeCategoryPanel.style.setProperty("--category-nav-top", `${Math.round(top)}px`);
+    homeCategoryPanel.style.setProperty("--category-nav-left", `${Math.round(left)}px`);
+    homeCategoryPanel.style.setProperty("--category-nav-width", `${Math.round(width)}px`);
+  };
+
+  const mountPanelForViewport = () => {
+    if (window.innerWidth <= 740) {
+      if (homeCategoryPanel.parentElement !== header) {
+        header.appendChild(homeCategoryPanel);
+      }
+      homeCategoryPanel.classList.add("is-header-anchored");
+      updatePanelPosition();
+      return;
+    }
+
+    homeCategoryPanel.classList.remove("is-header-anchored");
+    homeCategoryPanel.style.removeProperty("--category-nav-top");
+    homeCategoryPanel.style.removeProperty("--category-nav-left");
+    homeCategoryPanel.style.removeProperty("--category-nav-width");
+    if (originalParent && homeCategoryPanel.parentElement !== originalParent) {
+      originalParent.insertBefore(homeCategoryPanel, originalNextSibling || null);
+    }
+  };
+
   const applyButtonState = (expanded) => {
     button.setAttribute("aria-expanded", expanded ? "true" : "false");
     button.setAttribute("aria-controls", "categoryNav");
@@ -1075,16 +1119,20 @@ function wireHeaderMenu() {
   const closeMenu = () => {
     homeCategoryPanel.classList.remove("is-mobile-drawer-open");
     applyButtonState(false);
+    updatePanelPosition();
     syncHeaderOffset();
   };
 
   const toggleMenu = () => {
+    mountPanelForViewport();
     const isOpen = homeCategoryPanel.classList.toggle("is-mobile-drawer-open");
     applyButtonState(isOpen);
+    updatePanelPosition();
     syncHeaderOffset();
   };
 
   button.dataset.menuWired = "1";
+  mountPanelForViewport();
   applyButtonState(false);
   button.addEventListener("click", (event) => {
     event.stopPropagation();
@@ -1108,9 +1156,16 @@ function wireHeaderMenu() {
   });
 
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 700) closeMenu();
-    else applyButtonState(homeCategoryPanel.classList.contains("is-mobile-drawer-open"));
+    mountPanelForViewport();
+    if (window.innerWidth > 740) {
+      closeMenu();
+    } else {
+      applyButtonState(homeCategoryPanel.classList.contains("is-mobile-drawer-open"));
+      updatePanelPosition();
+    }
   }, { passive: true });
+
+  window.addEventListener("orientationchange", updatePanelPosition, { passive: true });
 }
 
 function ensureFavicon() {
