@@ -474,8 +474,7 @@ async function ensureCategoryNavsRendered(preloadedSleeves = null) {
   try {
     let sleeves = Array.isArray(preloadedSleeves) ? preloadedSleeves : null;
     if (!Array.isArray(sleeves)) {
-      const data = await loadData();
-      sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
+      sleeves = await loadCategoryNavSleeves();
     }
     for (const root of roots) {
       const hasItems = renderCategoryNav(sleeves, root);
@@ -511,6 +510,36 @@ async function ensureCategoryNavsRendered(preloadedSleeves = null) {
       root.hidden = !isHomeSidebar;
     }
   }
+}
+
+async function loadCategoryNavSleeves() {
+  if (Array.isArray(__dataCacheMem?.data?.sleeves)) {
+    return __dataCacheMem.data.sleeves;
+  }
+
+  const sessionCached = readSessionCache();
+  if (Array.isArray(sessionCached?.sleeves)) {
+    return sessionCached.sleeves;
+  }
+
+  const persistentCached = readPersistentCache();
+  if (Array.isArray(persistentCached?.sleeves)) {
+    return persistentCached.sleeves;
+  }
+
+  try {
+    const resolvedUrl = new URL(LOCAL_DATA_URL, document.baseURI || location.href).href;
+    const localData = await fetchJsonWithTimeout(resolvedUrl, {
+      timeoutMs: 2500,
+      cacheMode: "reload"
+    });
+    if (Array.isArray(localData?.sleeves)) {
+      return localData.sleeves;
+    }
+  } catch (_) { }
+
+  const data = await loadData();
+  return Array.isArray(data?.sleeves) ? data.sleeves : [];
 }
 
 function readSearchHistory() {
