@@ -464,7 +464,6 @@ function renderCategoryNav(sleeves, root) {
   const { hasItems, listHtml } = buildCategoryNavMarkup(sleeves);
   const list = target.querySelector(".category-nav-list");
   if (list) list.innerHTML = listHtml;
-  target.hidden = !hasItems;
   return hasItems;
 }
 
@@ -472,22 +471,32 @@ async function ensureCategoryNavsRendered() {
   const roots = Array.from(document.querySelectorAll("[data-category-nav]"));
   if (!roots.length) return;
 
-  for (const root of roots) {
-    root.hidden = false;
-  }
-
   try {
     const data = await loadData();
     const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
-    const hasAny = roots.map((root) => renderCategoryNav(sleeves, root)).some(Boolean);
-    if (!hasAny) {
-      for (const root of roots) root.hidden = true;
+    for (const root of roots) {
+      const hasItems = renderCategoryNav(sleeves, root);
+      const isHeaderRoot = root.id === "headerCategoryNav";
+      const isHomeSidebar = root.id === "categoryNav" && document.body.classList.contains("home-page");
+
+      if (isHeaderRoot) {
+        root.hidden = true;
+        continue;
+      }
+
+      if (isHomeSidebar) {
+        root.hidden = !hasItems;
+        continue;
+      }
+
+      root.hidden = true;
     }
   } catch (_) {
     for (const root of roots) {
       const list = root.querySelector(".category-nav-list");
       if (list) list.innerHTML = `<div class="category-nav-empty">カテゴリー一覧の読み込みに失敗しました。</div>`;
-      root.hidden = false;
+      const isHomeSidebar = root.id === "categoryNav" && document.body.classList.contains("home-page");
+      root.hidden = !isHomeSidebar;
     }
   }
 }
@@ -1222,17 +1231,23 @@ function wireHeaderMenu() {
 
   const closeMenu = () => {
     categoryPanel.classList.remove("is-mobile-drawer-open");
+    categoryPanel.hidden = true;
     applyButtonState(false);
     updatePanelPosition();
     syncHeaderOffset();
   };
 
   const toggleMenu = () => {
-    ensureCategoryNavsRendered().catch(() => {});
-    const isOpen = categoryPanel.classList.toggle("is-mobile-drawer-open");
-    applyButtonState(isOpen);
-    updatePanelPosition();
-    syncHeaderOffset();
+    const openMenu = () => {
+      categoryPanel.hidden = false;
+      const isOpen = categoryPanel.classList.toggle("is-mobile-drawer-open");
+      if (!isOpen) categoryPanel.hidden = true;
+      applyButtonState(isOpen);
+      updatePanelPosition();
+      syncHeaderOffset();
+    };
+
+    ensureCategoryNavsRendered().then(openMenu).catch(openMenu);
   };
 
   button.dataset.menuWired = "1";
