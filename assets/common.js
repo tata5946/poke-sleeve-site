@@ -480,7 +480,9 @@ async function ensureCategoryNavsRendered() {
       const isHomeSidebar = root.id === "categoryNav" && document.body.classList.contains("home-page");
 
       if (isHeaderRoot) {
-        root.hidden = true;
+        if (!root.classList.contains("is-mobile-drawer-open")) {
+          root.hidden = true;
+        }
         continue;
       }
 
@@ -496,6 +498,13 @@ async function ensureCategoryNavsRendered() {
       const list = root.querySelector(".category-nav-list");
       if (list) list.innerHTML = `<div class="category-nav-empty">カテゴリー一覧の読み込みに失敗しました。</div>`;
       const isHomeSidebar = root.id === "categoryNav" && document.body.classList.contains("home-page");
+      const isHeaderRoot = root.id === "headerCategoryNav";
+      if (isHeaderRoot) {
+        if (!root.classList.contains("is-mobile-drawer-open")) {
+          root.hidden = true;
+        }
+        continue;
+      }
       root.hidden = !isHomeSidebar;
     }
   }
@@ -1238,16 +1247,14 @@ function wireHeaderMenu() {
   };
 
   const toggleMenu = () => {
-    const openMenu = () => {
-      categoryPanel.hidden = false;
-      const isOpen = categoryPanel.classList.toggle("is-mobile-drawer-open");
-      if (!isOpen) categoryPanel.hidden = true;
-      applyButtonState(isOpen);
-      updatePanelPosition();
-      syncHeaderOffset();
-    };
-
-    ensureCategoryNavsRendered().then(openMenu).catch(openMenu);
+    const isOpen = categoryPanel.classList.toggle("is-mobile-drawer-open");
+    categoryPanel.hidden = !isOpen;
+    applyButtonState(isOpen);
+    updatePanelPosition();
+    syncHeaderOffset();
+    if (isOpen) {
+      ensureCategoryNavsRendered().catch(() => {});
+    }
   };
 
   button.dataset.menuWired = "1";
