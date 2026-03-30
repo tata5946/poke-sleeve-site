@@ -2961,17 +2961,13 @@
         <span class="legend-item">◎ 最新観測データ</span>
       `;
     }
-
     function renderPriceFootnotes(mode) {
       const el = document.getElementById("chartFootnotes");
       if (!el) return;
       const lines = [
-        "※ 価格が有効な観測点のみを表示しています。",
-        "※ 観測がない期間は補完せず、取得できた点だけを結んでいます。"
+        "※過去データは買取価格も含めて補完しています。",
+        "長期トレンドを把握するための参考値として掲載しています。"
       ];
-      if (mode === "all") lines.unshift("※ 全期間は年次・月次・週次を1本の時系列として接続しています。");
-      if (mode === "monthly") lines.unshift("※ 月次タブは monthlyPrices のみを表示しています。");
-      if (mode === "3m") lines.unshift("※ 直近3か月タブは weeklyPrices のうち直近約3か月分を表示しています。");
       el.innerHTML = lines.map((line) => `<div>${escapeHtml(line)}</div>`).join("");
     }
 
@@ -3456,5 +3452,7 @@
 </body>
 
 </html>
+
+
 
 
