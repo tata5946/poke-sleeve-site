@@ -819,21 +819,26 @@
       const rawGroupParam = String(url.searchParams.get("group") || "").trim().toLowerCase();
       const rawTagParam = String(url.searchParams.get("tag") || "").trim();
       const rawTypeParam = String(url.searchParams.get("type") || "").trim();
+      const GROUP_ALIASES = {
+        character: "series",
+        other: "category"
+      };
       const GROUP_CONFIG = {
         pokemon: {
           label: "ポケモン",
           description: "category1〜3 に値があるスリーブを表示しています。"
         },
-        character: {
-          label: "キャラクター",
-          description: "category4〜5 に値があるスリーブを表示しています。"
+        series: {
+          label: "シリーズ",
+          description: "category4〜6 に値があるスリーブを表示しています。"
         },
-        other: {
-          label: "その他",
-          description: "category6〜9 に値があるスリーブを表示しています。"
+        category: {
+          label: "カテゴリー",
+          description: "category7〜9 に値があるスリーブを表示しています。"
         }
       };
-      let activeGroup = GROUP_CONFIG[rawGroupParam] ? rawGroupParam : "";
+      const normalizedGroupParam = GROUP_ALIASES[rawGroupParam] || rawGroupParam;
+      let activeGroup = GROUP_CONFIG[normalizedGroupParam] ? normalizedGroupParam : "";
       let activeTag = rawTagParam;
       let activeType = rawTypeParam;
       if (qParam) searchInput.value = qParam;
@@ -855,8 +860,8 @@
         }
         const fallbackGroups = {
           pokemon: ["category1", "category2", "category3"],
-          character: ["category4", "category5"],
-          other: ["category6", "category7", "category8", "category9"]
+          series: ["category4", "category5", "category6"],
+          category: ["category7", "category8", "category9"]
         };
         const keys = fallbackGroups[activeGroup] || [];
         return keys.some((key) => String(sleeve?.[key] ?? "").trim());

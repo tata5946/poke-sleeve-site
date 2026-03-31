@@ -243,10 +243,11 @@ function uniq(arr) {
 
 const SLEEVE_CATEGORY_FIELD_GROUPS = {
   pokemon: ["category1", "category2", "category3"],
-  trainer: ["category4", "category5"],
-  category: ["category6", "category7", "category8", "category9"],
-  character: ["category4", "category5"],
-  other: ["category6", "category7", "category8", "category9"]
+  trainer: ["category4", "category5", "category6"],
+  series: ["category4", "category5", "category6"],
+  category: ["category7", "category8", "category9"],
+  character: ["category4", "category5", "category6"],
+  other: ["category7", "category8", "category9"]
 };
 
 function normalizeSleeveTextValue(value) {
@@ -283,8 +284,8 @@ function countSleevesByGroup(sleeves) {
   const list = Array.isArray(sleeves) ? sleeves : [];
   return {
     pokemon: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "pokemon") ? 1 : 0), 0),
-    character: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "character") ? 1 : 0), 0),
-    other: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "other") ? 1 : 0), 0)
+    series: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "series") ? 1 : 0), 0),
+    category: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "category") ? 1 : 0), 0)
   };
 }
 
@@ -377,8 +378,8 @@ function buildSleeveDetailHref(id) {
 function buildCategoryNavMarkup(sleeves) {
   const configs = [
     { key: "pokemon", label: "ポケモン" },
-    { key: "character", label: "キャラクター" },
-    { key: "other", label: "その他" }
+    { key: "series", label: "シリーズ" },
+    { key: "category", label: "カテゴリー" }
   ];
   const counts = countSleevesByGroup(sleeves);
   const items = configs

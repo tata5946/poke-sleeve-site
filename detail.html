@@ -1429,8 +1429,8 @@
 
       return [
         { label: "ポケモン", values: read(["category1", "category2", "category3"]) },
-        { label: "シリーズ", values: read(["category4", "category5"]) },
-        { label: "カテゴリー", values: read(["category6", "category7", "category8", "category9"]) }
+        { label: "シリーズ", values: read(["category4", "category5", "category6"]) },
+        { label: "カテゴリー", values: read(["category7", "category8", "category9"]) }
       ];
     }
 
@@ -1460,10 +1460,10 @@
         addChip(value, "pokemon", "pokemon");
       }
       for (const value of seriesGroup?.values || []) {
-        addChip(value, "series", "character");
+        addChip(value, "series", "series");
       }
       for (const value of categoryGroup?.values || []) {
-        addChip(value, "category", "other");
+        addChip(value, "category", "category");
       }
 
       const uniqueChips = Array.from(new Set(chips));
