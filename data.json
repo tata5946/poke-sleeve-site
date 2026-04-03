@@ -757,6 +757,264 @@
                                          }
                     },
                     {
+                        "id":  "130088",
+                        "name":  "ポケモンセンターナゴヤ コイキング",
+                        "imageUrl":  "https://drive.google.com/thumbnail?id=1M0J30vxdKj6De21SAIpNyvwjzVEUMWqW\u0026sz=w1200",
+                        "releaseYear":  2015,
+                        "series":  "公式",
+                        "condition":  "未開封",
+                        "type":  "デッキシールド",
+                        "feature":  "デッキシールド",
+                        "acquisitionType":  "ポケモンセンターナゴヤ",
+                        "note":  "ポケモンセンターナゴヤ（旧）限定",
+                        "category1":  "コイキング",
+                        "category2":  "",
+                        "category3":  "",
+                        "category4":  "",
+                        "category5":  "",
+                        "category6":  "",
+                        "category7":  "32枚販売",
+                        "category8":  "限定デッキシールド",
+                        "category9":  "",
+                        "pokemonCategories":  [
+                                                  "コイキング"
+                                              ],
+                        "trainerCategories":  [
+
+                                              ],
+                        "categoryTags":  [
+                                             "32枚販売",
+                                             "限定デッキシールド"
+                                         ],
+                        "categories":  [
+                                           "コイキング",
+                                           "32枚販売",
+                                           "限定デッキシールド"
+                                       ],
+                        "weeklyPrices":  [
+                                             {
+                                                 "week":  "2025-01-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-02-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-03-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-04-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-05-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-06-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-07-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-08-01",
+                                                 "price":  18888,
+                                                 "count":  1
+                                             },
+                                             {
+                                                 "week":  "2025-09-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-10-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-11-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-12-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-01-05",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-01-12",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-01-19",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-01-26",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-02-02",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-02-09",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-02-16",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-02-23",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-03-02",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-03-09",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-03-16",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-03-23",
+                                                 "price":  null,
+                                                 "count":  0
+                                             }
+                                         ],
+                        "monthlyPrices":  [
+                                              {
+                                                  "month":  "2024-01-01",
+                                                  "price":  12500,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-02-01",
+                                                  "price":  12500,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-04-01",
+                                                  "price":  12500,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-05-01",
+                                                  "price":  10000,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-06-01",
+                                                  "price":  10500,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-07-01",
+                                                  "price":  10500,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-08-01",
+                                                  "price":  12500,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-10-01",
+                                                  "price":  15000,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2025-08-01",
+                                                  "price":  18888,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              }
+                                          ],
+                        "yearlyPrices":  [
+                                             {
+                                                 "year":  2024,
+                                                 "price":  12500,
+                                                 "count":  null
+                                             },
+                                             {
+                                                 "year":  2024,
+                                                 "price":  12500,
+                                                 "count":  null
+                                             },
+                                             {
+                                                 "year":  2025,
+                                                 "price":  18888,
+                                                 "count":  null
+                                             },
+                                             {
+                                                 "year":  2025,
+                                                 "price":  18888,
+                                                 "count":  null
+                                             }
+                                         ],
+                        "pricesByYear":  {
+                                             "2024":  12500,
+                                             "2025":  18888
+                                         }
+                    },
+                    {
                         "id":  "135151",
                         "name":  "メガゲンガー",
                         "imageUrl":  "https://drive.google.com/thumbnail?id=1seq8AUNf5hCQIC8jWAQRwpELA8PKdJrM\u0026sz=w1200",
@@ -1328,6 +1586,315 @@
                                              "2024":  3000,
                                              "2025":  5555,
                                              "2026":  5200
+                                         }
+                    },
+                    {
+                        "id":  "176932",
+                        "name":  "TC~XY Heroine~",
+                        "imageUrl":  "https://drive.google.com/thumbnail?id=1z7JFYT03PxCPBYidUSBwom22rCUQr57n\u0026sz=w1200",
+                        "releaseYear":  2015,
+                        "series":  "公式",
+                        "condition":  "未開封",
+                        "type":  "デッキシールド",
+                        "feature":  "デッキシールド",
+                        "acquisitionType":  "ポケモンセンター",
+                        "note":  "",
+                        "category1":  "ブニャット",
+                        "category2":  "アチャモ",
+                        "category3":  "パチリス",
+                        "category4":  "セレナ",
+                        "category5":  "",
+                        "category6":  "",
+                        "category7":  "32枚販売",
+                        "category8":  "",
+                        "category9":  "",
+                        "pokemonCategories":  [
+                                                  "ブニャット",
+                                                  "アチャモ",
+                                                  "パチリス"
+                                              ],
+                        "trainerCategories":  [
+                                                  "セレナ"
+                                              ],
+                        "categoryTags":  [
+                                             "32枚販売"
+                                         ],
+                        "categories":  [
+                                           "ブニャット",
+                                           "アチャモ",
+                                           "パチリス",
+                                           "セレナ",
+                                           "32枚販売"
+                                       ],
+                        "weeklyPrices":  [
+                                             {
+                                                 "week":  "2025-01-01",
+                                                 "price":  4333,
+                                                 "count":  1
+                                             },
+                                             {
+                                                 "week":  "2025-02-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-03-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-04-01",
+                                                 "price":  4000,
+                                                 "count":  1
+                                             },
+                                             {
+                                                 "week":  "2025-05-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-06-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-07-01",
+                                                 "price":  4444,
+                                                 "count":  1
+                                             },
+                                             {
+                                                 "week":  "2025-08-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-09-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-10-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2025-11-01",
+                                                 "price":  4625,
+                                                 "count":  2
+                                             },
+                                             {
+                                                 "week":  "2025-12-01",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-01-05",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-01-12",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-01-19",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-01-26",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-02-02",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-02-09",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-02-16",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-02-23",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-03-02",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-03-09",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-03-16",
+                                                 "price":  null,
+                                                 "count":  0
+                                             },
+                                             {
+                                                 "week":  "2026-03-23",
+                                                 "price":  null,
+                                                 "count":  0
+                                             }
+                                         ],
+                        "monthlyPrices":  [
+                                              {
+                                                  "month":  "2024-01-01",
+                                                  "price":  5500,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-02-01",
+                                                  "price":  5000,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-04-01",
+                                                  "price":  3750,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-05-01",
+                                                  "price":  4000,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-06-01",
+                                                  "price":  3500,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-07-01",
+                                                  "price":  3500,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-08-01",
+                                                  "price":  3500,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-09-01",
+                                                  "price":  3000,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-10-01",
+                                                  "price":  3000,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-11-01",
+                                                  "price":  2500,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2024-12-01",
+                                                  "price":  3000,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2025-01-01",
+                                                  "price":  4333,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2025-04-01",
+                                                  "price":  4000,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2025-07-01",
+                                                  "price":  4444,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              },
+                                              {
+                                                  "month":  "2025-11-01",
+                                                  "price":  4625,
+                                                  "count":  null,
+                                                  "source":  "",
+                                                  "shop":  "",
+                                                  "note":  ""
+                                              }
+                                          ],
+                        "yearlyPrices":  [
+                                             {
+                                                 "year":  2024,
+                                                 "price":  3500,
+                                                 "count":  null
+                                             },
+                                             {
+                                                 "year":  2024,
+                                                 "price":  3500,
+                                                 "count":  null
+                                             },
+                                             {
+                                                 "year":  2025,
+                                                 "price":  4444,
+                                                 "count":  null
+                                             },
+                                             {
+                                                 "year":  2025,
+                                                 "price":  4444,
+                                                 "count":  null
+                                             }
+                                         ],
+                        "pricesByYear":  {
+                                             "2024":  3500,
+                                             "2025":  4444
                                          }
                     },
                     {
