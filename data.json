@@ -5359,6 +5359,96 @@
                                          }
                     },
                     {
+                        "monthlyPrices":  [
+
+                                          ],
+                        "trainerCategories":  [
+                                                  "ポケモンセンタートウキョーDX"
+                                              ],
+                        "condition":  "未開封",
+                        "pokemonCategories":  [
+
+                                              ],
+                        "category8":  "",
+                        "category3":  "",
+                        "pricesByYear":  {
+
+                                         },
+                        "series":  "公式",
+                        "category7":  "",
+                        "imageUrl":  "",
+                        "yearlyPrices":  [
+
+                                         ],
+                        "category2":  "",
+                        "categories":  [
+                                           "ポケモンセンタートウキョーDX"
+                                       ],
+                        "type":  "デッキシールド",
+                        "acquisitionType":  "ポケモンセンタートウキョーDX",
+                        "feature":  "デッキシールド",
+                        "id":  "2018003",
+                        "weeklyPrices":  [
+
+                                         ],
+                        "category6":  "",
+                        "category1":  "",
+                        "categoryTags":  [
+
+                                         ],
+                        "category5":  "",
+                        "category9":  "",
+                        "name":  "ポケモンセンタートウキョーDX",
+                        "releaseYear":  2018,
+                        "category4":  "ポケモンセンタートウキョーDX",
+                        "note":  ""
+                    },
+                    {
+                        "monthlyPrices":  [
+
+                                          ],
+                        "trainerCategories":  [
+                                                  "ポケモンセンターヨコハマ"
+                                              ],
+                        "condition":  "未開封",
+                        "pokemonCategories":  [
+
+                                              ],
+                        "category8":  "",
+                        "category3":  "",
+                        "pricesByYear":  {
+
+                                         },
+                        "series":  "公式",
+                        "category7":  "",
+                        "imageUrl":  "",
+                        "yearlyPrices":  [
+
+                                         ],
+                        "category2":  "",
+                        "categories":  [
+                                           "ポケモンセンターヨコハマ"
+                                       ],
+                        "type":  "デッキシールド",
+                        "acquisitionType":  "ポケモンセンターヨコハマ",
+                        "feature":  "デッキシールド",
+                        "id":  "2018004",
+                        "weeklyPrices":  [
+
+                                         ],
+                        "category6":  "",
+                        "category1":  "",
+                        "categoryTags":  [
+
+                                         ],
+                        "category5":  "",
+                        "category9":  "",
+                        "name":  "ポケモンセンターヨコハマ",
+                        "releaseYear":  2018,
+                        "category4":  "ポケモンセンターヨコハマ",
+                        "note":  ""
+                    },
+                    {
                         "id":  "2020001",
                         "name":  "あばれる君デザイン オリジナルデッキシールド",
                         "imageUrl":  "https://drive.google.com/thumbnail?id=1oVuN94gmR_RO9S2wSv59GLVzKf4K2Lap\u0026sz=w1200",
@@ -5529,6 +5619,51 @@
                         "pricesByYear":  {
                                              "2025":  63000
                                          }
+                    },
+                    {
+                        "monthlyPrices":  [
+
+                                          ],
+                        "trainerCategories":  [
+                                                  "ポケモンセンターカナザワ"
+                                              ],
+                        "condition":  "未開封",
+                        "pokemonCategories":  [
+
+                                              ],
+                        "category8":  "",
+                        "category3":  "",
+                        "pricesByYear":  {
+
+                                         },
+                        "series":  "公式",
+                        "category7":  "",
+                        "imageUrl":  "",
+                        "yearlyPrices":  [
+
+                                         ],
+                        "category2":  "",
+                        "categories":  [
+                                           "ポケモンセンターカナザワ"
+                                       ],
+                        "type":  "デッキシールド",
+                        "acquisitionType":  "ポケモンセンターカナザワ",
+                        "feature":  "デッキシールド",
+                        "id":  "2020002",
+                        "weeklyPrices":  [
+
+                                         ],
+                        "category6":  "",
+                        "category1":  "",
+                        "categoryTags":  [
+
+                                         ],
+                        "category5":  "",
+                        "category9":  "",
+                        "name":  "ポケモンセンターカナザワ",
+                        "releaseYear":  2020,
+                        "category4":  "ポケモンセンターカナザワ",
+                        "note":  ""
                     },
                     {
                         "id":  "226231",
