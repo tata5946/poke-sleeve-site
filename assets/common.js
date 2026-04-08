@@ -11,8 +11,8 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbziDNX6nOuoYk8CQ3geI_89
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
 const LOCAL_DATA_URL = "./data.json";
-const DATA_CACHE_KEY = "pokeSleeve:dataCache:v5";
-const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v5";
+const DATA_CACHE_KEY = "pokeSleeve:dataCache:v6";
+const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v6";
 const DATA_CACHE_TTL_MS = 5 * 60 * 1000;
 const DATA_STALE_MAX_MS = 24 * 60 * 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
@@ -25,6 +25,20 @@ let __dataCachePromise = null;
 let __sleeveFeedbackWired = false;
 let __headerOffsetWired = false;
 let __autocompleteIndexPromise = null;
+
+function countUsableSleeves(data) {
+  if (!Array.isArray(data?.sleeves)) return 0;
+  return data.sleeves.filter((sleeve) => {
+    if (!sleeve || typeof sleeve !== "object") return false;
+    const id = String(sleeve.id ?? "").trim();
+    const name = String(sleeve.name ?? "").trim();
+    return !!(id || name);
+  }).length;
+}
+
+function isUsableDataPayload(data) {
+  return countUsableSleeves(data) > 1;
+}
 
 function initGoogleAnalytics() {
   if (!GA_MEASUREMENT_ID || typeof document === "undefined") return;
@@ -1062,23 +1076,34 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000, cacheMode = "defau
 
 async function fetchPrimaryData() {
   const sources = [
-    { url: GAS_URL, timeoutMs: 12000, cacheMode: "default" },
-    { url: LOCAL_DATA_URL, timeoutMs: 2500, cacheMode: "reload" }
+    { url: LOCAL_DATA_URL, timeoutMs: 2500, cacheMode: "reload" },
+    { url: GAS_URL, timeoutMs: 12000, cacheMode: "default" }
   ];
 
   let lastError = null;
+  let bestData = null;
+  let bestCount = -1;
   for (const source of sources) {
     const resolvedUrl = new URL(source.url, document.baseURI || location.href).href;
     try {
-      return await fetchJsonWithTimeout(resolvedUrl, {
+      const data = await fetchJsonWithTimeout(resolvedUrl, {
         timeoutMs: source.timeoutMs,
         cacheMode: source.cacheMode
       });
+      const usableSleeveCount = countUsableSleeves(data);
+      if (usableSleeveCount > bestCount) {
+        bestData = data;
+        bestCount = usableSleeveCount;
+      }
+      if (isUsableDataPayload(data)) {
+        return data;
+      }
     } catch (error) {
       lastError = error;
     }
   }
 
+  if (bestData) return bestData;
   throw lastError || new Error("データ取得に失敗しました");
 }
 
@@ -1114,6 +1139,7 @@ function readSessionCache() {
   const entry = readSessionCacheEntry();
   if (!entry) return null;
   if ((Date.now() - entry.cachedAt) > DATA_CACHE_TTL_MS) return null;
+  if (!isUsableDataPayload(entry.data)) return null;
   return entry.data ?? null;
 }
 
@@ -1121,6 +1147,7 @@ function readPersistentCache() {
   const entry = readPersistentCacheEntry();
   if (!entry) return null;
   if ((Date.now() - entry.cachedAt) > DATA_CACHE_TTL_MS) return null;
+  if (!isUsableDataPayload(entry.data)) return null;
   return entry.data ?? null;
 }
 
