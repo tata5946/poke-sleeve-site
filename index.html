@@ -1732,7 +1732,6 @@
     function get30dGrowth(sleeve, latestWeek = null) {
       const pair = getWeeklyPair(sleeve);
       if (!pair) return null;
-      if (latestWeek && pair.latest.week !== latestWeek) return null;
       const base = getPriceAtOrBefore(pair.sorted, addDays(pair.latest.week, -30));
       if (!base || !Number.isFinite(base.price) || base.price === 0) return null;
       const diff = pair.latest.price - base.price;

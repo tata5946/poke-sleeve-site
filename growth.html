@@ -825,7 +825,6 @@
       const sorted = getWeeklySortedTrades(sleeve);
       const latest = getLatestTrade(sorted);
       if (!latest) return null;
-      if (latestWeek && latest.week !== latestWeek) return null;
 
       const targetISO = addDays(latest.week, -days);
       if (!targetISO) return null;
