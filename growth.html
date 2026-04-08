@@ -918,8 +918,6 @@
       const top2 = document.getElementById("top2");
       const top3Card = document.getElementById("top3Card");
       const restSection = document.getElementById("restSection");
-      const searchInput = document.getElementById("search");
-
       const metricSel = document.getElementById("metric");
       const daysSel = document.getElementById("days");
       const releaseYearSel = document.getElementById("releaseYear");
@@ -938,7 +936,7 @@
         return null;
       };
 
-      const sEl = searchInput || await waitForSearch();
+      const sEl = await waitForSearch();
       if (!sEl) {
         showError("検索バーが見つかりません（header読み込みに失敗している可能性があります）");
         return;
@@ -982,7 +980,6 @@
       }
 
       function render() {
-        const kw = sEl.value.trim().toLowerCase();
         const metric = metricSel.value;
         const days = Number(daysSel.value || "30");
         const releaseYear = releaseYearSel.value;
@@ -999,7 +996,6 @@
 
         const rows = [];
         for (const s of sleeves) {
-          if (kw && !String(s.name || "").toLowerCase().includes(kw)) continue;
           if (releaseYear && String(s.releaseYear ?? "") !== releaseYear) continue;
           if (series && String(s.series || "") !== series) continue;
 
@@ -1065,12 +1061,6 @@
       }
 
       // events
-      let t = null;
-      sEl.addEventListener("input", () => {
-        clearTimeout(t);
-        t = setTimeout(render, 80);
-      });
-
       metricSel.addEventListener("change", render);
       daysSel.addEventListener("change", render);
       releaseYearSel.addEventListener("change", render);
@@ -1078,7 +1068,6 @@
       minRateSel.addEventListener("change", render);
 
       clearBtn.addEventListener("click", () => {
-        sEl.value = "";
         metricSel.value = "rateDesc";
         daysSel.value = "30";
         releaseYearSel.value = "";

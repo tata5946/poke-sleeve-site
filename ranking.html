@@ -1026,7 +1026,6 @@
       const top2 = document.getElementById("top2");
       const top3Card = document.getElementById("top3Card");
       const restSection = document.getElementById("restSection");
-      const searchInput = document.getElementById("search");
       const releaseYearSel = document.getElementById("releaseYear");
       const seriesSel = document.getElementById("series");
       const priceBandSel = document.getElementById("priceBand");
@@ -1098,7 +1097,6 @@
       }
 
       function render() {
-        const kw = (searchInput ? searchInput.value : "").trim().toLowerCase();
         const releaseYear = releaseYearSel.value;
         const series = seriesSel.value;
         const band = parseBand(priceBandSel.value);
@@ -1112,7 +1110,6 @@
         renderActiveFilters();
         const rows = [];
         for (const s of sleeves) {
-          if (kw && !String(s.name || "").toLowerCase().includes(kw)) continue;
           if (releaseYear && String(s.releaseYear ?? "") !== releaseYear) continue;
           if (series && String(s.series || "") !== series) continue;
 
@@ -1169,20 +1166,11 @@
         list.appendChild(frag);
       }
 
-      let t = null;
-      if (searchInput) {
-        searchInput.addEventListener("input", () => {
-          clearTimeout(t);
-          t = setTimeout(render, 80);
-        });
-      }
-
       releaseYearSel.addEventListener("change", render);
       seriesSel.addEventListener("change", render);
       priceBandSel.addEventListener("change", render);
 
       clearBtn.addEventListener("click", () => {
-        if (searchInput) searchInput.value = "";
         releaseYearSel.value = "";
         seriesSel.value = "";
         priceBandSel.value = "";

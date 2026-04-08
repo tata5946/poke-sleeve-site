@@ -796,8 +796,6 @@
       const top2 = document.getElementById("top2");
       const top3Card = document.getElementById("top3Card");
       const restSection = document.getElementById("restSection");
-      const searchInput = document.getElementById("search"); // header側にある想定
-
       const metricSel = document.getElementById("metric");
       const releaseYearSel = document.getElementById("releaseYear");
       const seriesSel = document.getElementById("series");
@@ -843,7 +841,6 @@
       }
 
       function render() {
-        const kw = (searchInput ? searchInput.value : "").trim().toLowerCase();
         const metric = metricSel.value;
         const releaseYear = releaseYearSel.value;
         const series = seriesSel.value;
@@ -859,7 +856,6 @@
 
         const rows = [];
         for (const s of sleeves) {
-          if (kw && !String(s.name || "").toLowerCase().includes(kw)) continue;
           if (releaseYear && String(s.releaseYear ?? "") !== releaseYear) continue;
           if (series && String(s.series || "") !== series) continue;
 
@@ -921,21 +917,12 @@
       }
 
       // events
-      let t = null;
-      if (searchInput) {
-        searchInput.addEventListener("input", () => {
-          clearTimeout(t);
-          t = setTimeout(render, 80);
-        });
-      }
-
       metricSel.addEventListener("change", render);
       releaseYearSel.addEventListener("change", render);
       seriesSel.addEventListener("change", render);
       minDiffSel.addEventListener("change", render);
 
       clearBtn.addEventListener("click", () => {
-        if (searchInput) searchInput.value = "";
         metricSel.value = "diffDesc";
         releaseYearSel.value = "";
         seriesSel.value = "";
