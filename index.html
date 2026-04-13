@@ -3087,21 +3087,21 @@
       const avgDelta = Number.isFinite(stats.latestIndex?.rate) ? (stats.latestIndex.rate / 5) : 0;
       el.innerHTML = `
         <div class="kpi-card">
-          <p class="kpi-label">24時間出来高</p>
+          <p class="kpi-label">最新週の取引総額</p>
           <div class="kpi-value-row">
             <div class="kpi-value">¥${escapeHtml((stats.tradeValue / 1000000).toFixed(2))}M</div>
             <span class="kpi-change">+${escapeHtml((Math.max(0.4, listingDelta / 10)).toFixed(1))}%</span>
           </div>
         </div>
         <div class="kpi-card">
-          <p class="kpi-label">新規出品数</p>
+          <p class="kpi-label">取引件数</p>
           <div class="kpi-value-row">
             <div class="kpi-value">${escapeHtml(stats.activeCount.toLocaleString())}</div>
             <span class="kpi-change">+${escapeHtml(String(listingDelta))}%</span>
           </div>
         </div>
         <div class="kpi-card">
-          <p class="kpi-label">平均成約価格</p>
+          <p class="kpi-label">最新週の平均成約価格</p>
           <div class="kpi-value-row">
             <div class="kpi-value">¥${escapeHtml(Math.round(stats.avgPrice).toLocaleString())}</div>
             <span class="kpi-change ${avgDelta < 0 ? "down" : ""}">${escapeHtml(formatPercent(avgDelta))}</span>
