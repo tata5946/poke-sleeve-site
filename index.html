@@ -2033,6 +2033,64 @@
       text-align: center;
       font-size: 18px;
     }
+    .sidebar-category-shell[hidden] {
+      display: none;
+    }
+    .sidebar-category-toggle {
+      width: 100%;
+      justify-content: space-between;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+    .sidebar-category-toggle:hover {
+      transform: none;
+    }
+    .sidebar-category-toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .sidebar-category-caret {
+      font-size: 18px;
+      line-height: 1;
+      color: #94a3b8;
+      transition: transform .18s ease, color .18s ease;
+    }
+    .sidebar-category-shell.is-open .sidebar-category-toggle {
+      background: rgba(255,255,255,.9);
+      color: #111827;
+      box-shadow: inset -3px 0 0 #111827, 0 10px 24px rgba(15, 23, 42, 0.06);
+    }
+    .sidebar-category-shell.is-open .sidebar-category-caret {
+      color: #111827;
+      transform: rotate(90deg);
+    }
+    .sidebar-category-panel {
+      display: none;
+      min-height: 0;
+      margin-top: 10px;
+      padding: 16px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    }
+    .sidebar-category-shell.is-open .sidebar-category-panel {
+      display: grid;
+    }
+    .sidebar-category-panel .category-nav-list {
+      gap: 14px;
+    }
+    .sidebar-category-panel .category-nav-item {
+      gap: 6px;
+    }
+    .sidebar-category-panel .category-nav-link {
+      min-height: 40px;
+    }
+    .sidebar-category-panel .category-flyout-link {
+      min-height: 30px;
+      padding-left: 10px;
+    }
     .sidebar-primary {
       display: inline-flex;
       align-items: center;
@@ -2673,7 +2731,22 @@
           <a class="sidebar-link" href="./surge.html"><span class="sidebar-link-icon" aria-hidden="true">⚡</span><span>急上昇</span></a>
         </nav>
 
-      <a class="sidebar-primary" href="./sleeves/"><span aria-hidden="true">＋</span><span>新しい資産を追加</span></a>
+        <div id="sidebarCategoryShell" class="sidebar-category-shell" hidden>
+          <button type="button" class="sidebar-link sidebar-category-toggle" id="sidebarCategoryToggle" aria-expanded="false" aria-controls="categoryNav">
+            <span class="sidebar-category-toggle-label">
+              <span class="sidebar-link-icon" aria-hidden="true">☰</span>
+              <span>スリーブカテゴリ</span>
+            </span>
+            <span class="sidebar-category-caret" aria-hidden="true">›</span>
+          </button>
+          <aside id="categoryNav" class="category-nav sidebar-category-panel" data-category-nav aria-label="スリーブカテゴリ一覧">
+            <div class="category-nav-list">
+              <div class="category-nav-empty skeleton-block" style="min-height: 128px;"></div>
+            </div>
+          </aside>
+        </div>
+
+        <a class="sidebar-primary" href="./sleeves/"><span aria-hidden="true">＋</span><span>新しい資産を追加</span></a>
 
       <div class="sidebar-account">
         <div class="sidebar-account-avatar" aria-hidden="true">🗃️</div>
@@ -3869,6 +3942,45 @@
       });
     }
 
+    function wireSidebarCategoryToggle() {
+      const shell = document.getElementById("sidebarCategoryShell");
+      const button = document.getElementById("sidebarCategoryToggle");
+      const panel = document.getElementById("categoryNav");
+      const list = panel ? panel.querySelector(".category-nav-list") : null;
+      if (!shell || !button || !panel || !list || button.dataset.sidebarCategoryWired === "1") return;
+      button.dataset.sidebarCategoryWired = "1";
+
+      const setOpen = (open) => {
+        shell.classList.toggle("is-open", open);
+        button.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+
+      const syncVisibility = () => {
+        const hasItems = !!list.querySelector(".category-nav-item");
+        shell.hidden = !hasItems;
+        if (!hasItems) setOpen(false);
+      };
+
+      button.addEventListener("click", () => {
+        if (shell.hidden) return;
+        setOpen(!shell.classList.contains("is-open"));
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!(event.target instanceof Node)) return;
+        if (shell.contains(event.target)) return;
+        setOpen(false);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setOpen(false);
+      });
+
+      const observer = new MutationObserver(syncVisibility);
+      observer.observe(list, { childList: true, subtree: true });
+      syncVisibility();
+    }
+
     async function waitForHeaderSearch() {
       for (let i = 0; i < 20; i++) {
         const input = document.getElementById("search");
@@ -3887,6 +3999,10 @@
       wireDashboardSearch();
       const data = await window.common.loadData();
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
+      if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
+        await window.common.ensureCategoryNavsRendered(sleeves);
+      }
+      wireSidebarCategoryToggle();
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
 
       const priceRank = sleeves.map((s) => ({ s, price: getLatestWeeklyPrice(s) })).filter((row) => row.price != null).sort((a, b) => b.price - a.price).slice(0, 10).map((row) => row.s);
