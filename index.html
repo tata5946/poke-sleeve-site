@@ -2688,7 +2688,7 @@
       <header class="dashboard-topbar">
         <div class="topbar-search">
           <span class="topbar-search-icon" aria-hidden="true">⌕</span>
-          <input class="topbar-search-input" type="search" placeholder="資産、銘柄、またはトレンドを検索..." />
+          <input id="dashboardSearchInput" class="topbar-search-input" type="search" placeholder="スリーブを検索..." autocomplete="off" />
         </div>
         <nav class="topbar-tabs" aria-label="上部メニュー">
           <a class="topbar-tab is-active" href="./index.html">ダッシュボード</a>
@@ -3841,10 +3841,32 @@
       window.setTimeout(task, 32);
     }
 
-    function syncHeaderSearch(heroSearchInput) {
-      const headerSearch = document.getElementById("search");
-      if (!headerSearch || !heroSearchInput) return;
-      heroSearchInput.addEventListener("input", () => { headerSearch.value = heroSearchInput.value; });
+    function wireDashboardSearch() {
+      const input = document.getElementById("dashboardSearchInput");
+      if (!input || input.dataset.dashboardSearchWired === "1") return;
+      input.dataset.dashboardSearchWired = "1";
+
+      if (window.common && typeof window.common.wireSleeveAutocomplete === "function") {
+        window.common.wireSleeveAutocomplete(input, {
+          minChars: 1,
+          maxItems: 8,
+          anchorEl: input.closest(".topbar-search")
+        });
+      }
+
+      input.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") return;
+        if (event.defaultPrevented) return;
+        const q = input.value.trim();
+        if (window.common && typeof window.common.recordSearchHistory === "function") {
+          window.common.recordSearchHistory(q);
+        }
+        if (!q) {
+          location.href = "./sleeves/";
+          return;
+        }
+        location.href = "./sleeves/?q=" + encodeURIComponent(q);
+      });
     }
 
     async function waitForHeaderSearch() {
@@ -3862,6 +3884,7 @@
       if (!(window.common && typeof window.common.loadData === "function")) {
         throw new Error("共通データローダーの初期化に失敗しました。");
       }
+      wireDashboardSearch();
       const data = await window.common.loadData();
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
