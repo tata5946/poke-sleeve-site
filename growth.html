@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 
 <head>
@@ -56,9 +56,10 @@
     .ranking-filter-head {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       gap: 10px;
       margin-bottom: 8px;
+      flex-wrap: wrap;
     }
 
     .ranking-filter-title {
@@ -67,6 +68,16 @@
       color: #344054;
       font-weight: 900;
       letter-spacing: .04em;
+    }
+
+    .ranking-filter-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: #667085;
+      font-weight: 700;
     }
 
     .ranking-filter-grid {
@@ -494,6 +505,10 @@
       <section class="ranking-filter-card" aria-label="フィルタバー">
         <div class="ranking-filter-head">
           <h2 class="ranking-filter-title">絞り込み</h2>
+          <div class="ranking-filter-meta">
+            <span id="updatedAt">最新週を確認中</span>
+            <span id="countInfo">0件</span>
+          </div>
         </div>
 
         <div id="error" class="error"></div>
@@ -959,7 +974,7 @@
       try {
         if (latestWeek) {
           const u = document.getElementById("updatedAt");
-          u.textContent = `${latestWeek}（週次）`;
+          if (u) u.textContent = `最新認識週: ${latestWeek}`;
         }
       } catch (_) { }
 
@@ -1026,7 +1041,7 @@
         });
 
         const c = document.getElementById("countInfo");
-        if (c) c.textContent = `${rows.length.toLocaleString()}件（${days}日比較）`;
+        if (c) c.textContent = `${rows.length.toLocaleString()}件 / ${latestWeek ? `${latestWeek}週基準` : "最新週不明"} / ${days}日比較`;
 
         if (rows.length === 0) {
           list.innerHTML = `<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>`;
