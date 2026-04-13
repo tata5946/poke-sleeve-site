@@ -1514,13 +1514,17 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 4px 2px 12px;
+      padding: 4px 2px 10px;
     }
     .market-appbar-brand {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       min-width: 0;
+    }
+    .market-appbar-copy {
+      display: grid;
+      gap: 4px;
     }
     .market-appbar-menu {
       display: inline-flex;
@@ -1540,21 +1544,42 @@
       letter-spacing: -.04em;
       color: #111827;
     }
+    .market-appbar-sub {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #64748b;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+    .market-live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #10b981;
+      box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.14);
+    }
     .market-appbar-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
       display: grid;
       place-items: center;
       color: #fff;
-      background: linear-gradient(135deg, #0f766e, #1f2937);
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
+      background: linear-gradient(135deg, #0f766e, #1e293b);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.14);
       font-size: 24px;
     }
     .market-index-card {
-      padding: 18px;
+      padding: 20px;
       display: grid;
-      gap: 18px;
+      gap: 16px;
+      background:
+        radial-gradient(circle at top right, rgba(110, 231, 183, 0.16), transparent 28%),
+        linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+      box-shadow: 0 18px 44px rgba(15, 23, 42, 0.07);
     }
     .market-overview-link {
       display: grid;
@@ -1590,8 +1615,8 @@
     .market-index-change {
       min-width: 86px;
       padding: 10px 12px;
-      border-radius: 6px;
-      background: #6ee7b7;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #86efac, #6ee7b7);
       color: #047857;
       font-family: "Inter", sans-serif;
       font-size: 14px;
@@ -1611,20 +1636,10 @@
       padding: 8px 0 0;
       border-bottom: 1px solid #eef2f7;
     }
-    .market-bars {
+    .market-sparkline {
+      width: 100%;
       height: 100%;
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 6px;
-      align-items: end;
-    }
-    .market-bar {
-      border-radius: 0;
-      background: #d1fae5;
-      min-height: 28%;
-    }
-    .market-bar.is-active {
-      background: #6ee7b7;
+      display: block;
     }
     .market-index-meta {
       display: flex;
@@ -1640,23 +1655,31 @@
     .quick-actions {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
+      gap: 12px;
     }
     .quick-action {
-      padding: 16px 8px 14px;
-      border-radius: 10px;
-      background: linear-gradient(180deg, #eef2f7 0%, #e9edf3 100%);
+      padding: 14px 10px 12px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #f1f4f8 0%, #e8edf4 100%);
       display: grid;
       gap: 10px;
       place-items: center;
       text-align: center;
       color: #111827;
       text-decoration: none;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.75), 0 8px 18px rgba(15, 23, 42, 0.05);
     }
     .quick-action-icon {
-      font-size: 24px;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
       line-height: 1;
+      color: #0f172a;
+      background: rgba(255,255,255,.78);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
     }
     .quick-action-label {
       font-size: 11px;
@@ -1686,10 +1709,10 @@
       grid-template-columns: 72px minmax(0, 1fr) auto;
       gap: 14px;
       align-items: center;
-      padding: 14px;
-      border-radius: 14px;
+      padding: 14px 14px 14px 12px;
+      border-radius: 16px;
       background: #ffffff;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
       color: #111827;
       text-decoration: none;
     }
@@ -1714,6 +1737,7 @@
     }
     .ranking-tag {
       color: #dc2626;
+      letter-spacing: .14em;
     }
     .ranking-name {
       margin: 0;
@@ -1761,14 +1785,17 @@
     }
     .featured-card {
       padding: 18px;
-      border-radius: 8px;
-      background: linear-gradient(180deg, #18233c 0%, #1b2234 100%);
+      border-radius: 12px;
+      background:
+        radial-gradient(circle at top right, rgba(110, 231, 183, 0.08), transparent 32%),
+        linear-gradient(180deg, #162038 0%, #1b2234 100%);
       color: #ffffff;
       display: grid;
       grid-template-columns: 112px minmax(0, 1fr);
       gap: 16px;
       align-items: center;
       text-decoration: none;
+      box-shadow: 0 18px 36px rgba(15, 23, 42, 0.18);
     }
     .featured-media {
       min-height: 170px;
@@ -1838,15 +1865,14 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 42px;
+      min-height: 44px;
       padding: 0 16px;
-      border-radius: 4px;
+      border-radius: 8px;
       background: #ffffff;
       color: #111827;
       font-size: 14px;
       font-weight: 900;
       letter-spacing: .04em;
-      text-transform: uppercase;
     }
     .stats-grid {
       display: grid;
@@ -1912,6 +1938,9 @@
     .bottom-nav-link.is-active {
       color: #111827;
     }
+    .bottom-nav-link.is-active .bottom-nav-icon {
+      transform: translateY(-1px);
+    }
     .bottom-nav-icon {
       font-size: 24px;
       line-height: 1;
@@ -1946,7 +1975,10 @@
       <div class="market-appbar">
         <div class="market-appbar-brand">
           <span class="market-appbar-menu" aria-hidden="true">☰</span>
-          <h1 class="market-appbar-title">ポケスリ相場ナビ</h1>
+          <div class="market-appbar-copy">
+            <h1 class="market-appbar-title">ポケスリ相場ナビ</h1>
+            <span class="market-appbar-sub"><span class="market-live-dot" aria-hidden="true"></span>市場稼働中</span>
+          </div>
         </div>
         <div class="market-appbar-avatar" aria-hidden="true">🧑‍💼</div>
       </div>
@@ -1965,7 +1997,7 @@
 
       <section class="quick-actions" aria-label="ショートカット">
         <a class="quick-action" href="./sleeves/">
-          <span class="quick-action-icon" aria-hidden="true">🗂️</span>
+          <span class="quick-action-icon" aria-hidden="true">▣</span>
           <span class="quick-action-label">図鑑</span>
         </a>
         <a class="quick-action" href="./surge.html">
@@ -1973,7 +2005,7 @@
           <span class="quick-action-label">急騰</span>
         </a>
         <a class="quick-action" href="./ranking.html">
-          <span class="quick-action-icon" aria-hidden="true">💎</span>
+          <span class="quick-action-icon" aria-hidden="true">◇</span>
           <span class="quick-action-label">高額帯</span>
         </a>
         <a class="quick-action" href="./index-market.html">
@@ -1985,7 +2017,7 @@
       <section class="home-section" aria-label="最新ランキングTOP3">
         <div class="section-heading">
           <h2 class="home-section-title">最新ランキングTOP3</h2>
-          <a class="section-link" href="./ranking.html">View All</a>
+          <a class="section-link" href="./ranking.html">一覧を見る</a>
         </div>
         <div id="latestRankingList" class="ranking-list">
           <div class="ranking-card">
@@ -2999,15 +3031,11 @@
       }
       const latest = marketSeries[marketSeries.length - 1];
       const rateClass = getDeltaClass(latest.rate);
-      const recent = marketSeries.slice(-6);
+      const recent = marketSeries.slice(-8);
       const stats = buildMarketStats(Array.isArray(sleeves) ? sleeves : [], marketSeries);
-      const max = Math.max(...recent.map((row) => row.index));
-      const min = Math.min(...recent.map((row) => row.index));
-      const barsHtml = recent.map((row, index) => {
-        const ratio = max === min ? 0.64 : 0.32 + (((row.index - min) / (max - min)) * 0.58);
-        const activeClass = index === recent.length - 1 ? " is-active" : "";
-        return `<div class="market-bar${activeClass}" style="height:${escapeHtml(String((ratio * 100).toFixed(1)))}%"></div>`;
-      }).join("");
+      const values = recent.map((row) => row.index);
+      const linePoints = buildSparklinePoints(values, 320, 88);
+      const areaPoints = `${linePoints} 320,96 0,96`;
       const health = latest.rate >= 1 ? "強気" : latest.rate <= -1 ? "弱気" : "中立";
       el.innerHTML = `
         <a class="market-overview-link" href="./index-market.html">
@@ -3019,11 +3047,21 @@
             <div class="market-index-change ${escapeHtml(rateClass)}">${escapeHtml(formatPercent(latest.rate))}</div>
           </div>
           <div class="market-index-chart">
-            <div class="market-bars" aria-hidden="true">${barsHtml}</div>
+            <svg class="market-sparkline" viewBox="0 0 320 96" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="marketSparkFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#10b981" stop-opacity="0.28"></stop>
+                  <stop offset="100%" stop-color="#10b981" stop-opacity="0.03"></stop>
+                </linearGradient>
+              </defs>
+              <polygon fill="url(#marketSparkFill)" stroke="none" points="${escapeHtml(areaPoints)}"></polygon>
+              <polyline fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.22" points="${escapeHtml(linePoints)}"></polyline>
+              <polyline fill="none" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" points="${escapeHtml(linePoints)}"></polyline>
+            </svg>
           </div>
           <div class="market-index-meta">
             <div class="market-index-health">市場の地合い: <strong>${escapeHtml(health)}</strong></div>
-            <div>更新 ${escapeHtml(String(recent.length * 2))}分前</div>
+            <div>更新 2分前</div>
           </div>
         </a>
       `;
