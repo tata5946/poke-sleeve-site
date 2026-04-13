@@ -3723,38 +3723,17 @@
     function renderTrendLists({ surgeRank, growthRank, priceRank }) {
       const listEl = document.getElementById("moversTableBody");
       if (!listEl) return;
-      const rows = [];
-      if (surgeRank[0]) {
-        const rate = surgeRank[0].pair.prev?.price ? (surgeRank[0].diff / surgeRank[0].pair.prev.price) * 100 : null;
-        rows.push({
-          sleeve: surgeRank[0].s,
-          meta: "SM-P / Limited Release",
-          priceText: `¥${surgeRank[0].pair.latest.price.toLocaleString()}`,
+      const rows = surgeRank.slice(0, 3).map((row, index) => {
+        const rate = row.pair.prev?.price ? (row.diff / row.pair.prev.price) * 100 : null;
+        const badges = [`急上昇1位`, `急上昇2位`, `急上昇3位`];
+        return {
+          sleeve: row.s,
+          meta: badges[index] || "急上昇",
+          priceText: `¥${row.pair.latest.price.toLocaleString()}`,
           deltaText: formatPercent(rate),
           deltaClass: getDeltaClass(rate)
-        });
-      }
-      if (growthRank[0]) {
-        rows.push({
-          sleeve: growthRank[0].s,
-          meta: "Night-series / 2023",
-          priceText: `¥${growthRank[0].g.latest.price.toLocaleString()}`,
-          deltaText: formatPercent(growthRank[0].g.rate),
-          deltaClass: getDeltaClass(growthRank[0].g.rate)
-        });
-      }
-      if (priceRank[0]) {
-        const pair = getWeeklyPair(priceRank[0]);
-        const prevPrice = pair?.prev?.price ?? null;
-        const rate = prevPrice ? ((pair.latest.price - prevPrice) / prevPrice) * 100 : null;
-        rows.push({
-          sleeve: priceRank[0],
-          meta: "Core Edition / Genesis",
-          priceText: pair?.latest?.price == null ? "—" : `¥${pair.latest.price.toLocaleString()}`,
-          deltaText: formatPercent(rate),
-          deltaClass: getDeltaClass(rate)
-        });
-      }
+        };
+      });
       listEl.innerHTML = rows.map((row) => `
         <div class="movers-row">
           <a class="movers-main" href="${escapeHtml(getDetailHref(row.sleeve.id ?? ""))}">
