@@ -693,6 +693,7 @@
       for (const x of arr) {
         const weekISO = toISODate(x.week);
         if (!weekISO) continue;
+        if (String(weekISO).slice(-2) === "01") continue;
 
         const price = numOrNull(x.price);
         const count = numOrNull(x.count);
@@ -825,6 +826,7 @@
       const sorted = getWeeklySortedTrades(sleeve);
       const latest = getLatestTrade(sorted);
       if (!latest) return null;
+      if (latestWeek && latest.week !== latestWeek) return null;
 
       const targetISO = addDays(latest.week, -days);
       if (!targetISO) return null;
