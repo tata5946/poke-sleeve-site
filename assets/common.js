@@ -298,7 +298,7 @@ function countSleevesByGroup(sleeves) {
   const list = Array.isArray(sleeves) ? sleeves : [];
   return {
     pokemon: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "pokemon") ? 1 : 0), 0),
-    series: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "series") ? 1 : 0), 0),
+    trainer: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "trainer") ? 1 : 0), 0),
     category: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "category") ? 1 : 0), 0)
   };
 }
@@ -392,8 +392,8 @@ function buildSleeveDetailHref(id) {
 function buildCategoryNavMarkup(sleeves) {
   const configs = [
     { key: "pokemon", label: "ポケモン" },
-    { key: "series", label: "シリーズ" },
-    { key: "category", label: "カテゴリー" }
+    { key: "trainer", label: "トレーナー" },
+    { key: "category", label: "限定" }
   ];
   const counts = countSleevesByGroup(sleeves);
   const items = configs
