@@ -2904,12 +2904,12 @@
       return Number.isFinite(n) ? n : null;
     }
 
-    async function fetchRankingJsonWithTimeout(url, { timeoutMs = 12000 } = {}) {
+    async function fetchRankingJsonWithTimeout(url, { timeoutMs = 12000, cacheMode = "default" } = {}) {
       const controller = new AbortController();
       const t = setTimeout(() => controller.abort(), timeoutMs);
       try {
         const res = await fetch(url, {
-          cache: "default",
+          cache: cacheMode,
           signal: controller.signal,
           headers: { "Accept": "application/json" }
         });
@@ -2942,6 +2942,16 @@
       } catch (_) {
         return [];
       }
+    }
+
+    async function loadHomePrimaryData() {
+      const gasUrl = String(window.GAS_URL || "").trim();
+      if (gasUrl) {
+        try {
+          return await fetchRankingJsonWithTimeout(gasUrl, { timeoutMs: 12000, cacheMode: "no-store" });
+        } catch (_) { }
+      }
+      return await window.common.loadData();
     }
 
     function getWeeklyPair(sleeve) {
@@ -3996,12 +4006,7 @@
         throw new Error("共通データローダーの初期化に失敗しました。");
       }
       wireDashboardSearch();
-      let data;
-      try {
-        data = await window.common.loadData({ forceRefresh: true });
-      } catch (_) {
-        data = await window.common.loadData();
-      }
+      const data = await loadHomePrimaryData();
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
       if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
         await window.common.ensureCategoryNavsRendered(sleeves);
