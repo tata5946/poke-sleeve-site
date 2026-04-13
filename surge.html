@@ -567,6 +567,7 @@
       for (const x of arr) {
         const weekISO = toISODate(x.week);
         if (!weekISO) continue;
+        if (String(weekISO).slice(-2) === "01") continue;
 
         const price = numOrNull(x.price);
         const count = numOrNull(x.count);
@@ -689,6 +690,7 @@
     function computeSurge(sleeve, latestWeek) {
       const pair = getWeeklyPair(sleeve);
       if (!pair || !pair.prev) return null;
+      if (latestWeek && pair.latest.week !== latestWeek) return null;
 
       const diff = pair.latest.price - pair.prev.price;
       if (!(diff > 0)) return null; // 上昇だけ

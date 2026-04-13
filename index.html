@@ -2878,6 +2878,7 @@
       const map = new Map();
       for (const row of arr) {
         const weekISO = toISODate(row?.week);
+        if (weekISO && String(weekISO).slice(-2) === "01") continue;
         const price = numOrNull(row?.price);
         const count = numOrNull(row?.count);
         const hasTrade = count == null ? (price != null) : (count > 0 && price != null);
