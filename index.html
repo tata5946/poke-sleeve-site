@@ -1986,6 +1986,36 @@
       font-size: 22px;
       box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
     }
+    .brand-ball {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ef4444 0 48%, #ffffff 48% 100%);
+      box-shadow: 0 0 0 2px #111827 inset;
+    }
+    .brand-ball::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 2px;
+      background: #111827;
+      transform: translateY(-50%);
+    }
+    .brand-ball::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #ffffff;
+      box-shadow: 0 0 0 2px #111827;
+      transform: translate(-50%, -50%);
+    }
     .sidebar-brand-title {
       margin: 0;
       font-family: "Inter", "Noto Sans JP", sans-serif;
@@ -2693,7 +2723,7 @@
   <div class="dashboard-shell">
     <aside class="dashboard-sidebar" aria-label="サイドバー">
       <div class="sidebar-brand">
-        <div class="sidebar-brand-mark" aria-hidden="true">⛃</div>
+        <div class="sidebar-brand-mark" aria-hidden="true"><span class="brand-ball"></span></div>
         <div>
           <h1 class="sidebar-brand-title">ポケスリ相場ナビ</h1>
           <p class="sidebar-brand-sub">相場ダッシュボード</p>
@@ -2739,9 +2769,7 @@
         </div>
         <nav class="topbar-tabs" aria-label="上部メニュー">
           <a class="topbar-tab is-active" href="./index.html">ダッシュボード</a>
-          <a class="topbar-tab" href="./index-market.html">マーケット</a>
-          <a class="topbar-tab" href="./ranking.html">価格ランキング</a>
-          <a class="topbar-tab" href="./growth.html">高騰率ランキング</a>
+          <a class="topbar-tab" href="./index-market.html">市場状況</a>
           <a class="topbar-tab" href="./policy.html">設定</a>
         </nav>
         <div class="topbar-utils" aria-hidden="true">
@@ -3703,6 +3731,10 @@
               ? "やや弱気"
               : "中立";
       const strategistText = buildStrategistText(stats);
+      const latestWeekLabel = stats.latestWeek ? (() => {
+        const m = String(stats.latestWeek).match(/^(?:\d{4})-(\d{2})-(\d{2})$/);
+        return m ? `${Number(m[1])}/${Number(m[2])}週更新` : `${stats.latestWeek}更新`;
+      })() : "最新週更新";
       if (mainEl) {
         mainEl.innerHTML = `
           <a class="hero-main-link" href="./index-market.html" aria-label="指数ページを見る">
@@ -3747,7 +3779,7 @@
         sideEl.innerHTML = `
           <div class="sentiment-head">
             <h2 class="sentiment-title">市場状況</h2>
-            <span class="sentiment-updated">5分前更新</span>
+            <span class="sentiment-updated">${escapeHtml(latestWeekLabel)}</span>
           </div>
           <div class="sentiment-score-row">
             <div class="sentiment-score">${escapeHtml(String(sentimentScore))}</div>
