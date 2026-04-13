@@ -3756,7 +3756,7 @@
       if (!mainEl && !sideEl) return;
       if (!Array.isArray(marketSeries) || !marketSeries.length) {
         if (mainEl) mainEl.innerHTML = `<div class="home-empty">スリーブ指数を表示できませんでした。</div>`;
-        if (sideEl) sideEl.innerHTML = `<div class="home-empty">市場センチメントを表示できませんでした。</div>`;
+        if (sideEl) sideEl.innerHTML = `<div class="home-empty">市場状況を表示できませんでした。</div>`;
         return;
       }
       const latest = marketSeries[marketSeries.length - 1];
@@ -3766,7 +3766,15 @@
       const linePoints = buildSparklinePoints(values, 760, 220);
       const areaPoints = `${linePoints} 760,220 0,220`;
       const sentimentScore = Number(stats.sentimentScore || 0);
-      const sentimentLabel = sentimentScore >= 68 ? "GREED" : sentimentScore <= 38 ? "FEAR" : "NEUTRAL";
+      const sentimentLabel = sentimentScore >= 72
+        ? "強気"
+        : sentimentScore >= 58
+          ? "やや強気"
+          : sentimentScore <= 28
+            ? "弱気"
+            : sentimentScore <= 42
+              ? "やや弱気"
+              : "中立";
       const strategistText = buildStrategistText(stats);
       if (mainEl) {
         mainEl.innerHTML = `
@@ -3804,8 +3812,8 @@
       if (sideEl) {
         sideEl.innerHTML = `
           <div class="sentiment-head">
-            <h2 class="sentiment-title">市場センチメント</h2>
-            <span class="sentiment-updated">UPDATED: 5M AGO</span>
+            <h2 class="sentiment-title">市場状況</h2>
+            <span class="sentiment-updated">5分前更新</span>
           </div>
           <div class="sentiment-score-row">
             <div class="sentiment-score">${escapeHtml(String(sentimentScore))}</div>
@@ -3813,8 +3821,8 @@
           </div>
           <div class="sentiment-meter"></div>
           <div class="sentiment-scale">
-            <span>極度の恐怖</span>
-            <span>強欲</span>
+            <span>弱気</span>
+            <span>強気</span>
           </div>
           <p class="sentiment-copy">${escapeHtml(strategistText)}</p>
         `;
