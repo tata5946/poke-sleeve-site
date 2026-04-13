@@ -19,6 +19,9 @@
     --accent2: #ffcc00;
     --max-width: 100%;
     --site-header-h: 0px;
+    --font-ui: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+    --font-heading: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+    --font-numeric: "Inter", "Segoe UI", "Arial", sans-serif;
 }
 
 /* base */
@@ -34,7 +37,7 @@ body {
 }
 
 body {
-    font-family: system-ui, -apple-system, "Segoe UI", "M PLUS Rounded 1c", sans-serif;
+    font-family: var(--font-ui);
     margin: 0;
     background:
         radial-gradient(1200px 520px at 8% -8%, var(--bg-glow-a) 0%, rgba(30, 91, 215, 0) 62%),
@@ -204,7 +207,7 @@ a:hover {
     line-height: 1.1;
     white-space: nowrap;
     letter-spacing: -.02em;
-    font-family: "Noto Sans JP", "Yu Gothic", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    font-family: var(--font-heading);
 }
 
 /* header search */
@@ -250,7 +253,7 @@ body.home-page .search-wrap {
 }
 
 body.home-page .search-wrap input {
-    font-family: "Inter", "Noto Sans JP", sans-serif;
+    font-family: var(--font-numeric);
     color: #111827;
 }
 
@@ -540,7 +543,7 @@ body.home-page .search-wrap input {
     line-height: 1.1;
     color: #101828;
     font-weight: 900;
-    font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+    font-family: var(--font-heading);
 }
 
 .category-nav-copy {
