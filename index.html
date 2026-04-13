@@ -1467,6 +1467,7 @@
       }
     }
     body.home-page {
+      font-family: "Noto Sans JP", sans-serif;
       background: linear-gradient(180deg, #f4f6fa 0%, #eef2f6 100%);
       background-attachment: scroll;
     }
@@ -1493,7 +1494,7 @@
     }
     body.home-page .home-section-title {
       margin: 0;
-      font-family: "Manrope", "Inter", "Noto Sans JP", sans-serif;
+      font-family: "ラグランパンチ", "Noto Sans JP", sans-serif;
       font-size: 20px;
       line-height: 1.2;
       letter-spacing: -.03em;
@@ -1533,7 +1534,7 @@
     }
     .market-appbar-title {
       margin: 0;
-      font-family: "Manrope", "Inter", sans-serif;
+      font-family: "ラグランパンチ", "Noto Sans JP", sans-serif;
       font-size: 22px;
       line-height: 1.1;
       letter-spacing: -.04em;
@@ -1803,7 +1804,7 @@
     }
     .featured-name {
       margin: 0;
-      font-family: "Manrope", "Inter", "Noto Sans JP", sans-serif;
+      font-family: "ラグランパンチ", "Noto Sans JP", sans-serif;
       font-size: 24px;
       line-height: 1.08;
       letter-spacing: -.03em;
@@ -1945,7 +1946,7 @@
       <div class="market-appbar">
         <div class="market-appbar-brand">
           <span class="market-appbar-menu" aria-hidden="true">☰</span>
-          <h1 class="market-appbar-title">Sleeve Market</h1>
+          <h1 class="market-appbar-title">ポケスリ相場ナビ</h1>
         </div>
         <div class="market-appbar-avatar" aria-hidden="true">🧑‍💼</div>
       </div>
@@ -1965,19 +1966,19 @@
       <section class="quick-actions" aria-label="ショートカット">
         <a class="quick-action" href="./sleeves/">
           <span class="quick-action-icon" aria-hidden="true">🗂️</span>
-          <span class="quick-action-label">Catalog</span>
+          <span class="quick-action-label">図鑑</span>
         </a>
         <a class="quick-action" href="./surge.html">
           <span class="quick-action-icon" aria-hidden="true">↗</span>
-          <span class="quick-action-label">Surge</span>
+          <span class="quick-action-label">急騰</span>
         </a>
         <a class="quick-action" href="./ranking.html">
           <span class="quick-action-icon" aria-hidden="true">💎</span>
-          <span class="quick-action-label">High Price</span>
+          <span class="quick-action-label">高額帯</span>
         </a>
         <a class="quick-action" href="./index-market.html">
           <span class="quick-action-icon" aria-hidden="true">⌁</span>
-          <span class="quick-action-label">Analytics</span>
+          <span class="quick-action-label">指数</span>
         </a>
       </section>
 
@@ -2035,22 +2036,22 @@
     <div id="site-footer"></div>
   </div>
 
-  <nav class="bottom-nav" aria-label="下部ナビゲーション">
+      <nav class="bottom-nav" aria-label="下部ナビゲーション">
     <a class="bottom-nav-link is-active" href="./index.html">
       <span class="bottom-nav-icon" aria-hidden="true">⌂</span>
-      <span>Home</span>
+      <span>ホーム</span>
     </a>
     <a class="bottom-nav-link" href="./ranking.html">
       <span class="bottom-nav-icon" aria-hidden="true">▥</span>
-      <span>Rankings</span>
+      <span>ランキング</span>
     </a>
     <a class="bottom-nav-link" href="./index-market.html">
       <span class="bottom-nav-icon" aria-hidden="true">⌁</span>
-      <span>Index</span>
+      <span>指数</span>
     </a>
     <a class="bottom-nav-link" href="./sleeves/">
       <span class="bottom-nav-icon" aria-hidden="true">⌕</span>
-      <span>Search</span>
+      <span>検索</span>
     </a>
   </nav>
 
@@ -2332,14 +2333,14 @@
       const listingDelta = stats.activeCount ? Math.round((stats.risingCount / stats.activeCount) * 100) : 0;
       el.innerHTML = `
         <div class="stat-card">
-          <p class="stat-card-label">VOL (24H)</p>
+          <p class="stat-card-label">24時間出来高</p>
           <div class="stat-card-value">¥${escapeHtml((stats.volume / 10).toFixed(1))}M</div>
           <div class="stat-card-bar"><span style="width:${escapeHtml(String(volumeBar))}%"></span></div>
         </div>
         <div class="stat-card">
-          <p class="stat-card-label">NEW LISTINGS</p>
+          <p class="stat-card-label">新規出品数</p>
           <div class="stat-card-value">${escapeHtml(String(stats.activeCount))}</div>
-          <div class="stat-card-note">↑ ${escapeHtml(String(listingDelta))}% vs avg</div>
+          <div class="stat-card-note">↑ 平均比 ${escapeHtml(String(listingDelta))}%</div>
         </div>
       `;
     }
@@ -2925,13 +2926,13 @@
         <a class="featured-card" href="${escapeHtml(getDetailHref(topRow.s.id ?? ""))}">
           <div class="featured-media">${topRow.s.imageUrl ? `<img src="${escapeHtml(topRow.s.imageUrl)}" alt="${escapeHtml(topRow.s.name ?? "")}" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
           <div class="featured-body">
-            <span class="featured-badge">Hot Pick</span>
+            <span class="featured-badge">注目銘柄</span>
             <h3 class="featured-name">${escapeHtml(topRow.s.name ?? "")}</h3>
             <div class="featured-price-row">
               <strong class="featured-price"${getCountupAttrs(topRow.pair.latest.price, "currency")}>${escapeHtml(`¥${topRow.pair.latest.price.toLocaleString()}`)}</strong>
               <span class="featured-delta ${escapeHtml(deltaClass)}">${escapeHtml(formatPercent(pct))}</span>
             </div>
-            <span class="featured-cta">Market Analysis</span>
+            <span class="featured-cta">相場を見る</span>
           </div>
         </a>
       `;
@@ -2943,10 +2944,10 @@
       if (!listEl) return;
       const cards = [];
       if (surgeRank[0]) {
-        const rate = surgeRank[0].pair.prev?.price ? (surgeRank[0].diff / surgeRank[0].pair.prev.price) * 100 : null;
+          const rate = surgeRank[0].pair.prev?.price ? (surgeRank[0].diff / surgeRank[0].pair.prev.price) * 100 : null;
         cards.push({
           sleeve: surgeRank[0].s,
-          tag: "Weekly Surge",
+          tag: "週間急騰",
           priceText: `¥${surgeRank[0].pair.latest.price.toLocaleString()}`,
           deltaText: formatPercent(rate),
           deltaClass: getDeltaClass(rate)
@@ -2955,7 +2956,7 @@
       if (growthRank[0]) {
         cards.push({
           sleeve: growthRank[0].s,
-          tag: "High Growth",
+          tag: "高騰率",
           priceText: `¥${growthRank[0].g.latest.price.toLocaleString()}`,
           deltaText: formatPercent(growthRank[0].g.rate),
           deltaClass: getDeltaClass(growthRank[0].g.rate)
@@ -2967,7 +2968,7 @@
         const rate = prevPrice ? ((pair.latest.price - prevPrice) / prevPrice) * 100 : null;
         cards.push({
           sleeve: priceRank[0],
-          tag: "Premium Price",
+          tag: "プレミア価格",
           priceText: pair?.latest?.price == null ? "—" : `¥${pair.latest.price.toLocaleString()}`,
           deltaText: formatPercent(rate),
           deltaClass: getDeltaClass(rate)
@@ -3007,12 +3008,12 @@
         const activeClass = index === recent.length - 1 ? " is-active" : "";
         return `<div class="market-bar${activeClass}" style="height:${escapeHtml(String((ratio * 100).toFixed(1)))}%"></div>`;
       }).join("");
-      const health = latest.rate >= 1 ? "Bullish" : latest.rate <= -1 ? "Bearish" : "Neutral";
+      const health = latest.rate >= 1 ? "強気" : latest.rate <= -1 ? "弱気" : "中立";
       el.innerHTML = `
         <a class="market-overview-link" href="./index-market.html">
           <div class="market-index-top">
             <div>
-              <p class="market-index-kicker">Sleeve Index</p>
+              <p class="market-index-kicker">スリーブ指数</p>
               <h2 class="market-index-value">${escapeHtml(latest.index.toFixed(2))}</h2>
             </div>
             <div class="market-index-change ${escapeHtml(rateClass)}">${escapeHtml(formatPercent(latest.rate))}</div>
@@ -3021,8 +3022,8 @@
             <div class="market-bars" aria-hidden="true">${barsHtml}</div>
           </div>
           <div class="market-index-meta">
-            <div class="market-index-health">Market Health: <strong>${escapeHtml(health)}</strong></div>
-            <div>UPDATED ${escapeHtml(String(recent.length * 2))}M AGO</div>
+            <div class="market-index-health">市場の地合い: <strong>${escapeHtml(health)}</strong></div>
+            <div>更新 ${escapeHtml(String(recent.length * 2))}分前</div>
           </div>
         </a>
       `;
