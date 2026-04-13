@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 
 <head>
@@ -2228,8 +2228,7 @@
     .hero-side-card,
     .kpi-card,
     .movers-card,
-    .strategist-card,
-    .drops-card {
+    .strategist-card {
       background: rgba(255,255,255,.96);
       border-radius: 20px;
       box-shadow: 0 16px 38px rgba(15, 23, 42, 0.06);
@@ -2647,66 +2646,6 @@
       place-items: center;
       background: rgba(255,255,255,.08);
     }
-    .drops-card {
-      padding: 22px;
-      display: grid;
-      gap: 14px;
-    }
-    .drops-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .drops-title {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 800;
-      color: #111827;
-    }
-    .drops-list {
-      display: grid;
-      gap: 14px;
-    }
-    .drop-item {
-      display: grid;
-      grid-template-columns: 58px minmax(0, 1fr) auto;
-      gap: 14px;
-      align-items: center;
-      padding: 12px;
-      border-radius: 12px;
-      background: #f8fafc;
-      box-shadow: inset 0 0 0 1px rgba(148,163,184,.14);
-    }
-    .drop-thumb {
-      width: 58px;
-      height: 58px;
-      border-radius: 10px;
-      background: linear-gradient(180deg, #0f172a, #1e293b);
-      overflow: hidden;
-      display: grid;
-      place-items: center;
-      color: #fff;
-      font-size: 26px;
-    }
-    .drop-name {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 800;
-      color: #111827;
-    }
-    .drop-meta {
-      margin: 4px 0 0;
-      font-size: 13px;
-      color: #64748b;
-    }
-    .drop-status {
-      color: #10b981;
-      font-size: 18px;
-    }
-    .drop-status.is-locked {
-      color: #cbd5e1;
-    }
     @media (max-width: 1280px) {
       .dashboard-shell {
         grid-template-columns: 240px minmax(0, 1fr);
@@ -2889,22 +2828,6 @@
               </div>
             </article>
 
-            <section class="drops-card" aria-label="新着ドロップ">
-              <div class="drops-head">
-                <h3 class="drops-title">新着ドロップ</h3>
-                <span aria-hidden="true">◔</span>
-              </div>
-              <div id="newDropsList" class="drops-list">
-                <div class="drop-item">
-                  <div class="drop-thumb skeleton-block"></div>
-                  <div>
-                    <div class="hero-skeleton-copy skeleton-block"></div>
-                    <div class="hero-skeleton-copy skeleton-block" style="width:120px;"></div>
-                  </div>
-                  <div class="drop-status">⚡</div>
-                </div>
-              </div>
-            </section>
           </aside>
         </section>
       </div>
@@ -2949,10 +2872,10 @@
           signal: controller.signal,
           headers: { "Accept": "application/json" }
         });
-        if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
+        if (!res.ok) throw new Error(`Data fetch failed (HTTP ${res.status})`);
         return await res.json();
       } catch (e) {
-        if (e && e.name === "AbortError") throw new Error("データ取得がタイムアウトしました。時間をおいて再度お試しください。");
+        if (e && e.name === "AbortError") throw new Error("Data fetch timed out. Please try again later.");
         throw e;
       } finally {
         clearTimeout(t);
@@ -2979,7 +2902,6 @@
         return [];
       }
     }
-
     async function loadHomePrimaryData() {
       const gasUrl = String(window.GAS_URL || "").trim();
       if (gasUrl) {
@@ -3228,22 +3150,6 @@
       `;
     }
 
-    function renderNewDrops(sleeves) {
-      const el = document.getElementById("newDropsList");
-      if (!el) return;
-      const rows = (Array.isArray(sleeves) ? sleeves : []).slice(-2).reverse();
-      el.innerHTML = rows.map((sleeve, index) => `
-        <a class="drop-item" href="${escapeHtml(getDetailHref(sleeve.id ?? ""))}">
-          <div class="drop-thumb">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : "◈"}</div>
-          <div>
-            <p class="drop-name">${escapeHtml(sleeve.name ?? "新着スリーブ")}</p>
-            <p class="drop-meta">DROP: ${escapeHtml(index === 0 ? "14:00 JST" : "21:00 JST")}</p>
-          </div>
-          <div class="drop-status${index === 1 ? " is-locked" : ""}">${index === 0 ? "⚡" : "🔒"}</div>
-        </a>
-      `).join("") || `<div class="home-empty">新着ドロップを表示できませんでした。</div>`;
-    }
-
     function setText(id, value) {
       const el = document.getElementById(id);
       if (el) el.textContent = value;
@@ -3408,17 +3314,6 @@
           title: "高騰率ランキング",
           text: `${growthRank[0].s.name || "注目スリーブ"} の伸び率から、次に気になる銘柄を掘りにいく。`,
           meta: [`30日 ${formatPercent(growthRank[0].g.rate)}`]
-        });
-      }
-      if (newestSleeves[0]) {
-        slides.push({
-          href: "./sleeves/",
-          imageUrl: newestSleeves[0].imageUrl || "",
-          tone: "tone-new",
-          badge: "NEW ARRIVAL",
-          title: "新着スリーブをチェック",
-          text: "最近追加されたスリーブを先に見て、まだ知らない1枚を見つけにいく。",
-          meta: ["新着を見る"]
         });
       }
       if (marketSeries.length) {
@@ -4076,7 +3971,6 @@
 
       renderTodayHero(surgeRank[0] || null);
       renderTrendLists({ surgeRank, growthRank, priceRank });
-      renderNewDrops(sleeves);
       initScrollReveal();
 
       runDeferred(() => {
@@ -4087,7 +3981,7 @@
 
     main().catch((error) => {
       console.error(error);
-      ["marketSnapshotCard", "marketSentimentCard", "marketStatsGrid", "moversTableBody", "newDropsList"].forEach((id) => {
+      ["marketSnapshotCard", "marketSentimentCard", "marketStatsGrid", "moversTableBody"].forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = `<div class="home-empty">トップページのデータ読み込みに失敗しました。時間をおいて再度お試しください。</div>`;
       });
