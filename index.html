@@ -2726,25 +2726,24 @@
         <nav class="sidebar-nav" aria-label="主要ナビゲーション">
           <a class="sidebar-link is-active" href="./index.html"><span class="sidebar-link-icon" aria-hidden="true">⌂</span><span>ホーム</span></a>
           <a class="sidebar-link" href="./sleeves/"><span class="sidebar-link-icon" aria-hidden="true">▤</span><span>スリーブ図鑑</span></a>
+          <div id="sidebarCategoryShell" class="sidebar-category-shell" hidden>
+            <button type="button" class="sidebar-link sidebar-category-toggle" id="sidebarCategoryToggle" aria-expanded="false" aria-controls="categoryNav">
+              <span class="sidebar-category-toggle-label">
+                <span class="sidebar-link-icon" aria-hidden="true">☰</span>
+                <span>スリーブカテゴリ</span>
+              </span>
+              <span class="sidebar-category-caret" aria-hidden="true">›</span>
+            </button>
+            <aside id="categoryNav" class="category-nav sidebar-category-panel" data-category-nav aria-label="スリーブカテゴリ一覧">
+              <div class="category-nav-list">
+                <div class="category-nav-empty skeleton-block" style="min-height: 128px;"></div>
+              </div>
+            </aside>
+          </div>
           <a class="sidebar-link" href="./ranking.html"><span class="sidebar-link-icon" aria-hidden="true">◷</span><span>ランキング</span></a>
           <a class="sidebar-link" href="./index-market.html"><span class="sidebar-link-icon" aria-hidden="true">↗</span><span>市場分析</span></a>
           <a class="sidebar-link" href="./surge.html"><span class="sidebar-link-icon" aria-hidden="true">⚡</span><span>急上昇</span></a>
         </nav>
-
-        <div id="sidebarCategoryShell" class="sidebar-category-shell" hidden>
-          <button type="button" class="sidebar-link sidebar-category-toggle" id="sidebarCategoryToggle" aria-expanded="false" aria-controls="categoryNav">
-            <span class="sidebar-category-toggle-label">
-              <span class="sidebar-link-icon" aria-hidden="true">☰</span>
-              <span>スリーブカテゴリ</span>
-            </span>
-            <span class="sidebar-category-caret" aria-hidden="true">›</span>
-          </button>
-          <aside id="categoryNav" class="category-nav sidebar-category-panel" data-category-nav aria-label="スリーブカテゴリ一覧">
-            <div class="category-nav-list">
-              <div class="category-nav-empty skeleton-block" style="min-height: 128px;"></div>
-            </div>
-          </aside>
-        </div>
 
         <a class="sidebar-primary" href="./sleeves/"><span aria-hidden="true">＋</span><span>新しい資産を追加</span></a>
 
@@ -3997,7 +3996,12 @@
         throw new Error("共通データローダーの初期化に失敗しました。");
       }
       wireDashboardSearch();
-      const data = await window.common.loadData();
+      let data;
+      try {
+        data = await window.common.loadData({ forceRefresh: true });
+      } catch (_) {
+        data = await window.common.loadData();
+      }
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
       if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
         await window.common.ensureCategoryNavsRendered(sleeves);
