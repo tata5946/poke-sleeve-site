@@ -236,6 +236,24 @@ a:hover {
     background: transparent;
 }
 
+body.home-page .header {
+    background: rgba(247, 249, 251, .88);
+    backdrop-filter: blur(12px);
+    border-bottom-color: rgba(198, 198, 205, .45);
+}
+
+body.home-page .search-wrap {
+    border-radius: 14px;
+    border-color: rgba(118, 119, 125, .18);
+    background: rgba(255, 255, 255, .92);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, .06);
+}
+
+body.home-page .search-wrap input {
+    font-family: "Inter", "Noto Sans JP", sans-serif;
+    color: #111827;
+}
+
 .has-search-autocomplete {
     position: relative;
 }
