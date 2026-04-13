@@ -569,66 +569,181 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="./assets/index-market-terminal.css" />
 </head>
 
-<body>
+<body class="market-terminal-page">
   <!-- 共通ヘッダー差し込み -->
   <div id="site-header"></div>
 
   <div class="container">
-    <nav class="breadcrumb" aria-label="パンくず">
-      <a href="./index.html">ホーム</a>
-      <span class="breadcrumb-sep" aria-hidden="true">></span>
-      <span class="breadcrumb-current" aria-current="page">スリーブ指数</span>
-    </nav>
-    <div id="error" class="error"></div>
-
-        <div class="hero">
-      <section class="market-hero" aria-label="ページ見出し">
-        <h1 class="market-hero-title">スリーブ指数</h1>
-      </section>
-      <div class="panel chart-panel">
-        <h3 class="section-title">指数チャート</h3>
-        <div class="share-block">
-          <div class="share-row">
-            <button type="button" class="btn share-x" id="shareXBtn">
-              <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path fill="currentColor" d="M18.244 2H21.5l-7.112 8.129L22 22h-5.953l-4.661-6.108L6.04 22H2.78l7.606-8.695L2 2h6.105l4.213 5.566zM17.1 20h1.803L7.127 3.895H5.19z"></path>
-              </svg>
-              X(Twitter)で共有
-            </button>
+    <div class="market-terminal-shell">
+      <aside class="terminal-sidebar" aria-label="相場ナビゲーション">
+        <div class="terminal-brand">
+          <div class="terminal-brand-mark" aria-hidden="true">▦</div>
+          <div>
+            <p class="terminal-brand-title">Terminal v1.0</p>
+            <div class="terminal-status">Market Hours Open</div>
           </div>
-          <div id="shareStatus" class="share-status"></div>
         </div>
-        <div id="indexChart"></div>
-      </div>
 
-      <div class="panel market-comment-panel">
-        <h3 class="section-title">今週の市場コメント</h3>
-        <div class="ai-comment">
-          <p class="ai-comment-title">AIコメント（手動更新）</p>
-          <p id="aiCommentWeek" class="ai-comment-meta">対象週: -</p>
-          <p id="aiCommentBody" class="ai-comment-body">コメントを読み込み中です。</p>
-        </div>
-      </div>
+        <nav class="terminal-nav">
+          <a href="./index-market.html" class="is-active"><span class="terminal-nav-icon">▣</span><span>Dashboard</span></a>
+          <a href="./growth.html"><span class="terminal-nav-icon">↗</span><span>Indices</span></a>
+          <a href="./surge.html"><span class="terminal-nav-icon">◎</span><span>Live Trading</span></a>
+          <a href="./ranking.html"><span class="terminal-nav-icon">◌</span><span>Movers</span></a>
+          <a href="./detail.html"><span class="terminal-nav-icon">◫</span><span>Asset Detail</span></a>
+          <a href="./access-ranking.html"><span class="terminal-nav-icon">◍</span><span>Reports</span></a>
+        </nav>
 
-      <div class="contrib-grid">
-        <div class="panel">
-          <h3 class="section-title">上昇寄与スリーブ</h3>
-          <div class="meta" style="margin-bottom:10px;">指数変動への寄与度（今週）</div>
-          <div id="contribUp" class="contrib-list"></div>
+        <div class="terminal-export">
+          <a class="btn" href="./data.json">Export Data</a>
+          <div class="terminal-meta-links">
+            <a href="./contact.html">Support</a>
+            <a href="./policy.html">API / Policy</a>
+          </div>
         </div>
-        <div class="panel">
-          <h3 class="section-title">下落寄与スリーブ</h3>
-          <div class="meta" style="margin-bottom:10px;">指数変動への寄与度（今週）</div>
-          <div id="contribDown" class="contrib-list"></div>
-        </div>
-      </div>
+      </aside>
 
-      <div class="panel table-panel">
-        <h3 class="section-title">週次データ表</h3>
-        <div id="indexTable"></div>
-      </div>
+      <main class="terminal-main">
+        <div class="terminal-topbar">
+          <div class="terminal-topbar-copy">
+            <p class="terminal-kicker">Sleeve Market Professional</p>
+            <div class="terminal-tabs" aria-label="カテゴリ">
+              <a href="./index-market.html" class="terminal-tab is-active">Market</a>
+              <a href="./ranking.html" class="terminal-tab">Portfolio</a>
+              <a href="./growth.html" class="terminal-tab">Research</a>
+              <a href="./surge.html" class="terminal-tab">Signals</a>
+            </div>
+          </div>
+          <div class="terminal-actions" aria-label="ショートカット">
+            <a class="terminal-action-pill" href="./ranking.html">Top Movers</a>
+            <a class="terminal-action-pill" href="./growth.html">Trend Index</a>
+            <a class="terminal-action-pill" href="./surge.html">Live Surge</a>
+          </div>
+        </div>
+
+        <nav class="breadcrumb terminal-breadcrumb" aria-label="パンくず">
+          <a href="./index.html">ホーム</a>
+          <span class="breadcrumb-sep" aria-hidden="true">></span>
+          <span class="breadcrumb-current" aria-current="page">スリーブ指数</span>
+        </nav>
+        <div id="error" class="error"></div>
+
+        <div class="dashboard-grid">
+          <div class="dashboard-column">
+            <section class="panel dashboard-panel benchmark-panel" aria-label="マーケットベンチマーク">
+              <div class="benchmark-top">
+                <div>
+                  <p class="panel-eyebrow">Market Benchmark</p>
+                  <p class="benchmark-label">Sleeve Market Total Index (SMTI)</p>
+                  <h1 id="kpiIndex" class="benchmark-title">--</h1>
+                  <p id="subtitle">データを集計しています。</p>
+                </div>
+                <span class="live-badge">Live Feed</span>
+              </div>
+
+              <div class="benchmark-kpis">
+                <div class="metric-card is-featured">
+                  <p class="metric-label">Total Index</p>
+                  <div id="kpiIndexMeta" class="metric-foot">基準週を計算中</div>
+                  <div id="kpiIndexBaseDiff" class="subvalue flat">基準比 —</div>
+                </div>
+                <div class="metric-card">
+                  <p class="metric-label">24H Proxy</p>
+                  <p id="kpiRate" class="metric-value">--</p>
+                  <div id="kpiRateDelta" class="delta flat">比較できる前週データなし</div>
+                </div>
+                <div class="metric-card">
+                  <p class="metric-label">Market Breadth</p>
+                  <p id="kpiUpShare" class="metric-value">--</p>
+                  <div id="kpiUpShareMeta" class="metric-foot">上昇比率を計算中</div>
+                </div>
+              </div>
+
+              <div class="share-block">
+                <div class="share-row">
+                  <button type="button" class="btn share-x" id="shareXBtn">
+                    <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="currentColor" d="M18.244 2H21.5l-7.112 8.129L22 22h-5.953l-4.661-6.108L6.04 22H2.78l7.606-8.695L2 2h6.105l4.213 5.566zM17.1 20h1.803L7.127 3.895H5.19z"></path>
+                    </svg>
+                    Share Snapshot
+                  </button>
+                </div>
+                <div id="shareStatus" class="share-status"></div>
+              </div>
+              <div id="indexChart"></div>
+            </section>
+
+            <section class="panel dashboard-panel movers-panel">
+              <h2 class="section-title">Movers &amp; Shakers</h2>
+              <p class="section-subtle">指数変動への寄与度が大きいスリーブを、上昇側と下落側に分けて表示しています。</p>
+              <div class="contrib-grid">
+                <div>
+                  <h3 class="section-title">Up Leaders</h3>
+                  <p class="section-subtle">今週の上昇寄与</p>
+                  <div id="contribUp" class="contrib-list"></div>
+                </div>
+                <div>
+                  <h3 class="section-title">Down Pressure</h3>
+                  <p class="section-subtle">今週の下落寄与</p>
+                  <div id="contribDown" class="contrib-list"></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel dashboard-panel data-panel">
+              <h2 class="section-title">Historical Tape</h2>
+              <p class="section-subtle">週次指数と平均上昇率の履歴です。</p>
+              <div id="indexTable"></div>
+            </section>
+          </div>
+
+          <div class="dashboard-column">
+            <section class="panel dashboard-panel sentiment-panel">
+              <h2 class="section-title">Market Sentiment</h2>
+              <div class="sentiment-meter" aria-hidden="true">
+                <div class="sentiment-meter-bar"></div>
+              </div>
+
+              <div class="market-state-banner">
+                <p class="market-state-label">Fear / Greed</p>
+                <p id="marketStateValue" class="market-state-value flat">--</p>
+                <p id="marketStateNote" class="market-state-note">市場状態を分析しています。</p>
+              </div>
+
+              <div class="dist-box">
+                <h3 class="section-title">Market Breadth</h3>
+                <p id="distSummary">最新週の上昇・下落・横ばい割合を集計しています。</p>
+                <div id="distTable"></div>
+              </div>
+
+              <div class="quick-links">
+                <a class="btn" href="./growth.html">View Research</a>
+                <a class="btn" href="./ranking.html">Open Movers</a>
+                <a class="btn" href="./surge.html">Check Signals</a>
+              </div>
+            </section>
+
+            <section class="panel dashboard-panel strategist-panel">
+              <h2 class="section-title">Strategist Note</h2>
+              <p class="section-subtle">最新コメント</p>
+              <div class="ai-comment">
+                <p class="ai-comment-title">AI Comment</p>
+                <p id="aiCommentWeek" class="ai-comment-meta">対象週: -</p>
+                <p id="aiCommentBody" class="ai-comment-body">コメントを読み込み中です。</p>
+              </div>
+              <div class="strategist-footer">
+                <div class="strategist-avatar" aria-hidden="true">◔</div>
+                <div class="strategist-caption">
+                  <strong>Market Desk</strong><br>
+                  ポケスリ相場ナビ / Research Terminal
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
     </div>
 
     <!-- 共通フッター差し込み -->
