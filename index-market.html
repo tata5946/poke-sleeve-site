@@ -582,25 +582,25 @@
         <div class="terminal-brand">
           <div class="terminal-brand-mark" aria-hidden="true">▦</div>
           <div>
-            <p class="terminal-brand-title">Terminal v1.0</p>
-            <div class="terminal-status">Market Hours Open</div>
+            <p class="terminal-brand-title">ポケスリ相場ナビ</p>
+            <div class="terminal-status">最新相場を集計中</div>
           </div>
         </div>
 
         <nav class="terminal-nav">
-          <a href="./index-market.html" class="is-active"><span class="terminal-nav-icon">▣</span><span>Dashboard</span></a>
-          <a href="./growth.html"><span class="terminal-nav-icon">↗</span><span>Indices</span></a>
-          <a href="./surge.html"><span class="terminal-nav-icon">◎</span><span>Live Trading</span></a>
-          <a href="./ranking.html"><span class="terminal-nav-icon">◌</span><span>Movers</span></a>
-          <a href="./detail.html"><span class="terminal-nav-icon">◫</span><span>Asset Detail</span></a>
-          <a href="./access-ranking.html"><span class="terminal-nav-icon">◍</span><span>Reports</span></a>
+          <a href="./index-market.html" class="is-active"><span class="terminal-nav-icon">▣</span><span>相場トップ</span></a>
+          <a href="./growth.html"><span class="terminal-nav-icon">↗</span><span>指数推移</span></a>
+          <a href="./surge.html"><span class="terminal-nav-icon">◎</span><span>急上昇</span></a>
+          <a href="./ranking.html"><span class="terminal-nav-icon">◌</span><span>ランキング</span></a>
+          <a href="./detail.html"><span class="terminal-nav-icon">◫</span><span>個別詳細</span></a>
+          <a href="./access-ranking.html"><span class="terminal-nav-icon">◍</span><span>人気指標</span></a>
         </nav>
 
         <div class="terminal-export">
-          <a class="btn" href="./data.json">Export Data</a>
+          <a class="btn" href="./data.json">データ出力</a>
           <div class="terminal-meta-links">
-            <a href="./contact.html">Support</a>
-            <a href="./policy.html">API / Policy</a>
+            <a href="./contact.html">お問い合わせ</a>
+            <a href="./policy.html">ポリシー</a>
           </div>
         </div>
       </aside>
@@ -608,18 +608,18 @@
       <main class="terminal-main">
         <div class="terminal-topbar">
           <div class="terminal-topbar-copy">
-            <p class="terminal-kicker">Sleeve Market Professional</p>
+            <p class="terminal-kicker">ポケスリ相場ナビ</p>
             <div class="terminal-tabs" aria-label="カテゴリ">
-              <a href="./index-market.html" class="terminal-tab is-active">Market</a>
-              <a href="./ranking.html" class="terminal-tab">Portfolio</a>
-              <a href="./growth.html" class="terminal-tab">Research</a>
-              <a href="./surge.html" class="terminal-tab">Signals</a>
+              <a href="./index-market.html" class="terminal-tab is-active">市場概況</a>
+              <a href="./ranking.html" class="terminal-tab">ランキング</a>
+              <a href="./growth.html" class="terminal-tab">分析</a>
+              <a href="./surge.html" class="terminal-tab">シグナル</a>
             </div>
           </div>
           <div class="terminal-actions" aria-label="ショートカット">
-            <a class="terminal-action-pill" href="./ranking.html">Top Movers</a>
-            <a class="terminal-action-pill" href="./growth.html">Trend Index</a>
-            <a class="terminal-action-pill" href="./surge.html">Live Surge</a>
+            <a class="terminal-action-pill" href="./ranking.html">注目ランキング</a>
+            <a class="terminal-action-pill" href="./growth.html">指数を見る</a>
+            <a class="terminal-action-pill" href="./surge.html">急騰を見る</a>
           </div>
         </div>
 
@@ -636,11 +636,11 @@
               <div class="benchmark-top">
                 <div>
                   <p class="panel-eyebrow">Market Benchmark</p>
-                  <p class="benchmark-label">Sleeve Market Total Index (SMTI)</p>
+                  <p class="benchmark-label">ポケスリ総合指数 (PSMI)</p>
                   <h1 id="kpiIndex" class="benchmark-title">--</h1>
                   <p id="subtitle">データを集計しています。</p>
                 </div>
-                <span class="live-badge">Live Feed</span>
+                <span class="live-badge">Weekly Feed</span>
               </div>
 
               <div class="benchmark-kpis">
@@ -667,7 +667,7 @@
                     <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true">
                       <path fill="currentColor" d="M18.244 2H21.5l-7.112 8.129L22 22h-5.953l-4.661-6.108L6.04 22H2.78l7.606-8.695L2 2h6.105l4.213 5.566zM17.1 20h1.803L7.127 3.895H5.19z"></path>
                     </svg>
-                    Share Snapshot
+                    現在の指数を共有
                   </button>
                 </div>
                 <div id="shareStatus" class="share-status"></div>
@@ -676,16 +676,16 @@
             </section>
 
             <section class="panel dashboard-panel movers-panel">
-              <h2 class="section-title">Movers &amp; Shakers</h2>
+              <h2 class="section-title">注目変動銘柄</h2>
               <p class="section-subtle">指数変動への寄与度が大きいスリーブを、上昇側と下落側に分けて表示しています。</p>
               <div class="contrib-grid">
                 <div>
-                  <h3 class="section-title">Up Leaders</h3>
+                  <h3 class="section-title">上昇寄与</h3>
                   <p class="section-subtle">今週の上昇寄与</p>
                   <div id="contribUp" class="contrib-list"></div>
                 </div>
                 <div>
-                  <h3 class="section-title">Down Pressure</h3>
+                  <h3 class="section-title">下落寄与</h3>
                   <p class="section-subtle">今週の下落寄与</p>
                   <div id="contribDown" class="contrib-list"></div>
                 </div>
@@ -693,7 +693,7 @@
             </section>
 
             <section class="panel dashboard-panel data-panel">
-              <h2 class="section-title">Historical Tape</h2>
+              <h2 class="section-title">週次履歴</h2>
               <p class="section-subtle">週次指数と平均上昇率の履歴です。</p>
               <div id="indexTable"></div>
             </section>
@@ -701,7 +701,7 @@
 
           <div class="dashboard-column">
             <section class="panel dashboard-panel sentiment-panel">
-              <h2 class="section-title">Market Sentiment</h2>
+              <h2 class="section-title">市場センチメント</h2>
               <div class="sentiment-meter" aria-hidden="true">
                 <div class="sentiment-meter-bar"></div>
               </div>
@@ -719,14 +719,14 @@
               </div>
 
               <div class="quick-links">
-                <a class="btn" href="./growth.html">View Research</a>
-                <a class="btn" href="./ranking.html">Open Movers</a>
-                <a class="btn" href="./surge.html">Check Signals</a>
+                <a class="btn" href="./growth.html">分析を見る</a>
+                <a class="btn" href="./ranking.html">ランキングを見る</a>
+                <a class="btn" href="./surge.html">急上昇を見る</a>
               </div>
             </section>
 
             <section class="panel dashboard-panel strategist-panel">
-              <h2 class="section-title">Strategist Note</h2>
+              <h2 class="section-title">相場メモ</h2>
               <p class="section-subtle">最新コメント</p>
               <div class="ai-comment">
                 <p class="ai-comment-title">AI Comment</p>
@@ -736,8 +736,8 @@
               <div class="strategist-footer">
                 <div class="strategist-avatar" aria-hidden="true">◔</div>
                 <div class="strategist-caption">
-                  <strong>Market Desk</strong><br>
-                  ポケスリ相場ナビ / Research Terminal
+                  <strong>ポケスリ相場ナビ</strong><br>
+                  Market Desk / Weekly Research
                 </div>
               </div>
             </section>
