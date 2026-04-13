@@ -1467,476 +1467,453 @@
       }
     }
     body.home-page {
-      background:
-        radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 32%),
-        radial-gradient(circle at 88% 10%, rgba(15, 23, 42, 0.08), transparent 28%),
-        linear-gradient(180deg, #f7f9fb 0%, #eef2f6 100%);
+      background: linear-gradient(180deg, #f4f6fa 0%, #eef2f6 100%);
       background-attachment: scroll;
     }
+    body.home-page.has-fixed-header {
+      padding-top: 0;
+    }
+    body.home-page #site-header {
+      display: none;
+    }
+    body.home-page #site-footer {
+      display: none;
+    }
     body.home-page .container {
-      max-width: 1320px;
-      padding-top: 18px;
-      padding-bottom: 72px;
+      max-width: 480px;
+      padding: 18px 18px 108px;
+    }
+    body.home-page .home-shell,
+    body.home-page .home-top-grid,
+    body.home-page .home-top-main,
+    body.home-page .home-section,
+    body.home-page .pickup-section {
+      display: grid;
+      gap: 20px;
+    }
+    body.home-page .home-section-title {
+      margin: 0;
+      font-family: "Manrope", "Inter", "Noto Sans JP", sans-serif;
+      font-size: 20px;
+      line-height: 1.2;
+      letter-spacing: -.03em;
+      color: #0f172a;
     }
     body.home-page .home-card {
       border: 0;
-      border-radius: 26px;
-      background: rgba(255,255,255,.96);
-      box-shadow: 0 18px 46px rgba(15, 23, 42, 0.06);
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
     }
-    body.home-page .home-section-title {
-      font-family: "Manrope", "Inter", "Noto Sans JP", sans-serif;
-      font-size: clamp(24px, 2.8vw, 38px);
-      line-height: 1.06;
+    .home-top-sidebar {
+      display: none;
+    }
+    .market-appbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 2px 12px;
+    }
+    .market-appbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+    .market-appbar-menu {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
       color: #111827;
-      letter-spacing: -.03em;
+      font-size: 28px;
+      line-height: 1;
     }
-    body.home-page .home-section-copy {
-      max-width: 64ch;
-      color: #5f6b7c;
-      font-size: 14px;
-      line-height: 1.75;
-    }
-    body.home-page .home-category-pill {
-      padding: 8px 12px;
-      border-radius: 12px;
-      border: 0;
-      background: #e8edf4;
-      color: #445065;
-      letter-spacing: .14em;
-    }
-    .home-top-grid {
-      grid-template-columns: minmax(255px, 300px) minmax(0, 1fr);
-      grid-template-areas:
-        "sidebar hero"
-        "sidebar ranking"
-        "sidebar market"
-        "sidebar search";
-      gap: 24px;
-    }
-    .category-nav {
-      padding: 24px 20px;
-      border: 0;
-      background: rgba(242, 244, 246, 0.92);
-      box-shadow: none;
-    }
-    .category-nav-head {
-      border-bottom: 0;
-      padding-bottom: 4px;
-    }
-    .category-nav-title {
-      font-family: "Manrope", "Inter", "Noto Sans JP", sans-serif;
+    .market-appbar-title {
+      margin: 0;
+      font-family: "Manrope", "Inter", sans-serif;
       font-size: 22px;
-      letter-spacing: -.02em;
+      line-height: 1.1;
+      letter-spacing: -.04em;
+      color: #111827;
     }
-    .category-nav-copy,
-    .category-nav-kicker,
-    .category-nav-count,
-    .category-flyout-count {
+    .market-appbar-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, #0f766e, #1f2937);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
+      font-size: 24px;
+    }
+    .market-index-card {
+      padding: 18px;
+      display: grid;
+      gap: 18px;
+    }
+    .market-overview-link {
+      display: grid;
+      gap: 18px;
+      color: inherit;
+      text-decoration: none;
+    }
+    .market-index-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .market-index-kicker,
+    .ranking-tag,
+    .stat-card-label {
+      margin: 0;
+      font-size: 11px;
+      line-height: 1.4;
+      letter-spacing: .18em;
+      color: #6b7280;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .market-index-value {
+      margin: 10px 0 0;
+      font-family: "Manrope", "Inter", sans-serif;
+      font-size: clamp(40px, 12vw, 58px);
+      line-height: .95;
+      letter-spacing: -.05em;
+      color: #0f172a;
+    }
+    .market-index-change {
+      min-width: 86px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      background: #6ee7b7;
+      color: #047857;
+      font-family: "Inter", sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      text-align: center;
+    }
+    .market-index-change.down {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .market-index-change.flat {
+      background: #e5e7eb;
+      color: #4b5563;
+    }
+    .market-index-chart {
+      height: 120px;
+      padding: 8px 0 0;
+      border-bottom: 1px solid #eef2f7;
+    }
+    .market-bars {
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 6px;
+      align-items: end;
+    }
+    .market-bar {
+      border-radius: 0;
+      background: #d1fae5;
+      min-height: 28%;
+    }
+    .market-bar.is-active {
+      background: #6ee7b7;
+    }
+    .market-index-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
       color: #6b7280;
     }
-    .category-nav-link {
-      min-height: 46px;
-      border-bottom: 0;
-      padding: 0 0 0 12px;
-      border-radius: 14px;
+    .market-index-health strong {
+      color: #047857;
     }
-    .category-nav-link:hover {
-      color: #0f172a;
-      padding-left: 16px;
-      background: rgba(255,255,255,.7);
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
     }
-    .category-flyout-link {
-      min-height: 36px;
-      padding: 0 0 0 24px;
+    .quick-action {
+      padding: 16px 8px 14px;
       border-radius: 10px;
+      background: linear-gradient(180deg, #eef2f7 0%, #e9edf3 100%);
+      display: grid;
+      gap: 10px;
+      place-items: center;
+      text-align: center;
+      color: #111827;
+      text-decoration: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
     }
-    .today-hero-card-shell {
-      padding: 30px;
-      background:
-        linear-gradient(135deg, rgba(19, 27, 46, 0.05), rgba(124, 131, 155, 0.04)),
-        #ffffff;
+    .quick-action-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+    .quick-action-label {
+      font-size: 11px;
+      line-height: 1.4;
+      letter-spacing: .08em;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .section-link {
+      color: #047857;
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .ranking-list {
+      display: grid;
+      gap: 14px;
+    }
+    .ranking-card {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+      color: #111827;
+      text-decoration: none;
+    }
+    .ranking-thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: 4px;
+      background: linear-gradient(180deg, #dbe3ef, #f8fafc);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+    .ranking-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .ranking-body {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+    .ranking-tag {
+      color: #dc2626;
+    }
+    .ranking-name {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.25;
+      font-weight: 800;
+      color: #111827;
+      word-break: break-word;
+    }
+    .ranking-price {
+      font-size: 14px;
+      color: #4b5563;
+      font-weight: 500;
+    }
+    .ranking-side {
+      display: grid;
+      gap: 16px;
+      align-content: space-between;
+      justify-items: end;
+      min-height: 72px;
+    }
+    .ranking-delta {
+      font-size: 14px;
+      font-weight: 800;
+      color: #059669;
+      white-space: nowrap;
+    }
+    .ranking-delta.down {
+      color: #dc2626;
+    }
+    .ranking-delta.flat {
+      color: #64748b;
+    }
+    .ranking-arrow {
+      font-size: 28px;
+      line-height: 1;
+      color: #c4c9d4;
+    }
+    .featured-section {
+      display: grid;
+      gap: 14px;
     }
     .today-hero-card {
       min-height: 0;
     }
-    .today-hero-link {
-      grid-template-columns: minmax(0, 1.3fr) minmax(260px, .9fr);
-      gap: 28px;
-      align-items: stretch;
-    }
-    .today-hero-content {
-      gap: 18px;
-    }
-    .today-hero-kicker {
-      padding: 7px 11px;
-      border-radius: 10px;
-      border: 0;
-      background: #d1fae5;
-      color: #047857;
-      letter-spacing: .08em;
-    }
-    .today-hero-name {
-      font-family: "Manrope", "Inter", "Noto Sans JP", sans-serif;
-      font-size: clamp(30px, 4vw, 46px);
-      line-height: 1;
-      letter-spacing: -.04em;
-    }
-    .today-hero-summary {
-      max-width: 48ch;
-      color: #4b5563;
-    }
-    .today-hero-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .today-hero-metrics {
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-    .today-hero-metric {
-      padding: 18px 20px;
-      border: 0;
-      border-radius: 20px;
-      background: #f3f5f7;
-    }
-    .today-hero-value {
-      font-family: "Manrope", "Inter", "Noto Sans JP", sans-serif;
-      letter-spacing: -.03em;
-    }
-    .today-hero-label {
-      letter-spacing: .12em;
-    }
-    .today-hero-cta {
-      min-height: 48px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #131b2e 0%, #3f465c 100%);
-      box-shadow: none;
-    }
-    .today-hero-cta:hover {
-      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.12);
-    }
-    .today-hero-media {
-      min-height: 220px;
-      border-radius: 24px;
-      background:
-        radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.14), transparent 42%),
-        linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
-      padding: 22px;
-      order: 2;
-    }
-    .today-hero-main {
-      display: grid;
-      gap: 18px;
-      align-content: start;
-    }
-    .today-hero-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-    .today-hero-tape {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      width: fit-content;
-      padding: 10px 14px;
-      border-radius: 14px;
-      background: #f3f5f7;
-      color: #475467;
-      font-size: 12px;
-      font-weight: 800;
-    }
-    .today-hero-tape strong {
-      color: #111827;
-      font-family: "Manrope", "Inter", sans-serif;
-      font-size: 15px;
-      letter-spacing: -.02em;
-    }
-    .trend-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-    }
-    .trend-panel {
-      padding: 24px;
-      border-radius: 24px;
-      background: #ffffff;
-    }
-    .highlight-title {
-      font-family: "Manrope", "Inter", "Noto Sans JP", sans-serif;
-      font-size: 18px;
-      letter-spacing: -.02em;
-    }
-    .home-section-more {
-      padding: 10px 14px;
-      border: 0;
-      border-radius: 12px;
-      background: #eef2f7;
-      box-shadow: none;
-    }
-    .trend-list {
-      gap: 10px;
-    }
-    .trend-item {
-      grid-template-columns: 54px minmax(0, 1fr);
-      gap: 12px;
-      padding: 14px;
-      border: 0;
-      border-radius: 18px;
-      background: #f7f9fb;
-      box-shadow: inset 0 0 0 1px rgba(198, 198, 205, 0.24);
-    }
-    .trend-item:hover {
-      transform: translateY(-1px);
-      border-color: transparent;
-      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
-    }
-    .trend-thumb {
-      width: 54px;
-      height: 54px;
-      border-radius: 14px;
-      background: linear-gradient(180deg, #ffffff 0%, #edf2f7 100%);
-    }
-    .trend-name {
-      font-size: 13px;
-      line-height: 1.4;
-      color: #0f172a;
-    }
-    .trend-price {
-      font-family: "Manrope", "Inter", sans-serif;
-      font-size: 18px;
-      letter-spacing: -.02em;
-    }
-    .trend-delta {
-      font-size: 12px;
-      letter-spacing: .04em;
-    }
-    .market-desk-card {
-      padding: 28px;
-      gap: 22px;
-      background:
-        linear-gradient(135deg, rgba(19, 27, 46, 0.03), rgba(255,255,255,0.94)),
-        #fff;
-    }
-    .market-desk-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 18px;
-    }
-    .market-desk-status {
-      min-width: 120px;
-      padding: 16px;
-      border-radius: 18px;
-      background: #f3f5f7;
-      display: grid;
-      gap: 6px;
-    }
-    .market-desk-status-label,
-    .strategy-note-kicker {
-      margin: 0;
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: .14em;
-      color: #6b7280;
-    }
-    .market-desk-status-value {
-      font-family: "Manrope", "Inter", sans-serif;
-      font-size: 24px;
-      line-height: 1;
-      color: #111827;
-      letter-spacing: -.03em;
-    }
-    .market-search-form {
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 14px;
-      align-items: center;
-    }
-    .market-search-input {
-      height: 60px;
-      padding: 0 20px;
-      border-radius: 16px;
-      border: 1px solid rgba(118, 119, 125, 0.18);
-      background: rgba(247, 249, 251, 0.92);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
-    }
-    .market-search-input:focus {
-      border-color: rgba(73, 124, 255, 0.5);
-      box-shadow: 0 0 0 4px rgba(73, 124, 255, 0.12);
-    }
-    .market-search-submit {
-      height: 60px;
-      padding: 0 22px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #131b2e 0%, #3f465c 100%);
-      box-shadow: none;
-    }
-    .market-route-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-    }
-    .market-route-grid .quick-link {
-      grid-template-columns: 48px minmax(0, 1fr);
-      align-items: start;
-      gap: 14px;
+    .featured-card {
       padding: 18px;
-      border-radius: 20px;
-      background: #f7f9fb;
-    }
-    .market-route-grid .quick-link::before {
-      display: none;
-    }
-    .market-route-grid .quick-link-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: linear-gradient(180deg, #ffffff 0%, #e9eef5 100%);
-      font-size: 20px;
-      color: #111827;
-    }
-    .market-route-grid .quick-link-title {
-      font-size: 16px;
-      line-height: 1.25;
-      color: #111827;
-    }
-    .market-route-grid .quick-link-copy {
-      font-size: 12px;
-      line-height: 1.65;
-      color: #667085;
-    }
-    .strategy-note {
-      padding: 20px 22px;
-      border-radius: 22px;
-      background: #131b2e;
-      color: rgba(255,255,255,.92);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #18233c 0%, #1b2234 100%);
+      color: #ffffff;
       display: grid;
-      gap: 10px;
-    }
-    .strategy-note-text {
-      margin: 0;
-      font-size: 14px;
-      line-height: 1.8;
-      font-weight: 500;
-    }
-    .pickup-card-shell {
-      padding: 28px;
-      background: #ffffff;
-    }
-    .daily-pick-card {
-      min-height: 0;
-    }
-    .market-overview-link {
-      display: grid;
-      gap: 22px;
-      color: #111827;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
       text-decoration: none;
     }
-    .market-overview-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      align-items: start;
-      flex-wrap: wrap;
-    }
-    .market-overview-copy {
+    .featured-media {
+      min-height: 170px;
+      border-radius: 4px;
+      background: rgba(255,255,255,.08);
+      overflow: hidden;
+      padding: 8px;
       display: grid;
-      gap: 8px;
+      place-items: center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
     }
-    .market-overview-kicker {
-      margin: 0;
-      font-size: 11px;
+    .featured-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 2px;
+    }
+    .featured-body {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+    .featured-badge {
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 4px;
+      background: #16a34a;
+      color: #f0fdf4;
+      font-size: 12px;
+      letter-spacing: .08em;
       font-weight: 900;
-      letter-spacing: .14em;
-      color: #6b7280;
+      text-transform: uppercase;
     }
-    .market-overview-title {
+    .featured-name {
       margin: 0;
       font-family: "Manrope", "Inter", "Noto Sans JP", sans-serif;
-      font-size: clamp(28px, 3.6vw, 44px);
-      line-height: 1;
-      letter-spacing: -.04em;
+      font-size: 24px;
+      line-height: 1.08;
+      letter-spacing: -.03em;
+      color: #ffffff;
     }
-    .market-overview-note {
-      margin: 0;
-      color: #667085;
-      font-size: 14px;
-      line-height: 1.7;
+    .featured-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
     }
-    .market-overview-change {
-      min-width: 160px;
-      padding: 18px 20px;
-      border-radius: 22px;
-      background: #f3f5f7;
-      display: grid;
-      gap: 6px;
-      align-content: start;
-    }
-    .market-overview-change-label,
-    .market-kpi-label {
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: .12em;
-      color: #6b7280;
-    }
-    .market-overview-change-value,
-    .market-kpi-value {
+    .featured-price {
       font-family: "Manrope", "Inter", sans-serif;
       font-size: 30px;
       line-height: 1;
       letter-spacing: -.03em;
+      color: #ffffff;
+    }
+    .featured-delta {
+      font-size: 16px;
+      font-weight: 900;
+      color: #6ee7b7;
+    }
+    .featured-delta.down {
+      color: #fca5a5;
+    }
+    .featured-delta.flat {
+      color: #cbd5e1;
+    }
+    .featured-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 4px;
+      background: #ffffff;
       color: #111827;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
     }
-    .market-overview-chart {
-      padding: 18px 20px;
-      border-radius: 24px;
-      background:
-        linear-gradient(180deg, rgba(19, 27, 46, 0.02), rgba(255,255,255,0.8)),
-        #f7f9fb;
-    }
-    .market-overview-svg {
-      width: 100%;
-      height: 160px;
-      display: block;
-    }
-    .market-kpi-grid {
+    .stats-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: 1fr 1fr;
       gap: 14px;
     }
-    .market-kpi {
-      padding: 18px 20px;
-      border-radius: 20px;
-      background: #f3f5f7;
+    .stat-card {
+      padding: 18px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #eef2f7 0%, #e9edf3 100%);
       display: grid;
+      gap: 12px;
+    }
+    .stat-card-value {
+      font-family: "Manrope", "Inter", sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: -.03em;
+      color: #111827;
+    }
+    .stat-card-bar {
+      height: 4px;
+      border-radius: 999px;
+      background: #d6dce6;
+      overflow: hidden;
+    }
+    .stat-card-bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: #047857;
+    }
+    .stat-card-note {
+      font-size: 13px;
+      color: #047857;
+      font-weight: 700;
+    }
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      z-index: 40;
+      width: min(100%, 480px);
+      transform: translateX(-50%);
+      padding: 12px 24px 18px;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.08);
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
     }
-    .market-kpi-meta {
-      color: #667085;
-      font-size: 12px;
-      line-height: 1.6;
-      font-weight: 600;
-    }
-    .market-overview-strategy {
-      padding: 20px 22px;
-      border-radius: 22px;
-      background: #eef2f7;
+    .bottom-nav-link {
       display: grid;
-      gap: 8px;
+      gap: 6px;
+      place-items: center;
+      text-decoration: none;
+      color: #94a3b8;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
     }
-    .market-overview-strategy-title {
-      margin: 0;
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: .14em;
-      color: #475467;
+    .bottom-nav-link.is-active {
+      color: #111827;
     }
-    .market-overview-strategy-text {
-      margin: 0;
-      color: #334155;
-      font-size: 14px;
-      line-height: 1.8;
+    .bottom-nav-icon {
+      font-size: 24px;
+      line-height: 1;
     }
     .sr-only {
       position: absolute;
@@ -1949,59 +1926,12 @@
       white-space: nowrap;
       border: 0;
     }
-    @media (max-width: 1120px) {
-      .home-top-grid {
-        grid-template-columns: 1fr;
-        grid-template-areas: none;
-      }
-      .trend-grid,
-      .market-route-grid,
-      .quick-links {
-        grid-template-columns: 1fr 1fr;
-      }
-      .today-hero-link,
-      .market-search-form {
-        grid-template-columns: 1fr;
-      }
-      .market-kpi-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    @media (max-width: 740px) {
+    @media (min-width: 768px) {
       body.home-page .container {
-        padding-top: 8px;
-        padding-bottom: 36px;
+        max-width: 560px;
       }
-      .today-hero-card-shell,
-      .market-desk-card,
-      .pickup-card-shell,
-      .trend-panel {
-        padding: 20px;
-      }
-      .market-desk-head,
-      .market-overview-header {
-        grid-template-columns: 1fr;
-        display: grid;
-      }
-      .trend-grid,
-      .market-route-grid,
-      .quick-links,
-      .market-kpi-grid {
-        grid-template-columns: 1fr;
-      }
-      .today-hero-link {
-        grid-template-columns: 1fr;
-      }
-      .today-hero-media {
-        order: 0;
-        min-height: 180px;
-      }
-      .market-overview-title,
-      .today-hero-name {
-        font-size: clamp(28px, 9vw, 36px);
-      }
-      .market-search-submit {
-        width: 100%;
+      .bottom-nav {
+        width: min(100%, 560px);
       }
     }
   </style>
@@ -2012,151 +1942,117 @@
 
   <div class="container">
     <div class="home-shell">
-      <div class="home-top-grid reveal-on-scroll">
-        <div class="home-top-sidebar">
-          <aside id="categoryNav" class="category-nav" aria-label="カテゴリー導線">
-            <div class="category-nav-head">
-              <p class="category-nav-kicker">CATEGORY</p>
-              <h2 class="category-nav-title">カテゴリー</h2>
-            </div>
-            <div class="category-nav-list">
-              <div class="category-nav-empty skeleton-block" style="min-height: 148px;"></div>
-            </div>
-          </aside>
+      <div class="market-appbar">
+        <div class="market-appbar-brand">
+          <span class="market-appbar-menu" aria-hidden="true">☰</span>
+          <h1 class="market-appbar-title">Sleeve Market</h1>
         </div>
-        <div class="home-top-main">
-          <section class="home-section is-hot home-top-ranking" aria-label="マーケットモジュール">
-            <div class="home-section-head">
-              <div>
-                <p class="home-category-pill">MARKET MODULES</p>
-                <h2 class="home-section-title">急騰・高騰率・高額帯を一覧で把握</h2>
-                <p class="home-section-copy">モバイルでも読みやすいウォッチリスト形式で、相場の主役をすぐ追えるようにしています。</p>
-              </div>
-            </div>
-            <div class="trend-grid">
-              <section class="trend-panel home-card">
-                <div class="highlight-head"><h3 class="highlight-title">急騰ウォッチ</h3><a class="home-section-more" href="./surge.html">一覧を見る</a></div>
-                <div id="highlightSurge" class="trend-list">
-                  <div class="trend-item">
-                    <div class="trend-thumb skeleton-block"></div>
-                    <div class="trend-body">
-                      <div class="hero-skeleton-copy skeleton-block"></div>
-                      <div class="hero-skeleton-copy skeleton-block" style="width:120px;"></div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-              <section class="trend-panel home-card">
-                <div class="highlight-head"><h3 class="highlight-title">値上がり率</h3><a class="home-section-more" href="./growth.html">一覧を見る</a></div>
-                <div id="highlightGrowth" class="trend-list">
-                  <div class="trend-item">
-                    <div class="trend-thumb skeleton-block"></div>
-                    <div class="trend-body">
-                      <div class="hero-skeleton-copy skeleton-block"></div>
-                      <div class="hero-skeleton-copy skeleton-block" style="width:120px;"></div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-              <section class="trend-panel home-card">
-                <div class="highlight-head"><h3 class="highlight-title">プレミア価格</h3><a class="home-section-more" href="./ranking.html">一覧を見る</a></div>
-                <div id="highlightPrice" class="trend-list">
-                  <div class="trend-item">
-                    <div class="trend-thumb skeleton-block"></div>
-                    <div class="trend-body">
-                      <div class="hero-skeleton-copy skeleton-block"></div>
-                      <div class="hero-skeleton-copy skeleton-block" style="width:120px;"></div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </section>
-          <section class="today-hero" aria-label="今日のスリーブ市場">
-            <div class="today-hero-head">
-              <div>
-                <p class="home-category-pill">MARKET OVERVIEW</p>
-                <h1 class="home-section-title">スリーブ市場の注目銘柄</h1>
-                <p class="home-section-copy">今週もっとも強く動いた銘柄を、価格・上昇率・出来高感覚と合わせて確認できます。</p>
-              </div>
-            </div>
-            <div class="today-hero-card-shell home-card">
-              <div id="todayHeroCard" class="today-hero-card">
-              <div class="hero-skeleton">
-                <div class="hero-skeleton-media skeleton-block"></div>
-                <div class="hero-skeleton-body">
-                  <div class="hero-skeleton-pill skeleton-block"></div>
-                  <div class="hero-skeleton-title skeleton-block"></div>
-                  <div class="hero-skeleton-copy skeleton-block"></div>
-                  <div class="hero-skeleton-metrics">
-                    <div class="hero-skeleton-metric skeleton-block"></div>
-                    <div class="hero-skeleton-metric skeleton-block"></div>
-                  </div>
-                </div>
-              </div>
-              </div>
-            </div>
-          </section>
-          <section class="home-section is-search home-top-search" aria-label="マーケットデスク">
-            <div class="home-search-card home-card market-desk-card">
-              <div class="market-desk-head">
-                <div>
-                  <p class="home-category-pill">SEARCH DESK</p>
-                  <h2 class="home-section-title">マーケットデスク</h2>
-                  <p class="home-section-copy">銘柄検索からランキング、急騰、指数ページまでをターミナル風の導線でまとめています。</p>
-                </div>
-                <div class="market-desk-status">
-                  <span class="market-desk-status-label">ROUTE</span>
-                  <strong class="market-desk-status-value">4 Modules</strong>
-                </div>
-              </div>
-              <form class="home-search-form market-search-form" action="./sleeves/" method="get">
-                <div class="home-search-field">
-                  <label class="sr-only" for="homeDeskSearch">スリーブ検索</label>
-                  <input id="homeDeskSearch" class="home-search-input market-search-input" type="search" name="q" placeholder="スリーブ名・キャラクター名で検索" autocomplete="off" />
-                </div>
-                <button class="home-search-submit market-search-submit" type="submit">銘柄を検索</button>
-              </form>
-              <div class="quick-links market-route-grid">
-                <a class="quick-link quick-link--search home-card" href="./sleeves/"><span class="quick-link-icon">⌕</span><div><h3 class="quick-link-title">図鑑検索</h3><p class="quick-link-copy">全銘柄を横断して条件検索</p></div></a>
-                <a class="quick-link quick-link--hot home-card" href="./surge.html"><span class="quick-link-icon">↗</span><div><h3 class="quick-link-title">急騰</h3><p class="quick-link-copy">直近で強く上昇した銘柄</p></div></a>
-                <a class="quick-link quick-link--value home-card" href="./ranking.html"><span class="quick-link-icon">¥</span><div><h3 class="quick-link-title">高額帯</h3><p class="quick-link-copy">現在価格の高い順で確認</p></div></a>
-                <a class="quick-link quick-link--value home-card" href="./index-market.html"><span class="quick-link-icon">∿</span><div><h3 class="quick-link-title">指数</h3><p class="quick-link-copy">市場全体のモメンタムを見る</p></div></a>
-              </div>
-              <div class="strategy-note">
-                <p class="strategy-note-kicker">STRATEGIST REPORT</p>
-                <p id="marketDeskNote" class="strategy-note-text">市場コメントを集計中です。直近の値動きと出来高から、今日の温度感を要約します。</p>
-              </div>
-            </div>
-          </section>
-
-          <section class="pickup-section home-top-market" aria-label="スリーブ指数">
-            <div class="home-section-head">
-              <div>
-                <p class="home-category-pill">MARKET INDEX</p>
-                <h2 class="home-section-title">スリーブ市場総合指数</h2>
-                <p class="home-section-copy">市場全体の変化率と、直近の出来高感をひと目で確認できる総合ビューです。</p>
-              </div>
-            </div>
-            <div class="pickup-card-shell home-card">
-              <div id="marketSnapshotCard" class="daily-pick-card">
-                <div class="daily-pick-skeleton">
-                  <div class="daily-pick-skeleton-media skeleton-block"></div>
-                  <div class="daily-pick-skeleton-body">
-                    <div class="daily-pick-skeleton-pill skeleton-block"></div>
-                    <div class="daily-pick-skeleton-title skeleton-block"></div>
-                    <div class="daily-pick-skeleton-copy skeleton-block"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
+        <div class="market-appbar-avatar" aria-hidden="true">🧑‍💼</div>
       </div>
+
+      <section aria-label="指数カード">
+        <div id="marketSnapshotCard" class="market-index-card home-card">
+          <div class="daily-pick-skeleton">
+            <div class="daily-pick-skeleton-body">
+              <div class="daily-pick-skeleton-pill skeleton-block"></div>
+              <div class="daily-pick-skeleton-title skeleton-block"></div>
+              <div class="daily-pick-skeleton-copy skeleton-block"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-actions" aria-label="ショートカット">
+        <a class="quick-action" href="./sleeves/">
+          <span class="quick-action-icon" aria-hidden="true">🗂️</span>
+          <span class="quick-action-label">Catalog</span>
+        </a>
+        <a class="quick-action" href="./surge.html">
+          <span class="quick-action-icon" aria-hidden="true">↗</span>
+          <span class="quick-action-label">Surge</span>
+        </a>
+        <a class="quick-action" href="./ranking.html">
+          <span class="quick-action-icon" aria-hidden="true">💎</span>
+          <span class="quick-action-label">High Price</span>
+        </a>
+        <a class="quick-action" href="./index-market.html">
+          <span class="quick-action-icon" aria-hidden="true">⌁</span>
+          <span class="quick-action-label">Analytics</span>
+        </a>
+      </section>
+
+      <section class="home-section" aria-label="最新ランキングTOP3">
+        <div class="section-heading">
+          <h2 class="home-section-title">最新ランキングTOP3</h2>
+          <a class="section-link" href="./ranking.html">View All</a>
+        </div>
+        <div id="latestRankingList" class="ranking-list">
+          <div class="ranking-card">
+            <div class="ranking-thumb skeleton-block"></div>
+            <div class="ranking-body">
+              <div class="hero-skeleton-copy skeleton-block"></div>
+              <div class="hero-skeleton-copy skeleton-block" style="width:120px;"></div>
+            </div>
+            <div class="ranking-side">
+              <div class="hero-skeleton-pill skeleton-block" style="width:52px;height:18px;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="featured-section" aria-label="急上昇トップスリーブ">
+        <div class="section-heading">
+          <h2 class="home-section-title">急上昇トップスリーブ</h2>
+        </div>
+        <div id="todayHeroCard" class="today-hero-card">
+          <div class="hero-skeleton">
+            <div class="hero-skeleton-media skeleton-block"></div>
+            <div class="hero-skeleton-body">
+              <div class="hero-skeleton-pill skeleton-block"></div>
+              <div class="hero-skeleton-title skeleton-block"></div>
+              <div class="hero-skeleton-copy skeleton-block"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-label="主要指標">
+        <div id="marketStatsGrid" class="stats-grid">
+          <div class="stat-card">
+            <div class="hero-skeleton-title skeleton-block" style="height:18px;width:90px;"></div>
+            <div class="hero-skeleton-title skeleton-block" style="height:34px;width:120px;"></div>
+            <div class="hero-skeleton-copy skeleton-block"></div>
+          </div>
+          <div class="stat-card">
+            <div class="hero-skeleton-title skeleton-block" style="height:18px;width:90px;"></div>
+            <div class="hero-skeleton-title skeleton-block" style="height:34px;width:120px;"></div>
+            <div class="hero-skeleton-copy skeleton-block"></div>
+          </div>
+        </div>
+      </section>
     </div>
 
     <div id="site-footer"></div>
   </div>
+
+  <nav class="bottom-nav" aria-label="下部ナビゲーション">
+    <a class="bottom-nav-link is-active" href="./index.html">
+      <span class="bottom-nav-icon" aria-hidden="true">⌂</span>
+      <span>Home</span>
+    </a>
+    <a class="bottom-nav-link" href="./ranking.html">
+      <span class="bottom-nav-icon" aria-hidden="true">▥</span>
+      <span>Rankings</span>
+    </a>
+    <a class="bottom-nav-link" href="./index-market.html">
+      <span class="bottom-nav-icon" aria-hidden="true">⌁</span>
+      <span>Index</span>
+    </a>
+    <a class="bottom-nav-link" href="./sleeves/">
+      <span class="bottom-nav-icon" aria-hidden="true">⌕</span>
+      <span>Search</span>
+    </a>
+  </nav>
 
   <script src="./assets/common.js"></script>
   <script>
@@ -2427,6 +2323,25 @@
         return "市場は底堅く推移しています。指数は大きく振れていないものの、上昇銘柄の裾野が広く、回転は継続しています。";
       }
       return "市場は横ばい圏です。指数は落ち着いており、ランキング上位と出来高上位を見比べながら主導銘柄を探す局面です。";
+    }
+
+    function renderMarketStats(stats) {
+      const el = document.getElementById("marketStatsGrid");
+      if (!el) return;
+      const volumeBar = Math.max(12, Math.min(100, stats.volume / 4));
+      const listingDelta = stats.activeCount ? Math.round((stats.risingCount / stats.activeCount) * 100) : 0;
+      el.innerHTML = `
+        <div class="stat-card">
+          <p class="stat-card-label">VOL (24H)</p>
+          <div class="stat-card-value">¥${escapeHtml((stats.volume / 10).toFixed(1))}M</div>
+          <div class="stat-card-bar"><span style="width:${escapeHtml(String(volumeBar))}%"></span></div>
+        </div>
+        <div class="stat-card">
+          <p class="stat-card-label">NEW LISTINGS</p>
+          <div class="stat-card-value">${escapeHtml(String(stats.activeCount))}</div>
+          <div class="stat-card-note">↑ ${escapeHtml(String(listingDelta))}% vs avg</div>
+        </div>
+      `;
     }
 
     function setText(id, value) {
@@ -3006,47 +2921,17 @@
       }
       const pct = topRow.pair?.prev?.price ? (topRow.diff / topRow.pair.prev.price) * 100 : null;
       const deltaClass = getDeltaClass(pct);
-      const growth30 = get30dGrowth(topRow.s);
-      const totalTrades = getTotalTradeCount(topRow.s);
       el.innerHTML = `
-        <a class="today-hero-link" href="${escapeHtml(getDetailHref(topRow.s.id ?? ""))}">
-          <div class="today-hero-content">
-            <div class="today-hero-main">
-              <div class="today-hero-bar">
-                <span class="today-hero-kicker">LIVE LEADER</span>
-                <span class="live-status-chip"><span class="live-status-dot" aria-hidden="true"></span>更新中</span>
-              </div>
-              <h2 class="today-hero-name">${escapeHtml(topRow.s.name ?? "")}</h2>
-              <p class="today-hero-summary">直近週で最も強く上昇した注目銘柄です。相場の先頭を走る1枚として、現在価格と伸び率を基準に追えます。</p>
-              <div class="today-hero-tape">
-                <span>主導モメンタム</span>
-                <strong class="${escapeHtml(deltaClass)}">${escapeHtml(formatPercent(pct))}</strong>
-              </div>
-              <div class="today-hero-actions">
-                <span class="today-hero-cta">詳細を見る</span>
-              </div>
+        <a class="featured-card" href="${escapeHtml(getDetailHref(topRow.s.id ?? ""))}">
+          <div class="featured-media">${topRow.s.imageUrl ? `<img src="${escapeHtml(topRow.s.imageUrl)}" alt="${escapeHtml(topRow.s.name ?? "")}" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
+          <div class="featured-body">
+            <span class="featured-badge">Hot Pick</span>
+            <h3 class="featured-name">${escapeHtml(topRow.s.name ?? "")}</h3>
+            <div class="featured-price-row">
+              <strong class="featured-price"${getCountupAttrs(topRow.pair.latest.price, "currency")}>${escapeHtml(`¥${topRow.pair.latest.price.toLocaleString()}`)}</strong>
+              <span class="featured-delta ${escapeHtml(deltaClass)}">${escapeHtml(formatPercent(pct))}</span>
             </div>
-          </div>
-          <div class="today-hero-side">
-            <div class="today-hero-media">${topRow.s.imageUrl ? `<img src="${escapeHtml(topRow.s.imageUrl)}" alt="${escapeHtml(topRow.s.name ?? "")}" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
-            <div class="today-hero-metrics">
-              <div class="today-hero-metric">
-                <span class="today-hero-label">現在価格</span>
-                <div class="today-hero-value"${getCountupAttrs(topRow.pair.latest.price, "currency")}>${escapeHtml(`${topRow.pair.latest.price.toLocaleString()}円`)}</div>
-              </div>
-              <div class="today-hero-metric">
-                <span class="today-hero-label">週間変化率</span>
-                <div class="today-hero-value ${escapeHtml(deltaClass)}"${getCountupAttrs(pct, "percent", deltaClass)}>${escapeHtml(formatPercent(pct))}</div>
-              </div>
-              <div class="today-hero-metric">
-                <span class="today-hero-label">30日モメンタム</span>
-                <div class="today-hero-value ${escapeHtml(getDeltaClass(growth30?.rate))}">${escapeHtml(formatPercent(growth30?.rate))}</div>
-              </div>
-              <div class="today-hero-metric">
-                <span class="today-hero-label">累計出来高</span>
-                <div class="today-hero-value">${escapeHtml(totalTrades == null ? "—" : `${Math.round(totalTrades).toLocaleString()}件`)}</div>
-              </div>
-            </div>
+            <span class="featured-cta">Market Analysis</span>
           </div>
         </a>
       `;
@@ -3054,42 +2939,54 @@
     }
 
     function renderTrendLists({ surgeRank, growthRank, priceRank }) {
-      const surgeEl = document.getElementById("highlightSurge");
-      const growthEl = document.getElementById("highlightGrowth");
-      const priceEl = document.getElementById("highlightPrice");
-      if (!surgeEl || !growthEl || !priceEl) return;
-
-      surgeEl.innerHTML = surgeRank.slice(0, 3).map(({ s, pair, diff }, index) => {
-        const rate = pair.prev?.price ? (diff / pair.prev.price) * 100 : null;
-        return buildRankSummaryItem({
-          sleeve: s,
-          rank: index + 1,
-          priceText: `${pair.latest.price.toLocaleString()}円`,
+      const listEl = document.getElementById("latestRankingList");
+      if (!listEl) return;
+      const cards = [];
+      if (surgeRank[0]) {
+        const rate = surgeRank[0].pair.prev?.price ? (surgeRank[0].diff / surgeRank[0].pair.prev.price) * 100 : null;
+        cards.push({
+          sleeve: surgeRank[0].s,
+          tag: "Weekly Surge",
+          priceText: `¥${surgeRank[0].pair.latest.price.toLocaleString()}`,
           deltaText: formatPercent(rate),
           deltaClass: getDeltaClass(rate)
         });
-      }).join("") || `<div class="home-empty">急上昇データがありません。</div>`;
-
-      growthEl.innerHTML = growthRank.slice(0, 3).map(({ s, g }, index) => buildRankSummaryItem({
-        sleeve: s,
-        rank: index + 1,
-        priceText: `${g.latest.price.toLocaleString()}円`,
-        deltaText: formatPercent(g.rate),
-        deltaClass: getDeltaClass(g.rate)
-      })).join("") || `<div class="home-empty">高騰率データがありません。</div>`;
-
-      priceEl.innerHTML = (priceRank || []).slice(0, 3).map((sleeve, index) => {
-        const pair = getWeeklyPair(sleeve);
+      }
+      if (growthRank[0]) {
+        cards.push({
+          sleeve: growthRank[0].s,
+          tag: "High Growth",
+          priceText: `¥${growthRank[0].g.latest.price.toLocaleString()}`,
+          deltaText: formatPercent(growthRank[0].g.rate),
+          deltaClass: getDeltaClass(growthRank[0].g.rate)
+        });
+      }
+      if (priceRank[0]) {
+        const pair = getWeeklyPair(priceRank[0]);
         const prevPrice = pair?.prev?.price ?? null;
         const rate = prevPrice ? ((pair.latest.price - prevPrice) / prevPrice) * 100 : null;
-        return buildRankSummaryItem({
-          sleeve,
-          rank: index + 1,
-          priceText: pair?.latest?.price == null ? "—" : `${pair.latest.price.toLocaleString()}円`,
+        cards.push({
+          sleeve: priceRank[0],
+          tag: "Premium Price",
+          priceText: pair?.latest?.price == null ? "—" : `¥${pair.latest.price.toLocaleString()}`,
           deltaText: formatPercent(rate),
           deltaClass: getDeltaClass(rate)
         });
-      }).join("") || `<div class="home-empty">価格ランキングデータがありません。</div>`;
+      }
+      listEl.innerHTML = cards.map((card) => `
+        <a class="ranking-card" href="${escapeHtml(getDetailHref(card.sleeve.id ?? ""))}">
+          <div class="ranking-thumb">${card.sleeve.imageUrl ? `<img src="${escapeHtml(card.sleeve.imageUrl)}" alt="${escapeHtml(card.sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
+          <div class="ranking-body">
+            <p class="ranking-tag">${escapeHtml(card.tag)}</p>
+            <h3 class="ranking-name">${escapeHtml(card.sleeve.name ?? "")}</h3>
+            <div class="ranking-price">${escapeHtml(card.priceText)}</div>
+          </div>
+          <div class="ranking-side">
+            <span class="ranking-delta ${escapeHtml(card.deltaClass)}">${escapeHtml(card.deltaText)}</span>
+            <span class="ranking-arrow" aria-hidden="true">›</span>
+          </div>
+        </a>
+      `).join("") || `<div class="home-empty">ランキングデータがありません。</div>`;
     }
 
     function renderMarketSnapshot(marketSeries, sleeves) {
@@ -3101,63 +2998,35 @@
       }
       const latest = marketSeries[marketSeries.length - 1];
       const rateClass = getDeltaClass(latest.rate);
-      const recent = marketSeries.slice(-18);
-      const points = buildSparklinePoints(recent.map((row) => row.index), 640, 140);
+      const recent = marketSeries.slice(-6);
       const stats = buildMarketStats(Array.isArray(sleeves) ? sleeves : [], marketSeries);
-      const strategistText = buildStrategistText(stats);
-      const volumeRowsHtml = stats.topVolume.map((row) => `
-        <div class="market-kpi">
-          <span class="market-kpi-label">${escapeHtml(row.sleeve.name ?? "")}</span>
-          <strong class="market-kpi-value">${escapeHtml(`${Math.round(row.latestCount).toLocaleString()}件`)}</strong>
-          <span class="market-kpi-meta">${escapeHtml(row.pair.latest.price.toLocaleString())}円 / ${escapeHtml(formatPercent(row.rate))}</span>
-        </div>
-      `).join("");
-      const noteEl = document.getElementById("marketDeskNote");
-      if (noteEl) noteEl.textContent = strategistText;
+      const max = Math.max(...recent.map((row) => row.index));
+      const min = Math.min(...recent.map((row) => row.index));
+      const barsHtml = recent.map((row, index) => {
+        const ratio = max === min ? 0.64 : 0.32 + (((row.index - min) / (max - min)) * 0.58);
+        const activeClass = index === recent.length - 1 ? " is-active" : "";
+        return `<div class="market-bar${activeClass}" style="height:${escapeHtml(String((ratio * 100).toFixed(1)))}%"></div>`;
+      }).join("");
+      const health = latest.rate >= 1 ? "Bullish" : latest.rate <= -1 ? "Bearish" : "Neutral";
       el.innerHTML = `
         <a class="market-overview-link" href="./index-market.html">
-          <div class="market-overview-header">
-            <div class="market-overview-copy">
-              <p class="market-overview-kicker">SLEEVE MARKET INDEX</p>
-              <h3 class="market-overview-title">${escapeHtml(latest.index.toFixed(1))}</h3>
-              <p class="market-overview-note">市場全体の価格変化を集約したホーム用インデックスです。詳細ページでは時系列比較も確認できます。</p>
+          <div class="market-index-top">
+            <div>
+              <p class="market-index-kicker">Sleeve Index</p>
+              <h2 class="market-index-value">${escapeHtml(latest.index.toFixed(2))}</h2>
             </div>
-            <div class="market-overview-change">
-              <span class="market-overview-change-label">WEEKLY CHANGE</span>
-              <strong class="market-overview-change-value ${escapeHtml(rateClass)}">${escapeHtml(formatPercent(latest.rate))}</strong>
-              <span class="market-kpi-meta">${escapeHtml(stats.latestWeek || "")} 時点</span>
-            </div>
+            <div class="market-index-change ${escapeHtml(rateClass)}">${escapeHtml(formatPercent(latest.rate))}</div>
           </div>
-          <div class="market-overview-chart">
-            <svg class="market-overview-svg" viewBox="0 0 640 140" preserveAspectRatio="none" aria-hidden="true">
-              <polyline fill="none" stroke="#d7dee7" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" points="${escapeHtml(points)}"></polyline>
-              <polyline fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" points="${escapeHtml(points)}"></polyline>
-            </svg>
+          <div class="market-index-chart">
+            <div class="market-bars" aria-hidden="true">${barsHtml}</div>
           </div>
-          <div class="market-kpi-grid">
-            <div class="market-kpi">
-              <span class="market-kpi-label">上昇銘柄</span>
-              <strong class="market-kpi-value">${escapeHtml(`${stats.risingCount.toLocaleString()}件`)}</strong>
-              <span class="market-kpi-meta">直近週でプラス推移した銘柄数</span>
-            </div>
-            <div class="market-kpi">
-              <span class="market-kpi-label">稼働銘柄</span>
-              <strong class="market-kpi-value">${escapeHtml(`${stats.activeCount.toLocaleString()}件`)}</strong>
-              <span class="market-kpi-meta">直近週データがある銘柄数</span>
-            </div>
-            <div class="market-kpi">
-              <span class="market-kpi-label">直近出来高</span>
-              <strong class="market-kpi-value">${escapeHtml(`${stats.volume.toLocaleString()}件`)}</strong>
-              <span class="market-kpi-meta">全銘柄の最新週カウント合計</span>
-            </div>
+          <div class="market-index-meta">
+            <div class="market-index-health">Market Health: <strong>${escapeHtml(health)}</strong></div>
+            <div>UPDATED ${escapeHtml(String(recent.length * 2))}M AGO</div>
           </div>
-          <div class="market-overview-strategy">
-            <p class="market-overview-strategy-title">STRATEGIST VIEW</p>
-            <p class="market-overview-strategy-text">${escapeHtml(strategistText)}</p>
-          </div>
-          ${volumeRowsHtml ? `<div class="market-kpi-grid">${volumeRowsHtml}</div>` : ""}
         </a>
       `;
+      renderMarketStats(stats);
     }
 
     function runDeferred(task) {
@@ -3207,29 +3076,9 @@
         return g ? { s, g } : null;
       }).filter(Boolean).sort((a, b) => b.g.rate - a.g.rate).slice(0, 10);
 
-      const homeDeskSearch = document.getElementById("homeDeskSearch");
-      if (homeDeskSearch && window.common && typeof window.common.wireSleeveAutocomplete === "function") {
-        window.common.wireSleeveAutocomplete(homeDeskSearch, {
-          maxItems: 6,
-          anchorEl: homeDeskSearch.closest(".home-search-field") || undefined
-        });
-      }
-
       renderTodayHero(surgeRank[0] || null);
       renderTrendLists({ surgeRank, growthRank, priceRank });
       initScrollReveal();
-
-      if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
-        window.common.ensureCategoryNavsRendered(sleeves).catch(() => {});
-      }
-
-      const categoryRoot = document.getElementById("categoryNav");
-      if (categoryRoot && window.common && typeof window.common.renderCategoryNav === "function") {
-        const hasItems = window.common.renderCategoryNav(sleeves, categoryRoot);
-        categoryRoot.hidden = !hasItems;
-      } else {
-        renderCategoryNav(sleeves);
-      }
 
       runDeferred(() => {
         const marketSeries = buildHomeMarketIndexSeries(sleeves);
@@ -3239,7 +3088,7 @@
 
     main().catch((error) => {
       console.error(error);
-      ["todayHeroCard", "highlightSurge", "highlightGrowth", "highlightPrice", "marketSnapshotCard", "categoryNav"].forEach((id) => {
+      ["todayHeroCard", "latestRankingList", "marketSnapshotCard", "marketStatsGrid"].forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = `<div class="home-empty">トップページのデータ読み込みに失敗しました。時間をおいて再度お試しください。</div>`;
       });
