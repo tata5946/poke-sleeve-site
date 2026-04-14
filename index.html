@@ -2235,19 +2235,10 @@
       border-radius: 999px;
       background: #111827;
     }
-    .topbar-utils {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-left: auto;
-      color: #64748b;
-      font-size: 20px;
-    }
     .mobile-bottom-nav {
       display: none;
     }
-    .dashboard-right,
-    .strategist-card {
+    .topbar-utils {
       display: none;
     }
     .dashboard-content {
@@ -2684,9 +2675,6 @@
         background: rgba(241, 245, 249, 0.95);
       }
       .topbar-tab.is-active::after {
-        display: none;
-      }
-      .topbar-utils {
         display: none;
       }
       .dashboard-content {
@@ -3920,20 +3908,6 @@
       window.setTimeout(task, 32);
     }
 
-    function normalizeStaticLabels() {
-      const policyTab = document.querySelector('.topbar-tab[href="./policy.html"]');
-      if (policyTab) policyTab.textContent = "\u30D7\u30E9\u30A4\u30D0\u30B7\u30FC\u30DD\u30EA\u30B7\u30FC";
-
-      const moversTitle = document.querySelector(".movers-title");
-      if (moversTitle) moversTitle.textContent = "\u6025\u4E0A\u6607\u30B9\u30EA\u30FC\u30D6 (Movers & Shakers)";
-
-      const moversHead = document.querySelectorAll(".movers-table-head > div");
-      if (moversHead[2]) moversHead[2].textContent = "\u524D\u9031\u6BD4";
-
-      const strategist = document.querySelector(".dashboard-right");
-      if (strategist) strategist.remove();
-    }
-
     function wireDashboardSearch() {
       const input = document.getElementById("dashboardSearchInput");
       if (!input || input.dataset.dashboardSearchWired === "1") return;
@@ -4024,7 +3998,6 @@
       if (!(window.common && typeof window.common.loadData === "function")) {
         throw new Error("共通データローダーの初期化に失敗しました。");
       }
-      normalizeStaticLabels();
       wireDashboardSearch();
       const data = await loadHomePrimaryData();
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
