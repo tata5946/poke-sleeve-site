@@ -2243,6 +2243,13 @@
       color: #64748b;
       font-size: 20px;
     }
+    .mobile-bottom-nav {
+      display: none;
+    }
+    .dashboard-right,
+    .strategist-card {
+      display: none;
+    }
     .dashboard-content {
       padding: 28px;
       display: grid;
@@ -2512,7 +2519,7 @@
     }
     .dashboard-lower {
       display: grid;
-      grid-template-columns: minmax(0, 1.6fr) 340px;
+      grid-template-columns: minmax(0, 1fr);
       gap: 24px;
       align-items: start;
     }
@@ -2629,54 +2636,6 @@
       font-weight: 800;
       width: fit-content;
     }
-    .dashboard-right {
-      display: grid;
-      gap: 22px;
-    }
-    .strategist-card {
-      padding: 26px;
-      background: linear-gradient(180deg, #162038 0%, #182236 100%);
-      color: #fff;
-    }
-    .strategist-kicker {
-      margin: 0 0 18px;
-      color: rgba(226,232,240,.92);
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: .08em;
-    }
-    .strategist-title {
-      margin: 0;
-      font-family: "Inter", "Noto Sans JP", sans-serif;
-      font-size: 40px;
-      line-height: 1.15;
-      letter-spacing: -.04em;
-      color: #fff;
-    }
-    .strategist-copy {
-      margin: 18px 0 0;
-      color: rgba(226,232,240,.86);
-      font-size: 15px;
-      line-height: 1.9;
-    }
-    .strategist-author {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 24px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(226,232,240,.12);
-      color: rgba(226,232,240,.9);
-      font-size: 14px;
-    }
-    .strategist-author-avatar {
-      width: 34px;
-      height: 34px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      background: rgba(255,255,255,.08);
-    }
     @media (max-width: 1280px) {
       .dashboard-shell {
         grid-template-columns: 240px minmax(0, 1fr);
@@ -2696,12 +2655,85 @@
       .dashboard-sidebar {
         display: none;
       }
+      .dashboard-main {
+        padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+      }
       .dashboard-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
         flex-wrap: wrap;
+        gap: 14px;
+        padding: 14px 16px 12px;
+        backdrop-filter: blur(18px);
       }
       .topbar-tabs {
-        order: 2;
         width: 100%;
+        order: 2;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .topbar-tab {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 12px;
+        border-radius: 999px;
+        background: rgba(241, 245, 249, 0.95);
+      }
+      .topbar-tab.is-active::after {
+        display: none;
+      }
+      .topbar-utils {
+        display: none;
+      }
+      .dashboard-content {
+        padding: 16px;
+        gap: 18px;
+      }
+      .hero-main-card,
+      .hero-side-card,
+      .kpi-card,
+      .movers-card {
+        border-radius: 22px;
+      }
+      .hero-main-card,
+      .hero-side-card,
+      .kpi-card {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+      .hero-main-card {
+        padding-top: 20px;
+        padding-bottom: 18px;
+      }
+      .hero-chart-card {
+        padding: 16px;
+      }
+      .hero-index-value {
+        font-size: clamp(40px, 12vw, 56px);
+      }
+      .hero-index-chip {
+        min-height: 36px;
+        padding: 0 12px;
+      }
+      .hero-chart-axis {
+        font-size: 11px;
+      }
+      .dashboard-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .kpi-card {
+        padding: 18px;
+      }
+      .kpi-label {
+        font-size: 13px;
+      }
+      .kpi-value {
+        font-size: clamp(28px, 8vw, 38px);
       }
       .movers-table-head,
       .movers-row {
@@ -2710,8 +2742,96 @@
       .movers-table-head {
         display: none;
       }
+      .movers-card {
+        padding: 18px 14px 14px;
+      }
+      .movers-head {
+        padding: 0 6px 14px;
+        align-items: end;
+      }
+      .movers-title {
+        font-size: clamp(24px, 7vw, 30px);
+      }
+      .movers-row {
+        gap: 14px;
+        padding: 18px;
+        margin-bottom: 12px;
+        border: 0;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(248, 250, 252, 0.98) 0%, rgba(255,255,255,0.98) 100%);
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.06);
+      }
+      .movers-main {
+        grid-template-columns: 84px minmax(0, 1fr);
+        gap: 14px;
+      }
+      .movers-thumb {
+        width: 84px;
+        height: 84px;
+        border-radius: 16px;
+      }
+      .movers-name {
+        font-size: 17px;
+      }
+      .movers-price,
+      .movers-delta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .movers-price::before,
+      .movers-delta::before {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .04em;
+      }
+      .movers-price::before {
+        content: "最新週価格";
+      }
+      .movers-delta::before {
+        content: "前週比";
+      }
       .movers-action {
-        margin-top: 6px;
+        width: 100%;
+        min-height: 48px;
+        margin-top: 0;
+        border-radius: 14px;
+      }
+      .mobile-bottom-nav {
+        position: fixed;
+        left: 12px;
+        right: 12px;
+        bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+        z-index: 30;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        padding: 10px;
+        border-radius: 20px;
+        background: rgba(255,255,255,.92);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 18px 38px rgba(15, 23, 42, 0.14);
+      }
+      .mobile-bottom-link {
+        min-height: 52px;
+        display: grid;
+        place-items: center;
+        gap: 4px;
+        border-radius: 14px;
+        color: #5b6779;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .mobile-bottom-link.is-active {
+        background: #111827;
+        color: #fff;
+      }
+      .mobile-bottom-link span[aria-hidden="true"] {
+        font-size: 18px;
+        line-height: 1;
       }
     }
   </style>
@@ -2861,6 +2981,12 @@
           </aside>
         </section>
       </div>
+      <nav class="mobile-bottom-nav" aria-label="モバイルナビゲーション">
+        <a class="mobile-bottom-link is-active" href="./index.html"><span aria-hidden="true">⌂</span><span>ホーム</span></a>
+        <a class="mobile-bottom-link" href="./surge.html"><span aria-hidden="true">↗</span><span>急上昇</span></a>
+        <a class="mobile-bottom-link" href="./index-market.html"><span aria-hidden="true">◔</span><span>市場</span></a>
+        <a class="mobile-bottom-link" href="./policy.html"><span aria-hidden="true">○</span><span>プライバシー</span></a>
+      </nav>
     </main>
   </div>
 
@@ -2933,12 +3059,6 @@
       }
     }
     async function loadHomePrimaryData() {
-      const gasUrl = String(window.GAS_URL || "").trim();
-      if (gasUrl) {
-        try {
-          return await fetchRankingJsonWithTimeout(gasUrl, { timeoutMs: 12000, cacheMode: "no-store" });
-        } catch (_) { }
-      }
       return await window.common.loadData();
     }
 
@@ -3774,6 +3894,8 @@
             </div>
           </a>
         `;
+        const chipEl = mainEl.querySelector(".hero-index-chip");
+        if (chipEl) chipEl.textContent = `${formatPercent(latest.rate)}\uFF08\u524D\u9031\u6BD4\uFF09`;
       }
       if (sideEl) {
         sideEl.innerHTML = `
@@ -3793,10 +3915,13 @@
           <p class="sentiment-copy">${escapeHtml(strategistText)}</p>
         `;
         sideEl.style.setProperty("--sentiment-progress", `${sentimentScore}%`);
+        const updatedEl = sideEl.querySelector(".sentiment-updated");
+        if (updatedEl) {
+          const m = String(stats.latestWeek || "").match(/^(?:\d{4})-(\d{2})-(\d{2})$/);
+          updatedEl.textContent = m ? `\u96C6\u8A08\u9031 ${Number(m[1])}/${Number(m[2])}` : (stats.latestWeek ? `\u96C6\u8A08\u9031 ${stats.latestWeek}` : "\u96C6\u8A08\u9031 \u672A\u53CD\u6620");
+        }
       }
       renderMarketStats(stats);
-      const strategistNote = document.getElementById("strategistNoteText");
-      if (strategistNote) strategistNote.textContent = strategistText;
     }
 
     function runDeferred(task) {
@@ -3807,18 +3932,40 @@
       window.setTimeout(task, 32);
     }
 
+    function normalizeStaticLabels() {
+      const policyTab = document.querySelector('.topbar-tab[href="./policy.html"]');
+      if (policyTab) policyTab.textContent = "\u30D7\u30E9\u30A4\u30D0\u30B7\u30FC\u30DD\u30EA\u30B7\u30FC";
+
+      const moversTitle = document.querySelector(".movers-title");
+      if (moversTitle) moversTitle.textContent = "\u6025\u4E0A\u6607\u30B9\u30EA\u30FC\u30D6 (Movers & Shakers)";
+
+      const moversHead = document.querySelectorAll(".movers-table-head > div");
+      if (moversHead[2]) moversHead[2].textContent = "\u524D\u9031\u6BD4";
+
+      const strategist = document.querySelector(".dashboard-right");
+      if (strategist) strategist.remove();
+    }
+
     function wireDashboardSearch() {
       const input = document.getElementById("dashboardSearchInput");
       if (!input || input.dataset.dashboardSearchWired === "1") return;
       input.dataset.dashboardSearchWired = "1";
 
-      if (window.common && typeof window.common.wireSleeveAutocomplete === "function") {
-        window.common.wireSleeveAutocomplete(input, {
-          minChars: 1,
-          maxItems: 8,
-          anchorEl: input.closest(".topbar-search")
-        });
-      }
+      let autocompleteWired = false;
+      const wireAutocomplete = () => {
+        if (autocompleteWired) return;
+        autocompleteWired = true;
+        if (window.common && typeof window.common.wireSleeveAutocomplete === "function") {
+          window.common.wireSleeveAutocomplete(input, {
+            minChars: 1,
+            maxItems: 8,
+            anchorEl: input.closest(".topbar-search")
+          });
+        }
+      };
+
+      input.addEventListener("focus", wireAutocomplete, { once: true });
+      input.addEventListener("pointerdown", wireAutocomplete, { once: true });
 
       input.addEventListener("keydown", (event) => {
         if (event.key !== "Enter") return;
@@ -3889,6 +4036,7 @@
       if (!(window.common && typeof window.common.loadData === "function")) {
         throw new Error("共通データローダーの初期化に失敗しました。");
       }
+      normalizeStaticLabels();
       wireDashboardSearch();
       const data = await loadHomePrimaryData();
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
