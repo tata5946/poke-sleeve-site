@@ -2934,8 +2934,8 @@
               <a class="movers-link" href="./surge.html">すべて表示</a>
             </div>
             <div class="movers-table-head">
-              <div>銘柄</div>
-              <div>現在価格</div>
+              <div>スリーブ</div>
+              <div>最新週価格</div>
               <div>前週比</div>
               <div>アクション</div>
             </div>
@@ -2955,6 +2955,59 @@
             </div>
           </div>
 
+          <div class="movers-card">
+            <div class="movers-head">
+              <h2 class="movers-title">価格ランキング</h2>
+              <a class="movers-link" href="./ranking.html">すべて表示</a>
+            </div>
+            <div class="movers-table-head">
+              <div>スリーブ</div>
+              <div>最新週価格</div>
+              <div>前週比</div>
+              <div>アクション</div>
+            </div>
+            <div id="priceTableBody">
+              <div class="movers-row">
+                <div class="movers-main">
+                  <div class="movers-thumb skeleton-block"></div>
+                  <div>
+                    <div class="hero-skeleton-copy skeleton-block"></div>
+                    <div class="hero-skeleton-copy skeleton-block" style="width:140px;"></div>
+                  </div>
+                </div>
+                <div class="hero-skeleton-copy skeleton-block" style="height:24px;"></div>
+                <div class="hero-skeleton-copy skeleton-block" style="height:24px;"></div>
+                <div class="hero-skeleton-pill skeleton-block" style="height:40px;width:90px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="movers-card">
+            <div class="movers-head">
+              <h2 class="movers-title">高騰率ランキング</h2>
+              <a class="movers-link" href="./growth.html">すべて表示</a>
+            </div>
+            <div class="movers-table-head">
+              <div>スリーブ</div>
+              <div>最新週価格</div>
+              <div>30日騰落率</div>
+              <div>アクション</div>
+            </div>
+            <div id="growthTableBody">
+              <div class="movers-row">
+                <div class="movers-main">
+                  <div class="movers-thumb skeleton-block"></div>
+                  <div>
+                    <div class="hero-skeleton-copy skeleton-block"></div>
+                    <div class="hero-skeleton-copy skeleton-block" style="width:140px;"></div>
+                  </div>
+                </div>
+                <div class="hero-skeleton-copy skeleton-block" style="height:24px;"></div>
+                <div class="hero-skeleton-copy skeleton-block" style="height:24px;"></div>
+                <div class="hero-skeleton-pill skeleton-block" style="height:40px;width:90px;"></div>
+              </div>
+            </div>
+          </div>
         </section>
       </div>
       <nav class="mobile-bottom-nav" aria-label="モバイルナビゲーション">
@@ -3798,6 +3851,69 @@
       `).join("") || `<div class="home-empty">ランキングデータがありません。</div>`;
     }
 
+    function buildRankingRows(rows) {
+      return rows.map((row) => `
+        <div class="movers-row">
+          <a class="movers-main" href="${escapeHtml(getDetailHref(row.sleeve.id ?? ""))}">
+            <div class="movers-thumb">${row.sleeve.imageUrl ? `<img src="${escapeHtml(row.sleeve.imageUrl)}" alt="${escapeHtml(row.sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
+            <div>
+              <p class="movers-name">${escapeHtml(row.sleeve.name ?? "")}</p>
+              <p class="movers-meta">${escapeHtml(row.meta)}</p>
+            </div>
+          </a>
+          <div class="movers-price">${escapeHtml(row.priceText)}</div>
+          <div class="movers-delta ${escapeHtml(row.deltaClass)}">${escapeHtml(row.deltaText)}</div>
+          <a class="movers-action" href="${escapeHtml(getDetailHref(row.sleeve.id ?? ""))}">詳細表示</a>
+        </div>
+      `).join("") || `<div class="home-empty">ランキングデータがありません。</div>`;
+    }
+
+    function renderTrendLists({ surgeRank, growthRank, priceRank }) {
+      const surgeEl = document.getElementById("moversTableBody");
+      const priceEl = document.getElementById("priceTableBody");
+      const growthEl = document.getElementById("growthTableBody");
+
+      if (surgeEl) {
+        const rows = surgeRank.slice(0, 3).map((row, index) => {
+          const rate = row.pair.prev?.price ? (row.diff / row.pair.prev.price) * 100 : null;
+          return {
+            sleeve: row.s,
+            meta: `急上昇 ${index + 1}位`,
+            priceText: `¥${row.pair.latest.price.toLocaleString()}`,
+            deltaText: formatPercent(rate),
+            deltaClass: getDeltaClass(rate)
+          };
+        });
+        surgeEl.innerHTML = buildRankingRows(rows);
+      }
+
+      if (priceEl) {
+        const rows = priceRank.slice(0, 3).map((sleeve, index) => {
+          const pair = getWeeklyPair(sleeve);
+          const rate = pair?.prev?.price ? ((pair.latest.price - pair.prev.price) / pair.prev.price) * 100 : null;
+          return {
+            sleeve,
+            meta: `価格 ${index + 1}位`,
+            priceText: pair?.latest?.price != null ? `¥${pair.latest.price.toLocaleString()}` : "—",
+            deltaText: formatPercent(rate),
+            deltaClass: getDeltaClass(rate)
+          };
+        });
+        priceEl.innerHTML = buildRankingRows(rows);
+      }
+
+      if (growthEl) {
+        const rows = growthRank.slice(0, 3).map((row, index) => ({
+          sleeve: row.s,
+          meta: `高騰率 ${index + 1}位`,
+          priceText: row.g?.latest?.price != null ? `¥${row.g.latest.price.toLocaleString()}` : "—",
+          deltaText: formatPercent(row.g?.rate ?? null),
+          deltaClass: getDeltaClass(row.g?.rate ?? null)
+        }));
+        growthEl.innerHTML = buildRankingRows(rows);
+      }
+    }
+
     function renderMarketSnapshot(marketSeries, sleeves) {
       const mainEl = document.getElementById("marketSnapshotCard");
       const sideEl = document.getElementById("marketSentimentCard");
@@ -4033,7 +4149,7 @@
 
     main().catch((error) => {
       console.error(error);
-      ["marketSnapshotCard", "marketSentimentCard", "marketStatsGrid", "moversTableBody"].forEach((id) => {
+      ["marketSnapshotCard", "marketSentimentCard", "marketStatsGrid", "moversTableBody", "priceTableBody", "growthTableBody"].forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = `<div class="home-empty">トップページのデータ読み込みに失敗しました。時間をおいて再度お試しください。</div>`;
       });
