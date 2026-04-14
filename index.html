@@ -2511,12 +2511,12 @@
     .dashboard-lower {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 28px;
+      gap: 24px;
       align-items: start;
     }
     .movers-card {
       position: relative;
-      padding: 24px 18px 18px;
+      padding: 18px 14px 12px;
       overflow: hidden;
       background:
         radial-gradient(circle at top left, rgba(255,255,255,.9), transparent 42%),
@@ -2553,14 +2553,14 @@
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 16px;
-      padding: 4px 6px 18px;
+      gap: 12px;
+      padding: 2px 4px 12px;
     }
     .movers-title {
       margin: 0;
       font-family: "Manrope", "Inter", "Noto Sans JP", sans-serif;
-      font-size: 26px;
-      line-height: 1.15;
+      font-size: 23px;
+      line-height: 1.12;
       letter-spacing: -.03em;
       color: #111827;
     }
@@ -2568,7 +2568,7 @@
     .dashboard-lower > .movers-card:nth-child(2) .movers-title::before,
     .dashboard-lower > .movers-card:nth-child(3) .movers-title::before {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       color: #475569;
       font-size: 11px;
       font-weight: 800;
@@ -2587,43 +2587,43 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 40px;
-      padding: 0 14px;
+      min-height: 36px;
+      padding: 0 12px;
       border-radius: 999px;
       background: rgba(255,255,255,.86);
       color: #0f172a;
       text-decoration: none;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       white-space: nowrap;
     }
     .movers-row {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      gap: 16px;
-      padding: 18px;
+      gap: 10px;
+      padding: 12px;
     }
     .movers-table-head {
       display: none;
     }
     .movers-row {
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       border: 0;
-      border-radius: 24px;
+      border-radius: 18px;
       background: rgba(255,255,255,.94);
-      box-shadow: 0 18px 32px rgba(15, 23, 42, 0.07);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.05);
     }
     .movers-main {
       display: grid;
-      grid-template-columns: 112px minmax(0, 1fr);
-      gap: 20px;
-      align-items: start;
+      grid-template-columns: 84px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
       min-width: 0;
     }
     .movers-thumb {
-      width: 112px;
-      height: 112px;
-      border-radius: 22px;
+      width: 84px;
+      height: 84px;
+      border-radius: 18px;
       overflow: hidden;
       background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
       box-shadow: inset 0 0 0 1px rgba(148,163,184,.14), 0 10px 22px rgba(15, 23, 42, 0.06);
@@ -2632,56 +2632,56 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      padding: 8px;
+      padding: 6px;
     }
     .movers-copy {
       display: grid;
-      gap: 10px;
+      gap: 6px;
       min-width: 0;
     }
     .movers-rank {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 30px;
-      padding: 0 12px;
+      min-height: 24px;
+      padding: 0 10px;
       width: fit-content;
       border-radius: 999px;
       background: #e2e8f0;
       color: #0f172a;
       font-family: "Manrope", "Inter", sans-serif;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       letter-spacing: .08em;
     }
     .movers-name {
       margin: 0;
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 800;
       color: #111827;
-      line-height: 1.4;
+      line-height: 1.3;
     }
     .movers-meta {
       margin: 0;
-      font-size: 13px;
+      font-size: 12px;
       color: #64748b;
     }
     .movers-stats {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+      gap: 10px;
     }
     .movers-stat {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      padding: 14px 16px;
-      border-radius: 18px;
+      gap: 6px;
+      padding: 9px 10px;
+      border-radius: 14px;
       background: rgba(248,250,252,.95);
     }
     .movers-stat--price .movers-stat-value-row {
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: space-between;
       gap: 12px;
     }
@@ -2693,14 +2693,14 @@
     }
     .movers-stat-value {
       font-family: "Manrope", "Inter", sans-serif;
-      font-size: 24px;
+      font-size: 19px;
       line-height: 1;
       letter-spacing: -.03em;
       color: #111827;
     }
     .movers-sparkline {
-      width: 72px;
-      height: 28px;
+      width: 56px;
+      height: 22px;
       flex: 0 0 auto;
       opacity: .92;
     }
@@ -2713,13 +2713,13 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 32px;
-      padding: 0 12px;
+      min-height: 28px;
+      padding: 0 10px;
       width: fit-content;
       border-radius: 999px;
       background: rgba(110,231,183,.28);
       color: #047857;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 900;
     }
     .movers-delta.down {
@@ -2730,15 +2730,23 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 44px;
-      padding: 0 14px;
-      border-radius: 12px;
+      min-height: 36px;
+      padding: 0 12px;
+      border-radius: 10px;
       background: #111827;
       color: #fff;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
       width: 100%;
+    }
+    .movers-row--ranking {
+      grid-template-columns: minmax(0, 1.25fr) minmax(180px, .85fr) auto;
+      align-items: center;
+    }
+    .movers-row--ranking .movers-action {
+      width: auto;
+      min-width: 88px;
     }
     @media (max-width: 1280px) {
       .dashboard-shell {
@@ -2856,6 +2864,9 @@
         border: 0;
         border-radius: 20px;
       }
+      .movers-row--ranking {
+        grid-template-columns: 1fr;
+      }
       .movers-main {
         grid-template-columns: 100px minmax(0, 1fr);
         gap: 14px;
@@ -2879,6 +2890,9 @@
         min-height: 48px;
         margin-top: 0;
         border-radius: 14px;
+      }
+      .movers-row--ranking .movers-action {
+        width: 100%;
       }
       .mobile-bottom-nav {
         position: fixed;
@@ -3023,7 +3037,7 @@
         <section class="dashboard-lower" aria-label="下部分析エリア">
           <div class="movers-card">
             <div class="movers-head">
-              <h2 class="movers-title">急上昇スリーブ (Movers &amp; Shakers)</h2>
+              <h2 class="movers-title">急上昇スリーブ</h2>
               <a class="movers-link" href="./surge.html">すべて表示</a>
             </div>
             <div class="movers-table-head">
@@ -3965,7 +3979,7 @@
 
     function buildRankingRows(rows) {
       return rows.map((row) => `
-        <div class="movers-row">
+        <div class="movers-row movers-row--ranking">
           <a class="movers-main" href="${escapeHtml(getDetailHref(row.sleeve.id ?? ""))}">
             <div class="movers-thumb">${row.sleeve.imageUrl ? `<img src="${escapeHtml(row.sleeve.imageUrl)}" alt="${escapeHtml(row.sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
             <div class="movers-copy">
