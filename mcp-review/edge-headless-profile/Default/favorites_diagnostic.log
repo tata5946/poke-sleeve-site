@@ -1,0 +1,40 @@
+2026-04-14 10:00:16.330: [INFO] OnDoneLoading sync enabled: 0
+2026-04-14 10:00:16.331: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-04-14 10:00:16.488: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 3
+2026-04-14 10:00:16.495: [INFO] Primary account changed.
+2026-04-14 10:00:16.495: [INFO] OnPrimaryAccountChanged PrimaryAccountChangeEvent::Type::kSet
+2026-04-14 10:00:16.497: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 3
+2026-04-14 10:00:16.719: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 3
+2026-04-14 10:00:16.782: [INFO] VisibilityChanged: 0
+2026-04-14 10:00:20.460: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.462: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.463: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.464: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.465: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.466: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.467: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.468: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.469: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.470: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.471: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.472: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.472: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.473: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.474: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.476: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.477: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.478: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.479: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.480: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.481: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.482: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.482: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.482: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.483: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.484: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.485: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.486: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.487: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.488: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.489: [INFO] BookmarkNodeAdded, ABU: 0
+2026-04-14 10:00:20.490: [INFO] BookmarkNodeAdded, ABU: 0

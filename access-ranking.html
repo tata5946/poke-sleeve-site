@@ -311,22 +311,30 @@
   </style>
 </head>
 
-<body>
+<body class="page-market-list">
   <div id="site-header"></div>
 
-  <div class="container">
+  <div class="container page-shell page-shell--market">
     <nav class="breadcrumb" aria-label="パンくず">
       <a href="./index.html">ホーム</a>
       <span class="breadcrumb-sep" aria-hidden="true">></span>
       <span class="breadcrumb-current" aria-current="page">アクセスランキング</span>
     </nav>
-    <div class="ranking-page-top">
-      <section class="ranking-hero" aria-label="ページ見出し">
-        <h1 class="ranking-page-title">アクセスランキング</h1>
+    <div class="ranking-page-top page-market-top">
+      <section class="ranking-hero page-hero-card" aria-label="ページ見出し">
+        <p class="page-hero-kicker">ATTENTION FLOW</p>
+        <h1 class="ranking-page-title page-hero-title">アクセスランキング</h1>
+        <p class="page-hero-desc">実際に見られているスリーブから関心の流れを読むページです。価格ランキングとは別に、需要の気配を先回りで確認できます。</p>
+        <div class="page-hero-meta">
+          <span class="page-hero-badge">注目銘柄数 <strong id="countInfo">集計中</strong></span>
+        </div>
       </section>
-      <section class="ranking-filter-card" aria-label="フィルタバー">
+      <section class="ranking-filter-card page-toolbar-card" aria-label="フィルタバー">
         <div class="ranking-filter-head">
-          <h2 class="ranking-filter-title">絞り込み</h2>
+          <div>
+            <h2 class="ranking-filter-title">絞り込み</h2>
+            <p class="page-toolbar-copy">発売年や価格帯を掛け合わせて、閲覧集中がどのゾーンに起きているかを把握できます。</p>
+          </div>
         </div>
         <div id="error" class="error"></div>
         <div class="ranking-filter-grid">

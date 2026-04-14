@@ -226,38 +226,33 @@
   </style>
 </head>
 
-<body>
+<body class="page-market-list">
   <div id="site-header"></div>
 
-  <div class="container">
+  <div class="container page-shell page-shell--market">
     <nav class="breadcrumb" aria-label="パンくず">
       <a href="./index.html">ホーム</a>
       <span class="breadcrumb-sep" aria-hidden="true">></span>
       <span class="breadcrumb-current" aria-current="page">ポケモンカード スリーブ図鑑</span>
     </nav>
-    <div class="ranking-page-top">
-      <section class="ranking-header-card" aria-label="ページヘッダー">
+    <div class="ranking-page-top page-market-top">
+      <section class="ranking-header-card page-hero-card" aria-label="ページヘッダー">
         <div>
-          <h1 class="ranking-page-title">ポケモンカード スリーブ図鑑</h1>
-          <p class="ranking-page-desc">検索と絞り込みで目的のスリーブを見つけて、価格推移や相場感を一覧で比較できます。</p>
+          <p class="page-hero-kicker">SLEEVE DIRECTORY</p>
+          <h1 class="ranking-page-title page-hero-title">ポケモンカード スリーブ図鑑</h1>
+          <p class="ranking-page-desc page-hero-desc">検索と絞り込みで目的のスリーブを見つけて、価格推移や相場感を一覧で比較できます。</p>
         </div>
-        <div class="ranking-status" aria-label="集計状況">
-          <div class="ranking-status-card">
-            <span class="ranking-status-label">最終更新</span>
-            <span id="updatedAt" class="ranking-status-value">読み込み中</span>
-          </div>
-          <div class="ranking-status-card">
-            <span class="ranking-status-label">表示件数</span>
-            <span id="countInfo" class="ranking-status-value">集計中</span>
-          </div>
+        <div class="page-hero-meta" aria-label="集計状況">
+          <span class="page-hero-badge">最終更新 <strong id="updatedAt">読み込み中</strong></span>
+          <span class="page-hero-badge">表示件数 <strong id="countInfo">集計中</strong></span>
         </div>
       </section>
 
-      <section class="ranking-filter-card" aria-label="フィルタバー">
+      <section class="ranking-filter-card page-toolbar-card" aria-label="フィルタバー">
         <div class="ranking-filter-head">
           <div>
             <h2 class="ranking-filter-title">絞り込み</h2>
-            <p class="ranking-filter-sub">条件や並び替えを変えると図鑑一覧をすぐに更新できます</p>
+            <p class="ranking-filter-sub page-toolbar-copy">条件や並び替えを変えると図鑑一覧をすぐに更新できます。</p>
           </div>
         </div>
 

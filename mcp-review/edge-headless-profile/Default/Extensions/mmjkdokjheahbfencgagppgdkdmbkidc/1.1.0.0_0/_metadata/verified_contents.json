@@ -1,0 +1,24 @@
+[
+  {
+    "description": "treehash per file",
+    "signed_content": {
+      "payload": "eyJpdGVtX2lkIjoibW1qa2Rva2poZWFoYmZlbmNnYWdwcGdka2RtYmtpZGMiLCJpdGVtX3ZlcnNpb24iOiIxLjEuMC4wIiwicHJvdG9jb2xfdmVyc2lvbiI6MSwiY29udGVudF9oYXNoZXMiOlt7ImZvcm1hdCI6InRyZWVoYXNoIiwiZGlnZXN0Ijoic2hhMjU2IiwiYmxvY2tfc2l6ZSI6NDA5NiwiaGFzaF9ibG9ja19zaXplIjo0MDk2LCJmaWxlcyI6W3sicGF0aCI6IkxzcFdhb2ljb24xMjgucG5nIiwicm9vdF9oYXNoIjoiUExLT21qSmkwR0NWY0pHendySWxEYmdHamRnLTl4Qm85SENLUDlVQVVzcyJ9LHsicGF0aCI6IkxzcFdhb2ljb24xNi5wbmciLCJyb290X2hhc2giOiIyRXRGSzdQaGEwQjRaY255YVVZck9sdmNmUEVSWHlKclJ3ZTI3VEFiT2N3In0seyJwYXRoIjoiTHNwV2FvaWNvbjQ4LnBuZyIsInJvb3RfaGFzaCI6IjNMc2F5eUNTa19BeTd0Sm5pRGRTT1c5aHRFUDlsT21sWmlOZkdIYjYwN2MifSx7InBhdGgiOiJMc3BXYW9NZUJhY2tncm91bmQuaHRtbCIsInJvb3RfaGFzaCI6ImJ0a0V5alVkY1Y3UDlnaWhucEh6RGRsN00weTFBVGFlQ0xUamNzY3JaZTAifSx7InBhdGgiOiJMc3BXYW9NZUJhY2tncm91bmQuanMiLCJyb290X2hhc2giOiJzb3l2bVRkX180V3huak94TWtiQmRVeFVrN3NuOFJGdl9OZmdKbmI3SGtzIn0seyJwYXRoIjoiTHNwV2FvTWVEb20uanMiLCJyb290X2hhc2giOiI2dGRVZXpWY040dDNUUE4yZFR5QjZMdF8yNVhuY0Z3Sjh1dWZCTG1XRmNnIn0seyJwYXRoIjoiTHNwV2FvTWVHb29nbGVEcml2ZS5qcyIsInJvb3RfaGFzaCI6IkZtQjJJd2lWcGdjS2xjU0dKRnFxLVpGQWN4eVEtcWR1YWZXYzNMeDU5ZGsifSx7InBhdGgiOiJtYW5pZmVzdC5qc29uIiwicm9vdF9oYXNoIjoiMWh4ZE82V2ZXc0I4XzYzTk5NYzhlNHVxcVFYVFQtZ1lFNEk4a3k2NkJVOCJ9XX1dfQ",
+      "signatures": [
+        {
+          "header": {
+            "kid": "publisher"
+          },
+          "protected": "eyJhbGciOiJSUzI1NiJ9",
+          "signature": "m6yrVh5mfM99FV05odNgnVWnlcvEyCo6DABop-t-BaDXmqKnILnorBLVpjL9f2eUoykGCLVBqvdM1vJQejZh9WQ9j0ItWinoVTVFGHG2SX0calSgtngLATDz-XtijhB1NMoqUOozr29BmHNYHYjbUjzYjj96RA8JJzyWDmjzQwAhIwX215Z7vDYpKV1ff8qB9x4IIDwnXiILHsOsb9zAzW1TMYSoC1Zt6li76SN0-9S0JU9Y9xE5eMcV3lGMiH9IathH84q1otnS1TpkYf4Ff_fTIEawy5ismgzJhdeuyjDaAT1FlsNmVK0tiFdWmZclaoWaqZ7SUXWPJx0UNdeqpg"
+        },
+        {
+          "header": {
+            "kid": "webstore"
+          },
+          "protected": "eyJhbGciOiJSUzI1NiJ9",
+          "signature": "SEtBK2GQRah8m-NqAg-VscvPCpQAduEFl25jAwUVIaomkhja28Kxnx4wGRWhsr-q6_DhI35C6m4FZK66fvktQeNbLM2_KaoYwrZOzZS3U0p-eRcK_BKnxmXaJgHeoITOWgsOkT_RFBc2Y7vEjkGo7zvy8K-F0vuXxQ1K2leS9wIy1nJGoredxBNzzezrf1T-4CGAiPieVs9NZwZP1zSts5vAxMLgvav9SJT3hFn9DKRw5_CvZ6d6uSSN6QdiU3Xey-Gis_JKp6mo1DyX1DwLGQXtxrtkusW54roZ82EWEfu8digLZMkL2L-Lp5eVxiI8bAZ1XH_tOSMQUiKWVdrqPw"
+        }
+      ]
+    }
+  }
+]

@@ -114,10 +114,10 @@
   </style>
 </head>
 
-<body>
+<body class="page-content-focus">
   <div id="site-header"></div>
 
-  <div class="container">
+  <div class="container page-shell page-shell--content">
     <nav class="breadcrumb" aria-label="パンくず">
       <a href="./index.html">ホーム</a>
       <span class="breadcrumb-sep" aria-hidden="true">></span>
@@ -126,11 +126,12 @@
     <div id="error" class="error"></div>
 
     <div class="contact-wrap">
-      <div class="panel">
-        <h2 class="title" style="margin:0;">お問い合わせ</h2>
-        <p class="meta" style="margin-top:6px;">
-          内容を入力して送信してください。送信完了後に完了ページへ移動します。
-        </p>
+      <div class="panel page-focus-panel page-focus-panel--form">
+        <div class="page-focus-intro">
+          <p class="page-focus-kicker">CONTACT</p>
+          <h1 class="page-focus-title">お問い合わせ</h1>
+          <p class="page-focus-desc">内容を入力して送信してください。送信完了後に完了ページへ移動します。</p>
+        </div>
 
         <form id="contactForm" class="contact-form" novalidate>
           <div class="field">

@@ -1,0 +1,28 @@
+{
+   "background": {
+      "service_worker": "LspWaoMeBackground.js"
+   },
+   "content_scripts": [ {
+      "js": [ "LspWaoMeDom.js" ],
+      "match_about_blank": true,
+      "matches": [ "http://*/*", "https://*/*" ],
+      "run_at": "document_end"
+   }, {
+      "js": [ "LspWaoMeGoogleDrive.js" ],
+      "matches": [ "https://drive.google.com/*" ],
+      "run_at": "document_end"
+   } ],
+   "description": "WebAccessLog Engine (ME)",
+   "host_permissions": [ "http://*/*", "https://*/*" ],
+   "icons": {
+      "128": "LspWaoicon128.png",
+      "16": "LspWaoicon16.png",
+      "48": "LspWaoicon48.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt5OZKqSaRrse2qvXWsCWDpFSzn1q93YPZ+1roiwEJh1k0Ze7dpoMG6bsbbefKMPkzWHotteZhzr/Jqc1xkt3M0M3GsOcjXAePEf8AKsxAUKvqHyJPEPd9CVZQH3idN7KlpWWwfX0/GdZOZ+FMtZeg0y2+mhtXtbx/LL54V9ftKZskO+XGexGF1AdXJF14unwg4cg1C9LIp5nC3DWJpccpFFy7maYJ7STFj9xXiJoW3vOfhHUEAeCDxLLbw+/SIES3J9cdblmE1Brj31Q5D85apMKvyIU8Jr5TM6C8Z5RWwK5WVh9H924QpsYzTLUZW7oQkjrOneaxzIeKf+RZhgzYQIDAQAB",
+   "manifest_version": 3,
+   "name": "LspMeExtension",
+   "permissions": [ "tabs", "downloads", "nativeMessaging", "webRequest", "alarms", "storage" ],
+   "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
+   "version": "1.1.0.0"
+}

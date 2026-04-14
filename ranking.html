@@ -622,26 +622,33 @@
   </style>
 </head>
 <script src="./assets/common.js"></script>
-<body>
+<body class="page-market-list">
   <div id="site-header"></div>
 
-  <div class="container">
+  <div class="container page-shell page-shell--market">
     <nav class="breadcrumb" aria-label="パンくず">
       <a href="./index.html">ホーム</a>
       <span class="breadcrumb-sep" aria-hidden="true">></span>
       <span class="breadcrumb-current" aria-current="page">価格ランキング</span>
     </nav>
-    <div class="ranking-page-top">
-      <section class="ranking-header-card" aria-label="ページヘッダー">
+    <div class="ranking-page-top page-market-top">
+      <section class="ranking-header-card page-hero-card" aria-label="ページヘッダー">
         <div class="ranking-header-copy">
-          <h1 class="ranking-page-title">価格ランキング</h1>
+          <p class="page-hero-kicker">MARKET RANKING</p>
+          <h1 class="ranking-page-title page-hero-title">価格ランキング</h1>
+          <p class="page-hero-desc">現在価格を軸に、いま相場の強いスリーブを一覧比較できるページです。トップページの市場ダッシュボードと同じ目線で、上位帯の価格感をすばやく把握できます。</p>
+          <div class="page-hero-meta" aria-label="集計状況">
+            <span class="page-hero-badge">表示件数 <strong id="countInfo">集計中</strong></span>
+            <span class="page-hero-badge">更新状況 <strong id="updatedAt">最新週を確認中</strong></span>
+          </div>
         </div>
       </section>
 
-      <section class="ranking-filter-card" aria-label="フィルタバー">
+      <section class="ranking-filter-card page-toolbar-card" aria-label="フィルタバー">
         <div class="ranking-filter-head">
           <div>
             <h2 class="ranking-filter-title">絞り込み</h2>
+            <p class="page-toolbar-copy">価格帯やシリーズを切り替えながら、ランキングの文脈を保ったまま候補を絞り込めます。</p>
           </div>
         </div>
 

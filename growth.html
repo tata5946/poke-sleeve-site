@@ -487,27 +487,32 @@
   </style>
 </head>
 
-<body>
+<body class="page-market-list">
   <!-- 共通ヘッダー差し込み -->
   <div id="site-header"></div>
 
-  <div class="container">
+  <div class="container page-shell page-shell--market">
     <nav class="breadcrumb" aria-label="パンくず">
       <a href="./index.html">ホーム</a>
       <span class="breadcrumb-sep" aria-hidden="true">></span>
       <span class="breadcrumb-current" aria-current="page">高騰率ランキング</span>
     </nav>
-    <div class="ranking-page-top">
-      <section class="ranking-hero" aria-label="ページ見出し">
-        <h1 class="ranking-page-title">高騰率ランキング</h1>
+    <div class="ranking-page-top page-market-top">
+      <section class="ranking-hero page-hero-card" aria-label="ページ見出し">
+        <p class="page-hero-kicker">GROWTH SIGNAL</p>
+        <h1 class="ranking-page-title page-hero-title">高騰率ランキング</h1>
+        <p class="page-hero-desc">一定期間でどれだけ伸びたかを追うページです。価格の絶対値ではなく、伸び率や上昇額の勢いを見極める用途に寄せています。</p>
+        <div class="page-hero-meta">
+          <span class="page-hero-badge">最終更新 <strong id="updatedAt">最新週を確認中</strong></span>
+          <span class="page-hero-badge">表示件数 <strong id="countInfo">0件</strong></span>
+        </div>
       </section>
 
-      <section class="ranking-filter-card" aria-label="フィルタバー">
+      <section class="ranking-filter-card page-toolbar-card" aria-label="フィルタバー">
         <div class="ranking-filter-head">
-          <h2 class="ranking-filter-title">絞り込み</h2>
-          <div class="ranking-filter-meta">
-            <span id="updatedAt">最新週を確認中</span>
-            <span id="countInfo">0件</span>
+          <div>
+            <h2 class="ranking-filter-title">絞り込み</h2>
+            <p class="page-toolbar-copy">期間、伸び率、シリーズ条件を切り替えて、単発上振れと継続的な伸びを見分けやすくします。</p>
           </div>
         </div>
 

@@ -723,6 +723,212 @@ body.home-page .search-wrap input {
     box-shadow: var(--shadow);
 }
 
+/* rollout shells */
+.page-shell {
+    padding-top: 24px;
+    padding-bottom: 64px;
+}
+
+body.page-market-list .page-market-top {
+    display: grid;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+body.page-market-list .page-hero-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    padding: 26px 28px;
+    border: 1px solid rgba(17, 24, 39, .08);
+    background:
+        radial-gradient(circle at top right, rgba(255, 204, 0, .18), transparent 34%),
+        radial-gradient(circle at left center, rgba(30, 91, 215, .14), transparent 28%),
+        linear-gradient(145deg, #13233f 0%, #1d3259 68%, #234072 100%);
+    box-shadow: 0 20px 42px rgba(15, 23, 42, .14);
+    color: #fff;
+}
+
+body.page-market-list .page-hero-card::after {
+    content: "";
+    position: absolute;
+    inset: auto -80px -120px auto;
+    width: 260px;
+    height: 260px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .08);
+    filter: blur(10px);
+    pointer-events: none;
+}
+
+body.page-market-list .page-hero-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+body.page-market-list .page-hero-kicker {
+    margin: 0 0 10px;
+    font-size: 11px;
+    line-height: 1.3;
+    letter-spacing: .16em;
+    font-weight: 900;
+    color: rgba(255, 255, 255, .7);
+}
+
+body.page-market-list .page-hero-card .page-hero-title,
+.page-focus-title,
+.page-reading-panel .page-focus-title {
+    margin: 0;
+    font-family: "Zen Kaku Gothic New", var(--font-heading);
+    font-size: clamp(28px, 3.8vw, 42px);
+    line-height: 1.08;
+    letter-spacing: -.02em;
+    font-weight: 900;
+}
+
+body.page-market-list .page-hero-card .page-hero-title {
+    color: #fff;
+}
+
+body.page-market-list .page-hero-desc,
+.page-focus-desc {
+    margin: 10px 0 0;
+    max-width: 62ch;
+    font-size: 14px;
+    line-height: 1.75;
+    font-weight: 500;
+}
+
+body.page-market-list .page-hero-desc {
+    color: rgba(255, 255, 255, .82);
+}
+
+body.page-market-list .page-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+body.page-market-list .page-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .12);
+    border: 1px solid rgba(255, 255, 255, .18);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    backdrop-filter: blur(8px);
+}
+
+body.page-market-list .page-hero-badge strong {
+    font-family: var(--font-numeric);
+    font-size: 13px;
+    font-weight: 900;
+}
+
+body.page-market-list .page-toolbar-card {
+    padding: 16px 18px;
+    border-radius: 24px;
+    border: 1px solid #dbe4f1;
+    background: rgba(255, 255, 255, .92);
+    box-shadow: 0 14px 28px rgba(15, 23, 42, .06);
+}
+
+body.page-market-list .page-toolbar-copy {
+    margin: 6px 0 0;
+    color: #667085;
+    font-size: 13px;
+    line-height: 1.65;
+    font-weight: 600;
+}
+
+.page-focus-panel,
+.page-reading-panel {
+    border-radius: 24px;
+    border: 1px solid #dde6f2;
+    background:
+        radial-gradient(circle at top right, rgba(255, 204, 0, .08), transparent 30%),
+        linear-gradient(180deg, rgba(255, 255, 255, .98) 0%, rgba(249, 251, 255, .98) 100%);
+    box-shadow: 0 16px 34px rgba(15, 23, 42, .08);
+}
+
+.page-focus-panel {
+    padding: 22px;
+}
+
+.page-reading-panel {
+    padding: 28px;
+}
+
+.page-focus-intro {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.page-focus-kicker {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.3;
+    letter-spacing: .16em;
+    font-weight: 900;
+    color: #7b8798;
+}
+
+.page-focus-title {
+    color: #111827;
+}
+
+.page-focus-desc {
+    color: #475467;
+}
+
+.page-reading-panel p,
+.page-reading-panel li {
+    line-height: 1.8;
+}
+
+body.page-market-list .container,
+body.page-content-focus .container {
+    max-width: 1280px;
+}
+
+body.page-content-focus {
+    background:
+        radial-gradient(circle at top, rgba(255, 198, 72, 0.12), transparent 28%),
+        radial-gradient(circle at 84% 8%, rgba(30, 91, 215, 0.08), transparent 24%),
+        linear-gradient(180deg, #f7f9fd 0%, #eef3fb 100%);
+}
+
+@media (max-width: 700px) {
+    .page-shell {
+        padding-top: 18px;
+        padding-bottom: 48px;
+    }
+
+    body.page-market-list .page-hero-card,
+    .page-focus-panel,
+    .page-reading-panel,
+    body.page-market-list .page-toolbar-card {
+        padding: 18px;
+        border-radius: 20px;
+    }
+
+    body.page-market-list .page-hero-meta {
+        gap: 8px;
+    }
+
+    body.page-market-list .page-hero-badge {
+        min-height: 36px;
+        padding: 0 12px;
+    }
+}
+
 /* grid / tiles / cards */
 .grid {
     display: grid;

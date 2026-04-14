@@ -630,10 +630,10 @@
   </style>
 </head>
 
-<body>
+<body class="page-content-focus">
   <div id="site-header"></div>
 
-  <div class="container">
+  <div class="container page-shell page-shell--content">
     <div id="error" class="error"></div>
 
     <div class="detail-wrap">
@@ -645,12 +645,14 @@
           <span class="breadcrumb-sep" aria-hidden="true">></span>
           <span id="breadcrumbCurrent" class="breadcrumb-current" aria-current="page">読み込み中...</span>
         </nav>
-        <div class="panel">
+        <div class="panel page-focus-panel page-focus-panel--detail">
           <div class="detail-hero">
             <img id="img" class="thumb" alt="" />
 
             <div>
+              <p class="page-focus-kicker">LOOKUP RESULT</p>
               <h2 id="name" class="name">読み込み中...</h2>
+              <p class="page-focus-desc">該当スリーブが見つからない場合でも、別の候補や近い条件のページへ戻りやすい導線を優先しています。</p>
               <div id="meta" class="meta-line"></div>
               <div id="badges" class="badges" style="margin-top:8px;"></div>
 
@@ -691,7 +693,7 @@
         </div>
 
         <div class="detail-price-grid">
-          <div class="panel">
+          <div class="panel page-focus-panel">
             <h3 id="priceSectionTitle" style="margin:0;">価格推移（観測ベース）</h3>
             <div class="chart-period-switch" role="tablist" aria-label="表示期間">
               <button type="button" class="chart-period-btn" id="period3mBtn" data-period="3m">直近3か月</button>
@@ -707,17 +709,17 @@
         </div>
 
         <div class="related-sections" id="relatedSections" hidden>
-          <section class="panel related-panel">
+          <section class="panel related-panel page-focus-panel">
             <h3>同じキャラクターのスリーブ</h3>
             <p class="related-note">character が一致するスリーブを優先して表示します。<br>※該当が少ない場合は別条件のスリーブも表示します。</p>
             <div id="relatedCharacter" class="related-list"></div>
           </section>
-          <section class="panel related-panel">
+          <section class="panel related-panel page-focus-panel">
             <h3>同シリーズのスリーブ</h3>
             <p class="related-note">同じシリーズに含まれるスリーブを表示します。<br>※該当が少ない場合は別条件のスリーブも表示します。</p>
             <div id="relatedSeries" class="related-list"></div>
           </section>
-          <section class="panel related-panel">
+          <section class="panel related-panel page-focus-panel">
             <h3>価格が近いスリーブ</h3>
             <p class="related-note">current.price の前後 30% を目安に表示します。<br>※該当が少ない場合は別条件のスリーブも表示します。</p>
             <div id="relatedPriceBand" class="related-list"></div>
