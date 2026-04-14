@@ -2599,9 +2599,10 @@
     }
     .movers-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
       gap: 10px;
-      padding: 12px;
+      padding: 10px 12px;
     }
     .movers-table-head {
       display: none;
@@ -2609,24 +2610,24 @@
     .movers-row {
       margin-bottom: 8px;
       border: 0;
-      border-radius: 18px;
+      border-radius: 16px;
       background: rgba(255,255,255,.94);
-      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.05);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
     }
     .movers-main {
       display: grid;
-      grid-template-columns: 84px minmax(0, 1fr);
-      gap: 14px;
+      grid-template-columns: 56px minmax(0, 1fr);
+      gap: 10px;
       align-items: center;
       min-width: 0;
     }
     .movers-thumb {
-      width: 84px;
-      height: 84px;
-      border-radius: 18px;
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
       overflow: hidden;
       background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-      box-shadow: inset 0 0 0 1px rgba(148,163,184,.14), 0 10px 22px rgba(15, 23, 42, 0.06);
+      box-shadow: inset 0 0 0 1px rgba(148,163,184,.14), 0 6px 14px rgba(15, 23, 42, 0.05);
     }
     .movers-thumb img {
       width: 100%;
@@ -2636,71 +2637,73 @@
     }
     .movers-copy {
       display: grid;
-      gap: 6px;
+      gap: 3px;
       min-width: 0;
     }
     .movers-rank {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-height: 24px;
-      padding: 0 10px;
+      justify-content: flex-start;
+      min-height: 0;
+      padding: 0;
       width: fit-content;
-      border-radius: 999px;
-      background: #e2e8f0;
-      color: #0f172a;
+      border-radius: 0;
+      background: transparent;
+      color: #475569;
       font-family: "Manrope", "Inter", sans-serif;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       letter-spacing: .08em;
     }
     .movers-name {
       margin: 0;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       color: #111827;
-      line-height: 1.3;
+      line-height: 1.25;
     }
     .movers-meta {
       margin: 0;
-      font-size: 12px;
+      font-size: 11px;
       color: #64748b;
+    }
+    .movers-side {
+      display: grid;
+      justify-items: end;
+      gap: 6px;
+      min-width: 118px;
     }
     .movers-stats {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      justify-items: end;
+      gap: 6px;
     }
     .movers-stat {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding: 9px 10px;
-      border-radius: 14px;
-      background: rgba(248,250,252,.95);
-    }
-    .movers-stat--price .movers-stat-value-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      display: grid;
+      gap: 2px;
+      justify-items: end;
     }
     .movers-stat-label {
       color: #64748b;
-      font-size: 12px;
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: .04em;
+      letter-spacing: .06em;
     }
     .movers-stat-value {
       font-family: "Manrope", "Inter", sans-serif;
-      font-size: 19px;
+      font-size: 18px;
       line-height: 1;
       letter-spacing: -.03em;
       color: #111827;
     }
+    .movers-stat-value-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
     .movers-sparkline {
-      width: 56px;
-      height: 22px;
+      width: 44px;
+      height: 18px;
       flex: 0 0 auto;
       opacity: .92;
     }
@@ -2713,13 +2716,13 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 28px;
-      padding: 0 10px;
+      min-height: 24px;
+      padding: 0 8px;
       width: fit-content;
       border-radius: 999px;
       background: rgba(110,231,183,.28);
       color: #047857;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 900;
     }
     .movers-delta.down {
@@ -2729,24 +2732,36 @@
     .movers-action {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-height: 36px;
-      padding: 0 12px;
-      border-radius: 10px;
-      background: #111827;
-      color: #fff;
+      justify-content: flex-end;
+      min-height: 0;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #0f172a;
       text-decoration: none;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
-      width: 100%;
+      width: auto;
+      white-space: nowrap;
+    }
+    .movers-action::after {
+      content: "→";
+      margin-left: 4px;
     }
     .movers-row--ranking {
-      grid-template-columns: minmax(0, 1.25fr) minmax(180px, .85fr) auto;
+      grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
     }
-    .movers-row--ranking .movers-action {
-      width: auto;
-      min-width: 88px;
+    .movers-price {
+      font-family: "Manrope", "Inter", sans-serif;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: -.03em;
+      color: #111827;
+    }
+    .movers-row--surge .movers-side,
+    .movers-row--ranking .movers-side {
+      padding-left: 8px;
     }
     @media (max-width: 1280px) {
       .dashboard-shell {
@@ -2864,6 +2879,7 @@
         border: 0;
         border-radius: 20px;
       }
+      .movers-row,
       .movers-row--ranking {
         grid-template-columns: 1fr;
       }
@@ -2877,7 +2893,12 @@
         border-radius: 16px;
       }
       .movers-stats {
-        grid-template-columns: 1fr;
+        justify-items: stretch;
+      }
+      .movers-side {
+        justify-items: stretch;
+        min-width: 0;
+        padding-left: 0;
       }
       .movers-sparkline {
         width: 84px;
@@ -2890,9 +2911,13 @@
         min-height: 48px;
         margin-top: 0;
         border-radius: 14px;
+        justify-content: center;
+        background: #111827;
+        color: #fff;
+        padding: 0 12px;
       }
-      .movers-row--ranking .movers-action {
-        width: 100%;
+      .movers-action::after {
+        margin-left: 6px;
       }
       .mobile-bottom-nav {
         position: fixed;
@@ -3962,17 +3987,22 @@
         };
       });
       listEl.innerHTML = rows.map((row) => `
-        <div class="movers-row">
+        <div class="movers-row movers-row--surge">
           <a class="movers-main" href="${escapeHtml(getDetailHref(row.sleeve.id ?? ""))}">
             <div class="movers-thumb">${row.sleeve.imageUrl ? `<img src="${escapeHtml(row.sleeve.imageUrl)}" alt="${escapeHtml(row.sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
-            <div>
+            <div class="movers-copy">
               <p class="movers-name">${escapeHtml(row.sleeve.name ?? "")}</p>
               <p class="movers-meta">${escapeHtml(row.meta)}</p>
             </div>
           </a>
-          <div class="movers-price">${escapeHtml(row.priceText)}</div>
-          <div class="movers-delta ${escapeHtml(row.deltaClass)}">${escapeHtml(row.deltaText)}</div>
-          <a class="movers-action" href="${escapeHtml(getDetailHref(row.sleeve.id ?? ""))}">詳細表示</a>
+          <div class="movers-side">
+            <div class="movers-stat">
+              <span class="movers-stat-label">最新週価格</span>
+              <strong class="movers-price">${escapeHtml(row.priceText)}</strong>
+            </div>
+            <span class="movers-delta ${escapeHtml(row.deltaClass)}">${escapeHtml(row.deltaText)}</span>
+            <a class="movers-action" href="${escapeHtml(getDetailHref(row.sleeve.id ?? ""))}">詳細</a>
+          </div>
         </div>
       `).join("") || `<div class="home-empty">ランキングデータがありません。</div>`;
     }
@@ -3988,20 +4018,22 @@
               <p class="movers-meta">${escapeHtml(row.meta)}</p>
             </div>
           </a>
-          <div class="movers-stats">
-            <div class="movers-stat movers-stat--price">
-              <span class="movers-stat-label">最新週価格</span>
-              <div class="movers-stat-value-row">
-                <strong class="movers-stat-value">${escapeHtml(row.priceText)}</strong>
-                ${row.sparklineMarkup ?? ""}
+          <div class="movers-side">
+            <div class="movers-stats">
+              <div class="movers-stat movers-stat--price">
+                <span class="movers-stat-label">最新週価格</span>
+                <div class="movers-stat-value-row">
+                  <strong class="movers-stat-value">${escapeHtml(row.priceText)}</strong>
+                  ${row.sparklineMarkup ?? ""}
+                </div>
+              </div>
+              <div class="movers-stat">
+                <span class="movers-stat-label">前週比</span>
+                <span class="movers-delta ${escapeHtml(row.deltaClass)}">${escapeHtml(row.deltaText)}</span>
               </div>
             </div>
-            <div class="movers-stat">
-              <span class="movers-stat-label">前週比</span>
-              <span class="movers-delta ${escapeHtml(row.deltaClass)}">${escapeHtml(row.deltaText)}</span>
-            </div>
+            <a class="movers-action" href="${escapeHtml(getDetailHref(row.sleeve.id ?? ""))}">詳細</a>
           </div>
-          <a class="movers-action" href="${escapeHtml(getDetailHref(row.sleeve.id ?? ""))}">詳細表示</a>
         </div>
       `).join("") || `<div class="home-empty">ランキングデータがありません。</div>`;
     }
