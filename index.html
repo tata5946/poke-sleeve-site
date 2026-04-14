@@ -377,12 +377,104 @@
     }
     .reveal-on-scroll {
       opacity: 0;
-      transform: translateY(26px);
-      transition: opacity .42s ease-out, transform .42s ease-out;
+      transform: translateY(4px);
+      transition: opacity .32s cubic-bezier(.22, 1, .36, 1), transform .32s cubic-bezier(.22, 1, .36, 1);
+      transition-delay: var(--reveal-delay, 0ms);
     }
     .reveal-on-scroll.is-visible {
       opacity: 1;
       transform: translateY(0);
+    }
+    .dashboard-sidebar,
+    .dashboard-topbar,
+    .hero-main-card,
+    .hero-side-card,
+    .kpi-card,
+    .movers-card {
+      will-change: transform, opacity, box-shadow;
+    }
+    .hero-main-card,
+    .hero-side-card,
+    .kpi-card,
+    .movers-card {
+      transition: transform .22s cubic-bezier(.22, 1, .36, 1), box-shadow .22s ease, background-color .22s ease;
+    }
+    .hero-main-card:hover,
+    .hero-side-card:hover,
+    .kpi-card:hover,
+    .movers-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 36px rgba(15, 23, 42, 0.07);
+    }
+    .movers-row,
+    .movers-action,
+    .movers-link,
+    .topbar-tab,
+    .topbar-search-input {
+      transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease, color .18s ease, border-color .18s ease;
+    }
+    .movers-row:hover {
+      transform: none;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+      background: rgba(248,250,252,.98);
+    }
+    .movers-action:hover,
+    .movers-link:hover {
+      transform: translateY(-0.5px);
+    }
+    .topbar-search-input:focus {
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.86), 0 10px 22px rgba(15, 23, 42, 0.07);
+      background: rgba(255,255,255,.96);
+    }
+    .topbar-tab:hover {
+      color: #111827;
+      transform: translateY(-0.5px);
+    }
+    .hero-chart-line {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: hero-line-draw .6s cubic-bezier(0, 0, 0.2, 1) .08s forwards;
+    }
+    .hero-chart-area {
+      opacity: 0;
+      animation: hero-area-fade .45s ease-out .08s forwards;
+    }
+    .hero-chart-grid {
+      opacity: .72;
+      animation: hero-grid-fade .35s ease-out forwards;
+    }
+    @keyframes hero-line-draw {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes hero-area-fade {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes hero-grid-fade {
+      from { opacity: 0; }
+      to { opacity: .72; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-on-scroll,
+      .hero-main-card,
+      .hero-side-card,
+      .kpi-card,
+      .movers-card,
+      .movers-row,
+      .movers-action,
+      .movers-link,
+      .topbar-tab,
+      .topbar-search-input,
+      .hero-chart-line,
+      .hero-chart-area,
+      .hero-chart-grid {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+      }
+      .reveal-on-scroll {
+        opacity: 1 !important;
+      }
     }
     .skeleton-block {
       position: relative;
@@ -2932,7 +3024,7 @@
   <div id="site-header"></div>
 
   <div class="dashboard-shell">
-    <aside class="dashboard-sidebar" aria-label="サイドバー">
+    <aside class="dashboard-sidebar reveal-on-scroll" style="--reveal-delay: 0ms;" aria-label="サイドバー">
       <div class="sidebar-brand">
         <div class="sidebar-brand-mark" aria-hidden="true"><span class="brand-ball"></span></div>
         <div>
@@ -2966,7 +3058,7 @@
     </aside>
 
     <main class="dashboard-main">
-      <header class="dashboard-topbar">
+      <header class="dashboard-topbar reveal-on-scroll" style="--reveal-delay: 32ms;">
         <div class="topbar-search">
           <span class="topbar-search-icon" aria-hidden="true">⌕</span>
           <input id="dashboardSearchInput" class="topbar-search-input" type="search" placeholder="スリーブを検索..." autocomplete="off" />
@@ -2985,7 +3077,7 @@
 
       <div class="dashboard-content">
         <section class="dashboard-hero" aria-label="市場ヒーロー">
-          <div id="marketSnapshotCard" class="hero-main-card">
+          <div id="marketSnapshotCard" class="hero-main-card reveal-on-scroll" style="--reveal-delay: 64ms;">
             <div class="daily-pick-skeleton">
               <div class="daily-pick-skeleton-body">
                 <div class="daily-pick-skeleton-pill skeleton-block"></div>
@@ -2994,7 +3086,7 @@
               </div>
             </div>
           </div>
-          <aside class="hero-side-card" id="marketSentimentCard" aria-label="市場センチメント">
+          <aside class="hero-side-card reveal-on-scroll" style="--reveal-delay: 96ms;" id="marketSentimentCard" aria-label="市場センチメント">
             <div class="daily-pick-skeleton">
               <div class="daily-pick-skeleton-body">
                 <div class="daily-pick-skeleton-pill skeleton-block"></div>
@@ -3005,7 +3097,7 @@
           </aside>
         </section>
 
-        <section id="marketStatsGrid" class="dashboard-kpis" aria-label="主要KPI">
+        <section id="marketStatsGrid" class="dashboard-kpis reveal-on-scroll" style="--reveal-delay: 128ms;" aria-label="主要KPI">
           <div class="kpi-card">
             <div class="hero-skeleton-title skeleton-block" style="height:18px;width:110px;"></div>
             <div class="hero-skeleton-title skeleton-block" style="height:52px;width:180px;"></div>
@@ -3023,7 +3115,7 @@
           </div>
         </section>
 
-        <section class="dashboard-lower" aria-label="下部分析エリア">
+        <section class="dashboard-lower reveal-on-scroll" style="--reveal-delay: 160ms;" aria-label="下部分析エリア">
           <div class="movers-card">
             <div class="movers-head">
               <h2 class="movers-title">急上昇スリーブ</h2>
@@ -3423,21 +3515,21 @@
         <div class="kpi-card">
           <p class="kpi-label">集計週の取引総額</p>
           <div class="kpi-value-row">
-            <div class="kpi-value">¥${escapeHtml((stats.tradeValue / 1000000).toFixed(2))}M</div>
+            <div class="kpi-value"${getCountupAttrs(stats.tradeValue / 1000000, "compact-yen-m")}>¥${escapeHtml((stats.tradeValue / 1000000).toFixed(2))}M</div>
             <span class="kpi-change">+${escapeHtml((Math.max(0.4, listingDelta / 10)).toFixed(1))}%</span>
           </div>
         </div>
         <div class="kpi-card">
           <p class="kpi-label">取引件数</p>
           <div class="kpi-value-row">
-            <div class="kpi-value">${escapeHtml(stats.activeCount.toLocaleString())}</div>
+            <div class="kpi-value"${getCountupAttrs(stats.activeCount, "count")}>${escapeHtml(stats.activeCount.toLocaleString())}</div>
             <span class="kpi-change">+${escapeHtml(String(listingDelta))}%</span>
           </div>
         </div>
         <div class="kpi-card">
           <p class="kpi-label">集計週の平均成約価格</p>
           <div class="kpi-value-row">
-            <div class="kpi-value">¥${escapeHtml(Math.round(stats.avgPrice).toLocaleString())}</div>
+            <div class="kpi-value"${getCountupAttrs(stats.avgPrice, "yen")}>¥${escapeHtml(Math.round(stats.avgPrice).toLocaleString())}</div>
             <span class="kpi-change ${avgDelta < 0 ? "down" : ""}">${escapeHtml(formatPercent(avgDelta))}</span>
           </div>
         </div>
@@ -3708,6 +3800,10 @@
 
     function formatMetricValue(value, format = "currency") {
       if (!Number.isFinite(value)) return "—";
+      if (format === "index") return value.toFixed(2);
+      if (format === "score") return `${Math.round(value)}`;
+      if (format === "compact-yen-m") return `¥${value.toFixed(2)}M`;
+      if (format === "yen") return `¥${Math.round(value).toLocaleString()}`;
       if (format === "count") return `${Math.round(value).toLocaleString()}件`;
       if (format === "percent") return formatPercent(value);
       return `${Math.round(value).toLocaleString()}円`;
@@ -3720,16 +3816,10 @@
         if (!Number.isFinite(target)) return;
         const format = el.getAttribute("data-format") || "currency";
         const start = 0;
-        const duration = 520;
+        const duration = 400;
         const startTime = performance.now();
         const render = (value) => {
-          if (format === "percent") {
-            el.textContent = formatPercent(value);
-          } else if (format === "count") {
-            el.textContent = `${Math.round(value).toLocaleString()}件`;
-          } else {
-            el.textContent = `${Math.round(value).toLocaleString()}円`;
-          }
+          el.textContent = formatMetricValue(value, format);
         };
         const step = (now) => {
           const progress = Math.min(1, (now - startTime) / duration);
@@ -4094,7 +4184,7 @@
               <div>
                 <p class="hero-index-kicker">スリーブ市場 総合指数（SMTI）</p>
                 <div class="hero-index-value-row">
-                  <h1 class="hero-index-value">${escapeHtml(latest.index.toFixed(2))}</h1>
+                  <h1 class="hero-index-value"${getCountupAttrs(latest.index, "index")}>${escapeHtml(latest.index.toFixed(2))}</h1>
                   <span class="hero-index-chip">${escapeHtml(formatPercent(latest.rate))}（前週比）</span>
                 </div>
               </div>
@@ -4115,9 +4205,9 @@
                     <stop offset="100%" stop-color="#0b8f68" stop-opacity="0.04"></stop>
                   </linearGradient>
                 </defs>
-                <rect x="0" y="0" width="760" height="220" fill="url(#marketGrid)"></rect>
-                <polygon fill="url(#marketHeroFill)" stroke="none" points="${escapeHtml(areaPoints)}"></polygon>
-                <polyline fill="none" stroke="#0b7a59" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" points="${escapeHtml(linePoints)}"></polyline>
+                <rect class="hero-chart-grid" x="0" y="0" width="760" height="220" fill="url(#marketGrid)"></rect>
+                <polygon class="hero-chart-area" fill="url(#marketHeroFill)" stroke="none" points="${escapeHtml(areaPoints)}"></polygon>
+                <polyline class="hero-chart-line" pathLength="1" fill="none" stroke="#0b7a59" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" points="${escapeHtml(linePoints)}"></polyline>
               </svg>
               <div class="hero-chart-axis">
                 <span>7.DAYS AGO</span>
@@ -4136,7 +4226,7 @@
             <span class="sentiment-updated">${escapeHtml(latestWeekLabel)}</span>
           </div>
           <div class="sentiment-score-row">
-            <div class="sentiment-score">${escapeHtml(String(sentimentScore))}</div>
+            <div class="sentiment-score"${getCountupAttrs(sentimentScore, "score")}>${escapeHtml(String(sentimentScore))}</div>
             <div class="sentiment-badge">${escapeHtml(sentimentLabel)}</div>
           </div>
           <div class="sentiment-meter"></div>
