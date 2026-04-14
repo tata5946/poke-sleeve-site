@@ -2511,39 +2511,97 @@
     .dashboard-lower {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 24px;
+      gap: 28px;
       align-items: start;
     }
     .movers-card {
-      padding: 24px 16px 16px;
+      position: relative;
+      padding: 24px 18px 18px;
       overflow: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.9), transparent 42%),
+        linear-gradient(180deg, rgba(248,250,252,.98) 0%, rgba(241,245,249,.96) 100%);
+      box-shadow: 0 22px 44px rgba(15, 23, 42, 0.08);
+    }
+    .movers-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 4px;
+      background: var(--movers-accent, #0f172a);
+      opacity: .92;
+    }
+    .dashboard-lower > .movers-card:nth-child(1) {
+      --movers-accent: linear-gradient(90deg, #ef4444 0%, #fb7185 100%);
+      background:
+        radial-gradient(circle at top left, rgba(254,226,226,.92), transparent 40%),
+        linear-gradient(180deg, rgba(255,250,250,.98) 0%, rgba(255,255,255,.98) 100%);
+    }
+    .dashboard-lower > .movers-card:nth-child(2) {
+      --movers-accent: linear-gradient(90deg, #0f172a 0%, #334155 100%);
+      background:
+        radial-gradient(circle at top left, rgba(226,232,240,.88), transparent 40%),
+        linear-gradient(180deg, rgba(248,250,252,.98) 0%, rgba(255,255,255,.98) 100%);
+    }
+    .dashboard-lower > .movers-card:nth-child(3) {
+      --movers-accent: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+      background:
+        radial-gradient(circle at top left, rgba(209,250,229,.9), transparent 40%),
+        linear-gradient(180deg, rgba(247,254,250,.98) 0%, rgba(255,255,255,.98) 100%);
     }
     .movers-head {
       display: flex;
-      align-items: end;
+      align-items: flex-start;
       justify-content: space-between;
       gap: 16px;
-      padding: 0 4px 18px;
+      padding: 4px 6px 18px;
     }
     .movers-title {
       margin: 0;
-      font-family: "Inter", "Noto Sans JP", sans-serif;
-      font-size: 24px;
+      font-family: "Manrope", "Inter", "Noto Sans JP", sans-serif;
+      font-size: 26px;
       line-height: 1.15;
       letter-spacing: -.03em;
       color: #111827;
     }
-    .movers-link {
-      color: #111827;
-      text-decoration: none;
-      font-size: 15px;
+    .dashboard-lower > .movers-card:nth-child(1) .movers-title::before,
+    .dashboard-lower > .movers-card:nth-child(2) .movers-title::before,
+    .dashboard-lower > .movers-card:nth-child(3) .movers-title::before {
+      display: block;
+      margin-bottom: 8px;
+      color: #475569;
+      font-size: 11px;
       font-weight: 800;
+      letter-spacing: .12em;
+    }
+    .dashboard-lower > .movers-card:nth-child(1) .movers-title::before {
+      content: "SURGE";
+    }
+    .dashboard-lower > .movers-card:nth-child(2) .movers-title::before {
+      content: "PRICE";
+    }
+    .dashboard-lower > .movers-card:nth-child(3) .movers-title::before {
+      content: "GROWTH";
+    }
+    .movers-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.86);
+      color: #0f172a;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
     }
     .movers-row {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      gap: 14px;
-      padding: 16px;
+      gap: 16px;
+      padding: 18px;
     }
     .movers-table-head {
       display: none;
@@ -2551,86 +2609,118 @@
     .movers-row {
       margin-bottom: 12px;
       border: 0;
-      border-radius: 20px;
-      background: linear-gradient(180deg, rgba(248, 250, 252, 0.98) 0%, rgba(255,255,255,0.98) 100%);
-      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.06);
+      border-radius: 24px;
+      background: rgba(255,255,255,.94);
+      box-shadow: 0 18px 32px rgba(15, 23, 42, 0.07);
     }
     .movers-main {
       display: grid;
-      grid-template-columns: 104px minmax(0, 1fr);
-      gap: 18px;
-      align-items: center;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
       min-width: 0;
     }
     .movers-thumb {
-      width: 104px;
-      height: 104px;
-      border-radius: 18px;
+      width: 112px;
+      height: 112px;
+      border-radius: 22px;
       overflow: hidden;
-      background: linear-gradient(180deg, #e2e8f0 0%, #f8fafc 100%);
-      box-shadow: inset 0 0 0 1px rgba(148,163,184,.18);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      box-shadow: inset 0 0 0 1px rgba(148,163,184,.14), 0 10px 22px rgba(15, 23, 42, 0.06);
     }
     .movers-thumb img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      padding: 8px;
+    }
+    .movers-copy {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+    .movers-rank {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 0 12px;
+      width: fit-content;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #0f172a;
+      font-family: "Manrope", "Inter", sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
     }
     .movers-name {
       margin: 0;
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 800;
       color: #111827;
-      line-height: 1.35;
+      line-height: 1.4;
     }
     .movers-meta {
-      margin: 6px 0 0;
+      margin: 0;
       font-size: 13px;
       color: #64748b;
     }
-    .movers-price {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-family: "Manrope", "Inter", sans-serif;
-      font-size: 22px;
-      line-height: 1;
-      letter-spacing: -.03em;
-      color: #111827;
+    .movers-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
-    .movers-price::before,
-    .movers-delta {
+    .movers-stat {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
+      flex-direction: column;
+      gap: 8px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(248,250,252,.95);
     }
-    .movers-price::before,
-    .movers-delta::before {
+    .movers-stat--price .movers-stat-value-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .movers-stat-label {
       color: #64748b;
       font-size: 12px;
       font-weight: 700;
       letter-spacing: .04em;
     }
-    .movers-price::before {
-      content: "最新週価格";
+    .movers-stat-value {
+      font-family: "Manrope", "Inter", sans-serif;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: -.03em;
+      color: #111827;
+    }
+    .movers-sparkline {
+      width: 72px;
+      height: 28px;
+      flex: 0 0 auto;
+      opacity: .92;
+    }
+    .movers-sparkline svg {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
     .movers-delta {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       min-height: 32px;
       padding: 0 12px;
-      border-radius: 8px;
+      width: fit-content;
+      border-radius: 999px;
       background: rgba(110,231,183,.28);
       color: #047857;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 900;
-    }
-    .movers-delta::before {
-      content: "騰落率";
-      color: #64748b;
-      background: transparent;
-      padding-right: 16px;
-      flex: 1;
     }
     .movers-delta.down {
       background: rgba(254,226,226,.9);
@@ -2753,28 +2843,33 @@
       }
       .movers-head {
         padding: 0 6px 14px;
-        align-items: end;
+        align-items: flex-start;
+        flex-wrap: wrap;
       }
       .movers-title {
         font-size: clamp(24px, 7vw, 30px);
       }
       .movers-row {
-        gap: 14px;
+        gap: 16px;
         padding: 18px;
         margin-bottom: 12px;
         border: 0;
-        border-radius: 18px;
-        background: linear-gradient(180deg, rgba(248, 250, 252, 0.98) 0%, rgba(255,255,255,0.98) 100%);
-        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.06);
+        border-radius: 20px;
       }
       .movers-main {
-        grid-template-columns: 96px minmax(0, 1fr);
+        grid-template-columns: 100px minmax(0, 1fr);
         gap: 14px;
       }
       .movers-thumb {
-        width: 96px;
-        height: 96px;
+        width: 100px;
+        height: 100px;
         border-radius: 16px;
+      }
+      .movers-stats {
+        grid-template-columns: 1fr;
+      }
+      .movers-sparkline {
+        width: 84px;
       }
       .movers-name {
         font-size: 17px;
@@ -3105,6 +3200,25 @@
       if (!map.size) return null;
       const sorted = Array.from(map.values()).sort((a, b) => a.week.localeCompare(b.week));
       return { latest: sorted[sorted.length - 1], prev: sorted.length >= 2 ? sorted[sorted.length - 2] : null, sorted };
+    }
+
+    function buildRankingSparkline(sleeve) {
+      const pair = getWeeklyPair(sleeve);
+      const points = Array.isArray(pair?.sorted) ? pair.sorted.slice(-6) : [];
+      if (points.length < 2) return "";
+      const prices = points.map((row) => numOrNull(row?.price)).filter((value) => value != null);
+      if (prices.length < 2) return "";
+      const min = Math.min(...prices);
+      const max = Math.max(...prices);
+      const range = Math.max(max - min, 1);
+      const chartPoints = prices.map((price, index) => {
+        const x = (index / (prices.length - 1)) * 72;
+        const y = 24 - (((price - min) / range) * 20);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      const upColor = prices[prices.length - 1] >= prices[0];
+      const stroke = upColor ? "#059669" : "#dc2626";
+      return `<span class="movers-sparkline" aria-hidden="true"><svg viewBox="0 0 72 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="${chartPoints}" stroke="${stroke}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${((prices.length - 1) / (prices.length - 1) * 72).toFixed(1)}" cy="${(24 - (((prices[prices.length - 1] - min) / range) * 20)).toFixed(1)}" r="3" fill="${stroke}"/></svg></span>`;
     }
 
     function getLatestWeeklyPrice(sleeve) {
@@ -3854,13 +3968,25 @@
         <div class="movers-row">
           <a class="movers-main" href="${escapeHtml(getDetailHref(row.sleeve.id ?? ""))}">
             <div class="movers-thumb">${row.sleeve.imageUrl ? `<img src="${escapeHtml(row.sleeve.imageUrl)}" alt="${escapeHtml(row.sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
-            <div>
+            <div class="movers-copy">
+              <span class="movers-rank">${escapeHtml(row.rankText ?? "")}</span>
               <p class="movers-name">${escapeHtml(row.sleeve.name ?? "")}</p>
               <p class="movers-meta">${escapeHtml(row.meta)}</p>
             </div>
           </a>
-          <div class="movers-price">${escapeHtml(row.priceText)}</div>
-          <div class="movers-delta ${escapeHtml(row.deltaClass)}">${escapeHtml(row.deltaText)}</div>
+          <div class="movers-stats">
+            <div class="movers-stat movers-stat--price">
+              <span class="movers-stat-label">最新週価格</span>
+              <div class="movers-stat-value-row">
+                <strong class="movers-stat-value">${escapeHtml(row.priceText)}</strong>
+                ${row.sparklineMarkup ?? ""}
+              </div>
+            </div>
+            <div class="movers-stat">
+              <span class="movers-stat-label">前週比</span>
+              <span class="movers-delta ${escapeHtml(row.deltaClass)}">${escapeHtml(row.deltaText)}</span>
+            </div>
+          </div>
           <a class="movers-action" href="${escapeHtml(getDetailHref(row.sleeve.id ?? ""))}">詳細表示</a>
         </div>
       `).join("") || `<div class="home-empty">ランキングデータがありません。</div>`;
@@ -3876,6 +4002,8 @@
           const rate = row.pair.prev?.price ? (row.diff / row.pair.prev.price) * 100 : null;
           return {
             sleeve: row.s,
+            rankText: `#${index + 1}`,
+            sparklineMarkup: buildRankingSparkline(row.s),
             meta: `急上昇 ${index + 1}位`,
             priceText: `¥${row.pair.latest.price.toLocaleString()}`,
             deltaText: formatPercent(rate),
@@ -3891,6 +4019,8 @@
           const rate = pair?.prev?.price ? ((pair.latest.price - pair.prev.price) / pair.prev.price) * 100 : null;
           return {
             sleeve,
+            rankText: `#${index + 1}`,
+            sparklineMarkup: buildRankingSparkline(sleeve),
             meta: `価格 ${index + 1}位`,
             priceText: pair?.latest?.price != null ? `¥${pair.latest.price.toLocaleString()}` : "—",
             deltaText: formatPercent(rate),
@@ -3903,6 +4033,8 @@
       if (growthEl) {
         const rows = growthRank.slice(0, 3).map((row, index) => ({
           sleeve: row.s,
+          rankText: `#${index + 1}`,
+          sparklineMarkup: buildRankingSparkline(row.s),
           meta: `高騰率 ${index + 1}位`,
           priceText: row.g?.latest?.price != null ? `¥${row.g.latest.price.toLocaleString()}` : "—",
           deltaText: formatPercent(row.g?.rate ?? null),
