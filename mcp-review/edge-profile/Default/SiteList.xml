@@ -1,0 +1,1611 @@
+<?xml version="1.0"?>
+<site-list version="20220525">
+ <site url="10.160.20.76:443">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.160.20.76:444">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.160.20.76:445">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.160.20.76:446">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.1.137">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.1.137:100">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.1.137:83">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.1.137:89">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.1.137:90">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.1.137:93">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.1.137:99">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.1.78:803">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.1.79:803">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.30.99:808">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.30.99:812">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.30.99:813">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="10.30.30.99:814">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.1.124/vi32">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.1.124/vi32/view/vi32a1/vi32a1n01edit.html">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.1.124/vi32_2">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.1.124/vi32_2/view/vi32a1/vi32a1n01edit.html">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.1.124/vi32_3">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.1.124/vi32_4">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.1.124/vi32_5">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.1.124/vi32_5/view/vi32a1/vi32a1n01edit.html">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.10.52">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.10.52:100">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.10.52:83">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.10.52:89">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.10.52:90">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.10.52:93">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.10.52:99">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.127.69">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.15.209:83">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.18.159/spa/spoa">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.18.159/spa/spoe">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.19.109">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.19.109:81">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.19.109:82">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.19.109:83">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.19.114">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.19.114:81">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.19.138">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.19.160">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.19.162">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.19.188">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.19.188:81">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.206.147">
+  <compat-mode>IE7Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.238.156">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.238.156:81">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.105">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.105:90">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.125">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.125:90">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.140">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.140:706">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.140:801">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.140:802">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.140:806">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.141:802">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.141:803">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.141:804">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.141:805">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.141:808">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.141:810">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.141:811">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.141:812">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.141:815">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.141:850">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.141:851">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.141:852">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.172">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.172:81">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.203:513">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.203:605">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.203:608">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.203:612">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.203:613">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.203:615">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.203:713">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.203:805">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.203:808">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.203:812">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.203:813">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.203:815">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.22">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.22:90">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.37">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.37:100">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.37:83">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.37:89">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.37:90">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.37:93">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.37:99">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.61">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="148.161.250.61:81">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="161.93.4.147">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.4.149">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.4.150">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.4.206">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.4.207">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.4.208">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.5.33">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.5.34">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.5.35">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.5.37">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.5.39">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.5.40">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.5.41">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.5.42">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="161.93.5.43">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="192.168.197.117">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="192.168.197.117:801">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="192.168.197.117:802">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="192.168.197.117:803">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="192.168.197.117:8080">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="192.168.197.72">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="192.168.197.72:801">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="192.168.197.72:802">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="192.168.197.72:803">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="192.168.197.72:8080">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="allcome.isuzu.co.jp:8890">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="allisz/ciis">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="allisz/intraace">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="atsc.auth.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="auth.kitora.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="brems.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="bremst.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="ckap101">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="ckpp201">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="clpsv101/nikkei/index_mc.html">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="clpsv101.isuzu.co.jp/nikkei/index.html">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="cocjpad2/vi32_3">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="cocjpad2/vi32_4">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="cocjpad2/vi32_5">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="common-portal.com.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="costacc3">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="costaccp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="csovm101">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="csovm101:90">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="demis.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="demistap">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="dlmsv111">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="dptsv112/tssclient">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="dptsv112/tssclienttest">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="eoesv101">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="eoesv101:81">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="espvm101">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="espvm101:81">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="espvm101:82">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="espvm101:83">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="espvmwb1">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="espvmwb1:100">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="espvmwb1:83">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="espvmwb1:89">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="espvmwb1:90">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="espvmwb1:93">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="espvmwb1:99">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="estth101">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="estth101:90">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="estvm101">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="estvm101:90">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="exam-atsc.auth.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="exam-auth.kitora.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="exam-hag.kitora.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="exam-sp-hag.au.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="exam-sp-hag.kitora.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="exam-tsc.auth.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="expmulta1:513">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expmulta1:605">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expmulta1:608">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expmulta1:612">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expmulta1:613">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expmulta1:615">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expmulta1:713">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expmulta1:805">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expmulta1:808">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expmulta1:812">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expmulta1:813">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expmulta1:815">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expnavm1">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expnavm1:706">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expnavm1:801">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expnavm1:802">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expnavm1:806">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expovmdev1">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expovmdev1:801">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expovmdev1:802">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expovmdev1:803">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expovmdev1:8080">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expovmsv1">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expovmweb1">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expovmweb1:801">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expovmweb1:802">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expovmweb1:803">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expovmweb1:8080">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expptvm1:802">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expptvm1:803">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expptvm1:804">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expptvm1:805">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expptvm1:808">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expptvm1:810">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expptvm1:811">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expptvm1:812">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expptvm1:815">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expptvm1:850">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expptvm1:851">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="expptvm1:852">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="fieldstaff.isuzuna.com">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="gecs.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="gecstest.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="hag.kitora.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="impuls.isuzu.co.jp">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="inavisv11.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="int1.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="int2.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="int31.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="iplswet1:443">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="iplswet1:444">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="iplswet1:445">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="iplswet1:446">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="isz-kensyu">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="isz-kensyu-dev">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="iszad401.i2.win.isuzu.co.jp/certsrv">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="isztcmkwb11.i0.win.isuzu.co.jp:7100/isz_tcm_b-ken/webclient">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="isztcmkwb11.i0.win.isuzu.co.jp:7200/isz_tcm_training/webclient">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="isztcmwb11.i0.win.isuzu.co.jp:7100/isz_tcm_prod/webclient">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="kougu.isuzu.co.jp/macross_mt">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="mlit.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="mlittest.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="mmkdv999/mimamorihelp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="mmksv101/mimamorihelp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="ntssv124/webneoss">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="ntssv133/webneoss">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="ntssv712/webneoss">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="ntssv713/webneoss">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="pbinv01.isuzu.co.jp:8080/imart">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="pbinv02.isuzu.co.jp:8080/imart">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="pcsdwh01/mbrnet">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="powertrain-sales.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="prism2.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="prism3.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="prism4.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="prismt2.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="prismt3.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="prismt4.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="procas01">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="procas02">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="pswdap01">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="pswdap01.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="pswpap01">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="ptdvm101">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="ptdvm101:81">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="ptxvm101">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="ptxvm101:81">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="ptxvm201">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="ptxvm201:81">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="quasv101/dcmsys">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="quasv101/dcmuser">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="rapap7d2.isuzu.co.jp">
+  <compat-mode>IE7Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="rapap7t1.isuzu.co.jp">
+  <compat-mode>IE7Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="raps.isuzu.co.jp">
+  <compat-mode>IE7Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="rapstest.isuzu.co.jp">
+  <compat-mode>IE7Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="sdl1.mx.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="sim2.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="sim7.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="slviewer3.isuzu.co.jp:13302">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="slviewer4.isuzu.co.jp:13302">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="smshub1.mx.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="smshub2.mx.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="smshubt.mx.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="sp-hag.au.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="sp-hag.kitora.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="spdfdv01/spdfa">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="spdfpd01/spdfa">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="sprsv101/spkroot/asp">
+  <compat-mode>IE7Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="sq-tracer2.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="sq-tracer2test.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="t-hanbai.com.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="t-kyohan.com.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="t-supplier.com.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="t-tec.com.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tcommon-portal.com.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tcweb-b.i0.win.isuzu.co.jp:7100/isuzu_b-ken/webclient">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="tcweb-p.i0.win.isuzu.co.jp:7100/isuzu_production/webclient">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="tcweb-t.i0.win.isuzu.co.jp:7100/isuzu_training/webclient">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="tcweb.pe-outsourcing.local:7100/ipeo_production/webclient">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="tdkfsap1/macross_mut">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="tdkfsap1/macross_mzj">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="tdl-g01.kitora.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="tdl-t01.kitora.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="tdl1.mx.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tdl2.mx.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tdl3.mx.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tdl4.mx.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tdlt.mx.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="timnet.isuzu.co.jp/macross">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="tmc1.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tmc2.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tmc31.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tmc34g.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tmc41.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tmc51.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tmc56h.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tmc61.nhost.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="toshub1.mx.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tsc.auth.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="tt-hanbai.com.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tt-kyohan.com.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tt-supplier.com.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="tt-tec.com.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="uvois/uvois">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="voltvmwb">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="voltvmwb:81">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="w2k-d01.kitora.toyota.co.jp/auth/kt00041">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="w2k-d01.kitora.toyota.co.jp/auth/saml">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="w2k-d01.kitora.toyota.co.jp/dummy/kt00041">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="w2k-g01.kitora.toyota.co.jp/auth/kg00011">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="w2k-g01.kitora.toyota.co.jp/auth/saml">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="w2k-g02.au.toyota.co.jp/auth/saml">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="w2k-t01.kitora.toyota.co.jp/auth/kt00041">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="w2k-t01.kitora.toyota.co.jp/auth/saml">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="w2k-t01.kitora.toyota.co.jp/dummy/kt00041">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="w2k-t02.au.toyota.co.jp/auth/saml">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="wvtacoc.isuzu.co.jp/vi32">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="www-atsc.auth.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="www-tsc.auth.toyota.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">NEUTRAL</open-in>
+ </site>
+ <site url="www.einet.isuzu.co.jp/spa/spoa">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="www.einet.isuzu.co.jp/spa/spoe">
+  <compat-mode>IE8Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://172.19.72.49:7001/km">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://172.19.72.55:7001/km">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://csovm101:901">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://dev-brems.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://dev-prism2.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://dev-prism4.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://eoesv101:901">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://espvm101:901">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://espvmwb1:900">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://espvmwb1:903">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://espvmwb1:909">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://estth101:91">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://estvm101:91">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://estvm101:911">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://expmulta1:905">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://expmulta1:915">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://expnavm1:7061">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://expnavm1:8011">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://expnavm1:8041">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://expovmdev1:900">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://expovmdev1:901">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://expovmdev1:902">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://expovmdev1:903">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://expovmdev1:904">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://expovmdev1:905">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://expovmsv1:900">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://gecsap1a.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://ptdvm101:901">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://ptxvm101:901">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://ptxvm201:901">
+  <compat-mode>Default</compat-mode>
+  <open-in>MSEdge</open-in>
+ </site>
+ <site url="http://rapap702.isuzu.co.jp">
+  <compat-mode>IE7Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://rapap7t2.isuzu.co.jp">
+  <compat-mode>IE7Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://rapstest.isuzu.co.jp">
+  <compat-mode>IE7Enterprise</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://sharedid.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="http://sharedts.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in allow-redirect="true">IE11</open-in>
+ </site>
+ <site url="http://slap1a.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://slsv1b.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://test-brems.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://test-prism2.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://test-prism3.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="http://test-prism4.isuzu.co.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="https://e-co-meisai.jcb.co.jp/jcb-etcn/member/login/index.html">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="https://ebom.s0.isuzu.co.jp/ebom-demis/demis-online">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="https://ebomt.s0.isuzu.co.jp/ebom-demis-t01/demis-online">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="https://ebomt.s0.isuzu.co.jp/ebom-demis/demis-online">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="https://l6344-ap.cust.mob-connect.net/browser/login">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="https://net2b.fsas.fujitsu.com/servlet/loginuser">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="https://www.coworco.com/servlet/loginuser">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="https://www.edi.isuzu-india.com">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="https://www.imit-part.isuzu.co.jp:5000/irj/portal">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="https://www.shizuokabank.co.jp/corporation/index.html">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <site url="https://yoyaku.nasva.go.jp">
+  <compat-mode>Default</compat-mode>
+  <open-in>IE11</open-in>
+ </site>
+ <shared-cookie domain=".auth.toyota.co.jp" name="IW_INFO_001" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie domain=".auth.toyota.co.jp" name="IW_INFO_001E" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie domain=".toyota.co.jp" name="iPlanetDirectoryPro" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="atsc.auth.toyota.co.jp" name="IW_INFO_A01" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="auth.kitora.toyota.co.jp" name="BIGipServerpool_gauth_tcp80" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="auth.kitora.toyota.co.jp" name="BIGipServer~pt_rd0003~pl_authweb_80" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="auth.kitora.toyota.co.jp" name="JSESSIONID" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="exam-atsc.auth.toyota.co.jp" name="IW_INFO_A01E" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="exam-auth.kitora.toyota.co.jp" name="BIGipServerpool_tauth_tcp80" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="exam-auth.kitora.toyota.co.jp" name="BIGipServer~pt_rd0003~pl_authweb-test_80" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="exam-auth.kitora.toyota.co.jp" name="JSESSIONID" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="w2k-d01.kitora.toyota.co.jp" name="BIGipServer~pt_rd0003~pl_toyotaFW-authGW_80" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="w2k-d01.kitora.toyota.co.jp" name="ZDFW_AUTHGW_SESSIONID" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="w2k-g01.kitora.toyota.co.jp" name="BIGipServer~pt_rd0003~pl_toyotaFW-GW_80-2" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="w2k-g01.kitora.toyota.co.jp" name="ZDFW_AUTHGW_SESSIONID" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="w2k-g02.au.toyota.co.jp" name="BIGipServer~ktrfw_gw~ktrfw_gw_80_pool" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="w2k-g02.au.toyota.co.jp" name="ZDFW_AUTHGW_SESSIONID" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="w2k-t01.kitora.toyota.co.jp" name="BIGipServer~pt_rd0003~pl_toyotaFW-GWtest_80-2" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="w2k-t01.kitora.toyota.co.jp" name="ZDFW_AUTHGW_SESSIONID" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="w2k-t02.au.toyota.co.jp" name="BIGipServer~ktrfw_gw~ktrfw_gw_dev_80_pool" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+ <shared-cookie host="w2k-t02.au.toyota.co.jp" name="ZDFW_AUTHGW_SESSIONID" source-engine="both">
+  <type>session</type>
+  <integrity>auto</integrity>
+ </shared-cookie>
+</site-list>
