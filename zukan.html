@@ -20,133 +20,217 @@
   <link rel="stylesheet" href="./assets/site.css" />
   <style>
     body {
-      background: #f5f7fb;
+      background:
+        radial-gradient(circle at top, rgba(255, 198, 72, 0.16), transparent 28%),
+        radial-gradient(circle at 82% 8%, rgba(96, 165, 250, 0.12), transparent 24%),
+        linear-gradient(180deg, #f7f9fd 0%, #eef3fb 100%);
     }
 
-    .ranking-page-top {
+    .zukan-page {
+      display: grid;
+      gap: 24px;
+    }
+
+    .zukan-top {
+      display: grid;
+      gap: 18px;
+    }
+
+    .zukan-hero,
+    .zukan-search-card,
+    .zukan-filter-card,
+    .zukan-results-card {
+      background: #fff;
+      border: 1px solid #dfe7f2;
+      border-radius: 24px;
+      box-shadow: 0 16px 34px rgba(15, 23, 42, .07);
+    }
+
+    .zukan-hero {
+      padding: 28px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr);
+      gap: 24px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 220, 132, 0.24), transparent 30%),
+        radial-gradient(circle at left center, rgba(191, 219, 254, 0.24), transparent 28%),
+        linear-gradient(180deg, #ffffff 0%, #fffaf0 100%);
+    }
+
+    .zukan-hero-copy {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .zukan-kicker,
+    .zukan-search-kicker,
+    .zukan-filter-kicker,
+    .zukan-results-kicker {
+      margin: 0;
+      font-size: 11px;
+      line-height: 1.3;
+      letter-spacing: .14em;
+      color: #8b9ab0;
+      font-weight: 900;
+    }
+
+    .zukan-title {
+      margin: 0;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: clamp(30px, 4.2vw, 46px);
+      line-height: 1.06;
+      letter-spacing: -.02em;
+      color: #132238;
+      font-weight: 900;
+    }
+
+    .zukan-desc {
+      margin: 0;
+      max-width: 58ch;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #5c6c83;
+      font-weight: 600;
+    }
+
+    .zukan-hero-stats {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .zukan-stat {
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid #e3eaf4;
+      background: rgba(255, 255, 255, .84);
+    }
+
+    .zukan-stat-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 11px;
+      line-height: 1.3;
+      letter-spacing: .06em;
+      color: #7b8798;
+      font-weight: 900;
+    }
+
+    .zukan-stat-value {
+      display: block;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      font-size: 28px;
+      line-height: 1.1;
+      color: #162238;
+      font-weight: 900;
+    }
+
+    .zukan-search-card,
+    .zukan-filter-card,
+    .zukan-results-card {
+      padding: 22px;
+    }
+
+    .zukan-search-card {
       display: grid;
       gap: 16px;
-      margin-bottom: 20px;
     }
 
-    .ranking-header-card,
-    .ranking-filter-card {
-      background: #fff;
-      border: 1px solid #e6eaf2;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
+    .zukan-search-head,
+    .zukan-filter-head,
+    .zukan-results-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
-    .ranking-header-card {
+    .zukan-section-title {
+      margin: 4px 0 0;
+      font-size: 24px;
+      line-height: 1.15;
+      color: #162238;
+      font-weight: 900;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+    }
+
+    .zukan-section-copy {
+      margin: 6px 0 0;
+      font-size: 13px;
+      line-height: 1.75;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .zukan-search-form {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 16px;
-      align-items: center;
-      padding: 24px;
+      align-items: start;
     }
 
-    .ranking-page-title {
-      margin: 0;
-      font-size: 28px;
-      line-height: 1.15;
-      letter-spacing: -.02em;
-      color: #0f172a;
-      font-weight: 900;
+    .zukan-search-field {
+      min-width: 0;
     }
 
-    .ranking-page-desc {
-      margin: 10px 0 0;
-      font-size: 14px;
-      line-height: 1.6;
-      color: #475467;
-      font-weight: 700;
-    }
-
-    .ranking-status {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-
-    .ranking-status-card {
-      min-width: 144px;
-      padding: 12px 14px;
-      border-radius: 16px;
+    .zukan-search-input {
+      width: 100%;
+      height: 56px;
+      padding: 0 18px;
+      border-radius: 18px;
+      border: 1px solid #d4ddea;
       background: #fff;
-      border: 1px solid #e7ebf3;
-    }
-
-    .ranking-status-label {
-      display: block;
-      font-size: 11px;
-      line-height: 1.3;
-      color: #667085;
-      font-weight: 800;
-      margin-bottom: 6px;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    .ranking-status-value {
-      display: block;
+      color: #15243b;
       font-size: 15px;
-      line-height: 1.35;
-      color: #101828;
+      font-weight: 600;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .zukan-search-input:focus {
+      border-color: #8ca7cc;
+      box-shadow: 0 0 0 4px rgba(140, 167, 204, 0.18);
+    }
+
+    .zukan-search-submit {
+      height: 56px;
+      padding: 0 24px;
+      border: 0;
+      border-radius: 18px;
+      background: #162238;
+      color: #fff;
+      font-size: 14px;
       font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(24, 40, 62, 0.14);
     }
 
-    .ranking-filter-card {
-      padding: 18px 20px 20px;
-    }
-
-    .ranking-filter-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .ranking-filter-title {
-      margin: 0;
-      font-size: 13px;
-      color: #344054;
-      font-weight: 900;
-      letter-spacing: .04em;
-    }
-
-    .ranking-filter-sub {
-      margin: 0;
-      font-size: 12px;
-      color: #98a2b3;
-      font-weight: 700;
-    }
-
-    .ranking-filter-grid {
+    .zukan-filter-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
       gap: 12px;
       align-items: end;
     }
 
-    .ranking-filter-field {
+    .zukan-filter-field {
       display: grid;
       gap: 8px;
       min-width: 0;
     }
 
-    .ranking-filter-label {
+    .zukan-filter-label {
       font-size: 12px;
       color: #475467;
       font-weight: 800;
       line-height: 1.3;
     }
 
-    .ranking-filter-field select,
-    .ranking-filter-actions button {
+    .zukan-filter-field select,
+    .zukan-filter-actions button {
       width: 100%;
-      height: 50px;
+      height: 48px;
       border-radius: 16px;
       border: 1px solid #d7deea;
       background: #fff;
@@ -157,27 +241,185 @@
       transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
     }
 
-    .ranking-filter-field select:hover,
-    .ranking-filter-actions button:hover {
+    .zukan-filter-field select:hover,
+    .zukan-filter-actions button:hover {
       border-color: #b9c5d9;
       background: #fbfcfe;
     }
 
-    .ranking-filter-field select:focus,
-    .ranking-filter-actions button:focus {
+    .zukan-filter-field select:focus,
+    .zukan-filter-actions button:focus {
       outline: none;
       border-color: #9db5ff;
       box-shadow: 0 0 0 4px rgba(71, 122, 255, .12);
     }
 
-    .ranking-filter-actions {
+    .zukan-filter-actions {
       min-width: 132px;
     }
 
-    .ranking-filter-actions button {
+    .zukan-filter-actions button {
       background: #f8fafc;
       color: #344054;
       cursor: pointer;
+    }
+
+    .zukan-results-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #f8fbff;
+      border: 1px solid #dbe5f2;
+      color: #425168;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .zukan-results-meta strong {
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      font-size: 14px;
+      color: #162238;
+    }
+
+    .zukan-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .zukan-card {
+      overflow: hidden;
+      display: grid;
+      gap: 20px;
+      text-decoration: none;
+      color: #15243b;
+      border: 1px solid #d7e0ee;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.05);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .zukan-card:hover {
+      transform: translateY(-2px);
+      border-color: #c4d1e4;
+      box-shadow: 0 16px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    .zukan-card.is-lead {
+      grid-column: span 2;
+      background:
+        radial-gradient(circle at top right, rgba(255, 223, 122, 0.26), transparent 28%),
+        #fff;
+    }
+
+    .zukan-card-media {
+      aspect-ratio: 4 / 3;
+      border-radius: 18px;
+      margin: 24px 24px 0;
+      overflow: hidden;
+      background: linear-gradient(180deg, #f4f7fb 0%, #eef3f9 100%);
+      display: grid;
+      place-items: center;
+    }
+
+    .zukan-card.is-lead .zukan-card-media {
+      aspect-ratio: 16 / 10;
+    }
+
+    .zukan-card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .zukan-card-body {
+      padding: 0 24px 24px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .zukan-card-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .zukan-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #f5f7fb;
+      border: 1px solid #e1e8f2;
+      color: #4e6078;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .zukan-badge--rank {
+      background: #18283e;
+      border-color: #18283e;
+      color: #fff;
+    }
+
+    .zukan-badge--delta.up {
+      color: #dc2626;
+    }
+
+    .zukan-badge--delta.down {
+      color: #2563eb;
+    }
+
+    .zukan-badge--delta.flat {
+      color: #64748b;
+    }
+
+    .zukan-card-title {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.35;
+      font-weight: 900;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      color: #162238;
+    }
+
+    .zukan-card.is-lead .zukan-card-title {
+      font-size: 24px;
+    }
+
+    .zukan-card-price {
+      margin: 0;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      font-size: 25px;
+      line-height: 1.1;
+      font-weight: 900;
+      color: #15243b;
+    }
+
+    .zukan-card.is-lead .zukan-card-price {
+      font-size: 34px;
+    }
+
+    .zukan-card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .zukan-empty {
+      grid-column: 1 / -1;
+      padding: 24px;
+      border: 1px dashed #cbd7e8;
+      border-radius: 18px;
+      color: #5f7088;
+      background: rgba(255, 255, 255, 0.72);
+      font-size: 14px;
+      line-height: 1.75;
+      font-weight: 700;
     }
 
     .ranking-error {
@@ -185,125 +427,158 @@
       margin-bottom: 0;
     }
 
-    @media (max-width: 900px) {
-      .ranking-header-card {
+    @media (max-width: 1100px) {
+      .zukan-hero {
         grid-template-columns: 1fr;
-        padding: 20px;
       }
 
-      .ranking-status {
-        justify-content: flex-start;
+      .zukan-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
-      .ranking-status-card {
-        min-width: 0;
-        flex: 1 1 140px;
-      }
-
-      .ranking-filter-grid {
+      .zukan-filter-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .ranking-filter-actions {
-        min-width: 0;
       }
     }
 
     @media (max-width: 700px) {
-      .ranking-filter-card {
-        padding: 16px;
+      .zukan-search-card,
+      .zukan-filter-card,
+      .zukan-results-card,
+      .zukan-hero {
+        padding: 18px;
       }
 
-      .ranking-filter-head {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .ranking-filter-grid {
+      .zukan-search-form,
+      .zukan-filter-grid,
+      .zukan-grid {
         grid-template-columns: 1fr;
+      }
+
+      .zukan-card.is-lead {
+        grid-column: span 1;
+      }
+
+      .zukan-search-submit {
+        width: 100%;
       }
     }
   </style>
 </head>
 
-<body class="page-market-list">
+<body>
   <div id="site-header"></div>
 
-  <div class="container page-shell page-shell--market">
+  <div class="container">
     <nav class="breadcrumb" aria-label="パンくず">
       <a href="./index.html">ホーム</a>
       <span class="breadcrumb-sep" aria-hidden="true">></span>
       <span class="breadcrumb-current" aria-current="page">ポケモンカード スリーブ図鑑</span>
     </nav>
-    <div class="ranking-page-top page-market-top">
-      <section class="ranking-header-card page-hero-card" aria-label="ページヘッダー">
-        <div>
-          <p class="page-hero-kicker">SLEEVE DIRECTORY</p>
-          <h1 class="ranking-page-title page-hero-title">ポケモンカード スリーブ図鑑</h1>
-          <p class="ranking-page-desc page-hero-desc">検索と絞り込みで目的のスリーブを見つけて、価格推移や相場感を一覧で比較できます。</p>
-        </div>
-        <div class="page-hero-meta" aria-label="集計状況">
-          <span class="page-hero-badge">最終更新 <strong id="updatedAt">読み込み中</strong></span>
-          <span class="page-hero-badge">表示件数 <strong id="countInfo">集計中</strong></span>
-        </div>
-      </section>
-
-      <section class="ranking-filter-card page-toolbar-card" aria-label="フィルタバー">
-        <div class="ranking-filter-head">
+    <main class="zukan-page">
+      <div class="zukan-top">
+        <section class="zukan-hero" aria-label="図鑑トップ">
           <div>
-            <h2 class="ranking-filter-title">絞り込み</h2>
-            <p class="ranking-filter-sub page-toolbar-copy">条件や並び替えを変えると図鑑一覧をすぐに更新できます。</p>
+            <div class="zukan-hero-copy">
+              <p class="zukan-kicker">SLEEVE DIRECTORY</p>
+              <h1 class="zukan-title">ポケモンカード<br>スリーブ図鑑</h1>
+              <p class="zukan-desc">検索と絞り込みで目的のスリーブを見つけて、価格推移や相場感を一覧で比較できます。図鑑ページでは、ホームの「探す」「見比べる」体験をそのまま使えることを優先しています。</p>
+            </div>
           </div>
-        </div>
+          <div class="zukan-hero-stats" aria-label="集計状況">
+            <div class="zukan-stat">
+              <span class="zukan-stat-label">最終更新</span>
+              <span id="updatedAt" class="zukan-stat-value">読み込み中</span>
+            </div>
+            <div class="zukan-stat">
+              <span class="zukan-stat-label">表示件数</span>
+              <span id="countInfo" class="zukan-stat-value">集計中</span>
+            </div>
+          </div>
+        </section>
 
-        <div class="ranking-filter-grid">
-          <label class="ranking-filter-field">
-            <span class="ranking-filter-label">発売年</span>
-            <select id="releaseYear">
-              <option value="">全部</option>
-            </select>
-          </label>
+        <section class="zukan-search-card" aria-label="図鑑検索">
+          <div class="zukan-search-head">
+            <div>
+              <p class="zukan-search-kicker">SEARCH</p>
+              <h2 class="zukan-section-title">名前から探す</h2>
+              <p class="zukan-section-copy">ヘッダー検索と同じキーワードで、図鑑一覧をその場で絞り込みます。</p>
+            </div>
+          </div>
+          <form id="zukanSearchForm" class="zukan-search-form">
+            <div class="zukan-search-field">
+              <input id="zukanSearchInput" class="zukan-search-input" type="search" placeholder="スリーブ名で検索..." autocomplete="off" />
+            </div>
+            <button class="zukan-search-submit" type="submit">図鑑を絞り込む</button>
+          </form>
+        </section>
 
-          <label class="ranking-filter-field">
-            <span class="ranking-filter-label">シリーズ</span>
-            <select id="series">
-              <option value="">全部</option>
-            </select>
-          </label>
+        <section class="zukan-filter-card" aria-label="フィルタバー">
+          <div class="zukan-filter-head">
+            <div>
+              <p class="zukan-filter-kicker">FILTER</p>
+              <h2 class="zukan-section-title">条件で見比べる</h2>
+              <p class="zukan-section-copy">価格帯、シリーズ、発売年を切り替えて、一覧の見え方をすばやく整えます。</p>
+            </div>
+          </div>
 
-          <label class="ranking-filter-field">
-            <span class="ranking-filter-label">価格帯</span>
-            <select id="priceBand">
-              <option value="">全部</option>
-              <option value="0-999">〜999円</option>
+          <div class="zukan-filter-grid">
+            <label class="zukan-filter-field">
+              <span class="zukan-filter-label">発売年</span>
+              <select id="releaseYear">
+                <option value="">全部</option>
+              </select>
+            </label>
+
+            <label class="zukan-filter-field">
+              <span class="zukan-filter-label">シリーズ</span>
+              <select id="series">
+                <option value="">全部</option>
+              </select>
+            </label>
+
+            <label class="zukan-filter-field">
+              <span class="zukan-filter-label">価格帯</span>
+              <select id="priceBand">
+                <option value="">全部</option>
+                <option value="0-999">〜999円</option>
               <option value="1000-1999">1,000〜1,999円</option>
               <option value="2000-2999">2,000〜2,999円</option>
               <option value="3000-4999">3,000〜4,999円</option>
               <option value="5000-99999999">5,000円〜</option>
-            </select>
-          </label>
+              </select>
+            </label>
 
-          <label class="ranking-filter-field">
-            <span class="ranking-filter-label">並び替え</span>
-            <select id="sortOrder">
-              <option value="priceDesc">価格が高い順</option>
-              <option value="priceAsc">価格が安い順</option>
+            <label class="zukan-filter-field">
+              <span class="zukan-filter-label">並び替え</span>
+              <select id="sortOrder">
+                <option value="priceDesc">価格が高い順</option>
+                <option value="priceAsc">価格が安い順</option>
               <option value="nameAsc">名前順</option>
               <option value="releaseDesc">発売年が新しい順</option>
-            </select>
-          </label>
+              </select>
+            </label>
 
-          <div class="ranking-filter-actions">
-            <button id="clear" type="button">条件をクリア</button>
+            <div class="zukan-filter-actions">
+              <button id="clear" type="button">条件をクリア</button>
+            </div>
           </div>
+
+          <div id="error" class="error ranking-error"></div>
+        </section>
+      </div>
+
+      <section class="zukan-results-card" aria-label="図鑑一覧">
+        <div class="zukan-results-head">
+          <div>
+            <p class="zukan-results-kicker">RESULTS</p>
+            <h2 class="zukan-section-title">いま比較できるスリーブ</h2>
+            <p class="zukan-section-copy">先頭には主役カードを置き、残りは同じ文法で比較しやすく並べています。</p>
+          </div>
+          <div class="zukan-results-meta">一致したスリーブ <strong id="resultCountBadge">集計中</strong></div>
         </div>
-
-        <div id="error" class="error ranking-error"></div>
+        <div id="list" class="zukan-grid"></div>
       </section>
-    </div>
-
-    <main>
-      <div id="list" class="grid compact-grid"></div>
     </main>
 
     <div id="site-footer"></div>
@@ -456,9 +731,12 @@
     }
 
     async function main() {
-      const searchInput = await waitForSearch();
+      const headerSearchInput = await waitForSearch();
+      const localSearchInput = document.getElementById("zukanSearchInput");
+      const searchForm = document.getElementById("zukanSearchForm");
+      const searchInput = localSearchInput || headerSearchInput;
       if (!searchInput) {
-        showError("検索欄の初期化に失敗しました（headerが読み込めていません）");
+        showError("検索欄の初期化に失敗しました");
         return;
       }
 
@@ -471,7 +749,10 @@
 
       const url = new URL(location.href);
       const qParam = (url.searchParams.get("q") || "").trim();
-      if (qParam) searchInput.value = qParam;
+      if (qParam) {
+        if (localSearchInput) localSearchInput.value = qParam;
+        if (headerSearchInput) headerSearchInput.value = qParam;
+      }
 
       let data;
       try {
@@ -556,23 +837,27 @@
         if (!filtered.length) {
           const c = document.getElementById("countInfo");
           if (c) c.textContent = "0件";
-          list.innerHTML = '<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>';
+          const badge = document.getElementById("resultCountBadge");
+          if (badge) badge.textContent = "0件";
+          list.innerHTML = '<div class="zukan-empty">条件に一致するスリーブがありません。キーワードや価格帯をゆるめて、もう一度探してみてください。</div>';
           return;
         }
 
         const c = document.getElementById("countInfo");
         if (c) c.textContent = `${filtered.length.toLocaleString()}件`;
+        const badge = document.getElementById("resultCountBadge");
+        if (badge) badge.textContent = `${filtered.length.toLocaleString()}件`;
 
         const frag = document.createDocumentFragment();
 
-        for (const s of filtered) {
+        filtered.forEach((s, index) => {
           const p = getCardPrice(s);
           const priceText = (p == null) ? "-" : `${p.toLocaleString()}円`;
 
           const weeklyPair = getWeeklyPair(s);
           const delta = getDeltaDisplay(weeklyPair);
           const tags = getCardTags(s, 2);
-          const tagsHtml = tags.map(tag => `<span class="compact-tag">${escapeHtml(tag)}</span>`).join("");
+          const tagsHtml = tags.map(tag => `<span class="zukan-badge">${escapeHtml(tag)}</span>`).join("");
 
           const imgSrc = String(s.imageUrl || "").trim();
           const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
@@ -580,35 +865,56 @@
             : `./sleeve/${encodeURIComponent(s.id ?? "")}/`;
 
           const card = document.createElement("a");
-          card.className = "compact-card";
+          card.className = `zukan-card${index === 0 ? " is-lead" : ""}`;
           card.href = detailHref;
           card.setAttribute("data-sleeve-link", "1");
           card.setAttribute("aria-label", `${String(s.name ?? "")}の詳細を見る`);
+          const rankBadge = `<span class="zukan-badge zukan-badge--rank">${index === 0 ? "主役" : `${index + 1}位`}</span>`;
+          const deltaBadge = `<span class="zukan-badge zukan-badge--delta ${delta.className}">${escapeHtml(delta.shortText)}</span>`;
           card.innerHTML = `
-            <span class="compact-thumb-wrap">
+            <div class="zukan-card-media">
               ${imgSrc
-                ? `<img class="compact-thumb" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
+                ? `<img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
                     onerror="this.onerror=null; this.style.display='none';">`
                 : ""}
-            </span>
-            <h2 class="compact-card-title">${escapeHtml(s.name ?? "")}</h2>
-            <div class="compact-price-row">
-              <div class="compact-price">${escapeHtml(priceText)}</div>
-              <div class="compact-delta ${delta.className}">${escapeHtml(delta.shortText)}</div>
             </div>
-            ${tagsHtml ? `<div class="compact-tags">${tagsHtml}</div>` : ""}
+            <div class="zukan-card-body">
+              <div class="zukan-card-badges">${rankBadge}${deltaBadge}</div>
+              <h2 class="zukan-card-title">${escapeHtml(s.name ?? "")}</h2>
+              <p class="zukan-card-price">${escapeHtml(priceText)}</p>
+              <div class="zukan-card-meta">
+                ${window.common && typeof window.common.buildFlowBadgeHtml === "function" ? window.common.buildFlowBadgeHtml(s, { includeTrend: true }) : ""}
+                ${tagsHtml}
+              </div>
+            </div>
           `;
           frag.appendChild(card);
-        }
+        });
 
         list.appendChild(frag);
       }
 
       let t = null;
-      searchInput.addEventListener("input", () => {
+      const queueRender = () => {
         clearTimeout(t);
         t = setTimeout(render, 80);
-      });
+      };
+      searchInput.addEventListener("input", queueRender);
+      if (headerSearchInput && localSearchInput && headerSearchInput !== localSearchInput) {
+        headerSearchInput.addEventListener("input", () => {
+          localSearchInput.value = headerSearchInput.value;
+          queueRender();
+        });
+        localSearchInput.addEventListener("input", () => {
+          headerSearchInput.value = localSearchInput.value;
+        });
+      }
+      if (searchForm) {
+        searchForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+          queueRender();
+        });
+      }
 
       releaseYearSel.addEventListener("change", render);
       seriesSel.addEventListener("change", render);
@@ -617,6 +923,8 @@
 
       clearBtn.addEventListener("click", () => {
         searchInput.value = "";
+        if (headerSearchInput && headerSearchInput !== searchInput) headerSearchInput.value = "";
+        if (localSearchInput && localSearchInput !== searchInput) localSearchInput.value = "";
         releaseYearSel.value = "";
         seriesSel.value = "";
         priceBandSel.value = "";
