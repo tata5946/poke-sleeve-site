@@ -2890,7 +2890,7 @@
         <nav class="topbar-tabs" aria-label="上部メニュー">
           <a class="topbar-tab is-active" href="./index.html">ダッシュボード</a>
           <a class="topbar-tab" href="./index-market.html">市場状況</a>
-          <a class="topbar-tab" href="./policy.html">設定</a>
+          <a class="topbar-tab" href="./policy.html">プライバシーポリシー</a>
         </nav>
         <div class="topbar-utils" aria-hidden="true">
           <span>🔔</span>
@@ -2942,13 +2942,13 @@
         <section class="dashboard-lower" aria-label="下部分析エリア">
           <div class="movers-card">
             <div class="movers-head">
-              <h2 class="movers-title">急上昇銘柄 (Movers &amp; Shakers)</h2>
+              <h2 class="movers-title">急上昇スリーブ (Movers &amp; Shakers)</h2>
               <a class="movers-link" href="./surge.html">すべて表示</a>
             </div>
             <div class="movers-table-head">
               <div>銘柄</div>
               <div>現在価格</div>
-              <div>前日比</div>
+              <div>前週比</div>
               <div>アクション</div>
             </div>
             <div id="moversTableBody">
@@ -2967,18 +2967,6 @@
             </div>
           </div>
 
-          <aside class="dashboard-right">
-            <article class="strategist-card" aria-label="ストラテジスト・ノート">
-              <p class="strategist-kicker">ストラテジスト・ノート</p>
-              <h2 class="strategist-title">供給網の遅延と二次流通市場への影響</h2>
-              <p class="strategist-copy" id="strategistNoteText">国内主要サプライヤーの生産遅延により、ホログラフィック系スリーブの流通量が圧縮されています。短期では限定ドロップ銘柄への資金集中が継続する見通しです。</p>
-              <div class="strategist-author">
-                <span class="strategist-author-avatar" aria-hidden="true">●</span>
-                <span>K. Tanaka, Senior Analyst</span>
-              </div>
-            </article>
-
-          </aside>
         </section>
       </div>
       <nav class="mobile-bottom-nav" aria-label="モバイルナビゲーション">
@@ -3277,7 +3265,7 @@
       const avgDelta = Number.isFinite(stats.latestIndex?.rate) ? (stats.latestIndex.rate / 5) : 0;
       el.innerHTML = `
         <div class="kpi-card">
-          <p class="kpi-label">最新週の取引総額</p>
+          <p class="kpi-label">集計週の取引総額</p>
           <div class="kpi-value-row">
             <div class="kpi-value">¥${escapeHtml((stats.tradeValue / 1000000).toFixed(2))}M</div>
             <span class="kpi-change">+${escapeHtml((Math.max(0.4, listingDelta / 10)).toFixed(1))}%</span>
@@ -3291,7 +3279,7 @@
           </div>
         </div>
         <div class="kpi-card">
-          <p class="kpi-label">最新週の平均成約価格</p>
+          <p class="kpi-label">集計週の平均成約価格</p>
           <div class="kpi-value-row">
             <div class="kpi-value">¥${escapeHtml(Math.round(stats.avgPrice).toLocaleString())}</div>
             <span class="kpi-change ${avgDelta < 0 ? "down" : ""}">${escapeHtml(formatPercent(avgDelta))}</span>
@@ -3854,7 +3842,7 @@
       const latestWeekLabel = stats.latestWeek ? (() => {
         const m = String(stats.latestWeek).match(/^(?:\d{4})-(\d{2})-(\d{2})$/);
         return m ? `${Number(m[1])}/${Number(m[2])}週更新` : `${stats.latestWeek}更新`;
-      })() : "最新週更新";
+      })() : "集計週未反映";
       if (mainEl) {
         mainEl.innerHTML = `
           <a class="hero-main-link" href="./index-market.html" aria-label="指数ページを見る">
@@ -3863,7 +3851,7 @@
                 <p class="hero-index-kicker">スリーブ市場 総合指数（SMTI）</p>
                 <div class="hero-index-value-row">
                   <h1 class="hero-index-value">${escapeHtml(latest.index.toFixed(2))}</h1>
-                  <span class="hero-index-chip">${escapeHtml(formatPercent(latest.rate))}（前日比）</span>
+                  <span class="hero-index-chip">${escapeHtml(formatPercent(latest.rate))}（前週比）</span>
                 </div>
               </div>
             </div>
