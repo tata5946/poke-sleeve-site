@@ -352,39 +352,45 @@
       align-content: start;
     }
 
-    .zukan-page {
-      display: grid;
-      gap: 24px;
-    }
-
-    .zukan-top {
-      display: grid;
-      gap: 18px;
-    }
-
     .zukan-hero,
     .zukan-filter-card,
     .zukan-results-card {
-      background: #fff;
-      border: 1px solid #dfe7f2;
-      border-radius: 24px;
-      box-shadow: 0 16px 34px rgba(15, 23, 42, .07);
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 24px 48px rgba(15, 23, 42, .08);
+      backdrop-filter: blur(18px);
+    }
+
+    .zukan-hero::before,
+    .zukan-filter-card::before,
+    .zukan-results-card::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      border: 1px solid rgba(255, 255, 255, .72);
+      pointer-events: none;
     }
 
     .zukan-hero {
-      padding: 28px;
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr);
+      grid-template-columns: minmax(0, 1.28fr) minmax(320px, .72fr);
       gap: 24px;
+      padding: 32px;
       background:
-        radial-gradient(circle at top right, rgba(255, 220, 132, 0.24), transparent 30%),
-        radial-gradient(circle at left center, rgba(191, 219, 254, 0.24), transparent 28%),
-        linear-gradient(180deg, #ffffff 0%, #fffaf0 100%);
+        radial-gradient(circle at right top, rgba(255, 193, 7, 0.22), transparent 24%),
+        radial-gradient(circle at left center, rgba(176, 201, 208, 0.28), transparent 30%),
+        linear-gradient(135deg, rgba(64, 85, 95, 0.96) 0%, rgba(88, 109, 120, 0.88) 100%);
+      color: #fff;
     }
 
     .zukan-hero-copy {
+      position: relative;
+      z-index: 1;
       display: grid;
-      gap: 12px;
+      gap: 16px;
       align-content: start;
     }
 
@@ -395,65 +401,116 @@
       margin: 0;
       font-size: 11px;
       line-height: 1.3;
-      letter-spacing: .14em;
-      color: #8b9ab0;
+      letter-spacing: .18em;
+      color: rgba(255, 255, 255, .68);
       font-weight: 900;
     }
 
     .zukan-title {
       margin: 0;
-      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
-      font-size: clamp(30px, 4.2vw, 46px);
-      line-height: 1.06;
-      letter-spacing: -.02em;
-      color: #132238;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      font-size: clamp(34px, 4.4vw, 54px);
+      line-height: 1.02;
+      letter-spacing: -.04em;
+      color: #fff;
       font-weight: 900;
     }
 
     .zukan-desc {
       margin: 0;
-      max-width: 58ch;
+      max-width: 54ch;
       font-size: 14px;
-      line-height: 1.8;
-      color: #5c6c83;
+      line-height: 1.9;
+      color: rgba(239, 241, 242, 0.86);
       font-weight: 600;
+    }
+
+    .zukan-hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .zukan-hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      backdrop-filter: blur(10px);
     }
 
     .zukan-hero-stats {
       display: grid;
-      gap: 12px;
+      gap: 14px;
       align-content: start;
+      position: relative;
+      z-index: 1;
     }
 
     .zukan-stat {
-      padding: 18px;
-      border-radius: 20px;
-      border: 1px solid #e3eaf4;
-      background: rgba(255, 255, 255, .84);
+      padding: 20px 22px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18);
+      backdrop-filter: blur(12px);
     }
 
     .zukan-stat-label {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
       font-size: 11px;
       line-height: 1.3;
-      letter-spacing: .06em;
-      color: #7b8798;
+      letter-spacing: .12em;
+      color: rgba(255, 255, 255, .68);
       font-weight: 900;
     }
 
     .zukan-stat-value {
       display: block;
       font-family: "Inter", "Noto Sans JP", sans-serif;
-      font-size: 28px;
-      line-height: 1.1;
-      color: #162238;
+      font-size: clamp(28px, 3vw, 34px);
+      line-height: 1.05;
+      color: #fff;
       font-weight: 900;
+      letter-spacing: -.04em;
+    }
+
+    .zukan-hero-note {
+      padding: 18px 20px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.92) 0%, rgba(242, 244, 245, .88) 100%);
+      color: #354a53;
+      box-shadow: 0 18px 34px rgba(15, 23, 42, .08);
+    }
+
+    .zukan-hero-note-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      color: #876500;
+    }
+
+    .zukan-hero-note-text {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.8;
+      color: #3c494f;
+      font-weight: 700;
     }
 
     .zukan-filter-card,
     .zukan-results-card {
-      padding: 22px;
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.88) 0%, rgba(242, 244, 245, .94) 100%);
     }
 
     .zukan-filter-head,
@@ -461,159 +518,197 @@
       display: flex;
       align-items: end;
       justify-content: space-between;
-      gap: 12px;
+      gap: 16px;
       flex-wrap: wrap;
+      margin-bottom: 18px;
     }
 
     .zukan-section-title {
-      margin: 4px 0 0;
-      font-size: 24px;
-      line-height: 1.15;
-      color: #162238;
+      margin: 6px 0 0;
+      font-size: 28px;
+      line-height: 1.08;
+      color: #191c1d;
       font-weight: 900;
-      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      letter-spacing: -.03em;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
     }
 
     .zukan-section-copy {
-      margin: 6px 0 0;
+      margin: 8px 0 0;
+      max-width: 60ch;
       font-size: 13px;
-      line-height: 1.75;
-      color: #64748b;
+      line-height: 1.82;
+      color: #57656b;
       font-weight: 600;
+    }
+
+    .zukan-filter-summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: rgba(255, 223, 158, 0.56);
+      color: #5b4300;
+      font-size: 12px;
+      font-weight: 900;
     }
 
     .zukan-filter-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
-      gap: 12px;
+      gap: 14px;
       align-items: end;
+      padding: 16px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.62);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.88);
     }
 
     .zukan-filter-field {
       display: grid;
-      gap: 8px;
+      gap: 10px;
       min-width: 0;
     }
 
     .zukan-filter-label {
-      font-size: 12px;
-      color: #475467;
-      font-weight: 800;
+      font-size: 11px;
+      color: #42484b;
+      font-weight: 900;
       line-height: 1.3;
+      letter-spacing: .08em;
     }
 
     .zukan-filter-field select,
     .zukan-filter-actions button {
       width: 100%;
-      height: 48px;
-      border-radius: 16px;
-      border: 1px solid #d7deea;
-      background: #fff;
-      color: #101828;
+      height: 52px;
+      border: 0;
+      border-radius: 18px;
+      background: #e1e3e4;
+      color: #191c1d;
       font-size: 14px;
-      font-weight: 700;
-      padding: 0 16px;
-      transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+      font-weight: 800;
+      padding: 0 18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.88);
+      transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
     }
 
     .zukan-filter-field select:hover,
     .zukan-filter-actions button:hover {
-      border-color: #b9c5d9;
-      background: #fbfcfe;
+      background: #e6e8e9;
+      transform: translateY(-1px);
     }
 
     .zukan-filter-field select:focus,
     .zukan-filter-actions button:focus {
       outline: none;
-      border-color: #9db5ff;
-      box-shadow: 0 0 0 4px rgba(71, 122, 255, .12);
+      box-shadow: inset 0 -2px 0 #876500, 0 0 0 4px rgba(255, 193, 7, .12);
     }
 
     .zukan-filter-actions {
-      min-width: 132px;
+      min-width: 152px;
     }
 
     .zukan-filter-actions button {
-      background: #f8fafc;
-      color: #344054;
       cursor: pointer;
+      color: #354a53;
+      background: linear-gradient(135deg, #fff 0%, #f2f4f5 100%);
     }
 
     .zukan-results-meta {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
+      gap: 10px;
+      padding: 12px 16px;
       border-radius: 999px;
-      background: #f8fbff;
-      border: 1px solid #dbe5f2;
-      color: #425168;
+      background: rgba(64, 85, 95, 0.08);
+      color: #42484b;
       font-size: 12px;
       font-weight: 900;
     }
 
     .zukan-results-meta strong {
       font-family: "Inter", "Noto Sans JP", sans-serif;
-      font-size: 14px;
-      color: #162238;
+      font-size: 15px;
+      color: #191c1d;
     }
 
     .zukan-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 24px;
+      gap: 20px;
     }
 
     .zukan-card {
+      position: relative;
       overflow: hidden;
       display: grid;
-      gap: 20px;
+      gap: 18px;
+      padding: 18px;
       text-decoration: none;
-      color: #15243b;
-      border: 1px solid #d7e0ee;
-      border-radius: 22px;
-      background: #fff;
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.05);
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      color: #191c1d;
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(242,244,245,.92) 100%);
+      box-shadow: 0 18px 32px rgba(25, 28, 29, 0.08);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .zukan-card::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      border: 1px solid rgba(194, 199, 203, 0.28);
+      pointer-events: none;
     }
 
     .zukan-card:hover {
-      transform: translateY(-2px);
-      border-color: #c4d1e4;
-      box-shadow: 0 16px 28px rgba(15, 23, 42, 0.08);
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 24px 40px rgba(25, 28, 29, 0.1);
+      text-decoration: none;
     }
 
     .zukan-card.is-lead {
       grid-column: span 2;
+      grid-template-columns: minmax(240px, .9fr) minmax(0, 1.1fr);
+      align-items: center;
+      padding: 22px;
       background:
-        radial-gradient(circle at top right, rgba(255, 223, 122, 0.26), transparent 28%),
-        #fff;
+        radial-gradient(circle at top right, rgba(255, 223, 158, 0.42), transparent 26%),
+        linear-gradient(145deg, rgba(255,255,255,.98) 0%, rgba(242,244,245,.96) 100%);
     }
 
     .zukan-card-media {
       aspect-ratio: 4 / 3;
-      border-radius: 18px;
-      margin: 24px 24px 0;
+      border-radius: 22px;
       overflow: hidden;
-      background: linear-gradient(180deg, #f4f7fb 0%, #eef3f9 100%);
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,.88), transparent 54%),
+        linear-gradient(180deg, #eef1f3 0%, #dfe4e7 100%);
       display: grid;
       place-items: center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.88);
     }
 
     .zukan-card.is-lead .zukan-card-media {
-      aspect-ratio: 16 / 10;
+      aspect-ratio: 1 / 1;
+      min-height: 100%;
     }
 
     .zukan-card-media img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      padding: 12px;
+      filter: drop-shadow(0 16px 24px rgba(15, 23, 42, 0.12));
     }
 
     .zukan-card-body {
-      padding: 0 24px 24px;
       display: grid;
-      gap: 12px;
+      gap: 14px;
+      align-content: start;
+      min-width: 0;
     }
 
     .zukan-card-badges {
@@ -626,57 +721,89 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: #f5f7fb;
-      border: 1px solid #e1e8f2;
-      color: #4e6078;
+      padding: 7px 11px;
+      border-radius: 12px;
+      background: #d4e2e9;
+      color: #57656b;
       font-size: 12px;
       font-weight: 800;
     }
 
     .zukan-badge--rank {
-      background: #18283e;
-      border-color: #18283e;
+      background: linear-gradient(135deg, #40555f 0%, #586d78 100%);
       color: #fff;
     }
 
     .zukan-badge--delta.up {
-      color: #dc2626;
+      background: rgba(220, 38, 38, 0.08);
+      color: #b42318;
     }
 
     .zukan-badge--delta.down {
-      color: #2563eb;
+      background: rgba(23, 92, 211, 0.08);
+      color: #175cd3;
     }
 
     .zukan-badge--delta.flat {
-      color: #64748b;
+      background: rgba(87, 101, 107, 0.12);
+      color: #57656b;
     }
 
     .zukan-card-title {
       margin: 0;
-      font-size: 19px;
-      line-height: 1.35;
+      font-size: 20px;
+      line-height: 1.4;
       font-weight: 900;
-      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
-      color: #162238;
+      letter-spacing: -.02em;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      color: #191c1d;
     }
 
     .zukan-card.is-lead .zukan-card-title {
-      font-size: 24px;
+      font-size: 30px;
+      line-height: 1.18;
+    }
+
+    .zukan-card-price-wrap {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .zukan-card-price-label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 10px;
+      letter-spacing: .12em;
+      color: #72787b;
+      font-weight: 900;
     }
 
     .zukan-card-price {
       margin: 0;
       font-family: "Inter", "Noto Sans JP", sans-serif;
-      font-size: 25px;
-      line-height: 1.1;
+      font-size: 26px;
+      line-height: 1.02;
       font-weight: 900;
-      color: #15243b;
+      letter-spacing: -.04em;
+      color: #191c1d;
     }
 
     .zukan-card.is-lead .zukan-card-price {
-      font-size: 34px;
+      font-size: 40px;
+    }
+
+    .zukan-card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #694e00;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
     }
 
     .zukan-card-meta {
@@ -685,16 +812,29 @@
       gap: 8px;
     }
 
+    .zukan-card-spec {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 11px;
+      border-radius: 12px;
+      background: rgba(64, 85, 95, 0.08);
+      color: #42484b;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
     .zukan-empty {
       grid-column: 1 / -1;
-      padding: 24px;
-      border: 1px dashed #cbd7e8;
-      border-radius: 18px;
-      color: #5f7088;
-      background: rgba(255, 255, 255, 0.72);
+      padding: 30px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.94) 0%, rgba(242,244,245,.88) 100%);
+      color: #57656b;
       font-size: 14px;
-      line-height: 1.75;
+      line-height: 1.8;
       font-weight: 700;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
     }
 
     .ranking-error {
@@ -717,6 +857,10 @@
 
       .zukan-filter-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .zukan-card.is-lead {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -743,6 +887,7 @@
       .zukan-results-card,
       .zukan-hero {
         padding: 18px;
+        border-radius: 24px;
       }
 
       .zukan-filter-grid,
@@ -752,6 +897,11 @@
 
       .zukan-card.is-lead {
         grid-column: span 1;
+        grid-template-columns: 1fr;
+      }
+
+      .zukan-title {
+        font-size: 34px;
       }
     }
   </style>
@@ -781,7 +931,12 @@
             <div class="zukan-hero-copy">
               <p class="zukan-kicker">SLEEVE DIRECTORY</p>
               <h1 class="zukan-title">ポケモンカード<br>スリーブ図鑑</h1>
-              <p class="zukan-desc">検索と絞り込みで目的のスリーブを見つけて、価格推移や相場感を一覧で比較できます。図鑑ページでも、トップページと同じダッシュボード文法で迷わず探せることを優先しています。</p>
+              <p class="zukan-desc">検索と絞り込みで目的のスリーブを見つけて、価格推移や相場感を一覧で比較できます。図鑑という一覧性は維持しつつ、収集アーカイブのように気持ちよく見渡せる体験へ整えています。</p>
+              <div class="zukan-hero-pills" aria-label="図鑑の特徴">
+                <span class="zukan-hero-pill">検索からすぐ比較</span>
+                <span class="zukan-hero-pill">相場感を一覧で把握</span>
+                <span class="zukan-hero-pill">主役カードを先頭表示</span>
+              </div>
             </div>
           </div>
           <div class="zukan-hero-stats" aria-label="集計状況">
@@ -793,6 +948,10 @@
               <span class="zukan-stat-label">表示件数</span>
               <span id="countInfo" class="zukan-stat-value">集計中</span>
             </div>
+            <div class="zukan-hero-note">
+              <span class="zukan-hero-note-label">ARCHIVE NOTE</span>
+              <p class="zukan-hero-note-text">上部の検索を軸に、発売年、シリーズ、価格帯、並び替えを組み合わせて、欲しい1枚まで素早く絞り込めます。</p>
+            </div>
           </div>
         </section>
 
@@ -803,6 +962,7 @@
               <h2 class="zukan-section-title">条件で見比べる</h2>
               <p class="zukan-section-copy">上部検索と組み合わせて、価格帯、シリーズ、発売年をすばやく切り替えられます。</p>
             </div>
+            <div class="zukan-filter-summary">タップ感のあるフィルタで即座に再配置</div>
           </div>
 
           <div class="zukan-filter-grid">
@@ -855,7 +1015,7 @@
             <div>
               <p class="zukan-results-kicker">RESULTS</p>
               <h2 class="zukan-section-title">いま比較できるスリーブ</h2>
-              <p class="zukan-section-copy">図鑑に合う密度を保ちながら、カード階層と余白はトップページのダッシュボードに揃えています。</p>
+              <p class="zukan-section-copy">一覧の走査性を優先しつつ、主役カードだけは大きく見せて判断の起点を作ります。</p>
             </div>
             <div class="zukan-results-meta">一致したスリーブ <strong id="resultCountBadge">集計中</strong></div>
           </div>
@@ -1143,6 +1303,10 @@
           const delta = getDeltaDisplay(weeklyPair);
           const tags = getCardTags(s, 2);
           const tagsHtml = tags.map(tag => `<span class="zukan-badge">${escapeHtml(tag)}</span>`).join("");
+          const specHtml = [
+            s.releaseYear ? `<span class="zukan-card-spec">YEAR ${escapeHtml(s.releaseYear)}</span>` : "",
+            s.series ? `<span class="zukan-card-spec">${escapeHtml(s.series)}</span>` : ""
+          ].filter(Boolean).join("");
 
           const imgSrc = String(s.imageUrl || "").trim();
           const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
@@ -1166,8 +1330,15 @@
             <div class="zukan-card-body">
               <div class="zukan-card-badges">${rankBadge}${deltaBadge}</div>
               <h2 class="zukan-card-title">${escapeHtml(s.name ?? "")}</h2>
-              <p class="zukan-card-price">${escapeHtml(priceText)}</p>
+              <div class="zukan-card-price-wrap">
+                <div>
+                  <span class="zukan-card-price-label">MARKET PRICE</span>
+                  <p class="zukan-card-price">${escapeHtml(priceText)}</p>
+                </div>
+                <span class="zukan-card-cta">Open Archive →</span>
+              </div>
               <div class="zukan-card-meta">
+                ${specHtml}
                 ${window.common && typeof window.common.buildFlowBadgeHtml === "function" ? window.common.buildFlowBadgeHtml(s, { includeTrend: true }) : ""}
                 ${tagsHtml}
               </div>
