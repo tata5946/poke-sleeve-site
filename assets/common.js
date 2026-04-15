@@ -1289,7 +1289,10 @@ async function loadData({ forceRefresh = false, ttlMs = DATA_CACHE_TTL_MS } = {}
 function injectHeaderFooter() {
   try {
     const headSlot = document.getElementById("site-header");
-    if (headSlot) headSlot.innerHTML = HEADER_HTML;
+    const suppressGlobalHeader = document.body?.dataset?.hideGlobalHeader === "1";
+    if (headSlot) {
+      headSlot.innerHTML = suppressGlobalHeader ? "" : HEADER_HTML;
+    }
 
     const footSlot = document.getElementById("site-footer");
     if (footSlot) footSlot.innerHTML = FOOTER_HTML;
