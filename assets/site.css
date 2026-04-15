@@ -192,6 +192,9 @@ a:hover {
     font-weight: 900;
     letter-spacing: -.03em;
     color: #0f172a;
+    white-space: nowrap;
+    word-break: keep-all;
+    text-wrap: nowrap;
 }
 
 .sidebar-brand-sub {

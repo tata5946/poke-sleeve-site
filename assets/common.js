@@ -133,7 +133,7 @@ function buildDashboardSidebarHtml(activeSidebar = "") {
     <div class="sidebar-brand-mark" aria-hidden="true"><span class="brand-ball"></span></div>
     <div class="sidebar-brand-copy">
       <h1 class="sidebar-brand-title">ポケスリ相場ナビ</h1>
-      <p class="sidebar-brand-sub">相場ダッシュボード</p>
+      <p class="sidebar-brand-sub">ホーム</p>
     </div>
   </div>
 
@@ -171,7 +171,7 @@ function buildDashboardTopbarHtml(activeTopbar = "") {
     <input id="dashboardSearchInput" class="topbar-search-input" type="search" placeholder="スリーブを検索..." autocomplete="off" />
   </div>
   <nav class="topbar-tabs" aria-label="上部メニュー">
-    <a class="${itemClass("dashboard")}" href="${escapeHtml(buildSiteHref("index.html"))}">ダッシュボード</a>
+    <a class="${itemClass("dashboard")}" href="${escapeHtml(buildSiteHref("index.html"))}">ホーム</a>
     <a class="${itemClass("market")}" href="${escapeHtml(buildSiteHref("index-market.html"))}">市場状況</a>
     <a class="${itemClass("policy")}" href="${escapeHtml(buildSiteHref("policy.html"))}">プライバシーポリシー</a>
   </nav>
