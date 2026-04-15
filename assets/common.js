@@ -126,6 +126,62 @@ const FOOTER_HTML = `
 </footer>
 `;
 
+function buildDashboardSidebarHtml(activeSidebar = "") {
+  const itemClass = (key) => `sidebar-link${activeSidebar === key ? " is-active" : ""}`;
+  return `
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-mark" aria-hidden="true"><span class="brand-ball"></span></div>
+    <div class="sidebar-brand-copy">
+      <h1 class="sidebar-brand-title">ポケスリ相場ナビ</h1>
+      <p class="sidebar-brand-sub">相場ダッシュボード</p>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav" aria-label="主要ナビゲーション">
+    <a class="${itemClass("index")}" href="${escapeHtml(buildSiteHref("index.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⌂</span><span>ホーム</span></a>
+    <a class="${itemClass("zukan")}" href="${escapeHtml(buildSiteHref("sleeves/"))}"><span class="sidebar-link-icon" aria-hidden="true">▤</span><span>スリーブ図鑑</span></a>
+    <div id="sidebarCategoryShell" class="sidebar-category-shell" hidden>
+      <button type="button" class="sidebar-link sidebar-category-toggle" id="sidebarCategoryToggle" aria-expanded="false" aria-controls="categoryNav">
+        <span class="sidebar-category-toggle-label">
+          <span class="sidebar-link-icon" aria-hidden="true">☰</span>
+          <span>スリーブカテゴリ</span>
+        </span>
+        <span class="sidebar-category-caret" aria-hidden="true">›</span>
+      </button>
+      <aside id="categoryNav" class="category-nav sidebar-category-panel" data-category-nav aria-label="スリーブカテゴリ一覧">
+        <div class="category-nav-list">
+          <div class="category-nav-empty skeleton-block" style="min-height: 128px;"></div>
+        </div>
+      </aside>
+    </div>
+    <a class="${itemClass("ranking")}" href="${escapeHtml(buildSiteHref("ranking.html"))}"><span class="sidebar-link-icon" aria-hidden="true">◷</span><span>価格ランキング</span></a>
+    <a class="${itemClass("growth")}" href="${escapeHtml(buildSiteHref("growth.html"))}"><span class="sidebar-link-icon" aria-hidden="true">↗</span><span>高騰率ランキング</span></a>
+    <a class="${itemClass("market")}" href="${escapeHtml(buildSiteHref("index-market.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⌁</span><span>市場分析</span></a>
+    <a class="${itemClass("surge")}" href="${escapeHtml(buildSiteHref("surge.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⚡</span><span>急上昇</span></a>
+  </nav>
+  `;
+}
+
+function buildDashboardTopbarHtml(activeTopbar = "") {
+  const itemClass = (key) => `topbar-tab${activeTopbar === key ? " is-active" : ""}`;
+  return `
+  <div class="topbar-search">
+    <span class="topbar-search-icon" aria-hidden="true">⌕</span>
+    <input id="dashboardSearchInput" class="topbar-search-input" type="search" placeholder="スリーブを検索..." autocomplete="off" />
+  </div>
+  <nav class="topbar-tabs" aria-label="上部メニュー">
+    <a class="${itemClass("dashboard")}" href="${escapeHtml(buildSiteHref("index.html"))}">ダッシュボード</a>
+    <a class="${itemClass("market")}" href="${escapeHtml(buildSiteHref("index-market.html"))}">市場状況</a>
+    <a class="${itemClass("policy")}" href="${escapeHtml(buildSiteHref("policy.html"))}">プライバシーポリシー</a>
+  </nav>
+  <div class="topbar-utils" aria-hidden="true">
+    <span>◌</span>
+    <span>□</span>
+    <span>△</span>
+  </div>
+  `;
+}
+
 /* ----- Utilities ----- */
 function escapeHtml(str) {
   return String(str ?? "")
@@ -1250,6 +1306,98 @@ function injectHeaderFooter() {
   }
 }
 
+function injectDashboardChrome({ sidebarActive = "", topbarActive = "", sidebarSlotId = "dashboardSidebarSlot", topbarSlotId = "dashboardTopbarSlot" } = {}) {
+  const sidebarSlot = document.getElementById(sidebarSlotId);
+  if (sidebarSlot) {
+    const active = sidebarSlot.dataset.dashboardSidebarActive || sidebarActive;
+    sidebarSlot.innerHTML = buildDashboardSidebarHtml(active);
+  }
+
+  const topbarSlot = document.getElementById(topbarSlotId);
+  if (topbarSlot) {
+    const active = topbarSlot.dataset.dashboardTopbarActive || topbarActive;
+    topbarSlot.innerHTML = buildDashboardTopbarHtml(active);
+  }
+}
+
+function wireDashboardSearch() {
+  const input = document.getElementById("dashboardSearchInput");
+  if (!input || input.dataset.dashboardSearchWired === "1") return;
+  input.dataset.dashboardSearchWired = "1";
+
+  let autocompleteWired = false;
+  const wireAutocomplete = () => {
+    if (autocompleteWired) return;
+    autocompleteWired = true;
+    wireSleeveAutocomplete(input, {
+      minChars: 1,
+      maxItems: 8,
+      anchorEl: input.closest(".topbar-search")
+    });
+  };
+
+  input.addEventListener("focus", wireAutocomplete, { once: true });
+  input.addEventListener("pointerdown", wireAutocomplete, { once: true });
+
+  input.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    if (event.defaultPrevented) return;
+    const q = input.value.trim();
+    recordSearchHistory(q);
+    location.href = q ? buildSiteHref(`sleeves/?q=${encodeURIComponent(q)}`) : buildSiteHref("sleeves/");
+  });
+}
+
+function wireDashboardSidebarCategoryToggle() {
+  const shell = document.getElementById("sidebarCategoryShell");
+  const button = document.getElementById("sidebarCategoryToggle");
+  const panel = document.getElementById("categoryNav");
+  const list = panel ? panel.querySelector(".category-nav-list") : null;
+  if (!shell || !button || !panel || !list || button.dataset.sidebarCategoryWired === "1") return;
+  button.dataset.sidebarCategoryWired = "1";
+
+  const setOpen = (open) => {
+    shell.classList.toggle("is-open", open);
+    button.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+
+  const syncVisibility = () => {
+    const hasItems = !!list.querySelector(".category-nav-item");
+    shell.hidden = !hasItems;
+    if (!hasItems) setOpen(false);
+  };
+
+  button.addEventListener("click", () => {
+    if (shell.hidden) return;
+    setOpen(!shell.classList.contains("is-open"));
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Node)) return;
+    if (shell.contains(event.target)) return;
+    setOpen(false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") setOpen(false);
+  });
+
+  const observer = new MutationObserver(syncVisibility);
+  observer.observe(list, { childList: true, subtree: true });
+  syncVisibility();
+}
+
+async function setupDashboardChrome(options = {}) {
+  injectDashboardChrome(options);
+  wireDashboardSearch();
+  try {
+    await ensureCategoryNavsRendered(options.sleeves || null);
+  } catch (_) {
+    // no-op: the page can still render without category data
+  }
+  wireDashboardSidebarCategoryToggle();
+}
+
 function syncHeaderOffset() {
   const header = document.querySelector("#site-header .header");
   if (!header) {
@@ -1542,8 +1690,11 @@ window.common = {
   renderCategoryNav,
   ensureCategoryNavsRendered,
   injectHeaderFooter,
+  injectDashboardChrome,
+  setupDashboardChrome,
   setActiveNav,
   wireHeaderSearch,
+  wireDashboardSearch,
   wireSleeveAutocomplete,
   recordSearchHistory,
   wireSleeveSelectionFeedback,

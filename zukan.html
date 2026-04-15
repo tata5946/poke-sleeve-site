@@ -340,6 +340,10 @@
       background: #111827;
     }
 
+    .topbar-utils {
+      display: none;
+    }
+
     .dashboard-content {
       padding: 28px;
       display: grid;
@@ -756,49 +760,12 @@
   <div id="site-header"></div>
   <div class="dashboard-shell">
     <aside class="dashboard-sidebar" aria-label="サイドバー">
-      <div class="sidebar-brand">
-        <div class="sidebar-brand-mark" aria-hidden="true"><span class="brand-ball"></span></div>
-        <div class="sidebar-brand-copy">
-          <h1 class="sidebar-brand-title">ポケスリ相場ナビ</h1>
-          <p class="sidebar-brand-sub">相場ダッシュボード</p>
-        </div>
-      </div>
-
-      <nav class="sidebar-nav" aria-label="主要ナビゲーション">
-        <a class="sidebar-link" href="./index.html"><span class="sidebar-link-icon" aria-hidden="true">⌂</span><span>ホーム</span></a>
-        <a class="sidebar-link is-active" href="./sleeves/"><span class="sidebar-link-icon" aria-hidden="true">▤</span><span>スリーブ図鑑</span></a>
-        <div id="sidebarCategoryShell" class="sidebar-category-shell" hidden>
-          <button type="button" class="sidebar-link sidebar-category-toggle" id="sidebarCategoryToggle" aria-expanded="false" aria-controls="categoryNav">
-            <span class="sidebar-category-toggle-label">
-              <span class="sidebar-link-icon" aria-hidden="true">☰</span>
-              <span>スリーブカテゴリ</span>
-            </span>
-            <span class="sidebar-category-caret" aria-hidden="true">›</span>
-          </button>
-          <aside id="categoryNav" class="category-nav sidebar-category-panel" data-category-nav aria-label="スリーブカテゴリ一覧">
-            <div class="category-nav-list">
-              <div class="category-nav-empty skeleton-block" style="min-height: 128px;"></div>
-            </div>
-          </aside>
-        </div>
-        <a class="sidebar-link" href="./ranking.html"><span class="sidebar-link-icon" aria-hidden="true">◷</span><span>価格ランキング</span></a>
-        <a class="sidebar-link" href="./growth.html"><span class="sidebar-link-icon" aria-hidden="true">↗</span><span>高騰率ランキング</span></a>
-        <a class="sidebar-link" href="./index-market.html"><span class="sidebar-link-icon" aria-hidden="true">⌁</span><span>市場分析</span></a>
-        <a class="sidebar-link" href="./surge.html"><span class="sidebar-link-icon" aria-hidden="true">⚡</span><span>急上昇</span></a>
-      </nav>
+      <div id="dashboardSidebarSlot" data-dashboard-sidebar-active="zukan"></div>
     </aside>
 
     <main class="dashboard-main">
       <header class="dashboard-topbar">
-        <div class="topbar-search">
-          <span class="topbar-search-icon" aria-hidden="true">⌕</span>
-          <input id="dashboardSearchInput" class="topbar-search-input" type="search" placeholder="スリーブを検索..." autocomplete="off" />
-        </div>
-        <nav class="topbar-tabs" aria-label="上部メニュー">
-          <a class="topbar-tab" href="./index.html">ダッシュボード</a>
-          <a class="topbar-tab" href="./index-market.html">市場状況</a>
-          <a class="topbar-tab" href="./policy.html">プライバシーポリシー</a>
-        </nav>
+        <div id="dashboardTopbarSlot"></div>
       </header>
 
       <div class="dashboard-content">
@@ -1045,82 +1012,10 @@
       return document.getElementById("search");
     }
 
-    function wireDashboardSearch() {
-      const input = document.getElementById("dashboardSearchInput");
-      if (!input || input.dataset.dashboardSearchWired === "1") return;
-      input.dataset.dashboardSearchWired = "1";
-
-      let autocompleteWired = false;
-      const wireAutocomplete = () => {
-        if (autocompleteWired) return;
-        autocompleteWired = true;
-        if (window.common && typeof window.common.wireSleeveAutocomplete === "function") {
-          window.common.wireSleeveAutocomplete(input, {
-            minChars: 1,
-            maxItems: 8,
-            anchorEl: input.closest(".topbar-search")
-          });
-        }
-      };
-
-      input.addEventListener("focus", wireAutocomplete, { once: true });
-      input.addEventListener("pointerdown", wireAutocomplete, { once: true });
-
-      input.addEventListener("keydown", (event) => {
-        if (event.key !== "Enter") return;
-        if (event.defaultPrevented) return;
-        const q = input.value.trim();
-        if (window.common && typeof window.common.recordSearchHistory === "function") {
-          window.common.recordSearchHistory(q);
-        }
-        if (!q) {
-          location.href = "./sleeves/";
-          return;
-        }
-        location.href = "./sleeves/?q=" + encodeURIComponent(q);
-      });
-    }
-
-    function wireSidebarCategoryToggle() {
-      const shell = document.getElementById("sidebarCategoryShell");
-      const button = document.getElementById("sidebarCategoryToggle");
-      const panel = document.getElementById("categoryNav");
-      const list = panel ? panel.querySelector(".category-nav-list") : null;
-      if (!shell || !button || !panel || !list || button.dataset.sidebarCategoryWired === "1") return;
-      button.dataset.sidebarCategoryWired = "1";
-
-      const setOpen = (open) => {
-        shell.classList.toggle("is-open", open);
-        button.setAttribute("aria-expanded", open ? "true" : "false");
-      };
-
-      const syncVisibility = () => {
-        const hasItems = !!list.querySelector(".category-nav-item");
-        shell.hidden = !hasItems;
-        if (!hasItems) setOpen(false);
-      };
-
-      button.addEventListener("click", () => {
-        if (shell.hidden) return;
-        setOpen(!shell.classList.contains("is-open"));
-      });
-
-      document.addEventListener("click", (event) => {
-        if (!(event.target instanceof Node)) return;
-        if (shell.contains(event.target)) return;
-        setOpen(false);
-      });
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") setOpen(false);
-      });
-
-      const observer = new MutationObserver(syncVisibility);
-      observer.observe(list, { childList: true, subtree: true });
-      syncVisibility();
-    }
-
     async function main() {
+      if (window.common && typeof window.common.setupDashboardChrome === "function") {
+        await window.common.setupDashboardChrome({ sidebarActive: "zukan" });
+      }
       const headerSearchInput = await waitForSearch();
       const dashboardSearchInput = document.getElementById("dashboardSearchInput");
       const searchInput = dashboardSearchInput || headerSearchInput;
@@ -1153,14 +1048,6 @@
       hideError();
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
-
-      wireDashboardSearch();
-      if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
-        try {
-          await window.common.ensureCategoryNavsRendered(sleeves);
-        } catch (_) {}
-      }
-      wireSidebarCategoryToggle();
 
       let maxWeek = null;
       for (const s of sleeves) {
