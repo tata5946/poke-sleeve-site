@@ -29,13 +29,13 @@
 
     .dashboard-shell {
       display: grid;
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: 280px minmax(0, 1fr);
       min-height: 100vh;
       background: linear-gradient(180deg, rgba(247,249,253,.82) 0%, rgba(238,243,251,.64) 100%);
     }
 
     .dashboard-sidebar {
-      display: none;
+      display: grid;
       grid-template-rows: auto 1fr;
       gap: 28px;
       padding: 28px 20px 24px;
@@ -816,6 +816,10 @@
     }
 
     @media (max-width: 1100px) {
+      .dashboard-shell {
+        grid-template-columns: 240px minmax(0, 1fr);
+      }
+
       .zukan-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
@@ -830,6 +834,14 @@
     }
 
     @media (max-width: 700px) {
+      .dashboard-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-sidebar {
+        display: none;
+      }
+
       .dashboard-topbar {
         padding: 18px;
         flex-wrap: wrap;
