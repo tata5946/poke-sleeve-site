@@ -21,14 +21,17 @@
   <link rel="stylesheet" href="./assets/site.css?v=20260415b" />
   <style>
     body {
-      background: #fff;
+      background:
+        radial-gradient(circle at top, rgba(255, 198, 72, 0.12), transparent 30%),
+        radial-gradient(circle at 82% 8%, rgba(96, 165, 250, 0.12), transparent 26%),
+        linear-gradient(180deg, #f7f9fd 0%, #eef3fb 100%);
     }
 
     .dashboard-shell {
       display: grid;
       grid-template-columns: 280px minmax(0, 1fr);
       min-height: 100vh;
-      background: #fff;
+      background: linear-gradient(180deg, rgba(247,249,253,.82) 0%, rgba(238,243,251,.64) 100%);
     }
 
     .dashboard-sidebar {
@@ -36,8 +39,8 @@
       grid-template-rows: auto 1fr;
       gap: 28px;
       padding: 28px 20px 24px;
-      background: #fafafa;
-      border-right: 1px solid #eceff2;
+      background: linear-gradient(180deg, #f7f9fc 0%, #f1f5f9 100%);
+      border-right: 1px solid #d7e0ee;
     }
 
     .sidebar-brand {
@@ -152,7 +155,7 @@
 
     .sidebar-link:hover {
       background: rgba(255,255,255,.72);
-      color: #111827;
+      color: #1a2840;
       transform: translateX(2px);
       text-decoration: none;
     }
@@ -361,7 +364,7 @@
       justify-content: space-between;
       gap: 16px;
       padding: 0 0 18px;
-      border-bottom: 1px solid #e8eaee;
+      border-bottom: 1px solid #d7e0ee;
     }
 
     .zukan-hero-copy {
@@ -377,7 +380,7 @@
       font-size: 10px;
       line-height: 1.3;
       letter-spacing: .14em;
-      color: #98a2b3;
+      color: #90a0b7;
       font-weight: 700;
       text-transform: uppercase;
     }
@@ -388,7 +391,7 @@
       font-size: clamp(28px, 2.4vw, 36px);
       line-height: 1.12;
       letter-spacing: -.03em;
-      color: #111827;
+      color: #162238;
       font-weight: 900;
     }
 
@@ -405,8 +408,8 @@
       gap: 6px;
       min-height: 32px;
       padding: 0 10px;
-      border: 1px solid #e5e7eb;
-      color: #4b5563;
+      border: 1px solid #d7e0ee;
+      color: #506079;
       font-size: 12px;
       font-weight: 700;
       white-space: nowrap;
@@ -414,7 +417,7 @@
     }
 
     .zukan-meta-chip strong {
-      color: #111827;
+      color: #1a2840;
       font-size: 12px;
       font-weight: 800;
     }
@@ -425,13 +428,9 @@
     }
 
     .zukan-filter-card {
-      position: sticky;
-      top: 12px;
-      z-index: 8;
       padding: 14px 0 16px;
-      background: rgba(255, 255, 255, 0.96);
-      border-bottom: 1px solid #e8eaee;
-      backdrop-filter: blur(8px);
+      background: transparent;
+      border-bottom: 1px solid #d7e0ee;
     }
 
     .zukan-filter-head,
@@ -448,7 +447,7 @@
       margin: 0;
       font-size: 18px;
       line-height: 1.2;
-      color: #111827;
+      color: #1a2840;
       font-weight: 800;
       letter-spacing: -.02em;
       font-family: "Inter", "Noto Sans JP", sans-serif;
@@ -473,22 +472,23 @@
     .zukan-search-input {
       width: 100%;
       height: 42px;
-      border: 1px solid #d8dee4;
+      border: 1px solid #d7e0ee;
       border-radius: 0;
       background: #fff;
-      color: #111827;
+      color: #1a2840;
       font-size: 14px;
       font-weight: 500;
       padding: 0 14px 0 40px;
     }
 
     .zukan-search-input::placeholder {
-      color: #9ca3af;
+      color: #90a0b7;
     }
 
     .zukan-search-input:focus {
       outline: none;
-      border-color: #9ca3af;
+      border-color: #b8c7db;
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.08);
     }
 
     .zukan-search-icon {
@@ -496,7 +496,7 @@
       left: 14px;
       top: 50%;
       transform: translateY(-50%);
-      color: #6b7280;
+      color: #7a8aa3;
       font-size: 14px;
       pointer-events: none;
     }
@@ -516,7 +516,7 @@
 
     .zukan-filter-label {
       font-size: 11px;
-      color: #6b7280;
+      color: #5d6b80;
       font-weight: 700;
       line-height: 1.3;
     }
@@ -525,10 +525,10 @@
     .zukan-filter-actions button {
       width: 100%;
       height: 40px;
-      border: 1px solid #d8dee4;
+      border: 1px solid #d7e0ee;
       border-radius: 0;
       background: #fff;
-      color: #111827;
+      color: #1a2840;
       font-size: 13px;
       font-weight: 500;
       padding: 0 12px;
@@ -537,14 +537,15 @@
 
     .zukan-filter-field select:hover,
     .zukan-filter-actions button:hover {
-      border-color: #c7ced6;
-      background: #fafafa;
+      border-color: #c5d3e8;
+      background: #f8fbff;
     }
 
     .zukan-filter-field select:focus,
     .zukan-filter-actions button:focus {
       outline: none;
-      border-color: #9ca3af;
+      border-color: #b8c7db;
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.08);
     }
 
     .zukan-filter-actions {
@@ -553,7 +554,7 @@
 
     .zukan-filter-actions button {
       cursor: pointer;
-      color: #374151;
+      color: #506079;
     }
 
     .zukan-filter-footer {
@@ -577,33 +578,33 @@
       align-items: center;
       gap: 5px;
       padding: 4px 8px;
-      border: 1px solid #e5e7eb;
-      color: #4b5563;
+      border: 1px solid #d7e0ee;
+      color: #506079;
       font-size: 11px;
       font-weight: 600;
       background: #fff;
     }
 
     .zukan-active-chip strong {
-      color: #111827;
+      color: #1a2840;
       font-weight: 700;
     }
 
     .zukan-results-head {
       padding-top: 18px;
-      border-bottom: 1px solid #e8eaee;
+      border-bottom: 1px solid #d7e0ee;
       padding-bottom: 12px;
       margin-bottom: 18px;
     }
 
     .zukan-results-meta {
-      color: #4b5563;
+      color: #5d6b80;
       font-size: 12px;
       font-weight: 700;
     }
 
     .zukan-results-meta strong {
-      color: #111827;
+      color: #1a2840;
       font-size: 13px;
       font-weight: 800;
     }
@@ -631,8 +632,8 @@
     .zukan-card-media {
       aspect-ratio: 1 / 1;
       overflow: hidden;
-      background: #f7f7f7;
-      border: 1px solid #eceff2;
+      background: linear-gradient(180deg, #f8fbff 0%, #f2f6fc 100%);
+      border: 1px solid #dbe5f2;
       display: grid;
       place-items: center;
     }
@@ -664,7 +665,7 @@
       align-items: center;
       padding: 0;
       background: transparent;
-      color: #6b7280;
+      color: #6f7f98;
       font-size: 11px;
       font-weight: 600;
     }
@@ -682,7 +683,7 @@
     }
 
     .zukan-badge--delta.flat {
-      color: #6b7280;
+      color: #6f7f98;
     }
 
     .zukan-card-title {
@@ -692,7 +693,7 @@
       font-weight: 800;
       letter-spacing: -.01em;
       font-family: "Inter", "Noto Sans JP", sans-serif;
-      color: #111827;
+      color: #162238;
     }
 
     .zukan-card-price-wrap {
@@ -710,7 +711,7 @@
       font-size: 14px;
       line-height: 1.2;
       font-weight: 800;
-      color: #111827;
+      color: #162238;
     }
 
     .zukan-card-cta {
@@ -728,7 +729,7 @@
       align-items: center;
       padding: 0;
       background: transparent;
-      color: #6b7280;
+      color: #5d6b80;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 0;
@@ -737,11 +738,11 @@
     .zukan-empty {
       grid-column: 1 / -1;
       padding: 24px 0;
-      color: #6b7280;
+      color: #5d6b80;
       font-size: 14px;
       line-height: 1.8;
       font-weight: 500;
-      border-top: 1px solid #e8eaee;
+      border-top: 1px solid #d7e0ee;
     }
 
     .ranking-error {
