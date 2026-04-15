@@ -29,13 +29,13 @@
 
     .dashboard-shell {
       display: grid;
-      grid-template-columns: 280px minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr);
       min-height: 100vh;
       background: linear-gradient(180deg, rgba(247,249,253,.82) 0%, rgba(238,243,251,.64) 100%);
     }
 
     .dashboard-sidebar {
-      display: grid;
+      display: none;
       grid-template-rows: auto 1fr;
       gap: 28px;
       padding: 28px 20px 24px;
@@ -346,9 +346,9 @@
     }
 
     .dashboard-content {
-      padding: 28px;
+      padding: 24px 28px 40px;
       display: grid;
-      gap: 28px;
+      gap: 20px;
       align-content: start;
     }
 
@@ -359,12 +359,9 @@
     }
 
     .zukan-hero {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 0 0 18px;
-      border-bottom: 1px solid #d7e0ee;
+      display: grid;
+      gap: 10px;
+      padding: 4px 0 8px;
     }
 
     .zukan-hero-copy {
@@ -388,8 +385,8 @@
     .zukan-title {
       margin: 0;
       font-family: "Inter", "Noto Sans JP", sans-serif;
-      font-size: clamp(28px, 2.4vw, 36px);
-      line-height: 1.12;
+      font-size: clamp(30px, 2.8vw, 40px);
+      line-height: 1.08;
       letter-spacing: -.03em;
       color: #162238;
       font-weight: 900;
@@ -406,14 +403,15 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      min-height: 32px;
-      padding: 0 10px;
+      min-height: 34px;
+      padding: 0 12px;
       border: 1px solid #d7e0ee;
       color: #506079;
       font-size: 12px;
       font-weight: 700;
       white-space: nowrap;
-      background: #fff;
+      background: rgba(255,255,255,.85);
+      border-radius: 999px;
     }
 
     .zukan-meta-chip strong {
@@ -428,9 +426,11 @@
     }
 
     .zukan-filter-card {
-      padding: 14px 0 16px;
-      background: transparent;
-      border-bottom: 1px solid #d7e0ee;
+      padding: 14px 16px 16px;
+      background: linear-gradient(180deg, rgba(241,246,255,.95) 0%, rgba(236,244,255,.88) 100%);
+      border: 1px solid #d7e0ee;
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
     }
 
     .zukan-filter-head,
@@ -445,7 +445,7 @@
 
     .zukan-section-title {
       margin: 0;
-      font-size: 18px;
+      font-size: 20px;
       line-height: 1.2;
       color: #1a2840;
       font-weight: 800;
@@ -459,9 +459,9 @@
 
     .zukan-search-row {
       display: grid;
-      grid-template-columns: minmax(260px, 1.5fr) auto;
+      grid-template-columns: minmax(280px, 1.6fr) auto;
       gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .zukan-search-field {
@@ -471,10 +471,10 @@
 
     .zukan-search-input {
       width: 100%;
-      height: 42px;
+      height: 46px;
       border: 1px solid #d7e0ee;
-      border-radius: 0;
-      background: #fff;
+      border-radius: 12px;
+      background: rgba(255,255,255,.95);
       color: #1a2840;
       font-size: 14px;
       font-weight: 500;
@@ -524,10 +524,10 @@
     .zukan-filter-field select,
     .zukan-filter-actions button {
       width: 100%;
-      height: 40px;
+      height: 44px;
       border: 1px solid #d7e0ee;
-      border-radius: 0;
-      background: #fff;
+      border-radius: 12px;
+      background: rgba(255,255,255,.95);
       color: #1a2840;
       font-size: 13px;
       font-weight: 500;
@@ -563,7 +563,7 @@
       justify-content: flex-start;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .zukan-active-summary {
@@ -591,10 +591,10 @@
     }
 
     .zukan-results-head {
-      padding-top: 18px;
+      padding-top: 4px;
       border-bottom: 1px solid #d7e0ee;
       padding-bottom: 12px;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
 
     .zukan-results-meta {
@@ -611,21 +611,27 @@
 
     .zukan-grid {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 28px 18px;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 22px 16px;
     }
 
     .zukan-card {
       display: grid;
       gap: 10px;
       text-decoration: none;
-      color: #111827;
-      background: transparent;
-      transition: opacity .18s ease;
+      color: #1a2840;
+      background: rgba(255,255,255,.92);
+      border: 1px solid #dbe5f2;
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
 
     .zukan-card:hover {
-      opacity: 0.84;
+      transform: translateY(-2px);
+      border-color: #c7d5ee;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.07);
       text-decoration: none;
     }
 
@@ -636,6 +642,7 @@
       border: 1px solid #dbe5f2;
       display: grid;
       place-items: center;
+      border-radius: 12px;
     }
 
     .zukan-card-media img {
@@ -745,16 +752,70 @@
       border-top: 1px solid #d7e0ee;
     }
 
+    .skeleton-shimmer {
+      position: relative;
+      overflow: hidden;
+      background: #eaf1fb;
+      color: transparent !important;
+    }
+
+    .skeleton-shimmer::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.72) 50%, transparent 100%);
+      animation: zukan-skeleton 1.3s ease-in-out infinite;
+    }
+
+    .zukan-meta-chip.is-loading {
+      min-width: 120px;
+      border-color: transparent;
+    }
+
+    .zukan-card.is-skeleton {
+      pointer-events: none;
+    }
+
+    .zukan-card.is-skeleton .zukan-card-title {
+      height: 38px;
+      border-radius: 10px;
+    }
+
+    .zukan-card.is-skeleton .zukan-card-price {
+      width: 72px;
+      height: 18px;
+      border-radius: 999px;
+    }
+
+    .zukan-card.is-skeleton .zukan-card-spec {
+      width: 54px;
+      height: 16px;
+      border-radius: 999px;
+    }
+
+    .zukan-card.is-skeleton .zukan-badge {
+      width: 42px;
+      height: 14px;
+      border-radius: 999px;
+    }
+
+    @keyframes zukan-skeleton {
+      100% { transform: translateX(100%); }
+    }
+
     .ranking-error {
       margin-top: 12px;
       margin-bottom: 0;
     }
 
-    @media (max-width: 1100px) {
-      .dashboard-shell {
-        grid-template-columns: 240px minmax(0, 1fr);
+    @media (max-width: 1380px) {
+      .zukan-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
       }
+    }
 
+    @media (max-width: 1100px) {
       .zukan-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
       }
@@ -769,14 +830,6 @@
     }
 
     @media (max-width: 700px) {
-      .dashboard-shell {
-        grid-template-columns: 1fr;
-      }
-
-      .dashboard-sidebar {
-        display: none;
-      }
-
       .dashboard-topbar {
         padding: 18px;
         flex-wrap: wrap;
@@ -794,7 +847,7 @@
 
       .zukan-filter-grid,
       .zukan-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .zukan-search-row {
@@ -802,8 +855,7 @@
       }
 
       .zukan-hero {
-        flex-direction: column;
-        align-items: flex-start;
+        gap: 8px;
       }
     }
   </style>
@@ -834,8 +886,8 @@
             <h1 class="zukan-title">ポケモンカード スリーブ図鑑</h1>
           </div>
           <div class="zukan-hero-meta" aria-label="集計状況">
-            <div class="zukan-meta-chip">最終更新 <strong id="updatedAt">読み込み中</strong></div>
-            <div class="zukan-meta-chip">表示 <strong id="countInfo">集計中</strong></div>
+            <div id="updatedChip" class="zukan-meta-chip is-loading skeleton-shimmer">最終更新 <strong id="updatedAt">読み込み中</strong></div>
+            <div id="countChip" class="zukan-meta-chip is-loading skeleton-shimmer">表示 <strong id="countInfo">集計中</strong></div>
           </div>
         </section>
 
@@ -1082,6 +1134,8 @@
       const pageSearchInput = document.getElementById("zukanPageSearch");
       const list = document.getElementById("list");
       const activeSummary = document.getElementById("activeSummary");
+      const updatedChip = document.getElementById("updatedChip");
+      const countChip = document.getElementById("countChip");
 
       const url = new URL(location.href);
       const qParam = (url.searchParams.get("q") || "").trim();
@@ -1094,13 +1148,49 @@
         if (headerSearchInput) headerSearchInput.value = qParam;
       }
 
+      function setLoadingState() {
+        [updatedChip, countChip].forEach(el => {
+          if (!el) return;
+          el.classList.add("is-loading", "skeleton-shimmer");
+        });
+        if (activeSummary) activeSummary.innerHTML = "";
+        list.innerHTML = Array.from({ length: 12 }, () => `
+          <div class="zukan-card is-skeleton">
+            <div class="zukan-card-media skeleton-shimmer"></div>
+            <div class="zukan-card-body">
+              <div class="zukan-card-badges">
+                <span class="zukan-badge skeleton-shimmer"></span>
+                <span class="zukan-badge skeleton-shimmer"></span>
+              </div>
+              <div class="zukan-card-title skeleton-shimmer"></div>
+              <div class="zukan-card-price skeleton-shimmer"></div>
+              <div class="zukan-card-meta">
+                <span class="zukan-card-spec skeleton-shimmer"></span>
+                <span class="zukan-card-spec skeleton-shimmer"></span>
+              </div>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      function clearLoadingState() {
+        [updatedChip, countChip].forEach(el => {
+          if (!el) return;
+          el.classList.remove("is-loading", "skeleton-shimmer");
+        });
+      }
+
+      setLoadingState();
+
       let data;
       try {
         data = await window.common.loadData();
       } catch (e) {
+        clearLoadingState();
         showError(e.message || "データ読み込みに失敗しました");
         return;
       }
+      clearLoadingState();
       hideError();
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
