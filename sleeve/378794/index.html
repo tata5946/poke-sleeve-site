@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./assets/site.css" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260415b" />
 
   <style>
     .detail-wrap {
@@ -980,10 +980,19 @@
   </style>
 </head>
 
-<body>
+<body class="page-content-focus" data-hide-global-header="1">
   <div id="site-header"></div>
 
-  <div class="container">
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー">
+      <div id="dashboardSidebarSlot" data-dashboard-sidebar-active="zukan"></div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot"></div>
+      </header>
+      <div class="dashboard-content">
+  <div class="container page-shell page-shell--content">
     <div id="error" class="error"></div>
 
     <div class="detail-wrap">
@@ -1082,10 +1091,13 @@
 
     <div id="site-footer"></div>
   </div>
+      </div>
+    </main>
+  </div>
 
     <script>window.__SLEEVE_PAGE_ID = "378794";</script>
 
-  <script src="./assets/common.js"></script>
+  <script src="./assets/common.js?v=20260415b"></script>
 
   <script>
     function escapeHtml(str) {
@@ -3324,22 +3336,7 @@
     }
 
     async function main() {
-      const applySearchBehavior = () => {
-        const search = document.getElementById("search");
-        if (!search) return false;
-        search.placeholder = "図鑑へ戻って検索...";
-        search.addEventListener("keydown", (e) => {
-          if (e.key !== "Enter") return;
-          const q = search.value.trim();
-          if (!q) {
-            location.href = "./sleeves/";
-            return;
-          }
-          location.href = "./sleeves/?q=" + encodeURIComponent(q);
-        });
-        return true;
-      };
-      if (!applySearchBehavior()) setTimeout(applySearchBehavior, 200);
+      await window.common.setupDashboardChrome({ sidebarActive: "zukan" });
 
       const id = getSleeveId();
       if (!id) {
