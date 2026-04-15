@@ -1324,7 +1324,7 @@
 
         const frag = document.createDocumentFragment();
 
-        filtered.forEach((s, index) => {
+        filtered.forEach((s) => {
           const p = getCardPrice(s);
           const priceText = (p == null) ? "-" : `${p.toLocaleString()}円`;
 
@@ -1356,7 +1356,7 @@
                 : ""}
             </div>
             <div class="zukan-card-body">
-              <div class="zukan-card-badges"><span class="zukan-badge">${index + 1}</span>${deltaBadge}</div>
+              <div class="zukan-card-badges">${deltaBadge}</div>
               <h2 class="zukan-card-title">${escapeHtml(s.name ?? "")}</h2>
               <div class="zukan-card-price-wrap">
                 <div>
