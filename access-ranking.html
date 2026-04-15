@@ -311,9 +311,18 @@
   </style>
 </head>
 
-<body class="page-market-list">
+<body class="page-market-list" data-hide-global-header="1">
   <div id="site-header"></div>
 
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー">
+      <div id="dashboardSidebarSlot" data-dashboard-sidebar-active="access-ranking"></div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot" data-dashboard-topbar-active="market"></div>
+      </header>
+      <div class="dashboard-content">
   <div class="container page-shell page-shell--market">
     <nav class="breadcrumb" aria-label="パンくず">
       <a href="./index.html">ホーム</a>
@@ -376,6 +385,9 @@
     </div>
 
     <div id="site-footer"></div>
+  </div>
+      </div>
+    </main>
   </div>
 
   <script src="./assets/common.js"></script>
@@ -673,6 +685,7 @@
     }
 
     async function main() {
+      await window.common.setupDashboardChrome({ sidebarActive: "access-ranking", topbarActive: "market" });
       try {
         const releaseYearSel = document.getElementById("releaseYear");
         const seriesSel = document.getElementById("series");

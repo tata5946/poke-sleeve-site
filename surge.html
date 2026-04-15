@@ -383,10 +383,19 @@
   </style>
 </head>
 
-<body class="page-market-list">
+<body class="page-market-list" data-hide-global-header="1">
   <!-- 共通ヘッダー差し込み -->
   <div id="site-header"></div>
 
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー">
+      <div id="dashboardSidebarSlot" data-dashboard-sidebar-active="surge"></div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot" data-dashboard-topbar-active="market"></div>
+      </header>
+      <div class="dashboard-content">
   <div class="container page-shell page-shell--market">
     <nav class="breadcrumb" aria-label="パンくず">
       <a href="./index.html">ホーム</a>
@@ -466,6 +475,9 @@
 
     <!-- 共通フッター差し込み -->
     <div id="site-footer"></div>
+  </div>
+      </div>
+    </main>
   </div>
 
   <script>
@@ -811,6 +823,7 @@
     // main
     // -----------------------------
     async function main() {
+      await window.common.setupDashboardChrome({ sidebarActive: "surge", topbarActive: "market" });
       const list = document.getElementById("list");
       const top3 = document.getElementById("top3");
       const top1 = document.getElementById("top1");

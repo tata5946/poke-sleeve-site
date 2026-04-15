@@ -20,6 +20,12 @@
   <!-- 共通CSS -->
   <link rel="stylesheet" href="./assets/site.css" />
   <style>
+    .market-terminal-shell--embedded {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      padding-top: 0;
+    }
+
     .hero {
       display: grid;
       gap: 14px;
@@ -572,56 +578,22 @@
   <link rel="stylesheet" href="./assets/index-market-terminal.css" />
 </head>
 
-<body class="market-terminal-page">
+<body class="market-terminal-page" data-hide-global-header="1">
   <!-- 共通ヘッダー差し込み -->
   <div id="site-header"></div>
 
-  <div class="container">
-    <div class="market-terminal-shell">
-      <aside class="terminal-sidebar" aria-label="相場ナビゲーション">
-        <div class="terminal-brand">
-          <div class="terminal-brand-mark" aria-hidden="true">▦</div>
-          <div>
-            <p class="terminal-brand-title">ポケスリ相場ナビ</p>
-            <div class="terminal-status">最新相場を集計中</div>
-          </div>
-        </div>
-
-        <nav class="terminal-nav">
-          <a href="./index-market.html" class="is-active"><span class="terminal-nav-icon">▣</span><span>相場トップ</span></a>
-          <a href="./growth.html"><span class="terminal-nav-icon">↗</span><span>指数推移</span></a>
-          <a href="./surge.html"><span class="terminal-nav-icon">◎</span><span>急上昇</span></a>
-          <a href="./ranking.html"><span class="terminal-nav-icon">◌</span><span>ランキング</span></a>
-          <a href="./detail.html"><span class="terminal-nav-icon">◫</span><span>個別詳細</span></a>
-          <a href="./access-ranking.html"><span class="terminal-nav-icon">◍</span><span>人気指標</span></a>
-        </nav>
-
-        <div class="terminal-export">
-          <a class="btn" href="./data.json">データ出力</a>
-          <div class="terminal-meta-links">
-            <a href="./contact.html">お問い合わせ</a>
-            <a href="./policy.html">ポリシー</a>
-          </div>
-        </div>
-      </aside>
-
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー">
+      <div id="dashboardSidebarSlot" data-dashboard-sidebar-active="market"></div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot" data-dashboard-topbar-active="market"></div>
+      </header>
+      <div class="dashboard-content">
+        <div class="container">
+          <div class="market-terminal-shell market-terminal-shell--embedded">
       <main class="terminal-main">
-        <div class="terminal-topbar">
-          <div class="terminal-topbar-copy">
-            <p class="terminal-kicker">ポケスリ相場ナビ</p>
-            <div class="terminal-tabs" aria-label="カテゴリ">
-              <a href="./index-market.html" class="terminal-tab is-active">市場概況</a>
-              <a href="./ranking.html" class="terminal-tab">ランキング</a>
-              <a href="./growth.html" class="terminal-tab">分析</a>
-              <a href="./surge.html" class="terminal-tab">シグナル</a>
-            </div>
-          </div>
-          <div class="terminal-actions" aria-label="ショートカット">
-            <a class="terminal-action-pill" href="./ranking.html">注目ランキング</a>
-            <a class="terminal-action-pill" href="./growth.html">指数を見る</a>
-            <a class="terminal-action-pill" href="./surge.html">急騰を見る</a>
-          </div>
-        </div>
 
         <nav class="breadcrumb terminal-breadcrumb" aria-label="パンくず">
           <a href="./index.html">ホーム</a>
@@ -744,10 +716,13 @@
           </div>
         </div>
       </main>
-    </div>
-
-    <!-- 共通フッター差し込み -->
-    <div id="site-footer"></div>
+          </div>
+ 
+          <!-- 共通フッター差し込み -->
+          <div id="site-footer"></div>
+        </div>
+      </div>
+    </main>
   </div>
 
   <!-- 共通JS（header/footer差し込み & nav active 等） -->
@@ -1920,26 +1895,7 @@
     }
 
     async function main() {
-      // header差し込みが遅いと #search が無いことがあるので待つ
-      const waitForSearch = async () => {
-        for (let i = 0; i < 20; i++) {
-          const s = document.getElementById("search");
-          if (s) return s;
-          await new Promise(r => setTimeout(r, 50));
-        }
-        return null;
-      };
-
-      const search = document.getElementById("search") || await waitForSearch();
-      if (search) {
-        // 検索バーは一覧へ
-        search.addEventListener("keydown", (e) => {
-          if (e.key !== "Enter") return;
-          const q = search.value.trim();
-          if (!q) { location.href = "./sleeves/"; return; }
-          location.href = "./sleeves/?q=" + encodeURIComponent(q);
-        });
-      }
+      await window.common.setupDashboardChrome({ sidebarActive: "market", topbarActive: "market" });
 
       let data;
       try { data = await loadData(); }
