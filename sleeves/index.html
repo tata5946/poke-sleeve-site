@@ -1212,6 +1212,9 @@
 
       const url = new URL(location.href);
       const qParam = (url.searchParams.get("q") || "").trim();
+      let currentGroupParam = (url.searchParams.get("group") || "").trim();
+      let currentTagParam = (url.searchParams.get("tag") || "").trim();
+      let currentTypeParam = (url.searchParams.get("type") || "").trim();
       if (qParam) {
         if (pageSearchInput) pageSearchInput.value = qParam;
         if (dashboardSearchInput) dashboardSearchInput.value = qParam;
@@ -1263,10 +1266,13 @@
         return getLatestWeeklyPrice(s);
       }
 
-      function renderActiveSummary({ kw, releaseYear, series, band, sortOrder, total }) {
+      function renderActiveSummary({ kw, releaseYear, series, band, sortOrder, total, group, tag, type }) {
         if (!activeSummary) return;
         const chips = [];
         if (kw) chips.push(`<span class="zukan-active-chip">検索 <strong>${escapeHtml(kw)}</strong></span>`);
+        if (group) chips.push(`<span class="zukan-active-chip">カテゴリ <strong>${escapeHtml(group)}</strong></span>`);
+        if (tag) chips.push(`<span class="zukan-active-chip">タグ <strong>${escapeHtml(tag)}</strong></span>`);
+        if (type) chips.push(`<span class="zukan-active-chip">種別 <strong>${escapeHtml(type)}</strong></span>`);
         if (releaseYear) chips.push(`<span class="zukan-active-chip">発売年 <strong>${escapeHtml(releaseYear)}</strong></span>`);
         if (series) chips.push(`<span class="zukan-active-chip">シリーズ <strong>${escapeHtml(series)}</strong></span>`);
         if (band) chips.push(`<span class="zukan-active-chip">価格帯 <strong>${escapeHtml(priceBandSel.options[priceBandSel.selectedIndex]?.textContent || "")}</strong></span>`);
@@ -1284,12 +1290,24 @@
         const series = seriesSel.value;
         const band = parseBand(priceBandSel.value);
         const sortOrder = sortOrderSel.value;
+        const normalizedGroup = window.common && typeof window.common.normalizeSleeveTextValue === "function"
+          ? window.common.normalizeSleeveTextValue(currentGroupParam).toLowerCase()
+          : String(currentGroupParam || "").trim().toLowerCase();
+        const normalizedTag = window.common && typeof window.common.normalizeSleeveTextValue === "function"
+          ? window.common.normalizeSleeveTextValue(currentTagParam)
+          : String(currentTagParam || "").trim();
+        const normalizedType = window.common && typeof window.common.normalizeSleeveTextValue === "function"
+          ? window.common.normalizeSleeveTextValue(currentTypeParam)
+          : String(currentTypeParam || "").trim();
 
         list.innerHTML = "";
 
         const filtered = [];
         for (const s of sleeves) {
           if (kw && !String(s.name || "").toLowerCase().includes(kw)) continue;
+          if (normalizedGroup && (!window.common || typeof window.common.sleeveMatchesGroup !== "function" || !window.common.sleeveMatchesGroup(s, normalizedGroup))) continue;
+          if (normalizedTag && (!window.common || typeof window.common.sleeveMatchesDetailTag !== "function" || !window.common.sleeveMatchesDetailTag(s, normalizedTag))) continue;
+          if (normalizedType && (!window.common || typeof window.common.sleeveMatchesType !== "function" || !window.common.sleeveMatchesType(s, normalizedType))) continue;
           if (releaseYear && String(s.releaseYear ?? "") !== releaseYear) continue;
           if (series && String(s.series || "") !== series) continue;
 
@@ -1318,7 +1336,7 @@
           if (c) c.textContent = "0件";
           const badge = document.getElementById("resultCountBadge");
           if (badge) badge.textContent = "0";
-          renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, sortOrder, total: 0 });
+          renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, sortOrder, total: 0, group: normalizedGroup, tag: normalizedTag, type: normalizedType });
           list.innerHTML = '<div class="zukan-empty">条件に一致するスリーブがありません。キーワードや価格帯をゆるめて、もう一度探してみてください。</div>';
           return;
         }
@@ -1327,7 +1345,7 @@
         if (c) c.textContent = `${filtered.length.toLocaleString()}件`;
         const badge = document.getElementById("resultCountBadge");
         if (badge) badge.textContent = `${filtered.length.toLocaleString()}`;
-        renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, sortOrder, total: filtered.length });
+        renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, sortOrder, total: filtered.length, group: normalizedGroup, tag: normalizedTag, type: normalizedType });
 
         const frag = document.createDocumentFragment();
 
@@ -1418,6 +1436,17 @@
         if (pageSearchInput) pageSearchInput.value = "";
         searchInput.value = "";
         syncInputs("", searchInput);
+        currentGroupParam = "";
+        currentTagParam = "";
+        currentTypeParam = "";
+        try {
+          const nextUrl = new URL(location.href);
+          nextUrl.searchParams.delete("q");
+          nextUrl.searchParams.delete("group");
+          nextUrl.searchParams.delete("tag");
+          nextUrl.searchParams.delete("type");
+          history.replaceState({}, "", nextUrl.toString());
+        } catch (_) { }
         releaseYearSel.value = "";
         seriesSel.value = "";
         priceBandSel.value = "";
