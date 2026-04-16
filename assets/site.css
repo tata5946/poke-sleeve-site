@@ -1204,7 +1204,10 @@ body.page-market-list .page-toolbar-copy {
     line-height: 1.8;
 }
 
-body.page-market-list .container,
+body.page-market-list .container {
+    max-width: 1520px;
+}
+
 body.page-content-focus .container {
     max-width: 1280px;
 }
