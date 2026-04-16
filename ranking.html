@@ -1226,7 +1226,15 @@
           return;
         }
 
-        const normalRows = rows;
+        const topRows = rows.slice(0, 3);
+        if (topRows.length) {
+          top3.hidden = false;
+          top1.innerHTML = buildPodiumCard(topRows[0], 1);
+          if (topRows[1]) top2.innerHTML = buildPodiumCard(topRows[1], 2);
+          if (topRows[2]) top3Card.innerHTML = buildPodiumCard(topRows[2], 3);
+        }
+
+        const normalRows = rows.slice(3);
         restSection.hidden = normalRows.length === 0;
 
         const frag = document.createDocumentFragment();
@@ -1237,7 +1245,7 @@
           card.href = row.detailHref;
           card.setAttribute("data-sleeve-link", "1");
           card.setAttribute("aria-label", `${String(row.s.name ?? "")}の詳細を見る`);
-          card.innerHTML = buildStandardCard(row, i + 1);
+          card.innerHTML = buildStandardCard(row, i + 4);
           frag.appendChild(card);
         }
 
