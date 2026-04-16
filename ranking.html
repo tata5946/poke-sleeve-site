@@ -543,6 +543,10 @@
     .ranking-page-top { gap: 8px; margin-bottom: 10px; }
     .ranking-hero {
       padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
       border-radius: 18px;
       border: 1px solid #d7e0ee;
       background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(246,250,254,.98) 100%);
@@ -550,6 +554,8 @@
       color: #162238;
     }
     .ranking-page-title { font-size: clamp(26px, 2.6vw, 34px); color: #162238; }
+    .page-hero-meta { margin-top: 0; margin-left: auto; justify-content: flex-end; text-align: right; }
+    .page-hero-badge { white-space: nowrap; }
     .ranking-filter-card { padding: 12px 14px; }
     .ranking-filter-head { margin-bottom: 6px; }
     .ranking-filter-title { font-size: 13px; color: #1a2840; }
@@ -621,6 +627,8 @@
 
     @media (max-width: 700px) {
       .ranking-hero { padding: 14px; }
+      .ranking-hero { align-items: flex-start; flex-direction: column; }
+      .page-hero-meta { margin-left: 0; justify-content: flex-start; text-align: left; }
 
       .ranking-filter-card {
         padding: 10px 12px 12px;
@@ -721,8 +729,8 @@
       <section class="ranking-hero page-hero-card" aria-label="ページ見出し">
         <h1 class="ranking-page-title page-hero-title">価格ランキング</h1>
         <div class="page-hero-meta">
-          <span class="page-hero-badge">最終更新 <strong id="updatedAt">最新週を確認中</strong></span>
-          <span class="page-hero-badge">表示件数 <strong id="countInfo">集計中</strong></span>
+          <span class="page-hero-badge">最終更新：<strong id="updatedAt">確認中</strong></span>
+          <span class="page-hero-badge">更新件数：<strong id="countInfo">集計中</strong></span>
         </div>
       </section>
 
@@ -836,6 +844,13 @@
     function numOrNull(v) {
       const n = Number(v);
       return Number.isFinite(n) ? n : null;
+    }
+
+    function formatMetaDate(value) {
+      const text = String(value ?? "").trim();
+      const match = text.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+      if (!match) return text || "-";
+      return `${match[1]}/${Number(match[2])}/${Number(match[3])}`;
     }
 
     async function loadData() {
@@ -1132,7 +1147,7 @@
         if (maxWeek) {
           const u = document.getElementById("updatedAt");
           if (u) {
-            u.textContent = `最終更新：${maxWeek}（週次）`;
+            u.textContent = formatMetaDate(maxWeek);
             u.style.display = "block";
           }
         }
