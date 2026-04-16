@@ -1036,18 +1036,13 @@
     function buildPodiumCard(row, rank) {
       const s = row.s;
       const deltaInfo = row.deltaInfo;
-      const range = row.marketRange || { min: null, max: null };
       const imgSrc = String(s.imageUrl || "").trim();
-      const tagLabels = getTagLabels(s, rank === 1 ? 3 : 2);
-      const summary = buildHighlightCopy(s, rank, deltaInfo);
-      const flowBadgeHtml = (window.common && typeof window.common.buildFlowBadgeHtml === "function")
-        ? window.common.buildFlowBadgeHtml(s)
-        : "";
       const rateClass = getDeltaClass(deltaInfo && deltaInfo.rate);
-      const weekText = row.week ? `対象週 ${escapeHtml(row.week)}` : "対象週データなし";
-      const tagHtml = tagLabels.map((tag) => `<span class="podium-chip">${escapeHtml(tag)}</span>`).join("");
-      const minText = range.min == null ? "?" : `${Number(range.min).toLocaleString()}円`;
-      const maxText = range.max == null ? "?" : `${Number(range.max).toLocaleString()}円`;
+      const metaItems = [
+        s.releaseYear ? `YEAR ${escapeHtml(s.releaseYear)}` : "",
+        s.series ? escapeHtml(s.series) : ""
+      ].filter(Boolean);
+      const metaHtml = metaItems.map((item) => `<span class="podium-chip">${item}</span>`).join("");
 
       return `
         <article class="podium-card podium-card--rank${rank}">
@@ -1068,21 +1063,9 @@
                 <span class="podium-metric-label">前週比</span>
                 <div class="podium-rate ${rateClass}">${formatRateText(deltaInfo && deltaInfo.rate)}</div>
               </div>
-              <div class="podium-metric">
-                <span class="podium-metric-label">最安値</span>
-                <div class="podium-rate">${minText}</div>
-              </div>
-              <div class="podium-metric">
-                <span class="podium-metric-label">最高値</span>
-                <div class="podium-rate">${maxText}</div>
-              </div>
             </div>
             <div class="podium-meta">
-              <div class="podium-chip-group">${flowBadgeHtml}${tagHtml}</div>
-              <span class="podium-chip">${weekText}</span>
-            </div>
-            <div class="podium-actions">
-              <a class="btn" data-sleeve-link="1" href="${row.detailHref}">価格推移を見る →</a>
+              <div class="podium-chip-group">${metaHtml}</div>
             </div>
           </div>
         </article>
@@ -1093,8 +1076,13 @@
       const s = row.s;
       const imgSrc = String(s.imageUrl || "").trim();
       const delta = getCompactDeltaDisplay(row.deltaInfo);
-      const tags = getCompactTagLabels(s, 2);
-      const tagsHtml = tags.map((tag) => `<span class="compact-tag">${escapeHtml(tag)}</span>`).join("");
+      const metaItems = [
+        s.releaseYear ? `YEAR ${escapeHtml(s.releaseYear)}` : "",
+        s.series ? escapeHtml(s.series) : ""
+      ].filter(Boolean);
+      const metaHtml = metaItems.length
+        ? `<div class="compact-meta">${metaItems.map((item) => `<span class="compact-meta-item">${item}</span>`).join("")}</div>`
+        : "";
 
       return `
         <span class="compact-rank-badge">${rank}位</span>
@@ -1109,7 +1097,7 @@
           <div class="compact-price">${row.price.toLocaleString()}円</div>
           <div class="compact-delta ${delta.className}">${escapeHtml(delta.text)}</div>
         </div>
-        ${tagsHtml ? `<div class="compact-tags">${tagsHtml}</div>` : ""}
+        ${metaHtml}
       `;
     }
 

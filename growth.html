@@ -877,10 +877,13 @@
       const s = row.s;
       const g = row.g;
       const imgSrc = String(s.imageUrl || "").trim();
-      const tagHtml = getTagLabels(s).map((tag) => `<span class="podium-chip">${escapeHtml(tag)}</span>`).join("");
       const detailHref = row.detailHref;
       const rateClass = (g.rate ?? 0) > 0 ? "up" : (g.rate ?? 0) < 0 ? "down" : "flat";
-      const latestWeekText = g.latest && g.latest.week ? `対象週 ${escapeHtml(g.latest.week)}` : "対象週データなし";
+      const metaItems = [
+        s.releaseYear ? `YEAR ${escapeHtml(s.releaseYear)}` : "",
+        s.series ? escapeHtml(s.series) : ""
+      ].filter(Boolean);
+      const metaHtml = metaItems.map((item) => `<span class="podium-chip">${item}</span>`).join("");
       return `
         <article class="podium-card podium-card--rank${rank}">
           <div class="podium-badge">${getPodiumBadge(rank)}</div>
@@ -902,11 +905,7 @@
               </div>
             </div>
             <div class="podium-meta">
-              <div class="podium-chip-group">${tagHtml}</div>
-              <span class="podium-chip">${latestWeekText}</span>
-            </div>
-            <div class="podium-actions">
-              <a class="btn" data-sleeve-link="1" href="${detailHref}">価格推移を見る →</a>
+              <div class="podium-chip-group">${metaHtml}</div>
             </div>
           </div>
         </article>
@@ -991,10 +990,15 @@
 
     function buildStandardCard(row, rank) {
       const s = row.s;
-      const tags = getCompactTagLabels(s, 2);
-      const tagsHtml = tags.map((tag) => `<span class="compact-tag">${escapeHtml(tag)}</span>`).join("");
       const deltaClass = row.g.rate > 0 ? "up" : row.g.rate < 0 ? "down" : "flat";
       const deltaText = `${row.g.rate > 0 ? "+" : row.g.rate < 0 ? "-" : "±"}${Math.abs(row.g.rate).toFixed(1)}%`;
+      const metaItems = [
+        s.releaseYear ? `YEAR ${escapeHtml(s.releaseYear)}` : "",
+        s.series ? escapeHtml(s.series) : ""
+      ].filter(Boolean);
+      const metaHtml = metaItems.length
+        ? `<div class="compact-meta">${metaItems.map((item) => `<span class="compact-meta-item">${item}</span>`).join("")}</div>`
+        : "";
       return `
         <span class="compact-rank-badge">${rank}位</span>
         <span class="compact-thumb-wrap">
@@ -1008,7 +1012,7 @@
           <div class="compact-price">${row.g.latest.price.toLocaleString()}円</div>
           <div class="compact-delta ${deltaClass}">${escapeHtml(deltaText)}</div>
         </div>
-        ${tagsHtml ? `<div class="compact-tags">${tagsHtml}</div>` : ""}
+        ${metaHtml}
       `;
     }
 
