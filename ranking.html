@@ -541,12 +541,13 @@
     }
 
     .ranking-page-top { gap: 8px; margin-bottom: 10px; }
-    .ranking-header-card {
+    .ranking-hero {
       padding: 14px 18px;
       border-radius: 18px;
       border: 1px solid #d7e0ee;
       background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(246,250,254,.98) 100%);
       box-shadow: 0 10px 24px rgba(15, 23, 42, .05);
+      color: #162238;
     }
     .ranking-page-title { font-size: clamp(26px, 2.6vw, 34px); color: #162238; }
     .ranking-filter-card { padding: 12px 14px; }
@@ -619,9 +620,7 @@
     }
 
     @media (max-width: 700px) {
-      .ranking-header-card {
-        padding: 12px 14px;
-      }
+      .ranking-hero { padding: 14px; }
 
       .ranking-filter-card {
         padding: 10px 12px 12px;
@@ -719,13 +718,11 @@
       <span class="breadcrumb-current" aria-current="page">価格ランキング</span>
     </nav>
     <div class="ranking-page-top page-market-top">
-      <section class="ranking-header-card page-hero-card" aria-label="ページヘッダー">
-        <div class="ranking-header-copy">
-          <h1 class="ranking-page-title page-hero-title">価格ランキング</h1>
-          <div class="page-hero-meta" aria-label="集計状況">
-            <span class="page-hero-badge">表示件数 <strong id="countInfo">集計中</strong></span>
-            <span class="page-hero-badge">更新状況 <strong id="updatedAt">最新週を確認中</strong></span>
-          </div>
+      <section class="ranking-hero page-hero-card" aria-label="ページ見出し">
+        <h1 class="ranking-page-title page-hero-title">価格ランキング</h1>
+        <div class="page-hero-meta">
+          <span class="page-hero-badge">最終更新 <strong id="updatedAt">最新週を確認中</strong></span>
+          <span class="page-hero-badge">表示件数 <strong id="countInfo">集計中</strong></span>
         </div>
       </section>
 
@@ -736,6 +733,7 @@
           </div>
         </div>
 
+        <div id="error" class="error ranking-error"></div>
         <div class="ranking-filter-grid">
           <div class="ranking-filter-field">
             <select id="releaseYear">
@@ -764,10 +762,7 @@
             <button id="clear" type="button">クリア</button>
           </div>
         </div>
-
         <div id="activeFilters" class="ranking-active-filters" aria-label="選択中の絞り込み条件"></div>
-
-        <div id="error" class="error ranking-error"></div>
       </section>
     </div>
 
