@@ -1073,27 +1073,12 @@ body.page-market-list .page-market-top {
 body.page-market-list .page-hero-card {
     position: relative;
     overflow: hidden;
-    border-radius: 28px;
-    padding: 26px 28px;
-    border: 1px solid rgba(17, 24, 39, .08);
-    background:
-        radial-gradient(circle at top right, rgba(255, 204, 0, .18), transparent 34%),
-        radial-gradient(circle at left center, rgba(30, 91, 215, .14), transparent 28%),
-        linear-gradient(145deg, #13233f 0%, #1d3259 68%, #234072 100%);
-    box-shadow: 0 20px 42px rgba(15, 23, 42, .14);
-    color: #fff;
-}
-
-body.page-market-list .page-hero-card::after {
-    content: "";
-    position: absolute;
-    inset: auto -80px -120px auto;
-    width: 260px;
-    height: 260px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, .08);
-    filter: blur(10px);
-    pointer-events: none;
+    border-radius: 18px;
+    padding: 14px 18px;
+    border: 1px solid #d7e0ee;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .98) 0%, rgba(246, 250, 254, .98) 100%);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, .05);
+    color: #162238;
 }
 
 body.page-market-list .page-hero-card > * {
@@ -1102,12 +1087,7 @@ body.page-market-list .page-hero-card > * {
 }
 
 body.page-market-list .page-hero-kicker {
-    margin: 0 0 10px;
-    font-size: 11px;
-    line-height: 1.3;
-    letter-spacing: .16em;
-    font-weight: 900;
-    color: rgba(255, 255, 255, .7);
+    display: none;
 }
 
 body.page-market-list .page-hero-card .page-hero-title,
@@ -1122,7 +1102,7 @@ body.page-market-list .page-hero-card .page-hero-title,
 }
 
 body.page-market-list .page-hero-card .page-hero-title {
-    color: #fff;
+    color: #162238;
 }
 
 body.page-market-list .page-hero-desc,
@@ -1135,51 +1115,47 @@ body.page-market-list .page-hero-desc,
 }
 
 body.page-market-list .page-hero-desc {
-    color: rgba(255, 255, 255, .82);
+    display: none;
 }
 
 body.page-market-list .page-hero-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 18px;
+    gap: 8px;
+    margin-top: 10px;
 }
 
 body.page-market-list .page-hero-badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    min-height: 40px;
-    padding: 0 14px;
+    gap: 6px;
+    min-height: 34px;
+    padding: 0 12px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, .12);
-    border: 1px solid rgba(255, 255, 255, .18);
-    color: #fff;
+    background: rgba(255, 255, 255, .96);
+    border: 1px solid #d7e0ee;
+    color: #506079;
     font-size: 12px;
     font-weight: 800;
-    backdrop-filter: blur(8px);
 }
 
 body.page-market-list .page-hero-badge strong {
     font-family: var(--font-numeric);
     font-size: 13px;
     font-weight: 900;
+    color: #1a2840;
 }
 
 body.page-market-list .page-toolbar-card {
-    padding: 16px 18px;
-    border-radius: 24px;
-    border: 1px solid #dbe4f1;
-    background: rgba(255, 255, 255, .92);
-    box-shadow: 0 14px 28px rgba(15, 23, 42, .06);
+    padding: 12px 14px;
+    border-radius: 18px;
+    border: 1px solid #d7e0ee;
+    background: linear-gradient(180deg, rgba(241, 246, 255, .95) 0%, rgba(236, 244, 255, .88) 100%);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, .04);
 }
 
 body.page-market-list .page-toolbar-copy {
-    margin: 6px 0 0;
-    color: #667085;
-    font-size: 13px;
-    line-height: 1.65;
-    font-weight: 600;
+    display: none;
 }
 
 .page-focus-panel,
@@ -1308,19 +1284,19 @@ body.page-content-focus {
 }
 
 .compact-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
 }
 
 .compact-card {
     display: grid;
     gap: 6px;
     min-width: 0;
-    padding: 6px;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    background: var(--card);
-    box-shadow: 0 6px 18px rgba(16, 24, 40, .06);
+    padding: 8px;
+    border: 1px solid #dbe5f2;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .92);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, .04);
     color: inherit;
     text-decoration: none;
     position: relative;
@@ -1422,21 +1398,7 @@ body.page-content-focus {
 }
 
 .compact-rank-badge {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 28px;
-    height: 20px;
-    padding: 0 6px;
-    border-radius: 999px;
-    background: rgba(17, 24, 39, .84);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 900;
-    box-shadow: 0 6px 14px rgba(15, 23, 42, .18);
+    display: none;
 }
 
 .card {

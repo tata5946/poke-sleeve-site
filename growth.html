@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
   <!-- 共通CSS -->
-  <link rel="stylesheet" href="./assets/site.css?v=20260415b" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260416a" />
   <style>
     body {
       background: #f5f7fb;
@@ -426,6 +426,80 @@
       margin-top: 0;
     }
 
+    .ranking-page-top { gap: 8px; margin-bottom: 10px; }
+    .ranking-hero {
+      padding: 14px 18px;
+      border-radius: 18px;
+      border: 1px solid #d7e0ee;
+      background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(246,250,254,.98) 100%);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, .05);
+      color: #162238;
+    }
+    .ranking-page-title { font-size: clamp(26px, 2.6vw, 34px); color: #162238; }
+    .ranking-filter-card { padding: 12px 14px; }
+    .ranking-filter-head { margin-bottom: 6px; }
+    .ranking-filter-title { font-size: 13px; color: #1a2840; }
+    .ranking-filter-grid { gap: 10px; }
+    .ranking-filter-field select,
+    .ranking-filter-actions button {
+      height: 42px;
+      border: 1px solid #d7e0ee;
+      border-radius: 12px;
+      background: rgba(255,255,255,.95);
+    }
+    .ranking-main { gap: 14px; }
+    .ranking-top3 { gap: 12px; grid-template-columns: minmax(0, 1.45fr) minmax(220px, .9fr) minmax(220px, .9fr); }
+    .podium-card {
+      border-radius: 16px;
+      border: 1px solid #dbe5f2;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, .04);
+      background: rgba(255,255,255,.94);
+      padding: 10px;
+    }
+    .podium-card--rank1 {
+      padding: 12px;
+      gap: 12px;
+      background: linear-gradient(180deg, #fff9ed 0%, #ffffff 100%);
+    }
+    .podium-card--rank2,
+    .podium-card--rank3 { background: rgba(255,255,255,.94); }
+    .podium-badge {
+      top: 10px;
+      left: 10px;
+      padding: 4px 8px;
+      font-size: 11px;
+      background: #162238;
+    }
+    .podium-media {
+      border-radius: 12px;
+      padding: 8px;
+      background: linear-gradient(180deg, #f8fbff 0%, #f2f6fc 100%);
+    }
+    .podium-card--rank1 .podium-media img { height: 260px; }
+    .podium-card:not(.podium-card--rank1) .podium-media img { height: 170px; }
+    .podium-content { gap: 6px; }
+    .podium-kicker,
+    .podium-actions { display: none; }
+    .podium-title { font-size: 18px; }
+    .podium-card:not(.podium-card--rank1) .podium-title { font-size: 15px; }
+    .podium-metrics { gap: 6px; }
+    .podium-metric {
+      padding: 8px;
+      border-radius: 12px;
+      background: #f8fbff;
+      border: 1px solid #dbe5f2;
+    }
+    .podium-price { font-size: 22px; }
+    .podium-card:not(.podium-card--rank1) .podium-price { font-size: 17px; }
+    .podium-rate { font-size: 18px; }
+    .podium-card:not(.podium-card--rank1) .podium-rate { font-size: 15px; }
+    .podium-chip {
+      min-height: 22px;
+      padding: 0 7px;
+      background: #fff;
+      border: 1px solid #dbe5f2;
+    }
+
     @media (max-width: 960px) {
       .ranking-filter-grid {
         display: grid;
@@ -508,9 +582,7 @@
     </nav>
     <div class="ranking-page-top page-market-top">
       <section class="ranking-hero page-hero-card" aria-label="ページ見出し">
-        <p class="page-hero-kicker">GROWTH SIGNAL</p>
         <h1 class="ranking-page-title page-hero-title">高騰率ランキング</h1>
-        <p class="page-hero-desc">一定期間でどれだけ伸びたかを追うページです。価格の絶対値ではなく、伸び率や上昇額の勢いを見極める用途に寄せています。</p>
         <div class="page-hero-meta">
           <span class="page-hero-badge">最終更新 <strong id="updatedAt">最新週を確認中</strong></span>
           <span class="page-hero-badge">表示件数 <strong id="countInfo">0件</strong></span>
@@ -521,7 +593,6 @@
         <div class="ranking-filter-head">
           <div>
             <h2 class="ranking-filter-title">絞り込み</h2>
-            <p class="page-toolbar-copy">期間、伸び率、シリーズ条件を切り替えて、単発上振れと継続的な伸びを見分けやすくします。</p>
           </div>
         </div>
 
@@ -568,7 +639,7 @@
           </div>
 
           <div class="ranking-filter-actions">
-            <button id="clear" type="button">条件をクリア</button>
+            <button id="clear" type="button">クリア</button>
           </div>
         </div>
 
