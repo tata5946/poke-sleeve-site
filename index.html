@@ -2331,6 +2331,9 @@
     .topbar-utils {
       display: none;
     }
+    .mobile-action-grid {
+      display: none;
+    }
     .dashboard-content {
       padding: 28px;
       display: grid;
@@ -3044,6 +3047,376 @@
         line-height: 1;
       }
     }
+    @media (max-width: 960px) {
+      body.home-page {
+        background:
+          radial-gradient(circle at 12% -8%, rgba(191, 219, 254, 0.62), transparent 28%),
+          radial-gradient(circle at 92% 4%, rgba(167, 243, 208, 0.42), transparent 24%),
+          linear-gradient(180deg, #f8fafc 0%, #eef3f9 54%, #f8fafc 100%);
+      }
+      body.home-page .dashboard-main {
+        min-width: 0;
+        padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+      }
+      body.home-page .dashboard-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 34;
+        padding: 10px 14px 8px;
+        gap: 8px;
+        background: rgba(248, 250, 252, 0.86);
+        border-bottom: 1px solid rgba(203, 213, 225, 0.62);
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      }
+      body.home-page .topbar-search {
+        width: 100%;
+        min-width: 0;
+        order: 1;
+      }
+      body.home-page .topbar-search-input {
+        min-height: 44px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.86), 0 10px 24px rgba(15, 23, 42, 0.06);
+        font-size: 15px;
+      }
+      body.home-page .topbar-tabs {
+        order: 2;
+        gap: 6px;
+        display: flex;
+        overflow-x: auto;
+        padding-bottom: 1px;
+        scrollbar-width: none;
+      }
+      body.home-page .topbar-tabs::-webkit-scrollbar {
+        display: none;
+      }
+      body.home-page .topbar-tab {
+        flex: 0 0 auto;
+        min-height: 34px;
+        padding: 0 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.7);
+        color: #475569;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      body.home-page .topbar-tab.is-active {
+        background: #0b1b3f;
+        color: #fff;
+      }
+      body.home-page .dashboard-content {
+        padding: 12px 12px 0;
+        gap: 12px;
+      }
+      body.home-page .dashboard-hero {
+        gap: 10px;
+      }
+      body.home-page .hero-main-card {
+        position: relative;
+        overflow: hidden;
+        padding: 14px;
+        gap: 12px;
+        border: 1px solid rgba(147, 197, 253, 0.5);
+        border-radius: 24px;
+        background:
+          linear-gradient(135deg, rgba(255,255,255,.98), rgba(241,245,249,.94)) padding-box,
+          linear-gradient(135deg, rgba(96,165,250,.62), rgba(45,212,191,.45), rgba(251,191,36,.28)) border-box;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+      }
+      body.home-page .hero-main-card::after {
+        content: "";
+        position: absolute;
+        inset: -42% -28% auto auto;
+        width: 190px;
+        height: 190px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(96, 165, 250, 0.32), transparent 66%);
+        pointer-events: none;
+      }
+      body.home-page .hero-main-link {
+        position: relative;
+        z-index: 1;
+        gap: 12px;
+      }
+      body.home-page .hero-main-head {
+        gap: 10px;
+      }
+      body.home-page .hero-index-kicker {
+        gap: 8px;
+        font-size: 10px;
+        letter-spacing: .16em;
+        color: #1e3a8a;
+      }
+      body.home-page .hero-index-kicker::before {
+        width: 8px;
+        height: 8px;
+        background: #2563eb;
+        box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.12);
+      }
+      body.home-page .hero-index-value-row {
+        align-items: center;
+        gap: 10px;
+      }
+      body.home-page .hero-index-value {
+        font-size: clamp(44px, 16vw, 62px);
+        letter-spacing: -.08em;
+      }
+      body.home-page .hero-index-chip {
+        min-height: 30px;
+        padding: 0 10px;
+        border-radius: 999px;
+        background: rgba(220, 252, 231, 0.95);
+        color: #047857;
+        font-size: 12px;
+        box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.16);
+      }
+      body.home-page .hero-chart-card {
+        height: 118px;
+        min-height: 118px;
+        padding: 0;
+        border-radius: 18px;
+        background:
+          radial-gradient(circle at 16% 12%, rgba(59,130,246,.12), transparent 28%),
+          linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+      }
+      body.home-page .hero-chart-axis,
+      body.home-page .hero-chart-yaxis {
+        display: none;
+      }
+      body.home-page .hero-side-card {
+        padding: 12px;
+        gap: 10px;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.86);
+        box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06);
+      }
+      body.home-page .sentiment-head {
+        display: grid;
+        gap: 5px;
+      }
+      body.home-page .sentiment-title {
+        font-size: 14px;
+      }
+      body.home-page .sentiment-updated,
+      body.home-page .sentiment-copy,
+      body.home-page .sentiment-scale {
+        font-size: 11px;
+      }
+      body.home-page .sentiment-score {
+        font-size: 36px;
+      }
+      body.home-page .sentiment-badge {
+        padding: 7px 10px;
+        font-size: 12px;
+        border-radius: 999px;
+      }
+      body.home-page .sentiment-meter {
+        height: 7px;
+      }
+      body.home-page .sentiment-meter,
+      body.home-page .sentiment-scale,
+      body.home-page .sentiment-copy {
+        display: none;
+      }
+      body.home-page .mobile-action-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      body.home-page .mobile-action-link {
+        min-height: 64px;
+        padding: 9px 6px 8px;
+        display: grid;
+        place-items: center;
+        align-content: center;
+        gap: 5px;
+        border-radius: 18px;
+        color: #0f172a;
+        text-align: center;
+        text-decoration: none;
+        background:
+          radial-gradient(circle at top, rgba(255,255,255,.82), transparent 60%),
+          rgba(255,255,255,.74);
+        box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.13), 0 10px 24px rgba(15, 23, 42, 0.06);
+      }
+      body.home-page .mobile-action-icon {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border-radius: 11px;
+        color: #fff;
+        background: #0b1b3f;
+        font-size: 14px;
+        font-weight: 900;
+        line-height: 1;
+      }
+      body.home-page .mobile-action-link:nth-child(1) .mobile-action-icon {
+        background: linear-gradient(135deg, #ef4444, #f97316);
+      }
+      body.home-page .mobile-action-link:nth-child(2) .mobile-action-icon {
+        background: linear-gradient(135deg, #2563eb, #14b8a6);
+      }
+      body.home-page .mobile-action-link:nth-child(3) .mobile-action-icon {
+        background: linear-gradient(135deg, #0f172a, #475569);
+      }
+      body.home-page .mobile-action-label {
+        color: #334155;
+        font-size: 11px;
+        font-weight: 900;
+        line-height: 1.15;
+        letter-spacing: .02em;
+      }
+      body.home-page .dashboard-kpis {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      body.home-page .kpi-card {
+        min-height: 0;
+        padding: 10px 9px;
+        gap: 5px;
+        border-radius: 16px;
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.05);
+      }
+      body.home-page .kpi-label {
+        font-size: 10px;
+        line-height: 1.25;
+      }
+      body.home-page .kpi-value {
+        font-size: clamp(20px, 7vw, 28px);
+        white-space: nowrap;
+      }
+      body.home-page .kpi-change {
+        font-size: 11px;
+        white-space: nowrap;
+      }
+      body.home-page .dashboard-lower {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      body.home-page .movers-card {
+        padding: 12px 10px 8px;
+        border-radius: 20px;
+        box-shadow: 0 12px 26px rgba(15, 23, 42, 0.07);
+      }
+      body.home-page .movers-card::before {
+        height: 3px;
+      }
+      body.home-page .movers-head {
+        padding: 0 2px 8px;
+        align-items: center;
+        flex-wrap: nowrap;
+      }
+      body.home-page .movers-title {
+        font-size: 18px;
+        line-height: 1.15;
+      }
+      body.home-page .dashboard-lower > .movers-card .movers-title::before {
+        margin-bottom: 3px;
+        font-size: 9px;
+      }
+      body.home-page .movers-link {
+        min-height: 30px;
+        padding: 0 10px;
+        font-size: 11px;
+      }
+      body.home-page .movers-row,
+      body.home-page .movers-row--ranking {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        padding: 9px;
+        margin-bottom: 7px;
+        border-radius: 15px;
+      }
+      body.home-page .movers-main {
+        grid-template-columns: 54px minmax(0, 1fr);
+        gap: 9px;
+      }
+      body.home-page .movers-thumb {
+        width: 54px;
+        height: 54px;
+        border-radius: 13px;
+      }
+      body.home-page .movers-name {
+        font-size: 13px;
+        line-height: 1.25;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      body.home-page .movers-meta,
+      body.home-page .movers-rank,
+      body.home-page .movers-stat-label {
+        font-size: 10px;
+      }
+      body.home-page .movers-side {
+        min-width: 86px;
+        justify-items: end;
+        padding-left: 0;
+      }
+      body.home-page .movers-stats {
+        justify-items: end;
+        gap: 4px;
+      }
+      body.home-page .movers-stat-value,
+      body.home-page .movers-price {
+        font-size: 15px;
+      }
+      body.home-page .movers-sparkline {
+        display: none;
+      }
+      body.home-page .movers-action {
+        min-height: 0;
+        width: auto;
+        padding: 0;
+        margin: 0;
+        background: transparent;
+        color: #0f172a;
+        font-size: 11px;
+      }
+      body.home-page .mobile-bottom-nav {
+        left: 14px;
+        right: 14px;
+        bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        gap: 4px;
+        padding: 7px;
+        border: 1px solid rgba(203, 213, 225, 0.72);
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
+      }
+      body.home-page .mobile-bottom-link {
+        min-height: 48px;
+        border-radius: 16px;
+        font-size: 10px;
+      }
+      body.home-page .mobile-bottom-link.is-active {
+        background: #0b1b3f;
+      }
+    }
+    @media (max-width: 430px) {
+      body.home-page .topbar-tabs {
+        gap: 5px;
+      }
+      body.home-page .dashboard-content {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+      body.home-page .dashboard-kpis {
+        gap: 6px;
+      }
+      body.home-page .kpi-card {
+        padding: 9px 7px;
+      }
+      body.home-page .movers-side {
+        min-width: 78px;
+      }
+    }
   </style>
 </head>
 
@@ -3123,6 +3496,21 @@
             </div>
           </aside>
         </section>
+
+        <nav class="mobile-action-grid reveal-on-scroll" style="--reveal-delay: 112ms;" aria-label="主要ページ">
+          <a class="mobile-action-link" href="./surge.html">
+            <span class="mobile-action-icon" aria-hidden="true">↗</span>
+            <span class="mobile-action-label">急上昇</span>
+          </a>
+          <a class="mobile-action-link" href="./sleeves/">
+            <span class="mobile-action-icon" aria-hidden="true">□</span>
+            <span class="mobile-action-label">図鑑</span>
+          </a>
+          <a class="mobile-action-link" href="./ranking.html">
+            <span class="mobile-action-icon" aria-hidden="true">¥</span>
+            <span class="mobile-action-label">価格</span>
+          </a>
+        </nav>
 
         <section id="marketStatsGrid" class="dashboard-kpis reveal-on-scroll" style="--reveal-delay: 128ms;" aria-label="主要KPI">
           <div class="kpi-card">
