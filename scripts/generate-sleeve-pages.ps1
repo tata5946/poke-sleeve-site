@@ -68,7 +68,12 @@ foreach ($sleeve in @($data.sleeves)) {
       1
     )
   }
-  $content = $content -replace '<script src="\./assets/common\.js"></script>', ($inlineIdScript + "`r`n`r`n" + '  <script src="./assets/common.js"></script>')
+  $content = [regex]::Replace(
+    $content,
+    '<script src="\./assets/common\.js(?:\?[^"]*)?"></script>',
+    ($inlineIdScript + "`r`n`r`n" + '$0'),
+    1
+  )
 
   $targetDir = Join-Path $OutputRoot $id
   if (-not (Test-Path -LiteralPath $targetDir)) {

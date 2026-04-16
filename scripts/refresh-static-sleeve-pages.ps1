@@ -44,7 +44,12 @@ Get-ChildItem -Path $OutputRoot -Recurse -Filter index.html -File | ForEach-Obje
     }
   }
 
-  $content = $content -replace '<script src="\./assets/common\.js"></script>', ($inlineIdScript + "`r`n`r`n" + '  <script src="./assets/common.js"></script>')
+  $content = [regex]::Replace(
+    $content,
+    '<script src="\./assets/common\.js(?:\?[^"]*)?"></script>',
+    ($inlineIdScript + "`r`n`r`n" + '$0'),
+    1
+  )
   Set-Content -LiteralPath $targetPath -Value $content -Encoding UTF8
 }
 

@@ -7,17 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022"
      crossorigin="anonymous"></script>
-    <title>ポケモンセンターヨコハマ | ポケスリ相場ナビ</title>
-    <meta name="description" content="ポケモンセンターヨコハマ / 発売年 2018 / シリーズ 公式 / 状態 未開封 の価格推移ページです。" />
-    <meta property="og:title" content="ポケモンセンターヨコハマ | ポケスリ相場ナビ" />
-    <meta property="og:description" content="ポケモンセンターヨコハマ / 発売年 2018 / シリーズ 公式 / 状態 未開封 の価格推移ページです。" />
-    <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
-    <meta property="og:url" content="https://pokesuri-navi.com/sleeve/2018004/" />
-  <link rel="canonical" href="/sleeve/2018004/" />
+  <title>ポケモンセンターヨコハマ | ポケスリ相場ナビ</title>
+  <meta name="description" content="ポケモンセンターヨコハマ / 発売年 2018 / シリーズ 公式 / 状態 未開封 の価格推移ページです。" />
+  <meta property="og:title" content="ポケモンセンターヨコハマ | ポケスリ相場ナビ" />
+  <meta property="og:description" content="ポケモンセンターヨコハマ / 発売年 2018 / シリーズ 公式 / 状態 未開封 の価格推移ページです。" />
+  <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
+  <meta property="og:url" content="https://pokesuri-navi.com/sleeve/2018004/" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="./assets/site.css?v=20260415b" />
 
@@ -970,6 +969,312 @@
       }
     }
 
+    /* Stitch detail-page polish: keep the existing data hooks, simplify the visual hierarchy. */
+    body.page-content-focus .dashboard-content {
+      background:
+        radial-gradient(circle at 18% 0%, rgba(219, 225, 255, 0.72), transparent 28%),
+        linear-gradient(180deg, #f6fafe 0%, #eef4fb 100%);
+    }
+
+    body.page-content-focus .page-shell--content {
+      width: min(100%, 1280px);
+    }
+
+    .detail-wrap {
+      margin-top: 10px;
+      gap: 18px;
+    }
+
+    .breadcrumb {
+      margin-bottom: 12px;
+      color: #64748b;
+      font-weight: 800;
+    }
+
+    .breadcrumb a {
+      color: #1d4ed8;
+    }
+
+    .detail-hero {
+      grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+      gap: 22px;
+      padding: 18px;
+      border-color: rgba(197, 198, 210, 0.45);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(219, 225, 255, 0.8), transparent 34%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(240, 244, 248, 0.94));
+      box-shadow: 0 14px 34px rgba(23, 28, 31, 0.07);
+    }
+
+    .detail-hero .thumb {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      padding: 12px;
+      border-color: rgba(197, 198, 210, 0.55);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 18px 36px rgba(23, 28, 31, 0.08);
+    }
+
+    .detail-hero-main {
+      gap: 12px;
+    }
+
+    .page-focus-kicker {
+      margin: 0;
+      color: #435b9f;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .14em;
+    }
+
+    .name {
+      max-width: 820px;
+      color: #0f172a;
+      font-size: clamp(28px, 4vw, 46px);
+      letter-spacing: -.035em;
+      line-height: 1.08;
+    }
+
+    .detail-info-card {
+      padding: 0;
+      background: transparent;
+    }
+
+    .detail-meta-chips,
+    .detail-tag-list {
+      gap: 7px;
+    }
+
+    .detail-meta-chip,
+    .detail-tag {
+      min-height: 30px;
+      border-color: rgba(197, 198, 210, 0.62);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 6px 18px rgba(23, 28, 31, 0.035);
+    }
+
+    .detail-tag--pokemon {
+      background: #e9fff5;
+      border-color: #b6f4d6;
+      color: #005236;
+    }
+
+    .detail-tag--series {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+      color: #243f8f;
+    }
+
+    .detail-tag--category {
+      background: #fff7ed;
+      border-color: #fed7aa;
+      color: #9a3412;
+    }
+
+    .kpi {
+      margin-top: 2px;
+    }
+
+    .box {
+      border-color: rgba(197, 198, 210, 0.5);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: none;
+      padding: 14px 16px;
+    }
+
+    .box .label {
+      color: #64748b;
+      letter-spacing: .08em;
+    }
+
+    .box .value {
+      margin-top: 4px;
+      color: #00113a;
+      font-size: clamp(34px, 4.2vw, 52px);
+      line-height: 1;
+      letter-spacing: -.045em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #weeklyDelta,
+    #weeklyCount {
+      font-weight: 800;
+    }
+
+    .btn-row {
+      grid-template-columns: repeat(2, minmax(0, 220px));
+      justify-content: start;
+      gap: 8px;
+    }
+
+    .btn-row .btn,
+    .share-row .btn {
+      border-radius: 999px;
+      min-height: 42px;
+      font-weight: 900;
+    }
+
+    .btn.primary {
+      border-color: #00113a;
+      background: linear-gradient(135deg, #00113a 0%, #002366 100%);
+    }
+
+    .share-row {
+      grid-template-columns: repeat(2, minmax(0, 220px));
+      justify-content: start;
+    }
+
+    .price-panel {
+      padding: 18px;
+      border-color: rgba(197, 198, 210, 0.45);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 250, 254, 0.94));
+      box-shadow: 0 14px 34px rgba(23, 28, 31, 0.055);
+    }
+
+    .price-panel-summary-copy h3,
+    .related-panel h3 {
+      color: #0f172a;
+      font-size: 20px;
+      line-height: 1.2;
+      letter-spacing: -.02em;
+    }
+
+    .chart-period-switch,
+    .granularity-switch {
+      width: fit-content;
+      border: 0;
+      border-radius: 999px;
+      background: #eaeef2;
+      padding: 5px;
+    }
+
+    .chart-period-btn,
+    .granularity-btn {
+      border-radius: 999px;
+      color: #475569;
+      padding: 8px 13px;
+    }
+
+    .chart-period-btn.is-active,
+    .granularity-btn.is-active {
+      border-color: rgba(197, 198, 210, 0.3);
+      color: #00113a;
+      background: #fff;
+      box-shadow: 0 8px 18px rgba(23, 28, 31, 0.07);
+    }
+
+    .chart-wrap,
+    .table-wrap,
+    .single-observation-card {
+      border-color: rgba(197, 198, 210, 0.5);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: none;
+    }
+
+    .table-wrap thead th {
+      background: #f0f4f8;
+      color: #334155;
+      letter-spacing: .04em;
+    }
+
+    .table-wrap th,
+    .table-wrap td {
+      border-bottom-color: rgba(197, 198, 210, 0.4);
+    }
+
+    .related-sections {
+      gap: 12px;
+    }
+
+    .related-panel {
+      padding: 16px;
+      border-color: rgba(197, 198, 210, 0.45);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 12px 28px rgba(23, 28, 31, 0.05);
+    }
+
+    .related-note {
+      display: none;
+    }
+
+    .related-card {
+      grid-template-columns: 86px minmax(0, 1fr);
+      padding: 8px;
+      border-color: rgba(197, 198, 210, 0.42);
+      border-radius: 14px;
+      background: #f8fbff;
+      box-shadow: none;
+    }
+
+    .related-card:hover {
+      border-color: rgba(67, 91, 159, 0.4);
+      box-shadow: 0 12px 24px rgba(23, 28, 31, 0.06);
+    }
+
+    .related-thumb {
+      width: 86px;
+      height: 86px;
+      border-radius: 12px;
+      background: #fff;
+      object-fit: contain;
+      box-shadow: none;
+    }
+
+    .related-card-price {
+      color: #00113a;
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 900px) {
+      .detail-hero {
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 16px;
+        padding: 14px;
+      }
+
+      .related-sections {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body.page-content-focus .page-shell--content {
+        width: 100%;
+      }
+
+      .detail-hero {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-hero .thumb {
+        max-width: 260px;
+        margin: 0 auto;
+      }
+
+      .name {
+        text-align: left;
+        font-size: 28px;
+      }
+
+      .btn-row,
+      .share-row {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-period-switch {
+        width: 100%;
+        flex-wrap: nowrap;
+      }
+    }
+
     @media (max-width: 700px) {
       #weeklyTable,
       #chartLegend,
@@ -1004,11 +1309,12 @@
           <span class="breadcrumb-sep" aria-hidden="true">></span>
           <span id="breadcrumbCurrent" class="breadcrumb-current" aria-current="page">読み込み中...</span>
         </nav>
-        <div class="panel">
+        <div class="panel page-focus-panel page-focus-panel--detail">
           <div class="detail-hero">
             <img id="img" class="thumb" alt="" />
 
             <div class="detail-hero-main">
+              <p class="page-focus-kicker">DETAIL VIEW</p>
               <h2 id="name" class="name">読み込み中...</h2>
               <div id="badges" class="badges"></div>
               <div id="detailInfo" class="detail-info-card" hidden></div>
@@ -1050,7 +1356,7 @@
         </div>
 
         <div class="detail-price-grid">
-          <section class="panel price-panel" id="pricePanel">
+          <section class="panel price-panel page-focus-panel" id="pricePanel">
             <div class="price-panel-body">
               <div class="price-panel-summary-copy">
                 <h3 id="priceSectionTitle" style="margin:0;">価格推移</h3>
@@ -1070,19 +1376,16 @@
         </div>
 
         <div class="related-sections" id="relatedSections" hidden>
-          <section class="panel related-panel">
+          <section class="panel related-panel page-focus-panel">
             <h3>同じキャラクターのスリーブ</h3>
-            <p class="related-note">character が一致するスリーブを優先して表示します。<br>※該当が少ない場合は別条件のスリーブも表示します。</p>
             <div id="relatedCharacter" class="related-list"></div>
           </section>
-          <section class="panel related-panel">
+          <section class="panel related-panel page-focus-panel">
             <h3>同シリーズのスリーブ</h3>
-            <p class="related-note">同じシリーズに含まれるスリーブを表示します。<br>※該当が少ない場合は別条件のスリーブも表示します。</p>
             <div id="relatedSeries" class="related-list"></div>
           </section>
-          <section class="panel related-panel">
+          <section class="panel related-panel page-focus-panel">
             <h3>価格が近いスリーブ</h3>
-            <p class="related-note">current.price の前後 30% を目安に表示します。<br>※該当が少ない場合は別条件のスリーブも表示します。</p>
             <div id="relatedPriceBand" class="related-list"></div>
           </section>
         </div>
@@ -1097,7 +1400,7 @@
 
     <script>window.__SLEEVE_PAGE_ID = "2018004";</script>
 
-  <script src="./assets/common.js?v=20260415b"></script>
+<script src="./assets/common.js?v=20260415b"></script>
 
   <script>
     function escapeHtml(str) {
