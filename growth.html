@@ -433,15 +433,60 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      position: relative;
+      overflow: hidden;
       border-radius: 18px;
       border: 1px solid #d7e0ee;
-      background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(246,250,254,.98) 100%);
+      background:
+        radial-gradient(circle at 14% 18%, rgba(255, 210, 92, .22), transparent 22%),
+        radial-gradient(circle at 86% 12%, rgba(79, 139, 255, .14), transparent 24%),
+        linear-gradient(135deg, rgba(255,255,255,.99) 0%, rgba(242,247,255,.98) 54%, rgba(255,251,238,.94) 100%);
       box-shadow: 0 10px 24px rgba(15, 23, 42, .05);
       color: #162238;
     }
+    .ranking-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, transparent 0 42%, rgba(0, 35, 102, .05) 42% 43%, transparent 43% 100%),
+        repeating-linear-gradient(135deg, rgba(0, 35, 102, .045) 0 1px, transparent 1px 18px);
+      opacity: .72;
+      pointer-events: none;
+    }
+    .ranking-hero-copy {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+    .ranking-hero-label {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 24px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(0, 35, 102, .08);
+      color: #2a4386;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .12em;
+    }
+    .ranking-hero-label::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 2px;
+      background: linear-gradient(135deg, #ffd35a, #4f8bff);
+      transform: rotate(12deg);
+      box-shadow: 0 0 0 4px rgba(255, 211, 90, .16);
+    }
     .ranking-page-title { font-size: clamp(26px, 2.6vw, 34px); color: #162238; }
     .page-hero-meta { margin-top: 0; margin-left: auto; justify-content: flex-end; text-align: right; }
-    .page-hero-badge { white-space: nowrap; }
+    .page-hero-badge { position: relative; z-index: 1; white-space: nowrap; backdrop-filter: blur(8px); }
     .ranking-filter-card { padding: 12px 14px; }
     .ranking-filter-head { margin-bottom: 6px; }
     .ranking-filter-title { font-size: 13px; color: #1a2840; }
@@ -540,6 +585,7 @@
       .ranking-hero { padding: 14px; }
       .ranking-hero { align-items: flex-start; flex-direction: column; }
       .page-hero-meta { margin-left: 0; justify-content: flex-start; text-align: left; }
+      .ranking-hero-label { min-height: 22px; font-size: 10px; }
       .ranking-page-title { font-size: 20px; }
       .ranking-filter-card { padding: 10px 12px 12px; }
       .ranking-filter-chip { font-size: 10px; }
@@ -591,7 +637,10 @@
     </nav>
     <div class="ranking-page-top page-market-top">
       <section class="ranking-hero page-hero-card" aria-label="ページ見出し">
-        <h1 class="ranking-page-title page-hero-title">高騰率ランキング</h1>
+        <div class="ranking-hero-copy">
+          <span class="ranking-hero-label">MARKET RANKING</span>
+          <h1 class="ranking-page-title page-hero-title">高騰率ランキング</h1>
+        </div>
         <div class="page-hero-meta">
           <span class="page-hero-badge">最終更新：<strong id="updatedAt">確認中</strong></span>
           <span class="page-hero-badge">更新件数：<strong id="countInfo">0件</strong></span>
