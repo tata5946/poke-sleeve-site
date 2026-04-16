@@ -371,18 +371,6 @@
       font-weight: 700;
     }
 
-    .quick-links {
-      margin-top: 14px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .quick-links .btn {
-      width: 100%;
-      justify-content: center;
-    }
-
     .table-wrap {
       margin-top: 10px;
       border: 1px solid var(--border);
@@ -639,18 +627,6 @@
     .down { color: #2563eb; }
     .flat { color: #64748b; }
 
-    .index-main-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.55fr) minmax(320px, .75fr);
-      gap: 12px;
-      align-items: start;
-    }
-
-    .index-side-stack {
-      display: grid;
-      gap: 12px;
-    }
-
     .chart-panel,
     .market-panel {
       border: 1px solid #dbe5f2;
@@ -684,8 +660,7 @@
       margin-top: 0;
     }
 
-    .share-row .btn,
-    .quick-links .btn {
+    .share-row .btn {
       min-height: 36px;
       border-radius: 999px;
       font-size: 12px;
@@ -711,16 +686,7 @@
       overflow: hidden;
     }
 
-    .market-state-banner {
-      display: block;
-      margin: 0;
-      padding: 0;
-      border: 0;
-      background: transparent;
-    }
-
-    .market-state-note,
-    #distSummary {
+    .market-state-note {
       margin: 6px 0 0;
       color: #64748b;
       font-size: 12px;
@@ -750,12 +716,6 @@
       font-size: 12px;
     }
 
-    .quick-links {
-      margin-top: 10px;
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
-
     .table-wrap {
       max-height: 360px;
       border-color: #dbe5f2;
@@ -768,8 +728,7 @@
     }
 
     @media (max-width: 1100px) {
-      .index-summary-grid,
-      .index-main-grid {
+      .index-summary-grid {
         grid-template-columns: 1fr;
       }
 
@@ -847,9 +806,6 @@
         grid-template-columns: 1fr;
       }
 
-      .quick-links {
-        grid-template-columns: 1fr;
-      }
     }
   </style>
 </head>
@@ -913,8 +869,7 @@
           </div>
         </section>
 
-        <div class="index-main-grid">
-          <section class="chart-panel" aria-label="指数推移チャート">
+        <section class="chart-panel" aria-label="指数推移チャート">
             <div class="panel-heading">
               <h2 class="section-title">指数推移</h2>
               <div class="share-block">
@@ -930,43 +885,6 @@
               </div>
             </div>
             <div id="indexChart"></div>
-          </section>
-
-          <div class="index-side-stack">
-            <section class="market-panel">
-              <h2 class="section-title">市場内訳</h2>
-              <p id="distSummary">最新週の上昇・下落・横ばい割合を集計しています。</p>
-              <div id="distTable"></div>
-              <div class="quick-links">
-                <a class="btn" href="./growth.html">高騰率ランキング</a>
-                <a class="btn" href="./ranking.html">価格ランキング</a>
-                <a class="btn" href="./surge.html">急上昇ランキング</a>
-              </div>
-            </section>
-          </div>
-        </div>
-
-        <section class="market-panel">
-          <div class="panel-heading">
-            <h2 class="section-title">寄与スリーブ</h2>
-          </div>
-          <div class="contrib-grid">
-            <div>
-              <h3 class="section-title">上昇寄与</h3>
-              <div id="contribUp" class="contrib-list"></div>
-            </div>
-            <div>
-              <h3 class="section-title">下落寄与</h3>
-              <div id="contribDown" class="contrib-list"></div>
-            </div>
-          </div>
-        </section>
-
-        <section class="market-panel">
-          <div class="panel-heading">
-            <h2 class="section-title">指数推移履歴</h2>
-          </div>
-          <div id="indexTable"></div>
         </section>
                 </div>
  
@@ -2269,29 +2187,6 @@
       }
 
       runDeferred(() => {
-        const indexTable = document.getElementById("indexTable");
-        if (indexTable) indexTable.innerHTML = renderTableIndex(series);
-
-        const distSummary = document.getElementById("distSummary");
-        const distTable = document.getElementById("distTable");
-        if (distSummary) {
-          distSummary.textContent = last ? `最新週（${formatPeriodLabel(last.week)}）の上昇/下落/横ばい割合` : "—";
-        }
-        if (distTable) {
-          distTable.innerHTML = renderTableDist(last);
-        }
-
-        const contrib = buildLatestContributors(weeklyEntries, weeks, {
-          minPrice: 300,
-          minCount: 2,
-          weightCap: 20,
-          maxRatio: 2.5
-        });
-        const contribUp = document.getElementById("contribUp");
-        const contribDown = document.getElementById("contribDown");
-        if (contribUp) contribUp.innerHTML = renderContribList(contrib.up, "up");
-        if (contribDown) contribDown.innerHTML = renderContribList(contrib.down, "down");
-
         renderAiComment(last?.week || null);
       });
     }
