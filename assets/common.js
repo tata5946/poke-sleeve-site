@@ -157,7 +157,7 @@ function buildDashboardSidebarHtml(activeSidebar = "") {
     <a class="${itemClass("ranking")}" href="${escapeHtml(buildSiteHref("ranking.html"))}"><span class="sidebar-link-icon" aria-hidden="true">◷</span><span>価格ランキング</span></a>
     <a class="${itemClass("access-ranking")}" href="${escapeHtml(buildSiteHref("access-ranking.html"))}"><span class="sidebar-link-icon" aria-hidden="true">◉</span><span>アクセスランキング</span></a>
     <a class="${itemClass("growth")}" href="${escapeHtml(buildSiteHref("growth.html"))}"><span class="sidebar-link-icon" aria-hidden="true">↗</span><span>高騰率ランキング</span></a>
-    <a class="${itemClass("market")}" href="${escapeHtml(buildSiteHref("index-market.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⌁</span><span>市場分析</span></a>
+    <a class="${itemClass("market")}" href="${escapeHtml(buildSiteHref("index-market.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⌁</span><span>市場状況</span></a>
     <a class="${itemClass("surge")}" href="${escapeHtml(buildSiteHref("surge.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⚡</span><span>急上昇</span></a>
   </nav>
   `;
