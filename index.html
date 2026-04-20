@@ -2856,6 +2856,182 @@
     .movers-row--ranking .movers-side {
       padding-left: 8px;
     }
+    .mobile-category-discovery {
+      display: none;
+    }
+    .mobile-category-discovery {
+      position: relative;
+      overflow: hidden;
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(248,250,252,.98) 100%);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
+    }
+    .mobile-category-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .mobile-category-title-wrap {
+      min-width: 0;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .mobile-category-title {
+      margin: 0;
+      color: #111827;
+      font-family: "Manrope", "Inter", "Noto Sans JP", sans-serif;
+      font-size: 18px;
+      line-height: 1.15;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+    .mobile-category-count {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.1);
+      color: #047857;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .mobile-category-more {
+      flex: 0 0 auto;
+      color: #0f172a;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .mobile-category-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-bottom: 12px;
+      padding: 4px;
+      border-radius: 14px;
+      background: rgba(226, 232, 240, 0.68);
+    }
+    .mobile-category-tab {
+      position: relative;
+      min-width: 0;
+      min-height: 38px;
+      padding: 0 6px;
+      border: 0;
+      border-radius: 11px;
+      background: transparent;
+      color: #475569;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: 0;
+      cursor: pointer;
+    }
+    .mobile-category-tab.is-active {
+      background: rgba(255, 255, 255, 0.9);
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
+    .mobile-category-tab.is-active::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 5px;
+      width: 18px;
+      height: 3px;
+      border-radius: 999px;
+      background: #10b981;
+      transform: translateX(-50%);
+    }
+    .mobile-category-subhead {
+      margin: 0 0 8px;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+    .mobile-category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .mobile-category-chip {
+      min-width: 0;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 0 10px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.78);
+      color: #0f172a;
+      text-decoration: none;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .mobile-category-chip.is-selected {
+      border-color: rgba(16, 185, 129, 0.55);
+      background: rgba(209, 250, 229, 0.5);
+      color: #064e3b;
+    }
+    .mobile-category-chip-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mobile-category-chip-count {
+      flex: 0 0 auto;
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .mobile-category-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(148, 163, 184, 0.16);
+    }
+    .mobile-category-selected {
+      min-width: 0;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mobile-category-cta {
+      flex: 0 0 auto;
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 14px;
+      border-radius: 12px;
+      background: #0f172a;
+      color: #fff;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
     @media (max-width: 1280px) {
       .dashboard-shell {
         grid-template-columns: 240px minmax(0, 1fr);
@@ -3298,6 +3474,10 @@
         grid-template-columns: 1fr;
         gap: 10px;
       }
+      body.home-page .mobile-category-discovery {
+        display: grid;
+        gap: 0;
+      }
       body.home-page .movers-card {
         padding: 12px 10px 8px;
         border-radius: 20px;
@@ -3418,6 +3598,14 @@
       }
       body.home-page .movers-side {
         min-width: 74px;
+      }
+      body.home-page .mobile-category-tab {
+        font-size: 10px;
+        padding-inline: 4px;
+      }
+      body.home-page .mobile-category-chip {
+        padding-inline: 8px;
+        gap: 6px;
       }
       body.home-page .movers-main {
         grid-template-columns: 60px minmax(0, 1fr);
@@ -3620,6 +3808,31 @@
                 <div class="hero-skeleton-pill skeleton-block" style="height:40px;width:90px;"></div>
               </div>
             </div>
+          </div>
+        </section>
+        <section id="mobileCategoryDiscovery" class="mobile-category-discovery reveal-on-scroll" style="--reveal-delay: 190ms;" aria-label="スリーブカテゴリ">
+          <div class="mobile-category-head">
+            <div class="mobile-category-title-wrap">
+              <h2 class="mobile-category-title">カテゴリから探す</h2>
+              <span class="mobile-category-count">分類中</span>
+            </div>
+            <a class="mobile-category-more" href="./sleeves/">もっと見る</a>
+          </div>
+          <div class="mobile-category-tabs" aria-label="カテゴリ">
+            <button type="button" class="mobile-category-tab is-active">ポケモン</button>
+            <button type="button" class="mobile-category-tab">トレーナー</button>
+            <button type="button" class="mobile-category-tab">限定・シリーズ</button>
+          </div>
+          <p class="mobile-category-subhead">人気タグ</p>
+          <div class="mobile-category-grid">
+            <div class="mobile-category-chip skeleton-block" style="min-height:38px;"></div>
+            <div class="mobile-category-chip skeleton-block" style="min-height:38px;"></div>
+            <div class="mobile-category-chip skeleton-block" style="min-height:38px;"></div>
+            <div class="mobile-category-chip skeleton-block" style="min-height:38px;"></div>
+          </div>
+          <div class="mobile-category-foot">
+            <span class="mobile-category-selected">選択中: 読み込み中</span>
+            <a class="mobile-category-cta" href="./sleeves/">図鑑で見る</a>
           </div>
         </section>
       </div>
@@ -4611,6 +4824,95 @@
       }
     }
 
+    const MOBILE_CATEGORY_GROUPS = [
+      { key: "pokemon", label: "ポケモン" },
+      { key: "trainer", label: "トレーナー" },
+      { key: "category", label: "限定・シリーズ" }
+    ];
+
+    function buildMobileCategoryHref(groupKey, tag = "") {
+      const key = String(groupKey || "").trim();
+      const tagText = String(tag || "").trim();
+      if (tagText && window.common && typeof window.common.buildSleeveCategoryHref === "function") {
+        return window.common.buildSleeveCategoryHref(key, tagText);
+      }
+      if (window.common && typeof window.common.buildSleeveGroupHref === "function") {
+        return window.common.buildSleeveGroupHref(key);
+      }
+      const params = new URLSearchParams();
+      if (key) params.set("group", key);
+      if (tagText) params.set("tag", tagText);
+      return `./sleeves/?${params.toString()}`;
+    }
+
+    function renderMobileCategoryDiscovery(sleeves) {
+      const root = document.getElementById("mobileCategoryDiscovery");
+      if (!root) return;
+      const list = Array.isArray(sleeves) ? sleeves : [];
+      const counts = window.common && typeof window.common.countSleevesByGroup === "function"
+        ? window.common.countSleevesByGroup(list)
+        : {};
+      const activeKey = MOBILE_CATEGORY_GROUPS.some((group) => group.key === root.dataset.group)
+        ? root.dataset.group
+        : "pokemon";
+      const activeGroup = MOBILE_CATEGORY_GROUPS.find((group) => group.key === activeKey) || MOBILE_CATEGORY_GROUPS[0];
+      const rawTags = window.common && typeof window.common.collectGroupDetailItems === "function"
+        ? window.common.collectGroupDetailItems(list, activeGroup.key)
+        : [];
+      const tags = rawTags.slice(0, 6);
+      const selectedTag = tags.some((tag) => tag.label === root.dataset.tag)
+        ? root.dataset.tag
+        : (tags[0]?.label || "");
+      const selectedHref = buildMobileCategoryHref(activeGroup.key, selectedTag);
+      const moreHref = buildMobileCategoryHref(activeGroup.key);
+
+      root.innerHTML = `
+        <div class="mobile-category-head">
+          <div class="mobile-category-title-wrap">
+            <h2 class="mobile-category-title">カテゴリから探す</h2>
+            <span class="mobile-category-count">${escapeHtml(String(list.length || 0))}件から分類</span>
+          </div>
+          <a class="mobile-category-more" href="${escapeHtml(moreHref)}">もっと見る</a>
+        </div>
+        <div class="mobile-category-tabs" aria-label="カテゴリ">
+          ${MOBILE_CATEGORY_GROUPS.map((group) => {
+            const count = Number(counts?.[group.key] || 0);
+            return `<button type="button" class="mobile-category-tab${group.key === activeGroup.key ? " is-active" : ""}" data-group="${escapeHtml(group.key)}">${escapeHtml(group.label)} ${escapeHtml(String(count))}</button>`;
+          }).join("")}
+        </div>
+        <p class="mobile-category-subhead">人気タグ</p>
+        <div class="mobile-category-grid">
+          ${tags.map((tag) => {
+            const isSelected = tag.label === selectedTag;
+            return `
+              <button type="button" class="mobile-category-chip${isSelected ? " is-selected" : ""}" data-tag="${escapeHtml(tag.label)}">
+                <span class="mobile-category-chip-name">${escapeHtml(tag.label)}</span>
+                <span class="mobile-category-chip-count">${escapeHtml(String(tag.count))}件</span>
+              </button>
+            `;
+          }).join("") || `<a class="mobile-category-chip" href="./sleeves/"><span class="mobile-category-chip-name">図鑑を見る</span><span class="mobile-category-chip-count">一覧</span></a>`}
+        </div>
+        <div class="mobile-category-foot">
+          <span class="mobile-category-selected">${selectedTag ? `選択中: ${escapeHtml(selectedTag)}` : "カテゴリを選択"}</span>
+          <a class="mobile-category-cta" href="${escapeHtml(selectedHref)}">図鑑で見る</a>
+        </div>
+      `;
+
+      root.querySelectorAll(".mobile-category-tab").forEach((button) => {
+        button.addEventListener("click", () => {
+          root.dataset.group = button.dataset.group || "pokemon";
+          root.dataset.tag = "";
+          renderMobileCategoryDiscovery(list);
+        });
+      });
+      root.querySelectorAll(".mobile-category-chip[data-tag]").forEach((button) => {
+        button.addEventListener("click", () => {
+          root.dataset.tag = button.dataset.tag || "";
+          renderMobileCategoryDiscovery(list);
+        });
+      });
+    }
+
     function renderMarketSnapshot(marketSeries, sleeves) {
       const mainEl = document.getElementById("marketSnapshotCard");
       const sideEl = document.getElementById("marketSentimentCard");
@@ -4833,6 +5135,7 @@
 
       renderTodayHero(surgeRank[0] || null);
       renderTrendLists({ surgeRank, growthRank, priceRank });
+      renderMobileCategoryDiscovery(sleeves);
       initScrollReveal();
 
       runDeferred(() => {
