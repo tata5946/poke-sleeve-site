@@ -3195,7 +3195,7 @@
         bottom: calc(12px + env(safe-area-inset-bottom, 0px));
         z-index: 30;
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
         gap: 8px;
         padding: 10px;
         border-radius: 20px;
@@ -3211,8 +3211,9 @@
         border-radius: 14px;
         color: #5b6779;
         text-decoration: none;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 800;
+        line-height: 1;
       }
       .mobile-bottom-link.is-active {
         background: #111827;
@@ -3575,7 +3576,7 @@
       }
       body.home-page .mobile-bottom-link {
         min-height: 48px;
-        border-radius: 16px;
+        border-radius: 14px;
         font-size: 10px;
       }
       body.home-page .mobile-bottom-link.is-active {
@@ -3838,9 +3839,10 @@
       </div>
       <nav class="mobile-bottom-nav" aria-label="モバイルナビゲーション">
         <a class="mobile-bottom-link is-active" href="./index.html"><span aria-hidden="true">⌂</span><span>ホーム</span></a>
+        <a class="mobile-bottom-link" href="./sleeves/" aria-label="スリーブ図鑑"><span aria-hidden="true">▤</span><span>図鑑</span></a>
         <a class="mobile-bottom-link" href="./surge.html"><span aria-hidden="true">↗</span><span>急上昇</span></a>
-        <a class="mobile-bottom-link" href="./index-market.html"><span aria-hidden="true">◔</span><span>市場</span></a>
-        <a class="mobile-bottom-link" href="./policy.html"><span aria-hidden="true">○</span><span>プライバシー</span></a>
+        <a class="mobile-bottom-link" href="./growth.html"><span aria-hidden="true">△</span><span>高騰率</span></a>
+        <a class="mobile-bottom-link" href="./ranking.html" aria-label="価格ランキング"><span aria-hidden="true">¥</span><span>価格</span></a>
       </nav>
     </main>
   </div>
