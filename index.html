@@ -3691,12 +3691,49 @@
       }
     }
     async function loadHomePrimaryData() {
-      return await window.common.loadData();
+      const localUrl = new URL("./data.json", document.baseURI || location.href).href;
+      const localDataPromise = window.common.fetchJsonWithTimeout(localUrl, {
+        timeoutMs: 2500,
+        cacheMode: "default"
+      });
+      const commonDataPromise = window.common.loadData();
+      try {
+        const data = await Promise.any([
+          commonDataPromise,
+          localDataPromise.then((payload) => {
+            if (!Array.isArray(payload?.sleeves) || !payload.sleeves.length) {
+              throw new Error("Local data is empty");
+            }
+            return payload;
+          })
+        ]);
+        if (Array.isArray(data?.sleeves) && data.sleeves.length) {
+          return data;
+        }
+      } catch (_) {}
+      try {
+        const data = await window.common.fetchJsonWithTimeout(localUrl, {
+          timeoutMs: 2500,
+          cacheMode: "default"
+        });
+        if (Array.isArray(data?.sleeves) && data.sleeves.length) {
+          return data;
+        }
+      } catch (_) {}
+      return await commonDataPromise;
     }
 
+    const weeklyPairCache = new WeakMap();
+
     function getWeeklyPair(sleeve) {
+      if (sleeve && typeof sleeve === "object" && weeklyPairCache.has(sleeve)) {
+        return weeklyPairCache.get(sleeve);
+      }
       const arr = Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [];
-      if (!arr.length) return null;
+      if (!arr.length) {
+        if (sleeve && typeof sleeve === "object") weeklyPairCache.set(sleeve, null);
+        return null;
+      }
       const map = new Map();
       for (const row of arr) {
         const weekISO = toISODate(row?.week);
@@ -3707,9 +3744,14 @@
         if (!weekISO || !hasTrade) continue;
         map.set(weekISO, { week: weekISO, price, count });
       }
-      if (!map.size) return null;
+      if (!map.size) {
+        if (sleeve && typeof sleeve === "object") weeklyPairCache.set(sleeve, null);
+        return null;
+      }
       const sorted = Array.from(map.values()).sort((a, b) => a.week.localeCompare(b.week));
-      return { latest: sorted[sorted.length - 1], prev: sorted.length >= 2 ? sorted[sorted.length - 2] : null, sorted };
+      const pair = { latest: sorted[sorted.length - 1], prev: sorted.length >= 2 ? sorted[sorted.length - 2] : null, sorted };
+      if (sleeve && typeof sleeve === "object") weeklyPairCache.set(sleeve, pair);
+      return pair;
     }
 
     function buildRankingSparkline(sleeve) {
@@ -4762,9 +4804,6 @@
       wireDashboardSearch();
       const data = await loadHomePrimaryData();
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
-      if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
-        await window.common.ensureCategoryNavsRendered(sleeves);
-      }
       wireSidebarCategoryToggle();
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
 
@@ -4789,6 +4828,14 @@
       runDeferred(() => {
         const marketSeries = buildHomeMarketIndexSeries(sleeves);
         renderMarketSnapshot(marketSeries, sleeves);
+      });
+
+      runDeferred(async () => {
+        if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
+          try {
+            await window.common.ensureCategoryNavsRendered(sleeves);
+          } catch (_) {}
+        }
       });
     }
 
