@@ -700,30 +700,148 @@
       .ranking-filter-chip { font-size: 10px; }
       .ranking-filter-chip-remove { width: 14px; height: 14px; font-size: 9px; }
 
-      .podium-card,
-      .podium-card--rank1 {
-        padding: 8px;
-        gap: 7px;
-      }
-
-      .podium-card--rank1 .podium-media img {
-        height: 132px;
-      }
-
-      .podium-card:not(.podium-card--rank1) .podium-media img {
-        height: 132px;
-      }
-
-      .podium-title {
-        font-size: 13px;
-      }
-
-      .podium-actions .btn {
-        width: 100%;
+      .ranking-top3 {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        overflow: visible;
+        padding-bottom: 0;
       }
 
       .ranking-top3 > div {
-        flex-basis: min(86vw, 300px);
+        display: block;
+        min-width: 0;
+      }
+
+      .podium-card,
+      .podium-card--rank1 {
+        grid-template-columns: 86px minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+        min-height: 112px;
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: none;
+        background: rgba(255,255,255,.96);
+      }
+
+      .podium-badge {
+        top: 10px;
+        left: 10px;
+        min-height: 24px;
+        padding: 0 8px;
+        border-radius: 7px;
+        font-size: 10px;
+      }
+
+      .podium-media,
+      .podium-card--rank1 .podium-media,
+      .podium-card:not(.podium-card--rank1) .podium-media {
+        width: 86px;
+        height: 86px;
+        padding: 6px;
+        border-radius: 6px;
+        justify-self: start;
+      }
+
+      .podium-media img,
+      .podium-card--rank1 .podium-media img,
+      .podium-card:not(.podium-card--rank1) .podium-media img {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 74px;
+      }
+
+      .podium-content,
+      .podium-card--rank1 .podium-content {
+        min-width: 0;
+        gap: 5px;
+        margin-top: 0;
+      }
+
+      .podium-kicker {
+        display: none;
+      }
+
+      .podium-title,
+      .podium-card:not(.podium-card--rank1) .podium-title {
+        font-size: 14px;
+        line-height: 1.28;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 0;
+      }
+
+      .podium-market-row {
+        grid-template-columns: minmax(0, 1fr) 64px;
+        gap: 7px;
+        align-items: center;
+      }
+
+      .podium-metrics {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 4px 7px;
+        align-items: center;
+      }
+
+      .podium-metric {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .podium-metric-label {
+        margin-bottom: 1px;
+        font-size: 9px;
+      }
+
+      .podium-diff,
+      .podium-card:not(.podium-card--rank1) .podium-diff {
+        font-size: 20px;
+        line-height: 1.05;
+        white-space: nowrap;
+      }
+
+      .podium-price,
+      .podium-card:not(.podium-card--rank1) .podium-price {
+        font-size: 12px;
+        line-height: 1.15;
+        white-space: nowrap;
+      }
+
+      .podium-rate,
+      .podium-card:not(.podium-card--rank1) .podium-rate {
+        display: inline-flex;
+        align-items: center;
+        min-height: 22px;
+        padding: 0 7px;
+        border-radius: 6px;
+        background: #ffe4e6;
+        font-size: 11px;
+        white-space: nowrap;
+      }
+
+      .podium-meta {
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .podium-chip-group {
+        flex-wrap: nowrap;
+        gap: 5px;
+        overflow: hidden;
+      }
+
+      .podium-chip {
+        min-height: 20px;
+        padding: 0 7px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .compact-grid {
@@ -844,18 +962,13 @@
         display: none;
       }
 
-      .podium-market-row {
-        grid-template-columns: minmax(0, 1fr) 58px;
-        gap: 6px;
-      }
-
       .compact-market-row .sleeve-sparkline {
         width: 72px;
         height: 34px;
       }
 
       .podium-market-row .sleeve-sparkline {
-        width: 58px;
+        width: 64px;
         height: 32px;
       }
     }
