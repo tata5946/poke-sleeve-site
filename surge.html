@@ -340,6 +340,25 @@
 
     .podium-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
     .podium-metric { padding: 10px; border-radius: 14px; background: rgba(255,255,255,.78); border: 1px solid rgba(255,255,255,.72); }
+    .podium-price-block,
+    .podium-trend-row {
+      min-width: 0;
+      padding: 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(255,255,255,.72);
+    }
+    .podium-price-block { display: grid; gap: 4px; }
+    .podium-trend-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 72px);
+      gap: 8px;
+      align-items: end;
+    }
+    .podium-trend-row .sleeve-sparkline {
+      width: 100%;
+      min-width: 0;
+    }
     .podium-metric-label { display:block; font-size:11px; color:#667085; font-weight:800; margin-bottom:4px; }
     .podium-price { font-size:24px; font-weight:900; line-height:1.1; color:#111827; }
     .podium-card:not(.podium-card--rank1) .podium-price { font-size:18px; }
@@ -348,10 +367,14 @@
     .podium-market-row,
     .compact-market-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 72px;
+      grid-template-columns: minmax(0, 1fr) minmax(128px, auto);
       gap: 8px;
       align-items: end;
       min-width: 0;
+    }
+
+    .compact-market-row {
+      grid-template-columns: minmax(0, 1fr) 72px;
     }
     .sleeve-sparkline {
       width: 86px;
@@ -718,7 +741,7 @@
 
       .ranking-top3 > div {
         display: block;
-        flex: 0 0 min(88vw, 360px);
+        flex: 0 0 min(90vw, 380px);
         min-width: 0;
         scroll-snap-align: start;
       }
@@ -732,7 +755,7 @@
         grid-template-rows: auto minmax(0, 1fr);
         align-items: center;
         gap: 10px;
-        min-height: 148px;
+        min-height: 180px;
         padding: 10px;
         border-radius: 8px;
         box-shadow: none;
@@ -774,7 +797,7 @@
       .podium-card--rank1 .podium-content {
         grid-area: content;
         min-width: 0;
-        gap: 5px;
+        gap: 6px;
         margin-top: 0;
       }
 
@@ -794,9 +817,9 @@
       }
 
       .podium-market-row {
-        grid-template-columns: minmax(0, 1fr) 74px;
-        gap: 8px;
-        align-items: center;
+        grid-template-columns: 1fr;
+        gap: 5px;
+        align-items: stretch;
       }
 
       .podium-metrics {
@@ -805,11 +828,25 @@
         align-items: center;
       }
 
-      .podium-metric {
+      .podium-metric,
+      .podium-price-block,
+      .podium-trend-row {
         padding: 0;
         border: 0;
         border-radius: 0;
         background: transparent;
+      }
+
+      .podium-price-block {
+        display: grid;
+        gap: 1px;
+      }
+
+      .podium-trend-row {
+        display: grid;
+        grid-template-columns: auto minmax(72px, 1fr);
+        gap: 8px;
+        align-items: center;
       }
 
       .podium-metric-label {
@@ -835,17 +872,18 @@
       .podium-card:not(.podium-card--rank1) .podium-rate {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         min-height: 22px;
         padding: 0 7px;
         border-radius: 6px;
         background: #ffe4e6;
         font-size: 12px;
+        flex-shrink: 0;
         white-space: nowrap;
       }
 
       .podium-meta {
-        min-width: 0;
-        overflow: hidden;
+        display: none;
       }
 
       .podium-chip-group {
@@ -986,7 +1024,8 @@
       }
 
       .podium-market-row .sleeve-sparkline {
-        width: 74px;
+        width: 100%;
+        min-width: 0;
         height: 36px;
       }
     }
@@ -1369,18 +1408,15 @@
             <div class="podium-kicker">TOP ${rank} SLEEVE</div>
             <h${rank === 1 ? "2" : "3"} class="podium-title">${escapeHtml(s.name ?? "")}</h${rank === 1 ? "2" : "3"}>
             <div class="podium-market-row">
-              <div class="podium-metrics">
-                <div class="podium-metric">
-                  <span class="podium-metric-label">前週比</span>
-                  <div class="podium-diff">${escapeHtml(diffText)}</div>
-                  <div class="podium-price">現在 ${pair.latest.price.toLocaleString()}円</div>
-                </div>
-                <div class="podium-metric">
-                  <span class="podium-metric-label">上昇率</span>
-                  <div class="podium-rate ${rateClass}">${escapeHtml(rateText)}</div>
-                </div>
+              <div class="podium-price-block">
+                <span class="podium-metric-label">前週比</span>
+                <div class="podium-diff">${escapeHtml(diffText)}</div>
+                <div class="podium-price">現在 ${pair.latest.price.toLocaleString()}円</div>
               </div>
-              ${sparklineHtml}
+              <div class="podium-trend-row">
+                <div class="podium-rate ${rateClass}">${escapeHtml(rateText)}</div>
+                ${sparklineHtml}
+              </div>
             </div>
             <div class="podium-meta">
               <div class="podium-chip-group">${metaHtml}</div>
