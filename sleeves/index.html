@@ -466,35 +466,6 @@
       margin-bottom: 8px;
     }
 
-    .zukan-search-tools {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .zukan-search-count {
-      min-height: 42px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 10px;
-      border-radius: 8px;
-      background: #fff;
-      border: 1px solid #d7e0ee;
-      color: #5d6b80;
-      font-size: 12px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .zukan-search-count strong {
-      margin-right: 2px;
-      color: #111827;
-      font-size: 13px;
-      font-weight: 900;
-    }
-
     .zukan-search-field {
       position: relative;
       min-width: 0;
@@ -947,13 +918,8 @@
       }
 
       .zukan-search-row {
-        grid-template-columns: 1fr;
-        gap: 6px;
-      }
-
-      .zukan-search-tools {
-        display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
+        gap: 6px;
       }
 
       .zukan-filter-grid,
@@ -1020,11 +986,8 @@
               <span class="zukan-search-icon" aria-hidden="true">⌕</span>
               <input id="zukanPageSearch" class="zukan-search-input" type="search" placeholder="スリーブ名、シリーズ、年代で検索" autocomplete="off" />
             </label>
-            <div class="zukan-search-tools">
-              <div class="zukan-search-count"><strong id="searchResultCount">集計中</strong></div>
-              <div class="zukan-filter-actions">
-                <button id="clear" type="button">クリア</button>
-              </div>
+            <div class="zukan-filter-actions">
+              <button id="clear" type="button">クリア</button>
             </div>
           </div>
 
@@ -1437,8 +1400,6 @@
           if (c) c.textContent = "0件";
           const badge = document.getElementById("resultCountBadge");
           if (badge) badge.textContent = "0";
-          const searchCount = document.getElementById("searchResultCount");
-          if (searchCount) searchCount.textContent = "0件";
           renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, sortOrder, total: 0, group: normalizedGroup, tag: normalizedTag, type: normalizedType });
           list.innerHTML = '<div class="zukan-empty">条件に一致するスリーブがありません。キーワードや価格帯をゆるめて、もう一度探してみてください。</div>';
           return;
@@ -1448,8 +1409,6 @@
         if (c) c.textContent = `${filtered.length.toLocaleString()}件`;
         const badge = document.getElementById("resultCountBadge");
         if (badge) badge.textContent = `${filtered.length.toLocaleString()}`;
-        const searchCount = document.getElementById("searchResultCount");
-        if (searchCount) searchCount.textContent = `${filtered.length.toLocaleString()}件`;
         renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, sortOrder, total: filtered.length, group: normalizedGroup, tag: normalizedTag, type: normalizedType });
 
         const frag = document.createDocumentFragment();
