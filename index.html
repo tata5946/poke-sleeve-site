@@ -1307,6 +1307,55 @@
     .new-arrival-name { margin: 0; font-size: 19px; line-height: 1.32; font-weight: 900; font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif; }
     .spotlight-price,
     .new-arrival-price { margin: 0; font-size: 25px; line-height: 1.1; font-weight: 900; color: #15243b; font-family: "Inter", "Noto Sans JP", sans-serif; }
+    .spotlight-price-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 76px;
+      gap: 10px;
+      align-items: end;
+      min-width: 0;
+    }
+    .spotlight-price-copy {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+    .spotlight-sparkline {
+      width: 76px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      align-self: end;
+      overflow: hidden;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #f8fffb 0%, #edf8f1 100%);
+      box-shadow: inset 0 0 0 1px rgba(5, 150, 105, .10);
+      color: #94a3b8;
+    }
+    .spotlight-sparkline svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .spotlight-sparkline-grid {
+      stroke: rgba(71, 85, 105, .18);
+      stroke-width: 1;
+    }
+    .spotlight-sparkline-area {
+      fill: rgba(5, 150, 105, .10);
+    }
+    .spotlight-sparkline-line {
+      fill: none;
+      stroke: #059669;
+      stroke-width: 2.35;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .spotlight-sparkline-empty {
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .02em;
+      white-space: nowrap;
+    }
     .spotlight-meta,
     .new-arrival-meta { display: flex; flex-wrap: wrap; gap: 8px; }
     .home-chip,
@@ -3505,6 +3554,69 @@
         padding: 0 10px;
         font-size: 11px;
       }
+      body.home-page .spotlight-grid,
+      body.home-page .new-arrivals-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      body.home-page .spotlight-card,
+      body.home-page .spotlight-card.is-lead {
+        grid-column: auto;
+        gap: 8px;
+        border-radius: 14px;
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+      }
+      body.home-page .spotlight-media,
+      body.home-page .spotlight-card.is-lead .spotlight-media {
+        margin: 8px 8px 0;
+        aspect-ratio: 1 / 1;
+        border-radius: 10px;
+      }
+      body.home-page .spotlight-body {
+        padding: 0 8px 9px;
+        gap: 7px;
+      }
+      body.home-page .spotlight-rank {
+        min-height: 20px;
+        padding: 0 7px;
+        font-size: 10px;
+      }
+      body.home-page .spotlight-name,
+      body.home-page .spotlight-card.is-lead .spotlight-name {
+        font-size: 12px;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 2.7em;
+      }
+      body.home-page .spotlight-price-panel {
+        grid-template-columns: minmax(0, 1fr) 58px;
+        gap: 6px;
+      }
+      body.home-page .spotlight-price-copy {
+        gap: 5px;
+      }
+      body.home-page .spotlight-price,
+      body.home-page .spotlight-card.is-lead .spotlight-price {
+        font-size: 16px;
+        line-height: 1.05;
+        white-space: nowrap;
+      }
+      body.home-page .spotlight-meta {
+        gap: 4px;
+      }
+      body.home-page .spotlight-meta .home-chip {
+        min-height: 20px;
+        padding: 0 6px;
+        font-size: 10px;
+      }
+      body.home-page .spotlight-sparkline {
+        width: 58px;
+        height: 32px;
+        border-radius: 6px;
+      }
       body.home-page .movers-row,
       body.home-page .movers-row--ranking {
         grid-template-columns: minmax(0, 1fr) auto;
@@ -3552,7 +3664,9 @@
         font-size: 15px;
       }
       body.home-page .movers-sparkline {
-        display: none;
+        display: inline-grid;
+        width: 58px;
+        height: 24px;
       }
       body.home-page .movers-action {
         min-height: 0;
@@ -4000,6 +4114,34 @@
       return `<span class="movers-sparkline" aria-hidden="true"><svg viewBox="0 0 72 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="${chartPoints}" stroke="${stroke}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${((prices.length - 1) / (prices.length - 1) * 72).toFixed(1)}" cy="${(24 - (((prices[prices.length - 1] - min) / range) * 20)).toFixed(1)}" r="3" fill="${stroke}"/></svg></span>`;
     }
 
+    function buildSpotlightSparkline(sleeve) {
+      const pair = getWeeklyPair(sleeve);
+      const points = Array.isArray(pair?.sorted) ? pair.sorted.slice(-8) : [];
+      const prices = points.map((row) => numOrNull(row?.price)).filter((value) => value != null && value > 0);
+      if (prices.length < 2) {
+        return `<span class="spotlight-sparkline spotlight-sparkline--empty" aria-label="price trend unavailable"><span class="spotlight-sparkline-empty">&#25512;&#31227;&#12394;&#12375;</span></span>`;
+      }
+
+      const width = 86;
+      const height = 36;
+      const padX = 5;
+      const padY = 5;
+      const min = Math.min(...prices);
+      const max = Math.max(...prices);
+      const range = Math.max(max - min, 1);
+      const step = (width - padX * 2) / Math.max(1, prices.length - 1);
+      const chartPoints = prices.map((price, index) => {
+        const x = padX + (step * index);
+        const y = height - padY - (((price - min) / range) * (height - padY * 2));
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      const firstX = padX.toFixed(1);
+      const lastX = (padX + (step * (prices.length - 1))).toFixed(1);
+      const areaPoints = `${firstX},${height - padY} ${chartPoints} ${lastX},${height - padY}`;
+
+      return `<span class="spotlight-sparkline" aria-label="recent ${prices.length} week price trend"><svg viewBox="0 0 ${width} ${height}" focusable="false" aria-hidden="true" preserveAspectRatio="none"><line class="spotlight-sparkline-grid" x1="${padX}" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}"></line><polygon class="spotlight-sparkline-area" points="${areaPoints}"></polygon><polyline class="spotlight-sparkline-line" points="${chartPoints}"></polyline></svg></span>`;
+    }
+
     function getLatestWeeklyPrice(sleeve) {
       const pair = getWeeklyPair(sleeve);
       return pair ? pair.latest.price : null;
@@ -4375,10 +4517,18 @@
       const detailHref = getDetailHref(sleeve.id ?? "");
       const imageHtml = sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : "";
       const deltaHtml = Number.isFinite(deltaRate) ? `<span class="home-chip spotlight-delta ${getDeltaClass(deltaRate)}">${escapeHtml(formatPercent(deltaRate))}</span>` : "";
+      const sparklineHtml = buildSpotlightSparkline(sleeve);
+      const priceText = latestPrice == null ? "&#8212;" : `${latestPrice.toLocaleString()}&#20870;`;
+      const rankHtml = Number.isFinite(rank) ? `<span class="spotlight-rank">#${rank}</span>` : "";
+      const leadChipHtml = lead ? `<span class="home-chip">&#20170;&#20154;&#27671;&#12398;&#20027;&#24441;</span>` : "";
+      return `<a class="spotlight-card home-card${lead ? " is-lead" : ""}" href="${escapeHtml(detailHref)}" aria-label="${escapeHtml(sleeve.name ?? "")}"><div class="spotlight-media">${imageHtml}</div><div class="spotlight-body">${rankHtml}<h3 class="spotlight-name">${escapeHtml(sleeve.name ?? "")}</h3><div class="spotlight-price-panel"><div class="spotlight-price-copy"><p class="spotlight-price">${priceText}</p><div class="spotlight-meta">${deltaHtml}${extraChip || ""}${leadChipHtml}</div></div>${sparklineHtml}</div></div></a>`;
+      /*
       const rankLabel = rank === 1 ? "🥇 1位" : rank === 2 ? "🥈 2位" : rank === 3 ? "🥉 3位" : Number.isFinite(rank) ? `🏆 ${rank}位` : "";
       return `<a class="spotlight-card home-card${lead ? " is-lead" : ""}" href="${escapeHtml(detailHref)}" aria-label="${escapeHtml(sleeve.name ?? "")}"><div class="spotlight-media">${imageHtml}</div><div class="spotlight-body">${Number.isFinite(rank) ? `<span class="spotlight-rank">${rankLabel}</span>` : ""}<h3 class="spotlight-name">${escapeHtml(sleeve.name ?? "")}</h3><p class="spotlight-price">${latestPrice == null ? "—" : `${latestPrice.toLocaleString()}円`}</p><div class="spotlight-meta">${deltaHtml}${extraChip || ""}${lead ? `<span class="home-chip">今人気の主役</span>` : ""}</div></div></a>`;
     }
 
+      */
+    }
     function buildTrendItem({ sleeve, priceText, deltaText, deltaClass }) {
       return `
         <a class="trend-item" href="${escapeHtml(getDetailHref(sleeve.id ?? ""))}" aria-label="${escapeHtml(sleeve.name ?? "")}">
