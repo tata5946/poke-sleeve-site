@@ -183,6 +183,34 @@ function buildDashboardTopbarHtml(activeTopbar = "") {
   `;
 }
 
+function getCurrentNavKey() {
+  const path = String(location.pathname || "").toLowerCase();
+  let key = "index";
+  if (path.includes("access-ranking")) key = "access-ranking";
+  else if (path.includes("ranking")) key = "ranking";
+  else if (path.includes("zukan") || path.includes("sleeves")) key = "zukan";
+  else if (path.includes("growth")) key = "growth";
+  else if (path.includes("surge")) key = "surge";
+  else if (path.includes("market")) key = "market";
+  else if (path.includes("contact")) key = "contact";
+  else if (path.includes("detail") || path.includes("/sleeve/")) key = "zukan";
+  else if (path === "/" || path.endsWith("/index.html")) key = "index";
+  return key;
+}
+
+function buildMobileBottomNavHtml(activeKey = getCurrentNavKey()) {
+  const itemClass = (key) => `mobile-bottom-link${activeKey === key ? " is-active" : ""}`;
+  return `
+  <nav class="mobile-bottom-nav" aria-label="モバイルナビゲーション" data-common-mobile-bottom-nav="1">
+    <a class="${itemClass("index")}" href="${escapeHtml(buildSiteHref("index.html"))}"><span aria-hidden="true">⌂</span><span>ホーム</span></a>
+    <a class="${itemClass("zukan")}" href="${escapeHtml(buildSiteHref("sleeves/"))}" aria-label="スリーブ図鑑"><span aria-hidden="true">▤</span><span>図鑑</span></a>
+    <a class="${itemClass("surge")}" href="${escapeHtml(buildSiteHref("surge.html"))}"><span aria-hidden="true">↗</span><span>急上昇</span></a>
+    <a class="${itemClass("growth")}" href="${escapeHtml(buildSiteHref("growth.html"))}"><span aria-hidden="true">△</span><span>高騰率</span></a>
+    <a class="${itemClass("ranking")}" href="${escapeHtml(buildSiteHref("ranking.html"))}" aria-label="価格ランキング"><span aria-hidden="true">¥</span><span>価格</span></a>
+  </nav>
+  `;
+}
+
 /* ----- Utilities ----- */
 function escapeHtml(str) {
   return String(str ?? "")
@@ -1297,6 +1325,7 @@ function injectHeaderFooter() {
 
     const footSlot = document.getElementById("site-footer");
     if (footSlot) footSlot.innerHTML = FOOTER_HTML;
+    injectMobileBottomNav();
 
     wireHeaderOffsetSync();
     syncHeaderOffset();
@@ -1314,14 +1343,50 @@ function injectDashboardChrome({ sidebarActive = "", topbarActive = "", sidebarS
   const sidebarSlot = document.getElementById(sidebarSlotId);
   if (sidebarSlot) {
     const active = sidebarSlot.dataset.dashboardSidebarActive || sidebarActive;
+    sidebarSlot.parentElement?.classList?.add("has-dashboard-slot");
     sidebarSlot.innerHTML = buildDashboardSidebarHtml(active);
   }
 
   const topbarSlot = document.getElementById(topbarSlotId);
   if (topbarSlot) {
     const active = topbarSlot.dataset.dashboardTopbarActive || topbarActive;
+    topbarSlot.parentElement?.classList?.add("has-dashboard-slot");
     topbarSlot.innerHTML = buildDashboardTopbarHtml(active);
   }
+
+  injectMobileBottomNav();
+}
+
+function getMobileBottomNavKeyFromHref(href) {
+  const value = String(href || "");
+  if (value.includes("sleeves")) return "zukan";
+  if (value.includes("surge")) return "surge";
+  if (value.includes("growth")) return "growth";
+  if (value.includes("ranking")) return "ranking";
+  if (value.includes("index")) return "index";
+  return "";
+}
+
+function syncMobileBottomNavActive(activeKey = getCurrentNavKey()) {
+  const links = document.querySelectorAll(".mobile-bottom-link");
+  for (const link of links) {
+    const key = getMobileBottomNavKeyFromHref(link.getAttribute("href"));
+    link.classList.toggle("is-active", key === activeKey);
+  }
+}
+
+function injectMobileBottomNav({ activeKey = getCurrentNavKey() } = {}) {
+  if (!document.body) return;
+  const existing = document.querySelector(".mobile-bottom-nav");
+  if (existing) {
+    existing.setAttribute("data-common-mobile-bottom-nav", "1");
+    syncMobileBottomNavActive(activeKey);
+    document.body.classList.add("has-mobile-bottom-nav");
+    return;
+  }
+
+  document.body.insertAdjacentHTML("beforeend", buildMobileBottomNavHtml(activeKey));
+  document.body.classList.add("has-mobile-bottom-nav");
 }
 
 function wireDashboardSearch() {
@@ -1543,22 +1608,13 @@ function ensureFavicon() {
 
 /* ----- Navigation active handling ----- */
 function setActiveNav() {
-  const path = String(location.pathname || "").toLowerCase();
-  let key = "index";
-  if (path.includes("access-ranking")) key = "access-ranking";
-  else if (path.includes("ranking")) key = "ranking";
-  else if (path.includes("zukan") || path.includes("sleeves")) key = "zukan";
-  else if (path.includes("growth")) key = "growth";
-  else if (path.includes("surge")) key = "surge";
-  else if (path.includes("market")) key = "market";
-  else if (path.includes("contact")) key = "contact";
-  else if (path.includes("detail")) key = "zukan";
-  else if (path === "" || path === "index.html") key = "index";
+  const key = getCurrentNavKey();
 
   const links = document.querySelectorAll(".nav a[data-nav]");
   for (const a of links) {
     a.classList.toggle("is-active", a.getAttribute("data-nav") === key);
   }
+  syncMobileBottomNavActive(key);
 }
 
 /* ----- Header search wiring (Enter => index?q=) ----- */
@@ -1695,6 +1751,7 @@ window.common = {
   ensureCategoryNavsRendered,
   injectHeaderFooter,
   injectDashboardChrome,
+  injectMobileBottomNav,
   setupDashboardChrome,
   setActiveNav,
   wireHeaderSearch,
@@ -1712,6 +1769,13 @@ window.GAS_URL = GAS_URL;
 document.addEventListener("DOMContentLoaded", () => {
   try { ensureFavicon(); } catch (e) { console.error(e); }
   injectHeaderFooter();
+  try {
+    if (document.getElementById("dashboardSidebarSlot") || document.getElementById("dashboardTopbarSlot")) {
+      injectDashboardChrome();
+      wireDashboardSearch();
+      wireDashboardSidebarCategoryToggle();
+    }
+  } catch (e) { console.error(e); }
 
   try {
     const warmCache = () => { loadData().catch(() => {}); };

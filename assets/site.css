@@ -360,6 +360,11 @@ a:hover {
     gap: 24px;
 }
 
+.dashboard-sidebar.has-dashboard-slot > :not(#dashboardSidebarSlot),
+.dashboard-topbar.has-dashboard-slot > :not(#dashboardTopbarSlot) {
+    display: none;
+}
+
 .topbar-search {
     flex: 1;
     position: relative;
@@ -421,6 +426,10 @@ a:hover {
 }
 
 .topbar-utils {
+    display: none;
+}
+
+.mobile-bottom-nav {
     display: none;
 }
 
@@ -1220,6 +1229,53 @@ body.page-content-focus {
 }
 
 @media (max-width: 700px) {
+    body.has-mobile-bottom-nav {
+        padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .mobile-bottom-nav {
+        position: fixed;
+        left: 12px;
+        right: 12px;
+        bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+        z-index: 120;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 8px;
+        padding: 10px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, .92);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 18px 38px rgba(15, 23, 42, 0.14);
+    }
+
+    .mobile-bottom-link {
+        min-height: 52px;
+        display: grid;
+        place-items: center;
+        gap: 4px;
+        border-radius: 14px;
+        color: #5b6779;
+        text-decoration: none;
+        font-size: 10px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .mobile-bottom-link:hover {
+        text-decoration: none;
+    }
+
+    .mobile-bottom-link.is-active {
+        background: #111827;
+        color: #fff;
+    }
+
+    .mobile-bottom-link span[aria-hidden="true"] {
+        font-size: 18px;
+        line-height: 1;
+    }
+
     .dashboard-topbar {
         flex-wrap: wrap;
         gap: 14px;
