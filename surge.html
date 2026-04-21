@@ -255,7 +255,7 @@
 
     .podium-card--rank1 {
       display: grid;
-      grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
+      grid-template-columns: minmax(180px, 260px) minmax(0, 1fr);
       align-items: center;
       gap: 14px;
       padding: 14px;
@@ -284,7 +284,8 @@
     }
 
     .podium-media {
-      display: block;
+      display: grid;
+      place-items: center;
       border-radius: 16px;
       overflow: hidden;
       background: rgba(255, 255, 255, .84);
@@ -293,15 +294,29 @@
     }
 
     .podium-media img {
-      width: 100%;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
       object-position: center;
       display: block;
-      background: #f4f6fa;
+      background: transparent;
     }
 
-    .podium-card--rank1 .podium-media img { height: 340px; }
-    .podium-card:not(.podium-card--rank1) .podium-media img { height: 190px; }
+    .podium-card--rank1 .podium-media {
+      width: min(100%, 260px);
+      justify-self: center;
+    }
+
+    .podium-card--rank1 .podium-media img { max-height: 240px; }
+
+    .podium-card:not(.podium-card--rank1) .podium-media {
+      width: min(100%, 220px);
+      justify-self: center;
+    }
+
+    .podium-card:not(.podium-card--rank1) .podium-media img { max-height: 160px; }
 
     .podium-content { display: grid; gap: 8px; margin-top: 10px; }
     .podium-card--rank1 .podium-content { margin-top: 0; }
