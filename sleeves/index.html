@@ -725,10 +725,17 @@
       min-height: 2.7em;
     }
 
-    .zukan-card-price-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .zukan-card-price-wrap,
+    .zukan-price-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 72px;
+      align-items: end;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .zukan-price-copy {
+      display: grid;
       gap: 4px;
       min-width: 0;
     }
@@ -744,6 +751,67 @@
       line-height: 1.2;
       font-weight: 800;
       color: #162238;
+      white-space: nowrap;
+    }
+
+    .zukan-sparkline {
+      --zukan-spark-line: #059669;
+      --zukan-spark-area: rgba(5, 150, 105, .10);
+      width: 72px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      align-self: end;
+      overflow: hidden;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #f8fffb 0%, #edf8f1 100%);
+      box-shadow: inset 0 0 0 1px rgba(5, 150, 105, .10);
+      color: #94a3b8;
+    }
+
+    .zukan-sparkline--down {
+      --zukan-spark-line: #dc2626;
+      --zukan-spark-area: rgba(220, 38, 38, .10);
+      background: linear-gradient(180deg, #fffafa 0%, #fff1f2 100%);
+      box-shadow: inset 0 0 0 1px rgba(220, 38, 38, .10);
+    }
+
+    .zukan-sparkline--flat,
+    .zukan-sparkline--empty {
+      --zukan-spark-line: #64748b;
+      --zukan-spark-area: rgba(100, 116, 139, .10);
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      box-shadow: inset 0 0 0 1px rgba(100, 116, 139, .10);
+    }
+
+    .zukan-sparkline svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .zukan-sparkline-grid {
+      stroke: rgba(71, 85, 105, .18);
+      stroke-width: 1;
+    }
+
+    .zukan-sparkline-area {
+      fill: var(--zukan-spark-area);
+    }
+
+    .zukan-sparkline-line {
+      fill: none;
+      stroke: var(--zukan-spark-line);
+      stroke-width: 2.35;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .zukan-sparkline-empty {
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .02em;
+      white-space: nowrap;
     }
 
     .zukan-card-cta {
@@ -933,6 +1001,17 @@
 
       .zukan-results-head {
         margin-bottom: 8px;
+      }
+
+      .zukan-card-price-wrap,
+      .zukan-price-panel {
+        grid-template-columns: minmax(0, 1fr) 58px;
+        gap: 5px;
+      }
+
+      .zukan-sparkline {
+        width: 58px;
+        height: 32px;
       }
     }
 
@@ -1165,6 +1244,40 @@
         text: `前週比 ${sign}${Math.abs(diff).toLocaleString()}円`,
         shortText: `${sign}${Math.abs(diff).toLocaleString()}円`
       };
+    }
+
+    function buildZukanSparkline(sleeve) {
+      const pair = getWeeklyPair(sleeve);
+      const rows = Array.isArray(pair?.sorted) ? pair.sorted.slice(-8) : [];
+      const prices = rows
+        .map((row) => numOrNull(row?.price))
+        .filter((value) => Number.isFinite(value) && value > 0);
+
+      if (prices.length < 2) {
+        return `<span class="zukan-sparkline zukan-sparkline--empty" aria-label="価格推移データなし"><span class="zukan-sparkline-empty">推移なし</span></span>`;
+      }
+
+      const first = prices[0];
+      const last = prices[prices.length - 1];
+      const trendClass = last > first ? "up" : last < first ? "down" : "flat";
+      const width = 86;
+      const height = 36;
+      const padX = 5;
+      const padY = 5;
+      const min = Math.min(...prices);
+      const max = Math.max(...prices);
+      const range = Math.max(max - min, 1);
+      const step = (width - padX * 2) / Math.max(1, prices.length - 1);
+      const points = prices.map((price, index) => {
+        const x = padX + (step * index);
+        const y = height - padY - (((price - min) / range) * (height - padY * 2));
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      const firstX = padX.toFixed(1);
+      const lastX = (padX + (step * (prices.length - 1))).toFixed(1);
+      const areaPoints = `${firstX},${height - padY} ${points} ${lastX},${height - padY}`;
+
+      return `<span class="zukan-sparkline zukan-sparkline--${trendClass}" aria-label="直近${prices.length}週の価格推移"><svg viewBox="0 0 ${width} ${height}" focusable="false" aria-hidden="true" preserveAspectRatio="none"><line class="zukan-sparkline-grid" x1="${padX}" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}"></line><polygon class="zukan-sparkline-area" points="${areaPoints}"></polygon><polyline class="zukan-sparkline-line" points="${points}"></polyline></svg></span>`;
     }
 
     function getCardTags(sleeve, maxItems = 2) {
@@ -1419,6 +1532,7 @@
 
           const weeklyPair = getWeeklyPair(s);
           const delta = getDeltaDisplay(weeklyPair);
+          const sparklineHtml = buildZukanSparkline(s);
           const tags = getCardTags(s, 2);
           const tagsHtml = tags.map(tag => `<span class="zukan-badge">${escapeHtml(tag)}</span>`).join("");
           const specHtml = [
@@ -1446,9 +1560,12 @@
             </div>
             <div class="zukan-card-body">
               <h2 class="zukan-card-title">${escapeHtml(s.name ?? "")}</h2>
-              <div class="zukan-card-price-wrap">
-                <p class="zukan-card-price">${escapeHtml(priceText)}</p>
-                <div class="zukan-card-badges">${deltaBadge}</div>
+              <div class="zukan-card-price-wrap zukan-price-panel">
+                <div class="zukan-price-copy">
+                  <p class="zukan-card-price">${escapeHtml(priceText)}</p>
+                  <div class="zukan-card-badges">${deltaBadge}</div>
+                </div>
+                ${sparklineHtml}
               </div>
               <div class="zukan-card-meta">
                 ${specHtml}
