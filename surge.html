@@ -143,9 +143,16 @@
 
     .ranking-active-filters {
       display: none;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 6px;
       margin-top: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .ranking-active-filters::-webkit-scrollbar {
+      display: none;
     }
 
     .ranking-active-filters.is-visible {
@@ -338,22 +345,12 @@
       overflow: hidden;
       border-radius: 18px;
       border: 1px solid #d7e0ee;
-      background:
-        radial-gradient(circle at 14% 18%, rgba(255, 210, 92, .22), transparent 22%),
-        radial-gradient(circle at 86% 12%, rgba(79, 139, 255, .14), transparent 24%),
-        linear-gradient(135deg, rgba(255,255,255,.99) 0%, rgba(242,247,255,.98) 54%, rgba(255,251,238,.94) 100%);
-      box-shadow: 0 10px 24px rgba(15, 23, 42, .05);
+      background: #fff;
+      box-shadow: none;
       color: #162238;
     }
     .ranking-hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(120deg, transparent 0 42%, rgba(0, 35, 102, .05) 42% 43%, transparent 43% 100%),
-        repeating-linear-gradient(135deg, rgba(0, 35, 102, .045) 0 1px, transparent 1px 18px);
-      opacity: .72;
-      pointer-events: none;
+      display: none;
     }
     .ranking-hero-copy {
       position: relative;
@@ -388,7 +385,12 @@
     .ranking-page-title { font-size: clamp(26px, 2.6vw, 34px); color: #162238; }
     .page-hero-meta { margin-top: 0; margin-left: auto; justify-content: flex-end; text-align: right; }
     .page-hero-badge { position: relative; z-index: 1; white-space: nowrap; backdrop-filter: blur(8px); }
-    .ranking-filter-card { padding: 12px 14px; }
+    .ranking-filter-card {
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: none;
+      background: #f1f4f6;
+    }
     .ranking-filter-head { margin-bottom: 6px; }
     .ranking-filter-title { font-size: 13px; color: #1a2840; }
     .ranking-filter-grid { gap: 10px; }
@@ -396,23 +398,38 @@
     .ranking-filter-actions button {
       height: 42px;
       border: 1px solid #d7e0ee;
-      border-radius: 12px;
+      border-radius: 8px;
       background: rgba(255,255,255,.95);
     }
     .ranking-main { gap: 14px; }
-    .ranking-top3 { gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .ranking-top3 {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ranking-top3::-webkit-scrollbar { display: none; }
+    .ranking-top3 > div {
+      display: block;
+      flex: 0 0 min(74vw, 240px);
+      scroll-snap-align: start;
+    }
     .podium-card {
-      border-radius: 16px;
+      border-radius: 8px;
       border: 1px solid #dbe5f2;
-      box-shadow: 0 8px 18px rgba(15, 23, 42, .04);
+      box-shadow: none;
       background: rgba(255,255,255,.94);
-      padding: 10px;
+      padding: 8px;
+      gap: 7px;
     }
     .podium-card--rank1 {
       grid-template-columns: 1fr;
-      padding: 10px;
-      gap: 10px;
-      background: linear-gradient(180deg, #fff9ed 0%, #ffffff 100%);
+      padding: 8px;
+      gap: 7px;
+      background: #fff;
     }
     .podium-card--rank2,
     .podium-card--rank3 { background: rgba(255,255,255,.94); }
@@ -424,33 +441,150 @@
       background: #162238;
     }
     .podium-media {
-      border-radius: 12px;
-      padding: 8px;
+      border-radius: 6px;
+      padding: 6px;
       background: linear-gradient(180deg, #f8fbff 0%, #f2f6fc 100%);
     }
-    .podium-card--rank1 .podium-media img { height: 170px; }
-    .podium-card:not(.podium-card--rank1) .podium-media img { height: 170px; }
+    .podium-card--rank1 .podium-media img { height: 132px; }
+    .podium-card:not(.podium-card--rank1) .podium-media img { height: 132px; }
     .podium-content { gap: 6px; margin-top: 0; }
     .podium-kicker,
     .podium-actions { display: none; }
-    .podium-title { font-size: 16px; }
-    .podium-card:not(.podium-card--rank1) .podium-title { font-size: 16px; }
-    .podium-metrics { gap: 6px; }
-    .podium-metric {
-      padding: 8px;
-      border-radius: 12px;
-      background: #f8fbff;
-      border: 1px solid #dbe5f2;
+    .podium-title {
+      font-size: 13px;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 2.7em;
     }
-    .podium-price { font-size: 18px; }
-    .podium-card:not(.podium-card--rank1) .podium-price { font-size: 18px; }
-    .podium-rate { font-size: 15px; }
-    .podium-card:not(.podium-card--rank1) .podium-rate { font-size: 15px; }
+    .podium-card:not(.podium-card--rank1) .podium-title { font-size: 13px; }
+    .podium-metrics {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 6px;
+      align-items: end;
+    }
+    .podium-metric {
+      padding: 0;
+      border-radius: 0;
+      background: #f8fbff;
+      border: 0;
+    }
+    .podium-metric-label { font-size: 9px; margin-bottom: 2px; }
+    .podium-diff {
+      font-size: 20px;
+      line-height: 1.05;
+      font-weight: 900;
+      color: #be123c;
+      white-space: nowrap;
+    }
+    .podium-price {
+      font-size: 11px;
+      color: #475467;
+    }
+    .podium-card:not(.podium-card--rank1) .podium-price { font-size: 11px; }
+    .podium-rate {
+      min-height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 6px;
+      border-radius: 6px;
+      background: #ffe4e6;
+      color: #be123c;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .podium-card:not(.podium-card--rank1) .podium-rate { font-size: 11px; }
     .podium-chip {
       min-height: 22px;
       padding: 0 7px;
       background: #fff;
       border: 1px solid #dbe5f2;
+    }
+
+    .compact-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .compact-card {
+      gap: 7px;
+      padding: 6px;
+      border-radius: 8px;
+      box-shadow: none;
+    }
+
+    .compact-rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      z-index: 2;
+      min-width: 28px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 6px;
+      background: #111827;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .compact-thumb-wrap {
+      border-radius: 6px;
+      aspect-ratio: 1 / 1;
+    }
+
+    .compact-thumb {
+      object-fit: contain;
+      padding: 6px;
+    }
+
+    .compact-card-title {
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .compact-price-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3px;
+      align-items: start;
+    }
+
+    .compact-delta {
+      order: -1;
+      font-size: 16px;
+      line-height: 1.1;
+      font-weight: 900;
+      text-align: left;
+      color: #be123c;
+    }
+
+    .compact-price {
+      font-size: 11px;
+      line-height: 1.2;
+      color: #475467;
+      font-weight: 800;
+    }
+
+    .compact-rate {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 20px;
+      padding: 0 6px;
+      border-radius: 6px;
+      background: #ffe4e6;
+      color: #be123c;
+      font-size: 10px;
+      font-weight: 900;
     }
 
     @media (max-width: 960px) {
@@ -470,10 +604,13 @@
         width: 100%;
         min-width: 0;
       }
+
+      .compact-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
     }
 
     @media (max-width: 900px) {
-      .ranking-top3 { grid-template-columns: 1fr; }
       .podium-card--rank1 { grid-template-columns: 1fr; }
     }
 
@@ -489,24 +626,38 @@
 
       .podium-card,
       .podium-card--rank1 {
-        padding: 12px;
-        gap: 10px;
+        padding: 8px;
+        gap: 7px;
       }
 
       .podium-card--rank1 .podium-media img {
-        height: 220px;
+        height: 132px;
       }
 
       .podium-card:not(.podium-card--rank1) .podium-media img {
-        height: 150px;
+        height: 132px;
       }
 
       .podium-title {
-        font-size: 17px;
+        font-size: 13px;
       }
 
       .podium-actions .btn {
         width: 100%;
+      }
+
+      .ranking-top3 > div {
+        flex-basis: min(72vw, 220px);
+      }
+
+      .compact-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 560px) and (max-width: 700px) {
+      .compact-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
   </style>
@@ -803,6 +954,8 @@
       const imgSrc = String(s.imageUrl || "").trim();
       const rate = row.rate;
       const rateClass = (rate ?? 0) > 0 ? "up" : (rate ?? 0) < 0 ? "down" : "flat";
+      const diffText = `+${row.diff.toLocaleString()}円`;
+      const rateText = rate == null ? "—" : `${rate > 0 ? "+" : ""}${rate.toFixed(1)}%`;
       const metaItems = [
         s.releaseYear ? `YEAR ${escapeHtml(s.releaseYear)}` : "",
         s.series ? escapeHtml(s.series) : ""
@@ -820,12 +973,13 @@
             <h${rank === 1 ? "2" : "3"} class="podium-title">${escapeHtml(s.name ?? "")}</h${rank === 1 ? "2" : "3"}>
             <div class="podium-metrics">
               <div class="podium-metric">
-                <span class="podium-metric-label">最新価格</span>
-                <div class="podium-price">${pair.latest.price.toLocaleString()}円</div>
+                <span class="podium-metric-label">前週比</span>
+                <div class="podium-diff">${escapeHtml(diffText)}</div>
+                <div class="podium-price">現在 ${pair.latest.price.toLocaleString()}円</div>
               </div>
               <div class="podium-metric">
-                <span class="podium-metric-label">前週比</span>
-                <div class="podium-rate ${rateClass}">${rate == null ? "—" : `${rate > 0 ? "+" : ""}${rate.toFixed(1)}%`}</div>
+                <span class="podium-metric-label">上昇率</span>
+                <div class="podium-rate ${rateClass}">${escapeHtml(rateText)}</div>
               </div>
             </div>
             <div class="podium-meta">
@@ -936,6 +1090,7 @@
       const s = row.s;
       const deltaClass = row.diff > 0 ? "up" : row.diff < 0 ? "down" : "flat";
       const deltaText = `${row.diff > 0 ? "+" : row.diff < 0 ? "-" : "±"}${Math.abs(row.diff).toLocaleString()}円`;
+      const rateText = row.rate == null ? "—" : `${row.rate > 0 ? "+" : ""}${row.rate.toFixed(1)}%`;
       const metaItems = [
         s.releaseYear ? `YEAR ${escapeHtml(s.releaseYear)}` : "",
         s.series ? escapeHtml(s.series) : ""
@@ -955,6 +1110,7 @@
         <div class="compact-price-row">
           <div class="compact-price">${row.pair.latest.price.toLocaleString()}円</div>
           <div class="compact-delta ${deltaClass}">${escapeHtml(deltaText)}</div>
+          <div class="compact-rate ${deltaClass}">${escapeHtml(rateText)}</div>
         </div>
         ${metaHtml}
       `;
