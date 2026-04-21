@@ -163,7 +163,15 @@ function buildDashboardSidebarHtml(activeSidebar = "") {
   `;
 }
 
-function buildDashboardTopbarHtml(activeTopbar = "") {
+function getCurrentTopbarKey() {
+  const path = String(location.pathname || "").toLowerCase();
+  if (path.includes("policy")) return "policy";
+  if (path.includes("contact")) return "contact";
+  if (path.includes("market") || path.includes("ranking") || path.includes("growth") || path.includes("surge") || path.includes("access-ranking")) return "market";
+  return "dashboard";
+}
+
+function buildDashboardTopbarHtml(activeTopbar = getCurrentTopbarKey()) {
   const itemClass = (key) => `topbar-tab${activeTopbar === key ? " is-active" : ""}`;
   return `
   <div class="topbar-search">
@@ -174,6 +182,7 @@ function buildDashboardTopbarHtml(activeTopbar = "") {
     <a class="${itemClass("dashboard")}" href="${escapeHtml(buildSiteHref("index.html"))}">ホーム</a>
     <a class="${itemClass("market")}" href="${escapeHtml(buildSiteHref("index-market.html"))}">市場状況</a>
     <a class="${itemClass("policy")}" href="${escapeHtml(buildSiteHref("policy.html"))}">プライバシーポリシー</a>
+    <a class="${itemClass("contact")}" href="${escapeHtml(buildSiteHref("contact.html"))}">お問い合わせ</a>
   </nav>
   <div class="topbar-utils" aria-hidden="true">
     <span>◌</span>
