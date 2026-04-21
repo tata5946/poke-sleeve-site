@@ -708,15 +708,77 @@
       }
 
       .ranking-top3 > div {
-        flex-basis: min(72vw, 220px);
+        flex-basis: min(86vw, 300px);
       }
 
       .compact-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .compact-card {
+        grid-template-columns: 86px minmax(0, 1fr);
+        grid-template-areas:
+          "thumb title"
+          "thumb market"
+          "thumb meta";
+        align-items: center;
+        gap: 7px 10px;
+        padding: 8px;
+        min-height: 112px;
+      }
+
+      .compact-thumb-wrap {
+        grid-area: thumb;
+        width: 86px;
+        height: 86px;
+        aspect-ratio: auto;
+      }
+
+      .compact-card-title {
+        grid-area: title;
+        min-height: 0;
+        font-size: 14px;
+        line-height: 1.35;
       }
 
       .compact-market-row {
-        grid-template-columns: minmax(0, 1fr) 58px;
+        grid-area: market;
+        grid-template-columns: minmax(0, 1fr) 76px;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .compact-price-row {
+        grid-template-columns: auto auto;
+        gap: 3px 8px;
+        align-items: center;
+      }
+
+      .compact-delta {
+        order: 0;
+        grid-column: 1;
+        grid-row: 1;
+        font-size: 20px;
+        line-height: 1.05;
+      }
+
+      .compact-price {
+        grid-column: 1;
+        grid-row: 2;
+        font-size: 12px;
+      }
+
+      .compact-rate {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        align-self: center;
+      }
+
+      .compact-meta {
+        grid-area: meta;
+        min-width: 0;
+        overflow: hidden;
       }
 
       .podium-market-row {
@@ -724,7 +786,11 @@
         gap: 6px;
       }
 
-      .compact-market-row .sleeve-sparkline,
+      .compact-market-row .sleeve-sparkline {
+        width: 76px;
+        height: 34px;
+      }
+
       .podium-market-row .sleeve-sparkline {
         width: 58px;
         height: 32px;
@@ -733,7 +799,7 @@
 
     @media (min-width: 560px) and (max-width: 700px) {
       .compact-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: 1fr;
       }
     }
   </style>
