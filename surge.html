@@ -717,21 +717,31 @@
       }
 
       .compact-card {
-        grid-template-columns: 86px minmax(0, 1fr);
+        grid-template-columns: 80px minmax(0, 1fr);
         grid-template-areas:
           "thumb title"
           "thumb market"
           "thumb meta";
-        align-items: center;
-        gap: 7px 10px;
+        align-items: stretch;
+        gap: 6px 10px;
         padding: 8px;
-        min-height: 112px;
+        min-height: 108px;
+      }
+
+      .compact-rank-badge {
+        left: 10px;
+        top: 10px;
+        min-width: 34px;
+        height: 24px;
+        border-radius: 7px;
+        font-size: 10px;
       }
 
       .compact-thumb-wrap {
         grid-area: thumb;
-        width: 86px;
-        height: 86px;
+        width: 80px;
+        height: 80px;
+        align-self: center;
         aspect-ratio: auto;
       }
 
@@ -739,18 +749,18 @@
         grid-area: title;
         min-height: 0;
         font-size: 14px;
-        line-height: 1.35;
+        line-height: 1.28;
       }
 
       .compact-market-row {
         grid-area: market;
-        grid-template-columns: minmax(0, 1fr) 76px;
+        grid-template-columns: minmax(0, 1fr) 72px;
         gap: 8px;
         align-items: center;
       }
 
       .compact-price-row {
-        grid-template-columns: auto auto;
+        grid-template-columns: minmax(0, 1fr) auto;
         gap: 3px 8px;
         align-items: center;
       }
@@ -767,18 +777,56 @@
         grid-column: 1;
         grid-row: 2;
         font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .compact-price::before {
+        content: "現在 ";
+        color: #667085;
+        font-size: 10px;
+        font-weight: 800;
       }
 
       .compact-rate {
         grid-column: 2;
         grid-row: 1 / span 2;
         align-self: center;
+        max-width: 58px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .compact-meta {
         grid-area: meta;
         min-width: 0;
         overflow: hidden;
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 5px;
+        align-items: center;
+        min-height: 20px;
+      }
+
+      .compact-meta-item {
+        display: inline-flex;
+        align-items: center;
+        min-width: 0;
+        max-width: 100%;
+        height: 20px;
+        padding: 0 7px;
+        border: 1px solid #dbe5f2;
+        border-radius: 999px;
+        background: #fff;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 10px;
+        line-height: 1;
+      }
+
+      .compact-meta-item:nth-child(n+3) {
+        display: none;
       }
 
       .podium-market-row {
@@ -787,7 +835,7 @@
       }
 
       .compact-market-row .sleeve-sparkline {
-        width: 76px;
+        width: 72px;
         height: 34px;
       }
 
