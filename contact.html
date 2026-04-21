@@ -114,54 +114,69 @@
   </style>
 </head>
 
-<body class="page-content-focus">
+<body class="page-content-focus" data-hide-global-header="1">
   <div id="site-header"></div>
 
-  <div class="container page-shell page-shell--content">
-    <nav class="breadcrumb" aria-label="パンくず">
-      <a href="./index.html">ホーム</a>
-      <span class="breadcrumb-sep" aria-hidden="true">></span>
-      <span class="breadcrumb-current" aria-current="page">お問い合わせ</span>
-    </nav>
-    <div id="error" class="error"></div>
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー">
+      <div id="dashboardSidebarSlot"></div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot" data-dashboard-topbar-active="contact"></div>
+      </header>
+      <div class="dashboard-content">
+        <div class="container page-shell page-shell--content">
+          <nav class="breadcrumb" aria-label="パンくず">
+            <a href="./index.html">ホーム</a>
+            <span class="breadcrumb-sep" aria-hidden="true">></span>
+            <span class="breadcrumb-current" aria-current="page">お問い合わせ</span>
+          </nav>
+          <div id="error" class="error"></div>
 
-    <div class="contact-wrap">
-      <div class="panel page-focus-panel page-focus-panel--form">
-        <div class="page-focus-intro">
-          <p class="page-focus-kicker">CONTACT</p>
-          <h1 class="page-focus-title">お問い合わせ</h1>
-          <p class="page-focus-desc">内容を入力して送信してください。送信完了後に完了ページへ移動します。</p>
+          <div class="contact-wrap">
+            <div class="panel page-focus-panel page-focus-panel--form">
+              <div class="page-focus-intro">
+                <p class="page-focus-kicker">CONTACT</p>
+                <h1 class="page-focus-title">お問い合わせ</h1>
+                <p class="page-focus-desc">内容を入力して送信してください。送信完了後に完了ページへ移動します。</p>
+              </div>
+
+              <form id="contactForm" class="contact-form" novalidate>
+                <div class="field">
+                  <label for="name">お名前<span class="required">必須</span></label>
+                  <input id="name" name="name" type="text" maxlength="60" required />
+                </div>
+
+                <div class="field">
+                  <label for="subject">件名<span class="required">必須</span></label>
+                  <input id="subject" name="subject" type="text" maxlength="100" required />
+                </div>
+
+                <div class="field">
+                  <label for="message">お問い合わせ内容<span class="required">必須</span></label>
+                  <textarea id="message" name="message" maxlength="3000" required></textarea>
+                </div>
+
+                <div class="actions">
+                  <button id="sendBtn" type="submit" class="btn send">送信</button>
+                  <a class="btn" href="./index.html">一覧へ戻る</a>
+                </div>
+                <div id="status" class="status"></div>
+              </form>
+            </div>
+          </div>
+
+          <div id="site-footer"></div>
         </div>
-
-        <form id="contactForm" class="contact-form" novalidate>
-          <div class="field">
-            <label for="name">お名前<span class="required">必須</span></label>
-            <input id="name" name="name" type="text" maxlength="60" required />
-          </div>
-
-          <div class="field">
-            <label for="subject">件名<span class="required">必須</span></label>
-            <input id="subject" name="subject" type="text" maxlength="100" required />
-          </div>
-
-          <div class="field">
-            <label for="message">お問い合わせ内容<span class="required">必須</span></label>
-            <textarea id="message" name="message" maxlength="3000" required></textarea>
-          </div>
-
-          <div class="actions">
-            <button id="sendBtn" type="submit" class="btn send">送信</button>
-            <a class="btn" href="./index.html">一覧へ戻る</a>
-          </div>
-          <div id="status" class="status"></div>
-        </form>
       </div>
-    </div>
-
-    <div id="site-footer"></div>
+    </main>
   </div>
 
   <script src="./assets/common.js"></script>
+  <script>
+    window.common.setupDashboardChrome({ topbarActive: "contact" });
+  </script>
   <script>
     function showStatus(text, ok) {
       const el = document.getElementById("status");

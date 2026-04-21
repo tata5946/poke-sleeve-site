@@ -27,31 +27,47 @@
   </style>
 </head>
 
-<body>
+<body class="page-content-focus" data-hide-global-header="1">
   <div id="site-header"></div>
 
-  <div class="container">
-    <nav class="breadcrumb" aria-label="パンくず">
-      <a href="./index.html">ホーム</a>
-      <span class="breadcrumb-sep" aria-hidden="true">></span>
-      <a href="./contact.html">お問い合わせ</a>
-      <span class="breadcrumb-sep" aria-hidden="true">></span>
-      <span class="breadcrumb-current" aria-current="page">送信完了</span>
-    </nav>
-    <div class="done-wrap">
-      <div class="panel">
-        <h2 class="title" style="margin:0;">送信が完了しました</h2>
-        <p class="meta" style="margin-top:8px;">
-          お問い合わせありがとうございます。内容を確認のうえ、必要に応じてご連絡します。
-        </p>
-        <a class="btn" href="./index.html">一覧へ戻る</a>
-      </div>
-    </div>
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー">
+      <div id="dashboardSidebarSlot"></div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot" data-dashboard-topbar-active="contact"></div>
+      </header>
+      <div class="dashboard-content">
+        <div class="container page-shell page-shell--content">
+          <nav class="breadcrumb" aria-label="パンくず">
+            <a href="./index.html">ホーム</a>
+            <span class="breadcrumb-sep" aria-hidden="true">></span>
+            <a href="./contact.html">お問い合わせ</a>
+            <span class="breadcrumb-sep" aria-hidden="true">></span>
+            <span class="breadcrumb-current" aria-current="page">送信完了</span>
+          </nav>
+          <div class="done-wrap">
+            <div class="panel page-focus-panel">
+              <div class="page-focus-intro">
+                <p class="page-focus-kicker">CONTACT</p>
+                <h1 class="page-focus-title">送信が完了しました</h1>
+                <p class="page-focus-desc">お問い合わせありがとうございます。内容を確認のうえ、必要に応じてご連絡します。</p>
+              </div>
+              <a class="btn" href="./index.html">一覧へ戻る</a>
+            </div>
+          </div>
 
-    <div id="site-footer"></div>
+          <div id="site-footer"></div>
+        </div>
+      </div>
+    </main>
   </div>
 
   <script src="./assets/common.js"></script>
+  <script>
+    window.common.setupDashboardChrome({ topbarActive: "contact" });
+  </script>
 </body>
 
 </html>
