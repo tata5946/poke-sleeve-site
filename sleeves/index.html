@@ -948,6 +948,9 @@
       }
 
       .dashboard-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 34;
         padding: 10px 14px 8px;
         gap: 8px;
         flex-wrap: wrap;
@@ -956,10 +959,27 @@
         box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
       }
 
+      .topbar-search {
+        width: 100%;
+        min-width: 0;
+        flex: 1 1 100%;
+      }
+
+      .topbar-search-input {
+        min-height: 44px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.86), 0 10px 24px rgba(15, 23, 42, 0.06);
+        font-size: 15px;
+      }
+
       .topbar-tabs {
         width: 100%;
+        min-width: 0;
+        max-width: 100%;
         gap: 6px;
-        overflow: auto;
+        overflow-x: auto;
         padding-bottom: 1px;
         scrollbar-width: none;
       }
@@ -969,6 +989,9 @@
       }
 
       .topbar-tab {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         flex: 0 0 auto;
         min-height: 34px;
         padding: 0 12px;
