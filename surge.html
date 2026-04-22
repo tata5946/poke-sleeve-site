@@ -506,6 +506,24 @@
       flex: 0 0 min(74vw, 240px);
       scroll-snap-align: start;
     }
+
+    @media (min-width: 701px) {
+      .ranking-top3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        overflow: visible;
+        padding-bottom: 0;
+        scroll-snap-type: none;
+      }
+
+      .ranking-top3 > div {
+        display: flex;
+        flex: initial;
+        min-width: 0;
+        scroll-snap-align: unset;
+      }
+    }
+
     .podium-card {
       border-radius: 8px;
       border: 1px solid #dbe5f2;
