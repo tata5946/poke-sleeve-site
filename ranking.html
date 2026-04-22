@@ -254,6 +254,21 @@
       gap: 10px;
     }
 
+    .ranking-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .ranking-section-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 900;
+      color: #101828;
+    }
+
     .ranking-top3 {
       display: grid;
       gap: 14px;
@@ -1044,6 +1059,9 @@
       </section>
 
       <section id="restSection" class="ranking-rest-section">
+        <div class="ranking-section-head">
+          <h2 class="ranking-section-title">4位以降</h2>
+        </div>
         <div id="list" class="grid compact-grid"></div>
       </section>
     </main>

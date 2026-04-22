@@ -307,6 +307,25 @@
       gap: 12px;
     }
 
+    .ranking-rest-section[hidden] {
+      display: none;
+    }
+
+    .ranking-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .ranking-section-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 900;
+      color: #101828;
+    }
+
     .ranking-top3 {
       gap: 12px;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -564,7 +583,12 @@
         <div id="top2"></div>
         <div id="top3Card"></div>
       </section>
-      <div id="list" class="ranking-list compact-grid"></div>
+      <section id="restSection" class="ranking-rest-section">
+        <div class="ranking-section-head">
+          <h2 class="ranking-section-title">4位以降</h2>
+        </div>
+        <div id="list" class="ranking-list compact-grid"></div>
+      </section>
     </div>
 
     <div id="site-footer"></div>
@@ -858,6 +882,7 @@
       const top1 = document.getElementById("top1");
       const top2 = document.getElementById("top2");
       const top3Card = document.getElementById("top3Card");
+      const restSection = document.getElementById("restSection");
       const countInfo = document.getElementById("countInfo");
       if (!root) return;
 
@@ -901,6 +926,7 @@
         if (top2) top2.innerHTML = "";
         if (top3Card) top3Card.innerHTML = "";
         if (top3) top3.hidden = true;
+        if (restSection) restSection.hidden = false;
         return;
       }
 
@@ -909,6 +935,7 @@
       if (top2) top2.innerHTML = "";
       if (top3Card) top3Card.innerHTML = "";
       if (top3) top3.hidden = true;
+      if (restSection) restSection.hidden = rows.length <= 3;
 
       rows.forEach((row, index) => {
         if (index < 3) return;
