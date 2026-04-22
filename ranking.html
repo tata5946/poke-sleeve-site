@@ -509,6 +509,73 @@
       gap: 6px;
     }
 
+    .podium-market-row,
+    .compact-market-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(72px, auto);
+      gap: 8px;
+      align-items: end;
+      min-width: 0;
+    }
+
+    .compact-market-row {
+      grid-template-columns: minmax(0, 1fr) 64px;
+    }
+
+    .sleeve-sparkline {
+      width: 86px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      align-self: end;
+      overflow: hidden;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #f8fffb 0%, #edf8f1 100%);
+      box-shadow: inset 0 0 0 1px rgba(5, 150, 105, .10);
+    }
+
+    .sleeve-sparkline svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .sleeve-sparkline-grid {
+      stroke: rgba(71, 85, 105, .18);
+      stroke-width: 1;
+    }
+
+    .sleeve-sparkline-area {
+      fill: rgba(5, 150, 105, .10);
+    }
+
+    .sleeve-sparkline-line {
+      fill: none;
+      stroke: #059669;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .sleeve-sparkline-empty {
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .02em;
+      white-space: nowrap;
+    }
+
+    .podium-market-row .sleeve-sparkline {
+      width: 72px;
+      height: 34px;
+    }
+
+    .compact-market-row .sleeve-sparkline {
+      width: 64px;
+      height: 34px;
+      border-radius: 6px;
+    }
+
     .podium-actions {
       display: flex;
       align-items: center;
@@ -614,6 +681,10 @@
     }
     .ranking-main { gap: 14px; }
     .ranking-top3 { gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .compact-grid {
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 10px;
+    }
     .podium-card {
       border-radius: 16px;
       border: 1px solid #dbe5f2;
@@ -713,23 +784,104 @@
       }
 
       .ranking-top3 {
-        grid-template-columns: 1fr;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
       }
 
+      .ranking-top3::-webkit-scrollbar {
+        display: none;
+      }
+
+      .ranking-top3 > div {
+        display: block;
+        flex: 0 0 min(90vw, 380px);
+        min-width: 0;
+        scroll-snap-align: start;
+      }
+
+      .podium-card,
       .podium-card--rank1 {
+        grid-template-columns: 112px minmax(0, 1fr);
+        grid-template-areas:
+          "media badge"
+          "media content";
+        grid-template-rows: auto minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+        min-height: 180px;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: none;
+        background: rgba(255,255,255,.96);
+      }
+
+      .podium-badge {
+        position: static;
+        grid-area: badge;
+        justify-self: start;
+        align-self: end;
+        min-height: 24px;
+        padding: 0 8px;
+        border-radius: 7px;
+        font-size: 10px;
+      }
+
+      .podium-media,
+      .podium-card--rank1 .podium-media,
+      .podium-card:not(.podium-card--rank1) .podium-media {
+        grid-area: media;
+        width: 112px;
+        height: 112px;
+        padding: 6px;
+        border-radius: 6px;
+        justify-self: start;
+      }
+
+      .podium-media img,
+      .podium-card--rank1 .podium-media img,
+      .podium-card:not(.podium-card--rank1) .podium-media img {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100px;
+      }
+
+      .podium-content,
+      .podium-card--rank1 .podium-content {
+        grid-area: content;
+        min-width: 0;
+        gap: 6px;
+        margin-top: 0;
+      }
+
+      .podium-market-row {
         grid-template-columns: 1fr;
-      }
-
-      .podium-card--rank1 .podium-media img {
-        height: 180px;
-      }
-
-       .podium-card:not(.podium-card--rank1) .podium-media img {
-        height: 120px;
+        gap: 5px;
+        align-items: stretch;
       }
 
       .podium-metrics {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 4px 7px;
+        align-items: center;
+      }
+
+      .podium-metric {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .podium-market-row .sleeve-sparkline {
+        width: 100%;
+        min-width: 0;
+        height: 36px;
       }
 
       .podium-title {
@@ -740,6 +892,67 @@
       .podium-card--rank1 {
         padding: 12px;
         gap: 10px;
+      }
+
+      .compact-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .compact-card {
+        grid-template-columns: 80px minmax(0, 1fr);
+        grid-template-areas:
+          "thumb title"
+          "thumb market"
+          "thumb meta";
+        align-items: stretch;
+        gap: 6px 10px;
+        padding: 8px;
+        min-height: 108px;
+      }
+
+      .compact-thumb-wrap {
+        grid-area: thumb;
+        width: 80px;
+        height: 80px;
+        align-self: center;
+        aspect-ratio: auto;
+      }
+
+      .compact-card-title {
+        grid-area: title;
+        min-height: 0;
+        font-size: 14px;
+        line-height: 1.28;
+      }
+
+      .compact-market-row {
+        grid-area: market;
+        grid-template-columns: minmax(0, 1fr) 72px;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .compact-meta {
+        grid-area: meta;
+      }
+
+      .compact-price-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 3px 8px;
+        align-items: center;
+      }
+
+      .compact-price::before {
+        content: "現在 ";
+        color: #667085;
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .compact-market-row .sleeve-sparkline {
+        width: 72px;
+        height: 34px;
       }
 
       .podium-actions .btn {
@@ -937,6 +1150,65 @@
       return { latest, prev };
     }
 
+    function getSparklinePoints(sleeve, maxItems = 8) {
+      const arr = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      const map = new Map();
+
+      for (const x of arr) {
+        const weekISO = toISODate(x.week);
+        if (!weekISO) continue;
+
+        const price = numOrNull(x.price);
+        const count = numOrNull(x.count);
+        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        if (!hasTrade || !(price > 0)) continue;
+
+        map.set(weekISO, { week: weekISO, price });
+      }
+
+      return Array.from(map.values())
+        .sort((a, b) => a.week.localeCompare(b.week))
+        .slice(-maxItems)
+        .map((x) => x.price);
+    }
+
+    function buildSparklineSvg(sleeve) {
+      const prices = getSparklinePoints(sleeve);
+      if (prices.length < 2) {
+        return `<div class="sleeve-sparkline sleeve-sparkline--empty" aria-label="価格推移データなし"><span class="sleeve-sparkline-empty">推移なし</span></div>`;
+      }
+
+      const width = 86;
+      const height = 36;
+      const padX = 5;
+      const padY = 5;
+      const min = Math.min(...prices);
+      const max = Math.max(...prices);
+      const range = max - min;
+      const step = (width - padX * 2) / Math.max(1, prices.length - 1);
+      const points = prices.map((price, index) => {
+        const x = padX + step * index;
+        const y = range === 0
+          ? height / 2
+          : height - padY - ((price - min) / range) * (height - padY * 2);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      });
+      const linePoints = points.join(" ");
+      const firstX = padX.toFixed(1);
+      const lastX = (padX + step * (prices.length - 1)).toFixed(1);
+      const areaPoints = `${firstX},${height - padY} ${linePoints} ${lastX},${height - padY}`;
+
+      return `
+        <div class="sleeve-sparkline" aria-label="直近${prices.length}週の価格推移">
+          <svg viewBox="0 0 ${width} ${height}" focusable="false" aria-hidden="true" preserveAspectRatio="none">
+            <line class="sleeve-sparkline-grid" x1="5" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}"></line>
+            <polygon class="sleeve-sparkline-area" points="${areaPoints}"></polygon>
+            <polyline class="sleeve-sparkline-line" points="${linePoints}"></polyline>
+          </svg>
+        </div>
+      `;
+    }
+
     function getLatestWeeklyPrice(sleeve) {
       const pair = getWeeklyPair(sleeve);
       return pair ? pair.latest.price : null;
@@ -1097,6 +1369,7 @@
       const deltaInfo = row.deltaInfo;
       const imgSrc = String(s.imageUrl || "").trim();
       const rateClass = getDeltaClass(deltaInfo && deltaInfo.rate);
+      const sparklineHtml = buildSparklineSvg(s);
       const metaItems = [
         s.releaseYear ? `YEAR ${escapeHtml(s.releaseYear)}` : "",
         s.series ? escapeHtml(s.series) : ""
@@ -1123,6 +1396,9 @@
                 <div class="podium-rate ${rateClass}">${formatRateText(deltaInfo && deltaInfo.rate)}</div>
               </div>
             </div>
+            <div class="podium-market-row">
+              ${sparklineHtml}
+            </div>
             <div class="podium-meta">
               <div class="podium-chip-group">${metaHtml}</div>
             </div>
@@ -1135,6 +1411,7 @@
       const s = row.s;
       const imgSrc = String(s.imageUrl || "").trim();
       const delta = getCompactDeltaDisplay(row.deltaInfo);
+      const sparklineHtml = buildSparklineSvg(s);
       const metaItems = [
         s.releaseYear ? `YEAR ${escapeHtml(s.releaseYear)}` : "",
         s.series ? escapeHtml(s.series) : ""
@@ -1152,9 +1429,12 @@
             : ""}
         </span>
         <h3 class="compact-card-title">${escapeHtml(s.name ?? "")}</h3>
-        <div class="compact-price-row">
-          <div class="compact-price">${row.price.toLocaleString()}円</div>
-          <div class="compact-delta ${delta.className}">${escapeHtml(delta.text)}</div>
+        <div class="compact-market-row">
+          <div class="compact-price-row">
+            <div class="compact-price">${row.price.toLocaleString()}円</div>
+            <div class="compact-delta ${delta.className}">${escapeHtml(delta.text)}</div>
+          </div>
+          ${sparklineHtml}
         </div>
         ${metaHtml}
       `;

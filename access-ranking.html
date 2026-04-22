@@ -269,6 +269,33 @@
     .podium-metric-label { display:block; font-size:11px; color:#667085; font-weight:800; margin-bottom:4px; }
     .podium-price { font-size:24px; font-weight:900; line-height:1.1; color:#111827; }
     .podium-card:not(.podium-card--rank1) .podium-price { font-size:18px; }
+    .podium-market-row,
+    .compact-market-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(72px, auto);
+      gap: 8px;
+      align-items: end;
+      min-width: 0;
+    }
+    .compact-market-row { grid-template-columns: minmax(0, 1fr) 64px; }
+    .sleeve-sparkline {
+      width: 86px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      align-self: end;
+      overflow: hidden;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #f8fffb 0%, #edf8f1 100%);
+      box-shadow: inset 0 0 0 1px rgba(5, 150, 105, .10);
+    }
+    .sleeve-sparkline svg { display: block; width: 100%; height: 100%; }
+    .sleeve-sparkline-grid { stroke: rgba(71, 85, 105, .18); stroke-width: 1; }
+    .sleeve-sparkline-area { fill: rgba(5, 150, 105, .10); }
+    .sleeve-sparkline-line { fill: none; stroke: #059669; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+    .sleeve-sparkline-empty { color: #94a3b8; font-size:9px; font-weight:900; letter-spacing:.02em; white-space:nowrap; }
+    .podium-market-row .sleeve-sparkline { width: 72px; height: 34px; }
+    .compact-market-row .sleeve-sparkline { width: 64px; height: 34px; border-radius: 6px; }
     .podium-meta { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
     .podium-chip-group { display:flex; flex-wrap:wrap; gap:6px; }
     .podium-chip { display:inline-flex; align-items:center; min-height:24px; padding:0 8px; border-radius:999px; font-size:10px; font-weight:900; background:rgba(255,255,255,.82); border:1px solid rgba(16,24,40,.08); color:#344054; }
@@ -278,6 +305,17 @@
     .ranking-main {
       display: grid;
       gap: 12px;
+    }
+
+    .ranking-top3 {
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-bottom: 0;
+    }
+
+    .compact-grid {
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 10px;
     }
 
     @media (max-width: 960px) {
@@ -299,14 +337,159 @@
       }
     }
 
-    @media (max-width: 760px) {
-      .ranking-top3 { grid-template-columns: 1fr; }
-      .podium-card--rank1 { grid-template-columns: 1fr; }
+    @media (max-width: 700px) {
       .ranking-hero { padding: 14px; }
       .ranking-page-title { font-size: 20px; }
       .ranking-filter-card { padding: 10px 12px 12px; }
       .ranking-filter-chip { font-size: 10px; }
       .ranking-filter-chip-remove { width: 14px; height: 14px; font-size: 9px; }
+
+      .ranking-top3 {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .ranking-top3::-webkit-scrollbar { display: none; }
+      .ranking-top3 > div {
+        display: block;
+        flex: 0 0 min(90vw, 380px);
+        min-width: 0;
+        scroll-snap-align: start;
+      }
+      .podium-card,
+      .podium-card--rank1 {
+        grid-template-columns: 112px minmax(0, 1fr);
+        grid-template-areas:
+          "media badge"
+          "media content";
+        grid-template-rows: auto minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+        min-height: 180px;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: none;
+        background: rgba(255,255,255,.96);
+      }
+      .podium-badge {
+        position: static;
+        grid-area: badge;
+        justify-self: start;
+        align-self: end;
+        min-height: 24px;
+        padding: 0 8px;
+        border-radius: 7px;
+        font-size: 10px;
+      }
+      .podium-media,
+      .podium-card--rank1 .podium-media,
+      .podium-card:not(.podium-card--rank1) .podium-media {
+        grid-area: media;
+        width: 112px;
+        height: 112px;
+        padding: 6px;
+        border-radius: 6px;
+        justify-self: start;
+      }
+      .podium-media img,
+      .podium-card--rank1 .podium-media img,
+      .podium-card:not(.podium-card--rank1) .podium-media img {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100px;
+      }
+      .podium-content,
+      .podium-card--rank1 .podium-content {
+        grid-area: content;
+        min-width: 0;
+        gap: 6px;
+        margin-top: 0;
+      }
+      .podium-kicker,
+      .podium-actions,
+      .podium-meta { display: none; }
+      .podium-title,
+      .podium-card:not(.podium-card--rank1) .podium-title {
+        font-size: 16px;
+        line-height: 1.28;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .podium-metrics {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 4px 7px;
+        align-items: center;
+      }
+      .podium-metric {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+      }
+      .podium-metric:nth-child(n+3) { display: none; }
+      .podium-market-row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+        align-items: stretch;
+      }
+      .podium-market-row .sleeve-sparkline {
+        width: 100%;
+        min-width: 0;
+        height: 36px;
+      }
+      .compact-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .compact-card {
+        grid-template-columns: 80px minmax(0, 1fr);
+        grid-template-areas:
+          "thumb title"
+          "thumb market"
+          "thumb meta";
+        align-items: stretch;
+        gap: 6px 10px;
+        padding: 8px;
+        min-height: 108px;
+      }
+      .compact-thumb-wrap {
+        grid-area: thumb;
+        width: 80px;
+        height: 80px;
+        align-self: center;
+        aspect-ratio: auto;
+      }
+      .compact-card-title {
+        grid-area: title;
+        min-height: 0;
+        font-size: 14px;
+        line-height: 1.28;
+      }
+      .compact-market-row {
+        grid-area: market;
+        grid-template-columns: minmax(0, 1fr) 72px;
+        gap: 8px;
+        align-items: center;
+      }
+      .compact-tags {
+        grid-area: meta;
+      }
+      .compact-price-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 3px 8px;
+        align-items: center;
+      }
+      .compact-market-row .sleeve-sparkline {
+        width: 72px;
+        height: 34px;
+      }
     }
   </style>
 </head>
@@ -502,6 +685,60 @@
       return { latest: sorted[sorted.length - 1] };
     }
 
+    function getSparklinePoints(sleeve, maxItems = 8) {
+      const arr = Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      const map = new Map();
+      for (const x of arr) {
+        const week = toISODate(x.week);
+        const price = numOrNull(x.price);
+        const count = numOrNull(x.count);
+        if (!week || !(price > 0)) continue;
+        if (count != null && count <= 0) continue;
+        map.set(week, { week, price });
+      }
+      return Array.from(map.values())
+        .sort((a, b) => a.week.localeCompare(b.week))
+        .slice(-maxItems)
+        .map((x) => x.price);
+    }
+
+    function buildSparklineSvg(sleeve) {
+      const prices = getSparklinePoints(sleeve);
+      if (prices.length < 2) {
+        return `<div class="sleeve-sparkline sleeve-sparkline--empty" aria-label="価格推移データなし"><span class="sleeve-sparkline-empty">推移なし</span></div>`;
+      }
+
+      const width = 86;
+      const height = 36;
+      const padX = 5;
+      const padY = 5;
+      const min = Math.min(...prices);
+      const max = Math.max(...prices);
+      const range = max - min;
+      const step = (width - padX * 2) / Math.max(1, prices.length - 1);
+      const points = prices.map((price, index) => {
+        const x = padX + step * index;
+        const y = range === 0
+          ? height / 2
+          : height - padY - ((price - min) / range) * (height - padY * 2);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      });
+      const linePoints = points.join(" ");
+      const firstX = padX.toFixed(1);
+      const lastX = (padX + step * (prices.length - 1)).toFixed(1);
+      const areaPoints = `${firstX},${height - padY} ${linePoints} ${lastX},${height - padY}`;
+
+      return `
+        <div class="sleeve-sparkline" aria-label="直近${prices.length}週の価格推移">
+          <svg viewBox="0 0 ${width} ${height}" focusable="false" aria-hidden="true" preserveAspectRatio="none">
+            <line class="sleeve-sparkline-grid" x1="5" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}"></line>
+            <polygon class="sleeve-sparkline-area" points="${areaPoints}"></polygon>
+            <polyline class="sleeve-sparkline-line" points="${linePoints}"></polyline>
+          </svg>
+        </div>
+      `;
+    }
+
     function getMarketRange(sleeve) {
       const arr = Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
       const prices = arr.map((x) => numOrNull(x && x.price)).filter((v) => Number.isFinite(v) && v > 0);
@@ -528,6 +765,7 @@
       const minText = row.range.min == null ? "—" : `${row.range.min.toLocaleString()}円`;
       const maxText = row.range.max == null ? "—" : `${row.range.max.toLocaleString()}円`;
       const tagHtml = row.tags.map((tag) => `<span class="podium-chip">${escapeHtml(tag)}</span>`).join("");
+      const sparklineHtml = buildSparklineSvg(row.sleeve || {});
       return `
         <article class="podium-card podium-card--rank${rank}">
           <div class="podium-badge">${getPodiumBadge(rank)}</div>
@@ -555,6 +793,9 @@
                 <span class="podium-metric-label">最高値</span>
                 <div class="podium-price">${maxText}</div>
               </div>
+            </div>
+            <div class="podium-market-row">
+              ${sparklineHtml}
             </div>
             <div class="podium-meta">
               <div class="podium-chip-group">${tagHtml}</div>
@@ -590,6 +831,7 @@
 
     function buildStandardCard(row, rank) {
       const tagsHtml = row.tags.map((tag) => `<span class="compact-tag">${escapeHtml(tag.replace(/^#/, ""))}</span>`).join("");
+      const sparklineHtml = buildSparklineSvg(row.sleeve || {});
       return `
         <span class="compact-rank-badge">${rank}位</span>
         <span class="compact-thumb-wrap">
@@ -599,9 +841,12 @@
             : ""}
         </span>
         <h3 class="compact-card-title">${escapeHtml(row.name)}</h3>
-        <div class="compact-price-row">
-          <div class="compact-price">${Number.isFinite(row.access) ? row.access.toLocaleString() : 0}アクセス</div>
-          <div class="compact-delta flat">${row.latestPrice == null ? "価格なし" : `${row.latestPrice.toLocaleString()}円`}</div>
+        <div class="compact-market-row">
+          <div class="compact-price-row">
+            <div class="compact-price">${Number.isFinite(row.access) ? row.access.toLocaleString() : 0}アクセス</div>
+            <div class="compact-delta flat">${row.latestPrice == null ? "価格なし" : `${row.latestPrice.toLocaleString()}円`}</div>
+          </div>
+          ${sparklineHtml}
         </div>
         ${tagsHtml ? `<div class="compact-tags">${tagsHtml}</div>` : ""}
       `;
@@ -642,7 +887,7 @@
           if (latestPrice < band.min || latestPrice > band.max) return;
         }
 
-        rows.push({ id, access: Number.isFinite(access) ? access : 0, name, imageUrl, detailHref, latestPrice, range, tags });
+        rows.push({ id, access: Number.isFinite(access) ? access : 0, name, imageUrl, detailHref, latestPrice, range, tags, sleeve: sleeve || {} });
       });
 
       rows.sort((a, b) => b.access - a.access || String(a.name).localeCompare(String(b.name)));
