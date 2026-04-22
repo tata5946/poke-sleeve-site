@@ -391,8 +391,98 @@
     .btn-row {
       margin-top: 10px;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr);
       gap: 10px;
+    }
+
+    .marketplace-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .marketplace-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      width: 100%;
+      min-height: 42px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      color: #111827;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1;
+      text-decoration: none;
+      white-space: nowrap;
+      box-shadow: 0 6px 14px rgba(16, 24, 40, .06);
+      transition: transform .14s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .marketplace-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(16, 24, 40, .10);
+    }
+
+    .marketplace-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      line-height: 1;
+    }
+
+    .marketplace-logo--mercari {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: #ff2f35;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .marketplace-logo--yahoo {
+      color: #111;
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .marketplace-logo--suruga {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: #fff;
+      color: #2e3192;
+      font-size: 10px;
+      font-weight: 900;
+      box-shadow: inset 0 0 0 2px currentColor;
+    }
+
+    .marketplace-link--mercari {
+      border-color: #e5e7eb;
+    }
+
+    .marketplace-link--yahoo {
+      border-color: #facc15;
+      background: #ffd91a;
+      color: #111;
+    }
+
+    .marketplace-link--suruga {
+      border-color: #1d1f95;
+      background: #2325a8;
+      color: #fff;
+    }
+
+    .marketplace-link--suruga .marketplace-logo--suruga {
+      color: #fff;
+      background: transparent;
     }
 
     .btn-row .btn {
@@ -954,6 +1044,37 @@
         gap: 6px;
       }
 
+      .marketplace-row {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .marketplace-link {
+        min-height: 38px;
+        padding: 0 7px;
+        gap: 5px;
+        border-radius: 9px;
+        font-size: 11px;
+      }
+
+      .marketplace-logo--mercari {
+        width: 18px;
+        height: 18px;
+        border-radius: 5px;
+        font-size: 12px;
+      }
+
+      .marketplace-logo--yahoo {
+        font-size: 12px;
+      }
+
+      .marketplace-logo--suruga {
+        width: 18px;
+        height: 18px;
+        font-size: 8px;
+      }
+
       .btn-row .btn,
       .share-row .btn {
         width: 100%;
@@ -1160,10 +1281,16 @@
 
     .btn-row {
       grid-area: actions;
-      grid-template-columns: repeat(2, minmax(0, 220px));
+      grid-template-columns: minmax(0, 160px) minmax(0, 1fr);
       justify-content: start;
       gap: 8px;
       margin-top: 0;
+    }
+
+    .marketplace-row {
+      grid-template-columns: repeat(3, minmax(0, 150px));
+      justify-content: start;
+      gap: 8px;
     }
 
     .btn-row .btn,
@@ -1402,7 +1529,20 @@
 
               <div class="btn-row">
                 <a class="btn primary" id="backLink" href="./sleeves/">← 図鑑へ戻る</a>
-                <a class="btn" id="mercariLink" href="https://jp.mercari.com/search" target="_blank" rel="noopener noreferrer nofollow">メルカリで最安値を見る</a>
+                <div class="marketplace-row" aria-label="外部サイトで探す">
+                  <a class="marketplace-link marketplace-link--mercari" id="mercariLink" href="https://jp.mercari.com/search" target="_blank" rel="noopener noreferrer nofollow" aria-label="メルカリで探す">
+                    <span class="marketplace-logo marketplace-logo--mercari" aria-hidden="true">m</span>
+                    <span>メルカリで探す</span>
+                  </a>
+                  <a class="marketplace-link marketplace-link--yahoo" id="yahooAuctionLink" href="https://auctions.yahoo.co.jp/search/search" target="_blank" rel="noopener noreferrer nofollow" aria-label="ヤフオクで探す">
+                    <span class="marketplace-logo marketplace-logo--yahoo" aria-hidden="true">ヤフオク!</span>
+                    <span>で探す</span>
+                  </a>
+                  <a class="marketplace-link marketplace-link--suruga" id="surugayaLink" href="https://www.suruga-ya.jp/search" target="_blank" rel="noopener noreferrer nofollow" aria-label="駿河屋で探す">
+                    <span class="marketplace-logo marketplace-logo--suruga" aria-hidden="true">駿</span>
+                    <span>駿河屋で探す</span>
+                  </a>
+                </div>
               </div>
 
               <div class="share-block">
@@ -2079,6 +2219,20 @@
       const keyword = baseName ? `${baseName} デッキシールド` : "";
       if (!keyword) return "https://jp.mercari.com/search";
       return `https://jp.mercari.com/search?keyword=${encodeURIComponent(keyword)}`;
+    }
+
+    function buildYahooAuctionSearchUrl(name) {
+      const baseName = String(name || "").trim();
+      const keyword = baseName ? `${baseName} デッキシールド` : "";
+      if (!keyword) return "https://auctions.yahoo.co.jp/search/search";
+      return `https://auctions.yahoo.co.jp/search/search?p=${encodeURIComponent(keyword)}`;
+    }
+
+    function buildSurugayaSearchUrl(name) {
+      const baseName = String(name || "").trim();
+      const keyword = baseName ? `${baseName} デッキシールド` : "";
+      if (!keyword) return "https://www.suruga-ya.jp/search";
+      return `https://www.suruga-ya.jp/search?search_word=${encodeURIComponent(keyword)}`;
     }
 
     function normalizeWeekly(arr) {
@@ -3800,6 +3954,10 @@
       document.getElementById("backLink").href = "./sleeves/";
       const mercariLink = document.getElementById("mercariLink");
       if (mercariLink) mercariLink.href = buildMercariSearchUrl(s.name);
+      const yahooAuctionLink = document.getElementById("yahooAuctionLink");
+      if (yahooAuctionLink) yahooAuctionLink.href = buildYahooAuctionSearchUrl(s.name);
+      const surugayaLink = document.getElementById("surugayaLink");
+      if (surugayaLink) surugayaLink.href = buildSurugayaSearchUrl(s.name);
 
       const fullPeriodSeries = buildFullPeriodSeries(s);
       const latestObservation = fullPeriodSeries.length ? fullPeriodSeries[fullPeriodSeries.length - 1] : null;
