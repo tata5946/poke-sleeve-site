@@ -138,7 +138,7 @@ a:hover {
 
 .site-title-logo--sidebar {
     grid-column: 1 / -1;
-    max-width: 218px;
+    max-width: none;
 }
 
 .sidebar-brand-copy {
@@ -534,8 +534,25 @@ a:hover {
 }
 
 .site-title-logo--header {
-    width: clamp(190px, 24vw, 330px);
-    max-height: 58px;
+    width: clamp(420px, 42vw, 760px);
+    max-height: 104px;
+}
+
+.dashboard-sidebar .sidebar-brand {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.dashboard-sidebar .site-title-logo--sidebar {
+    grid-column: 1 / -1 !important;
+    width: min(286px, calc(100% + 30px)) !important;
+    max-width: none !important;
+    height: auto !important;
+    margin-left: -15px;
 }
 
 .menu-toggle {
@@ -1883,8 +1900,8 @@ footer.site-footer {
     }
 
     .site-title-logo--header {
-        width: min(100%, 230px);
-        max-height: 44px;
+        width: min(100%, 360px);
+        max-height: 70px;
     }
 
     .logo {
