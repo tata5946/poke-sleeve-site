@@ -1495,14 +1495,14 @@
     }
 
     .detail-hero {
-      grid-template-columns: 320px minmax(0, 1fr);
+      grid-template-columns: 320px minmax(0, 1fr) minmax(300px, 360px);
       grid-template-areas:
-        "image title"
-        "image badges"
-        "image info"
-        "image tags"
-        "actions price"
-        "share price";
+        "image title price"
+        "image badges price"
+        "image info price"
+        "image tags price"
+        "actions tags price"
+        "share tags price";
       gap: 12px 18px;
       padding: 16px;
       border-radius: 8px;
@@ -1570,7 +1570,7 @@
     }
 
     .box .value {
-      font-size: clamp(40px, 4.2vw, 56px);
+      font-size: clamp(36px, 3.8vw, 50px);
       letter-spacing: 0;
     }
 
@@ -1608,6 +1608,7 @@
       grid-template-columns: 1fr;
       gap: 8px;
       margin-top: 0;
+      align-self: end;
     }
 
     .btn-row .btn.primary {
@@ -1629,6 +1630,7 @@
 
     .share-block {
       grid-area: share;
+      align-self: start;
     }
 
     .share-row {
