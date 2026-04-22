@@ -919,8 +919,14 @@
       .box .label,
       .box .value,
       #weeklyDelta,
-      #weeklyCount {
+      #weeklyCount,
+      #weeklyUnitPrice {
         text-align: center;
+      }
+
+      #weeklyUnitPrice {
+        margin-left: auto;
+        margin-right: auto;
       }
 
       .box .value {
@@ -1134,6 +1140,23 @@
     #weeklyDelta,
     #weeklyCount {
       font-weight: 800;
+    }
+
+    .unit-price {
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #eef4ff;
+      border: 1px solid #c7d7fe;
+      color: #1e3a8a;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0;
     }
 
     .btn-row {
@@ -1372,6 +1395,7 @@
                 <div class="box">
                   <div id="latestPriceLabel" class="label">現在価格</div>
                   <div id="latestWeekly" class="value">-</div>
+                  <div id="weeklyUnitPrice" class="unit-price" hidden></div>
                   <div id="weeklyDelta" class="delta" style="margin-top:6px;"></div>
                   <div id="weeklyCount" class="meta" style="margin-top:6px;">最終観測日: -</div>
                 </div>
@@ -3382,7 +3406,47 @@
       `;
     }
 
-    function setPriceKpiFromSeries(points) {
+    function getSleeveCategoryTexts(sleeve) {
+      const values = [];
+      const push = (value) => {
+        if (Array.isArray(value)) {
+          value.forEach(push);
+          return;
+        }
+        const text = String(value ?? "").trim();
+        if (text) values.push(text);
+      };
+
+      push(sleeve?.categories);
+      push(sleeve?.categoryTags);
+      push(sleeve?.tags);
+      push(sleeve?.tag);
+      push(sleeve?.badge);
+      for (let i = 1; i <= 9; i++) push(sleeve?.[`category${i}`]);
+      return Array.from(new Set(values));
+    }
+
+    function getSleeveSheetCount(sleeve) {
+      const categories = getSleeveCategoryTexts(sleeve);
+      return categories.some((text) => /32\s*枚販売|32\s*枚/.test(text)) ? 32 : 64;
+    }
+
+    function renderUnitPrice(latestPrice, sleeve) {
+      const el = document.getElementById("weeklyUnitPrice");
+      if (!el) return;
+      if (!Number.isFinite(latestPrice) || latestPrice <= 0) {
+        el.hidden = true;
+        el.textContent = "";
+        return;
+      }
+
+      const sheetCount = getSleeveSheetCount(sleeve);
+      const unitPrice = Math.round(latestPrice / sheetCount);
+      el.textContent = `1枚あたり 約${unitPrice.toLocaleString()}円（${sheetCount}枚入り）`;
+      el.hidden = false;
+    }
+
+    function setPriceKpiFromSeries(points, sleeve) {
       const latestEl = document.getElementById("latestWeekly");
       const deltaEl = document.getElementById("weeklyDelta");
       const countEl = document.getElementById("weeklyCount");
@@ -3391,6 +3455,7 @@
       const list = enrichSeries(points);
       if (!list.length) {
         latestEl.textContent = "-";
+        renderUnitPrice(null, sleeve);
         deltaEl.textContent = "比較できるデータがありません";
         deltaEl.className = "delta flat";
         countEl.textContent = "最終観測日: -";
@@ -3398,6 +3463,7 @@
       }
       const latest = list[list.length - 1];
       latestEl.textContent = `${latest.price.toLocaleString()}円`;
+      renderUnitPrice(latest.price, sleeve);
       countEl.textContent = `最終観測日: ${formatPointDate(latest, "all")}`;
       const prev = list.length >= 2 ? list[list.length - 2] : null;
       if (!prev) {
@@ -3749,7 +3815,7 @@
       const periodAllBtn = document.getElementById("periodAllBtn");
       let currentPeriod = "all";
 
-      setPriceKpiFromSeries(fullPeriodSeries);
+      setPriceKpiFromSeries(fullPeriodSeries, s);
       renderRelatedSleeves(s, sleeves);
 
       const setPeriodButtons = (period) => {
