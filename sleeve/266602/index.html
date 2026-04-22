@@ -1481,6 +1481,339 @@
         display: none;
       }
     }
+
+    /* Final Stitch pass: clearer product/detail hierarchy for desktop and mobile. */
+    body.page-content-focus .page-shell--content {
+      width: min(100%, 1180px);
+    }
+
+    .page-focus-panel--detail {
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .detail-hero {
+      grid-template-columns: 320px minmax(0, 1fr);
+      grid-template-areas:
+        "image title"
+        "image badges"
+        "image info"
+        "image tags"
+        "actions price"
+        "share price";
+      gap: 12px 18px;
+      padding: 16px;
+      border-radius: 8px;
+      border-color: rgba(197, 198, 210, 0.55);
+      background: #fff;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+    }
+
+    .detail-hero-main {
+      display: contents;
+    }
+
+    .detail-hero .thumb {
+      grid-area: image;
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      padding: 10px;
+      border-radius: 8px;
+      border-color: #dbe5f2;
+      box-shadow: none;
+    }
+
+    .name {
+      grid-area: title;
+      max-width: none;
+      margin-top: 2px;
+      font-size: clamp(26px, 2.7vw, 38px);
+      line-height: 1.14;
+      letter-spacing: 0;
+    }
+
+    #badges {
+      grid-area: badges;
+    }
+
+    .detail-info-card {
+      grid-area: info;
+    }
+
+    .detail-tag-list {
+      grid-area: tags;
+    }
+
+    .kpi {
+      grid-area: price;
+      margin-top: 0;
+    }
+
+    .box {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 16px;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      border-color: #dbe5f2;
+    }
+
+    .box .label,
+    .box .value {
+      grid-column: 1 / -1;
+    }
+
+    .box .value {
+      font-size: clamp(40px, 4.2vw, 56px);
+      letter-spacing: 0;
+    }
+
+    #weeklyUnitPrice,
+    #weeklyDelta,
+    #weeklyCount {
+      min-height: 42px;
+      margin-top: 0 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #eef4ff;
+      border: 1px solid #d5e2ff;
+      color: #1e3a8a;
+      font-size: 12px;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    #weeklyUnitPrice[hidden] {
+      display: none;
+    }
+
+    #weeklyCount {
+      color: #475569;
+      background: #f8fafc;
+      border-color: #e2e8f0;
+    }
+
+    .btn-row {
+      grid-area: actions;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 0;
+    }
+
+    .btn-row .btn.primary {
+      min-height: 40px;
+      border-radius: 8px;
+    }
+
+    .marketplace-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .marketplace-link {
+      min-height: 40px;
+      border-radius: 8px;
+      box-shadow: none;
+    }
+
+    .share-block {
+      grid-area: share;
+    }
+
+    .share-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .share-row .btn {
+      min-height: 38px;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .price-panel {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+    }
+
+    .price-panel-body {
+      display: grid;
+      gap: 10px;
+    }
+
+    .price-panel-summary-copy h3,
+    .related-panel h3 {
+      letter-spacing: 0;
+    }
+
+    .chart-period-switch {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      overflow: visible;
+      border-radius: 8px;
+    }
+
+    .chart-period-btn {
+      min-height: 36px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .chart-wrap,
+    .table-wrap,
+    .single-observation-card,
+    .related-panel,
+    .related-card,
+    .related-empty {
+      border-radius: 8px;
+    }
+
+    .related-sections {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 900px) {
+      body.page-content-focus .page-shell--content {
+        width: 100%;
+      }
+
+      .detail-hero {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "image"
+          "title"
+          "badges"
+          "info"
+          "tags"
+          "price"
+          "actions"
+          "share";
+        gap: 10px;
+        padding: 12px;
+      }
+
+      .detail-hero .thumb {
+        width: min(100%, 260px);
+        height: auto;
+        margin: 0 auto;
+      }
+
+      .name {
+        font-size: 24px;
+        line-height: 1.2;
+        text-align: left;
+      }
+
+      .box {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: 12px;
+      }
+
+      .box .value {
+        font-size: 38px;
+      }
+
+      #weeklyUnitPrice {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+
+      .marketplace-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .marketplace-link--mercari {
+        grid-column: 1 / -1;
+      }
+
+      .share-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .related-sections {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .detail-wrap {
+        margin-top: 8px;
+      }
+
+      .breadcrumb {
+        margin-bottom: 8px;
+      }
+
+      .detail-hero {
+        padding: 10px;
+      }
+
+      .detail-hero .thumb {
+        width: min(100%, 232px);
+      }
+
+      .detail-info-card,
+      .detail-note-box {
+        padding: 0;
+        background: transparent;
+        border: 0;
+      }
+
+      .detail-meta-chip,
+      .detail-tag {
+        min-height: 26px;
+        padding: 5px 8px;
+        border-radius: 8px;
+        box-shadow: none;
+      }
+
+      .box {
+        gap: 6px;
+      }
+
+      .box .label {
+        font-size: 11px;
+      }
+
+      .box .value {
+        font-size: 34px;
+      }
+
+      #weeklyUnitPrice,
+      #weeklyDelta,
+      #weeklyCount {
+        min-height: 38px;
+        font-size: 11px;
+      }
+
+      .marketplace-link,
+      .share-row .btn,
+      .btn-row .btn.primary {
+        min-height: 42px;
+      }
+
+      .price-panel {
+        margin-top: 10px;
+        padding: 12px;
+      }
+    }
   </style>
 </head>
 
