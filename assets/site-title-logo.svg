@@ -60,6 +60,6 @@
 
   <g font-family="'Noto Sans JP', 'Yu Gothic', 'YuGothic', 'Hiragino Kaku Gothic ProN', sans-serif" font-weight="900">
     <text x="336" y="171" fill="url(#titleBlue)" font-size="104" letter-spacing="-5">ポケスリ相場</text>
-    <text x="956" y="171" fill="url(#titleGold)" font-size="104" letter-spacing="-5">ナビ</text>
+    <text x="890" y="171" fill="url(#titleGold)" font-size="104" letter-spacing="-5">ナビ</text>
   </g>
 </svg>
