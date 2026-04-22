@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 300" role="img" aria-labelledby="title desc">
+  <title id="title">ポケスリ相場ナビ</title>
+  <desc id="desc">カードと価格チャートを組み合わせたポケスリ相場ナビの横長ロゴ</desc>
+  <defs>
+    <linearGradient id="cardBack" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#08245a"/>
+      <stop offset="0.52" stop-color="#0d4f9f"/>
+      <stop offset="1" stop-color="#8bd3ff"/>
+    </linearGradient>
+    <linearGradient id="blueText" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00235a"/>
+      <stop offset="0.54" stop-color="#003a8f"/>
+      <stop offset="1" stop-color="#0b74df"/>
+    </linearGradient>
+    <linearGradient id="goldText" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f0b30d"/>
+      <stop offset="1" stop-color="#ffcb37"/>
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0b2a5f" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect x="255" y="58" width="1190" height="192" rx="8" fill="#ffffff" stroke="#07285c" stroke-width="13"/>
+  <path d="M255 235h1184l-22 15H274z" fill="#07285c" opacity=".12"/>
+  <path d="M355 218h1040" stroke="#88bce8" stroke-width="8" stroke-linecap="round"/>
+  <path d="M355 218h250l140 1 112 0 105 17 105-28 118 50 108-49 67 26 68-71" fill="none" stroke="#65a8dd" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#9ac7ed">
+    <circle cx="355" cy="218" r="9"/>
+    <circle cx="600" cy="218" r="9"/>
+    <circle cx="744" cy="219" r="9"/>
+    <circle cx="858" cy="219" r="9"/>
+    <circle cx="962" cy="236" r="9"/>
+    <circle cx="1067" cy="208" r="9"/>
+    <circle cx="1185" cy="258" r="9"/>
+    <circle cx="1293" cy="209" r="9"/>
+    <circle cx="1360" cy="235" r="9"/>
+  </g>
+  <g fill="#c9def1" opacity=".78">
+    <rect x="1266" y="203" width="24" height="48"/>
+    <rect x="1307" y="185" width="24" height="66"/>
+    <rect x="1348" y="161" width="24" height="90"/>
+    <rect x="1389" y="129" width="24" height="122"/>
+  </g>
+  <path d="M1395 83l-55 24 39 12 12 39z" fill="#0b3b8a"/>
+
+  <g filter="url(#softShadow)">
+    <rect x="74" y="38" width="196" height="216" rx="18" fill="#ffffff" stroke="#07285c" stroke-width="12" transform="rotate(-8 172 146)"/>
+    <rect x="102" y="63" width="142" height="166" rx="8" fill="url(#cardBack)" stroke="#d9ecff" stroke-width="7" transform="rotate(-8 173 146)"/>
+    <rect x="116" y="76" width="115" height="140" rx="5" fill="none" stroke="#275b99" stroke-width="6" transform="rotate(-8 173 146)"/>
+    <circle cx="170" cy="148" r="39" fill="#ffffff"/>
+    <circle cx="170" cy="148" r="18" fill="url(#cardBack)"/>
+    <path d="M108 150h123" stroke="#ffffff" stroke-width="8" stroke-linecap="round" transform="rotate(-8 170 148)"/>
+    <path d="M216 84l9 15 17 2-13 10 4 17-15-9-15 8 4-17-13-11 17-1z" fill="#ffffff" opacity=".95"/>
+    <path d="M111 210l6 10 12 2-9 7 2 12-10-6-10 5 3-12-9-8 12-1z" fill="#ffffff" opacity=".9"/>
+    <rect x="254" y="68" width="40" height="170" rx="10" fill="#e8f4ff" stroke="#07285c" stroke-width="9" transform="rotate(-8 274 153)"/>
+  </g>
+
+  <g font-family="'Noto Sans JP', 'Yu Gothic', 'Hiragino Kaku Gothic ProN', sans-serif" font-weight="900">
+    <text x="340" y="172" fill="url(#blueText)" font-size="96" letter-spacing="-5">ポケスリ相場</text>
+    <text x="1088" y="172" fill="url(#goldText)" font-size="96" letter-spacing="-4">ナビ</text>
+  </g>
+</svg>

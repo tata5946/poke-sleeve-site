@@ -78,10 +78,7 @@ const HEADER_HTML = `
       <span class="menu-toggle-bar" aria-hidden="true"></span>
     </button>
     <a href="./index.html" class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <h1 class="main-title"><span class="accent">ポケスリ</span>相場ナビ</h1>
-      </div>
+      <img class="site-title-logo site-title-logo--header" src="./assets/site-title-logo.svg" alt="ポケスリ相場ナビ" />
     </a>
     <div class="header-search" aria-label="サイト内検索">
       <div class="search-wrap">
@@ -130,11 +127,7 @@ function buildDashboardSidebarHtml(activeSidebar = "") {
   const itemClass = (key) => `sidebar-link${activeSidebar === key ? " is-active" : ""}`;
   return `
   <div class="sidebar-brand">
-    <div class="sidebar-brand-mark" aria-hidden="true"><span class="brand-ball"></span></div>
-    <div class="sidebar-brand-copy">
-      <h1 class="sidebar-brand-title">ポケスリ相場ナビ</h1>
-      <p class="sidebar-brand-sub">ホーム</p>
-    </div>
+    <img class="site-title-logo site-title-logo--sidebar" src="./assets/site-title-logo.svg" alt="ポケスリ相場ナビ" />
   </div>
 
   <nav class="sidebar-nav" aria-label="主要ナビゲーション">
