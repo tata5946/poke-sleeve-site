@@ -1495,14 +1495,9 @@
     }
 
     .detail-hero {
-      grid-template-columns: 320px minmax(0, 1fr) minmax(300px, 360px);
+      grid-template-columns: 320px minmax(0, 1fr);
       grid-template-areas:
-        "image title price"
-        "image badges price"
-        "image info price"
-        "image tags price"
-        "actions tags price"
-        "share tags price";
+        "image content";
       gap: 12px 18px;
       padding: 16px;
       border-radius: 8px;
@@ -1512,7 +1507,19 @@
     }
 
     .detail-hero-main {
-      display: contents;
+      grid-area: content;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+      grid-template-areas:
+        "title price"
+        "badges price"
+        "info price"
+        "tags price"
+        "actions price"
+        "share price";
+      gap: 10px 18px;
+      align-content: start;
+      align-items: start;
     }
 
     .detail-hero .thumb {
@@ -1605,10 +1612,10 @@
     .btn-row {
       grid-area: actions;
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 140px) minmax(0, 1fr);
       gap: 8px;
       margin-top: 0;
-      align-self: end;
+      align-self: start;
     }
 
     .btn-row .btn.primary {
@@ -1618,7 +1625,7 @@
 
     .marketplace-row {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
     }
 
@@ -1700,6 +1707,14 @@
         grid-template-columns: 1fr;
         grid-template-areas:
           "image"
+          "content";
+        gap: 10px;
+        padding: 12px;
+      }
+
+      .detail-hero-main {
+        grid-template-columns: 1fr;
+        grid-template-areas:
           "title"
           "badges"
           "info"
@@ -1708,7 +1723,6 @@
           "actions"
           "share";
         gap: 10px;
-        padding: 12px;
       }
 
       .detail-hero .thumb {
