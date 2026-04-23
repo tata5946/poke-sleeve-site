@@ -972,6 +972,12 @@
         margin-bottom: 8px;
       }
 
+      .chart-panel .panel-heading {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
       .section-title {
         font-size: 15px;
         letter-spacing: 0;
@@ -984,6 +990,7 @@
       .share-block {
         margin-top: 0;
         flex: 0 0 auto;
+        justify-self: start;
       }
 
       .share-status {
@@ -1035,12 +1042,13 @@
       }
 
       .chart-viewport {
-        overflow-x: auto;
+        overflow: hidden;
         padding-inline: 4px;
       }
 
       .chart {
-        min-width: 620px;
+        width: 100%;
+        min-width: 0;
       }
 
       .hero .kpi {
@@ -1736,15 +1744,15 @@
         return;
       }
 
-      const W = 980;
-      const H = isMobile ? 520 : 420;
-      const padL = isMobile ? 70 : 84;
-      const padR = isMobile ? 28 : 34;
-      const mainTop = isMobile ? 22 : 24;
-      const mainBottom = isMobile ? 350 : 288;
-      const xLabelY = isMobile ? 382 : 318;
-      const navTop = isMobile ? 414 : 340;
-      const navBottom = isMobile ? 486 : 392;
+      const W = isMobile ? 430 : 980;
+      const H = isMobile ? 470 : 420;
+      const padL = isMobile ? 48 : 84;
+      const padR = isMobile ? 18 : 34;
+      const mainTop = isMobile ? 20 : 24;
+      const mainBottom = isMobile ? 306 : 288;
+      const xLabelY = isMobile ? 334 : 318;
+      const navTop = isMobile ? 370 : 340;
+      const navBottom = isMobile ? 438 : 392;
       const ticks = 4;
       const minWindow = Math.min(Math.max(2, Math.ceil(data.length * 0.12)), data.length);
 
