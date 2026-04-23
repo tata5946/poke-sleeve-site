@@ -779,6 +779,45 @@
       color: #334155;
     }
 
+    .ai-market-panel,
+    .contrib-panel,
+    .market-table-grid {
+      min-width: 0;
+    }
+
+    .ai-comment-card {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f8fbff;
+      border: 1px solid #dbe5f2;
+    }
+
+    .ai-comment-meta {
+      margin: 0;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .ai-comment-body {
+      margin: 0;
+      color: #1f2937;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.75;
+      white-space: pre-wrap;
+    }
+
+    .panel-note {
+      margin: -2px 0 10px;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
     @media (max-width: 1100px) {
       .index-summary-grid {
         grid-template-columns: 1fr;
@@ -790,19 +829,66 @@
     }
 
     @media (max-width: 900px) {
+      body.page-market-list .dashboard-content {
+        padding-bottom: 84px;
+      }
+
+      body.page-market-list .container {
+        padding-inline: 10px;
+      }
+
+      .market-index-shell {
+        gap: 10px;
+      }
+
+      .market-index-shell .breadcrumb {
+        margin: 0;
+        padding: 2px 2px 0;
+        font-size: 11px;
+        line-height: 1.4;
+      }
+
       .market-index-hero {
         align-items: flex-start;
         flex-direction: column;
+        gap: 10px;
+        padding: 12px;
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(255,255,255,.98) 0%, rgba(244,248,255,.98) 100%);
+        box-shadow: none;
+      }
+
+      .market-index-hero::before {
+        opacity: .22;
       }
 
       .market-index-label {
         min-height: 22px;
+        padding: 0 8px;
+        border-radius: 8px;
         font-size: 10px;
+        letter-spacing: 0;
       }
 
       .market-index-meta {
+        width: 100%;
         justify-content: flex-start;
         margin-left: 0;
+        gap: 6px;
+      }
+
+      .market-index-badge {
+        flex: 1 1 132px;
+        justify-content: center;
+        min-height: 32px;
+        padding-inline: 8px;
+        border-radius: 8px;
+        font-size: 11px;
+      }
+
+      .market-index-badge strong {
+        font-size: 12px;
       }
 
       .market-hero {
@@ -811,10 +897,84 @@
 
       .market-hero-title {
         font-size: 22px;
+        letter-spacing: 0;
+      }
+
+      .index-summary-grid {
+        display: flex;
+        gap: 8px;
+        margin-inline: -10px;
+        padding: 0 10px 2px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .index-summary-grid::-webkit-scrollbar,
+      .chart-toolbar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .index-summary-card {
+        flex: 0 0 148px;
+        min-height: 104px;
+        padding: 11px 12px;
+        border-radius: 8px;
+        box-shadow: none;
+        scroll-snap-align: start;
+      }
+
+      .index-summary-card.is-primary {
+        flex-basis: min(84vw, 320px);
+        min-height: 138px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background:
+          linear-gradient(135deg, #001845 0%, #00327c 100%);
+      }
+
+      .index-summary-label {
+        margin-bottom: 7px;
+        font-size: 10px;
+        letter-spacing: 0;
+      }
+
+      .index-summary-card.is-primary .index-summary-value {
+        font-size: 46px;
+        letter-spacing: 0;
+      }
+
+      .metric-value,
+      .market-state-value {
+        font-size: 22px;
+        letter-spacing: 0;
+      }
+
+      .metric-foot,
+      .delta,
+      .subvalue,
+      .market-state-note {
+        font-size: 11px;
+        line-height: 1.45;
       }
 
       .chart-panel {
-        padding: 14px;
+        padding: 12px 0 10px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: none;
+      }
+
+      .panel-heading {
+        align-items: flex-start;
+        padding-inline: 12px;
+        margin-bottom: 8px;
+      }
+
+      .section-title {
+        font-size: 15px;
+        letter-spacing: 0;
       }
 
       .chart-panel .section-title {
@@ -822,33 +982,65 @@
       }
 
       .share-block {
-        margin-top: 8px;
+        margin-top: 0;
+        flex: 0 0 auto;
       }
 
       .share-status {
         font-size: 11px;
       }
 
+      .share-row .btn {
+        min-height: 32px;
+        padding-inline: 10px;
+        border-radius: 8px;
+      }
+
+      .chart-wrap {
+        margin: 0;
+        padding: 8px 0 10px;
+        border-width: 1px 0 0;
+        border-radius: 0;
+      }
+
       .chart-toolbar {
-        justify-content: space-between;
-        gap: 4px;
-        margin-bottom: 10px;
+        justify-content: flex-start;
+        gap: 6px;
+        margin-bottom: 8px;
+        padding-inline: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       .chart-zoom-btn {
         min-height: 34px;
-        padding: 6px 8px;
+        flex: 0 0 auto;
+        padding: 6px 10px;
+        border-radius: 8px;
         font-size: 11px;
       }
 
       .chart-zoom-label {
+        flex: 0 0 auto;
         min-width: 0;
+        min-height: 34px;
+        display: inline-flex;
+        align-items: center;
         font-size: 11px;
         text-align: left;
       }
 
       .chart-panel #indexChart {
-        margin-top: 12px;
+        margin-top: 0;
+      }
+
+      .chart-viewport {
+        overflow-x: auto;
+        padding-inline: 4px;
+      }
+
+      .chart {
+        min-width: 620px;
       }
 
       .hero .kpi {
@@ -857,10 +1049,42 @@
 
       .market-grid {
         grid-template-columns: 1fr;
+        gap: 10px;
       }
 
       .contrib-grid {
         grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .market-panel {
+        padding: 12px;
+        border-radius: 8px;
+        box-shadow: none;
+      }
+
+      .ai-comment-card {
+        padding: 10px;
+      }
+
+      .ai-comment-body {
+        max-height: 13.5em;
+        overflow: auto;
+      }
+
+      .contrib-item {
+        grid-template-columns: minmax(0, 1fr) auto;
+        border-radius: 8px;
+      }
+
+      .contrib-weight {
+        grid-column: 1 / -1;
+        justify-self: start;
+      }
+
+      .table-wrap {
+        max-height: 300px;
+        border-radius: 8px;
       }
 
     }
@@ -945,6 +1169,48 @@
               </div>
             </div>
             <div id="indexChart"></div>
+        </section>
+
+        <section class="market-panel ai-market-panel" aria-label="AI市場コメント">
+          <div class="panel-heading">
+            <h2 class="section-title">AI市場コメント</h2>
+          </div>
+          <div class="ai-comment-card">
+            <p id="aiCommentWeek" class="ai-comment-meta">対象週: -</p>
+            <p id="aiCommentBody" class="ai-comment-body">コメントを読み込み中です。</p>
+          </div>
+        </section>
+
+        <section class="market-panel contrib-panel" aria-label="寄与度分析">
+          <div class="panel-heading">
+            <h2 class="section-title">寄与度分析</h2>
+          </div>
+          <p class="panel-note">最新週の指数に影響したスリーブです。</p>
+          <div class="contrib-grid">
+            <div>
+              <h3 class="section-title">上昇寄与</h3>
+              <div id="contribUpList" class="contrib-list"></div>
+            </div>
+            <div>
+              <h3 class="section-title">下落寄与</h3>
+              <div id="contribDownList" class="contrib-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="market-grid market-table-grid" aria-label="指数テーブル">
+          <div class="market-panel">
+            <div class="panel-heading">
+              <h2 class="section-title">指数テーブル</h2>
+            </div>
+            <div id="indexTable"></div>
+          </div>
+          <div class="market-panel">
+            <div class="panel-heading">
+              <h2 class="section-title">市場内訳</h2>
+            </div>
+            <div id="distTable"></div>
+          </div>
         </section>
                 </div>
  
@@ -2245,6 +2511,22 @@
       } else {
         renderLineChartV2("indexChart", "", indexSeries, "week", "index", (v) => Number(v).toFixed(1));
       }
+
+      const contributors = buildLatestContributors(weeklyEntries, weeks, {
+        minPrice: 300,
+        minCount: 2,
+        weightCap: 20,
+        maxRatio: 2.5
+      });
+      const contribUpList = document.getElementById("contribUpList");
+      const contribDownList = document.getElementById("contribDownList");
+      if (contribUpList) contribUpList.innerHTML = renderContribList(contributors.up, "up");
+      if (contribDownList) contribDownList.innerHTML = renderContribList(contributors.down, "down");
+
+      const indexTable = document.getElementById("indexTable");
+      const distTable = document.getElementById("distTable");
+      if (indexTable) indexTable.innerHTML = renderTableIndex(series);
+      if (distTable) distTable.innerHTML = renderTableDist(last);
 
       runDeferred(() => {
         renderAiComment(last?.week || null);
