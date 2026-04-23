@@ -126,9 +126,9 @@ const FOOTER_HTML = `
 function buildDashboardSidebarHtml(activeSidebar = "") {
   const itemClass = (key) => `sidebar-link${activeSidebar === key ? " is-active" : ""}`;
   return `
-  <div class="sidebar-brand">
+  <a class="sidebar-brand" href="${escapeHtml(buildSiteHref("index.html"))}" aria-label="ポケスリ相場ナビ ホームへ">
     <img class="site-title-logo site-title-logo--sidebar" src="./assets/image.png?v=20260422a" alt="ポケスリ相場ナビ" />
-  </div>
+  </a>
 
   <nav class="sidebar-nav" aria-label="主要ナビゲーション">
     <a class="${itemClass("index")}" href="${escapeHtml(buildSiteHref("index.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⌂</span><span>ホーム</span></a>
