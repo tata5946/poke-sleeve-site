@@ -1469,12 +1469,43 @@
         .sort((a, b) => String(a.week).localeCompare(String(b.week))); // asc
     }
 
+    function normalizeMonthlyPrices(arr) {
+      return (Array.isArray(arr) ? arr : [])
+        .map(x => {
+          const week = toISODate(x.month ?? x.week);
+
+          let price = null;
+          const priceStr = String(x.price ?? "").trim();
+          if (priceStr !== "" && priceStr !== "-" && priceStr !== "—") {
+            const n = Number(priceStr);
+            if (Number.isFinite(n) && n > 0) price = n;
+          }
+
+          let count = null;
+          const countStr = String(x.count ?? "").trim();
+          if (countStr !== "" && countStr !== "-" && countStr !== "—") {
+            const n = Number(countStr);
+            if (Number.isFinite(n)) count = n;
+          }
+
+          return { week, price: price == null ? null : price, count: count == null ? 1 : count };
+        })
+        .filter(x => x.week && periodKind(x.week) === "month")
+        .sort((a, b) => String(a.week).localeCompare(String(b.week)));
+    }
+
     function buildPeriodEntries(sleeves, kind = "week") {
       return (Array.isArray(sleeves) ? sleeves : []).map((sleeve) => {
         const weekMap = new Map();
-        for (const row of normalizeWeekly(sleeve.weeklyPrices)) {
-          if (periodKind(row.week) !== kind) continue;
-          weekMap.set(row.week, { price: row.price, count: row.count });
+        if (kind === "month") {
+          for (const row of normalizeMonthlyPrices(sleeve.monthlyPrices)) {
+            weekMap.set(row.week, { price: row.price, count: row.count });
+          }
+        } else {
+          for (const row of normalizeWeekly(sleeve.weeklyPrices)) {
+            if (periodKind(row.week) !== kind) continue;
+            weekMap.set(row.week, { price: row.price, count: row.count });
+          }
         }
         return { sleeve, weekMap };
       });
@@ -2670,7 +2701,7 @@
       const periodType = useMonthly ? "month" : "week";
       let rateRows = buildWeeklyMarketSeries(entries, periods, {
         minPrice: 300,
-        minCount: 2,
+        minCount: useMonthly ? 1 : 2,
         weightCap: 20,
         maxRatio: 2.5,
         periodType
@@ -2819,7 +2850,7 @@
 
       const contributors = buildLatestContributors(entries, periods, {
         minPrice: 300,
-        minCount: 2,
+        minCount: periodType === "month" ? 1 : 2,
         weightCap: 20,
         maxRatio: 2.5
       });
