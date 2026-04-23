@@ -167,6 +167,9 @@ function getCurrentTopbarKey() {
 function buildDashboardTopbarHtml(activeTopbar = getCurrentTopbarKey()) {
   const itemClass = (key) => `topbar-tab${activeTopbar === key ? " is-active" : ""}`;
   return `
+  <a class="topbar-mobile-logo" href="${escapeHtml(buildSiteHref("index.html"))}" aria-label="ポケスリ相場ナビ ホームへ">
+    <img src="./assets/image.png?v=20260422a" alt="ポケスリ相場ナビ" />
+  </a>
   <div class="topbar-search">
     <span class="topbar-search-icon" aria-hidden="true">⌕</span>
     <input id="dashboardSearchInput" class="topbar-search-input" type="search" placeholder="スリーブを検索..." autocomplete="off" />
