@@ -1297,6 +1297,9 @@
 
   <script>
     // 週次コメントは毎週ここに追記（キー: YYYY-MM-DD）
+    const MARKET_INDEX_BASE_MONTH = "2024-01";
+    const MARKET_INDEX_BASE_LABEL = "2024年1月";
+
     const AI_MARKET_COMMENTS_BY_WEEK = {
       "2026-02-23": "スリーブ指数は2月中旬に底を打ち、その後急速に回復しており短期的には上昇トレンド入りが確認できる。上昇スリーブ割合も約43%と広範囲に買いが入っており、特にキャラクター系・イベント系スリーブがランキング上位を占めるなどコレクション需要主導のテーマ相場が形成されている。価格帯は1000～2500円の流動性の高いゾーンに資金が集中しており、短期トレード需要も含めた活発な市場環境と考えられる。",
       "2026-03-02": "スリーブ指数は2月中旬に底を打ち、その後急速に回復しており短期的には上昇トレンド入りが確認できる。上昇スリーブ割合も約43%と広範囲に買いが入っており、特にキャラクター系・イベント系スリーブがランキング上位を占めるなどコレクション需要主導のテーマ相場が形成されている。価格帯は1000～2500円の流動性の高いゾーンに資金が集中しており、短期トレード需要も含めた活発な市場環境と考えられる。",
@@ -2399,25 +2402,38 @@
       return rows;
     }
 
-    function buildCumulativeIndexFromRates(rateRows, baseIndex = 100) {
+    function buildCumulativeIndexFromRates(rateRows, baseIndex = 100, opts = {}) {
+      const baseMonth = String(opts.baseMonth || MARKET_INDEX_BASE_MONTH || "").trim();
+      const baseLabel = String(opts.baseLabel || MARKET_INDEX_BASE_LABEL || baseMonth || "基準月").trim();
+      const validBaseIndexes = (Array.isArray(rateRows) ? rateRows : [])
+        .map((row, index) => ({ row, index }))
+        .filter(({ row }) => Number.isFinite(row?.avgLogReturn));
+      const targetBase = baseMonth
+        ? validBaseIndexes.find(({ row }) => String(row?.week || "").slice(0, 7) >= baseMonth)
+        : validBaseIndexes[0];
+      const fallbackBase = targetBase || validBaseIndexes[0] || null;
+      const baseIndexPosition = fallbackBase ? fallbackBase.index : -1;
+      const baseWeek = fallbackBase?.row?.week || null;
       let indexVal = null;
-      let baseWeek = null;
       const out = [];
       for (let i = 0; i < rateRows.length; i++) {
         const row = rateRows[i];
         const hasRate = Number.isFinite(row?.avgLogReturn);
+        if (baseIndexPosition < 0 || i < baseIndexPosition) {
+          out.push({ ...row, index: null, baseWeek, baseMonth, baseLabel });
+          continue;
+        }
         if (!hasRate) {
-          out.push({ ...row, index: indexVal, baseWeek });
+          out.push({ ...row, index: indexVal, baseWeek, baseMonth, baseLabel });
           continue;
         }
         if (indexVal == null) {
           indexVal = baseIndex;
-          baseWeek = row.week;
-          out.push({ ...row, index: indexVal, baseWeek });
+          out.push({ ...row, index: indexVal, baseWeek, baseMonth, baseLabel });
           continue;
         }
         indexVal = indexVal * Math.exp(row.avgLogReturn);
-        out.push({ ...row, index: indexVal, baseWeek });
+        out.push({ ...row, index: indexVal, baseWeek, baseMonth, baseLabel });
       }
       return out;
     }
@@ -2614,7 +2630,10 @@
         weightCap: 20,
         maxRatio: 2.5
       });
-      const series = buildCumulativeIndexFromRates(rateRows, 100);
+      const series = buildCumulativeIndexFromRates(rateRows, 100, {
+        baseMonth: MARKET_INDEX_BASE_MONTH,
+        baseLabel: MARKET_INDEX_BASE_LABEL
+      });
 
       // KPI表示用
       const subtitle = document.getElementById("subtitle");
@@ -2675,7 +2694,12 @@
         }
         if (kpiIndexMeta) {
           const baseRef = pairIdx.latest.baseWeek || null;
-          kpiIndexMeta.textContent = `基準週：${baseRef ? formatPeriodLabel(baseRef) : "—"} = 100`;
+          const baseMonth = pairIdx.latest.baseMonth || MARKET_INDEX_BASE_MONTH;
+          const baseLabel = pairIdx.latest.baseLabel || MARKET_INDEX_BASE_LABEL;
+          const isTargetMonth = baseRef && String(baseRef).slice(0, 7) === String(baseMonth);
+          kpiIndexMeta.textContent = isTargetMonth
+            ? `${baseLabel} = 100`
+            : `${baseLabel}基準（実基準：${baseRef ? formatPeriodLabel(baseRef) : "—"} = 100）`;
         }
       } else if (kpiIndexBaseDiff) {
         kpiIndexBaseDiff.className = "subvalue flat";
@@ -2695,7 +2719,7 @@
       setupMarketShare(pairRate?.latest || null, pairIdx?.latest?.index ?? null);
 
       // チャート（指数）
-      const indexSeries = series;
+      const indexSeries = series.filter((row) => Number.isFinite(row?.index));
       const validIndexCount = indexSeries.filter(r => Number.isFinite(r.index) && r.index > 0).length;
       if (validIndexCount < 2) {
         document.getElementById("indexChart").innerHTML =
