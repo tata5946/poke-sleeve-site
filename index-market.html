@@ -499,6 +499,10 @@
       fill: #475467;
     }
 
+    .mobile-chart-summary {
+      display: none;
+    }
+
     /* Stitch pass 1: compact index dashboard, aligned with the ranking pages. */
     body.page-market-list {
       background:
@@ -1005,18 +1009,73 @@
 
       .chart-wrap {
         margin: 0;
-        padding: 8px 0 10px;
+        padding: 8px 12px 10px;
         border-width: 1px 0 0;
         border-radius: 0;
+      }
+
+      .chart-wrap--mobile {
+        display: grid;
+        gap: 10px;
+      }
+
+      .mobile-chart-summary {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 8px;
+      }
+
+      .mobile-chart-stat {
+        min-width: 0;
+        padding: 9px 10px;
+        border: 1px solid #dbe5f2;
+        border-radius: 8px;
+        background: #f8fbff;
+      }
+
+      .mobile-chart-stat span {
+        display: block;
+        color: #64748b;
+        font-size: 10px;
+        font-weight: 900;
+        line-height: 1.2;
+      }
+
+      .mobile-chart-stat strong {
+        display: block;
+        margin-top: 4px;
+        color: #001845;
+        font-family: var(--font-numeric);
+        font-size: 21px;
+        font-weight: 900;
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .mobile-chart-stat strong.up {
+        color: #dc2626;
+      }
+
+      .mobile-chart-stat strong.down {
+        color: #2563eb;
+      }
+
+      .mobile-chart-stat strong.flat {
+        color: #475467;
       }
 
       .chart-toolbar {
         justify-content: flex-start;
         gap: 6px;
         margin-bottom: 8px;
-        padding-inline: 12px;
+        padding-inline: 0;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+      }
+
+      .chart-toolbar--mobile-static {
+        margin: 0;
+        justify-content: center;
       }
 
       .chart-zoom-btn {
@@ -1043,12 +1102,16 @@
 
       .chart-viewport {
         overflow: hidden;
-        padding-inline: 4px;
+        padding-inline: 0;
       }
 
       .chart {
         width: 100%;
         min-width: 0;
+      }
+
+      .chart--mobile-index {
+        aspect-ratio: 350 / 190;
       }
 
       .hero .kpi {
@@ -1744,15 +1807,136 @@
         return;
       }
 
-      const W = isMobile ? 430 : 980;
-      const H = isMobile ? 470 : 420;
-      const padL = isMobile ? 48 : 84;
-      const padR = isMobile ? 18 : 34;
-      const mainTop = isMobile ? 20 : 24;
-      const mainBottom = isMobile ? 306 : 288;
-      const xLabelY = isMobile ? 334 : 318;
-      const navTop = isMobile ? 370 : 340;
-      const navBottom = isMobile ? 438 : 392;
+      if (isMobile) {
+        const W = 350;
+        const H = 190;
+        const padL = 36;
+        const padR = 24;
+        const padT = 18;
+        const padB = 36;
+        const chartBottom = H - padB;
+        const yValues = validData.map(d => d.y);
+        let yMin = Math.min(...yValues);
+        let yMax = Math.max(...yValues);
+        const span = (yMax - yMin) || 1;
+        yMin -= span * 0.12;
+        yMax += span * 0.12;
+        const yMid = yMin + ((yMax - yMin) / 2);
+        const xToPx = (i) => data.length <= 1 ? padL : padL + (i / (data.length - 1)) * (W - padL - padR);
+        const yToPx = (v) => padT + (1 - (v - yMin) / (yMax - yMin)) * (chartBottom - padT);
+        const mobilePath = (() => {
+          let d = "";
+          let penDown = false;
+          for (let i = 0; i < data.length; i++) {
+            if (!hasValidY(data[i].y)) {
+              penDown = false;
+              continue;
+            }
+            d += `${penDown ? " L" : " M"} ${xToPx(i)} ${yToPx(data[i].y)}`;
+            penDown = true;
+          }
+          return d.trim();
+        })();
+        const filledPoints = data
+          .map((point, idx) => hasValidY(point?.y) ? `${xToPx(idx)} ${yToPx(point.y)}` : null)
+          .filter(Boolean);
+        const firstValidIdx = data.findIndex((point) => hasValidY(point?.y));
+        const latestIdx = (() => {
+          for (let i = data.length - 1; i >= 0; i--) {
+            if (hasValidY(data[i]?.y)) return i;
+          }
+          return data.length - 1;
+        })();
+        const latest = data[latestIdx];
+        const firstFillX = firstValidIdx >= 0 ? xToPx(firstValidIdx) : padL;
+        const latestFillX = xToPx(latestIdx);
+        const fillD = filledPoints.length >= 2
+          ? `M ${firstFillX} ${chartBottom} L ${filledPoints.join(" L ")} L ${latestFillX} ${chartBottom} Z`
+          : "";
+        const baseDiff = hasValidY(latest?.y) ? latest.y - 100 : null;
+        const diffCls = getTrendClass(baseDiff);
+        const axisTicks = [
+          { value: yMax, y: yToPx(yMax) },
+          { value: yMid, y: yToPx(yMid) },
+          { value: yMin, y: yToPx(yMin) }
+        ];
+        const midIdx = Math.floor((data.length - 1) / 2);
+        const xLabels = [
+          { x: xToPx(0) + 2, text: formatMonthAxisLabel(data[0].x), anchor: "start" },
+          { x: xToPx(midIdx), text: formatMonthAxisLabel(data[midIdx].x), anchor: "middle" },
+          { x: xToPx(data.length - 1) - 2, text: formatMonthAxisLabel(data[data.length - 1].x), anchor: "end" }
+        ].filter((label, index, arr) => arr.findIndex((item) => item.text === label.text) === index || index === arr.length - 1);
+
+        el.innerHTML = `
+          <div class="chart-wrap chart-wrap--mobile">
+            <div class="mobile-chart-summary" aria-label="指数サマリー">
+              <div class="mobile-chart-stat">
+                <span>現在指数</span>
+                <strong>${hasValidY(latest?.y) ? escapeHtml(yFmt(latest.y)) : "-"}</strong>
+              </div>
+              <div class="mobile-chart-stat">
+                <span>基準比</span>
+                <strong class="${escapeHtml(diffCls)}">${Number.isFinite(baseDiff) ? escapeHtml(formatSignedPercent(baseDiff, 1)) : "-"}</strong>
+              </div>
+            </div>
+            <div class="chart-tooltip"></div>
+            <div class="chart-viewport">
+              <svg class="chart chart--mobile-index" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="スリーブ指数の全期間推移">
+                <defs>
+                  <linearGradient id="mobileIndexGrad-${escapeHtml(containerId)}" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#1b3b5f" stop-opacity="0.13" />
+                    <stop offset="100%" stop-color="#1b3b5f" stop-opacity="0" />
+                  </linearGradient>
+                </defs>
+                <rect x="${padL}" y="${padT}" width="${W - padL - padR}" height="${chartBottom - padT}" rx="8" fill="#f8fbff"></rect>
+                ${axisTicks.map((tick) => `<line x1="${padL}" y1="${tick.y}" x2="${W - padR}" y2="${tick.y}" stroke="#dfe7f3" stroke-width="1"></line><text x="${padL - 8}" y="${tick.y + 4}" text-anchor="end" font-size="9" font-weight="800" fill="#64748b">${escapeHtml(yFmt(tick.value))}</text>`).join("")}
+                ${xLabels.map((label) => `<text x="${label.x}" y="${H - 18}" text-anchor="${label.anchor}" font-size="10" font-weight="800" fill="#475467">${escapeHtml(label.text)}</text>`).join("")}
+                <path d="${fillD}" fill="url(#mobileIndexGrad-${escapeHtml(containerId)})"></path>
+                <path d="${mobilePath}" fill="none" stroke="#1b3b5f" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                <circle cx="${latestFillX}" cy="${hasValidY(latest?.y) ? yToPx(latest.y) : chartBottom}" r="5.5" fill="#1b3b5f" stroke="#ffffff" stroke-width="3"></circle>
+                <rect class="chart-main-hit" x="${padL}" y="${padT}" width="${W - padL - padR}" height="${chartBottom - padT}" fill="transparent"></rect>
+              </svg>
+            </div>
+            <div class="chart-toolbar chart-toolbar--mobile-static" aria-label="表示期間">
+              <span class="chart-zoom-label">全期間</span>
+            </div>
+          </div>
+        `;
+
+        const wrap = el.querySelector(".chart-wrap");
+        const svg = el.querySelector("svg.chart");
+        const tip = el.querySelector(".chart-tooltip");
+        const hit = el.querySelector(".chart-main-hit");
+        if (hit && svg && tip) {
+          hit.addEventListener("mousemove", (ev) => {
+            const rect = svg.getBoundingClientRect();
+            const vbX = ((ev.clientX - rect.left) / rect.width) * W;
+            const t = (vbX - padL) / (W - padL - padR);
+            const idx = Math.max(0, Math.min(data.length - 1, Math.round(t * (data.length - 1))));
+            const point = data[idx];
+            const hasValue = hasValidY(point?.y);
+            tip.style.display = "block";
+            tip.textContent = `${formatPeriodLabel(point.x)} / 指数 ${hasValue ? yFmt(point.y) : "-"}`;
+            const wrapRect = wrap.getBoundingClientRect();
+            tip.style.left = `${Math.min(Math.max(ev.clientX - wrapRect.left, 56), wrapRect.width - 56)}px`;
+            tip.style.top = "12px";
+          });
+          hit.addEventListener("mouseleave", () => {
+            tip.style.display = "none";
+          });
+        }
+        return;
+      }
+
+      const W = 980;
+      const H = 420;
+      const padL = 84;
+      const padR = 34;
+      const mainTop = 24;
+      const mainBottom = 288;
+      const xLabelY = 318;
+      const navTop = 340;
+      const navBottom = 392;
       const ticks = 4;
       const minWindow = Math.min(Math.max(2, Math.ceil(data.length * 0.12)), data.length);
 
