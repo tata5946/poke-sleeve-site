@@ -1394,9 +1394,11 @@ body.page-content-focus {
     }
 
     .topbar-tabs {
+        order: 2;
         width: 100%;
         min-width: 0;
         max-width: 100%;
+        display: flex;
         gap: 6px;
         overflow-x: auto;
         padding-bottom: 1px;
