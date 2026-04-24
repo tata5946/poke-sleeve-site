@@ -4201,8 +4201,8 @@
       const boundaryMarks = sourceBoundary && Number.isFinite(boundaryX)
         ? `
           <line x1="${boundaryX}" y1="${padT}" x2="${boundaryX}" y2="${H - padB}" stroke="#1e3a5f" stroke-width="${isMobileView ? 3.6 : 3}" stroke-dasharray="8 8"></line>
-          <text x="${Math.max(padL + 18, (padL + boundaryX) / 2)}" y="${padT + (isMobileView ? 22 : 18)}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="900" fill="#475467">${escapeHtml(sourceBoundary.leftLabel)}</text>
-          <text x="${Math.min(W - padR - 18, (boundaryX + (W - padR)) / 2)}" y="${padT + (isMobileView ? 22 : 18)}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="900" fill="#1e3a5f">${escapeHtml(sourceBoundary.rightLabel)}</text>
+          <text x="${Math.max(padL + 18, (padL + boundaryX) / 2)}" y="${padT + (isMobileView ? 22 : 18)}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="900" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${escapeHtml(sourceBoundary.leftLabel)}</text>
+          <text x="${Math.min(W - padR - 18, (boundaryX + (W - padR)) / 2)}" y="${padT + (isMobileView ? 22 : 18)}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="900" fill="#1e3a5f" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${escapeHtml(sourceBoundary.rightLabel)}</text>
         `
         : "";
       const markers = data.map((point, index) => {
@@ -4232,12 +4232,12 @@
               </defs>
               <g>${yGrid.join("")}</g>
               <g>${yearGuides.join("")}</g>
-              <g>${boundaryMarks}</g>
               <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
               <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
               <path d="${areaD}" fill="url(#priceAreaGrad-${escapeHtml(containerId)})"></path>
               <g>${volumeBars}</g>
               <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="${isMobileView ? 5.5 : 4.2}" stroke-linecap="round" stroke-linejoin="round"></path>
+              <g>${boundaryMarks}</g>
               ${mode === "all" ? `<line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"></line>` : ""}
               <text x="${firstLabelX}" y="${Math.max(24, firstY - 18)}" text-anchor="start" font-size="${labelFontSize}" font-weight="900" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">開始 ¥${first.price.toLocaleString()}</text>
               ${latestCallout}
