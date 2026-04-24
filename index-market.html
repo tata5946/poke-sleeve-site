@@ -459,6 +459,26 @@
       box-shadow: 0 1px 4px rgba(15, 23, 42, .08);
     }
 
+    .market-index-filter-btn {
+      min-height: 30px;
+      padding: 0 12px;
+      border: 1px solid #dbe5f2;
+      border-radius: 999px;
+      background: #fff;
+      color: #475467;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .market-index-filter-btn.is-active {
+      border-color: #1e5bd7;
+      background: #eff4ff;
+      color: #0f2b6f;
+      box-shadow: 0 1px 4px rgba(30, 91, 215, .12);
+    }
+
     .chart-viewport {
       width: 100%;
       overflow: auto;
@@ -1037,6 +1057,10 @@
         min-width: 0;
       }
 
+      .market-index-filter-btn {
+        width: 100%;
+      }
+
       .share-status {
         font-size: 11px;
       }
@@ -1272,6 +1296,7 @@
                 <button type="button" class="market-chart-switch-btn is-active" data-index-mode="month" role="tab" aria-selected="true">月</button>
                 <button type="button" class="market-chart-switch-btn" data-index-mode="week" role="tab" aria-selected="false">週</button>
               </div>
+              <button type="button" class="market-index-filter-btn" id="limitedMemorialBtn" aria-pressed="false">記念/限定のみ</button>
               <div class="share-block">
                 <div class="share-row">
                   <button type="button" class="btn share-x" id="shareXBtn">
@@ -1459,6 +1484,39 @@
         rightIdx,
         leftLabel: "買取相場ベース",
         rightLabel: "メルカリ実売ベース"
+      };
+    }
+
+    function isLimitedMemorialSleeve(sleeve) {
+      const targetTags = new Set(["限定デッキシールド", "記念デッキシールド"]);
+      const values = [
+        ...(Array.isArray(sleeve?.categoryTags) ? sleeve.categoryTags : []),
+        ...(Array.isArray(sleeve?.categories) ? sleeve.categories : []),
+        sleeve?.category7,
+        sleeve?.category8,
+        sleeve?.category9
+      ]
+        .map((value) => String(value || "").trim())
+        .filter(Boolean);
+      return values.some((value) => targetTags.has(value));
+    }
+
+    function filterSleevesByIndexScope(sleeves, scope) {
+      const list = Array.isArray(sleeves) ? sleeves : [];
+      if (scope === "limited-memorial") return list.filter(isLimitedMemorialSleeve);
+      return list.slice();
+    }
+
+    function getIndexScopeMeta(scope) {
+      if (scope === "limited-memorial") {
+        return {
+          label: "記念/限定のみ",
+          shareLabel: "記念/限定スリーブ指数"
+        };
+      }
+      return {
+        label: "全体",
+        shareLabel: "スリーブ指数"
       };
     }
 
@@ -2688,7 +2746,8 @@
       const indexText = Number.isFinite(latestIndex) ? latestIndex.toFixed(1) : "-";
       const avgRateText = Number.isFinite(latestRow?.avgRate) ? `${latestRow.avgRate.toFixed(2)}%` : "-";
       const shareUrl = currentShareUrl();
-      const shareText = `【スリーブ指数】${weekText}時点で指数 ${indexText} / ${periodLabel}の市場上昇率 ${avgRateText} #ポケカ #ポケモンカード`;
+      const shareLabel = String(shareXBtn.dataset.scopeLabel || "スリーブ指数");
+      const shareText = `【${shareLabel}】${weekText}時点で指数 ${indexText} / ${periodLabel}の市場上昇率 ${avgRateText} #ポケカ #ポケモンカード`;
 
       shareXBtn.onclick = () => {
         const intent = new URL("https://twitter.com/intent/tweet");
@@ -2786,7 +2845,15 @@
       });
     }
 
-    function renderMarketIndexView(view, sleeves) {
+    function setIndexScopeButton(scope) {
+      const btn = document.getElementById("limitedMemorialBtn");
+      if (!btn) return;
+      const active = scope === "limited-memorial";
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    }
+
+    function renderMarketIndexView(view, sleeves, scopeMeta) {
       const { entries, periods, periodType, series, periodLabel, rateLabel, deltaLabel } = view;
       if (!periods.length || periods.length < 2) {
         showError(`${periodLabel}データが不足しています（2点以上必要）`);
@@ -2795,7 +2862,8 @@
 
       const subtitle = document.getElementById("subtitle");
       if (subtitle) {
-        subtitle.textContent = `対象：${sleeves.length}件 / ${periodLabel}期間：${formatPeriodLabel(periods[0])}〜${formatPeriodLabel(periods[periods.length - 1])}`;
+        const scopeText = scopeMeta?.label && scopeMeta.label !== "全体" ? ` / 条件：${scopeMeta.label}` : "";
+        subtitle.textContent = `対象：${sleeves.length}件${scopeText} / ${periodLabel}期間：${formatPeriodLabel(periods[0])}〜${formatPeriodLabel(periods[periods.length - 1])}`;
       }
 
       const pairRate = latestTwoValid(series, "avgRate");
@@ -2880,6 +2948,8 @@
       if (marketStateNote) {
         marketStateNote.textContent = marketState.note;
       }
+      const shareXBtn = document.getElementById("shareXBtn");
+      if (shareXBtn) shareXBtn.dataset.scopeLabel = scopeMeta?.shareLabel || "スリーブ指数";
       setupMarketShare(pairRate?.latest || null, pairIdx?.latest?.index ?? null, periodLabel);
 
       const indexSeries = series.filter((row) => Number.isFinite(row?.index));
@@ -2932,21 +3002,38 @@
       const initialMode = document.querySelector(`.market-chart-switch-btn[data-index-mode="${preferredMode}"]`)
         ? preferredMode
         : "week";
+      let currentMode = initialMode;
+      let currentScope = "all";
 
-      const renderMode = (mode) => {
+      const renderCurrent = () => {
         document.getElementById("error").style.display = "none";
-        setIndexModeButtons(mode);
-        renderMarketIndexView(buildMarketIndexView(sleeves, mode), sleeves);
+        const scopedSleeves = filterSleevesByIndexScope(sleeves, currentScope);
+        if (!scopedSleeves.length) {
+          showError("条件に合うスリーブがありません");
+          return;
+        }
+        setIndexModeButtons(currentMode);
+        setIndexScopeButton(currentScope);
+        renderMarketIndexView(
+          buildMarketIndexView(scopedSleeves, currentMode),
+          scopedSleeves,
+          getIndexScopeMeta(currentScope)
+        );
       };
 
       document.querySelectorAll(".market-chart-switch-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
-          const mode = btn.dataset.indexMode || "week";
-          renderMode(mode);
+          currentMode = btn.dataset.indexMode || "week";
+          renderCurrent();
         });
       });
 
-      renderMode(initialMode);
+      document.getElementById("limitedMemorialBtn")?.addEventListener("click", () => {
+        currentScope = currentScope === "limited-memorial" ? "all" : "limited-memorial";
+        renderCurrent();
+      });
+
+      renderCurrent();
     }
 
     main();
