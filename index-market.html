@@ -459,24 +459,39 @@
       box-shadow: 0 1px 4px rgba(15, 23, 42, .08);
     }
 
-    .market-index-filter-btn {
-      min-height: 30px;
-      padding: 0 12px;
+    .market-index-scope {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
       border: 1px solid #dbe5f2;
       border-radius: 999px;
-      background: #fff;
-      color: #475467;
-      font-size: 12px;
-      font-weight: 900;
-      cursor: pointer;
-      transition: background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
+      background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8);
     }
 
-    .market-index-filter-btn.is-active {
-      border-color: #1e5bd7;
-      background: #eff4ff;
+    .market-index-scope-btn {
+      min-height: 32px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #667085;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .01em;
+      cursor: pointer;
+      transition: background-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+
+    .market-index-scope-btn:hover {
       color: #0f2b6f;
-      box-shadow: 0 1px 4px rgba(30, 91, 215, .12);
+    }
+
+    .market-index-scope-btn.is-active {
+      background: linear-gradient(180deg, #1e5bd7 0%, #1649b3 100%);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(30, 91, 215, .22);
     }
 
     .chart-viewport {
@@ -1057,8 +1072,15 @@
         min-width: 0;
       }
 
-      .market-index-filter-btn {
+      .market-index-scope {
         width: 100%;
+        justify-content: space-between;
+      }
+
+      .market-index-scope-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 0 8px;
       }
 
       .share-status {
@@ -1296,7 +1318,11 @@
                 <button type="button" class="market-chart-switch-btn is-active" data-index-mode="month" role="tab" aria-selected="true">月</button>
                 <button type="button" class="market-chart-switch-btn" data-index-mode="week" role="tab" aria-selected="false">週</button>
               </div>
-              <button type="button" class="market-index-filter-btn" id="limitedMemorialBtn" aria-pressed="false">記念/限定のみ</button>
+              <div class="market-index-scope" role="tablist" aria-label="指数対象の切り替え">
+                <button type="button" class="market-index-scope-btn is-active" data-index-scope="all" role="tab" aria-selected="true">全体</button>
+                <button type="button" class="market-index-scope-btn" data-index-scope="memorial" role="tab" aria-selected="false">記念</button>
+                <button type="button" class="market-index-scope-btn" data-index-scope="limited" role="tab" aria-selected="false">限定</button>
+              </div>
               <div class="share-block">
                 <div class="share-row">
                   <button type="button" class="btn share-x" id="shareXBtn">
@@ -1487,9 +1513,8 @@
       };
     }
 
-    function isLimitedMemorialSleeve(sleeve) {
-      const targetTags = new Set(["限定デッキシールド", "記念デッキシールド"]);
-      const values = [
+    function getSleeveCategoryValues(sleeve) {
+      return [
         ...(Array.isArray(sleeve?.categoryTags) ? sleeve.categoryTags : []),
         ...(Array.isArray(sleeve?.categories) ? sleeve.categories : []),
         sleeve?.category7,
@@ -1498,20 +1523,38 @@
       ]
         .map((value) => String(value || "").trim())
         .filter(Boolean);
-      return values.some((value) => targetTags.has(value));
+    }
+
+    function sleeveHasCategoryTag(sleeve, tagName) {
+      return getSleeveCategoryValues(sleeve).some((value) => value === tagName);
+    }
+
+    function isMemorialSleeve(sleeve) {
+      return sleeveHasCategoryTag(sleeve, "記念デッキシールド");
+    }
+
+    function isLimitedSleeve(sleeve) {
+      return sleeveHasCategoryTag(sleeve, "限定デッキシールド");
     }
 
     function filterSleevesByIndexScope(sleeves, scope) {
       const list = Array.isArray(sleeves) ? sleeves : [];
-      if (scope === "limited-memorial") return list.filter(isLimitedMemorialSleeve);
+      if (scope === "memorial") return list.filter(isMemorialSleeve);
+      if (scope === "limited") return list.filter(isLimitedSleeve);
       return list.slice();
     }
 
     function getIndexScopeMeta(scope) {
-      if (scope === "limited-memorial") {
+      if (scope === "memorial") {
         return {
-          label: "記念/限定のみ",
-          shareLabel: "記念/限定スリーブ指数"
+          label: "記念デッキシールド",
+          shareLabel: "記念デッキシールド指数"
+        };
+      }
+      if (scope === "limited") {
+        return {
+          label: "限定デッキシールド",
+          shareLabel: "限定デッキシールド指数"
         };
       }
       return {
@@ -2846,11 +2889,11 @@
     }
 
     function setIndexScopeButton(scope) {
-      const btn = document.getElementById("limitedMemorialBtn");
-      if (!btn) return;
-      const active = scope === "limited-memorial";
-      btn.classList.toggle("is-active", active);
-      btn.setAttribute("aria-pressed", active ? "true" : "false");
+      document.querySelectorAll(".market-index-scope-btn").forEach((btn) => {
+        const active = btn.dataset.indexScope === scope;
+        btn.classList.toggle("is-active", active);
+        btn.setAttribute("aria-selected", active ? "true" : "false");
+      });
     }
 
     function renderMarketIndexView(view, sleeves, scopeMeta) {
@@ -3028,9 +3071,11 @@
         });
       });
 
-      document.getElementById("limitedMemorialBtn")?.addEventListener("click", () => {
-        currentScope = currentScope === "limited-memorial" ? "all" : "limited-memorial";
-        renderCurrent();
+      document.querySelectorAll(".market-index-scope-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          currentScope = btn.dataset.indexScope || "all";
+          renderCurrent();
+        });
       });
 
       renderCurrent();
