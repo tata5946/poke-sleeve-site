@@ -1749,7 +1749,7 @@
 
       function formatMonthAxisLabel(value) {
         const matched = String(value || "").match(/^(\d{4})[\/\-](\d{2})/);
-        if (matched) return `${Number(matched[2])}月`;
+        if (matched) return `${String(matched[1]).slice(-2)}/${Number(matched[2])}`;
         return formatPeriodLabel(value);
       }
 
@@ -2029,7 +2029,7 @@
 
       function formatMonthAxisLabel(value) {
         const matched = String(value || "").match(/^(\d{4})[\/\-](\d{2})/);
-        if (matched) return `${Number(matched[2])}月`;
+        if (matched) return `${String(matched[1]).slice(-2)}/${Number(matched[2])}`;
         return formatPeriodLabel(value);
       }
 
