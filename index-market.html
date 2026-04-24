@@ -1285,6 +1285,7 @@
               </div>
             </div>
             <div id="indexChart"></div>
+            <p id="indexChartNote" class="panel-note" hidden></p>
         </section>
 
         <section class="market-panel ai-market-panel" aria-label="AI市場コメント">
@@ -1438,6 +1439,27 @@
       const m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
       if (!m) return s || "-";
       return `${m[1]}/${Number(m[2])}/${Number(m[3])}`;
+    }
+
+    function getMarketSourceBoundary(points, key = "x") {
+      const list = Array.isArray(points) ? points : [];
+      let leftIdx = -1;
+      let rightIdx = -1;
+      for (let i = 0; i < list.length; i++) {
+        const period = String(list[i]?.[key] ?? "");
+        if (/^2024-12(?:-\d{2})?$/.test(period)) leftIdx = i;
+        if (leftIdx >= 0 && /^2025-01(?:-\d{2})?$/.test(period)) {
+          rightIdx = i;
+          break;
+        }
+      }
+      if (leftIdx < 0 || rightIdx < 0 || rightIdx <= leftIdx) return null;
+      return {
+        leftIdx,
+        rightIdx,
+        leftLabel: "買取相場ベース",
+        rightLabel: "メルカリ実売ベース"
+      };
     }
 
     // weeklyPrices: [{week, price, count}]
@@ -1887,6 +1909,7 @@
           return { x, y: hasValidY(n) ? n : null };
         })
         .filter(p => p.x);
+      const sourceBoundary = getMarketSourceBoundary(data);
 
       const validData = data.filter(p => hasValidY(p.y));
       if (data.length < 2 || validData.length < 2) {
@@ -1953,6 +1976,9 @@
           { x: xToPx(midIdx), text: formatMonthAxisLabel(data[midIdx].x), anchor: "middle" },
           { x: xToPx(data.length - 1) - 2, text: formatMonthAxisLabel(data[data.length - 1].x), anchor: "end" }
         ].filter((label, index, arr) => arr.findIndex((item) => item.text === label.text) === index || index === arr.length - 1);
+        const boundaryX = sourceBoundary ? (xToPx(sourceBoundary.leftIdx) + xToPx(sourceBoundary.rightIdx)) / 2 : null;
+        const leftLabelX = sourceBoundary ? Math.max(padL + 8, (padL + boundaryX) / 2) : null;
+        const rightLabelX = sourceBoundary ? Math.min(W - padR - 8, (boundaryX + (W - padR)) / 2) : null;
 
         el.innerHTML = `
           <div class="chart-wrap chart-wrap--mobile">
@@ -1978,6 +2004,9 @@
                 <rect x="${padL}" y="${padT}" width="${W - padL - padR}" height="${chartBottom - padT}" rx="8" fill="#f8fbff"></rect>
                 ${axisTicks.map((tick) => `<line x1="${padL}" y1="${tick.y}" x2="${W - padR}" y2="${tick.y}" stroke="#dfe7f3" stroke-width="1"></line><text x="${padL - 8}" y="${tick.y + 4}" text-anchor="end" font-size="9" font-weight="800" fill="#64748b">${escapeHtml(yFmt(tick.value))}</text>`).join("")}
                 ${xLabels.map((label) => `<text x="${label.x}" y="${H - 18}" text-anchor="${label.anchor}" font-size="10" font-weight="800" fill="#475467">${escapeHtml(label.text)}</text>`).join("")}
+                ${Number.isFinite(boundaryX) ? `<line x1="${boundaryX}" y1="${padT}" x2="${boundaryX}" y2="${chartBottom}" stroke="#1e3a5f" stroke-width="2.5" stroke-dasharray="6 6"></line>` : ""}
+                ${Number.isFinite(leftLabelX) ? `<text x="${leftLabelX}" y="${padT + 14}" text-anchor="middle" font-size="8.5" font-weight="900" fill="#475467">${escapeHtml(sourceBoundary.leftLabel)}</text>` : ""}
+                ${Number.isFinite(rightLabelX) ? `<text x="${rightLabelX}" y="${padT + 14}" text-anchor="middle" font-size="8.5" font-weight="900" fill="#1e3a5f">${escapeHtml(sourceBoundary.rightLabel)}</text>` : ""}
                 <path d="${fillD}" fill="url(#mobileIndexGrad-${escapeHtml(containerId)})"></path>
                 <path d="${mobilePath}" fill="none" stroke="#1b3b5f" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 <circle cx="${latestFillX}" cy="${hasValidY(latest?.y) ? yToPx(latest.y) : chartBottom}" r="5.5" fill="#1b3b5f" stroke="#ffffff" stroke-width="3"></circle>
@@ -2237,9 +2266,20 @@
           { x: xToPxMain(midIdx), text: formatMonthAxisLabel(visible[midIdx].x), anchor: "middle" },
           { x: xToPxMain(visible.length - 1), text: formatMonthAxisLabel(visible[visible.length - 1].x), anchor: "end" }
         ].filter((label, index, arr) => arr.findIndex((item) => item.text === label.text) === index || index === arr.length - 1);
+        const visibleBoundary = sourceBoundary && sourceBoundary.leftIdx >= s && sourceBoundary.rightIdx <= e
+          ? {
+            x: (xToPxMain(sourceBoundary.leftIdx - s) + xToPxMain(sourceBoundary.rightIdx - s)) / 2,
+            leftLabel: sourceBoundary.leftLabel,
+            rightLabel: sourceBoundary.rightLabel
+          }
+          : null;
         xLabels.forEach((label) => {
           gridLines.push(`<line x1="${label.x}" y1="${mainTop}" x2="${label.x}" y2="${mainBottom}" stroke="#eef2f7" stroke-dasharray="4 4"/>`);
         });
+        if (visibleBoundary) {
+          gridLines.push(`<line x1="${visibleBoundary.x}" y1="${mainTop}" x2="${visibleBoundary.x}" y2="${mainBottom}" stroke="#1e3a5f" stroke-width="3" stroke-dasharray="8 8"/>`);
+        }
+        mainGrid.innerHTML = gridLines.join("");
         mainXLabels.innerHTML = xLabels.map(l =>
            `<text x="${l.x}" y="${xLabelY}" font-size="${isMobile ? 19 : 16}" font-weight="800" fill="#111827" text-anchor="${l.anchor}">${escapeHtml(l.text)}</text>`
         ).join("");
@@ -2272,7 +2312,9 @@
           const latestLeaderStartX = latestX + latestMarkerRadius + 2;
 
            mainGrid.innerHTML += `<line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#9bb4ea" stroke-dasharray="6 6"/>`;
-           mainCallouts.innerHTML = `
+            mainCallouts.innerHTML = `
+              ${visibleBoundary ? `<text x="${Math.max(padL + 12, (padL + visibleBoundary.x) / 2)}" y="${mainTop + 18}" text-anchor="middle" font-size="14" font-weight="900" fill="#475467">${escapeHtml(visibleBoundary.leftLabel)}</text>` : ""}
+              ${visibleBoundary ? `<text x="${Math.min(W - padR - 12, (visibleBoundary.x + (W - padR)) / 2)}" y="${mainTop + 18}" text-anchor="middle" font-size="14" font-weight="900" fill="#1e3a5f">${escapeHtml(visibleBoundary.rightLabel)}</text>` : ""}
               <circle cx="${firstX}" cy="${firstY}" r="${isMobile ? 6 : 5}" fill="#ffffff" stroke="#1e5bd7" stroke-width="3"></circle>
               <text x="${startLabelX}" y="${Math.max(mainTop + 18, firstY - (isMobile ? 22 : 18))}" text-anchor="${startAnchor}" class="chart-callout-label">開始 ${escapeHtml(yFmt(firstPoint.y))}</text>
               <circle cx="${latestX}" cy="${latestY}" r="${isMobile ? 8 : 7}" fill="#1e5bd7" stroke="#ffffff" stroke-width="4"></circle>
@@ -2830,6 +2872,7 @@
       const marketState = describeMarketState(series, last);
       const marketStateValue = document.getElementById("marketStateValue");
       const marketStateNote = document.getElementById("marketStateNote");
+      const indexChartNote = document.getElementById("indexChartNote");
       if (marketStateValue) {
         marketStateValue.className = `market-state-value ${marketState.cls}`;
         marketStateValue.textContent = marketState.label;
@@ -2841,6 +2884,13 @@
 
       const indexSeries = series.filter((row) => Number.isFinite(row?.index));
       const validIndexCount = indexSeries.filter(r => Number.isFinite(r.index) && r.index > 0).length;
+      const hasSourceBoundary = !!getMarketSourceBoundary(indexSeries, "week");
+      if (indexChartNote) {
+        indexChartNote.hidden = !hasSourceBoundary;
+        indexChartNote.textContent = hasSourceBoundary
+          ? "25/1以降はメルカリの売却データを参照。買取価格（業者卸値）から実売価格（エンドユーザー価格）への切り替えに伴い、指数に不連続な上昇が含まれています。"
+          : "";
+      }
       if (validIndexCount < 2) {
         document.getElementById("indexChart").innerHTML =
           `<div class="chart-wrap"><div class="meta">指数データが不足しています</div></div>`;
