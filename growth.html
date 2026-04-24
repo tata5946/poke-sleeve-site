@@ -251,6 +251,11 @@
       height: 100%;
     }
 
+    a.podium-card {
+      color: inherit;
+      text-decoration: none;
+    }
+
     .podium-card--rank1 {
       display: grid;
       grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
@@ -1201,12 +1206,12 @@
       ].filter(Boolean);
       const metaHtml = metaItems.map((item) => `<span class="podium-chip">${item}</span>`).join("");
       return `
-        <article class="podium-card podium-card--rank${rank}">
+        <a class="podium-card podium-card--rank${rank}" data-sleeve-link="1" href="${detailHref}" aria-label="${escapeHtml(String(s.name ?? ""))}の詳細を見る">
           <div class="podium-badge">${getPodiumBadge(rank)}</div>
-          <a class="podium-media" data-sleeve-link="1" href="${detailHref}">
+          <div class="podium-media">
             <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="${rank === 1 ? "eager" : "lazy"}" referrerpolicy="no-referrer"
               onerror="this.onerror=null; this.style.display='none';">
-          </a>
+          </div>
           <div class="podium-content">
             <div class="podium-kicker">TOP ${rank} SLEEVE</div>
             <h${rank === 1 ? "2" : "3"} class="podium-title">${escapeHtml(s.name ?? "")}</h${rank === 1 ? "2" : "3"}>
@@ -1227,7 +1232,7 @@
               <div class="podium-chip-group">${metaHtml}</div>
             </div>
           </div>
-        </article>
+        </a>
       `;
     }
 
