@@ -3852,13 +3852,15 @@
       `;
     }
 
-    function renderPriceFootnotes(mode) {
+    function renderPriceFootnotes(mode, points) {
       const el = document.getElementById("chartFootnotes");
       if (!el) return;
       const lines = [
         "※過去データは買取価格も含めて補完しています。",
         "長期トレンドを把握するための参考値として掲載しています。"
       ];
+      const sourceBoundary = (mode === "all" || mode === "monthly") ? getPriceSourceBoundary(points) : null;
+      if (sourceBoundary?.note) lines.push(sourceBoundary.note);
       el.innerHTML = lines.map((line) => `<div>${escapeHtml(line)}</div>`).join("");
     }
 
@@ -4037,6 +4039,28 @@
       return ticks;
     }
 
+    function getPriceSourceBoundary(points) {
+      const list = Array.isArray(points) ? points : [];
+      let leftIndex = -1;
+      let rightIndex = -1;
+      for (let i = 0; i < list.length; i++) {
+        const date = String(list[i]?.date || "").trim();
+        if (/^2024-12-\d{2}$/.test(date)) leftIndex = i;
+        if (leftIndex >= 0 && /^2025-01-\d{2}$/.test(date)) {
+          rightIndex = i;
+          break;
+        }
+      }
+      if (leftIndex < 0 || rightIndex < 0 || rightIndex <= leftIndex) return null;
+      return {
+        leftIndex,
+        rightIndex,
+        leftLabel: "買取相場ベース",
+        rightLabel: "メルカリ実売ベース",
+        note: "25/1以降はメルカリの売却データを参照。買取価格（業者卸値）から実売価格（エンドユーザー価格）への切り替えに伴い、価格に不連続な上昇が含まれています。"
+      };
+    }
+
     function renderPriceAreaChart(containerId, title, points, mode) {
       const el = document.getElementById(containerId);
       if (!el) return;
@@ -4071,6 +4095,7 @@
       const yMax = yMaxRaw + yPad;
       const xToPx = (ts) => padL + ((ts - xMin) / spanX) * chartW;
       const yToPx = (v) => padT + (1 - ((v - yMin) / Math.max(1, yMax - yMin))) * chartH;
+      const sourceBoundary = (mode === "all" || mode === "monthly") ? getPriceSourceBoundary(data) : null;
 
       const yGrid = [];
       const yLabels = [];
@@ -4170,6 +4195,16 @@
       const lowLabel = showLowLabel
          ? `<text x="${isMobileView ? Math.max(padL + 18, xToPx(lowPoint.timestamp) - 80) : Math.min(xToPx(lowPoint.timestamp) + 6, W - padR - 84)}" y="${Math.min(H - padB - 8, yToPx(lowPoint.price) + 16)}" text-anchor="start" font-size="${subLabelFontSize}" font-weight="700" fill="#64748b" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">安値 ¥${lowPoint.price.toLocaleString()}</text>`
           : "";
+      const boundaryX = sourceBoundary
+        ? (xToPx(data[sourceBoundary.leftIndex].timestamp) + xToPx(data[sourceBoundary.rightIndex].timestamp)) / 2
+        : null;
+      const boundaryMarks = sourceBoundary && Number.isFinite(boundaryX)
+        ? `
+          <line x1="${boundaryX}" y1="${padT}" x2="${boundaryX}" y2="${H - padB}" stroke="#1e3a5f" stroke-width="${isMobileView ? 3.6 : 3}" stroke-dasharray="8 8"></line>
+          <text x="${Math.max(padL + 18, (padL + boundaryX) / 2)}" y="${padT + (isMobileView ? 22 : 18)}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="900" fill="#475467">${escapeHtml(sourceBoundary.leftLabel)}</text>
+          <text x="${Math.min(W - padR - 18, (boundaryX + (W - padR)) / 2)}" y="${padT + (isMobileView ? 22 : 18)}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="900" fill="#1e3a5f">${escapeHtml(sourceBoundary.rightLabel)}</text>
+        `
+        : "";
       const markers = data.map((point, index) => {
         const cx = xToPx(point.timestamp);
         const cy = yToPx(point.price);
@@ -4197,6 +4232,7 @@
               </defs>
               <g>${yGrid.join("")}</g>
               <g>${yearGuides.join("")}</g>
+              <g>${boundaryMarks}</g>
               <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
               <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
               <path d="${areaD}" fill="url(#priceAreaGrad-${escapeHtml(containerId)})"></path>
@@ -4335,7 +4371,7 @@
         const titleSuffix = currentPeriod === "3m" ? "（直近3か月）" : currentPeriod === "monthly" ? "（月次）" : "（全期間）";
         if (chartTitleEl) chartTitleEl.textContent = `価格推移${titleSuffix}`;
         renderPriceLegend(currentPeriod);
-        renderPriceFootnotes(currentPeriod);
+        renderPriceFootnotes(currentPeriod, scoped);
 
         if (mode === "empty") {
           document.getElementById("weeklyChart").innerHTML = `<div class="chart-wrap"><div class="meta">選択期間に観測データがありません</div></div>`;
