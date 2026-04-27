@@ -442,7 +442,7 @@
 
       <div class="admin-panel">
         <h2 class="panel-title">プレビュー</h2>
-        <p class="panel-note">画像は `1600 x 900` のPNGで保存します。画像URLがCORS非対応の場合は、書き出し時にプレースホルダーで代替します。</p>
+        <p class="panel-note">画像は `1200 x 630` のPNGで保存します。画像URLがCORS非対応の場合は、書き出し時にプレースホルダーで代替します。</p>
         <div class="preview-top">
           <section class="preview-sleeve-card" aria-label="選択中スリーブ">
             <div class="preview-sleeve-art">
@@ -470,8 +470,8 @@
       authSessionKey: "pokeSleeve:promoAdminAuth:v1",
       authHash: "3d756736a0f3ca820602ee0ca5e932bfb4733d18e362761366dd1d2e21f997ad",
       defaultPassphraseLabel: "sleeve-promo-2026",
-      canvasWidth: 1600,
-      canvasHeight: 900
+      canvasWidth: 1200,
+      canvasHeight: 630
     };
 
     const adminState = {
@@ -844,26 +844,49 @@
       ctx.clearRect(0, 0, W, H);
 
       const bg = ctx.createLinearGradient(0, 0, W, H);
-      bg.addColorStop(0, "#fffdf7");
-      bg.addColorStop(1, "#f6fbff");
+      bg.addColorStop(0, "#fffef9");
+      bg.addColorStop(1, "#f7fbff");
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
 
-      for (let i = 0; i < 26; i++) {
-        const x = 30 + ((i * 59) % (W - 60));
-        const y = 28 + ((i * 97) % (H - 56));
-        ctx.fillStyle = i % 2 === 0 ? "rgba(250, 204, 21, 0.14)" : "rgba(251, 113, 133, 0.11)";
-        ctx.beginPath();
-        ctx.arc(x, y, 3 + (i % 3), 0, Math.PI * 2);
-        ctx.fill();
-      }
+      const hookText = qs("hookInput").value || "なんかこのスリーブ、最近やたら見るよね？";
+      const subhookText = qs("subhookInput").value || `${sleeve.name || "このスリーブ"}、静かに高騰中…？`;
+      const footerText = qs("footerInput").value || "";
+      const noteText = qs("noteInput").value || "";
+
+      ctx.strokeStyle = "#fbbf24";
+      ctx.lineWidth = 6;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(18, 30);
+      ctx.lineTo(34, 38);
+      ctx.moveTo(28, 16);
+      ctx.lineTo(30, 36);
+      ctx.moveTo(40, 20);
+      ctx.lineTo(34, 34);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(W - 20, 34);
+      ctx.lineTo(W - 36, 42);
+      ctx.moveTo(W - 30, 16);
+      ctx.lineTo(W - 32, 36);
+      ctx.moveTo(W - 42, 22);
+      ctx.lineTo(W - 36, 36);
+      ctx.stroke();
 
       ctx.fillStyle = "#111827";
-      ctx.font = "900 64px 'Noto Sans JP', sans-serif";
-      ctx.fillText(qs("hookInput").value || "なんかこのスリーブ、最近やたら見るよね？", 54, 92);
+      ctx.font = "900 34px 'Noto Sans JP', sans-serif";
+      wrapText(ctx, hookText, 34, 54, W - 68, 42);
 
-      const left = { x: 50, y: 130, w: 420, h: 650 };
-      drawRoundedRect(ctx, left.x, left.y, left.w, left.h, 34);
+      ctx.strokeStyle = "#fb7185";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(364, 60);
+      ctx.lineTo(520, 60);
+      ctx.stroke();
+
+      const left = { x: 24, y: 84, w: 288, h: 492 };
+      drawRoundedRect(ctx, left.x, left.y, left.w, left.h, 28);
       ctx.fillStyle = "#ffffff";
       ctx.fill();
       ctx.strokeStyle = "#dbe4f0";
@@ -878,7 +901,10 @@
       }
       adminState.currentImageBitmap = bitmap;
 
-      const art = { x: left.x + 28, y: left.y + 28, w: 364, h: 428 };
+      ctx.shadowColor = "rgba(15, 23, 42, 0.18)";
+      ctx.shadowBlur = 24;
+      ctx.shadowOffsetY = 14;
+      const art = { x: left.x + 28, y: left.y + 22, w: 232, h: 292 };
       drawRoundedRect(ctx, art.x, art.y, art.w, art.h, 24);
       ctx.save();
       ctx.clip();
@@ -902,72 +928,119 @@
         ctx.fillText("NO IMAGE", art.x + 70, art.y + art.h / 2);
       }
       ctx.restore();
+      ctx.shadowColor = "transparent";
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
 
       ctx.fillStyle = "#eff4ff";
-      drawRoundedRect(ctx, left.x + 28, left.y + 480, 240, 46, 16);
+      drawRoundedRect(ctx, left.x + 24, left.y + 334, 220, 34, 14);
       ctx.fill();
       ctx.fillStyle = "#1849a9";
-      ctx.font = "900 20px 'Noto Sans JP', sans-serif";
-      ctx.fillText("ポケモンカードゲーム デッキシールド", left.x + 44, left.y + 509);
+      ctx.font = "900 13px 'Noto Sans JP', sans-serif";
+      ctx.fillText("ポケモンカードゲーム デッキシールド", left.x + 36, left.y + 356);
 
       ctx.fillStyle = "#101828";
-      ctx.font = "900 54px 'Noto Sans JP', sans-serif";
-      ctx.fillText(String(sleeve.name || ""), left.x + 28, left.y + 592, left.w - 56);
+      ctx.font = "900 28px 'Noto Sans JP', sans-serif";
+      wrapText(ctx, String(sleeve.name || ""), left.x + 24, left.y + 404, left.w - 48, 34);
 
       ctx.fillStyle = "#111827";
-      ctx.font = "800 42px 'Noto Sans JP', sans-serif";
-      wrapText(ctx, qs("subhookInput").value || `${sleeve.name || "このスリーブ"}、静かに高騰中…？`, left.x + 28, left.y + 646, left.w - 56, 58);
+      ctx.font = "700 24px 'Klee One', 'Noto Sans JP', sans-serif";
+      wrapText(ctx, subhookText, left.x + 24, left.y + 464, left.w - 48, 30);
+      ctx.strokeStyle = "#fb7185";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(left.x + 24, left.y + 474);
+      ctx.lineTo(left.x + 170, left.y + 474);
+      ctx.stroke();
 
-      const right = { x: 510, y: 130, w: 1040, h: 650 };
+      const right = { x: 330, y: 84, w: 846, h: 492 };
       drawChart(ctx, stats, right);
 
       const cards = [
         {
-          title: "直近推移",
+          title: "比較",
           value: stats.growthMultiple && stats.growthMultiple >= 1.1 ? `約${stats.growthMultiple.toFixed(1)}倍` : "横ばい圏",
-          sub: stats.first?.date ? `${formatDateLabel(stats.first.date)} 比較` : "比較データ不足",
-          color: "#1d4ed8"
+          sub: stats.first?.date ? `${formatDateLabel(stats.first.date)}比` : "比較データ不足",
+          color: "#1d4ed8",
+          accent: "#eff4ff"
         },
         {
-          title: "最新価格",
+          title: "平均相場",
           value: stats.latest ? `約${Math.round(stats.latest.price).toLocaleString()}円` : "—",
           sub: Number.isFinite(stats.changePct) ? `前回比 ${stats.changePct > 0 ? "+" : ""}${stats.changePct.toFixed(1)}%` : "前回比なし",
-          color: "#e11d48"
+          color: "#e11d48",
+          accent: "#fff1f6"
         },
         {
-          title: "取引件数（30日）",
+          title: "取引数（30日）",
           value: stats.tradeCount30 > 0 ? `約${stats.tradeCount30.toLocaleString()}件` : "動き少なめ",
           sub: stats.latest?.date ? `最終観測 ${formatDateLabel(stats.latest.date)}` : "観測不足",
-          color: "#f97316"
+          color: "#f97316",
+          accent: "#fff4ed"
         }
       ];
 
       cards.forEach((card, index) => {
-        const x = right.x + 34 + (index * 318);
-        const y = right.y + right.h - 134;
-        drawRoundedRect(ctx, x, y, 286, 98, 20);
-        ctx.fillStyle = "#ffffff";
+        const x = 360 + (index * 262);
+        const y = 508;
+        drawRoundedRect(ctx, x, y, 236, 82, 18);
+        ctx.fillStyle = card.accent;
         ctx.fill();
         ctx.strokeStyle = "#dbe4f0";
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 2;
         ctx.stroke();
         ctx.fillStyle = card.color;
-        ctx.font = "900 18px 'Noto Sans JP', sans-serif";
-        ctx.fillText(card.title, x + 18, y + 28);
+        ctx.font = "900 15px 'Noto Sans JP', sans-serif";
+        ctx.fillText(card.title, x + 16, y + 24);
         ctx.fillStyle = "#12213f";
-        ctx.font = "900 38px 'Noto Sans JP', sans-serif";
-        ctx.fillText(card.value, x + 18, y + 66);
+        ctx.font = "900 30px 'Noto Sans JP', sans-serif";
+        ctx.fillText(card.value, x + 16, y + 54);
         ctx.fillStyle = "#667085";
-        ctx.font = "800 18px 'Noto Sans JP', sans-serif";
-        ctx.fillText(card.sub, x + 18, y + 88);
+        ctx.font = "800 13px 'Noto Sans JP', sans-serif";
+        ctx.fillText(card.sub, x + 16, y + 72);
       });
 
+      const trendUp = Number(stats?.growthMultiple || 0) >= 1.15 || Number(stats?.changePct || 0) > 0;
+      const arrowGrad = ctx.createLinearGradient(860, 160, 1070, 280);
+      if (trendUp) {
+        arrowGrad.addColorStop(0, "rgba(251, 113, 133, 0.24)");
+        arrowGrad.addColorStop(1, "rgba(244, 63, 94, 0.85)");
+      } else {
+        arrowGrad.addColorStop(0, "rgba(59, 130, 246, 0.22)");
+        arrowGrad.addColorStop(1, "rgba(37, 99, 235, 0.78)");
+      }
+      ctx.fillStyle = arrowGrad;
+      ctx.beginPath();
+      if (trendUp) {
+        ctx.moveTo(850, 284);
+        ctx.lineTo(1030, 222);
+        ctx.lineTo(1020, 198);
+        ctx.lineTo(1088, 205);
+        ctx.lineTo(1046, 260);
+        ctx.lineTo(1038, 236);
+        ctx.lineTo(858, 298);
+      } else {
+        ctx.moveTo(850, 208);
+        ctx.lineTo(1030, 270);
+        ctx.lineTo(1038, 246);
+        ctx.lineTo(1088, 301);
+        ctx.lineTo(1020, 308);
+        ctx.lineTo(1030, 284);
+        ctx.lineTo(850, 222);
+      }
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = trendUp ? "#e11d48" : "#2563eb";
+      ctx.font = "700 24px 'Klee One', 'Noto Sans JP', sans-serif";
+      ctx.fillText(trendUp ? "右肩上がりで上昇中！" : "下落中のため買いチャンス！", 842, 146);
+
       ctx.fillStyle = "#111827";
-      ctx.font = "800 28px 'Noto Sans JP', sans-serif";
-      wrapText(ctx, qs("footerInput").value || "", 54, 838, W - 108, 38);
+      ctx.font = "800 22px 'Noto Sans JP', sans-serif";
+      wrapText(ctx, footerText, 40, 616, W - 80, 28);
       ctx.fillStyle = "#667085";
-      ctx.font = "700 16px 'Noto Sans JP', sans-serif";
-      ctx.fillText(qs("noteInput").value || "", 54, 882, W - 108);
+      ctx.font = "700 12px 'Noto Sans JP', sans-serif";
+      ctx.fillText(noteText, 40, 626, W - 80);
 
       qs("previewSleeveMeta").textContent = `対象: ${sleeve.name || "-"} / ID ${sleeve.id || "-"}`;
       qs("previewDataMeta").textContent = `最新観測: ${stats.latest?.date ? formatDateLabel(stats.latest.date) : "-"}${adminState.imageWarning ? " / 画像は代替表示" : ""}`;
