@@ -3106,7 +3106,7 @@
       if (distTable) distTable.innerHTML = renderTableDist(last);
 
       runDeferred(() => {
-        const commentStats = buildMarketCommentStats(sleeves, series, mode);
+        const commentStats = buildMarketCommentStats(sleeves, series, currentMode);
         renderAiComment(last?.week || null, commentStats);
       });
     }
