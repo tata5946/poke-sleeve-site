@@ -2975,7 +2975,7 @@
     }
 
     function renderMarketIndexView(view, sleeves, scopeMeta) {
-      const { entries, periods, periodType, series, periodLabel, rateLabel, deltaLabel } = view;
+      const { entries, periods, periodType, series, periodLabel, rateLabel, deltaLabel, mode } = view;
       if (!periods.length || periods.length < 2) {
         showError(`${periodLabel}データが不足しています（2点以上必要）`);
         return;
@@ -3106,7 +3106,7 @@
       if (distTable) distTable.innerHTML = renderTableDist(last);
 
       runDeferred(() => {
-        const commentStats = buildMarketCommentStats(sleeves, series, currentMode);
+        const commentStats = buildMarketCommentStats(sleeves, series, mode);
         renderAiComment(last?.week || null, commentStats);
       });
     }
