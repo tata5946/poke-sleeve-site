@@ -4315,21 +4315,60 @@
       return { latestWeek, activeCount, risingCount, volume, tradeValue, avgPrice, topVolume, latestIndex, sentimentScore };
     }
 
-    function buildStrategistText(stats) {
-      const rate = stats?.latestIndex?.rate;
+    const MARKET_COMMENT_TEMPLATES = Object.freeze({
+      strong_up: "市場全体は強い上昇局面です。指数は前週比で大きく上昇し、上昇銘柄も広く見られます。主力どころだけでなく、相場全体に買いの広がりが出ています。",
+      up: "市場全体は堅調です。指数は前週比で上昇しており、相場全体に買いが入りやすい地合いです。広い価格帯で底堅さが確認できます。",
+      volume_up: "市場全体では売買が活発です。指数の方向感はまだ限定的ですが、上昇銘柄の広がりが見られます。出来高先行で相場の熱量が高まりつつある局面です。",
+      flat: "市場全体は横ばい圏です。指数の変動は限られており、全体としては落ち着いた推移です。足元では個別銘柄ごとの差が出やすい局面です。",
+      soft_down: "市場全体はやや軟調です。指数は弱含みで推移しており、買いの勢いはやや限定的です。強い銘柄と弱い銘柄の差が広がりやすい局面です。",
+      down: "市場全体は下落基調です。指数は前週比で大きく下落しており、全体的に慎重な地合いです。短期的には様子見姿勢が強まりやすい局面です."
+    });
+
+    function classifyMarketState(stats) {
+      const rate = Number(stats?.latestIndex?.rate);
       const activeCount = Number(stats?.activeCount || 0);
       const risingCount = Number(stats?.risingCount || 0);
-      const ratio = activeCount ? risingCount / activeCount : 0;
-      if (Number.isFinite(rate) && rate >= 2 && ratio >= 0.45) {
-        return "市場は強めの地合いです。指数の上昇と上昇銘柄の広がりが同時に出ており、短期資金が主力銘柄に集まりやすい局面です。";
+      const ratio = activeCount > 0 ? (risingCount / activeCount) : 0;
+
+      if (Number.isFinite(rate) && rate >= 2.0 && ratio >= 0.55) return "strong_up";
+      if (Number.isFinite(rate) && rate <= -2.0) return "down";
+      if (Number.isFinite(rate) && rate >= 0.8 && ratio >= 0.45) return "up";
+      if (Number.isFinite(rate) && rate <= -0.8) return "soft_down";
+      if (Number.isFinite(rate) && rate > -0.8 && rate < 0.8 && ratio >= 0.45) return "volume_up";
+      return "flat";
+    }
+
+    function buildMarketCommentAddon(stats) {
+      const activeCount = Number(stats?.activeCount || 0);
+      const risingCount = Number(stats?.risingCount || 0);
+      const ratio = activeCount > 0 ? (risingCount / activeCount) : 0;
+      const volume = Number(stats?.volume || 0);
+      const tradeValue = Number(stats?.tradeValue || 0);
+      const avgPrice = Number(stats?.avgPrice || 0);
+
+      if (ratio >= 0.6) {
+        return "上昇の裾野が広く、市場全体に資金が回っています。";
       }
-      if (Number.isFinite(rate) && rate <= -2) {
-        return "市場はやや調整色が強く、資金は一部の銘柄に集中しています。逆行高の銘柄を選別しながら追うのが無難です。";
+      if (ratio <= 0.3 && activeCount > 0) {
+        return "一部銘柄を除き、全体には弱さが残っています。";
       }
-      if (ratio >= 0.4) {
-        return "市場は底堅く推移しています。指数は大きく振れていないものの、上昇銘柄の裾野が広く、回転は継続しています。";
+      if (volume >= 45) {
+        return "売買の回転が活発で、参加者の多さが目立ちます。";
       }
-      return "市場は横ばい圏です。指数は落ち着いており、ランキング上位と出来高上位を見比べながら主導銘柄を探す局面です。";
+      if (tradeValue >= 180000) {
+        return "売買金額ベースでも資金流入が確認できます。";
+      }
+      if (avgPrice >= 3500) {
+        return "高額帯スリーブの成約が相場を支えています。";
+      }
+      return "";
+    }
+
+    function buildStrategistText(stats) {
+      const state = classifyMarketState(stats);
+      const base = MARKET_COMMENT_TEMPLATES[state] || MARKET_COMMENT_TEMPLATES.flat;
+      const addon = buildMarketCommentAddon(stats);
+      return addon ? `${base} ${addon}` : base;
     }
 
     function renderMarketStats(stats) {

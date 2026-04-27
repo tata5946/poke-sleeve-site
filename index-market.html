@@ -1397,12 +1397,14 @@
     const MARKET_INDEX_BASE_MONTH = "2024-01";
     const MARKET_INDEX_BASE_LABEL = "2024年1月";
 
-    const AI_MARKET_COMMENTS_BY_WEEK = {
-      "2026-02-23": "スリーブ指数は2月中旬に底を打ち、その後急速に回復しており短期的には上昇トレンド入りが確認できる。上昇スリーブ割合も約43%と広範囲に買いが入っており、特にキャラクター系・イベント系スリーブがランキング上位を占めるなどコレクション需要主導のテーマ相場が形成されている。価格帯は1000～2500円の流動性の高いゾーンに資金が集中しており、短期トレード需要も含めた活発な市場環境と考えられる。",
-      "2026-03-02": "スリーブ指数は2月中旬に底を打ち、その後急速に回復しており短期的には上昇トレンド入りが確認できる。上昇スリーブ割合も約43%と広範囲に買いが入っており、特にキャラクター系・イベント系スリーブがランキング上位を占めるなどコレクション需要主導のテーマ相場が形成されている。価格帯は1000～2500円の流動性の高いゾーンに資金が集中しており、短期トレード需要も含めた活発な市場環境と考えられる。",
-      "2026-03-09": "スリーブ指数は2月中旬に底を打ち、その後急速に回復しており短期的には上昇トレンド入りが確認できる。上昇スリーブ割合も約43%と広範囲に買いが入っており、特にキャラクター系・イベント系スリーブがランキング上位を占めるなどコレクション需要主導のテーマ相場が形成されている。価格帯は1000～2500円の流動性の高いゾーンに資金が集中しており、短期トレード需要も含めた活発な市場環境と考えられる。",
-      "2026-03-16": "2月中旬の底打ち以降の上昇トレンドは継続しているが、足元ではやや上昇一服の動き。指数は104付近で高止まりしており、短期的には“上昇トレンド内の調整局面”に移行。\n\n上昇銘柄は引き続き複数見られるものの、下落寄与も目立ち始めており、資金の分散が進行。特に一部の人気スリーブで利益確定売りが出ており、テーマ相場はやや選別フェーズへ。\n\n一方で、上昇寄与銘柄は+10〜20%の強い値動きも確認されており、コレクション需要自体は依然として堅調。資金は引き続き中価格帯（1000〜3000円付近）に集中しつつ、“強い個別”に寄る構造へシフトしている。"
-    };
+    const MARKET_COMMENT_TEMPLATES = Object.freeze({
+      strong_up: "市場全体は強い上昇局面です。指数は前週比で大きく上昇し、上昇銘柄も広く見られます。主力どころだけでなく、相場全体に買いの広がりが出ています。",
+      up: "市場全体は堅調です。指数は前週比で上昇しており、相場全体に買いが入りやすい地合いです。広い価格帯で底堅さが確認できます。",
+      volume_up: "市場全体では売買が活発です。指数の方向感はまだ限定的ですが、上昇銘柄の広がりが見られます。出来高先行で相場の熱量が高まりつつある局面です。",
+      flat: "市場全体は横ばい圏です。指数の変動は限られており、全体としては落ち着いた推移です。足元では個別銘柄ごとの差が出やすい局面です。",
+      soft_down: "市場全体はやや軟調です。指数は弱含みで推移しており、買いの勢いはやや限定的です。強い銘柄と弱い銘柄の差が広がりやすい局面です。",
+      down: "市場全体は下落基調です。指数は前週比で大きく下落しており、全体的に慎重な地合いです。短期的には様子見姿勢が強まりやすい局面です。"
+    });
 
     function escapeHtml(str) {
       return String(str ?? "")
@@ -1746,20 +1748,96 @@
       return { latest, prev };
     }
 
-    function renderAiComment(weekIso) {
+    function classifyMarketCommentState(stats) {
+      const rate = Number(stats?.latestRate);
+      const activeCount = Number(stats?.activeCount || 0);
+      const risingCount = Number(stats?.risingCount || 0);
+      const ratio = activeCount > 0 ? (risingCount / activeCount) : 0;
+
+      if (Number.isFinite(rate) && rate >= 2.0 && ratio >= 0.55) return "strong_up";
+      if (Number.isFinite(rate) && rate <= -2.0) return "down";
+      if (Number.isFinite(rate) && rate >= 0.8 && ratio >= 0.45) return "up";
+      if (Number.isFinite(rate) && rate <= -0.8) return "soft_down";
+      if (Number.isFinite(rate) && rate > -0.8 && rate < 0.8 && ratio >= 0.45) return "volume_up";
+      return "flat";
+    }
+
+    function buildMarketCommentAddon(stats) {
+      const activeCount = Number(stats?.activeCount || 0);
+      const risingCount = Number(stats?.risingCount || 0);
+      const ratio = activeCount > 0 ? (risingCount / activeCount) : 0;
+      const volume = Number(stats?.volume || 0);
+      const tradeValue = Number(stats?.tradeValue || 0);
+      const avgPrice = Number(stats?.avgPrice || 0);
+
+      if (ratio >= 0.6) return "上昇の裾野が広く、市場全体に資金が回っています。";
+      if (ratio <= 0.3 && activeCount > 0) return "一部銘柄を除き、全体には弱さが残っています。";
+      if (volume >= 45) return "売買の回転が活発で、参加者の多さが目立ちます。";
+      if (tradeValue >= 180000) return "売買金額ベースでも資金流入が確認できます。";
+      if (avgPrice >= 3500) return "高額帯スリーブの成約が相場を支えています。";
+      return "";
+    }
+
+    function buildMarketCommentStats(sleeves, series, mode) {
+      const list = Array.isArray(sleeves) ? sleeves : [];
+      const rows = Array.isArray(series) ? series : [];
+      const pair = latestTwoValid(rows, "avgRate");
+      const latest = pair?.latest || null;
+      if (!latest?.week) return null;
+
+      let activeCount = 0;
+      let volume = 0;
+      let tradeValue = 0;
+      let priceSum = 0;
+      let priceCount = 0;
+
+      const sourceRows = (sleeve) => mode === "month"
+        ? normalizeMonthlyPrices(sleeve?.monthlyPrices)
+        : normalizeWeekly(sleeve?.weeklyPrices).filter((row) => periodKind(row.week) === "week");
+
+      for (const sleeve of list) {
+        const row = sourceRows(sleeve).find((item) => item.week === latest.week);
+        if (!row || !Number.isFinite(row.price) || row.price <= 0) continue;
+        activeCount++;
+        const count = Number.isFinite(row.count) ? row.count : 1;
+        volume += count;
+        tradeValue += row.price * count;
+        priceSum += row.price;
+        priceCount++;
+      }
+
+      return {
+        latestWeek: latest.week,
+        latestRate: Number.isFinite(latest.avgRate) ? latest.avgRate : null,
+        activeCount,
+        risingCount: Number(latest.up || 0),
+        volume,
+        tradeValue,
+        avgPrice: priceCount > 0 ? (priceSum / priceCount) : 0
+      };
+    }
+
+    function buildAiMarketComment(stats) {
+      if (!stats) return "コメントを生成できるデータがまだありません。";
+      const state = classifyMarketCommentState(stats);
+      const base = MARKET_COMMENT_TEMPLATES[state] || MARKET_COMMENT_TEMPLATES.flat;
+      const addon = buildMarketCommentAddon(stats);
+      return addon ? `${base} ${addon}` : base;
+    }
+
+    function renderAiComment(weekIso, stats) {
       const weekEl = document.getElementById("aiCommentWeek");
       const bodyEl = document.getElementById("aiCommentBody");
       if (!weekEl || !bodyEl) return;
 
       if (!weekIso) {
         weekEl.textContent = "対象週: -";
-        bodyEl.textContent = "コメント未設定";
+        bodyEl.textContent = "コメントを生成できるデータがまだありません。";
         return;
       }
 
-      const txt = String(AI_MARKET_COMMENTS_BY_WEEK[weekIso] || "").trim();
       weekEl.textContent = `対象週: ${formatPeriodLabel(weekIso)}`;
-      bodyEl.textContent = txt || "この週のコメントは未設定です。AI_MARKET_COMMENTS_BY_WEEK に追記してください。";
+      bodyEl.textContent = buildAiMarketComment(stats);
     }
 
     function renderTableIndex(rows) {
@@ -3028,7 +3106,8 @@
       if (distTable) distTable.innerHTML = renderTableDist(last);
 
       runDeferred(() => {
-        renderAiComment(last?.week || null);
+        const commentStats = buildMarketCommentStats(sleeves, series, mode);
+        renderAiComment(last?.week || null, commentStats);
       });
     }
 
