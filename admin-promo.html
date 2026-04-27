@@ -172,6 +172,12 @@
       resize: vertical;
     }
 
+    .field-hint {
+      font-size: 12px;
+      color: var(--admin-muted);
+      line-height: 1.6;
+    }
+
     .admin-actions {
       display: flex;
       flex-wrap: wrap;
@@ -255,12 +261,86 @@
       margin-top: 10px;
     }
 
+    .preview-top {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .preview-sleeve-card {
+      border: 1px solid #d9e3f1;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .preview-sleeve-art {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 16px;
+      border: 1px solid #dbe4f0;
+      background: #eef4ff;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+
+    .preview-sleeve-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #fff;
+    }
+
+    .preview-sleeve-placeholder {
+      color: #667085;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.6;
+      padding: 16px;
+    }
+
+    .preview-sleeve-name {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.35;
+      font-weight: 900;
+      color: #101828;
+    }
+
+    .preview-sleeve-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .preview-sleeve-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #eff4ff;
+      color: #1849a9;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
     .hidden {
       display: none !important;
     }
 
     @media (max-width: 1080px) {
       .admin-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-top {
         grid-template-columns: 1fr;
       }
     }
@@ -322,6 +402,11 @@
         <p class="panel-note">文言は自動で入りますが、そのまま上書きもできます。まずはスリーブを選ぶだけで運用を回せる形にしています。</p>
         <div class="field-grid">
           <div class="field">
+            <label for="sleeveSelect">登録済みスリーブ一覧</label>
+            <select id="sleeveSelect"></select>
+            <div class="field-hint">現在登録されているスリーブをすべて一覧から選べます。</div>
+          </div>
+          <div class="field">
             <label for="sleeveSearchInput">対象スリーブ</label>
             <input id="sleeveSearchInput" list="sleeveOptions" placeholder="名前またはIDで検索" autocomplete="off" />
             <datalist id="sleeveOptions"></datalist>
@@ -358,8 +443,18 @@
       <div class="admin-panel">
         <h2 class="panel-title">プレビュー</h2>
         <p class="panel-note">画像は `1600 x 900` のPNGで保存します。画像URLがCORS非対応の場合は、書き出し時にプレースホルダーで代替します。</p>
-        <div class="preview-stage">
-          <canvas id="promoCanvas" width="1600" height="900" aria-label="投稿画像プレビュー"></canvas>
+        <div class="preview-top">
+          <section class="preview-sleeve-card" aria-label="選択中スリーブ">
+            <div class="preview-sleeve-art">
+              <img id="previewSleeveImage" alt="" />
+              <div id="previewSleevePlaceholder" class="preview-sleeve-placeholder hidden">画像を表示できない場合は、保存時にプレースホルダーで代替します。</div>
+            </div>
+            <h3 id="previewSleeveName" class="preview-sleeve-name">スリーブ未選択</h3>
+            <div id="previewSleeveTags" class="preview-sleeve-tags"></div>
+          </section>
+          <div class="preview-stage">
+            <canvas id="promoCanvas" width="1600" height="900" aria-label="投稿画像プレビュー"></canvas>
+          </div>
         </div>
         <div class="preview-meta">
           <span id="previewSleeveMeta">対象: -</span>
@@ -910,9 +1005,56 @@
       return `${String(sleeve?.name || "").trim()} (${String(sleeve?.id || "").trim()})`;
     }
 
+    function getSleeveTagLabels(sleeve) {
+      return [
+        String(sleeve?.releaseYear || "").trim(),
+        String(sleeve?.series || "").trim(),
+        String(sleeve?.category7 || "").trim(),
+        String(sleeve?.category8 || "").trim(),
+        String(sleeve?.category9 || "").trim()
+      ].filter(Boolean).slice(0, 4);
+    }
+
+    function updateSleeveVisualPreview(sleeve) {
+      const img = qs("previewSleeveImage");
+      const placeholder = qs("previewSleevePlaceholder");
+      const nameEl = qs("previewSleeveName");
+      const tagsEl = qs("previewSleeveTags");
+      if (!img || !placeholder || !nameEl || !tagsEl) return;
+
+      if (!sleeve) {
+        img.classList.add("hidden");
+        placeholder.classList.remove("hidden");
+        placeholder.textContent = "スリーブを選ぶとここに画像が表示されます。";
+        nameEl.textContent = "スリーブ未選択";
+        tagsEl.innerHTML = "";
+        return;
+      }
+
+      img.classList.remove("hidden");
+      placeholder.classList.add("hidden");
+      img.src = String(sleeve.imageUrl || "").trim();
+      img.alt = String(sleeve.name || "").trim();
+      img.onerror = () => {
+        img.classList.add("hidden");
+        placeholder.classList.remove("hidden");
+        placeholder.textContent = "画像を表示できません。保存時はプレースホルダーで代替します。";
+      };
+      img.onload = () => {
+        img.classList.remove("hidden");
+        placeholder.classList.add("hidden");
+      };
+      nameEl.textContent = String(sleeve.name || "").trim() || "名称未設定";
+      tagsEl.innerHTML = getSleeveTagLabels(sleeve)
+        .map((label) => `<span class="preview-sleeve-tag">${escapeHtml(label)}</span>`)
+        .join("");
+    }
+
     function populateSleeveOptions() {
       const datalist = qs("sleeveOptions");
-      if (!datalist) return;
+      const select = qs("sleeveSelect");
+      if (!datalist || !select) return;
+      const selectedId = String(adminState.selectedSleeve?.id || "").trim();
       const sleeves = adminState.sleeves.slice().sort((a, b) => {
         const ap = Number(getLatestTradeRow(a)?.price || 0);
         const bp = Number(getLatestTradeRow(b)?.price || 0);
@@ -920,9 +1062,20 @@
         return String(a.name || "").localeCompare(String(b.name || ""), "ja");
       });
       datalist.innerHTML = sleeves.map((sleeve) => `<option value="${escapeHtml(buildSleeveOptionLabel(sleeve))}"></option>`).join("");
-      if (!adminState.selectedSleeve && sleeves.length) {
+      select.innerHTML = sleeves.map((sleeve) => `<option value="${escapeHtml(String(sleeve.id || ""))}">${escapeHtml(buildSleeveOptionLabel(sleeve))}</option>`).join("");
+      const matched = selectedId ? (sleeves.find((sleeve) => String(sleeve.id || "") === selectedId) || null) : null;
+      if (matched) {
+        adminState.selectedSleeve = matched;
+        qs("sleeveSearchInput").value = buildSleeveOptionLabel(matched);
+        select.value = String(matched.id || "");
+        updateSleeveVisualPreview(matched);
+        return;
+      }
+      if (sleeves.length) {
         adminState.selectedSleeve = sleeves[0];
         qs("sleeveSearchInput").value = buildSleeveOptionLabel(sleeves[0]);
+        select.value = String(sleeves[0].id || "");
+        updateSleeveVisualPreview(sleeves[0]);
       }
     }
 
@@ -973,7 +1126,10 @@
         return;
       }
       adminState.selectedSleeve = sleeve;
+      const select = qs("sleeveSelect");
+      if (select) select.value = String(sleeve.id || "");
       fillCopyFields();
+      updateSleeveVisualPreview(sleeve);
       await renderPromoCanvas();
     }
 
@@ -1028,6 +1184,16 @@
         showGate();
         setStatus("");
       };
+      qs("sleeveSelect").addEventListener("change", async (event) => {
+        const id = String(event.target.value || "").trim();
+        const sleeve = adminState.sleeves.find((item) => String(item.id || "") === id) || null;
+        if (!sleeve) return;
+        adminState.selectedSleeve = sleeve;
+        qs("sleeveSearchInput").value = buildSleeveOptionLabel(sleeve);
+        fillCopyFields();
+        updateSleeveVisualPreview(sleeve);
+        await renderPromoCanvas();
+      });
       qs("sleeveSearchInput").addEventListener("change", () => handleSelectionChange());
       qs("renderBtn").onclick = async () => {
         const resolved = resolveSleeveFromInput();
@@ -1046,6 +1212,7 @@
 
     async function main() {
       wireEvents();
+      updateSleeveVisualPreview(null);
       if (isAuthorized()) {
         showApp();
         await loadPromoData(false);
