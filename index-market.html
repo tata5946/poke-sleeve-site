@@ -1749,17 +1749,22 @@
     }
 
     function classifyMarketCommentState(stats) {
+      const hint = String(stats?.stateHint || "").trim();
       const rate = Number(stats?.latestRate);
       const activeCount = Number(stats?.activeCount || 0);
       const risingCount = Number(stats?.risingCount || 0);
       const ratio = activeCount > 0 ? (risingCount / activeCount) : 0;
 
-      if (Number.isFinite(rate) && rate >= 2.0 && ratio >= 0.55) return "strong_up";
-      if (Number.isFinite(rate) && rate <= -2.0) return "down";
-      if (Number.isFinite(rate) && rate >= 0.8 && ratio >= 0.45) return "up";
-      if (Number.isFinite(rate) && rate <= -0.8) return "soft_down";
-      if (Number.isFinite(rate) && rate > -0.8 && rate < 0.8 && ratio >= 0.45) return "volume_up";
-      return "flat";
+      let state = "flat";
+      if (Number.isFinite(rate) && rate >= 2.0 && ratio >= 0.55) state = "strong_up";
+      else if (Number.isFinite(rate) && rate <= -2.0) state = "down";
+      else if (Number.isFinite(rate) && rate >= 0.8 && ratio >= 0.45) state = "up";
+      else if (Number.isFinite(rate) && rate <= -0.8) state = "soft_down";
+      else if (Number.isFinite(rate) && rate > -0.8 && rate < 0.8 && ratio >= 0.45) state = "volume_up";
+
+      if (hint === "up" && (state === "flat" || state === "volume_up")) return "up";
+      if (hint === "down" && state === "flat") return "soft_down";
+      return state;
     }
 
     function buildMarketCommentAddon(stats) {
@@ -1813,7 +1818,8 @@
         risingCount: Number(latest.up || 0),
         volume,
         tradeValue,
-        avgPrice: priceCount > 0 ? (priceSum / priceCount) : 0
+        avgPrice: priceCount > 0 ? (priceSum / priceCount) : 0,
+        stateHint: String(latest.stateHint || "").trim()
       };
     }
 
@@ -3059,6 +3065,7 @@
       }
 
       const marketState = describeMarketState(series, last);
+      if (last) last.stateHint = marketState.cls;
       const marketStateValue = document.getElementById("marketStateValue");
       const marketStateNote = document.getElementById("marketStateNote");
       const indexChartNote = document.getElementById("indexChartNote");

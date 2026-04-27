@@ -4315,6 +4315,15 @@
       return { latestWeek, activeCount, risingCount, volume, tradeValue, avgPrice, topVolume, latestIndex, sentimentScore };
     }
 
+    function getSentimentProfile(stats) {
+      const score = Number(stats?.sentimentScore || 0);
+      if (score >= 72) return { label: "強気", state: "strong_up" };
+      if (score >= 58) return { label: "やや強気", state: "up" };
+      if (score <= 28) return { label: "弱気", state: "down" };
+      if (score <= 42) return { label: "やや弱気", state: "soft_down" };
+      return { label: "中立", state: "flat" };
+    }
+
     const MARKET_COMMENT_TEMPLATES = Object.freeze({
       strong_up: "スリーブ相場は強い上昇傾向です。指数は前週比で大きく伸びており、値上がりしているスリーブも広く見られます。人気どころだけでなく、相場全体で価格の持ち上がりが確認できます。",
       up: "スリーブ相場は堅調です。指数は前週比で上昇しており、全体として価格が上向きやすい流れです。幅広い価格帯で底堅さが見られます。",
@@ -4365,7 +4374,7 @@
     }
 
     function buildStrategistText(stats) {
-      const state = classifyMarketState(stats);
+      const state = getSentimentProfile(stats).state || classifyMarketState(stats);
       const base = MARKET_COMMENT_TEMPLATES[state] || MARKET_COMMENT_TEMPLATES.flat;
       const addon = buildMarketCommentAddon(stats);
       return addon ? `${base} ${addon}` : base;
@@ -5125,15 +5134,7 @@
       const maxValue = values.length ? Math.max(...values) : 0;
       const midValue = values.length ? (minValue + maxValue) / 2 : 0;
       const sentimentScore = Number(stats.sentimentScore || 0);
-      const sentimentLabel = sentimentScore >= 72
-        ? "強気"
-        : sentimentScore >= 58
-          ? "やや強気"
-          : sentimentScore <= 28
-            ? "弱気"
-            : sentimentScore <= 42
-              ? "やや弱気"
-              : "中立";
+      const sentimentLabel = getSentimentProfile(stats).label;
       const strategistText = buildStrategistText(stats);
       const latestWeekLabel = stats.latestWeek ? (() => {
         const m = String(stats.latestWeek).match(/^(?:\d{4})-(\d{2})-(\d{2})$/);
