@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <title>管理用プロモ画像メーカー | ポケスリ相場ナビ</title>
+  <link rel="stylesheet" href="./assets/site.css?v=20260427b" />
+  <style>
+    :root {
+      --admin-bg:
+        radial-gradient(circle at 10% 0%, rgba(255, 226, 200, 0.72), transparent 28%),
+        radial-gradient(circle at 100% 0%, rgba(201, 239, 255, 0.72), transparent 32%),
+        linear-gradient(180deg, #f8fbff 0%, #f4f7fb 100%);
+      --admin-card: rgba(255, 255, 255, 0.94);
+      --admin-border: #dbe4f0;
+      --admin-shadow: 0 14px 36px rgba(15, 23, 42, 0.10);
+      --admin-text: #162033;
+      --admin-muted: #667085;
+      --admin-accent: #f43f5e;
+      --admin-accent-2: #2563eb;
+      --admin-accent-3: #10b981;
+      --admin-warning: #b54708;
+    }
+
+    body.admin-promo-page {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--admin-bg);
+      color: var(--admin-text);
+      font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    }
+
+    .admin-shell {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px 20px 40px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .admin-hero,
+    .admin-panel,
+    .gate-card {
+      border: 1px solid var(--admin-border);
+      border-radius: 24px;
+      background: var(--admin-card);
+      box-shadow: var(--admin-shadow);
+    }
+
+    .admin-hero {
+      padding: 24px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .admin-hero h1 {
+      margin: 0;
+      font-size: clamp(26px, 3.4vw, 40px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+
+    .admin-hero p {
+      margin: 10px 0 0;
+      color: var(--admin-muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #fff4e8;
+      color: #b54708;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    .gate-wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .gate-card {
+      width: min(560px, 100%);
+      padding: 28px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .gate-card h2 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.15;
+    }
+
+    .gate-card p {
+      margin: 0;
+      color: var(--admin-muted);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .admin-form-grid {
+      display: grid;
+      grid-template-columns: 380px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .admin-panel {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .panel-note {
+      margin: -4px 0 0;
+      color: var(--admin-muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 12px;
+      font-weight: 900;
+      color: #344054;
+      letter-spacing: .04em;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      border: 1px solid #d5deeb;
+      border-radius: 14px;
+      background: #fff;
+      padding: 12px 14px;
+      font: inherit;
+      color: #101828;
+      box-sizing: border-box;
+    }
+
+    .field textarea {
+      min-height: 84px;
+      resize: vertical;
+    }
+
+    .admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-admin {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform .16s ease, box-shadow .16s ease, opacity .16s ease;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+    }
+
+    .btn-admin:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-admin.primary {
+      background: linear-gradient(135deg, #ff5b4d 0%, #ff8a00 100%);
+      color: #fff;
+    }
+
+    .btn-admin.secondary {
+      background: #eff4ff;
+      color: #1849a9;
+    }
+
+    .btn-admin.ghost {
+      background: #fff;
+      color: #344054;
+      border: 1px solid #d5deeb;
+      box-shadow: none;
+    }
+
+    .status-line {
+      min-height: 22px;
+      font-size: 13px;
+      color: var(--admin-muted);
+    }
+
+    .status-line.warning {
+      color: var(--admin-warning);
+      font-weight: 700;
+    }
+
+    .status-line.ok {
+      color: #047857;
+      font-weight: 700;
+    }
+
+    .preview-stage {
+      position: relative;
+      border: 1px solid #d9e3f1;
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.92) 0%, rgba(246,249,255,.96) 100%);
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .preview-stage canvas {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 18px;
+      background: #fff;
+    }
+
+    .preview-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--admin-muted);
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1080px) {
+      .admin-form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .admin-shell,
+      .gate-wrap {
+        padding: 14px;
+      }
+
+      .admin-hero,
+      .admin-panel,
+      .gate-card {
+        border-radius: 18px;
+      }
+
+      .admin-hero {
+        padding: 20px;
+        align-items: start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body class="admin-promo-page">
+  <div id="gateWrap" class="gate-wrap">
+    <section class="gate-card" aria-label="管理ページ認証">
+      <div>
+        <h2>管理用プロモ画像メーカー</h2>
+        <p>このページは簡易保護です。合言葉を入力すると、このブラウザのセッション中だけ利用できます。</p>
+      </div>
+      <div class="field">
+        <label for="gatePassphrase">合言葉</label>
+        <input id="gatePassphrase" type="password" autocomplete="current-password" placeholder="合言葉を入力" />
+      </div>
+      <div class="admin-actions">
+        <button id="gateLoginBtn" type="button" class="btn-admin primary">入室する</button>
+      </div>
+      <div id="gateStatus" class="status-line"></div>
+    </section>
+  </div>
+
+  <main id="adminApp" class="admin-shell hidden">
+    <section class="admin-hero">
+      <div>
+        <div class="admin-badge">PROMO MAKER</div>
+        <h1>X投稿向けの画像をサイト上でそのまま作る</h1>
+        <p>スリーブを選ぶと、直近の価格推移と主要数値をまとめた投稿用画像を生成します。公開導線には出さず、このページだけで使う運用を想定しています。</p>
+      </div>
+      <div class="admin-actions">
+        <button id="refreshDataBtn" type="button" class="btn-admin secondary">データ再読込</button>
+        <button id="logoutBtn" type="button" class="btn-admin ghost">ログアウト</button>
+      </div>
+    </section>
+
+    <section class="admin-form-grid">
+      <div class="admin-panel">
+        <h2 class="panel-title">設定</h2>
+        <p class="panel-note">文言は自動で入りますが、そのまま上書きもできます。まずはスリーブを選ぶだけで運用を回せる形にしています。</p>
+        <div class="field-grid">
+          <div class="field">
+            <label for="sleeveSearchInput">対象スリーブ</label>
+            <input id="sleeveSearchInput" list="sleeveOptions" placeholder="名前またはIDで検索" autocomplete="off" />
+            <datalist id="sleeveOptions"></datalist>
+          </div>
+          <div class="field">
+            <label for="hookInput">上部フック文</label>
+            <input id="hookInput" type="text" />
+          </div>
+          <div class="field">
+            <label for="subhookInput">下部フック文</label>
+            <input id="subhookInput" type="text" />
+          </div>
+          <div class="field">
+            <label for="badgeInput">チャート見出し</label>
+            <input id="badgeInput" type="text" />
+          </div>
+          <div class="field">
+            <label for="footerInput">フッター文</label>
+            <textarea id="footerInput"></textarea>
+          </div>
+          <div class="field">
+            <label for="noteInput">補足注記</label>
+            <textarea id="noteInput"></textarea>
+          </div>
+        </div>
+        <div class="admin-actions">
+          <button id="renderBtn" type="button" class="btn-admin primary">画像を更新</button>
+          <button id="downloadBtn" type="button" class="btn-admin secondary">PNG保存</button>
+          <button id="copyPostBtn" type="button" class="btn-admin ghost">投稿文をコピー</button>
+        </div>
+        <div id="adminStatus" class="status-line"></div>
+      </div>
+
+      <div class="admin-panel">
+        <h2 class="panel-title">プレビュー</h2>
+        <p class="panel-note">画像は `1600 x 900` のPNGで保存します。画像URLがCORS非対応の場合は、書き出し時にプレースホルダーで代替します。</p>
+        <div class="preview-stage">
+          <canvas id="promoCanvas" width="1600" height="900" aria-label="投稿画像プレビュー"></canvas>
+        </div>
+        <div class="preview-meta">
+          <span id="previewSleeveMeta">対象: -</span>
+          <span id="previewDataMeta">データ: -</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./assets/common.js?v=20260427b"></script>
+  <script>
+    const ADMIN_PROMO_CONFIG = {
+      authSessionKey: "pokeSleeve:promoAdminAuth:v1",
+      authHash: "3d756736a0f3ca820602ee0ca5e932bfb4733d18e362761366dd1d2e21f997ad",
+      defaultPassphraseLabel: "sleeve-promo-2026",
+      canvasWidth: 1600,
+      canvasHeight: 900
+    };
+
+    const adminState = {
+      data: null,
+      sleeves: [],
+      selectedSleeve: null,
+      currentStats: null,
+      currentImageBitmap: null,
+      imageWarning: ""
+    };
+
+    function qs(id) {
+      return document.getElementById(id);
+    }
+
+    function setStatus(msg, kind = "") {
+      const el = qs("adminStatus");
+      if (!el) return;
+      el.textContent = msg || "";
+      el.className = `status-line${kind ? ` ${kind}` : ""}`;
+    }
+
+    function setGateStatus(msg, kind = "") {
+      const el = qs("gateStatus");
+      if (!el) return;
+      el.textContent = msg || "";
+      el.className = `status-line${kind ? ` ${kind}` : ""}`;
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function sha256Hex(text) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(text || "")));
+      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function isAuthorized() {
+      return sessionStorage.getItem(ADMIN_PROMO_CONFIG.authSessionKey) === "ok";
+    }
+
+    function setAuthorized(ok) {
+      if (ok) sessionStorage.setItem(ADMIN_PROMO_CONFIG.authSessionKey, "ok");
+      else sessionStorage.removeItem(ADMIN_PROMO_CONFIG.authSessionKey);
+    }
+
+    function showApp() {
+      qs("gateWrap")?.classList.add("hidden");
+      qs("adminApp")?.classList.remove("hidden");
+    }
+
+    function showGate() {
+      qs("adminApp")?.classList.add("hidden");
+      qs("gateWrap")?.classList.remove("hidden");
+    }
+
+    function parseDate(value) {
+      const d = new Date(String(value || ""));
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function formatDateLabel(value) {
+      const d = parseDate(value);
+      if (!d) return "-";
+      return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
+    }
+
+    function formatCompactNumber(value) {
+      if (!Number.isFinite(value)) return "—";
+      if (value >= 10000) return `${Math.round(value).toLocaleString()}円`;
+      return `${Math.round(value).toLocaleString()}円`;
+    }
+
+    function normalizeWeeklyRows(sleeve) {
+      return (Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [])
+        .map((row) => {
+          const date = String(row?.week || "").trim();
+          const price = Number(row?.price);
+          const count = Number(row?.count);
+          return {
+            date,
+            timestamp: parseDate(date)?.getTime() || 0,
+            price: Number.isFinite(price) && price > 0 ? price : null,
+            count: Number.isFinite(count) ? count : 0
+          };
+        })
+        .filter((row) => row.timestamp > 0)
+        .sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function normalizeMonthlyRows(sleeve) {
+      return (Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [])
+        .map((row) => {
+          const date = String(row?.month || row?.week || "").trim();
+          const price = Number(row?.price);
+          return {
+            date,
+            timestamp: parseDate(date)?.getTime() || 0,
+            price: Number.isFinite(price) && price > 0 ? price : null,
+            count: 1
+          };
+        })
+        .filter((row) => row.timestamp > 0 && row.price != null)
+        .sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function getPositiveRows(rows) {
+      return rows.filter((row) => Number.isFinite(row.price) && row.price > 0);
+    }
+
+    function getRecentSeries(sleeve) {
+      const weekly = getPositiveRows(normalizeWeeklyRows(sleeve));
+      if (weekly.length >= 4) {
+        const latestTs = weekly[weekly.length - 1].timestamp;
+        const cutoff = latestTs - (90 * 24 * 60 * 60 * 1000);
+        const recent = weekly.filter((row) => row.timestamp >= cutoff);
+        return recent.length >= 4 ? recent : weekly.slice(-8);
+      }
+      const monthly = getPositiveRows(normalizeMonthlyRows(sleeve));
+      return monthly.slice(-8);
+    }
+
+    function getLatestTradeRow(sleeve) {
+      const weekly = getPositiveRows(normalizeWeeklyRows(sleeve));
+      if (weekly.length) return weekly[weekly.length - 1];
+      const monthly = getPositiveRows(normalizeMonthlyRows(sleeve));
+      return monthly.length ? monthly[monthly.length - 1] : null;
+    }
+
+    function buildPromoStats(sleeve) {
+      const series = getRecentSeries(sleeve);
+      const latest = series.length ? series[series.length - 1] : getLatestTradeRow(sleeve);
+      const first = series.length ? series[0] : latest;
+      const minRow = series.length ? series.reduce((min, row) => (row.price < min.price ? row : min), series[0]) : latest;
+      const weekly = getPositiveRows(normalizeWeeklyRows(sleeve));
+      const latestWeekly = weekly.length ? weekly[weekly.length - 1] : null;
+      const latestTs = latestWeekly?.timestamp || latest?.timestamp || Date.now();
+      const cutoff30 = latestTs - (30 * 24 * 60 * 60 * 1000);
+      const tradeCount30 = weekly
+        .filter((row) => row.timestamp >= cutoff30)
+        .reduce((sum, row) => sum + (Number.isFinite(row.count) ? row.count : 0), 0);
+      const prev = series.length >= 2 ? series[series.length - 2] : null;
+      const growthMultiple = (first && latest && first.price > 0) ? (latest.price / first.price) : null;
+      const changePct = (prev && prev.price > 0 && latest) ? ((latest.price - prev.price) / prev.price) * 100 : null;
+
+      return {
+        sleeve,
+        series,
+        latest,
+        first,
+        minRow,
+        tradeCount30,
+        growthMultiple,
+        changePct
+      };
+    }
+
+    function buildDefaultCopy(stats) {
+      const name = String(stats?.sleeve?.name || "このスリーブ");
+      const growth = Number(stats?.growthMultiple || 0);
+      const latestPrice = Number(stats?.latest?.price || 0);
+      const tradeCount30 = Number(stats?.tradeCount30 || 0);
+      const latestLabel = stats?.latest?.date ? formatDateLabel(stats.latest.date) : "-";
+      const priceText = latestPrice > 0 ? `最新は約${Math.round(latestPrice).toLocaleString()}円。` : "";
+      const tradeText = tradeCount30 > 0 ? `直近30日で${tradeCount30.toLocaleString()}件ほど動いています。` : "";
+
+      let hook = `なんかこのスリーブ、最近やたら見るよね？`;
+      if (growth >= 3) hook = `このスリーブ、最近かなり伸びてない？`;
+      else if (growth >= 1.8) hook = `このスリーブ、ここ最近で一気に来てない？`;
+      else if (growth >= 1.25) hook = `このスリーブ、じわっと注目集まってない？`;
+
+      let subhook = `${name}、静かに高騰中…？`;
+      if (growth >= 3) subhook = `${name}、約${growth.toFixed(1)}倍ペースで上昇中`;
+      else if (growth >= 1.8) subhook = `${name}、かなり勢いが出ています`;
+      else if (growth >= 1.25) subhook = `${name}、じわじわ上向きです`;
+
+      return {
+        hook,
+        subhook,
+        badge: "相場トレンド（直近90日）",
+        footer: `${priceText}${tradeText}`.trim() || `${name}の直近推移を確認できます。`,
+        note: `相場は過去データを含む参考値です。最終更新: ${latestLabel}`
+      };
+    }
+
+    function buildPostText(stats, copy) {
+      const name = String(stats?.sleeve?.name || "");
+      const latestPrice = Number(stats?.latest?.price || 0);
+      const growth = Number(stats?.growthMultiple || 0);
+      const lines = [
+        copy?.hook || "",
+        name ? `「${name}」` : "",
+        latestPrice > 0 ? `最新価格は約${Math.round(latestPrice).toLocaleString()}円` : "",
+        growth >= 1.1 ? `直近推移は約${growth.toFixed(1)}倍ペース` : "",
+        "https://pokesuri-navi.com/",
+        "#ポケカ #ポケモンカード #デッキシールド"
+      ].filter(Boolean);
+      return lines.join("\n");
+    }
+
+    async function fetchImageBitmap(url) {
+      if (!url) return null;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 10000);
+      try {
+        const res = await fetch(url, { cache: "default", signal: controller.signal });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const blob = await res.blob();
+        return await createImageBitmap(blob);
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function drawRoundedRect(ctx, x, y, w, h, r) {
+      const radius = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + w, y, x + w, y + h, radius);
+      ctx.arcTo(x + w, y + h, x, y + h, radius);
+      ctx.arcTo(x, y + h, x, y, radius);
+      ctx.arcTo(x, y, x + w, y, radius);
+      ctx.closePath();
+    }
+
+    function drawChart(ctx, stats, area) {
+      const rows = Array.isArray(stats?.series) ? stats.series : [];
+      drawRoundedRect(ctx, area.x, area.y, area.w, area.h, 28);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+      ctx.strokeStyle = "#dbe4f0";
+      ctx.stroke();
+
+      ctx.fillStyle = "#12213f";
+      ctx.font = "800 32px 'Noto Sans JP', sans-serif";
+      ctx.fillText(qs("badgeInput").value || "相場トレンド（直近90日）", area.x + 26, area.y + 48);
+
+      if (!rows.length) {
+        ctx.fillStyle = "#667085";
+        ctx.font = "700 28px 'Noto Sans JP', sans-serif";
+        ctx.fillText("表示できる価格データがありません", area.x + 26, area.y + 120);
+        return;
+      }
+
+      const chart = { x: area.x + 40, y: area.y + 88, w: area.w - 80, h: area.h - 220 };
+      const prices = rows.map((row) => row.price);
+      const min = Math.min(...prices);
+      const max = Math.max(...prices);
+      const span = Math.max(1, max - min);
+
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.35)";
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 4; i++) {
+        const y = chart.y + (chart.h / 3) * i;
+        ctx.beginPath();
+        ctx.moveTo(chart.x, y);
+        ctx.lineTo(chart.x + chart.w, y);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = "#667085";
+      ctx.font = "700 20px 'Inter', sans-serif";
+      for (let i = 0; i < 4; i++) {
+        const value = max - (span / 3) * i;
+        const y = chart.y + (chart.h / 3) * i + 6;
+        ctx.fillText(`${Math.round(value).toLocaleString()}`, chart.x - 4, y);
+      }
+
+      const points = rows.map((row, index) => {
+        const x = chart.x + (rows.length === 1 ? chart.w / 2 : (index / (rows.length - 1)) * chart.w);
+        const y = chart.y + chart.h - ((row.price - min) / span) * chart.h;
+        return { x, y, row };
+      });
+
+      const grad = ctx.createLinearGradient(0, chart.y, 0, chart.y + chart.h);
+      grad.addColorStop(0, "rgba(37, 99, 235, 0.24)");
+      grad.addColorStop(1, "rgba(37, 99, 235, 0.04)");
+
+      ctx.beginPath();
+      points.forEach((pt, index) => {
+        if (index === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      });
+      ctx.lineTo(points[points.length - 1].x, chart.y + chart.h);
+      ctx.lineTo(points[0].x, chart.y + chart.h);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      ctx.beginPath();
+      points.forEach((pt, index) => {
+        if (index === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      });
+      ctx.strokeStyle = "#2563eb";
+      ctx.lineWidth = 7;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      ctx.stroke();
+
+      const first = points[0];
+      const latest = points[points.length - 1];
+      ctx.fillStyle = "#ffffff";
+      ctx.strokeStyle = "#2563eb";
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(latest.x, latest.y, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      const callout = (pt, title, value, alignRight = false) => {
+        const w = 180;
+        const h = 88;
+        const x = alignRight ? Math.max(chart.x, pt.x - w - 12) : Math.min(chart.x + chart.w - w, pt.x + 12);
+        const y = Math.max(area.y + 60, Math.min(chart.y + chart.h - h, pt.y - 84));
+        drawRoundedRect(ctx, x, y, w, h, 18);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+        ctx.strokeStyle = "#dbe4f0";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.fillStyle = "#2563eb";
+        ctx.font = "900 22px 'Inter', sans-serif";
+        ctx.fillText(title, x + 18, y + 30);
+        ctx.fillStyle = "#12213f";
+        ctx.font = "900 28px 'Noto Sans JP', sans-serif";
+        ctx.fillText(value, x + 18, y + 64);
+        ctx.strokeStyle = "#94a3b8";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(alignRight ? x + w : x, y + h / 2);
+        ctx.lineTo(pt.x, pt.y);
+        ctx.stroke();
+      };
+
+      callout(first, formatDateLabel(first.row.date), `約${Math.round(first.row.price).toLocaleString()}円`, false);
+      callout(latest, formatDateLabel(latest.row.date), `約${Math.round(latest.row.price).toLocaleString()}円`, true);
+
+      ctx.fillStyle = "#667085";
+      ctx.font = "700 20px 'Inter', sans-serif";
+      const labelIndexes = [0, Math.floor((rows.length - 1) / 2), rows.length - 1].filter((v, i, arr) => arr.indexOf(v) === i);
+      labelIndexes.forEach((index) => {
+        const row = rows[index];
+        const x = chart.x + (rows.length === 1 ? chart.w / 2 : (index / (rows.length - 1)) * chart.w);
+        const label = formatDateLabel(row.date).slice(5);
+        ctx.fillText(label, Math.max(chart.x, x - 26), chart.y + chart.h + 34);
+      });
+    }
+
+    async function renderPromoCanvas() {
+      const sleeve = adminState.selectedSleeve;
+      if (!sleeve) {
+        setStatus("先に対象スリーブを選んでください。", "warning");
+        return;
+      }
+      const stats = buildPromoStats(sleeve);
+      adminState.currentStats = stats;
+      adminState.imageWarning = "";
+
+      const canvas = qs("promoCanvas");
+      const ctx = canvas.getContext("2d");
+      const W = canvas.width;
+      const H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const bg = ctx.createLinearGradient(0, 0, W, H);
+      bg.addColorStop(0, "#fffdf7");
+      bg.addColorStop(1, "#f6fbff");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      for (let i = 0; i < 26; i++) {
+        const x = 30 + ((i * 59) % (W - 60));
+        const y = 28 + ((i * 97) % (H - 56));
+        ctx.fillStyle = i % 2 === 0 ? "rgba(250, 204, 21, 0.14)" : "rgba(251, 113, 133, 0.11)";
+        ctx.beginPath();
+        ctx.arc(x, y, 3 + (i % 3), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = "#111827";
+      ctx.font = "900 64px 'Noto Sans JP', sans-serif";
+      ctx.fillText(qs("hookInput").value || "なんかこのスリーブ、最近やたら見るよね？", 54, 92);
+
+      const left = { x: 50, y: 130, w: 420, h: 650 };
+      drawRoundedRect(ctx, left.x, left.y, left.w, left.h, 34);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+      ctx.strokeStyle = "#dbe4f0";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      let bitmap = null;
+      try {
+        bitmap = await fetchImageBitmap(String(sleeve.imageUrl || "").trim());
+      } catch (_) {
+        adminState.imageWarning = "画像URLが書き出し非対応のため、プレースホルダーで代替しました。";
+      }
+      adminState.currentImageBitmap = bitmap;
+
+      const art = { x: left.x + 28, y: left.y + 28, w: 364, h: 428 };
+      drawRoundedRect(ctx, art.x, art.y, art.w, art.h, 24);
+      ctx.save();
+      ctx.clip();
+      if (bitmap) {
+        const scale = Math.min(art.w / bitmap.width, art.h / bitmap.height);
+        const drawW = bitmap.width * scale;
+        const drawH = bitmap.height * scale;
+        const dx = art.x + (art.w - drawW) / 2;
+        const dy = art.y + (art.h - drawH) / 2;
+        ctx.fillStyle = "#f5f7fb";
+        ctx.fillRect(art.x, art.y, art.w, art.h);
+        ctx.drawImage(bitmap, dx, dy, drawW, drawH);
+      } else {
+        const fallback = ctx.createLinearGradient(art.x, art.y, art.x + art.w, art.y + art.h);
+        fallback.addColorStop(0, "#203a74");
+        fallback.addColorStop(1, "#5b2c83");
+        ctx.fillStyle = fallback;
+        ctx.fillRect(art.x, art.y, art.w, art.h);
+        ctx.fillStyle = "rgba(255,255,255,0.18)";
+        ctx.font = "900 44px 'Inter', sans-serif";
+        ctx.fillText("NO IMAGE", art.x + 70, art.y + art.h / 2);
+      }
+      ctx.restore();
+
+      ctx.fillStyle = "#eff4ff";
+      drawRoundedRect(ctx, left.x + 28, left.y + 480, 240, 46, 16);
+      ctx.fill();
+      ctx.fillStyle = "#1849a9";
+      ctx.font = "900 20px 'Noto Sans JP', sans-serif";
+      ctx.fillText("ポケモンカードゲーム デッキシールド", left.x + 44, left.y + 509);
+
+      ctx.fillStyle = "#101828";
+      ctx.font = "900 54px 'Noto Sans JP', sans-serif";
+      ctx.fillText(String(sleeve.name || ""), left.x + 28, left.y + 592, left.w - 56);
+
+      ctx.fillStyle = "#111827";
+      ctx.font = "800 42px 'Noto Sans JP', sans-serif";
+      wrapText(ctx, qs("subhookInput").value || `${sleeve.name || "このスリーブ"}、静かに高騰中…？`, left.x + 28, left.y + 646, left.w - 56, 58);
+
+      const right = { x: 510, y: 130, w: 1040, h: 650 };
+      drawChart(ctx, stats, right);
+
+      const cards = [
+        {
+          title: "直近推移",
+          value: stats.growthMultiple && stats.growthMultiple >= 1.1 ? `約${stats.growthMultiple.toFixed(1)}倍` : "横ばい圏",
+          sub: stats.first?.date ? `${formatDateLabel(stats.first.date)} 比較` : "比較データ不足",
+          color: "#1d4ed8"
+        },
+        {
+          title: "最新価格",
+          value: stats.latest ? `約${Math.round(stats.latest.price).toLocaleString()}円` : "—",
+          sub: Number.isFinite(stats.changePct) ? `前回比 ${stats.changePct > 0 ? "+" : ""}${stats.changePct.toFixed(1)}%` : "前回比なし",
+          color: "#e11d48"
+        },
+        {
+          title: "取引件数（30日）",
+          value: stats.tradeCount30 > 0 ? `約${stats.tradeCount30.toLocaleString()}件` : "動き少なめ",
+          sub: stats.latest?.date ? `最終観測 ${formatDateLabel(stats.latest.date)}` : "観測不足",
+          color: "#f97316"
+        }
+      ];
+
+      cards.forEach((card, index) => {
+        const x = right.x + 34 + (index * 318);
+        const y = right.y + right.h - 134;
+        drawRoundedRect(ctx, x, y, 286, 98, 20);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+        ctx.strokeStyle = "#dbe4f0";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.fillStyle = card.color;
+        ctx.font = "900 18px 'Noto Sans JP', sans-serif";
+        ctx.fillText(card.title, x + 18, y + 28);
+        ctx.fillStyle = "#12213f";
+        ctx.font = "900 38px 'Noto Sans JP', sans-serif";
+        ctx.fillText(card.value, x + 18, y + 66);
+        ctx.fillStyle = "#667085";
+        ctx.font = "800 18px 'Noto Sans JP', sans-serif";
+        ctx.fillText(card.sub, x + 18, y + 88);
+      });
+
+      ctx.fillStyle = "#111827";
+      ctx.font = "800 28px 'Noto Sans JP', sans-serif";
+      wrapText(ctx, qs("footerInput").value || "", 54, 838, W - 108, 38);
+      ctx.fillStyle = "#667085";
+      ctx.font = "700 16px 'Noto Sans JP', sans-serif";
+      ctx.fillText(qs("noteInput").value || "", 54, 882, W - 108);
+
+      qs("previewSleeveMeta").textContent = `対象: ${sleeve.name || "-"} / ID ${sleeve.id || "-"}`;
+      qs("previewDataMeta").textContent = `最新観測: ${stats.latest?.date ? formatDateLabel(stats.latest.date) : "-"}${adminState.imageWarning ? " / 画像は代替表示" : ""}`;
+      setStatus(adminState.imageWarning || "プレビューを更新しました。", adminState.imageWarning ? "warning" : "ok");
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+      const chars = String(text || "");
+      let line = "";
+      let offsetY = 0;
+      for (const ch of chars) {
+        const test = line + ch;
+        if (ctx.measureText(test).width > maxWidth && line) {
+          ctx.fillText(line, x, y + offsetY, maxWidth);
+          line = ch;
+          offsetY += lineHeight;
+        } else {
+          line = test;
+        }
+      }
+      if (line) ctx.fillText(line, x, y + offsetY, maxWidth);
+    }
+
+    function resolveSleeveFromInput() {
+      const raw = String(qs("sleeveSearchInput").value || "").trim();
+      if (!raw) return null;
+      const byId = adminState.sleeves.find((sleeve) => String(sleeve.id || "") === raw);
+      if (byId) return byId;
+      const byLabel = adminState.sleeves.find((sleeve) => buildSleeveOptionLabel(sleeve) === raw);
+      if (byLabel) return byLabel;
+      return adminState.sleeves.find((sleeve) => String(sleeve.name || "").trim() === raw) || null;
+    }
+
+    function buildSleeveOptionLabel(sleeve) {
+      return `${String(sleeve?.name || "").trim()} (${String(sleeve?.id || "").trim()})`;
+    }
+
+    function populateSleeveOptions() {
+      const datalist = qs("sleeveOptions");
+      if (!datalist) return;
+      const sleeves = adminState.sleeves.slice().sort((a, b) => {
+        const ap = Number(getLatestTradeRow(a)?.price || 0);
+        const bp = Number(getLatestTradeRow(b)?.price || 0);
+        if (bp !== ap) return bp - ap;
+        return String(a.name || "").localeCompare(String(b.name || ""), "ja");
+      });
+      datalist.innerHTML = sleeves.map((sleeve) => `<option value="${escapeHtml(buildSleeveOptionLabel(sleeve))}"></option>`).join("");
+      if (!adminState.selectedSleeve && sleeves.length) {
+        adminState.selectedSleeve = sleeves[0];
+        qs("sleeveSearchInput").value = buildSleeveOptionLabel(sleeves[0]);
+      }
+    }
+
+    function fillCopyFields() {
+      if (!adminState.selectedSleeve) return;
+      const defaults = buildDefaultCopy(buildPromoStats(adminState.selectedSleeve));
+      qs("hookInput").value = defaults.hook;
+      qs("subhookInput").value = defaults.subhook;
+      qs("badgeInput").value = defaults.badge;
+      qs("footerInput").value = defaults.footer;
+      qs("noteInput").value = defaults.note;
+    }
+
+    async function loadPromoData(forceRefresh = false) {
+      if (!window.common || typeof window.common.loadData !== "function") {
+        throw new Error("共通データローダーの初期化に失敗しました。");
+      }
+      const data = await window.common.loadData({ forceRefresh });
+      adminState.data = data;
+      adminState.sleeves = Array.isArray(data?.sleeves) ? data.sleeves.filter((sleeve) => sleeve && sleeve.id && sleeve.name) : [];
+      populateSleeveOptions();
+      fillCopyFields();
+      await renderPromoCanvas();
+    }
+
+    async function handleLogin() {
+      const input = qs("gatePassphrase");
+      const passphrase = String(input?.value || "").trim();
+      if (!passphrase) {
+        setGateStatus("合言葉を入力してください。", "warning");
+        return;
+      }
+      const hash = await sha256Hex(passphrase);
+      if (hash !== ADMIN_PROMO_CONFIG.authHash) {
+        setGateStatus("合言葉が違います。", "warning");
+        return;
+      }
+      setAuthorized(true);
+      showApp();
+      setGateStatus("");
+      await loadPromoData(false);
+    }
+
+    async function handleSelectionChange() {
+      const sleeve = resolveSleeveFromInput();
+      if (!sleeve) {
+        setStatus("入力値に一致するスリーブが見つかりません。", "warning");
+        return;
+      }
+      adminState.selectedSleeve = sleeve;
+      fillCopyFields();
+      await renderPromoCanvas();
+    }
+
+    async function downloadCanvas() {
+      if (!adminState.selectedSleeve) {
+        setStatus("先に画像を作ってください。", "warning");
+        return;
+      }
+      const canvas = qs("promoCanvas");
+      const filename = `promo-${String(adminState.selectedSleeve.id || "sleeve")}.png`;
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          setStatus("PNGの書き出しに失敗しました。", "warning");
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setStatus(`PNGを保存しました: ${filename}`, "ok");
+      }, "image/png");
+    }
+
+    async function copyPostText() {
+      if (!adminState.selectedSleeve || !adminState.currentStats) {
+        setStatus("先に画像を作ってください。", "warning");
+        return;
+      }
+      const copy = {
+        hook: qs("hookInput").value,
+        subhook: qs("subhookInput").value,
+        footer: qs("footerInput").value
+      };
+      const text = buildPostText(adminState.currentStats, copy);
+      await navigator.clipboard.writeText(text);
+      setStatus("投稿文をコピーしました。", "ok");
+    }
+
+    function wireEvents() {
+      qs("gateLoginBtn").onclick = () => handleLogin();
+      qs("gatePassphrase").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") handleLogin();
+      });
+      qs("refreshDataBtn").onclick = async () => {
+        setStatus("データを再読込しています...");
+        await loadPromoData(true);
+      };
+      qs("logoutBtn").onclick = () => {
+        setAuthorized(false);
+        showGate();
+        setStatus("");
+      };
+      qs("sleeveSearchInput").addEventListener("change", () => handleSelectionChange());
+      qs("renderBtn").onclick = async () => {
+        const resolved = resolveSleeveFromInput();
+        if (resolved) adminState.selectedSleeve = resolved;
+        await renderPromoCanvas();
+      };
+      qs("downloadBtn").onclick = () => downloadCanvas();
+      qs("copyPostBtn").onclick = async () => {
+        try {
+          await copyPostText();
+        } catch (_) {
+          setStatus("投稿文のコピーに失敗しました。", "warning");
+        }
+      };
+    }
+
+    async function main() {
+      wireEvents();
+      if (isAuthorized()) {
+        showApp();
+        await loadPromoData(false);
+        return;
+      }
+      showGate();
+      setGateStatus(`初期の合言葉は ${ADMIN_PROMO_CONFIG.defaultPassphraseLabel} です。必要なら後で変更してください。`);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      main().catch((error) => {
+        console.error(error);
+        setStatus(error?.message || "管理ページの初期化に失敗しました。", "warning");
+        setGateStatus(error?.message || "管理ページの初期化に失敗しました。", "warning");
+      });
+    });
+  </script>
+</body>
+</html>
