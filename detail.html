@@ -2001,6 +2001,15 @@
       return String(getParam("id") || "").trim();
     }
 
+    function getEmbeddedSleeveData() {
+      const embedded = window.__SLEEVE_PAGE_DATA;
+      if (!embedded || typeof embedded !== "object") return null;
+      const pageId = String(window.__SLEEVE_PAGE_ID || "").trim();
+      const embeddedId = String(embedded.id || "").trim();
+      if (!embeddedId || (pageId && embeddedId !== pageId)) return null;
+      return embedded;
+    }
+
     async function loadData() {
       if (!window.common || typeof window.common.loadData !== "function") {
         throw new Error("共通データローダーの初期化に失敗しました（assets/common.js）");
@@ -4288,47 +4297,7 @@
       return buildFullPeriodSeries(sleeve);
     }
 
-    async function main() {
-      await window.common.setupDashboardChrome({ sidebarActive: "zukan" });
-
-      const id = getSleeveId();
-      if (!id) {
-        showError("id が指定されていません。一覧ページから開いてください。");
-        return;
-      }
-
-      if (!window.__SLEEVE_PAGE_ID && !getSleeveIdFromPath()) {
-        const nextHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
-          ? window.common.buildSleeveDetailHref(id)
-          : `./sleeve/${encodeURIComponent(id)}/`;
-        location.replace(nextHref);
-        return;
-      }
-
-      let data;
-      try {
-        data = await loadData();
-      } catch (e) {
-        showError(e.message || "データ読み込みに失敗しました");
-        return;
-      }
-
-      const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
-      const s = sleeves.find(x => String(x.id) === String(id));
-      if (!s) {
-        showError("指定されたスリーブが見つかりませんでした。");
-        return;
-      }
-
-      logAccess(location.href);
-
-      document.title = `${s.name || "スリーブ相場"} - ポケスリ相場ナビ`;
-
-      const img = document.getElementById("img");
-      img.referrerPolicy = "no-referrer";
-      img.src = String(s.imageUrl || "").trim();
-      img.alt = s.name || "";
-
+    function renderSleevePage(s, relatedSleeves) {
       const releaseDateText = getReleaseDateText(s);
       const breadcrumbCurrent = document.getElementById("breadcrumbCurrent");
       if (breadcrumbCurrent) breadcrumbCurrent.textContent = s.name || "";
@@ -4356,7 +4325,9 @@
       let currentPeriod = "all";
 
       setPriceKpiFromSeries(fullPeriodSeries, s);
-      renderRelatedSleeves(s, sleeves);
+      if (Array.isArray(relatedSleeves) && relatedSleeves.length) {
+        renderRelatedSleeves(s, relatedSleeves);
+      }
 
       const setPeriodButtons = (period) => {
         if (period3mBtn) period3mBtn.classList.toggle("is-active", period === "3m");
@@ -4403,6 +4374,60 @@
         granularity: point.type === "yearly" ? "year" : point.type === "monthly" ? "month" : "week",
         hasTrade: true
       })));
+    }
+
+    async function main() {
+      await window.common.setupDashboardChrome({ sidebarActive: "zukan" });
+
+      const id = getSleeveId();
+      if (!id) {
+        showError("id が指定されていません。一覧ページから開いてください。");
+        return;
+      }
+
+      if (!window.__SLEEVE_PAGE_ID && !getSleeveIdFromPath()) {
+        const nextHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
+          ? window.common.buildSleeveDetailHref(id)
+          : `./sleeve/${encodeURIComponent(id)}/`;
+        location.replace(nextHref);
+        return;
+      }
+
+      const embeddedSleeve = getEmbeddedSleeveData();
+      let s = embeddedSleeve && String(embeddedSleeve.id || "") === String(id) ? embeddedSleeve : null;
+      let sleeves = [];
+      if (!s) {
+        let data;
+        try {
+          data = await loadData();
+        } catch (e) {
+          showError(e.message || "データ読み込みに失敗しました");
+          return;
+        }
+        sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
+        s = sleeves.find(x => String(x.id) === String(id));
+      }
+      if (!s) {
+        showError("指定されたスリーブが見つかりませんでした。");
+        return;
+      }
+
+      logAccess(location.href);
+
+      document.title = `${s.name || "スリーブ相場"} - ポケスリ相場ナビ`;
+
+      const img = document.getElementById("img");
+      img.referrerPolicy = "no-referrer";
+      img.src = String(s.imageUrl || "").trim();
+      img.alt = s.name || "";
+      renderSleevePage(s, sleeves);
+
+      if (!sleeves.length && window.common && typeof window.common.loadData === "function") {
+        window.common.loadData().then((data) => {
+          const allSleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
+          if (allSleeves.length) renderRelatedSleeves(s, allSleeves);
+        }).catch(() => { });
+      }
     }
 
     document.addEventListener("DOMContentLoaded", () => main());

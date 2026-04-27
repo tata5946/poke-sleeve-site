@@ -31,6 +31,7 @@ foreach ($sleeve in @($data.sleeves)) {
 
   $encodedId = [System.Uri]::EscapeDataString($id)
   $jsId = ConvertTo-Json $id -Compress
+  $jsSleeve = ConvertTo-Json $sleeve -Compress -Depth 100
   $name = ([string]$sleeve.name).Trim()
   $series = ([string]$sleeve.series).Trim()
   $condition = ([string]$sleeve.condition).Trim()
@@ -45,7 +46,7 @@ foreach ($sleeve in @($data.sleeves)) {
   $ogImage = if ($rawImage) { $rawImage } else { $fallbackOgImage }
   $ogUrl = "https://pokesuri-navi.com/sleeve/$encodedId/"
   $canonicalTag = '  <link rel="canonical" href="/sleeve/' + $encodedId + '/" />'
-  $inlineIdScript = '  <script>window.__SLEEVE_PAGE_ID = ' + $jsId + ';</script>'
+  $inlinePageDataScript = '  <script>window.__SLEEVE_PAGE_ID = ' + $jsId + ';window.__SLEEVE_PAGE_DATA = ' + $jsSleeve + ';</script>'
 
   $content = $template
   $content = $content -replace '<head>', ("<head>`r`n" + $baseTag)
@@ -71,7 +72,7 @@ foreach ($sleeve in @($data.sleeves)) {
   $content = [regex]::Replace(
     $content,
     '<script src="\./assets/common\.js(?:\?[^"]*)?"></script>',
-    ($inlineIdScript + "`r`n`r`n" + '$0'),
+    ($inlinePageDataScript + "`r`n`r`n" + '$0'),
     1
   )
 
