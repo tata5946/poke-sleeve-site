@@ -655,12 +655,23 @@ body.home-page .search-wrap input {
     position: relative;
 }
 
+.has-search-autocomplete.is-search-autocomplete-open {
+    z-index: 1000;
+}
+
+.dashboard-topbar.is-search-autocomplete-open,
+#dashboardTopbarSlot.is-search-autocomplete-open,
+.header.is-search-autocomplete-open {
+    z-index: 1000 !important;
+    overflow: visible !important;
+}
+
 .search-autocomplete {
     position: absolute;
     top: calc(100% + 8px);
     left: 0;
     right: 0;
-    z-index: 90;
+    z-index: 1001;
     border: 1px solid #d4deee;
     border-radius: 16px;
     background: #fff;

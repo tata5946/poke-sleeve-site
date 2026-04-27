@@ -926,6 +926,13 @@ function wireSleeveAutocomplete(input, options = {}) {
   let debounceTimer = null;
   let indexItems = null;
   let indexLoadFailed = false;
+  const layerEls = [anchorEl, anchorEl.closest("#dashboardTopbarSlot"), anchorEl.closest(".dashboard-topbar"), anchorEl.closest(".header")]
+    .filter((el, idx, arr) => el && arr.indexOf(el) === idx);
+  const setLayerOpen = (isOpen) => {
+    for (const el of layerEls) {
+      el.classList.toggle("is-search-autocomplete-open", isOpen);
+    }
+  };
 
   const close = () => {
     open = false;
@@ -935,12 +942,14 @@ function wireSleeveAutocomplete(input, options = {}) {
     list.innerHTML = "";
     input.setAttribute("aria-expanded", "false");
     input.removeAttribute("aria-activedescendant");
+    setLayerOpen(false);
   };
 
   const openList = () => {
     open = true;
     list.hidden = false;
     input.setAttribute("aria-expanded", "true");
+    setLayerOpen(true);
   };
 
   const setActive = (next) => {
@@ -1395,30 +1404,34 @@ function injectMobileBottomNav({ activeKey = getCurrentNavKey() } = {}) {
 }
 
 function wireDashboardSearch() {
-  const input = document.getElementById("dashboardSearchInput");
-  if (!input || input.dataset.dashboardSearchWired === "1") return;
-  input.dataset.dashboardSearchWired = "1";
+  const inputs = document.querySelectorAll("#dashboardSearchInput");
+  if (!inputs.length) return;
 
-  let autocompleteWired = false;
-  const wireAutocomplete = () => {
-    if (autocompleteWired) return;
-    autocompleteWired = true;
-    wireSleeveAutocomplete(input, {
-      minChars: 1,
-      maxItems: 8,
-      anchorEl: input.closest(".topbar-search")
+  inputs.forEach((input) => {
+    if (!input || input.dataset.dashboardSearchWired === "1") return;
+    input.dataset.dashboardSearchWired = "1";
+
+    let autocompleteWired = false;
+    const wireAutocomplete = () => {
+      if (autocompleteWired) return;
+      autocompleteWired = true;
+      wireSleeveAutocomplete(input, {
+        minChars: 1,
+        maxItems: 8,
+        anchorEl: input.closest(".topbar-search")
+      });
+    };
+
+    input.addEventListener("focus", wireAutocomplete, { once: true });
+    input.addEventListener("pointerdown", wireAutocomplete, { once: true });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      if (event.defaultPrevented) return;
+      const q = input.value.trim();
+      recordSearchHistory(q);
+      location.href = q ? buildSiteHref(`sleeves/?q=${encodeURIComponent(q)}`) : buildSiteHref("sleeves/");
     });
-  };
-
-  input.addEventListener("focus", wireAutocomplete, { once: true });
-  input.addEventListener("pointerdown", wireAutocomplete, { once: true });
-
-  input.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter") return;
-    if (event.defaultPrevented) return;
-    const q = input.value.trim();
-    recordSearchHistory(q);
-    location.href = q ? buildSiteHref(`sleeves/?q=${encodeURIComponent(q)}`) : buildSiteHref("sleeves/");
   });
 }
 
