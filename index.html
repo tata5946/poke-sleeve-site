@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&family=Manrope:wght@700;800&family=M+PLUS+Rounded+1c:wght@700;900&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./assets/site.css?v=20260427a" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260427b" />
   <style>
     body.home-page {
       background:
@@ -3800,20 +3800,6 @@
 
     <main class="dashboard-main">
       <header class="dashboard-topbar reveal-on-scroll" style="--reveal-delay: 32ms;">
-        <div class="topbar-search">
-          <span class="topbar-search-icon" aria-hidden="true">⌕</span>
-          <input id="dashboardSearchInput" class="topbar-search-input" type="search" placeholder="スリーブを検索..." autocomplete="off" />
-        </div>
-        <nav class="topbar-tabs" aria-label="上部メニュー">
-          <a class="topbar-tab is-active" href="./index.html">ホーム</a>
-          <a class="topbar-tab" href="./index-market.html">市場状況</a>
-          <a class="topbar-tab" href="./policy.html">プライバシーポリシー</a>
-        </nav>
-        <div class="topbar-utils" aria-hidden="true">
-          <span>🔔</span>
-          <span>▣</span>
-          <span>◌</span>
-        </div>
         <div id="dashboardTopbarSlot" data-dashboard-topbar-active="dashboard"></div>
       </header>
 
@@ -3990,7 +3976,7 @@
     </main>
   </div>
 
-  <script src="./assets/common.js?v=20260427a"></script>
+  <script src="./assets/common.js?v=20260427b"></script>
   <script>
     const ACCESS_RANKING_ENDPOINT = window.GAS_URL || "";
     const ACCESS_RANKING_CACHE_KEY = "home_access_ranking_cache_v1";
@@ -5192,39 +5178,9 @@
     }
 
     function wireDashboardSearch() {
-      const input = document.getElementById("dashboardSearchInput");
-      if (!input || input.dataset.dashboardSearchWired === "1") return;
-      input.dataset.dashboardSearchWired = "1";
-
-      let autocompleteWired = false;
-      const wireAutocomplete = () => {
-        if (autocompleteWired) return;
-        autocompleteWired = true;
-        if (window.common && typeof window.common.wireSleeveAutocomplete === "function") {
-          window.common.wireSleeveAutocomplete(input, {
-            minChars: 1,
-            maxItems: 8,
-            anchorEl: input.closest(".topbar-search")
-          });
-        }
-      };
-
-      input.addEventListener("focus", wireAutocomplete, { once: true });
-      input.addEventListener("pointerdown", wireAutocomplete, { once: true });
-
-      input.addEventListener("keydown", (event) => {
-        if (event.key !== "Enter") return;
-        if (event.defaultPrevented) return;
-        const q = input.value.trim();
-        if (window.common && typeof window.common.recordSearchHistory === "function") {
-          window.common.recordSearchHistory(q);
-        }
-        if (!q) {
-          location.href = "./sleeves/";
-          return;
-        }
-        location.href = "./sleeves/?q=" + encodeURIComponent(q);
-      });
+      if (window.common && typeof window.common.wireDashboardSearch === "function") {
+        window.common.wireDashboardSearch();
+      }
     }
 
     function wireSidebarCategoryToggle() {

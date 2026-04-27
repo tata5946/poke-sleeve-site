@@ -1411,19 +1411,11 @@ function wireDashboardSearch() {
     if (!input || input.dataset.dashboardSearchWired === "1") return;
     input.dataset.dashboardSearchWired = "1";
 
-    let autocompleteWired = false;
-    const wireAutocomplete = () => {
-      if (autocompleteWired) return;
-      autocompleteWired = true;
-      wireSleeveAutocomplete(input, {
-        minChars: 1,
-        maxItems: 8,
-        anchorEl: input.closest(".topbar-search")
-      });
-    };
-
-    input.addEventListener("focus", wireAutocomplete, { once: true });
-    input.addEventListener("pointerdown", wireAutocomplete, { once: true });
+    wireSleeveAutocomplete(input, {
+      minChars: 1,
+      maxItems: 8,
+      anchorEl: input.closest(".topbar-search")
+    });
 
     input.addEventListener("keydown", (event) => {
       if (event.key !== "Enter") return;

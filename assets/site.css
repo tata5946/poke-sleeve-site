@@ -662,6 +662,7 @@ body.home-page .search-wrap input {
 .dashboard-topbar.is-search-autocomplete-open,
 #dashboardTopbarSlot.is-search-autocomplete-open,
 .header.is-search-autocomplete-open {
+    position: relative;
     z-index: 1000 !important;
     overflow: visible !important;
 }
