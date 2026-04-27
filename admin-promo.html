@@ -453,7 +453,7 @@
             <div id="previewSleeveTags" class="preview-sleeve-tags"></div>
           </section>
           <div class="preview-stage">
-            <canvas id="promoCanvas" width="1600" height="900" aria-label="投稿画像プレビュー"></canvas>
+            <canvas id="promoCanvas" width="1200" height="630" aria-label="投稿画像プレビュー"></canvas>
           </div>
         </div>
         <div class="preview-meta">
@@ -827,7 +827,7 @@
       });
     }
 
-    async function renderPromoCanvas() {
+    async function renderPromoCanvas(options = {}) {
       const sleeve = adminState.selectedSleeve;
       if (!sleeve) {
         setStatus("先に対象スリーブを選んでください。", "warning");
@@ -837,7 +837,9 @@
       adminState.currentStats = stats;
       adminState.imageWarning = "";
 
-      const canvas = qs("promoCanvas");
+      const safeExport = !!options.safeExport;
+      const silent = !!options.silent;
+      const canvas = options.canvas || qs("promoCanvas");
       const ctx = canvas.getContext("2d");
       const W = canvas.width;
       const H = canvas.height;
@@ -900,6 +902,8 @@
         adminState.imageWarning = "画像URLが書き出し非対応のため、プレースホルダーで代替しました。";
       }
       adminState.currentImageBitmap = bitmap;
+      const previewImg = qs("previewSleeveImage");
+      const canUsePreviewImage = !safeExport && !bitmap && previewImg && previewImg.complete && previewImg.naturalWidth > 0;
 
       ctx.shadowColor = "rgba(15, 23, 42, 0.18)";
       ctx.shadowBlur = 24;
@@ -917,6 +921,15 @@
         ctx.fillStyle = "#f5f7fb";
         ctx.fillRect(art.x, art.y, art.w, art.h);
         ctx.drawImage(bitmap, dx, dy, drawW, drawH);
+      } else if (canUsePreviewImage) {
+        const scale = Math.min(art.w / previewImg.naturalWidth, art.h / previewImg.naturalHeight);
+        const drawW = previewImg.naturalWidth * scale;
+        const drawH = previewImg.naturalHeight * scale;
+        const dx = art.x + (art.w - drawW) / 2;
+        const dy = art.y + (art.h - drawH) / 2;
+        ctx.fillStyle = "#f5f7fb";
+        ctx.fillRect(art.x, art.y, art.w, art.h);
+        ctx.drawImage(previewImg, dx, dy, drawW, drawH);
       } else {
         const fallback = ctx.createLinearGradient(art.x, art.y, art.x + art.w, art.y + art.h);
         fallback.addColorStop(0, "#203a74");
@@ -1043,8 +1056,10 @@
       ctx.fillText(noteText, 40, 626, W - 80);
 
       qs("previewSleeveMeta").textContent = `対象: ${sleeve.name || "-"} / ID ${sleeve.id || "-"}`;
-      qs("previewDataMeta").textContent = `最新観測: ${stats.latest?.date ? formatDateLabel(stats.latest.date) : "-"}${adminState.imageWarning ? " / 画像は代替表示" : ""}`;
-      setStatus(adminState.imageWarning || "プレビューを更新しました。", adminState.imageWarning ? "warning" : "ok");
+      qs("previewDataMeta").textContent = `最新観測: ${stats.latest?.date ? formatDateLabel(stats.latest.date) : "-"}${adminState.imageWarning ? " / 保存時は代替表示" : ""}`;
+      if (!silent) {
+        setStatus(adminState.imageWarning || "プレビューを更新しました。", adminState.imageWarning ? "warning" : "ok");
+      }
     }
 
     function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
@@ -1211,7 +1226,10 @@
         setStatus("先に画像を作ってください。", "warning");
         return;
       }
-      const canvas = qs("promoCanvas");
+      const canvas = document.createElement("canvas");
+      canvas.width = ADMIN_PROMO_CONFIG.canvasWidth;
+      canvas.height = ADMIN_PROMO_CONFIG.canvasHeight;
+      await renderPromoCanvas({ canvas, safeExport: true, silent: true });
       const filename = `promo-${String(adminState.selectedSleeve.id || "sleeve")}.png`;
       canvas.toBlob((blob) => {
         if (!blob) {
