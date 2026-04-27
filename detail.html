@@ -3140,14 +3140,14 @@
         statusEl.textContent = msg;
       };
 
-      shareXBtn.addEventListener("click", () => {
+      shareXBtn.onclick = () => {
         const intent = new URL("https://twitter.com/intent/tweet");
         intent.searchParams.set("text", shareText);
         intent.searchParams.set("url", shareUrl);
         window.open(intent.toString(), "_blank", "noopener,noreferrer");
-      });
+      };
 
-      shareInstagramBtn.addEventListener("click", async () => {
+      shareInstagramBtn.onclick = async () => {
         const text = `${shareText}\n${shareUrl}`;
         try {
           await copyToClipboard(text);
@@ -3156,7 +3156,7 @@
         } catch (_) {
           setStatus("コピーに失敗しました。ブラウザ設定をご確認ください。");
         }
-      });
+      };
     }
 
     function latestTwoTradedObservations(rows) {
@@ -4297,6 +4297,26 @@
       return buildFullPeriodSeries(sleeve);
     }
 
+    function getLatestTradeStamp(sleeve) {
+      const weekly = Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [];
+      for (let i = weekly.length - 1; i >= 0; i--) {
+        const row = weekly[i];
+        const price = Number(row?.price);
+        if (Number.isFinite(price) && price > 0) {
+          return `${String(row?.week || "").trim()}|${price}|${Number(row?.count || 0)}`;
+        }
+      }
+      const monthly = Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [];
+      for (let i = monthly.length - 1; i >= 0; i--) {
+        const row = monthly[i];
+        const price = Number(row?.price);
+        if (Number.isFinite(price) && price > 0) {
+          return `${String(row?.month || row?.week || "").trim()}|${price}`;
+        }
+      }
+      return "";
+    }
+
     function renderSleevePage(s, relatedSleeves) {
       const releaseDateText = getReleaseDateText(s);
       const breadcrumbCurrent = document.getElementById("breadcrumbCurrent");
@@ -4362,9 +4382,9 @@
         setPeriodButtons(currentPeriod);
       };
 
-      if (period3mBtn) period3mBtn.addEventListener("click", () => applyPeriod("3m"));
-      if (periodMonthlyBtn) periodMonthlyBtn.addEventListener("click", () => applyPeriod("monthly"));
-      if (periodAllBtn) periodAllBtn.addEventListener("click", () => applyPeriod("all"));
+      if (period3mBtn) period3mBtn.onclick = () => applyPeriod("3m");
+      if (periodMonthlyBtn) periodMonthlyBtn.onclick = () => applyPeriod("monthly");
+      if (periodAllBtn) periodAllBtn.onclick = () => applyPeriod("all");
 
       applyPeriod(currentPeriod);
       setupShare(s, fullPeriodSeries.map((point) => ({
@@ -4425,7 +4445,19 @@
       if (!sleeves.length && window.common && typeof window.common.loadData === "function") {
         window.common.loadData().then((data) => {
           const allSleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
-          if (allSleeves.length) renderRelatedSleeves(s, allSleeves);
+          if (!allSleeves.length) return;
+          const freshSleeve = allSleeves.find((item) => String(item?.id || "") === String(id));
+          if (freshSleeve && getLatestTradeStamp(freshSleeve) !== getLatestTradeStamp(s)) {
+            s = freshSleeve;
+            const heroImg = document.getElementById("img");
+            if (heroImg) {
+              heroImg.src = String(s.imageUrl || "").trim();
+              heroImg.alt = s.name || "";
+            }
+            renderSleevePage(s, allSleeves);
+            return;
+          }
+          renderRelatedSleeves(s, allSleeves);
         }).catch(() => { });
       }
     }
