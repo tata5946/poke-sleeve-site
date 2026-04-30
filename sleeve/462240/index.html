@@ -4451,7 +4451,9 @@
         if (!allSleeves.length) return;
         const freshSleeve = allSleeves.find((item) => String(item?.id || "") === String(id));
         if (!freshSleeve) return;
-        const priceChanged = getLatestTradeStamp(freshSleeve) !== getLatestTradeStamp(s);
+        const priceChanged = getLatestTradeStamp(freshSleeve) !== getLatestTradeStamp(s)
+          || (freshSleeve.monthlyPrices?.length ?? 0) !== (s.monthlyPrices?.length ?? 0)
+          || (freshSleeve.weeklyPrices?.length ?? 0) !== (s.weeklyPrices?.length ?? 0);
         const imageChanged = (freshSleeve.imageUrl || "") !== (s.imageUrl || "");
         if (priceChanged || imageChanged) {
           s = freshSleeve;
