@@ -4317,6 +4317,62 @@
       return "";
     }
 
+    function getSleevePriceDataSignature(sleeve) {
+      const pickRows = (rows, dateKey) => (Array.isArray(rows) ? rows : [])
+        .map((row) => {
+          const date = String(row?.[dateKey] ?? row?.week ?? row?.month ?? row?.year ?? "").trim();
+          const price = normalizeChartPrice(row?.price);
+          const countValue = parseNumberLike(row?.count);
+          const count = Number.isFinite(countValue) ? Math.max(0, Math.round(countValue)) : "";
+          if (!date || !(Number.isFinite(price) && price > 0)) return null;
+          return `${date}:${Math.round(price)}:${count}`;
+        })
+        .filter(Boolean)
+        .join(",");
+
+      const yearlyObject = sleeve?.pricesByYear && typeof sleeve.pricesByYear === "object"
+        ? Object.entries(sleeve.pricesByYear)
+          .map(([year, price]) => {
+            const normalized = normalizeChartPrice(price);
+            return Number.isFinite(normalized) && normalized > 0 ? `${year}:${Math.round(normalized)}` : null;
+          })
+          .filter(Boolean)
+          .sort()
+          .join(",")
+        : "";
+
+      return [
+        pickRows(sleeve?.monthlyPrices, "month"),
+        pickRows(sleeve?.weeklyPrices, "week"),
+        pickRows(sleeve?.yearlyPrices, "year"),
+        yearlyObject
+      ].join("|");
+    }
+
+    function shouldRefreshSleeveData(currentSleeve, freshSleeve) {
+      if (!freshSleeve) return false;
+      return getLatestTradeStamp(freshSleeve) !== getLatestTradeStamp(currentSleeve)
+        || getSleevePriceDataSignature(freshSleeve) !== getSleevePriceDataSignature(currentSleeve)
+        || String(freshSleeve.imageUrl || "") !== String(currentSleeve?.imageUrl || "");
+    }
+
+    async function refreshSleeveDataBeforeRender(sleeve, id) {
+      if (!window.common || typeof window.common.loadData !== "function") {
+        return { sleeve, sleeves: [] };
+      }
+      try {
+        const data = await window.common.loadData({ forceRefresh: true });
+        const allSleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
+        const freshSleeve = allSleeves.find((item) => String(item?.id || "") === String(id));
+        return {
+          sleeve: shouldRefreshSleeveData(sleeve, freshSleeve) ? freshSleeve : sleeve,
+          sleeves: allSleeves
+        };
+      } catch (_) {
+        return { sleeve, sleeves: [] };
+      }
+    }
+
     function renderSleevePage(s, relatedSleeves) {
       const releaseDateText = getReleaseDateText(s);
       const breadcrumbCurrent = document.getElementById("breadcrumbCurrent");
@@ -4432,6 +4488,12 @@
         return;
       }
 
+      if (!sleeves.length) {
+        const refreshed = await refreshSleeveDataBeforeRender(s, id);
+        s = refreshed.sleeve || s;
+        sleeves = Array.isArray(refreshed.sleeves) ? refreshed.sleeves : [];
+      }
+
       logAccess(location.href);
 
       document.title = `${s.name || "スリーブ相場"} - ポケスリ相場ナビ`;
@@ -4441,25 +4503,6 @@
       img.src = String(s.imageUrl || "").trim();
       img.alt = s.name || "";
       renderSleevePage(s, sleeves);
-
-      if (!sleeves.length && window.common && typeof window.common.loadData === "function") {
-        window.common.loadData().then((data) => {
-          const allSleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
-          if (!allSleeves.length) return;
-          const freshSleeve = allSleeves.find((item) => String(item?.id || "") === String(id));
-          if (freshSleeve && getLatestTradeStamp(freshSleeve) !== getLatestTradeStamp(s)) {
-            s = freshSleeve;
-            const heroImg = document.getElementById("img");
-            if (heroImg) {
-              heroImg.src = String(s.imageUrl || "").trim();
-              heroImg.alt = s.name || "";
-            }
-            renderSleevePage(s, allSleeves);
-            return;
-          }
-          renderRelatedSleeves(s, allSleeves);
-        }).catch(() => { });
-      }
     }
 
     document.addEventListener("DOMContentLoaded", () => main());

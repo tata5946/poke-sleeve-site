@@ -2004,6 +2004,15 @@
       return String(getParam("id") || "").trim();
     }
 
+    function getEmbeddedSleeveData() {
+      const embedded = window.__SLEEVE_PAGE_DATA;
+      if (!embedded || typeof embedded !== "object") return null;
+      const pageId = String(window.__SLEEVE_PAGE_ID || "").trim();
+      const embeddedId = String(embedded.id || "").trim();
+      if (!embeddedId || (pageId && embeddedId !== pageId)) return null;
+      return embedded;
+    }
+
     async function loadData() {
       if (!window.common || typeof window.common.loadData !== "function") {
         throw new Error("共通データローダーの初期化に失敗しました（assets/common.js）");
@@ -3134,14 +3143,14 @@
         statusEl.textContent = msg;
       };
 
-      shareXBtn.addEventListener("click", () => {
+      shareXBtn.onclick = () => {
         const intent = new URL("https://twitter.com/intent/tweet");
         intent.searchParams.set("text", shareText);
         intent.searchParams.set("url", shareUrl);
         window.open(intent.toString(), "_blank", "noopener,noreferrer");
-      });
+      };
 
-      shareInstagramBtn.addEventListener("click", async () => {
+      shareInstagramBtn.onclick = async () => {
         const text = `${shareText}\n${shareUrl}`;
         try {
           await copyToClipboard(text);
@@ -3150,7 +3159,7 @@
         } catch (_) {
           setStatus("コピーに失敗しました。ブラウザ設定をご確認ください。");
         }
-      });
+      };
     }
 
     function latestTwoTradedObservations(rows) {
@@ -4048,8 +4057,8 @@
       let rightIndex = -1;
       for (let i = 0; i < list.length; i++) {
         const date = String(list[i]?.date || "").trim();
-        if (/^2024-12-\d{2}$/.test(date)) leftIndex = i;
-        if (leftIndex >= 0 && /^2025-01-\d{2}$/.test(date)) {
+        if (/^2024-\d{2}-\d{2}$/.test(date)) leftIndex = i;
+        if (leftIndex >= 0 && i > leftIndex && /^2025-\d{2}-\d{2}$/.test(date)) {
           rightIndex = i;
           break;
         }
@@ -4204,8 +4213,8 @@
       const boundaryMarks = sourceBoundary && Number.isFinite(boundaryX)
         ? `
           <line x1="${boundaryX}" y1="${padT}" x2="${boundaryX}" y2="${H - padB}" stroke="#1e3a5f" stroke-width="${isMobileView ? 3.6 : 3}" stroke-dasharray="8 8"></line>
-          <text x="${Math.max(padL + 18, (padL + boundaryX) / 2)}" y="${padT + (isMobileView ? 22 : 18)}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="900" fill="#475467">${escapeHtml(sourceBoundary.leftLabel)}</text>
-          <text x="${Math.min(W - padR - 18, (boundaryX + (W - padR)) / 2)}" y="${padT + (isMobileView ? 22 : 18)}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="900" fill="#1e3a5f">${escapeHtml(sourceBoundary.rightLabel)}</text>
+          <text x="${Math.max(padL + 18, (padL + boundaryX) / 2)}" y="${padT + (isMobileView ? 22 : 18)}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="900" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${escapeHtml(sourceBoundary.leftLabel)}</text>
+          <text x="${Math.min(W - padR - 18, (boundaryX + (W - padR)) / 2)}" y="${padT + (isMobileView ? 22 : 18)}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="900" fill="#1e3a5f" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${escapeHtml(sourceBoundary.rightLabel)}</text>
         `
         : "";
       const markers = data.map((point, index) => {
@@ -4235,12 +4244,12 @@
               </defs>
               <g>${yGrid.join("")}</g>
               <g>${yearGuides.join("")}</g>
-              <g>${boundaryMarks}</g>
               <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
               <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
               <path d="${areaD}" fill="url(#priceAreaGrad-${escapeHtml(containerId)})"></path>
               <g>${volumeBars}</g>
               <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="${isMobileView ? 5.5 : 4.2}" stroke-linecap="round" stroke-linejoin="round"></path>
+              <g>${boundaryMarks}</g>
               ${mode === "all" ? `<line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"></line>` : ""}
               <text x="${firstLabelX}" y="${Math.max(24, firstY - 18)}" text-anchor="start" font-size="${labelFontSize}" font-weight="900" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">開始 ¥${first.price.toLocaleString()}</text>
               ${latestCallout}
@@ -4291,47 +4300,83 @@
       return buildFullPeriodSeries(sleeve);
     }
 
-    async function main() {
-      await window.common.setupDashboardChrome({ sidebarActive: "zukan" });
-
-      const id = getSleeveId();
-      if (!id) {
-        showError("id が指定されていません。一覧ページから開いてください。");
-        return;
+    function getLatestTradeStamp(sleeve) {
+      const weekly = Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [];
+      for (let i = weekly.length - 1; i >= 0; i--) {
+        const row = weekly[i];
+        const price = Number(row?.price);
+        if (Number.isFinite(price) && price > 0) {
+          return `${String(row?.week || "").trim()}|${price}|${Number(row?.count || 0)}`;
+        }
       }
-
-      if (!window.__SLEEVE_PAGE_ID && !getSleeveIdFromPath()) {
-        const nextHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
-          ? window.common.buildSleeveDetailHref(id)
-          : `./sleeve/${encodeURIComponent(id)}/`;
-        location.replace(nextHref);
-        return;
+      const monthly = Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [];
+      for (let i = monthly.length - 1; i >= 0; i--) {
+        const row = monthly[i];
+        const price = Number(row?.price);
+        if (Number.isFinite(price) && price > 0) {
+          return `${String(row?.month || row?.week || "").trim()}|${price}`;
+        }
       }
+      return "";
+    }
 
-      let data;
+    function getSleevePriceDataSignature(sleeve) {
+      const pickRows = (rows, dateKey) => (Array.isArray(rows) ? rows : [])
+        .map((row) => {
+          const date = String(row?.[dateKey] ?? row?.week ?? row?.month ?? row?.year ?? "").trim();
+          const price = normalizeChartPrice(row?.price);
+          const countValue = parseNumberLike(row?.count);
+          const count = Number.isFinite(countValue) ? Math.max(0, Math.round(countValue)) : "";
+          if (!date || !(Number.isFinite(price) && price > 0)) return null;
+          return `${date}:${Math.round(price)}:${count}`;
+        })
+        .filter(Boolean)
+        .join(",");
+
+      const yearlyObject = sleeve?.pricesByYear && typeof sleeve.pricesByYear === "object"
+        ? Object.entries(sleeve.pricesByYear)
+          .map(([year, price]) => {
+            const normalized = normalizeChartPrice(price);
+            return Number.isFinite(normalized) && normalized > 0 ? `${year}:${Math.round(normalized)}` : null;
+          })
+          .filter(Boolean)
+          .sort()
+          .join(",")
+        : "";
+
+      return [
+        pickRows(sleeve?.monthlyPrices, "month"),
+        pickRows(sleeve?.weeklyPrices, "week"),
+        pickRows(sleeve?.yearlyPrices, "year"),
+        yearlyObject
+      ].join("|");
+    }
+
+    function shouldRefreshSleeveData(currentSleeve, freshSleeve) {
+      if (!freshSleeve) return false;
+      return getLatestTradeStamp(freshSleeve) !== getLatestTradeStamp(currentSleeve)
+        || getSleevePriceDataSignature(freshSleeve) !== getSleevePriceDataSignature(currentSleeve)
+        || String(freshSleeve.imageUrl || "") !== String(currentSleeve?.imageUrl || "");
+    }
+
+    async function refreshSleeveDataBeforeRender(sleeve, id) {
+      if (!window.common || typeof window.common.loadData !== "function") {
+        return { sleeve, sleeves: [] };
+      }
       try {
-        data = await loadData();
-      } catch (e) {
-        showError(e.message || "データ読み込みに失敗しました");
-        return;
+        const data = await window.common.loadData({ forceRefresh: true });
+        const allSleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
+        const freshSleeve = allSleeves.find((item) => String(item?.id || "") === String(id));
+        return {
+          sleeve: shouldRefreshSleeveData(sleeve, freshSleeve) ? freshSleeve : sleeve,
+          sleeves: allSleeves
+        };
+      } catch (_) {
+        return { sleeve, sleeves: [] };
       }
+    }
 
-      const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
-      const s = sleeves.find(x => String(x.id) === String(id));
-      if (!s) {
-        showError("指定されたスリーブが見つかりませんでした。");
-        return;
-      }
-
-      logAccess(location.href);
-
-      document.title = `${s.name || "スリーブ相場"} - ポケスリ相場ナビ`;
-
-      const img = document.getElementById("img");
-      img.referrerPolicy = "no-referrer";
-      img.src = String(s.imageUrl || "").trim();
-      img.alt = s.name || "";
-
+    function renderSleevePage(s, relatedSleeves) {
       const releaseDateText = getReleaseDateText(s);
       const breadcrumbCurrent = document.getElementById("breadcrumbCurrent");
       if (breadcrumbCurrent) breadcrumbCurrent.textContent = s.name || "";
@@ -4359,7 +4404,9 @@
       let currentPeriod = "all";
 
       setPriceKpiFromSeries(fullPeriodSeries, s);
-      renderRelatedSleeves(s, sleeves);
+      if (Array.isArray(relatedSleeves) && relatedSleeves.length) {
+        renderRelatedSleeves(s, relatedSleeves);
+      }
 
       const setPeriodButtons = (period) => {
         if (period3mBtn) period3mBtn.classList.toggle("is-active", period === "3m");
@@ -4394,9 +4441,9 @@
         setPeriodButtons(currentPeriod);
       };
 
-      if (period3mBtn) period3mBtn.addEventListener("click", () => applyPeriod("3m"));
-      if (periodMonthlyBtn) periodMonthlyBtn.addEventListener("click", () => applyPeriod("monthly"));
-      if (periodAllBtn) periodAllBtn.addEventListener("click", () => applyPeriod("all"));
+      if (period3mBtn) period3mBtn.onclick = () => applyPeriod("3m");
+      if (periodMonthlyBtn) periodMonthlyBtn.onclick = () => applyPeriod("monthly");
+      if (periodAllBtn) periodAllBtn.onclick = () => applyPeriod("all");
 
       applyPeriod(currentPeriod);
       setupShare(s, fullPeriodSeries.map((point) => ({
@@ -4408,11 +4455,63 @@
       })));
     }
 
+    async function main() {
+      await window.common.setupDashboardChrome({ sidebarActive: "zukan" });
+
+      const id = getSleeveId();
+      if (!id) {
+        showError("id が指定されていません。一覧ページから開いてください。");
+        return;
+      }
+
+      if (!window.__SLEEVE_PAGE_ID && !getSleeveIdFromPath()) {
+        const nextHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
+          ? window.common.buildSleeveDetailHref(id)
+          : `./sleeve/${encodeURIComponent(id)}/`;
+        location.replace(nextHref);
+        return;
+      }
+
+      const embeddedSleeve = getEmbeddedSleeveData();
+      let s = embeddedSleeve && String(embeddedSleeve.id || "") === String(id) ? embeddedSleeve : null;
+      let sleeves = [];
+      if (!s) {
+        let data;
+        try {
+          data = await loadData();
+        } catch (e) {
+          showError(e.message || "データ読み込みに失敗しました");
+          return;
+        }
+        sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
+        s = sleeves.find(x => String(x.id) === String(id));
+      }
+      if (!s) {
+        showError("指定されたスリーブが見つかりませんでした。");
+        return;
+      }
+
+      if (!sleeves.length) {
+        const refreshed = await refreshSleeveDataBeforeRender(s, id);
+        s = refreshed.sleeve || s;
+        sleeves = Array.isArray(refreshed.sleeves) ? refreshed.sleeves : [];
+      }
+
+      logAccess(location.href);
+
+      document.title = `${s.name || "スリーブ相場"} - ポケスリ相場ナビ`;
+
+      const img = document.getElementById("img");
+      img.referrerPolicy = "no-referrer";
+      img.src = String(s.imageUrl || "").trim();
+      img.alt = s.name || "";
+      renderSleevePage(s, sleeves);
+    }
+
     document.addEventListener("DOMContentLoaded", () => main());
   </script>
 </body>
 
 </html>
-
 
 
