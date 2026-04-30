@@ -1040,7 +1040,7 @@
 
     async function loadData() {
       if (window.common && typeof window.common.loadData === "function") {
-        return await window.common.loadData({ forceRefresh: true });
+        return await window.common.loadData();
       }
       const url = window.GAS_URL;
       if (!url) throw new Error("GAS_URL が未設定です（common.js を確認してください）");

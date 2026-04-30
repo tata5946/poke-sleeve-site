@@ -971,7 +971,7 @@
         const activeFilters = document.getElementById("activeFilters");
         const [rankingData, masterData] = await Promise.all([
           fetchRanking(),
-          window.common.loadData({ forceRefresh: true })
+          window.common.loadData()
         ]);
 
         const ranking = Array.isArray(rankingData && rankingData.ranking) ? rankingData.ranking : [];
