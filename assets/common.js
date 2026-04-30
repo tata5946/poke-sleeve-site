@@ -11,8 +11,8 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbziDNX6nOuoYk8CQ3geI_89
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
 const LOCAL_DATA_URL = "./data.json";
-const DATA_CACHE_KEY = "pokeSleeve:dataCache:v9";
-const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v9";
+const DATA_CACHE_KEY = "pokeSleeve:dataCache:v10";
+const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v10";
 const DATA_CACHE_TTL_MS = 5 * 60 * 1000;
 const DATA_STALE_MAX_MS = 10 * 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
@@ -1175,8 +1175,8 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000, cacheMode = "defau
 
 async function fetchPrimaryData() {
   const sources = [
-    { url: GAS_URL, timeoutMs: 12000, cacheMode: "no-store" },
-    { url: LOCAL_DATA_URL, timeoutMs: 2500, cacheMode: "reload" }
+    { url: LOCAL_DATA_URL, timeoutMs: 2500, cacheMode: "reload" },
+    { url: GAS_URL, timeoutMs: 12000, cacheMode: "no-store" }
   ];
 
   let lastError = null;
@@ -1813,3 +1813,4 @@ document.addEventListener("DOMContentLoaded", () => {
     try { markSelectedSleeveLinks(); } catch (e) { console.error(e); }
   }, { once: true });
 });
+
