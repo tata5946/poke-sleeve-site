@@ -9,7 +9,10 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "PowerShell(cd \"c:\\\\Users\\\\takuy\\\\OneDrive\\\\ドキュメント\\\\GitHub\\\\poke-sleeve-site\"; $data = Get-Content \"data.json\" -Raw -Encoding UTF8 | ConvertFrom-Json; $sleeves = $data.sleeves; $trainerCount = \\($sleeves | Where-Object { $_.category4 -and $_.category4 -ne \"\" }\\).Count; $pokemonCount = \\($sleeves | Where-Object { $_.category1 -and $_.category1 -ne \"\" }\\).Count; $cat7Count = \\($sleeves | Where-Object { $_.category7 -and $_.category7 -ne \"\" }\\).Count; Write-Host \"category4\\(trainer\\)あり: $trainerCount\"; Write-Host \"category1\\(pokemon\\)あり: $pokemonCount\"; Write-Host \"category7\\(限定\\)あり: $cat7Count\"; $sleeves | Where-Object { $_.category4 } | Select-Object id,name,category4 | Select-Object -First 5)",
-      "PowerShell(cd \"c:\\\\Users\\\\takuy\\\\OneDrive\\\\ドキュメント\\\\GitHub\\\\poke-sleeve-site\"; try { $raw = Get-Content \"data.json\" -Raw -Encoding UTF8; $null = $raw | ConvertFrom-Json; Write-Host \"JSON valid: OK \\(length: $\\($raw.Length\\) bytes\\)\" } catch { Write-Host \"JSON invalid: $_\" })"
+      "PowerShell(cd \"c:\\\\Users\\\\takuy\\\\OneDrive\\\\ドキュメント\\\\GitHub\\\\poke-sleeve-site\"; try { $raw = Get-Content \"data.json\" -Raw -Encoding UTF8; $null = $raw | ConvertFrom-Json; Write-Host \"JSON valid: OK \\(length: $\\($raw.Length\\) bytes\\)\" } catch { Write-Host \"JSON invalid: $_\" })",
+      "PowerShell($missing | ForEach-Object { \"$\\($_.id\\)`t$\\($_.name\\)\" })",
+      "PowerShell(foreach \\($s in $missing\\) { Write-Host \"$\\($s.id\\) : $\\($s.name\\)\" })",
+      "PowerShell(Write-Host \"missing count: $\\($missing.Count\\)\"; Write-Host \"type: $\\($missing.GetType\\(\\).FullName\\)\"; $missing[0] | ConvertTo-Json -Depth 1 | Select-String \"id|name\")"
     ]
   }
 }
