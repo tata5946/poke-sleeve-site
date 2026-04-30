@@ -4359,20 +4359,30 @@
         || String(freshSleeve.imageUrl || "") !== String(currentSleeve?.imageUrl || "");
     }
 
-    async function refreshSleeveDataBeforeRender(sleeve, id) {
-      if (!window.common || typeof window.common.loadData !== "function") {
-        return { sleeve, sleeves: [] };
-      }
-      try {
-        const data = await window.common.loadData({ forceRefresh: true });
-        const allSleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
-        const freshSleeve = allSleeves.find((item) => String(item?.id || "") === String(id));
-        return {
-          sleeve: shouldRefreshSleeveData(sleeve, freshSleeve) ? freshSleeve : sleeve,
-          sleeves: allSleeves
-        };
-      } catch (_) {
-        return { sleeve, sleeves: [] };
+    function refreshSleeveDataAfterRender(sleeve, id) {
+      if (!window.common || typeof window.common.loadData !== "function") return;
+      const run = () => {
+        window.common.loadData().then((data) => {
+          const allSleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
+          if (!allSleeves.length) return;
+          const freshSleeve = allSleeves.find((item) => String(item?.id || "") === String(id));
+          if (shouldRefreshSleeveData(sleeve, freshSleeve)) {
+            const nextSleeve = freshSleeve;
+            const heroImg = document.getElementById("img");
+            if (heroImg) {
+              heroImg.src = String(nextSleeve.imageUrl || "").trim();
+              heroImg.alt = nextSleeve.name || "";
+            }
+            renderSleevePage(nextSleeve, allSleeves);
+            return;
+          }
+          renderRelatedSleeves(sleeve, allSleeves);
+        }).catch(() => { });
+      };
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(run, { timeout: 1200 });
+      } else {
+        setTimeout(run, 0);
       }
     }
 
@@ -4491,12 +4501,6 @@
         return;
       }
 
-      if (!sleeves.length) {
-        const refreshed = await refreshSleeveDataBeforeRender(s, id);
-        s = refreshed.sleeve || s;
-        sleeves = Array.isArray(refreshed.sleeves) ? refreshed.sleeves : [];
-      }
-
       logAccess(location.href);
 
       document.title = `${s.name || "スリーブ相場"} - ポケスリ相場ナビ`;
@@ -4506,6 +4510,9 @@
       img.src = String(s.imageUrl || "").trim();
       img.alt = s.name || "";
       renderSleevePage(s, sleeves);
+      if (!sleeves.length) {
+        refreshSleeveDataAfterRender(s, id);
+      }
     }
 
     document.addEventListener("DOMContentLoaded", () => main());
