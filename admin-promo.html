@@ -251,6 +251,31 @@
       background: #fff;
     }
 
+    .graph-preview-panel {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .graph-preview-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .graph-preview-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 900;
+      color: #12213f;
+    }
+
+    .graph-stage canvas {
+      aspect-ratio: 16 / 9;
+    }
+
     .preview-meta {
       display: flex;
       flex-wrap: wrap;
@@ -435,6 +460,7 @@
         <div class="admin-actions">
           <button id="renderBtn" type="button" class="btn-admin primary">画像を更新</button>
           <button id="downloadBtn" type="button" class="btn-admin secondary">PNG保存</button>
+          <button id="downloadGraphBtn" type="button" class="btn-admin secondary">グラフ高画質PNG保存</button>
           <button id="copyPostBtn" type="button" class="btn-admin ghost">投稿文をコピー</button>
         </div>
         <div id="adminStatus" class="status-line"></div>
@@ -456,6 +482,15 @@
             <canvas id="promoCanvas" width="1200" height="630" aria-label="投稿画像プレビュー"></canvas>
           </div>
         </div>
+        <section class="graph-preview-panel" aria-label="価格推移グラフ画像プレビュー">
+          <div class="graph-preview-head">
+            <h3 class="graph-preview-title">価格推移グラフ画像</h3>
+            <button id="downloadGraphBtnPreview" type="button" class="btn-admin secondary">高画質PNG保存</button>
+          </div>
+          <div class="preview-stage graph-stage">
+            <canvas id="graphCanvas" width="1200" height="675" aria-label="価格推移グラフ画像プレビュー"></canvas>
+          </div>
+        </section>
         <div class="preview-meta">
           <span id="previewSleeveMeta">対象: -</span>
           <span id="previewDataMeta">データ: -</span>
@@ -471,7 +506,10 @@
       authHash: "3d756736a0f3ca820602ee0ca5e932bfb4733d18e362761366dd1d2e21f997ad",
       defaultPassphraseLabel: "sleeve-promo-2026",
       canvasWidth: 1200,
-      canvasHeight: 630
+      canvasHeight: 630,
+      graphCanvasWidth: 1200,
+      graphCanvasHeight: 675,
+      graphExportScale: 2
     };
 
     const adminState = {
@@ -1059,7 +1097,56 @@
       qs("previewDataMeta").textContent = `最新観測: ${stats.latest?.date ? formatDateLabel(stats.latest.date) : "-"}${adminState.imageWarning ? " / 保存時は代替表示" : ""}`;
       if (!silent) {
         setStatus(adminState.imageWarning || "プレビューを更新しました。", adminState.imageWarning ? "warning" : "ok");
+        renderGraphCanvas({ silent: true });
       }
+    }
+
+    function renderGraphCanvas(options = {}) {
+      const canvas = options.canvas || qs("graphCanvas");
+      if (!canvas) return;
+
+      const scale = Math.max(1, Number(options.exportScale || 1));
+      const logicalW = ADMIN_PROMO_CONFIG.graphCanvasWidth;
+      const logicalH = ADMIN_PROMO_CONFIG.graphCanvasHeight;
+      canvas.width = logicalW * scale;
+      canvas.height = logicalH * scale;
+
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      ctx.clearRect(0, 0, logicalW, logicalH);
+
+      const bg = ctx.createLinearGradient(0, 0, logicalW, logicalH);
+      bg.addColorStop(0, "#fffef9");
+      bg.addColorStop(1, "#f3f7ff");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, logicalW, logicalH);
+
+      const sleeve = adminState.selectedSleeve;
+      if (!sleeve) {
+        ctx.fillStyle = "#667085";
+        ctx.font = "900 34px 'Noto Sans JP', sans-serif";
+        ctx.fillText("スリーブを選ぶと価格推移グラフが表示されます。", 48, 96);
+        return;
+      }
+
+      const stats = buildPromoStats(sleeve);
+      adminState.currentStats = stats;
+      const latestPrice = stats.latest ? `最新 約${Math.round(stats.latest.price).toLocaleString()}円` : "最新価格なし";
+      const latestDate = stats.latest?.date ? formatDateLabel(stats.latest.date) : "-";
+
+      ctx.fillStyle = "#111827";
+      ctx.font = "900 42px 'Noto Sans JP', sans-serif";
+      wrapText(ctx, String(sleeve.name || "スリーブ"), 42, 58, logicalW - 84, 46);
+
+      ctx.fillStyle = "#475467";
+      ctx.font = "800 22px 'Noto Sans JP', sans-serif";
+      ctx.fillText(`${latestPrice} / 最終観測 ${latestDate}`, 44, 116);
+
+      drawChart(ctx, stats, { x: 32, y: 140, w: logicalW - 64, h: 470 });
+
+      ctx.fillStyle = "#667085";
+      ctx.font = "800 18px 'Noto Sans JP', sans-serif";
+      ctx.fillText("ポケスリ相場ナビ / pokesuri-navi.com", 44, logicalH - 28);
     }
 
     function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
@@ -1246,6 +1333,33 @@
       }, "image/png");
     }
 
+    function downloadGraphCanvas() {
+      if (!adminState.selectedSleeve) {
+        setStatus("先に対象スリーブを選んでください。", "warning");
+        return;
+      }
+      const canvas = document.createElement("canvas");
+      renderGraphCanvas({
+        canvas,
+        exportScale: ADMIN_PROMO_CONFIG.graphExportScale,
+        silent: true
+      });
+      const filename = `graph-${String(adminState.selectedSleeve.id || "sleeve")}-${canvas.width}x${canvas.height}.png`;
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          setStatus("グラフPNGの書き出しに失敗しました。", "warning");
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setStatus(`高画質グラフPNGを保存しました: ${filename}`, "ok");
+      }, "image/png");
+    }
+
     async function copyPostText() {
       if (!adminState.selectedSleeve || !adminState.currentStats) {
         setStatus("先に画像を作ってください。", "warning");
@@ -1292,6 +1406,8 @@
         await renderPromoCanvas();
       };
       qs("downloadBtn").onclick = () => downloadCanvas();
+      qs("downloadGraphBtn").onclick = () => downloadGraphCanvas();
+      qs("downloadGraphBtnPreview").onclick = () => downloadGraphCanvas();
       qs("copyPostBtn").onclick = async () => {
         try {
           await copyPostText();
