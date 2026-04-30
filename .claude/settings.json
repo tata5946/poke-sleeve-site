@@ -9,7 +9,9 @@
       "WebFetch(domain:script.googleusercontent.com)",
       "PowerShell($resp = Invoke-WebRequest -Uri \"https://script.google.com/macros/s/AKfycbziDNX6nOuoYk8CQ3geI_89fqgfs7PL2Ubb5vC6u0C32Df6gK3vIUoJrJFYli1eax1y/exec\" -UseBasicParsing -MaximumRedirection 5; $json = $resp.Content | ConvertFrom-Json; $ids = @\\('310039','367897','228570','431147','266947'\\); $found = $json.sleeves | Where-Object { $ids -contains [string]$_.id }; Write-Host \"Found: $\\($found.Count\\) sleeves\"; $found | Select-Object id,name,imageUrl,releaseYear,series,condition,type,feature,acquisitionType,note,category1,category2,category3,category4,category5,category6,category7,category8,category9 | Format-List)",
       "PowerShell($resp = Invoke-WebRequest -Uri \"https://script.google.com/macros/s/AKfycbziDNX6nOuoYk8CQ3geI_89fqgfs7PL2Ubb5vC6u0C32Df6gK3vIUoJrJFYli1eax1y/exec\" -UseBasicParsing -MaximumRedirection 5; $json = $resp.Content | ConvertFrom-Json; $ids = @\\('310039','367897','228570','431147','266947'\\); $found = $json.sleeves | Where-Object { $ids -contains [string]$_.id }; $found | ConvertTo-Json -Depth 20 | Out-File -FilePath \"C:\\\\Users\\\\takuy\\\\OneDrive\\\\ドキュメント\\\\GitHub\\\\poke-sleeve-site\\\\.tmp_new_sleeves.json\" -Encoding utf8; Write-Host \"Saved to .tmp_new_sleeves.json\")",
-      "Bash(grep -v \":1$\")"
+      "Bash(grep -v \":1$\")",
+      "Bash(git rm *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
