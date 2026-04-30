@@ -14,7 +14,7 @@ const LOCAL_DATA_URL = "./data.json";
 const DATA_CACHE_KEY = "pokeSleeve:dataCache:v9";
 const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v9";
 const DATA_CACHE_TTL_MS = 5 * 60 * 1000;
-const DATA_STALE_MAX_MS = 24 * 60 * 60 * 1000;
+const DATA_STALE_MAX_MS = 10 * 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
 const SEARCH_HISTORY_KEY = "pokeSleeve:searchHistory:v1";
 const SEARCH_HISTORY_MAX = 8;
@@ -1299,6 +1299,9 @@ async function loadData({ forceRefresh = false, ttlMs = DATA_CACHE_TTL_MS } = {}
           __dataCacheMem = { cachedAt: Date.now(), data: fresh };
           writeSessionCache(fresh);
           writePersistentCache(fresh);
+          try {
+            document.dispatchEvent(new CustomEvent("pokeSleeve:dataRefreshed", { detail: fresh }));
+          } catch (_) {}
           return fresh;
         })();
         __dataCachePromise.finally(() => {

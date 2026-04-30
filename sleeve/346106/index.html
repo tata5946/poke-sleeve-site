@@ -4446,23 +4446,30 @@
       img.alt = s.name || "";
       renderSleevePage(s, sleeves);
 
-      if (!sleeves.length && window.common && typeof window.common.loadData === "function") {
-        window.common.loadData().then((data) => {
-          const allSleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
-          if (!allSleeves.length) return;
-          const freshSleeve = allSleeves.find((item) => String(item?.id || "") === String(id));
-          if (freshSleeve && getLatestTradeStamp(freshSleeve) !== getLatestTradeStamp(s)) {
-            s = freshSleeve;
-            const heroImg = document.getElementById("img");
-            if (heroImg) {
-              heroImg.src = String(s.imageUrl || "").trim();
-              heroImg.alt = s.name || "";
-            }
-            renderSleevePage(s, allSleeves);
-            return;
+      function applyFreshSleeveData(data) {
+        const allSleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
+        if (!allSleeves.length) return;
+        const freshSleeve = allSleeves.find((item) => String(item?.id || "") === String(id));
+        if (!freshSleeve) return;
+        const priceChanged = getLatestTradeStamp(freshSleeve) !== getLatestTradeStamp(s);
+        const imageChanged = (freshSleeve.imageUrl || "") !== (s.imageUrl || "");
+        if (priceChanged || imageChanged) {
+          s = freshSleeve;
+          const heroImg = document.getElementById("img");
+          if (heroImg) {
+            heroImg.src = String(s.imageUrl || "").trim();
+            heroImg.alt = s.name || "";
           }
-          renderRelatedSleeves(s, allSleeves);
-        }).catch(() => { });
+          renderSleevePage(s, allSleeves);
+          return;
+        }
+        renderRelatedSleeves(s, allSleeves);
+      }
+      if (!sleeves.length && window.common && typeof window.common.loadData === "function") {
+        window.common.loadData({ forceRefresh: true }).then(applyFreshSleeveData).catch(() => { });
+        document.addEventListener("pokeSleeve:dataRefreshed", (e) => {
+          applyFreshSleeveData(e.detail);
+        }, { once: true });
       }
     }
 
