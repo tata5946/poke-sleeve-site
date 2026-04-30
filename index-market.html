@@ -1424,7 +1424,7 @@
 
     async function loadData() {
       if (window.common && typeof window.common.loadData === "function") {
-        return await window.common.loadData();
+        return await window.common.loadData({ forceRefresh: true });
       }
 
       const gas = window.GAS_URL || (typeof GAS_URL !== "undefined" ? GAS_URL : "");

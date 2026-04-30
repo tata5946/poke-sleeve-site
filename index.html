@@ -4045,22 +4045,6 @@
       }
     }
     async function loadHomePrimaryData() {
-      const localUrl = new URL("./data.json", document.baseURI || location.href).href;
-      try {
-        const data = await window.common.loadData();
-        if (Array.isArray(data?.sleeves) && data.sleeves.length) {
-          return data;
-        }
-      } catch (_) {}
-      try {
-        const data = await window.common.fetchJsonWithTimeout(localUrl, {
-          timeoutMs: 2500,
-          cacheMode: "default"
-        });
-        if (Array.isArray(data?.sleeves) && data.sleeves.length) {
-          return data;
-        }
-      } catch (_) {}
       return await window.common.loadData({ forceRefresh: true });
     }
 
