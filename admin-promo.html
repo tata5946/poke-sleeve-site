@@ -1750,11 +1750,11 @@
       const select = qs("sleeveSelect");
       if (!datalist || !select) return;
       const selectedId = String(adminState.selectedSleeve?.id || "").trim();
+      const collator = new Intl.Collator("ja", { numeric: true, sensitivity: "base" });
       const sleeves = adminState.sleeves.slice().sort((a, b) => {
-        const ap = Number(getLatestTradeRow(a)?.price || 0);
-        const bp = Number(getLatestTradeRow(b)?.price || 0);
-        if (bp !== ap) return bp - ap;
-        return String(a.name || "").localeCompare(String(b.name || ""), "ja");
+        const nameDiff = collator.compare(String(a.name || ""), String(b.name || ""));
+        if (nameDiff !== 0) return nameDiff;
+        return collator.compare(String(a.id || ""), String(b.id || ""));
       });
       datalist.innerHTML = sleeves.map((sleeve) => `<option value="${escapeHtml(buildSleeveOptionLabel(sleeve))}"></option>`).join("");
       select.innerHTML = sleeves.map((sleeve) => `<option value="${escapeHtml(String(sleeve.id || ""))}">${escapeHtml(buildSleeveOptionLabel(sleeve))}</option>`).join("");
