@@ -606,7 +606,7 @@ async function ensureCategoryNavsRendered(preloadedSleeves = null) {
     for (const root of roots) {
       const hasItems = renderCategoryNav(sleeves, root);
       const isHeaderRoot = root.id === "headerCategoryNav";
-      const isHomeSidebar = root.id === "categoryNav" && document.body.classList.contains("home-page");
+      const isSidebarRoot = root.id === "categoryNav";
 
       if (isHeaderRoot) {
         if (!root.classList.contains("is-mobile-drawer-open")) {
@@ -615,7 +615,7 @@ async function ensureCategoryNavsRendered(preloadedSleeves = null) {
         continue;
       }
 
-      if (isHomeSidebar) {
+      if (isSidebarRoot) {
         root.hidden = !hasItems;
         continue;
       }
@@ -626,7 +626,7 @@ async function ensureCategoryNavsRendered(preloadedSleeves = null) {
     for (const root of roots) {
       const list = root.querySelector(".category-nav-list");
       if (list) list.innerHTML = `<div class="category-nav-empty">カテゴリー一覧の読み込みに失敗しました。</div>`;
-      const isHomeSidebar = root.id === "categoryNav" && document.body.classList.contains("home-page");
+      const isSidebarRoot = root.id === "categoryNav";
       const isHeaderRoot = root.id === "headerCategoryNav";
       if (isHeaderRoot) {
         if (!root.classList.contains("is-mobile-drawer-open")) {
@@ -634,7 +634,7 @@ async function ensureCategoryNavsRendered(preloadedSleeves = null) {
         }
         continue;
       }
-      root.hidden = !isHomeSidebar;
+      root.hidden = !isSidebarRoot;
     }
   }
 }
@@ -1793,6 +1793,9 @@ document.addEventListener("DOMContentLoaded", () => {
       injectDashboardChrome();
       wireDashboardSearch();
       wireDashboardSidebarCategoryToggle();
+      ensureCategoryNavsRendered()
+        .then(() => wireDashboardSidebarCategoryToggle())
+        .catch(() => {});
     }
   } catch (e) { console.error(e); }
 
