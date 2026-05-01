@@ -1570,12 +1570,7 @@
       const xToPx = (ts) => padL + ((ts - xMin) / spanX) * chartW;
       const yToPx = (value) => padT + (1 - ((value - yMin) / Math.max(1, yMax - yMin))) * chartH;
       const lineD = data.map((point, index) => `${index === 0 ? "M" : "L"} ${xToPx(point.timestamp).toFixed(2)} ${yToPx(point.price).toFixed(2)}`).join(" ");
-      const areaD = `${lineD} L ${xToPx(data[data.length - 1].timestamp).toFixed(2)} ${padT + chartH} L ${xToPx(data[0].timestamp).toFixed(2)} ${padT + chartH} Z`;
       const yTicks = [0, yMax / 4, yMax / 2, (yMax / 4) * 3, yMax];
-      const yGrid = yTicks.map((value) => {
-        const y = yToPx(value);
-        return `<line x1="${padL}" y1="${y.toFixed(2)}" x2="${W - padR}" y2="${y.toFixed(2)}" stroke="#dfd9d0" stroke-width="1.4" stroke-dasharray="2 9" stroke-linecap="round"></line>`;
-      }).join("");
       const yLabels = yTicks.map((value) => {
         const y = yToPx(value);
         return `<text x="${padL - 14}" y="${(y + 6).toFixed(2)}" text-anchor="end" font-size="17" font-weight="800" fill="#364152">${Math.round(value).toLocaleString()}</text>`;
@@ -1594,8 +1589,7 @@
         const cy = yToPx(point.price);
         const latest = index === data.length - 1;
         return `
-          ${latest ? `<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="14" fill="rgba(255, 32, 32, 0.16)"></circle>` : ""}
-          <circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${latest ? 8.5 : 6.5}" fill="#ff2020" stroke="#ffffff" stroke-width="2"></circle>
+          <circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${latest ? 8.5 : 6.5}" fill="#ff2020"></circle>
         `;
       }).join("");
       const latest = data[data.length - 1];
@@ -1606,24 +1600,12 @@
         <div class="chart-wrap chart-wrap--stylized">
           <div class="chart-viewport">
             <svg class="chart stylized-chart" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="stylizedPriceAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#ff2020" stop-opacity="0.20"></stop>
-                  <stop offset="100%" stop-color="#ff2020" stop-opacity="0.04"></stop>
-                </linearGradient>
-              </defs>
-              <rect x="0" y="0" width="${W}" height="${H}" rx="18" fill="#ffffff"></rect>
-              <rect x="${padL}" y="${padT}" width="${chartW}" height="${chartH}" fill="#fffaf8"></rect>
-              <g>${yGrid}</g>
-              <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + chartH}" stroke="#9aa4b2" stroke-width="2"></line>
-              <line x1="${padL}" y1="${padT + chartH}" x2="${W - padR}" y2="${padT + chartH}" stroke="#9aa4b2" stroke-width="2"></line>
-              <path d="${areaD}" fill="url(#stylizedPriceAreaGrad)"></path>
               <path d="${lineD}" fill="none" stroke="#ff2020" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></path>
               <g>${markers}</g>
               <text x="${padL - 52}" y="${padT - 12}" font-size="15" font-weight="900" fill="#364152">（円）</text>
               <g>${yLabels}</g>
               <g>${xLabels}</g>
-              <text x="${Math.min(W - padR - 8, latestX + 10).toFixed(2)}" y="${Math.max(padT + 18, latestY - 12).toFixed(2)}" text-anchor="${latestX > W - padR - 130 ? "end" : "start"}" font-size="18" font-weight="900" fill="#ff2020" style="paint-order:stroke;stroke:#ffffff;stroke-width:5px;stroke-linejoin:round;">¥${latest.price.toLocaleString()}</text>
+              <text x="${Math.min(W - padR - 8, latestX + 10).toFixed(2)}" y="${Math.max(padT + 18, latestY - 12).toFixed(2)}" text-anchor="${latestX > W - padR - 130 ? "end" : "start"}" font-size="18" font-weight="900" fill="#ff2020">¥${latest.price.toLocaleString()}</text>
             </svg>
           </div>
         </div>
@@ -1871,7 +1853,7 @@
       }, "image/png");
     }
 
-    async function downloadSvgChartCanvas({ previewId, render, filenamePrefix, scale, fallbackViewBox, emptyMessage, successLabel }) {
+    async function downloadSvgChartCanvas({ previewId, render, filenamePrefix, scale, fallbackViewBox, emptyMessage, successLabel, backgroundColor = "#ffffff" }) {
       if (!adminState.selectedSleeve) {
         setStatus("先に対象スリーブを選んでください。", "warning");
         return;
@@ -1891,8 +1873,10 @@
       canvas.width = Math.round(sourceW * safeScale);
       canvas.height = Math.round(sourceH * safeScale);
       const ctx = canvas.getContext("2d");
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      if (backgroundColor) {
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
 
       const clone = svg.cloneNode(true);
       clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
@@ -1950,7 +1934,8 @@
         scale: ADMIN_PROMO_CONFIG.stylizedGraphExportScale,
         fallbackViewBox: "0 0 720 405",
         emptyMessage: "保存できるデフォルメ版グラフがありません。",
-        successLabel: "デフォルメ版グラフPNGを保存しました"
+        successLabel: "デフォルメ版グラフPNGを保存しました",
+        backgroundColor: ""
       });
     }
 
