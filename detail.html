@@ -1993,11 +1993,17 @@
       }
     }
 
+    function normalizeSleeveDataId(id) {
+      const sleeveId = String(id || "").trim();
+      if (/^4521329\d{6,7}$/.test(sleeveId)) return sleeveId.slice(7);
+      return sleeveId;
+    }
+
     function getSleeveId() {
       const embeddedId = String(window.__SLEEVE_PAGE_ID || "").trim();
       if (embeddedId) return embeddedId;
       const pathId = getSleeveIdFromPath();
-      if (pathId) return pathId;
+      if (pathId) return normalizeSleeveDataId(pathId);
       return String(getParam("id") || "").trim();
     }
 

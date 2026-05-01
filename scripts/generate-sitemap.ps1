@@ -16,6 +16,12 @@ function Normalize-Origin([string]$Origin) {
   return ([string]$Origin).TrimEnd("/")
 }
 
+function Get-SleeveRouteId([string]$Id) {
+  $sleeveId = ([string]$Id).Trim()
+  if ($sleeveId -match '^\d{6,7}$') { return "4521329$sleeveId" }
+  return $sleeveId
+}
+
 Assert-Exists -Path $DataPath -Label "Data file"
 
 $origin = Normalize-Origin $SiteOrigin
@@ -51,7 +57,8 @@ foreach ($page in $staticPages) {
   }
 }
 foreach ($id in $sleeveIds) {
-  $urls.Add($origin + "/sleeve/" + [System.Uri]::EscapeDataString($id) + "/")
+  $routeId = Get-SleeveRouteId $id
+  $urls.Add($origin + "/sleeve/" + [System.Uri]::EscapeDataString($routeId) + "/")
 }
 
 $xml = New-Object System.Text.StringBuilder

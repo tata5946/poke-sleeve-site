@@ -11,6 +11,12 @@ function Assert-Exists([string]$Path, [string]$Label) {
   }
 }
 
+function Get-SleeveDataId([string]$RouteId) {
+  $sleeveId = ([string]$RouteId).Trim()
+  if ($sleeveId -match '^4521329\d{6,7}$') { return $sleeveId.Substring(7) }
+  return $sleeveId
+}
+
 Assert-Exists -Path $TemplatePath -Label "Template"
 Assert-Exists -Path $OutputRoot -Label "Sleeve directory"
 
@@ -20,7 +26,8 @@ $baseTag = '  <base href="../../" />'
 Get-ChildItem -Path $OutputRoot -Recurse -Filter index.html -File | ForEach-Object {
   $targetPath = $_.FullName
   $current = Get-Content -LiteralPath $targetPath -Raw -Encoding UTF8
-  $id = Split-Path -Path (Split-Path -Path $targetPath -Parent) -Leaf
+  $routeId = Split-Path -Path (Split-Path -Path $targetPath -Parent) -Leaf
+  $id = Get-SleeveDataId $routeId
   if ([string]::IsNullOrWhiteSpace($id)) { return }
 
   $jsId = ConvertTo-Json $id -Compress

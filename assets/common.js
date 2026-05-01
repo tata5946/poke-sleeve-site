@@ -473,10 +473,16 @@ function buildSiteHref(path) {
   return new URL(trimmed, document.baseURI).toString();
 }
 
-function buildSleeveDetailHref(id) {
+function buildSleeveRouteId(id) {
   const sleeveId = String(id || "").trim();
-  if (!sleeveId) return buildSiteHref("sleeves/");
-  return buildSiteHref(`sleeve/${encodeURIComponent(sleeveId)}/`);
+  if (/^\d{6,7}$/.test(sleeveId)) return `4521329${sleeveId}`;
+  return sleeveId;
+}
+
+function buildSleeveDetailHref(id) {
+  const routeId = buildSleeveRouteId(id);
+  if (!routeId) return buildSiteHref("sleeves/");
+  return buildSiteHref(`sleeve/${encodeURIComponent(routeId)}/`);
 }
 
 function buildCategoryNavMarkup(sleeves) {

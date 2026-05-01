@@ -12,6 +12,12 @@ function Assert-Exists([string]$Path, [string]$Label) {
   }
 }
 
+function Get-SleeveRouteId([string]$Id) {
+  $sleeveId = ([string]$Id).Trim()
+  if ($sleeveId -match '^\d{6,7}$') { return "4521329$sleeveId" }
+  return $sleeveId
+}
+
 Assert-Exists -Path $DataPath -Label "Data file"
 Assert-Exists -Path $TemplatePath -Label "Template"
 
@@ -29,7 +35,8 @@ foreach ($sleeve in @($data.sleeves)) {
   $id = [string]$sleeve.id
   if ([string]::IsNullOrWhiteSpace($id)) { continue }
 
-  $encodedId = [System.Uri]::EscapeDataString($id)
+  $routeId = Get-SleeveRouteId $id
+  $encodedId = [System.Uri]::EscapeDataString($routeId)
   $jsId = ConvertTo-Json $id -Compress
   $jsSleeve = ConvertTo-Json $sleeve -Compress -Depth 100
   $name = ([string]$sleeve.name).Trim()
@@ -76,7 +83,7 @@ foreach ($sleeve in @($data.sleeves)) {
     1
   )
 
-  $targetDir = Join-Path $OutputRoot $id
+  $targetDir = Join-Path $OutputRoot $routeId
   if (-not (Test-Path -LiteralPath $targetDir)) {
     New-Item -ItemType Directory -Path $targetDir | Out-Null
   }
