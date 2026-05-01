@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&family=Manrope:wght@700;800&family=M+PLUS+Rounded+1c:wght@700;900&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./assets/site.css?v=20260427b" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260501c" />
   <style>
     body.home-page {
       background:
@@ -3950,7 +3950,7 @@
     </main>
   </div>
 
-  <script src="./assets/common.js?v=20260501b"></script>
+  <script src="./assets/common.js?v=20260501c"></script>
   <script>
     const ACCESS_RANKING_ENDPOINT = window.GAS_URL || "";
     const ACCESS_RANKING_CACHE_KEY = "home_access_ranking_cache_v1";
@@ -4701,6 +4701,7 @@
       const setOpen = (open) => {
         shell.classList.toggle("is-open", open);
         button.setAttribute("aria-expanded", open ? "true" : "false");
+        panel.hidden = !open;
       };
 
       const syncVisibility = () => {

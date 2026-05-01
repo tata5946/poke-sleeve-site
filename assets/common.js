@@ -141,7 +141,7 @@ function buildDashboardSidebarHtml(activeSidebar = "") {
         </span>
         <span class="sidebar-category-caret" aria-hidden="true">›</span>
       </button>
-      <aside id="categoryNav" class="category-nav sidebar-category-panel" data-category-nav aria-label="スリーブカテゴリ一覧">
+      <aside id="categoryNav" class="category-nav sidebar-category-panel" data-category-nav aria-label="スリーブカテゴリ一覧" hidden>
         <div class="category-nav-list">
           <div class="category-nav-empty skeleton-block" style="min-height: 128px;"></div>
         </div>
@@ -616,7 +616,13 @@ async function ensureCategoryNavsRendered(preloadedSleeves = null) {
       }
 
       if (isSidebarRoot) {
-        root.hidden = !hasItems;
+        const shell = root.closest(".sidebar-category-shell");
+        if (shell instanceof Element) {
+          shell.hidden = !hasItems;
+          root.hidden = !hasItems || !shell.classList.contains("is-open");
+        } else {
+          root.hidden = !hasItems;
+        }
         continue;
       }
 
@@ -634,7 +640,13 @@ async function ensureCategoryNavsRendered(preloadedSleeves = null) {
         }
         continue;
       }
-      root.hidden = !isSidebarRoot;
+      if (isSidebarRoot) {
+        const shell = root.closest(".sidebar-category-shell");
+        if (shell instanceof Element) shell.hidden = false;
+        root.hidden = true;
+      } else {
+        root.hidden = true;
+      }
     }
   }
 }
@@ -1447,6 +1459,7 @@ function wireDashboardSidebarCategoryToggle() {
   const setOpen = (open) => {
     shell.classList.toggle("is-open", open);
     button.setAttribute("aria-expanded", open ? "true" : "false");
+    panel.hidden = !open;
   };
 
   const syncVisibility = () => {
