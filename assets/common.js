@@ -133,7 +133,6 @@ function buildDashboardSidebarHtml(activeSidebar = "") {
   <nav class="sidebar-nav" aria-label="主要ナビゲーション">
     <a class="${itemClass("index")}" href="${escapeHtml(buildSiteHref("index.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⌂</span><span>ホーム</span></a>
     <a class="${itemClass("zukan")}" href="${escapeHtml(buildSiteHref("sleeves/"))}"><span class="sidebar-link-icon" aria-hidden="true">▤</span><span>スリーブ図鑑</span></a>
-    <a class="${itemClass("surge")}" href="${escapeHtml(buildSiteHref("surge.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⚡</span><span>急上昇ランキング</span></a>
     <div id="sidebarCategoryShell" class="sidebar-category-shell" hidden>
       <button type="button" class="sidebar-link sidebar-category-toggle" id="sidebarCategoryToggle" aria-expanded="false" aria-controls="categoryNav">
         <span class="sidebar-category-toggle-label">
@@ -148,6 +147,7 @@ function buildDashboardSidebarHtml(activeSidebar = "") {
         </div>
       </aside>
     </div>
+    <a class="${itemClass("surge")}" href="${escapeHtml(buildSiteHref("surge.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⚡</span><span>急上昇ランキング</span></a>
     <a class="${itemClass("ranking")}" href="${escapeHtml(buildSiteHref("ranking.html"))}"><span class="sidebar-link-icon" aria-hidden="true">◷</span><span>価格ランキング</span></a>
     <a class="${itemClass("access-ranking")}" href="${escapeHtml(buildSiteHref("access-ranking.html"))}"><span class="sidebar-link-icon" aria-hidden="true">◉</span><span>アクセスランキング</span></a>
     <a class="${itemClass("growth")}" href="${escapeHtml(buildSiteHref("growth.html"))}"><span class="sidebar-link-icon" aria-hidden="true">↗</span><span>高騰率ランキング</span></a>
