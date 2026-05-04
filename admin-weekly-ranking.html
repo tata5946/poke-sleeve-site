@@ -23,6 +23,7 @@
     body {
       width: 100%;
       min-height: 100%;
+      overflow: hidden;
     }
 
     body {
@@ -40,7 +41,7 @@
       min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 20px 0;
+      padding: 0;
     }
 
     .poster {
@@ -85,23 +86,23 @@
       position: relative;
       z-index: 1;
       height: 100%;
-      padding: 24px 26px 10px;
+      padding: 22px 28px 16px;
       display: grid;
-      grid-template-rows: 206px repeat(5, 148px) 100px 22px;
+      grid-template-rows: 204px repeat(5, 146px) 116px 20px;
       gap: 7px;
     }
 
     .header {
       position: relative;
       display: grid;
-      grid-template-columns: 140px minmax(0, 1fr) 232px;
-      gap: 16px;
+      grid-template-columns: 136px minmax(0, 1fr) 226px;
+      gap: 18px;
       align-items: start;
     }
 
     .ribbon {
       position: relative;
-      height: 202px;
+      height: 200px;
       display: grid;
       place-items: center;
       padding-bottom: 20px;
@@ -114,27 +115,27 @@
     }
 
     .ribbon .crown {
-      font-size: 70px;
+      font-size: 64px;
       line-height: .8;
       filter: drop-shadow(0 3px 0 rgba(171, 114, 0, .18));
     }
 
     .ribbon .label {
       margin-top: 10px;
-      font-size: 38px;
+      font-size: 36px;
       font-weight: 1000;
       letter-spacing: .04em;
     }
 
     .title-block {
-      padding-top: 5px;
+      padding-top: 3px;
       text-align: center;
       min-width: 0;
     }
 
     .eyebrow {
       color: #0e9cb7;
-      font-size: 30px;
+      font-size: 29px;
       font-weight: 1000;
       letter-spacing: .08em;
       line-height: 1.1;
@@ -154,35 +155,35 @@
     }
 
     .headline .hot {
-      font-size: 80px;
+      font-size: 78px;
       color: var(--orange);
       text-shadow: 0 4px 0 #fff0d2, 0 7px 10px rgba(222, 91, 0, .18);
     }
 
     .headline .ranking {
-      font-size: 78px;
+      font-size: 76px;
       color: #272a31;
       text-shadow: 0 4px 0 #fff;
     }
 
     .headline .arrow {
-      width: 108px;
-      height: 100px;
-      margin-bottom: -7px;
+      width: 102px;
+      height: 94px;
+      margin-bottom: -5px;
     }
 
     .subhead {
-      margin-top: 14px;
+      margin-top: 10px;
       color: #252832;
-      font-size: 28px;
+      font-size: 27px;
       font-weight: 1000;
       letter-spacing: .12em;
     }
 
     .period-card {
-      margin-top: 22px;
-      padding: 16px 16px 12px;
-      min-height: 148px;
+      margin-top: 20px;
+      padding: 14px 14px 10px;
+      min-height: 144px;
       border: 3px solid #20b7d3;
       border-radius: 12px;
       background: rgba(255, 255, 255, .92);
@@ -192,14 +193,14 @@
 
     .period-title {
       color: #0ca8c2;
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 1000;
       letter-spacing: .05em;
     }
 
     .period-date {
-      margin-top: 10px;
-      font-size: 21px;
+      margin-top: 9px;
+      font-size: 20px;
       font-weight: 900;
       line-height: 1.45;
     }
@@ -214,18 +215,18 @@
     .source-note {
       position: absolute;
       right: 4px;
-      bottom: 0;
+      bottom: 10px;
       color: #0799b5;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 900;
     }
 
     .rank-row {
       display: grid;
-      grid-template-columns: 112px 438px 174px 126px 274px;
+      grid-template-columns: 100px 430px 178px 126px 278px;
       gap: 12px;
       align-items: stretch;
-      min-height: 154px;
+      min-height: 146px;
       border-radius: 11px;
       background: rgba(255, 255, 255, .96);
       border: 2px solid rgba(245, 218, 123, .68);
@@ -252,36 +253,36 @@
 
     .rank-medal .small-crown {
       position: absolute;
-      top: 14px;
-      font-size: 24px;
+      top: 12px;
+      font-size: 22px;
       color: var(--rank-color);
     }
 
     .rank-number {
-      font-size: 64px;
+      font-size: 58px;
       line-height: 1;
     }
 
     .laurel {
       position: absolute;
-      bottom: 14px;
-      font-size: 24px;
+      bottom: 12px;
+      font-size: 22px;
       letter-spacing: -.1em;
       opacity: .86;
     }
 
     .sleeve-info {
       display: grid;
-      grid-template-columns: 124px 1fr;
+      grid-template-columns: 118px 1fr;
       gap: 18px;
       align-items: center;
-      padding: 13px 0 13px 6px;
+      padding: 14px 0 12px 6px;
       min-width: 0;
     }
 
     .sleeve-art {
-      width: 110px;
-      height: 110px;
+      width: 108px;
+      height: 108px;
       border: 4px solid #2d3c4a;
       box-shadow: 0 3px 0 rgba(0, 0, 0, .15);
       display: grid;
@@ -296,13 +297,23 @@
       background: var(--art);
     }
 
+    .sleeve-art img {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #fff;
+    }
+
     .sleeve-art::before {
       content: var(--emoji);
       position: absolute;
       inset: 0;
       display: grid;
       place-items: center;
-      font-size: 64px;
+      font-size: 56px;
       filter: drop-shadow(0 6px 4px rgba(0, 0, 0, .35));
     }
 
@@ -320,18 +331,18 @@
     }
 
     .sleeve-name {
-      font-size: 24px;
+      font-size: 23px;
       font-weight: 1000;
-      line-height: 1.38;
+      line-height: 1.35;
       letter-spacing: 0;
     }
 
     .release {
-      margin-top: 14px;
+      margin-top: 12px;
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 800;
     }
 
@@ -350,7 +361,7 @@
 
     .release-badge {
       padding: 6px 8px;
-      font-size: 15px;
+      font-size: 14px;
     }
 
     .price-box {
@@ -363,22 +374,22 @@
 
     .price-badge {
       padding: 7px 10px;
-      font-size: 15px;
+      font-size: 14px;
       box-shadow: 0 2px 0 rgba(10, 126, 150, .16);
     }
 
     .price {
-      margin-top: 12px;
-      font-size: 37px;
+      margin-top: 10px;
+      font-size: 36px;
       font-weight: 1000;
       line-height: 1;
       letter-spacing: -.03em;
     }
 
     .prev {
-      margin-top: 12px;
+      margin-top: 10px;
       color: #343843;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       white-space: nowrap;
     }
@@ -386,7 +397,7 @@
     .delta-box {
       display: grid;
       place-items: center;
-      margin: 28px 0;
+      margin: 24px 0;
       border-radius: 12px;
       background: linear-gradient(180deg, #fff1e9, #ffe8db);
       color: var(--orange);
@@ -394,15 +405,15 @@
     }
 
     .delta-badge {
-      padding: 7px 10px;
+      padding: 6px 10px;
       background: #ffd7c4;
       color: #ff4e14;
-      font-size: 15px;
+      font-size: 14px;
     }
 
     .delta {
-      margin-top: 10px;
-      font-size: 30px;
+      margin-top: 9px;
+      font-size: 29px;
       font-weight: 1000;
       line-height: 1;
       text-shadow: 0 2px 0 #fff;
@@ -410,7 +421,7 @@
 
     .delta-arrow {
       margin-top: 2px;
-      font-size: 40px;
+      font-size: 36px;
       line-height: .8;
       transform: rotate(-18deg);
     }
@@ -418,37 +429,37 @@
     .chart-card {
       display: grid;
       align-content: center;
-      padding: 10px 16px 10px 0;
+      padding: 8px 10px 8px 0;
     }
 
     .chart-title {
       color: var(--chart-color);
       text-align: center;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 1000;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .chart {
       width: 100%;
-      height: 98px;
+      height: 96px;
     }
 
     .footer {
       display: grid;
-      grid-template-columns: 650px 1fr;
-      gap: 24px;
+      grid-template-columns: 640px 1fr;
+      gap: 20px;
       align-items: center;
-      padding-top: 4px;
+      padding-top: 2px;
     }
 
     .point-box {
-      min-height: 104px;
+      min-height: 112px;
       display: grid;
       grid-template-columns: 76px 1fr;
       align-items: center;
       gap: 12px;
-      padding: 14px 20px;
+      padding: 12px 18px;
       border-radius: 10px;
       border: 2px solid rgba(241, 203, 89, .55);
       background: rgba(255, 255, 255, .72);
@@ -464,26 +475,26 @@
 
     .point-title {
       color: #ff6b00;
-      font-size: 24px;
+      font-size: 23px;
       font-weight: 1000;
       letter-spacing: .08em;
     }
 
     .point-text {
       margin-top: 4px;
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 800;
-      line-height: 1.55;
+      line-height: 1.42;
     }
 
     .search-box {
       position: relative;
-      min-height: 104px;
+      min-height: 112px;
       display: grid;
       grid-template-columns: 96px 1fr;
       gap: 14px;
       align-items: center;
-      padding: 14px 22px;
+      padding: 12px 18px;
       border-radius: 11px;
       background: linear-gradient(135deg, #12afbf, #0791bb);
       color: #fff;
@@ -504,18 +515,18 @@
     }
 
     .search-copy {
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 1000;
-      line-height: 1.13;
+      line-height: 1.12;
       letter-spacing: .06em;
       padding-bottom: 34px;
     }
 
     .search-input {
       position: absolute;
-      left: 132px;
+      left: 128px;
       right: 18px;
-      bottom: 10px;
+      bottom: 12px;
       margin-top: 0;
       display: grid;
       grid-template-columns: 1fr 62px;
@@ -545,7 +556,7 @@
     .disclaimer {
       position: absolute;
       left: 28px;
-      bottom: 10px;
+      bottom: 11px;
       color: #3d4148;
       font-size: 14px;
       font-weight: 700;
@@ -584,7 +595,7 @@
         width: 100%;
         min-height: 100vh;
         padding: 0;
-        overflow: auto;
+        overflow: hidden;
       }
 
       .poster {
@@ -647,7 +658,7 @@
 
         <article class="rank-row" style="--rank-bg:linear-gradient(135deg,#fff4b8,#ffe57b);--rank-color:#e5a400;--chart-color:#f05a1a;--art:radial-gradient(circle at 50% 52%,#ffc92b 0 18%,transparent 19%),linear-gradient(135deg,#173f3f,#0b1822 55%,#f06224);--emoji:'⚡';">
           <div class="rank-medal"><div class="rank-medal-inner"><div class="small-crown">♛</div><div class="rank-number">1</div><div class="laurel">〈〉</div></div></div>
-          <div class="sleeve-info"><div class="sleeve-art"></div><div class="sleeve-copy"><div class="sleeve-name">メガレックウザ<br>ポンチョを着たピカチュウ</div><div class="release"><span class="release-badge">発売日</span><span>2015/12/19</span></div></div></div>
+          <div class="sleeve-info"><div class="sleeve-art"><img src="https://drive.google.com/thumbnail?id=16ve-J5yNN4s458bSDGrG7tP8YZDYEZx1&sz=w1200" alt="" onerror="this.remove()"></div><div class="sleeve-copy"><div class="sleeve-name">メガレックウザ<br>ポンチョを着たピカチュウ</div><div class="release"><span class="release-badge">発売日</span><span>2015/12/19</span></div></div></div>
           <div class="price-box"><span class="price-badge">現在価格</span><div class="price">¥12,800</div><div class="prev">前週価格：¥10,200</div></div>
           <div class="delta-box"><span class="delta-badge">前週比</span><div class="delta">+25.6%</div><div class="delta-arrow">➜</div></div>
           <div class="chart-card"><div class="chart-title">価格推移 (過去30日)</div><svg class="chart" viewBox="0 0 260 110" aria-hidden="true"><use href="#chart-grid"/><path d="M34 86 L50 76 L66 73 L82 64 L98 62 L114 51 L130 64 L146 55 L162 47 L178 55 L194 38 L210 45 L226 33 L244 18" fill="none" stroke="#f05a1a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 86 L50 76 L66 73 L82 64 L98 62 L114 51 L130 64 L146 55 L162 47 L178 55 L194 38 L210 45 L226 33 L244 18 L244 101 L34 101 Z" fill="#f05a1a" opacity=".08"/><circle cx="244" cy="18" r="6" fill="#f05a1a"/></svg></div>
@@ -655,7 +666,7 @@
 
         <article class="rank-row" style="--rank-bg:linear-gradient(135deg,#f4f4f4,#d6d7d9);--rank-color:#777b82;--chart-color:#168ee3;--art:radial-gradient(circle at 74% 34%,#ffe49b 0 15%,transparent 16%),linear-gradient(135deg,#82c7ff,#f7ab45 48%,#49345d);--emoji:'☾';">
           <div class="rank-medal"><div class="rank-medal-inner"><div class="rank-number">2</div><div class="laurel">〈〉</div></div></div>
-          <div class="sleeve-info"><div class="sleeve-art"></div><div class="sleeve-copy"><div class="sleeve-name">リーリエ＆コスモッグ</div><div class="release"><span class="release-badge">発売日</span><span>2017/06/23</span></div></div></div>
+          <div class="sleeve-info"><div class="sleeve-art"><img src="https://drive.google.com/thumbnail?id=1FfvF9OSh0jPArarEBUDNwT19fO9gPLtI&sz=w1200" alt="" onerror="this.remove()"></div><div class="sleeve-copy"><div class="sleeve-name">リーリエ＆コスモッグ</div><div class="release"><span class="release-badge">発売日</span><span>2017/06/23</span></div></div></div>
           <div class="price-box"><span class="price-badge">現在価格</span><div class="price">¥9,800</div><div class="prev">前週価格：¥8,280</div></div>
           <div class="delta-box"><span class="delta-badge">前週比</span><div class="delta">+18.3%</div><div class="delta-arrow">➜</div></div>
           <div class="chart-card"><div class="chart-title">価格推移 (過去30日)</div><svg class="chart" viewBox="0 0 260 110" aria-hidden="true"><use href="#chart-grid"/><path d="M34 86 L50 76 L66 72 L82 60 L98 66 L114 55 L130 70 L146 50 L162 48 L178 46 L194 38 L210 42 L226 30 L244 20" fill="none" stroke="#168ee3" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 86 L50 76 L66 72 L82 60 L98 66 L114 55 L130 70 L146 50 L162 48 L178 46 L194 38 L210 42 L226 30 L244 20 L244 101 L34 101 Z" fill="#168ee3" opacity=".08"/><circle cx="244" cy="20" r="6" fill="#168ee3"/></svg></div>
@@ -663,7 +674,7 @@
 
         <article class="rank-row" style="--rank-bg:linear-gradient(135deg,#ffd6a8,#f2a25e);--rank-color:#b76522;--chart-color:#4dae4f;--art:radial-gradient(circle at 50% 54%,#bd8a43 0 20%,transparent 21%),linear-gradient(135deg,#c7f7e3,#fff1b5 52%,#ffbfd1);--emoji:'✿';">
           <div class="rank-medal"><div class="rank-medal-inner"><div class="rank-number">3</div><div class="laurel">〈〉</div></div></div>
-          <div class="sleeve-info"><div class="sleeve-art"></div><div class="sleeve-copy"><div class="sleeve-name">イーブイズ<br>ブイズ集合</div><div class="release"><span class="release-badge">発売日</span><span>2019/05/31</span></div></div></div>
+          <div class="sleeve-info"><div class="sleeve-art"><img src="https://drive.google.com/thumbnail?id=1AZd9XnC4tLlbIZzYnGB0ACvG9kpfJ6Q6&sz=w1200" alt="" onerror="this.remove()"></div><div class="sleeve-copy"><div class="sleeve-name">イーブイズ<br>ブイズ集合</div><div class="release"><span class="release-badge">発売日</span><span>2019/05/31</span></div></div></div>
           <div class="price-box"><span class="price-badge">現在価格</span><div class="price">¥7,800</div><div class="prev">前週価格：¥6,780</div></div>
           <div class="delta-box"><span class="delta-badge">前週比</span><div class="delta">+15.2%</div><div class="delta-arrow">➜</div></div>
           <div class="chart-card"><div class="chart-title">価格推移 (過去30日)</div><svg class="chart" viewBox="0 0 260 110" aria-hidden="true"><use href="#chart-grid"/><path d="M34 84 L50 75 L66 72 L82 60 L98 63 L114 71 L130 58 L146 55 L162 52 L178 43 L194 49 L210 38 L226 31 L244 20" fill="none" stroke="#4dae4f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 84 L50 75 L66 72 L82 60 L98 63 L114 71 L130 58 L146 55 L162 52 L178 43 L194 49 L210 38 L226 31 L244 20 L244 101 L34 101 Z" fill="#4dae4f" opacity=".08"/><circle cx="244" cy="20" r="6" fill="#4dae4f"/></svg></div>
@@ -671,7 +682,7 @@
 
         <article class="rank-row" style="--rank-bg:linear-gradient(135deg,#daf9ff,#a7e2ee);--rank-color:#168da7;--chart-color:#7a55de;--art:radial-gradient(circle at 50% 48%,#f49b38 0 18%,transparent 19%),linear-gradient(135deg,#1b140d,#e65a16 48%,#140d09);--emoji:'🔥';">
           <div class="rank-medal"><div class="rank-medal-inner"><div class="rank-number">4</div><div class="laurel">〈〉</div></div></div>
-          <div class="sleeve-info"><div class="sleeve-art"></div><div class="sleeve-copy"><div class="sleeve-name">リザードン</div><div class="release"><span class="release-badge">発売日</span><span>2012/07/13</span></div></div></div>
+          <div class="sleeve-info"><div class="sleeve-art"><img src="https://drive.google.com/thumbnail?id=1YxrQUmkHtkDywe6RbfRu4IELnewJfwMa&sz=w1200" alt="" onerror="this.remove()"></div><div class="sleeve-copy"><div class="sleeve-name">リザードン</div><div class="release"><span class="release-badge">発売日</span><span>2012/07/13</span></div></div></div>
           <div class="price-box"><span class="price-badge">現在価格</span><div class="price">¥6,480</div><div class="prev">前週価格：¥5,740</div></div>
           <div class="delta-box"><span class="delta-badge">前週比</span><div class="delta">+12.7%</div><div class="delta-arrow">➜</div></div>
           <div class="chart-card"><div class="chart-title">価格推移 (過去30日)</div><svg class="chart" viewBox="0 0 260 110" aria-hidden="true"><use href="#chart-grid"/><path d="M34 84 L50 76 L66 72 L82 63 L98 67 L114 70 L130 57 L146 54 L162 53 L178 44 L194 50 L210 40 L226 34 L244 22" fill="none" stroke="#7a55de" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 84 L50 76 L66 72 L82 63 L98 67 L114 70 L130 57 L146 54 L162 53 L178 44 L194 50 L210 40 L226 34 L244 22 L244 101 L34 101 Z" fill="#7a55de" opacity=".08"/><circle cx="244" cy="22" r="6" fill="#7a55de"/></svg></div>
@@ -679,7 +690,7 @@
 
         <article class="rank-row" style="--rank-bg:linear-gradient(135deg,#e8f7ff,#b9e6ff);--rank-color:#148cc3;--chart-color:#ff9700;--art:radial-gradient(circle at 50% 53%,#ffd32a 0 20%,transparent 21%),linear-gradient(135deg,#4ac7f4,#ffdd5b 50%,#ff8f52);--emoji:'⚡';">
           <div class="rank-medal"><div class="rank-medal-inner"><div class="rank-number">5</div><div class="laurel">〈〉</div></div></div>
-          <div class="sleeve-info"><div class="sleeve-art"></div><div class="sleeve-copy"><div class="sleeve-name">ピカチュウ<br>大量発生チュウ!</div><div class="release"><span class="release-badge">発売日</span><span>2014/08/09</span></div></div></div>
+          <div class="sleeve-info"><div class="sleeve-art"><img src="https://drive.google.com/thumbnail?id=1XD8xZ9RsDxKYZJmsDWhALZoh3aGtN-KY&sz=w1200" alt="" onerror="this.remove()"></div><div class="sleeve-copy"><div class="sleeve-name">ピカチュウ<br>大量発生チュウ!</div><div class="release"><span class="release-badge">発売日</span><span>2014/08/09</span></div></div></div>
           <div class="price-box"><span class="price-badge">現在価格</span><div class="price">¥5,980</div><div class="prev">前週価格：¥5,370</div></div>
           <div class="delta-box"><span class="delta-badge">前週比</span><div class="delta">+11.5%</div><div class="delta-arrow">➜</div></div>
           <div class="chart-card"><div class="chart-title">価格推移 (過去30日)</div><svg class="chart" viewBox="0 0 260 110" aria-hidden="true"><use href="#chart-grid"/><path d="M34 86 L50 78 L66 70 L82 73 L98 62 L114 69 L130 57 L146 52 L162 53 L178 44 L194 50 L210 39 L226 34 L244 22" fill="none" stroke="#ff9700" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 86 L50 78 L66 70 L82 73 L98 62 L114 69 L130 57 L146 52 L162 53 L178 44 L194 50 L210 39 L226 34 L244 22 L244 101 L34 101 Z" fill="#ff9700" opacity=".08"/><circle cx="244" cy="22" r="6" fill="#ff9700"/></svg></div>
