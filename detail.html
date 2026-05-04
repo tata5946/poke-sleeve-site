@@ -3725,6 +3725,13 @@
     function buildMonthlySeries(sleeve) {
       const out = [];
       const seen = new Set();
+      const weeklyRows = Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [];
+      const latestWeeklyTs = getLatestWeeklyTimestamp(weeklyRows);
+      const completedWeeklyMonths = buildCompletedMonthlySeriesFromWeekly(weeklyRows);
+      const hasWeeklyMonth = new Set(weeklyRows
+        .map((item) => String(item?.week ?? "").trim().match(/^(\d{4})-(\d{2})-\d{2}$/))
+        .filter(Boolean)
+        .map((matched) => `${matched[1]}-${matched[2]}`));
       const pushMonthPoint = (monthValue, priceValue) => {
         const date = normalizeDateFromInput(monthValue, "01");
         const price = normalizeChartPrice(priceValue);
@@ -3735,14 +3742,74 @@
         out.push({ type: "monthly", date, price: Math.round(price) });
       };
       for (const item of (Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [])) {
+        const date = normalizeDateFromInput(item?.month, "01");
+        const monthKey = date ? date.slice(0, 7) : "";
+        if (monthKey && latestWeeklyTs != null && !isMonthlyBucketComplete(monthKey, latestWeeklyTs)) continue;
+        if (monthKey && hasWeeklyMonth.has(monthKey) && !completedWeeklyMonths.has(monthKey)) continue;
         pushMonthPoint(item?.month, item?.price);
       }
-      for (const item of (Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [])) {
-        const matched = String(item?.week ?? "").trim().match(/^(\d{4})-(\d{2})-01$/);
-        if (!matched) continue;
-        pushMonthPoint(`${matched[1]}-${matched[2]}`, item?.price);
+      for (const point of completedWeeklyMonths.values()) {
+        const date = normalizeDateFromInput(point?.month, "01");
+        if (!date) continue;
+        const key = `monthly|${date}`;
+        seen.delete(key);
+        for (let i = out.length - 1; i >= 0; i--) {
+          if (`monthly|${out[i].date}` === key) out.splice(i, 1);
+        }
+        pushMonthPoint(point.month, point.price);
       }
       return out.sort((a, b) => a.date.localeCompare(b.date));
+    }
+
+    function getLatestWeeklyTimestamp(weeklyRows) {
+      let latestWeekTs = null;
+      for (const item of (Array.isArray(weeklyRows) ? weeklyRows : [])) {
+        const week = normalizeDateFromInput(item?.week, "01");
+        if (!week || !/^\d{4}-\d{2}-\d{2}$/.test(week)) continue;
+        const weekTs = Date.parse(week);
+        if (!Number.isFinite(weekTs)) continue;
+        if (latestWeekTs == null || weekTs > latestWeekTs) latestWeekTs = weekTs;
+      }
+      return latestWeekTs;
+    }
+
+    function buildCompletedMonthlySeriesFromWeekly(weeklyRows) {
+      const rows = Array.isArray(weeklyRows) ? weeklyRows : [];
+      const latestWeekTs = getLatestWeeklyTimestamp(rows);
+      const buckets = new Map();
+      for (const item of rows) {
+        const week = normalizeDateFromInput(item?.week, "01");
+        if (!week || !/^\d{4}-\d{2}-\d{2}$/.test(week)) continue;
+        const weekTs = Date.parse(week);
+        if (!Number.isFinite(weekTs)) continue;
+        const price = normalizeChartPrice(item?.price);
+        if (!(Number.isFinite(price) && price > 0)) continue;
+        const monthKey = week.slice(0, 7);
+        if (!buckets.has(monthKey)) buckets.set(monthKey, []);
+        buckets.get(monthKey).push(price);
+      }
+      const out = new Map();
+      if (latestWeekTs == null) return out;
+      for (const [monthKey, prices] of buckets) {
+        if (!isMonthlyBucketComplete(monthKey, latestWeekTs)) continue;
+        const avg = prices.reduce((sum, price) => sum + price, 0) / prices.length;
+        if (Number.isFinite(avg) && avg > 0) {
+          out.set(monthKey, { month: monthKey, price: avg });
+        }
+      }
+      return out;
+    }
+
+    function isMonthlyBucketComplete(monthKey, latestWeekTs) {
+      const matched = String(monthKey || "").match(/^(\d{4})-(\d{2})$/);
+      if (!matched || !Number.isFinite(latestWeekTs)) return false;
+      const year = Number(matched[1]);
+      const monthIndex = Number(matched[2]) - 1;
+      const lastDay = new Date(year, monthIndex + 1, 0);
+      const dayOfWeek = lastDay.getDay();
+      const daysSinceMonday = (dayOfWeek + 6) % 7;
+      const finalWeeklyAnchor = new Date(year, monthIndex, lastDay.getDate() - daysSinceMonday);
+      return latestWeekTs >= finalWeeklyAnchor.getTime();
     }
 
     function buildWeeklySeries(sleeve) {
