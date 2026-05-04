@@ -22,8 +22,7 @@
     html,
     body {
       width: 100%;
-      height: 100%;
-      overflow: hidden;
+      min-height: 100%;
     }
 
     body {
@@ -41,13 +40,14 @@
       min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 0;
+      padding: 20px 0;
     }
 
     .poster {
       position: relative;
       width: 1240px;
       height: 1240px;
+      transform-origin: top center;
       aspect-ratio: 1 / 1;
       overflow: hidden;
       background:
@@ -87,8 +87,8 @@
       height: 100%;
       padding: 24px 26px 10px;
       display: grid;
-      grid-template-rows: 214px repeat(5, 154px) 104px 22px;
-      gap: 8px;
+      grid-template-rows: 206px repeat(5, 148px) 100px 22px;
+      gap: 7px;
     }
 
     .header {
@@ -101,7 +101,7 @@
 
     .ribbon {
       position: relative;
-      height: 210px;
+      height: 202px;
       display: grid;
       place-items: center;
       padding-bottom: 20px;
@@ -182,7 +182,7 @@
     .period-card {
       margin-top: 22px;
       padding: 16px 16px 12px;
-      min-height: 154px;
+      min-height: 148px;
       border: 3px solid #20b7d3;
       border-radius: 12px;
       background: rgba(255, 255, 255, .92);
@@ -280,8 +280,8 @@
     }
 
     .sleeve-art {
-      width: 116px;
-      height: 116px;
+      width: 110px;
+      height: 110px;
       border: 4px solid #2d3c4a;
       box-shadow: 0 3px 0 rgba(0, 0, 0, .15);
       display: grid;
@@ -431,7 +431,7 @@
 
     .chart {
       width: 100%;
-      height: 104px;
+      height: 98px;
     }
 
     .footer {
@@ -575,6 +575,34 @@
       .admin-frame {
         padding: 10px;
       }
+    }
+
+    @media (max-width: 1239px), (max-height: 1239px) {
+      .admin-frame {
+        display: grid;
+        place-items: start center;
+        width: 100%;
+        min-height: 100vh;
+        padding: 0;
+        overflow: auto;
+      }
+
+      .poster {
+        transform: none;
+        zoom: .9677419355;
+      }
+    }
+
+    @media (max-width: 1139px), (max-height: 1139px) {
+      .poster { zoom: .8870967742; }
+    }
+
+    @media (max-width: 999px), (max-height: 999px) {
+      .poster { zoom: .7741935484; }
+    }
+
+    @media (max-width: 839px), (max-height: 839px) {
+      .poster { zoom: .6451612903; }
     }
   </style>
 </head>
