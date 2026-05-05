@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <title>管理用 今が買いランキング TOP5 | ポケスリ相場</title>
+  <style>
+    :root {
+      --green: #0b7f3d;
+      --green-2: #198d49;
+      --deep: #151b28;
+      --muted: #5e6675;
+      --gold: #d7a300;
+      --blue: #1b78bd;
+      --line: #dfe5e0;
+      --paper: #fffdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      background: #f2f5f1;
+      color: var(--deep);
+      font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+    }
+
+    .admin-frame {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    .poster {
+      position: relative;
+      width: 1240px;
+      height: 1536px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 14% 4%, rgba(255, 226, 134, .22), transparent 15%),
+        radial-gradient(circle at 92% 6%, rgba(14, 136, 65, .10), transparent 16%),
+        linear-gradient(180deg, #ffffff 0%, #fffefa 100%);
+      box-shadow: 0 26px 70px rgba(20, 40, 26, .14);
+      padding: 24px 26px 14px;
+    }
+
+    .spark {
+      position: absolute;
+      color: #d9b155;
+      font-weight: 900;
+      line-height: 1;
+      opacity: .75;
+      pointer-events: none;
+    }
+
+    .spark-a {
+      top: 29px;
+      left: 183px;
+      font-size: 30px;
+    }
+
+    .spark-b {
+      top: 77px;
+      left: 157px;
+      font-size: 42px;
+    }
+
+    .spark-c {
+      top: 32px;
+      right: 160px;
+      font-size: 38px;
+    }
+
+    .top {
+      position: relative;
+      height: 130px;
+      display: grid;
+      grid-template-columns: 178px 1fr 174px;
+      align-items: start;
+      gap: 10px;
+      z-index: 1;
+    }
+
+    .buy-ribbon {
+      position: relative;
+      width: 172px;
+      height: 70px;
+      margin-top: 12px;
+      transform: rotate(-3deg);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: .01em;
+      background: linear-gradient(180deg, #219647 0%, #0b7334 100%);
+      border: 2px solid rgba(255, 255, 255, .45);
+      box-shadow: 0 8px 16px rgba(7, 82, 38, .22);
+    }
+
+    .buy-ribbon::after {
+      content: "";
+      position: absolute;
+      bottom: -20px;
+      left: 34px;
+      border-width: 20px 18px 0 0;
+      border-style: solid;
+      border-color: #0b7334 transparent transparent transparent;
+    }
+
+    .title-block {
+      text-align: center;
+      padding-top: 10px;
+      min-width: 0;
+    }
+
+    .main-title {
+      margin: 0;
+      font-size: 63px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: .01em;
+      white-space: nowrap;
+    }
+
+    .title-green {
+      color: #23863a;
+      text-shadow: 0 2px 0 rgba(35, 134, 58, .08);
+    }
+
+    .title-black {
+      color: #151b28;
+    }
+
+    .title-gold {
+      color: #b88400;
+      font-size: 72px;
+      letter-spacing: .03em;
+      text-shadow:
+        0 2px 0 #f4d76a,
+        0 4px 8px rgba(106, 70, 0, .20);
+    }
+
+    .subtitle {
+      margin-top: 12px;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: .04em;
+    }
+
+    .date-card {
+      width: 168px;
+      height: 88px;
+      margin-top: 37px;
+      display: grid;
+      place-items: center;
+      border: 2px solid #167a43;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 7px 18px rgba(0, 80, 38, .08);
+      text-align: center;
+    }
+
+    .date-label {
+      color: #087941;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .date-value {
+      margin-top: 8px;
+      color: #202838;
+      font-size: 23px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .columns {
+      position: relative;
+      z-index: 1;
+      height: 40px;
+      display: grid;
+      grid-template-columns: 104px 374px 198px 188px 1fr;
+      align-items: center;
+      padding: 0 20px 0 0;
+      border-radius: 7px;
+      overflow: hidden;
+      background: linear-gradient(90deg, #0e7e3d 0%, #198c49 100%);
+      color: #fff;
+      font-size: 19px;
+      font-weight: 900;
+      text-align: center;
+      box-shadow: 0 6px 14px rgba(8, 95, 44, .18);
+    }
+
+    .columns span {
+      border-left: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .columns span:first-child {
+      border-left: 0;
+    }
+
+    .ranking {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .rank-row {
+      height: 198px;
+      display: grid;
+      grid-template-columns: 104px 374px 198px 188px 1fr;
+      align-items: stretch;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, .97);
+      box-shadow: 0 5px 14px rgba(25, 47, 34, .08);
+    }
+
+    .medal {
+      display: grid;
+      place-items: center;
+      background: var(--medal-bg);
+      color: var(--rank-color);
+      border-right: 1px solid rgba(0, 0, 0, .04);
+    }
+
+    .medal-inner {
+      text-align: center;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .crown {
+      font-size: 35px;
+      margin-bottom: 4px;
+    }
+
+    .rank-number {
+      font-size: 74px;
+      text-shadow: 0 2px 0 rgba(255, 255, 255, .82);
+    }
+
+    .laurel {
+      margin-top: 2px;
+      font-size: 34px;
+      letter-spacing: -6px;
+      opacity: .95;
+    }
+
+    .sleeve-cell {
+      display: grid;
+      grid-template-columns: 148px 1fr;
+      gap: 18px;
+      align-items: center;
+      padding: 12px 20px;
+      border-right: 1px solid #e6ebe7;
+    }
+
+    .art {
+      width: 126px;
+      height: 172px;
+      display: grid;
+      place-items: center;
+      background: #f5f7f5;
+      border: 1px solid #cfd9cf;
+      box-shadow: 0 4px 10px rgba(13, 33, 20, .13);
+      overflow: hidden;
+    }
+
+    .art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .name {
+      margin: 0;
+      color: #101722;
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.38;
+      letter-spacing: 0;
+    }
+
+    .release {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .release-badge {
+      min-width: 58px;
+      padding: 3px 8px 4px;
+      border-radius: 4px;
+      background: #0d8a4a;
+      color: #fff;
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 12px;
+      max-height: 42px;
+      overflow: hidden;
+    }
+
+    .tag {
+      max-width: 162px;
+      padding: 3px 8px;
+      border: 1px solid #d2a622;
+      border-radius: 6px;
+      background: #fff0bf;
+      color: #4a3510;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .price-cell {
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 12px;
+      border-right: 1px solid #e6ebe7;
+      text-align: center;
+    }
+
+    .price {
+      color: #12743c;
+      font-size: 39px;
+      font-weight: 900;
+      letter-spacing: .01em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .prev {
+      color: #222a38;
+      font-size: 16px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .rate {
+      min-width: 126px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: #e3f1e4;
+      color: #15844a;
+      font-size: 27px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .diagnosis-cell {
+      display: grid;
+      place-items: center;
+      border-right: 1px solid #e6ebe7;
+    }
+
+    .diagnosis-card {
+      width: 148px;
+      min-height: 142px;
+      border: 2px solid var(--diag-color);
+      border-radius: 9px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #fbfff8 0%, #f3fbef 100%);
+      box-shadow: 0 4px 12px rgba(24, 108, 48, .17);
+      text-align: center;
+    }
+
+    .diagnosis-card.neutral {
+      background: linear-gradient(180deg, #f7fbff 0%, #edf7ff 100%);
+      box-shadow: 0 4px 12px rgba(37, 107, 164, .14);
+    }
+
+    .diag-head {
+      padding: 7px 6px;
+      background: var(--diag-color);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .diag-label {
+      display: grid;
+      place-items: center;
+      min-height: 60px;
+      padding: 7px 8px 0;
+      color: var(--diag-color);
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.28;
+    }
+
+    .diag-icon {
+      color: var(--diag-color);
+      font-size: 25px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .reason-cell {
+      padding: 15px 24px 12px;
+      min-width: 0;
+    }
+
+    .reason-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .reason-list li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 9px;
+      align-items: center;
+      color: #1d2532;
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.25;
+      min-width: 0;
+    }
+
+    .reason-icon {
+      width: 27px;
+      color: #e3a600;
+      font-size: 22px;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .reason-icon.chart {
+      color: #128342;
+    }
+
+    .reason-copy {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #dfe4df;
+      color: #2d3442;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .footer {
+      position: relative;
+      z-index: 1;
+      height: 156px;
+      display: grid;
+      grid-template-columns: 1fr 510px;
+      gap: 20px;
+      margin-top: 12px;
+    }
+
+    .guide,
+    .search-banner {
+      border: 1px solid #cae2d0;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 5px 14px rgba(25, 47, 34, .06);
+    }
+
+    .guide {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      align-items: center;
+      padding: 14px 22px;
+    }
+
+    .lightbulb {
+      width: 68px;
+      height: 68px;
+      display: grid;
+      place-items: center;
+      color: #20975a;
+      font-size: 60px;
+      line-height: 1;
+    }
+
+    .guide-title {
+      color: #128342;
+      font-size: 21px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .guide-copy {
+      margin-top: 8px;
+      color: #222a36;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .legend-card {
+      min-height: 50px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .legend-watch {
+      background: #e7f4e8;
+      color: #128342;
+    }
+
+    .legend-neutral {
+      background: #e9f5ff;
+      color: #1b78bd;
+    }
+
+    .legend-caution {
+      background: #fff0ee;
+      color: #e5332d;
+    }
+
+    .legend-card strong {
+      display: block;
+      font-size: 17px;
+    }
+
+    .legend-card span {
+      display: block;
+      margin-top: 3px;
+      color: #1f2834;
+      font-size: 12px;
+    }
+
+    .search-banner {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 112px;
+      align-items: center;
+      padding: 16px 18px 16px 24px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(255, 255, 255, .22), transparent 38%),
+        linear-gradient(135deg, #1d9b55 0%, #0d7339 100%);
+      color: #fff;
+    }
+
+    .banner-title {
+      font-size: 23px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .search-box {
+      display: grid;
+      grid-template-columns: 1fr 46px;
+      margin-top: 9px;
+      width: 324px;
+      height: 36px;
+      border-radius: 7px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .12);
+    }
+
+    .search-input {
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      color: #3c4655;
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .search-button {
+      display: grid;
+      place-items: center;
+      background: #d5f0dc;
+      color: #117b42;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .monitor {
+      width: 96px;
+      height: 92px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .88);
+      color: #299258;
+      font-size: 56px;
+      border: 5px solid rgba(255, 255, 255, .35);
+    }
+
+    .note {
+      margin-top: 8px;
+      color: #414956;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1240px) {
+      .admin-frame {
+        place-items: start center;
+      }
+
+      .poster {
+        transform-origin: top center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-frame">
+    <main class="poster" id="poster">
+      <div class="spark spark-a">✦</div>
+      <div class="spark spark-b">✦</div>
+      <div class="spark spark-c">✦</div>
+
+      <header class="top">
+        <div class="buy-ribbon">🛒今が買い!</div>
+        <div class="title-block">
+          <h1 class="main-title"><span class="title-green">今が買い</span><span class="title-black">ランキング</span><span class="title-gold">TOP5</span></h1>
+          <div class="subtitle">AI相場診断で「今、狙い目のスリーブ」を厳選！</div>
+        </div>
+        <div class="date-card">
+          <div>
+            <div class="date-label">集計日</div>
+            <div class="date-value" id="rankingDate">2025/05/20</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="columns" aria-hidden="true">
+        <span>順位</span>
+        <span>スリーブ名</span>
+        <span>現在価格（目安）</span>
+        <span>AI相場診断</span>
+        <span>おすすめ理由（AI評価ポイント）</span>
+      </div>
+
+      <section class="ranking" id="rankingList"></section>
+
+      <footer class="footer">
+        <section class="guide">
+          <div class="lightbulb">☼</div>
+          <div>
+            <div class="guide-title">ランキングの見方</div>
+            <div class="guide-copy">AI相場診断は、人気・限定性・価格推移・流通量などを総合的に分析し、「今が買いかどうか」を3段階で評価しています。</div>
+            <div class="legend">
+              <div class="legend-card legend-watch"><strong>ウォッチ推奨</strong><span>今が狙い目の可能性が高い</span></div>
+              <div class="legend-card legend-neutral"><strong>様子見</strong><span>動向を見ながら検討したい</span></div>
+              <div class="legend-card legend-caution"><strong>高値注意</strong><span>上昇後の反落に注意が必要</span></div>
+            </div>
+          </div>
+        </section>
+        <section class="search-banner">
+          <div>
+            <div class="banner-title">全スリーブの最新価格・相場は<br>当サイトでチェック！</div>
+            <div class="search-box">
+              <div class="search-input">スリーブ相場データベース</div>
+              <div class="search-button">⌕</div>
+            </div>
+          </div>
+          <div class="monitor">▥</div>
+        </section>
+      </footer>
+
+      <div class="note">※価格は当サイトの取引実績を元に集計した目安です。実際の価格は変動する場合があります。</div>
+    </main>
+  </div>
+
+  <script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxo7yT3rejT_pNMIwYcE_yjbK0AkRBwHC_hHVtGuE6_CLOQpQdAluW6U_SYPnCb-34m/exec";
+    const RANK_STYLES = [
+      { bg: "linear-gradient(90deg, #fff8df 0%, #fff1b8 100%)", color: "#d9a400", crown: "♛" },
+      { bg: "linear-gradient(90deg, #f0f2f4 0%, #d8dde2 100%)", color: "#848d98", crown: "♛" },
+      { bg: "linear-gradient(90deg, #ffd6a8 0%, #f4a765 100%)", color: "#b7611e", crown: "" },
+      { bg: "linear-gradient(90deg, #e1f2ff 0%, #bfe2ff 100%)", color: "#1b78bd", crown: "" },
+      { bg: "linear-gradient(90deg, #e1f2ff 0%, #c9e7ff 100%)", color: "#1b78bd", crown: "" }
+    ];
+    const POPULAR = ["ピカチュウ", "イーブイ", "リザードン", "ゲンガー", "ルカリオ", "ミュウ", "ブラッキー", "ニンフィア", "レックウザ", "サーナイト", "リーリエ", "シロナ", "ナンジャモ"];
+    const LIMITED = ["限定", "イベント", "プロモ", "ポンチョ", "ポケモンセンター", "ポケセン", "32枚販売", "大会", "周年", "非売品", "配布"];
+    const DESIGN = ["ポンチョ", "テーマ", "コンセプト", "にたものどうし", "メガシンカ", "テラスタル", "人気イラスト", "ロングセラー"];
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[ch]));
+    }
+
+    function numOrNull(value) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function toISODate(value) {
+      const d = new Date(String(value || ""));
+      if (Number.isNaN(d.getTime())) return "";
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function formatSlashDate(value) {
+      const iso = toISODate(value);
+      if (!iso) return "";
+      return iso.replaceAll("-", "/");
+    }
+
+    function formatReleaseDate(sleeve) {
+      const raw = sleeve.releaseDate || sleeve.release_date || sleeve.date || sleeve["発売日"];
+      const iso = toISODate(raw);
+      if (iso) return iso.replaceAll("-", "/");
+      const y = numOrNull(sleeve.releaseYear);
+      return y ? `${Math.round(y)}/01/01` : "-";
+    }
+
+    function yen(value) {
+      const n = numOrNull(value);
+      return n == null ? "-" : `¥${Math.round(n).toLocaleString("ja-JP")}`;
+    }
+
+    function percent(value) {
+      const n = numOrNull(value);
+      return n == null ? "-" : `${n > 0 ? "+" : ""}${n.toFixed(1)}%`;
+    }
+
+    function splitName(name) {
+      const text = String(name || "").trim();
+      if (text.length <= 13) return escapeHtml(text);
+      const hints = ["の", "を", " ", "　", "・", "＆", "！"];
+      for (const hint of hints) {
+        const idx = text.indexOf(hint, 7);
+        if (idx > 0 && idx < text.length - 1) {
+          const end = idx + (hint.trim() ? 1 : 0);
+          return `${escapeHtml(text.slice(0, end))}<br>${escapeHtml(text.slice(end))}`;
+        }
+      }
+      const mid = Math.ceil(text.length / 2);
+      return `${escapeHtml(text.slice(0, mid))}<br>${escapeHtml(text.slice(mid))}`;
+    }
+
+    function collectText(sleeve) {
+      const values = [
+        sleeve.name, sleeve.series, sleeve.type, sleeve.feature, sleeve.acquisitionType, sleeve.note,
+        sleeve.category1, sleeve.category2, sleeve.category3, sleeve.category4, sleeve.category5, sleeve.category6,
+        sleeve.category7, sleeve.category8, sleeve.category9
+      ];
+      for (const arr of [sleeve.categories, sleeve.pokemonCategories, sleeve.trainerCategories, sleeve.categoryTags]) {
+        if (Array.isArray(arr)) values.push(...arr);
+      }
+      return values.filter(Boolean).join(" ");
+    }
+
+    function hasAny(text, words) {
+      return words.some((word) => text.includes(word));
+    }
+
+    function getWeeklyRows(sleeve) {
+      const rows = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      return rows.map((row) => {
+        const week = toISODate(row.week);
+        const price = numOrNull(row.price);
+        const count = numOrNull(row.count);
+        if (!week || !(price > 0)) return null;
+        return { week, price, count: Number.isFinite(count) ? count : 0 };
+      }).filter(Boolean).sort((a, b) => a.week.localeCompare(b.week));
+    }
+
+    function getTags(sleeve) {
+      const text = collectText(sleeve);
+      const tags = [];
+      const add = (value) => {
+        const v = String(value || "").trim();
+        if (v && !tags.includes(v)) tags.push(v);
+      };
+      for (const value of sleeve.categoryTags || []) add(value);
+      for (const value of [sleeve.category7, sleeve.category8, sleeve.category9]) add(value);
+      if (!tags.length && hasAny(text, POPULAR)) add((sleeve.pokemonCategories || []).find((v) => POPULAR.includes(v)) || "人気");
+      if (!tags.some((v) => v.includes("限定")) && hasAny(text, LIMITED)) add("限定");
+      return tags.slice(0, 2);
+    }
+
+    function analyzeSleeve(sleeve) {
+      const weekly = getWeeklyRows(sleeve);
+      if (weekly.length < 2) return null;
+      const latest = weekly[weekly.length - 1];
+      const prev = weekly[weekly.length - 2];
+      const high = Math.max(...weekly.map((row) => row.price));
+      const min = Math.min(...weekly.map((row) => row.price));
+      const change = prev.price > 0 ? ((latest.price - prev.price) / prev.price) * 100 : 0;
+      const dropFromHigh = high > 0 ? ((high - latest.price) / high) * 100 : 0;
+      const reboundRoom = high - latest.price;
+      const text = collectText(sleeve);
+      const popular = hasAny(text, POPULAR);
+      const limited = hasAny(text, LIMITED) || Number(sleeve.releaseYear) <= 2020;
+      const design = hasAny(text, DESIGN);
+      const nearHigh = latest.price >= high * .92;
+      const tooThin = weekly.slice(-6).reduce((sum, row) => sum + (row.count || 1), 0) <= 2;
+      const score = (popular ? 28 : 0)
+        + (limited ? 22 : 0)
+        + (design ? 15 : 0)
+        + Math.min(22, Math.max(0, dropFromHigh) * .7)
+        + Math.min(10, weekly.length)
+        - (nearHigh ? 24 : 0)
+        - (tooThin ? 10 : 0);
+      const label = nearHigh && change > 12 ? "高値注意" : score >= 50 ? "ウォッチ推奨" : "様子見";
+      const tone = label === "ウォッチ推奨" ? "watch" : label === "様子見" ? "neutral" : "caution";
+      const reasons = [
+        `人気キャラ：${(sleeve.pokemonCategories || []).find((v) => POPULAR.includes(v)) || (popular ? "注目キャラ" : "安定枠")}`,
+        `${limited ? "限定性" : "流通量"}：${limited ? "希少性あり" : "取引データあり"}`,
+        `価格推移：${dropFromHigh >= 12 ? "下落後に横ばい" : change < 0 ? "調整局面" : "緩やかな推移"}`
+      ];
+      const copy = label === "ウォッチ推奨"
+        ? "過去の高騰実績があり、再度上昇する可能性が高いと判断しました。"
+        : label === "様子見"
+          ? "大きな下落は少なく安定しているが、上昇のきっかけ待ちの状況。"
+          : "直近価格が高値圏にあり、購入前の相場確認が必要です。";
+      return { sleeve, weekly, latest, prev, high, min, change, dropFromHigh, reboundRoom, score, label, tone, reasons, copy };
+    }
+
+    function buildBuyRanking(sleeves) {
+      const rows = sleeves
+        .filter((sleeve) => sleeve && sleeve.id && sleeve.name)
+        .map(analyzeSleeve)
+        .filter(Boolean)
+        .filter((row) => row.latest.price >= 800)
+        .sort((a, b) => b.score - a.score || b.reboundRoom - a.reboundRoom)
+        .slice(0, 5);
+      return rows;
+    }
+
+    function buildRow(row, index) {
+      const rank = index + 1;
+      const style = RANK_STYLES[index] || RANK_STYLES[4];
+      const diagColor = row.tone === "watch" ? "#117f3d" : row.tone === "neutral" ? "#1b78bd" : "#e33a2e";
+      const diagIcon = row.tone === "watch" ? "⌕" : row.tone === "neutral" ? "♙" : "!";
+      const tags = getTags(row.sleeve);
+      return `
+        <article class="rank-row" style="--medal-bg:${style.bg};--rank-color:${style.color};--diag-color:${diagColor};">
+          <div class="medal">
+            <div class="medal-inner">
+              <div class="crown">${style.crown || "&nbsp;"}</div>
+              <div class="rank-number">${rank}</div>
+              <div class="laurel">⌞⌟</div>
+            </div>
+          </div>
+          <div class="sleeve-cell">
+            <div class="art">${row.sleeve.imageUrl ? `<img src="${escapeHtml(row.sleeve.imageUrl)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}</div>
+            <div>
+              <h2 class="name">${splitName(row.sleeve.name)}</h2>
+              <div class="release"><span class="release-badge">発売日</span><span>${escapeHtml(formatReleaseDate(row.sleeve))}</span></div>
+              <div class="tags">${tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>
+            </div>
+          </div>
+          <div class="price-cell">
+            <div class="price">${yen(row.latest.price)}</div>
+            <div class="prev">前回価格：${yen(row.prev.price)}</div>
+            <div class="rate">${percent(row.change)}</div>
+          </div>
+          <div class="diagnosis-cell">
+            <div class="diagnosis-card ${row.tone === "neutral" ? "neutral" : ""}">
+              <div class="diag-head">AI相場診断</div>
+              <div class="diag-label">${escapeHtml(row.label).replace("ウォッチ", "ウォッチ<br>")}</div>
+              <div class="diag-icon">${diagIcon}</div>
+            </div>
+          </div>
+          <div class="reason-cell">
+            <ul class="reason-list">
+              <li><span class="reason-icon">♛</span><span>${escapeHtml(row.reasons[0])}</span></li>
+              <li><span class="reason-icon">★</span><span>${escapeHtml(row.reasons[1])}</span></li>
+              <li><span class="reason-icon chart">↗</span><span>${escapeHtml(row.reasons[2])}</span></li>
+            </ul>
+            <div class="reason-copy">${escapeHtml(row.copy)}</div>
+          </div>
+        </article>
+      `;
+    }
+
+    async function loadData() {
+      const sources = [
+        { url: GAS_URL, cache: "no-store" },
+        { url: "./data.json", cache: "reload" }
+      ];
+      for (const source of sources) {
+        try {
+          const res = await fetch(source.url, { cache: source.cache });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (Array.isArray(data.sleeves)) return data;
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+      return { sleeves: [] };
+    }
+
+    async function render() {
+      const data = await loadData();
+      const rows = buildBuyRanking(Array.isArray(data.sleeves) ? data.sleeves : []);
+      const latestWeek = rows.reduce((latest, row) => row.latest.week > latest ? row.latest.week : latest, "");
+      const dateEl = document.getElementById("rankingDate");
+      if (dateEl && latestWeek) dateEl.textContent = formatSlashDate(latestWeek);
+      const list = document.getElementById("rankingList");
+      list.innerHTML = rows.map(buildRow).join("");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      render().catch((error) => console.error(error));
+    });
+  </script>
+</body>
+</html>
