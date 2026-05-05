@@ -347,6 +347,33 @@
       font-weight: 800;
     }
 
+    .category-tags {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      max-height: 42px;
+      overflow: hidden;
+    }
+
+    .category-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      max-width: 128px;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: #fff7d6;
+      border: 1px solid #ffd86b;
+      color: #a66a00;
+      font-size: 11px;
+      font-weight: 1000;
+      line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .release-badge,
     .price-badge,
     .delta-badge {
@@ -883,6 +910,22 @@
       return `${escapeHtml(text.slice(0, splitAt))}<br>${escapeHtml(text.slice(splitAt))}`;
     }
 
+    function getCategoryTagValues(sleeve) {
+      const seen = new Set();
+      return ["category7", "category8", "category9"].map((key) => String(sleeve && sleeve[key] || "").trim())
+        .filter((value) => {
+          if (!value || seen.has(value)) return false;
+          seen.add(value);
+          return true;
+        });
+    }
+
+    function buildCategoryTagsHtml(sleeve) {
+      const tags = getCategoryTagValues(sleeve);
+      if (!tags.length) return "";
+      return `<div class="category-tags">${tags.map((tag) => `<span class="category-tag">${escapeHtml(tag)}</span>`).join("")}</div>`;
+    }
+
     function buildChartSvg(row, color) {
       const points = row.weekly.slice(-8);
       if (points.length < 2) {
@@ -938,13 +981,14 @@
       const style = WEEKLY_RANKING_STYLES[rank - 1] || WEEKLY_RANKING_STYLES[0];
       const sleeve = row.sleeve;
       const releaseDate = escapeHtml(formatReleaseDate(sleeve));
+      const categoryTags = buildCategoryTagsHtml(sleeve);
       const smallCrown = rank === 1 ? `<div class="small-crown">♛</div>` : "";
       return `
         <article class="rank-row" style="--rank-bg:${style.bg};--rank-color:${style.rank};--chart-color:${style.chart};">
           <div class="rank-medal"><div class="rank-medal-inner">${smallCrown}<div class="rank-number">${rank}</div><div class="laurel">〈〉</div></div></div>
           <div class="sleeve-info">
             <div class="sleeve-art">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}</div>
-            <div class="sleeve-copy"><div class="sleeve-name">${buildNameHtml(sleeve.name)}</div><div class="release"><span class="release-badge">発売日</span><span>${releaseDate}</span></div></div>
+            <div class="sleeve-copy"><div class="sleeve-name">${buildNameHtml(sleeve.name)}</div><div class="release"><span class="release-badge">発売日</span><span>${releaseDate}</span></div>${categoryTags}</div>
           </div>
           <div class="price-box"><span class="price-badge">現在価格</span><div class="price">${formatPrice(row.latest.price)}</div><div class="prev">前回価格：${formatPrice(row.prev.price)}</div></div>
           <div class="delta-box"><span class="delta-badge">前回比</span><div class="delta">${formatPercent(row.rate)}</div><div class="delta-arrow">➜</div></div>
