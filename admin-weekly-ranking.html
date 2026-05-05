@@ -740,5 +740,213 @@
       </svg>
     </section>
   </main>
+  <script>
+    const WEEKLY_RANKING_STYLES = [
+      { bg: "linear-gradient(135deg,#fff4b8,#ffe57b)", rank: "#e5a400", chart: "#f05a1a" },
+      { bg: "linear-gradient(135deg,#f4f4f4,#d6d7d9)", rank: "#777b82", chart: "#168ee3" },
+      { bg: "linear-gradient(135deg,#ffd6a8,#f2a25e)", rank: "#b76522", chart: "#4dae4f" },
+      { bg: "linear-gradient(135deg,#daf9ff,#a7e2ee)", rank: "#168da7", chart: "#7a55de" },
+      { bg: "linear-gradient(135deg,#e8f7ff,#b9e6ff)", rank: "#148cc3", chart: "#ff9700" }
+    ];
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[ch]));
+    }
+
+    function numOrNull(value) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function toISODate(value) {
+      const d = new Date(String(value || ""));
+      if (Number.isNaN(d.getTime())) return "";
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function addDays(iso, days) {
+      const d = new Date(`${iso}T00:00:00`);
+      d.setDate(d.getDate() + days);
+      return toISODate(d);
+    }
+
+    function formatDateLabel(iso) {
+      const d = new Date(`${iso}T00:00:00`);
+      if (Number.isNaN(d.getTime())) return "-";
+      const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}/${m}/${day} (${weekdays[d.getDay()]})`;
+    }
+
+    function formatPrice(value) {
+      const n = numOrNull(value);
+      if (n == null) return "-";
+      return `¥${n.toLocaleString("ja-JP", { maximumFractionDigits: 1 })}`;
+    }
+
+    function formatPercent(value) {
+      const n = numOrNull(value);
+      if (n == null) return "-";
+      return `${n > 0 ? "+" : ""}${n.toFixed(1)}%`;
+    }
+
+    function getWeeklyRows(sleeve) {
+      const map = new Map();
+      const arr = Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      for (const row of arr) {
+        const week = toISODate(row && row.week);
+        const price = numOrNull(row && row.price);
+        const count = numOrNull(row && row.count);
+        if (!week || !(price > 0)) continue;
+        map.set(week, { week, price, count: Number.isFinite(count) ? count : 0 });
+      }
+      return Array.from(map.values()).sort((a, b) => a.week.localeCompare(b.week));
+    }
+
+    function buildSurgeRows(sleeves) {
+      const validSleeves = sleeves.filter((sleeve) => sleeve && sleeve.id && sleeve.name);
+      const latestWeek = validSleeves.reduce((latest, sleeve) => {
+        const rows = getWeeklyRows(sleeve);
+        const row = rows[rows.length - 1];
+        return row && row.week > latest ? row.week : latest;
+      }, "");
+
+      const rows = validSleeves.map((sleeve) => {
+        const weekly = getWeeklyRows(sleeve);
+        const latestIndex = weekly.findIndex((row) => row.week === latestWeek);
+        if (latestIndex <= 0) return null;
+        const latest = weekly[latestIndex];
+        const prev = weekly[latestIndex - 1];
+        const diff = latest.price - prev.price;
+        if (!(diff > 0)) return null;
+        const rate = prev.price > 0 ? (diff / prev.price) * 100 : null;
+        return { sleeve, weekly, latest, prev, diff, rate };
+      }).filter(Boolean);
+
+      rows.sort((a, b) => {
+        const diff = b.diff - a.diff;
+        if (diff !== 0) return diff;
+        return (b.rate || 0) - (a.rate || 0);
+      });
+
+      return { latestWeek, rows };
+    }
+
+    function buildNameHtml(name) {
+      const text = String(name || "").trim();
+      if (text.length <= 14) return escapeHtml(text);
+      const separators = ["」", "の", "を", "＆", "・", "：", " ", "　"];
+      let splitAt = -1;
+      for (const sep of separators) {
+        const idx = text.indexOf(sep, 8);
+        if (idx > 0 && idx < text.length - 1) {
+          splitAt = idx + (sep === " " || sep === "　" ? 0 : 1);
+          break;
+        }
+      }
+      if (splitAt < 0) splitAt = Math.ceil(text.length / 2);
+      return `${escapeHtml(text.slice(0, splitAt))}<br>${escapeHtml(text.slice(splitAt))}`;
+    }
+
+    function buildChartSvg(row, color) {
+      const points = row.weekly.slice(-8);
+      if (points.length < 2) {
+        return `<svg class="chart" viewBox="0 0 260 110" aria-hidden="true"><text x="130" y="58" text-anchor="middle" font-size="14" font-weight="800" fill="#697386">データ不足</text></svg>`;
+      }
+      const W = 260;
+      const H = 110;
+      const padL = 28;
+      const padR = 14;
+      const padT = 15;
+      const padB = 18;
+      const prices = points.map((p) => p.price);
+      const min = Math.min(...prices);
+      const max = Math.max(...prices);
+      const span = Math.max(1, max - min);
+      const coords = points.map((point, index) => {
+        const x = padL + ((W - padL - padR) * (index / Math.max(1, points.length - 1)));
+        const y = padT + ((max - point.price) / span) * (H - padT - padB);
+        return { x, y };
+      });
+      const lineD = coords.map((p, index) => `${index ? "L" : "M"}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
+      const areaD = `${lineD} L${coords[coords.length - 1].x.toFixed(1)} ${H - padB} L${coords[0].x.toFixed(1)} ${H - padB} Z`;
+      const grid = [padT, padT + (H - padT - padB) / 2, H - padB]
+        .map((y) => `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="#d9dde3" stroke-width="1"/>`)
+        .join("");
+      const last = coords[coords.length - 1];
+      return `
+        <svg class="chart" viewBox="0 0 ${W} ${H}" aria-hidden="true">
+          ${grid}
+          <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#d9dde3" stroke-width="1"/>
+          <path d="${areaD}" fill="${color}" opacity=".10"/>
+          <path d="${lineD}" fill="none" stroke="${color}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="6" fill="${color}"/>
+        </svg>
+      `;
+    }
+
+    function buildRankRow(row, rank) {
+      const style = WEEKLY_RANKING_STYLES[rank - 1] || WEEKLY_RANKING_STYLES[0];
+      const sleeve = row.sleeve;
+      const releaseYear = sleeve.releaseYear ? escapeHtml(sleeve.releaseYear) : "-";
+      const smallCrown = rank === 1 ? `<div class="small-crown">♛</div>` : "";
+      return `
+        <article class="rank-row" style="--rank-bg:${style.bg};--rank-color:${style.rank};--chart-color:${style.chart};">
+          <div class="rank-medal"><div class="rank-medal-inner">${smallCrown}<div class="rank-number">${rank}</div><div class="laurel">〈〉</div></div></div>
+          <div class="sleeve-info">
+            <div class="sleeve-art">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}</div>
+            <div class="sleeve-copy"><div class="sleeve-name">${buildNameHtml(sleeve.name)}</div><div class="release"><span class="release-badge">発売年</span><span>${releaseYear}</span></div></div>
+          </div>
+          <div class="price-box"><span class="price-badge">現在価格</span><div class="price">${formatPrice(row.latest.price)}</div><div class="prev">前回価格：${formatPrice(row.prev.price)}</div></div>
+          <div class="delta-box"><span class="delta-badge">前回比</span><div class="delta">${formatPercent(row.rate)}</div><div class="delta-arrow">➜</div></div>
+          <div class="chart-card"><div class="chart-title">価格推移 (直近データ)</div>${buildChartSvg(row, style.chart)}</div>
+        </article>
+      `;
+    }
+
+    async function loadWeeklyRankingData() {
+      const res = await fetch("./data.json", { cache: "reload" });
+      if (!res.ok) throw new Error(`data.json の取得に失敗しました (${res.status})`);
+      return await res.json();
+    }
+
+    async function renderWeeklyRanking() {
+      const data = await loadWeeklyRankingData();
+      const sleeves = Array.isArray(data && data.sleeves) ? data.sleeves : [];
+      const { latestWeek, rows } = buildSurgeRows(sleeves);
+      const topRows = rows.slice(0, 5);
+      if (!latestWeek || topRows.length === 0) return;
+
+      const periodDates = document.querySelectorAll(".period-date");
+      if (periodDates[0]) periodDates[0].textContent = formatDateLabel(latestWeek);
+      if (periodDates[1]) periodDates[1].textContent = formatDateLabel(addDays(latestWeek, 6));
+
+      const firstRankRow = document.querySelector(".rank-row");
+      const parent = firstRankRow && firstRankRow.parentElement;
+      if (!parent) return;
+      document.querySelectorAll(".rank-row").forEach((row) => row.remove());
+      const footer = document.querySelector(".footer");
+      const html = topRows.map((row, index) => buildRankRow(row, index + 1)).join("");
+      if (footer) footer.insertAdjacentHTML("beforebegin", html);
+      else parent.insertAdjacentHTML("beforeend", html);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderWeeklyRanking().catch((error) => {
+        console.error(error);
+      });
+    });
+  </script>
 </body>
 </html>

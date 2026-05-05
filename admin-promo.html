@@ -185,12 +185,16 @@
     }
 
     .btn-admin {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       border: 0;
       border-radius: 14px;
       padding: 12px 16px;
       font: inherit;
       font-size: 14px;
       font-weight: 900;
+      text-decoration: none;
       cursor: pointer;
       transition: transform .16s ease, box-shadow .16s ease, opacity .16s ease;
       box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
@@ -478,6 +482,7 @@
         <p>スリーブを選ぶと、直近の価格推移と主要数値をまとめた投稿用画像を生成します。公開導線には出さず、このページだけで使う運用を想定しています。</p>
       </div>
       <div class="admin-actions">
+        <a class="btn-admin secondary" href="./admin-weekly-ranking.html" target="_blank" rel="noopener">週間ランキング画像</a>
         <button id="refreshDataBtn" type="button" class="btn-admin secondary">データ再読込</button>
         <button id="logoutBtn" type="button" class="btn-admin ghost">ログアウト</button>
       </div>
