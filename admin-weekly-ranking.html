@@ -795,6 +795,19 @@
       return `¥${n.toLocaleString("ja-JP", { maximumFractionDigits: 1 })}`;
     }
 
+    function formatAxisPrice(value) {
+      const n = numOrNull(value);
+      if (n == null) return "-";
+      if (Math.abs(n) >= 10000) return `${(n / 10000).toFixed(n % 10000 === 0 ? 0 : 1)}万`;
+      return Math.round(n).toLocaleString("ja-JP");
+    }
+
+    function formatAxisDate(iso) {
+      const d = new Date(`${iso}T00:00:00`);
+      if (Number.isNaN(d.getTime())) return "";
+      return `${d.getMonth() + 1}/${d.getDate()}`;
+    }
+
     function formatPercent(value) {
       const n = numOrNull(value);
       if (n == null) return "-";
@@ -866,10 +879,10 @@
       }
       const W = 260;
       const H = 110;
-      const padL = 28;
-      const padR = 14;
-      const padT = 15;
-      const padB = 18;
+      const padL = 52;
+      const padR = 12;
+      const padT = 12;
+      const padB = 24;
       const prices = points.map((p) => p.price);
       const min = Math.min(...prices);
       const max = Math.max(...prices);
@@ -885,10 +898,24 @@
         .map((y) => `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="#d9dde3" stroke-width="1"/>`)
         .join("");
       const last = coords[coords.length - 1];
+      const axisFont = 10;
+      const yTicks = [
+        { value: max, y: padT },
+        { value: min + (span / 2), y: padT + (H - padT - padB) / 2 },
+        { value: min, y: H - padB }
+      ].map((tick) => `
+        <text x="${padL - 6}" y="${tick.y + 4}" text-anchor="end" font-size="${axisFont}" font-weight="800" fill="#343843">${formatAxisPrice(tick.value)}</text>
+      `).join("");
+      const firstLabel = formatAxisDate(points[0].week);
+      const lastLabel = formatAxisDate(points[points.length - 1].week);
       return `
         <svg class="chart" viewBox="0 0 ${W} ${H}" aria-hidden="true">
           ${grid}
           <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#d9dde3" stroke-width="1"/>
+          <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#d9dde3" stroke-width="1"/>
+          ${yTicks}
+          <text x="${padL}" y="${H - 4}" text-anchor="start" font-size="${axisFont}" font-weight="800" fill="#343843">${escapeHtml(firstLabel)}</text>
+          <text x="${W - padR}" y="${H - 4}" text-anchor="end" font-size="${axisFont}" font-weight="800" fill="#343843">${escapeHtml(lastLabel)}</text>
           <path d="${areaD}" fill="${color}" opacity=".10"/>
           <path d="${lineD}" fill="none" stroke="${color}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
           <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="6" fill="${color}"/>
