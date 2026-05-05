@@ -808,6 +808,17 @@
       return `${d.getMonth() + 1}/${d.getDate()}`;
     }
 
+    function formatReleaseDate(sleeve) {
+      const rawDate = sleeve.releaseDate || sleeve.release_date || sleeve.date || sleeve["発売日"];
+      const iso = toISODate(rawDate);
+      if (iso) {
+        const [year, month, day] = iso.split("-");
+        return `${year}年${month}月${day}日`;
+      }
+      const year = numOrNull(sleeve.releaseYear);
+      return year ? `${Math.round(year)}年--月--日` : "-";
+    }
+
     function formatPercent(value) {
       const n = numOrNull(value);
       if (n == null) return "-";
@@ -926,14 +937,14 @@
     function buildRankRow(row, rank) {
       const style = WEEKLY_RANKING_STYLES[rank - 1] || WEEKLY_RANKING_STYLES[0];
       const sleeve = row.sleeve;
-      const releaseYear = sleeve.releaseYear ? escapeHtml(sleeve.releaseYear) : "-";
+      const releaseDate = escapeHtml(formatReleaseDate(sleeve));
       const smallCrown = rank === 1 ? `<div class="small-crown">♛</div>` : "";
       return `
         <article class="rank-row" style="--rank-bg:${style.bg};--rank-color:${style.rank};--chart-color:${style.chart};">
           <div class="rank-medal"><div class="rank-medal-inner">${smallCrown}<div class="rank-number">${rank}</div><div class="laurel">〈〉</div></div></div>
           <div class="sleeve-info">
             <div class="sleeve-art">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}</div>
-            <div class="sleeve-copy"><div class="sleeve-name">${buildNameHtml(sleeve.name)}</div><div class="release"><span class="release-badge">発売年</span><span>${releaseYear}</span></div></div>
+            <div class="sleeve-copy"><div class="sleeve-name">${buildNameHtml(sleeve.name)}</div><div class="release"><span class="release-badge">発売日</span><span>${releaseDate}</span></div></div>
           </div>
           <div class="price-box"><span class="price-badge">現在価格</span><div class="price">${formatPrice(row.latest.price)}</div><div class="prev">前回価格：${formatPrice(row.prev.price)}</div></div>
           <div class="delta-box"><span class="delta-badge">前回比</span><div class="delta">${formatPercent(row.rate)}</div><div class="delta-arrow">➜</div></div>
