@@ -463,7 +463,7 @@
 
     .reason-list {
       display: grid;
-      gap: 8px;
+      gap: 7px;
       margin: 0;
       padding: 0;
       list-style: none;
@@ -475,7 +475,7 @@
       gap: 9px;
       align-items: center;
       color: #1d2532;
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 900;
       line-height: 1.25;
       min-width: 0;
@@ -494,13 +494,15 @@
     }
 
     .reason-copy {
-      margin-top: 10px;
-      padding-top: 10px;
+      margin-top: 8px;
+      padding-top: 8px;
       border-top: 1px solid #dfe4df;
       color: #2d3442;
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 800;
-      line-height: 1.45;
+      line-height: 1.3;
+      max-height: 38px;
+      overflow: hidden;
     }
 
     .footer {
@@ -837,6 +839,99 @@
       }).filter(Boolean).sort((a, b) => a.week.localeCompare(b.week));
     }
 
+    function dateTs(iso) {
+      const ts = Date.parse(`${iso}T00:00:00`);
+      return Number.isFinite(ts) ? ts : NaN;
+    }
+
+    function findPastRow(rows, latest, days) {
+      if (!latest) return null;
+      const target = dateTs(latest.week) - days * 24 * 60 * 60 * 1000;
+      let selected = null;
+      for (const row of rows) {
+        const ts = dateTs(row.week);
+        if (!Number.isFinite(ts) || ts > dateTs(latest.week)) continue;
+        if (ts <= target) selected = row;
+      }
+      return selected || rows[0] || null;
+    }
+
+    function changeRate(latest, past) {
+      if (!latest || !past || !(past.price > 0)) return null;
+      return ((latest.price - past.price) / past.price) * 100;
+    }
+
+    function sumTradeCount(rows, latest, days) {
+      if (!latest) return 0;
+      const latestTs = dateTs(latest.week);
+      const startTs = latestTs - days * 24 * 60 * 60 * 1000;
+      return rows.reduce((sum, row) => {
+        const ts = dateTs(row.week);
+        if (!Number.isFinite(ts) || ts < startTs || ts > latestTs) return sum;
+        return sum + (Number.isFinite(row.count) && row.count > 0 ? row.count : 1);
+      }, 0);
+    }
+
+    function getRangeStats(rows, latest, days) {
+      if (!latest) return { rows: [], high: 0, low: 0, rangeRate: 0 };
+      const latestTs = dateTs(latest.week);
+      const startTs = latestTs - days * 24 * 60 * 60 * 1000;
+      const scoped = rows.filter((row) => {
+        const ts = dateTs(row.week);
+        return Number.isFinite(ts) && ts >= startTs && ts <= latestTs;
+      });
+      const prices = scoped.map((row) => row.price).filter((price) => price > 0);
+      const high = prices.length ? Math.max(...prices) : 0;
+      const low = prices.length ? Math.min(...prices) : 0;
+      const rangeRate = low > 0 ? ((high - low) / low) * 100 : 0;
+      return { rows: scoped, high, low, rangeRate };
+    }
+
+    function classifyBuyState(metrics) {
+      const {
+        change7,
+        change30,
+        change180,
+        dropFromHigh,
+        reboundFromLow180,
+        rangeRate180
+      } = metrics;
+      const modest7 = change7 == null || (change7 >= -10 && change7 <= 35);
+      const modest30 = change30 == null || (change30 >= -12 && change30 <= 45);
+
+      if (dropFromHigh >= 18 && reboundFromLow180 >= 6 && reboundFromLow180 <= 55 && modest7 && modest30) {
+        return {
+          code: "A",
+          label: "一度下落→横ばい→反発初動",
+          shortLabel: "反発初動",
+          priority: 3,
+          copy: "下落後に横ばいから反発初動。上昇余地ありと判断。"
+        };
+      }
+
+      if (rangeRate180 <= 35 && Math.abs(change180 || 0) <= 18 && modest7 && modest30) {
+        return {
+          code: "B",
+          label: "長期横ばい",
+          shortLabel: "長期横ばい",
+          priority: 2,
+          copy: "長期で高騰しすぎておらず、爆発前の横ばい圏と判断。"
+        };
+      }
+
+      if ((change180 || 0) > 8 && (change180 || 0) <= 70 && (change30 == null || change30 <= 35) && modest7) {
+        return {
+          code: "C",
+          label: "緩やかな上昇",
+          shortLabel: "緩やか上昇",
+          priority: 1,
+          copy: "過熱感の少ない緩やかな上昇。後追い感は弱めと判断。"
+        };
+      }
+
+      return null;
+    }
+
     function getTags(sleeve) {
       const text = collectText(sleeve);
       const tags = [];
@@ -853,40 +948,69 @@
 
     function analyzeSleeve(sleeve) {
       const weekly = getWeeklyRows(sleeve);
-      if (weekly.length < 2) return null;
+      if (weekly.length < 3) return null;
       const latest = weekly[weekly.length - 1];
       const prev = weekly[weekly.length - 2];
+      const past7 = findPastRow(weekly, latest, 7);
+      const past30 = findPastRow(weekly, latest, 30);
+      const past180 = findPastRow(weekly, latest, 180);
       const high = Math.max(...weekly.map((row) => row.price));
       const min = Math.min(...weekly.map((row) => row.price));
       const change = prev.price > 0 ? ((latest.price - prev.price) / prev.price) * 100 : 0;
+      const change7 = changeRate(latest, past7);
+      const change30 = changeRate(latest, past30);
+      const change180 = changeRate(latest, past180);
       const dropFromHigh = high > 0 ? ((high - latest.price) / high) * 100 : 0;
       const reboundRoom = high - latest.price;
+      const range180 = getRangeStats(weekly, latest, 180);
+      const reboundFromLow180 = range180.low > 0 ? ((latest.price - range180.low) / range180.low) * 100 : 0;
+      const trade7 = sumTradeCount(weekly, latest, 7);
+      const trade30 = sumTradeCount(weekly, latest, 30);
       const text = collectText(sleeve);
       const popular = hasAny(text, POPULAR);
       const limited = hasAny(text, LIMITED) || Number(sleeve.releaseYear) <= 2020;
       const design = hasAny(text, DESIGN);
       const nearHigh = latest.price >= high * .92;
-      const tooThin = weekly.slice(-6).reduce((sum, row) => sum + (row.count || 1), 0) <= 2;
-      const score = (popular ? 28 : 0)
-        + (limited ? 22 : 0)
-        + (design ? 15 : 0)
-        + Math.min(22, Math.max(0, dropFromHigh) * .7)
-        + Math.min(10, weekly.length)
-        - (nearHigh ? 24 : 0)
-        - (tooThin ? 10 : 0);
-      const label = nearHigh && change > 12 ? "高値注意" : score >= 50 ? "ウォッチ推奨" : "様子見";
-      const tone = label === "ウォッチ推奨" ? "watch" : label === "様子見" ? "neutral" : "caution";
+      const tooThin = trade30 <= 1 || (trade7 <= 0 && trade30 <= 2);
+      const overheated7 = change7 != null && change7 >= 50;
+      const overheated30 = change30 != null && change30 >= 100;
+      if (overheated7 || overheated30 || nearHigh || tooThin) return null;
+
+      const state = classifyBuyState({
+        change7,
+        change30,
+        change180,
+        dropFromHigh,
+        reboundFromLow180,
+        rangeRate180: range180.rangeRate
+      });
+      if (!state) return null;
+
+      const factorScore = (popular ? 18 : 0)
+        + (limited ? 16 : 0)
+        + (design ? 12 : 0)
+        + Math.min(12, trade30 * 1.2)
+        + Math.min(10, weekly.length / 2);
+      const stateScore = state.priority * 45;
+      const score = stateScore
+        + factorScore
+        + Math.min(18, Math.max(0, dropFromHigh) * .45)
+        - Math.max(0, (change30 || 0) - 45) * .6;
+      const label = score >= 105 ? "ウォッチ推奨" : "様子見";
+      const tone = label === "ウォッチ推奨" ? "watch" : "neutral";
+      const factorNames = [];
+      if (popular) factorNames.push("人気キャラ");
+      if (limited) factorNames.push("限定性");
+      if (design) factorNames.push("テーマ性");
+      factorNames.push("価格推移");
+      factorNames.push("流通量");
       const reasons = [
-        `人気キャラ：${(sleeve.pokemonCategories || []).find((v) => POPULAR.includes(v)) || (popular ? "注目キャラ" : "安定枠")}`,
-        `${limited ? "限定性" : "流通量"}：${limited ? "希少性あり" : "取引データあり"}`,
-        `価格推移：${dropFromHigh >= 12 ? "下落後に横ばい" : change < 0 ? "調整局面" : "緩やかな推移"}`
+        `状態${state.code}：${state.shortLabel}`,
+        `評価：${factorNames.slice(0, 3).join("・")}`,
+        `流通量：30日 ${trade30}件 / 7日 ${trade7}件`
       ];
-      const copy = label === "ウォッチ推奨"
-        ? "過去の高騰実績があり、再度上昇する可能性が高いと判断しました。"
-        : label === "様子見"
-          ? "大きな下落は少なく安定しているが、上昇のきっかけ待ちの状況。"
-          : "直近価格が高値圏にあり、購入前の相場確認が必要です。";
-      return { sleeve, weekly, latest, prev, high, min, change, dropFromHigh, reboundRoom, score, label, tone, reasons, copy };
+      const copy = `${factorNames.slice(0, 3).join("・")}の点で評価。${state.copy}`;
+      return { sleeve, weekly, latest, prev, high, min, change, change7, change30, change180, trade7, trade30, state, dropFromHigh, reboundRoom, score, label, tone, reasons, copy };
     }
 
     function buildBuyRanking(sleeves) {
@@ -895,7 +1019,7 @@
         .map(analyzeSleeve)
         .filter(Boolean)
         .filter((row) => row.latest.price >= 800)
-        .sort((a, b) => b.score - a.score || b.reboundRoom - a.reboundRoom)
+        .sort((a, b) => b.state.priority - a.state.priority || b.score - a.score || b.reboundRoom - a.reboundRoom)
         .slice(0, 5);
       return rows;
     }
