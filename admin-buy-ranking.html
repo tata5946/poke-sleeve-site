@@ -459,11 +459,13 @@
     .reason-cell {
       padding: 15px 20px 12px;
       min-width: 0;
+      display: grid;
+      align-content: center;
     }
 
     .reason-list {
       display: grid;
-      gap: 4px;
+      gap: 8px;
       margin: 0;
       padding: 0;
       list-style: none;
@@ -471,20 +473,20 @@
 
     .reason-list li {
       display: grid;
-      grid-template-columns: 20px 1fr;
-      gap: 7px;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
       align-items: center;
       color: #1d2532;
-      font-size: 13px;
+      font-size: 16px;
       font-weight: 900;
-      line-height: 1.25;
+      line-height: 1.28;
       min-width: 0;
     }
 
     .reason-icon {
-      width: 20px;
+      width: 24px;
       color: #e3a600;
-      font-size: 16px;
+      font-size: 18px;
       text-align: center;
       line-height: 1;
     }
@@ -991,7 +993,7 @@
         `キャラクター：${popularCharacter}`,
         `限定：${limitedKeyword || (releaseYear && releaseYear <= 2020 ? "旧作枠" : "限定要素は控えめ")}`,
         `希少性：${rarityLabel}`,
-        `発売日：${releaseLabel} / 絵柄：${designKeyword || "キャラ訴求"}`
+        `発売：${releaseLabel} / 絵柄：${designKeyword || "キャラ訴求"}`
       ];
     }
 
