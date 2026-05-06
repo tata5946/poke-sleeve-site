@@ -750,8 +750,10 @@
       { bg: "linear-gradient(90deg, #e1f2ff 0%, #bfe2ff 100%)", color: "#1b78bd", crown: "" },
       { bg: "linear-gradient(90deg, #e1f2ff 0%, #c9e7ff 100%)", color: "#1b78bd", crown: "" }
     ];
-    const POPULAR = ["ピカチュウ", "イーブイ", "リザードン", "ゲンガー", "ルカリオ", "ミュウ", "ブラッキー", "ニンフィア", "レックウザ", "サーナイト", "リーリエ", "シロナ", "ナンジャモ"];
-    const LIMITED = ["限定", "イベント", "プロモ", "ポンチョ", "ポケモンセンター", "ポケセン", "32枚販売", "大会", "周年", "非売品", "配布"];
+    const POPULAR_POKEMON = ["ピカチュウ", "イーブイ", "リザードン", "ゲンガー", "ルカリオ", "ミュウ", "ブラッキー", "ニンフィア", "レックウザ", "サーナイト"];
+    const POPULAR_CHARACTERS = ["リーリエ", "シロナ", "ナンジャモ"];
+    const POPULAR = POPULAR_POKEMON.concat(POPULAR_CHARACTERS);
+    const LIMITED = ["限定", "イベント", "プロモ", "ポンチョ", "32枚販売", "大会", "周年", "非売品", "配布"];
     const DESIGN = ["ポンチョ", "テーマ", "コンセプト", "にたものどうし", "メガシンカ", "テラスタル", "人気イラスト", "ロングセラー"];
 
     function escapeHtml(value) {
@@ -973,9 +975,12 @@
         sleeve.category8,
         sleeve.category9
       ].map((v) => String(v || "").trim()).filter(Boolean);
-      const popularName = pokemon.concat(trainer).find((v) => POPULAR.includes(v))
-        || pickMatchedKeyword(text, POPULAR)
-        || "安定カテゴリ";
+      const popularPokemon = pokemon.find((v) => POPULAR_POKEMON.includes(v))
+        || pickMatchedKeyword(text, POPULAR_POKEMON)
+        || (pokemon[0] || "該当なし");
+      const popularCharacter = trainer.find((v) => POPULAR_CHARACTERS.includes(v))
+        || pickMatchedKeyword(text, POPULAR_CHARACTERS)
+        || (trainer[0] || "該当なし");
       const limitedKeyword = pickMatchedKeyword(text, LIMITED);
       const designKeyword = tags.find((v) => DESIGN.some((word) => v.includes(word)))
         || pickMatchedKeyword(text, DESIGN);
@@ -990,11 +995,11 @@
           ? "旧作で現存数に注目"
           : `${metrics.trade30}件の取引あり`;
       return [
-        `人気キャラ：${popularName}`,
+        `ポケモン：${popularPokemon}`,
+        `キャラクター：${popularCharacter}`,
         `限定：${limitedKeyword || (releaseYear && releaseYear <= 2020 ? "旧作枠" : "限定要素は控えめ")}`,
         `希少性：${rarityLabel}`,
-        `発売日：${releaseLabel}`,
-        `イラスト：${designKeyword || "キャラ訴求"}`
+        `発売日：${releaseLabel} / 絵柄：${designKeyword || "キャラ訴求"}`
       ];
     }
 
