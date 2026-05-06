@@ -463,7 +463,7 @@
 
     .reason-list {
       display: grid;
-      gap: 7px;
+      gap: 4px;
       margin: 0;
       padding: 0;
       list-style: none;
@@ -471,20 +471,20 @@
 
     .reason-list li {
       display: grid;
-      grid-template-columns: 28px 1fr;
-      gap: 9px;
+      grid-template-columns: 20px 1fr;
+      gap: 7px;
       align-items: center;
       color: #1d2532;
-      font-size: 15px;
+      font-size: 12px;
       font-weight: 900;
-      line-height: 1.25;
+      line-height: 1.18;
       min-width: 0;
     }
 
     .reason-icon {
-      width: 27px;
+      width: 20px;
       color: #e3a600;
-      font-size: 22px;
+      font-size: 15px;
       text-align: center;
       line-height: 1;
     }
@@ -494,14 +494,14 @@
     }
 
     .reason-copy {
-      margin-top: 8px;
-      padding-top: 8px;
+      margin-top: 6px;
+      padding-top: 6px;
       border-top: 1px solid #dfe4df;
       color: #2d3442;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 800;
-      line-height: 1.3;
-      max-height: 38px;
+      line-height: 1.25;
+      max-height: 30px;
       overflow: hidden;
     }
 
@@ -951,6 +951,53 @@
       return tags.slice(0, 2);
     }
 
+    function getReleaseYearNumber(sleeve) {
+      const rawDate = sleeve.releaseDate || sleeve.release_date || sleeve.date || sleeve["発売日"];
+      const iso = toISODate(rawDate);
+      if (iso) return Number(iso.slice(0, 4));
+      const y = numOrNull(sleeve.releaseYear);
+      return Number.isFinite(y) ? Math.round(y) : null;
+    }
+
+    function pickMatchedKeyword(text, words) {
+      return words.find((word) => text.includes(word)) || "";
+    }
+
+    function buildBuyReasonDetails(sleeve, metrics) {
+      const text = collectText(sleeve);
+      const pokemon = Array.isArray(sleeve.pokemonCategories) ? sleeve.pokemonCategories : [];
+      const trainer = Array.isArray(sleeve.trainerCategories) ? sleeve.trainerCategories : [];
+      const tags = [
+        ...(Array.isArray(sleeve.categoryTags) ? sleeve.categoryTags : []),
+        sleeve.category7,
+        sleeve.category8,
+        sleeve.category9
+      ].map((v) => String(v || "").trim()).filter(Boolean);
+      const popularName = pokemon.concat(trainer).find((v) => POPULAR.includes(v))
+        || pickMatchedKeyword(text, POPULAR)
+        || "安定カテゴリ";
+      const limitedKeyword = pickMatchedKeyword(text, LIMITED);
+      const designKeyword = tags.find((v) => DESIGN.some((word) => v.includes(word)))
+        || pickMatchedKeyword(text, DESIGN);
+      const releaseYear = getReleaseYearNumber(sleeve);
+      const age = releaseYear ? new Date().getFullYear() - releaseYear : null;
+      const releaseLabel = releaseYear
+        ? `${releaseYear}年${age >= 7 ? "・旧作" : age >= 3 ? "・中堅" : "・新しめ"}`
+        : "発売年不明";
+      const rarityLabel = metrics.trade30 <= 3
+        ? `30日${metrics.trade30}件で少なめ`
+        : releaseYear && releaseYear <= 2020
+          ? "旧作で現存数に注目"
+          : `${metrics.trade30}件の取引あり`;
+      return [
+        `人気キャラ：${popularName}`,
+        `限定：${limitedKeyword || (releaseYear && releaseYear <= 2020 ? "旧作枠" : "限定要素は控えめ")}`,
+        `希少性：${rarityLabel}`,
+        `発売日：${releaseLabel}`,
+        `イラスト：${designKeyword || "キャラ訴求"}`
+      ];
+    }
+
     function analyzeSleeve(sleeve) {
       const weekly = getWeeklyRows(sleeve);
       if (weekly.length < 3) return null;
@@ -1009,12 +1056,8 @@
       if (design) factorNames.push("テーマ性");
       factorNames.push("価格推移");
       factorNames.push("流通量");
-      const reasons = [
-        `状態${state.code}：${state.shortLabel}`,
-        `評価：${factorNames.slice(0, 3).join("・")}`,
-        `流通量：30日 ${trade30}件 / 7日 ${trade7}件`
-      ];
-      const copy = `${factorNames.slice(0, 3).join("・")}の点で評価。${state.copy}`;
+      const reasons = buildBuyReasonDetails(sleeve, { trade7, trade30, state });
+      const copy = `状態${state.code}：${state.shortLabel}。${state.copy}`;
       return { sleeve, weekly, latest, prev, high, min, change, change7, change30, change180, trade7, trade30, state, dropFromHigh, reboundRoom, score, label, tone, reasons, copy };
     }
 
@@ -1035,6 +1078,7 @@
       const diagColor = row.tone === "watch" ? "#117f3d" : row.tone === "neutral" ? "#1b78bd" : "#e33a2e";
       const diagIcon = row.tone === "watch" ? "⌕" : row.tone === "neutral" ? "♙" : "!";
       const tags = getTags(row.sleeve);
+      const reasonIcons = ["♛", "★", "◆", "◷", "✦"];
       return `
         <article class="rank-row" style="--medal-bg:${style.bg};--rank-color:${style.color};--diag-color:${diagColor};">
           <div class="medal">
@@ -1066,9 +1110,9 @@
           </div>
           <div class="reason-cell">
             <ul class="reason-list">
-              <li><span class="reason-icon">♛</span><span>${escapeHtml(row.reasons[0])}</span></li>
-              <li><span class="reason-icon">★</span><span>${escapeHtml(row.reasons[1])}</span></li>
-              <li><span class="reason-icon chart">↗</span><span>${escapeHtml(row.reasons[2])}</span></li>
+              ${row.reasons.map((reason, reasonIndex) => `
+                <li><span class="reason-icon ${reasonIndex === 2 ? "chart" : ""}">${reasonIcons[reasonIndex] || "•"}</span><span>${escapeHtml(reason)}</span></li>
+              `).join("")}
             </ul>
             <div class="reason-copy">${escapeHtml(row.copy)}</div>
           </div>
