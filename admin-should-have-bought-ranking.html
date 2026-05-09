@@ -663,7 +663,7 @@
           </div>
 
           <div class="title-block">
-            <div class="eyebrow">前回買っておけば差額が大きかったスリーブ TOP5!</div>
+            <div class="eyebrow">4月に買っておけば差額が大きかったスリーブ TOP5!</div>
             <div class="headline">
               <span class="hot">買えば</span>
               <span class="ranking">ランキング</span>
@@ -672,7 +672,7 @@
                 <path d="M84 20 L112 8 L105 38 Z" fill="#ff5a18"/>
               </svg>
             </div>
-            <div class="subhead">前回価格から上がってしまったスリーブをチェック！</div>
+            <div class="subhead">4月価格から上がってしまったスリーブをチェック！</div>
           </div>
 
           <aside class="period-card">
@@ -729,7 +729,7 @@
             <div class="bulb">♙</div>
             <div>
               <div class="point-title">POINT</div>
-              <div class="point-text">前回価格から大きく上がったスリーブをランキング化！<br>「あの時買っておけば」の差額が見えるため、相場の勢いを確認できます。<br>次に同じ動きが出そうなスリーブ探しにもおすすめです。</div>
+              <div class="point-text">4月価格から最新月次価格まで大きく上がったスリーブをランキング化！<br>「あの時買っておけば」の差額が見えるため、月次の相場変化を確認できます。<br>次に同じ動きが出そうなスリーブ探しにもおすすめです。</div>
             </div>
           </div>
           <div class="search-box">
@@ -865,24 +865,42 @@
       return Array.from(map.values()).sort((a, b) => a.week.localeCompare(b.week));
     }
 
+    function getMonthlyRows(sleeve) {
+      const map = new Map();
+      const arr = Array.isArray(sleeve && sleeve.monthlyPrices) ? sleeve.monthlyPrices : [];
+      for (const row of arr) {
+        const month = toISODate(row && row.month);
+        const price = numOrNull(row && row.price);
+        const count = numOrNull(row && row.count);
+        if (!month || !(price > 0)) continue;
+        map.set(month, { week: month, month, price, count: Number.isFinite(count) ? count : 0 });
+      }
+      return Array.from(map.values()).sort((a, b) => a.month.localeCompare(b.month));
+    }
+
     function buildShouldHaveBoughtRows(sleeves) {
       const validSleeves = sleeves.filter((sleeve) => sleeve && sleeve.id && sleeve.name);
-      const latestWeek = validSleeves.reduce((latest, sleeve) => {
-        const rows = getWeeklyRows(sleeve);
+      const latestMonth = validSleeves.reduce((latest, sleeve) => {
+        const rows = getMonthlyRows(sleeve);
         const row = rows[rows.length - 1];
-        return row && row.week > latest ? row.week : latest;
+        return row && row.month > latest ? row.month : latest;
       }, "");
+      const latestYear = latestMonth ? latestMonth.slice(0, 4) : "";
+      const baseMonth = latestYear ? `${latestYear}-04-01` : "";
 
       const rows = validSleeves.map((sleeve) => {
-        const weekly = getWeeklyRows(sleeve);
-        const latestIndex = weekly.findIndex((row) => row.week === latestWeek);
-        if (latestIndex <= 0) return null;
-        const latest = weekly[latestIndex];
-        const prev = weekly[latestIndex - 1];
-        const diff = latest.price - prev.price;
+        const monthly = getMonthlyRows(sleeve);
+        if (!baseMonth) return null;
+        const baseIndex = monthly.findIndex((row) => row.month === baseMonth);
+        if (baseIndex < 0) return null;
+        const base = monthly[baseIndex];
+        const laterRows = monthly.slice(baseIndex + 1);
+        if (!laterRows.length) return null;
+        const latest = laterRows[laterRows.length - 1];
+        const diff = latest.price - base.price;
         if (!(diff > 0)) return null;
-        const rate = prev.price > 0 ? (diff / prev.price) * 100 : null;
-        return { sleeve, weekly, latest, prev, diff, rate };
+        const rate = base.price > 0 ? (diff / base.price) * 100 : null;
+        return { sleeve, weekly: monthly.slice(Math.max(0, baseIndex - 1)), latest, prev: base, diff, rate };
       }).filter(Boolean);
 
       rows.sort((a, b) => {
@@ -891,7 +909,7 @@
         return (b.rate || 0) - (a.rate || 0);
       });
 
-      return { latestWeek, rows };
+      return { baseMonth, latestMonth, rows };
     }
 
     function buildNameHtml(name) {
@@ -990,9 +1008,9 @@
             <div class="sleeve-art">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}</div>
             <div class="sleeve-copy"><div class="sleeve-name">${buildNameHtml(sleeve.name)}</div><div class="release"><span class="release-badge">発売日</span><span>${releaseDate}</span></div>${categoryTags}</div>
           </div>
-          <div class="price-box"><span class="price-badge">現在価格</span><div class="price">${formatPrice(row.latest.price)}</div><div class="prev">前回価格：${formatPrice(row.prev.price)}</div></div>
-          <div class="delta-box"><span class="delta-badge">前回比</span><div class="delta">${formatPercent(row.rate)}</div><div class="delta-arrow">➜</div></div>
-          <div class="chart-card"><div class="chart-title">価格推移 (直近データ)</div>${buildChartSvg(row, style.chart)}</div>
+          <div class="price-box"><span class="price-badge">最新価格</span><div class="price">${formatPrice(row.latest.price)}</div><div class="prev">4月価格：${formatPrice(row.prev.price)}</div></div>
+          <div class="delta-box"><span class="delta-badge">4月比</span><div class="delta">${formatPercent(row.rate)}</div><div class="delta-arrow">➜</div></div>
+          <div class="chart-card"><div class="chart-title">月次価格推移</div>${buildChartSvg(row, style.chart)}</div>
         </article>
       `;
     }
@@ -1020,13 +1038,13 @@
     async function renderWeeklyRanking() {
       const data = await loadWeeklyRankingData();
       const sleeves = Array.isArray(data && data.sleeves) ? data.sleeves : [];
-      const { latestWeek, rows } = buildShouldHaveBoughtRows(sleeves);
+      const { baseMonth, latestMonth, rows } = buildShouldHaveBoughtRows(sleeves);
       const topRows = rows.slice(0, 5);
-      if (!latestWeek || topRows.length === 0) return;
+      if (!baseMonth || !latestMonth || topRows.length === 0) return;
 
       const periodDates = document.querySelectorAll(".period-date");
-      if (periodDates[0]) periodDates[0].textContent = formatDateLabel(latestWeek);
-      if (periodDates[1]) periodDates[1].textContent = formatDateLabel(addDays(latestWeek, 6));
+      if (periodDates[0]) periodDates[0].textContent = formatDateLabel(baseMonth);
+      if (periodDates[1]) periodDates[1].textContent = formatDateLabel(latestMonth);
 
       const firstRankRow = document.querySelector(".rank-row");
       const parent = firstRankRow && firstRankRow.parentElement;
