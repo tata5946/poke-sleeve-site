@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex,nofollow,noarchive" />
-  <title>管理用 週間高騰ランキング | ポケスリ相場ナビ</title>
+  <title>管理用 週間下落ランキング | ポケスリ相場ナビ</title>
   <style>
     :root {
       --ink: #242833;
@@ -451,7 +451,7 @@
       margin-top: 2px;
       font-size: 36px;
       line-height: .8;
-      transform: rotate(-18deg);
+      transform: none;
     }
 
     .chart-card {
@@ -647,7 +647,7 @@
 </head>
 <body>
   <main class="admin-frame">
-    <section class="poster" aria-label="週間高騰ランキング">
+    <section class="poster" aria-label="週間下落ランキング">
       <div class="spark s1">✦</div>
       <div class="spark s2">✦</div>
       <div class="spark s3">≻</div>
@@ -663,16 +663,16 @@
           </div>
 
           <div class="title-block">
-            <div class="eyebrow">今週もっとも価格が上がったスリーブ TOP5!</div>
+            <div class="eyebrow">今週もっとも価格が下がったスリーブ TOP5!</div>
             <div class="headline">
-              <span class="hot">高騰</span>
+              <span class="hot">下落</span>
               <span class="ranking">ランキング</span>
               <svg class="arrow" viewBox="0 0 120 110" aria-hidden="true">
-                <path d="M7 91 L37 62 L58 78 L104 21" fill="none" stroke="#ff5a18" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M84 20 L112 8 L105 38 Z" fill="#ff5a18"/>
+                <path d="M7 21 L37 50 L58 34 L104 91" fill="none" stroke="#ff5a18" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M84 90 L112 102 L105 72 Z" fill="#ff5a18"/>
               </svg>
             </div>
-            <div class="subhead">価格・相場の上昇スリーブをチェック！</div>
+            <div class="subhead">価格・相場が下落したスリーブをチェック！</div>
           </div>
 
           <aside class="period-card">
@@ -729,7 +729,7 @@
             <div class="bulb">♙</div>
             <div>
               <div class="point-title">POINT</div>
-              <div class="point-text">人気キャラ系＋コンセプト性のあるスリーブが大きく上昇！<br>特に「ポンチョ系」や「テーマ性のあるデザイン」は需要が集中しやすく、価格が伸びやすい傾向にあります。<br>気になるスリーブはまだ上がる前にチェックがおすすめです。</div>
+              <div class="point-text">前回価格から下落したスリーブをランキング化！<br>一時的な値下がりや相場の調整が見えているスリーブを確認できます。<br>気になるスリーブは反発前の候補としてチェックがおすすめです。</div>
             </div>
           </div>
           <div class="search-box">
@@ -865,7 +865,7 @@
       return Array.from(map.values()).sort((a, b) => a.week.localeCompare(b.week));
     }
 
-    function buildSurgeRows(sleeves) {
+    function buildDeclineRows(sleeves) {
       const validSleeves = sleeves.filter((sleeve) => sleeve && sleeve.id && sleeve.name);
       const latestWeek = validSleeves.reduce((latest, sleeve) => {
         const rows = getWeeklyRows(sleeve);
@@ -880,15 +880,15 @@
         const latest = weekly[latestIndex];
         const prev = weekly[latestIndex - 1];
         const diff = latest.price - prev.price;
-        if (!(diff > 0)) return null;
+        if (!(diff < 0)) return null;
         const rate = prev.price > 0 ? (diff / prev.price) * 100 : null;
         return { sleeve, weekly, latest, prev, diff, rate };
       }).filter(Boolean);
 
       rows.sort((a, b) => {
-        const diff = b.diff - a.diff;
+        const diff = a.diff - b.diff;
         if (diff !== 0) return diff;
-        return (b.rate || 0) - (a.rate || 0);
+        return (a.rate || 0) - (b.rate || 0);
       });
 
       return { latestWeek, rows };
@@ -991,7 +991,7 @@
             <div class="sleeve-copy"><div class="sleeve-name">${buildNameHtml(sleeve.name)}</div><div class="release"><span class="release-badge">発売日</span><span>${releaseDate}</span></div>${categoryTags}</div>
           </div>
           <div class="price-box"><span class="price-badge">現在価格</span><div class="price">${formatPrice(row.latest.price)}</div><div class="prev">前回価格：${formatPrice(row.prev.price)}</div></div>
-          <div class="delta-box"><span class="delta-badge">前回比</span><div class="delta">${formatPercent(row.rate)}</div><div class="delta-arrow">➜</div></div>
+          <div class="delta-box"><span class="delta-badge">前回比</span><div class="delta">${formatPercent(row.rate)}</div><div class="delta-arrow">↓</div></div>
           <div class="chart-card"><div class="chart-title">価格推移 (直近データ)</div>${buildChartSvg(row, style.chart)}</div>
         </article>
       `;
@@ -1020,7 +1020,7 @@
     async function renderWeeklyRanking() {
       const data = await loadWeeklyRankingData();
       const sleeves = Array.isArray(data && data.sleeves) ? data.sleeves : [];
-      const { latestWeek, rows } = buildSurgeRows(sleeves);
+      const { latestWeek, rows } = buildDeclineRows(sleeves);
       const topRows = rows.slice(0, 5);
       if (!latestWeek || topRows.length === 0) return;
 
