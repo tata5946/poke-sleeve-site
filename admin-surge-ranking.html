@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <title>管理用 週間高騰ランキング | ポケスリ相場ナビ</title>
+  <style>
+    :root {
+      --ink: #242833;
+      --muted: #5d6673;
+      --cyan: #13a9c4;
+      --orange: #ff5a18;
+      --gold: #f2b620;
+      --paper: #fffdf3;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 16% 0%, rgba(255, 236, 166, .55), transparent 28%),
+        radial-gradient(circle at 100% 14%, rgba(31, 177, 209, .12), transparent 30%),
+        #f6f3e7;
+      color: var(--ink);
+      font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+    }
+
+    .admin-frame {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    .poster {
+      position: relative;
+      width: 1240px;
+      height: 1240px;
+      transform-origin: top center;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, .92), rgba(255, 250, 224, .9)),
+        var(--paper);
+      box-shadow: 0 24px 70px rgba(77, 61, 12, .18);
+      container-type: inline-size;
+    }
+
+    .poster::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(135deg, transparent 0 16px, rgba(249, 202, 82, .18) 16px 24px, transparent 24px 42px),
+        radial-gradient(circle at 95% 2%, rgba(249, 202, 82, .18), transparent 18%),
+        radial-gradient(circle at 0% 82%, rgba(31, 177, 209, .08), transparent 26%);
+      opacity: .8;
+      pointer-events: none;
+    }
+
+    .poster::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(90deg, rgba(242, 182, 32, .18) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(242, 182, 32, .12) 1px, transparent 1px);
+      background-size: 72px 72px;
+      opacity: .12;
+      pointer-events: none;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      padding: 22px 28px 16px;
+      display: grid;
+      grid-template-rows: 206px repeat(5, 146px) 114px 20px;
+      gap: 7px;
+    }
+
+    .header {
+      position: relative;
+      display: grid;
+      grid-template-columns: 132px minmax(0, 1fr) 214px;
+      gap: 18px;
+      align-items: start;
+      min-height: 0;
+    }
+
+    .ribbon {
+      position: relative;
+      height: 168px;
+      display: grid;
+      place-items: center;
+      padding-bottom: 14px;
+      background: linear-gradient(180deg, #fff8d4 0%, #fff3a7 100%);
+      border: 4px solid #ffd74a;
+      border-bottom: 0;
+      clip-path: polygon(0 0, 100% 0, 100% 86%, 50% 72%, 0 86%);
+      color: #eaa500;
+      text-shadow: 0 3px 0 #fff;
+    }
+
+    .ribbon .crown {
+      font-size: 52px;
+      line-height: .8;
+      filter: drop-shadow(0 3px 0 rgba(171, 114, 0, .18));
+    }
+
+    .ribbon .label {
+      margin-top: 9px;
+      font-size: 32px;
+      font-weight: 1000;
+      letter-spacing: .04em;
+    }
+
+    .title-block {
+      padding-top: 3px;
+      text-align: center;
+      min-width: 0;
+    }
+
+    .eyebrow {
+      color: #0e9cb7;
+      font-size: 29px;
+      font-weight: 1000;
+      letter-spacing: .08em;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .headline {
+      margin-top: 2px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 10px;
+      font-weight: 1000;
+      line-height: .95;
+      letter-spacing: .02em;
+      white-space: nowrap;
+    }
+
+    .headline .hot {
+      font-size: 78px;
+      color: var(--orange);
+      text-shadow: 0 4px 0 #fff0d2, 0 7px 10px rgba(222, 91, 0, .18);
+    }
+
+    .headline .ranking {
+      font-size: 76px;
+      color: #272a31;
+      text-shadow: 0 4px 0 #fff;
+    }
+
+    .headline .arrow {
+      width: 102px;
+      height: 94px;
+      margin-bottom: -5px;
+    }
+
+    .subhead {
+      margin-top: 8px;
+      color: #252832;
+      font-size: 26px;
+      font-weight: 1000;
+      letter-spacing: .12em;
+    }
+
+    .period-card {
+      margin-top: 16px;
+      padding: 12px 12px 8px;
+      min-height: 130px;
+      border: 3px solid #20b7d3;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .92);
+      text-align: center;
+      box-shadow: 0 8px 0 rgba(12, 158, 184, .08);
+    }
+
+    .period-title {
+      color: #0ca8c2;
+      font-size: 20px;
+      font-weight: 1000;
+      letter-spacing: .05em;
+    }
+
+    .period-date {
+      margin-top: 7px;
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+
+    .period-arrow {
+      color: #0ca8c2;
+      font-size: 22px;
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .source-note {
+      position: absolute;
+      right: 2px;
+      bottom: 13px;
+      color: #0799b5;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .rank-row {
+      display: grid;
+      grid-template-columns: 100px 430px 178px 126px 278px;
+      gap: 12px;
+      align-items: stretch;
+      min-height: 146px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, .96);
+      border: 2px solid rgba(245, 218, 123, .68);
+      box-shadow: 0 5px 12px rgba(110, 83, 0, .10);
+      overflow: hidden;
+    }
+
+    .rank-medal {
+      display: grid;
+      place-items: center;
+      color: var(--rank-color);
+      background: var(--rank-bg);
+      text-shadow: 0 3px 0 rgba(255, 255, 255, .95), 0 4px 10px rgba(0, 0, 0, .16);
+      font-weight: 1000;
+    }
+
+    .rank-medal-inner {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .rank-medal .small-crown {
+      position: absolute;
+      top: 12px;
+      font-size: 22px;
+      color: var(--rank-color);
+    }
+
+    .rank-number {
+      font-size: 58px;
+      line-height: 1;
+    }
+
+    .laurel {
+      position: absolute;
+      bottom: 12px;
+      font-size: 22px;
+      letter-spacing: -.1em;
+      opacity: .86;
+    }
+
+    .sleeve-info {
+      display: grid;
+      grid-template-columns: 118px 1fr;
+      gap: 18px;
+      align-items: center;
+      padding: 14px 0 12px 6px;
+      min-width: 0;
+    }
+
+    .sleeve-art {
+      width: 108px;
+      height: 108px;
+      border: 4px solid #2d3c4a;
+      box-shadow: 0 3px 0 rgba(0, 0, 0, .15);
+      display: grid;
+      place-items: end center;
+      padding: 8px;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+      background: var(--art);
+    }
+
+    .sleeve-art img {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #fff;
+    }
+
+    .sleeve-art::before {
+      content: var(--emoji);
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 56px;
+      filter: drop-shadow(0 6px 4px rgba(0, 0, 0, .35));
+    }
+
+    .sleeve-art::after {
+      content: "Pokemon Card Game";
+      position: relative;
+      z-index: 1;
+      font-size: 10px;
+      color: #fff7c0;
+      text-shadow: 0 1px 2px #000;
+    }
+
+    .sleeve-copy {
+      min-width: 0;
+    }
+
+    .sleeve-name {
+      font-size: 23px;
+      font-weight: 1000;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    .release {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .category-tags {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      max-height: 42px;
+      overflow: hidden;
+    }
+
+    .category-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 18px;
+      max-width: 128px;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: #fff7d6;
+      border: 1px solid #ffd86b;
+      color: #a66a00;
+      font-size: 11px;
+      font-weight: 1000;
+      line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .release-badge,
+    .price-badge,
+    .delta-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      color: #fff;
+      background: #17abc3;
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .release-badge {
+      padding: 6px 8px;
+      font-size: 14px;
+    }
+
+    .price-box {
+      border-left: 1px solid #e9edf1;
+      display: grid;
+      align-content: center;
+      justify-items: start;
+      padding-left: 18px;
+    }
+
+    .price-badge {
+      padding: 7px 10px;
+      font-size: 14px;
+      box-shadow: 0 2px 0 rgba(10, 126, 150, .16);
+    }
+
+    .price {
+      margin-top: 10px;
+      font-size: 36px;
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: -.03em;
+    }
+
+    .prev {
+      margin-top: 10px;
+      color: #343843;
+      font-size: 15px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .delta-box {
+      display: grid;
+      place-items: center;
+      margin: 24px 0;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #fff1e9, #ffe8db);
+      color: var(--orange);
+      text-align: center;
+    }
+
+    .delta-badge {
+      padding: 6px 10px;
+      background: #ffd7c4;
+      color: #ff4e14;
+      font-size: 14px;
+    }
+
+    .delta {
+      margin-top: 9px;
+      font-size: 29px;
+      font-weight: 1000;
+      line-height: 1;
+      text-shadow: 0 2px 0 #fff;
+    }
+
+    .delta-arrow {
+      margin-top: 2px;
+      font-size: 36px;
+      line-height: .8;
+      transform: rotate(-18deg);
+    }
+
+    .chart-card {
+      display: grid;
+      align-content: center;
+      padding: 8px 10px 8px 0;
+    }
+
+    .chart-title {
+      color: var(--chart-color);
+      text-align: center;
+      font-size: 14px;
+      font-weight: 1000;
+      margin-bottom: 2px;
+    }
+
+    .chart {
+      width: 100%;
+      height: 96px;
+    }
+
+    .footer {
+      display: grid;
+      grid-template-columns: 640px 1fr;
+      gap: 20px;
+      align-items: center;
+      padding-top: 2px;
+    }
+
+    .point-box {
+      min-height: 112px;
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 2px solid rgba(241, 203, 89, .55);
+      background: rgba(255, 255, 255, .72);
+      box-shadow: inset 0 0 24px rgba(255, 220, 102, .17);
+    }
+
+    .bulb {
+      color: #f5aa00;
+      font-size: 58px;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .point-title {
+      color: #ff6b00;
+      font-size: 23px;
+      font-weight: 1000;
+      letter-spacing: .08em;
+    }
+
+    .point-text {
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.34;
+    }
+
+    .search-box {
+      position: relative;
+      min-height: 112px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 18px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #12afbf, #0791bb);
+      color: #fff;
+      box-shadow: 0 6px 12px rgba(5, 119, 145, .25);
+    }
+
+    .monitor {
+      width: 90px;
+      height: 68px;
+      border-radius: 6px;
+      background: #e9f5fb;
+      border: 5px solid #c8e5f0;
+      display: grid;
+      place-items: center;
+      color: #208aa7;
+      font-size: 34px;
+      box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .7);
+    }
+
+    .search-copy {
+      font-size: 21px;
+      font-weight: 1000;
+      line-height: 1.12;
+      letter-spacing: .06em;
+      padding-bottom: 34px;
+    }
+
+    .search-input {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 12px;
+      margin-top: 0;
+      display: grid;
+      grid-template-columns: 1fr 62px;
+      height: 32px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .search-input span:first-child {
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      background: #fff;
+      color: #1470a6;
+      font-size: 20px;
+      font-weight: 1000;
+    }
+
+    .search-input span:last-child {
+      display: grid;
+      place-items: center;
+      background: #006dba;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .disclaimer {
+      position: absolute;
+      left: 28px;
+      bottom: 11px;
+      color: #3d4148;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .spark {
+      position: absolute;
+      color: #f4c43d;
+      font-size: 34px;
+      font-weight: 900;
+      pointer-events: none;
+    }
+
+    .spark.s1 { left: 188px; top: 18px; }
+    .spark.s2 { left: 34px; top: 66px; font-size: 24px; }
+    .spark.s3,
+    .spark.s4 { display: none; }
+
+    @container (max-width: 900px) {
+      .content {
+        transform-origin: top left;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .admin-frame {
+        padding: 10px;
+      }
+    }
+
+    @media (max-width: 1239px), (max-height: 1239px) {
+      .admin-frame {
+        display: grid;
+        place-items: start center;
+        width: 100%;
+        min-height: 100vh;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .poster {
+        transform: none;
+        zoom: .9677419355;
+      }
+    }
+
+    @media (max-width: 1139px), (max-height: 1139px) {
+      .poster { zoom: .8870967742; }
+    }
+
+    @media (max-width: 999px), (max-height: 999px) {
+      .poster { zoom: .7741935484; }
+    }
+
+    @media (max-width: 839px), (max-height: 839px) {
+      .poster { zoom: .6451612903; }
+    }
+  </style>
+</head>
+<body>
+  <main class="admin-frame">
+    <section class="poster" aria-label="週間高騰ランキング">
+      <div class="spark s1">✦</div>
+      <div class="spark s2">✦</div>
+      <div class="spark s3">≻</div>
+      <div class="spark s4">≺</div>
+
+      <div class="content">
+        <header class="header">
+          <div class="ribbon">
+            <div>
+              <div class="crown">♛</div>
+              <div class="label">週間</div>
+            </div>
+          </div>
+
+          <div class="title-block">
+            <div class="eyebrow">今週もっとも価格が上がったスリーブ TOP5!</div>
+            <div class="headline">
+              <span class="hot">高騰</span>
+              <span class="ranking">ランキング</span>
+              <svg class="arrow" viewBox="0 0 120 110" aria-hidden="true">
+                <path d="M7 91 L37 62 L58 78 L104 21" fill="none" stroke="#ff5a18" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M84 20 L112 8 L105 38 Z" fill="#ff5a18"/>
+              </svg>
+            </div>
+            <div class="subhead">価格・相場の上昇スリーブをチェック！</div>
+          </div>
+
+          <aside class="period-card">
+            <div class="period-title">▣ 集計期間</div>
+            <div class="period-date">2024/05/13 (月)</div>
+            <div class="period-arrow">▼</div>
+            <div class="period-date">2024/05/19 (日)</div>
+          </aside>
+          <div class="source-note">※当サイトの取引価格を元に集計</div>
+        </header>
+
+        <article class="rank-row" style="--rank-bg:linear-gradient(135deg,#fff4b8,#ffe57b);--rank-color:#e5a400;--chart-color:#f05a1a;--art:radial-gradient(circle at 50% 52%,#ffc92b 0 18%,transparent 19%),linear-gradient(135deg,#173f3f,#0b1822 55%,#f06224);--emoji:'⚡';">
+          <div class="rank-medal"><div class="rank-medal-inner"><div class="small-crown">♛</div><div class="rank-number">1</div><div class="laurel">〈〉</div></div></div>
+          <div class="sleeve-info"><div class="sleeve-art"><img src="https://drive.google.com/thumbnail?id=16ve-J5yNN4s458bSDGrG7tP8YZDYEZx1&sz=w1200" alt="" onerror="this.remove()"></div><div class="sleeve-copy"><div class="sleeve-name">メガレックウザ<br>ポンチョを着たピカチュウ</div><div class="release"><span class="release-badge">発売日</span><span>2015/12/19</span></div></div></div>
+          <div class="price-box"><span class="price-badge">現在価格</span><div class="price">¥12,800</div><div class="prev">前週価格：¥10,200</div></div>
+          <div class="delta-box"><span class="delta-badge">前週比</span><div class="delta">+25.6%</div><div class="delta-arrow">➜</div></div>
+          <div class="chart-card"><div class="chart-title">価格推移 (過去30日)</div><svg class="chart" viewBox="0 0 260 110" aria-hidden="true"><use href="#chart-grid"/><path d="M34 86 L50 76 L66 73 L82 64 L98 62 L114 51 L130 64 L146 55 L162 47 L178 55 L194 38 L210 45 L226 33 L244 18" fill="none" stroke="#f05a1a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 86 L50 76 L66 73 L82 64 L98 62 L114 51 L130 64 L146 55 L162 47 L178 55 L194 38 L210 45 L226 33 L244 18 L244 101 L34 101 Z" fill="#f05a1a" opacity=".08"/><circle cx="244" cy="18" r="6" fill="#f05a1a"/></svg></div>
+        </article>
+
+        <article class="rank-row" style="--rank-bg:linear-gradient(135deg,#f4f4f4,#d6d7d9);--rank-color:#777b82;--chart-color:#168ee3;--art:radial-gradient(circle at 74% 34%,#ffe49b 0 15%,transparent 16%),linear-gradient(135deg,#82c7ff,#f7ab45 48%,#49345d);--emoji:'☾';">
+          <div class="rank-medal"><div class="rank-medal-inner"><div class="rank-number">2</div><div class="laurel">〈〉</div></div></div>
+          <div class="sleeve-info"><div class="sleeve-art"><img src="https://drive.google.com/thumbnail?id=1FfvF9OSh0jPArarEBUDNwT19fO9gPLtI&sz=w1200" alt="" onerror="this.remove()"></div><div class="sleeve-copy"><div class="sleeve-name">リーリエ＆コスモッグ</div><div class="release"><span class="release-badge">発売日</span><span>2017/06/23</span></div></div></div>
+          <div class="price-box"><span class="price-badge">現在価格</span><div class="price">¥9,800</div><div class="prev">前週価格：¥8,280</div></div>
+          <div class="delta-box"><span class="delta-badge">前週比</span><div class="delta">+18.3%</div><div class="delta-arrow">➜</div></div>
+          <div class="chart-card"><div class="chart-title">価格推移 (過去30日)</div><svg class="chart" viewBox="0 0 260 110" aria-hidden="true"><use href="#chart-grid"/><path d="M34 86 L50 76 L66 72 L82 60 L98 66 L114 55 L130 70 L146 50 L162 48 L178 46 L194 38 L210 42 L226 30 L244 20" fill="none" stroke="#168ee3" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 86 L50 76 L66 72 L82 60 L98 66 L114 55 L130 70 L146 50 L162 48 L178 46 L194 38 L210 42 L226 30 L244 20 L244 101 L34 101 Z" fill="#168ee3" opacity=".08"/><circle cx="244" cy="20" r="6" fill="#168ee3"/></svg></div>
+        </article>
+
+        <article class="rank-row" style="--rank-bg:linear-gradient(135deg,#ffd6a8,#f2a25e);--rank-color:#b76522;--chart-color:#4dae4f;--art:radial-gradient(circle at 50% 54%,#bd8a43 0 20%,transparent 21%),linear-gradient(135deg,#c7f7e3,#fff1b5 52%,#ffbfd1);--emoji:'✿';">
+          <div class="rank-medal"><div class="rank-medal-inner"><div class="rank-number">3</div><div class="laurel">〈〉</div></div></div>
+          <div class="sleeve-info"><div class="sleeve-art"><img src="https://drive.google.com/thumbnail?id=1AZd9XnC4tLlbIZzYnGB0ACvG9kpfJ6Q6&sz=w1200" alt="" onerror="this.remove()"></div><div class="sleeve-copy"><div class="sleeve-name">イーブイズ<br>ブイズ集合</div><div class="release"><span class="release-badge">発売日</span><span>2019/05/31</span></div></div></div>
+          <div class="price-box"><span class="price-badge">現在価格</span><div class="price">¥7,800</div><div class="prev">前週価格：¥6,780</div></div>
+          <div class="delta-box"><span class="delta-badge">前週比</span><div class="delta">+15.2%</div><div class="delta-arrow">➜</div></div>
+          <div class="chart-card"><div class="chart-title">価格推移 (過去30日)</div><svg class="chart" viewBox="0 0 260 110" aria-hidden="true"><use href="#chart-grid"/><path d="M34 84 L50 75 L66 72 L82 60 L98 63 L114 71 L130 58 L146 55 L162 52 L178 43 L194 49 L210 38 L226 31 L244 20" fill="none" stroke="#4dae4f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 84 L50 75 L66 72 L82 60 L98 63 L114 71 L130 58 L146 55 L162 52 L178 43 L194 49 L210 38 L226 31 L244 20 L244 101 L34 101 Z" fill="#4dae4f" opacity=".08"/><circle cx="244" cy="20" r="6" fill="#4dae4f"/></svg></div>
+        </article>
+
+        <article class="rank-row" style="--rank-bg:linear-gradient(135deg,#daf9ff,#a7e2ee);--rank-color:#168da7;--chart-color:#7a55de;--art:radial-gradient(circle at 50% 48%,#f49b38 0 18%,transparent 19%),linear-gradient(135deg,#1b140d,#e65a16 48%,#140d09);--emoji:'🔥';">
+          <div class="rank-medal"><div class="rank-medal-inner"><div class="rank-number">4</div><div class="laurel">〈〉</div></div></div>
+          <div class="sleeve-info"><div class="sleeve-art"><img src="https://drive.google.com/thumbnail?id=1YxrQUmkHtkDywe6RbfRu4IELnewJfwMa&sz=w1200" alt="" onerror="this.remove()"></div><div class="sleeve-copy"><div class="sleeve-name">リザードン</div><div class="release"><span class="release-badge">発売日</span><span>2012/07/13</span></div></div></div>
+          <div class="price-box"><span class="price-badge">現在価格</span><div class="price">¥6,480</div><div class="prev">前週価格：¥5,740</div></div>
+          <div class="delta-box"><span class="delta-badge">前週比</span><div class="delta">+12.7%</div><div class="delta-arrow">➜</div></div>
+          <div class="chart-card"><div class="chart-title">価格推移 (過去30日)</div><svg class="chart" viewBox="0 0 260 110" aria-hidden="true"><use href="#chart-grid"/><path d="M34 84 L50 76 L66 72 L82 63 L98 67 L114 70 L130 57 L146 54 L162 53 L178 44 L194 50 L210 40 L226 34 L244 22" fill="none" stroke="#7a55de" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 84 L50 76 L66 72 L82 63 L98 67 L114 70 L130 57 L146 54 L162 53 L178 44 L194 50 L210 40 L226 34 L244 22 L244 101 L34 101 Z" fill="#7a55de" opacity=".08"/><circle cx="244" cy="22" r="6" fill="#7a55de"/></svg></div>
+        </article>
+
+        <article class="rank-row" style="--rank-bg:linear-gradient(135deg,#e8f7ff,#b9e6ff);--rank-color:#148cc3;--chart-color:#ff9700;--art:radial-gradient(circle at 50% 53%,#ffd32a 0 20%,transparent 21%),linear-gradient(135deg,#4ac7f4,#ffdd5b 50%,#ff8f52);--emoji:'⚡';">
+          <div class="rank-medal"><div class="rank-medal-inner"><div class="rank-number">5</div><div class="laurel">〈〉</div></div></div>
+          <div class="sleeve-info"><div class="sleeve-art"><img src="https://drive.google.com/thumbnail?id=1XD8xZ9RsDxKYZJmsDWhALZoh3aGtN-KY&sz=w1200" alt="" onerror="this.remove()"></div><div class="sleeve-copy"><div class="sleeve-name">ピカチュウ<br>大量発生チュウ!</div><div class="release"><span class="release-badge">発売日</span><span>2014/08/09</span></div></div></div>
+          <div class="price-box"><span class="price-badge">現在価格</span><div class="price">¥5,980</div><div class="prev">前週価格：¥5,370</div></div>
+          <div class="delta-box"><span class="delta-badge">前週比</span><div class="delta">+11.5%</div><div class="delta-arrow">➜</div></div>
+          <div class="chart-card"><div class="chart-title">価格推移 (過去30日)</div><svg class="chart" viewBox="0 0 260 110" aria-hidden="true"><use href="#chart-grid"/><path d="M34 86 L50 78 L66 70 L82 73 L98 62 L114 69 L130 57 L146 52 L162 53 L178 44 L194 50 L210 39 L226 34 L244 22" fill="none" stroke="#ff9700" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 86 L50 78 L66 70 L82 73 L98 62 L114 69 L130 57 L146 52 L162 53 L178 44 L194 50 L210 39 L226 34 L244 22 L244 101 L34 101 Z" fill="#ff9700" opacity=".08"/><circle cx="244" cy="22" r="6" fill="#ff9700"/></svg></div>
+        </article>
+
+        <footer class="footer">
+          <div class="point-box">
+            <div class="bulb">♙</div>
+            <div>
+              <div class="point-title">POINT</div>
+              <div class="point-text">人気キャラ系＋コンセプト性のあるスリーブが大きく上昇！<br>特に「ポンチョ系」や「テーマ性のあるデザイン」は需要が集中しやすく、価格が伸びやすい傾向にあります。<br>気になるスリーブはまだ上がる前にチェックがおすすめです。</div>
+            </div>
+          </div>
+          <div class="search-box">
+            <div>
+              <div class="search-copy">全スリーブの最新価格・相場は<br>当サイトでチェック！</div>
+              <div class="search-input"><span>ポケスリ相場</span><span>⌕</span></div>
+            </div>
+          </div>
+        </footer>
+
+        <div class="disclaimer">※価格は当サイトの取引実績を元に算出しています。実際の取引価格とは異なる場合があります。</div>
+      </div>
+
+      <svg width="0" height="0" aria-hidden="true" focusable="false">
+        <defs>
+          <g id="chart-grid">
+            <line x1="34" y1="17" x2="244" y2="17" stroke="#d9dde3" stroke-width="1"/>
+            <line x1="34" y1="45" x2="244" y2="45" stroke="#d9dde3" stroke-width="1"/>
+            <line x1="34" y1="73" x2="244" y2="73" stroke="#d9dde3" stroke-width="1"/>
+            <line x1="34" y1="101" x2="244" y2="101" stroke="#d9dde3" stroke-width="1"/>
+            <line x1="34" y1="17" x2="34" y2="101" stroke="#d9dde3" stroke-width="1"/>
+            <line x1="106" y1="17" x2="106" y2="101" stroke="#edf0f3" stroke-width="1"/>
+            <line x1="178" y1="17" x2="178" y2="101" stroke="#edf0f3" stroke-width="1"/>
+            <text x="0" y="22" font-size="13" font-weight="700" fill="#343843">13,000</text>
+            <text x="7" y="50" font-size="13" font-weight="700" fill="#343843">10,000</text>
+            <text x="17" y="78" font-size="13" font-weight="700" fill="#343843">7,000</text>
+            <text x="17" y="105" font-size="13" font-weight="700" fill="#343843">4,000</text>
+            <text x="24" y="109" font-size="13" font-weight="700" fill="#343843" transform="translate(0 14)">4/20</text>
+            <text x="98" y="109" font-size="13" font-weight="700" fill="#343843" transform="translate(0 14)">4/30</text>
+            <text x="172" y="109" font-size="13" font-weight="700" fill="#343843" transform="translate(0 14)">5/10</text>
+            <text x="226" y="109" font-size="13" font-weight="700" fill="#343843" transform="translate(0 14)">5/19</text>
+          </g>
+        </defs>
+      </svg>
+    </section>
+  </main>
+  <script>
+    const WEEKLY_RANKING_STYLES = [
+      { bg: "linear-gradient(135deg,#fff4b8,#ffe57b)", rank: "#e5a400", chart: "#f05a1a" },
+      { bg: "linear-gradient(135deg,#f4f4f4,#d6d7d9)", rank: "#777b82", chart: "#168ee3" },
+      { bg: "linear-gradient(135deg,#ffd6a8,#f2a25e)", rank: "#b76522", chart: "#4dae4f" },
+      { bg: "linear-gradient(135deg,#daf9ff,#a7e2ee)", rank: "#168da7", chart: "#7a55de" },
+      { bg: "linear-gradient(135deg,#e8f7ff,#b9e6ff)", rank: "#148cc3", chart: "#ff9700" }
+    ];
+    const WEEKLY_RANKING_GAS_URL = "https://script.google.com/macros/s/AKfycbxo7yT3rejT_pNMIwYcE_yjbK0AkRBwHC_hHVtGuE6_CLOQpQdAluW6U_SYPnCb-34m/exec";
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[ch]));
+    }
+
+    function numOrNull(value) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function toISODate(value) {
+      const d = new Date(String(value || ""));
+      if (Number.isNaN(d.getTime())) return "";
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function addDays(iso, days) {
+      const d = new Date(`${iso}T00:00:00`);
+      d.setDate(d.getDate() + days);
+      return toISODate(d);
+    }
+
+    function formatDateLabel(iso) {
+      const d = new Date(`${iso}T00:00:00`);
+      if (Number.isNaN(d.getTime())) return "-";
+      const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}/${m}/${day} (${weekdays[d.getDay()]})`;
+    }
+
+    function formatPrice(value) {
+      const n = numOrNull(value);
+      if (n == null) return "-";
+      return `¥${n.toLocaleString("ja-JP", { maximumFractionDigits: 1 })}`;
+    }
+
+    function formatAxisPrice(value) {
+      const n = numOrNull(value);
+      if (n == null) return "-";
+      if (Math.abs(n) >= 10000) return `${(n / 10000).toFixed(n % 10000 === 0 ? 0 : 1)}万`;
+      return Math.round(n).toLocaleString("ja-JP");
+    }
+
+    function formatAxisDate(iso) {
+      const d = new Date(`${iso}T00:00:00`);
+      if (Number.isNaN(d.getTime())) return "";
+      return `${d.getMonth() + 1}/${d.getDate()}`;
+    }
+
+    function formatReleaseDate(sleeve) {
+      const rawDate = sleeve.releaseDate || sleeve.release_date || sleeve.date || sleeve["発売日"];
+      const iso = toISODate(rawDate);
+      if (iso) {
+        const [year, month, day] = iso.split("-");
+        return `${year}年${month}月${day}日`;
+      }
+      const year = numOrNull(sleeve.releaseYear);
+      return year ? `${Math.round(year)}年--月--日` : "-";
+    }
+
+    function formatPercent(value) {
+      const n = numOrNull(value);
+      if (n == null) return "-";
+      return `${n > 0 ? "+" : ""}${n.toFixed(1)}%`;
+    }
+
+    function getWeeklyRows(sleeve) {
+      const map = new Map();
+      const arr = Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      for (const row of arr) {
+        const week = toISODate(row && row.week);
+        const price = numOrNull(row && row.price);
+        const count = numOrNull(row && row.count);
+        if (!week || !(price > 0)) continue;
+        map.set(week, { week, price, count: Number.isFinite(count) ? count : 0 });
+      }
+      return Array.from(map.values()).sort((a, b) => a.week.localeCompare(b.week));
+    }
+
+    function buildSurgeRows(sleeves) {
+      const validSleeves = sleeves.filter((sleeve) => sleeve && sleeve.id && sleeve.name);
+      const latestWeek = validSleeves.reduce((latest, sleeve) => {
+        const rows = getWeeklyRows(sleeve);
+        const row = rows[rows.length - 1];
+        return row && row.week > latest ? row.week : latest;
+      }, "");
+
+      const rows = validSleeves.map((sleeve) => {
+        const weekly = getWeeklyRows(sleeve);
+        const latestIndex = weekly.findIndex((row) => row.week === latestWeek);
+        if (latestIndex <= 0) return null;
+        const latest = weekly[latestIndex];
+        const prev = weekly[latestIndex - 1];
+        const diff = latest.price - prev.price;
+        if (!(diff > 0)) return null;
+        const rate = prev.price > 0 ? (diff / prev.price) * 100 : null;
+        return { sleeve, weekly, latest, prev, diff, rate };
+      }).filter(Boolean);
+
+      rows.sort((a, b) => {
+        const diff = b.diff - a.diff;
+        if (diff !== 0) return diff;
+        return (b.rate || 0) - (a.rate || 0);
+      });
+
+      return { latestWeek, rows };
+    }
+
+    function buildNameHtml(name) {
+      const text = String(name || "").trim();
+      if (text.length <= 14) return escapeHtml(text);
+      const separators = ["」", "の", "を", "＆", "・", "：", " ", "　"];
+      let splitAt = -1;
+      for (const sep of separators) {
+        const idx = text.indexOf(sep, 8);
+        if (idx > 0 && idx < text.length - 1) {
+          splitAt = idx + (sep === " " || sep === "　" ? 0 : 1);
+          break;
+        }
+      }
+      if (splitAt < 0) splitAt = Math.ceil(text.length / 2);
+      return `${escapeHtml(text.slice(0, splitAt))}<br>${escapeHtml(text.slice(splitAt))}`;
+    }
+
+    function getCategoryTagValues(sleeve) {
+      const seen = new Set();
+      return ["category7", "category8", "category9"].map((key) => String(sleeve && sleeve[key] || "").trim())
+        .filter((value) => {
+          if (!value || seen.has(value)) return false;
+          seen.add(value);
+          return true;
+        });
+    }
+
+    function buildCategoryTagsHtml(sleeve) {
+      const tags = getCategoryTagValues(sleeve);
+      if (!tags.length) return "";
+      return `<div class="category-tags">${tags.map((tag) => `<span class="category-tag">${escapeHtml(tag)}</span>`).join("")}</div>`;
+    }
+
+    function buildChartSvg(row, color) {
+      const points = row.weekly.slice(-8);
+      if (points.length < 2) {
+        return `<svg class="chart" viewBox="0 0 260 110" aria-hidden="true"><text x="130" y="58" text-anchor="middle" font-size="14" font-weight="800" fill="#697386">データ不足</text></svg>`;
+      }
+      const W = 260;
+      const H = 110;
+      const padL = 52;
+      const padR = 12;
+      const padT = 12;
+      const padB = 24;
+      const prices = points.map((p) => p.price);
+      const min = Math.min(...prices);
+      const max = Math.max(...prices);
+      const span = Math.max(1, max - min);
+      const coords = points.map((point, index) => {
+        const x = padL + ((W - padL - padR) * (index / Math.max(1, points.length - 1)));
+        const y = padT + ((max - point.price) / span) * (H - padT - padB);
+        return { x, y };
+      });
+      const lineD = coords.map((p, index) => `${index ? "L" : "M"}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
+      const areaD = `${lineD} L${coords[coords.length - 1].x.toFixed(1)} ${H - padB} L${coords[0].x.toFixed(1)} ${H - padB} Z`;
+      const grid = [padT, padT + (H - padT - padB) / 2, H - padB]
+        .map((y) => `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="#d9dde3" stroke-width="1"/>`)
+        .join("");
+      const last = coords[coords.length - 1];
+      const axisFont = 10;
+      const yTicks = [
+        { value: max, y: padT },
+        { value: min + (span / 2), y: padT + (H - padT - padB) / 2 },
+        { value: min, y: H - padB }
+      ].map((tick) => `
+        <text x="${padL - 6}" y="${tick.y + 4}" text-anchor="end" font-size="${axisFont}" font-weight="800" fill="#343843">${formatAxisPrice(tick.value)}</text>
+      `).join("");
+      const firstLabel = formatAxisDate(points[0].week);
+      const lastLabel = formatAxisDate(points[points.length - 1].week);
+      return `
+        <svg class="chart" viewBox="0 0 ${W} ${H}" aria-hidden="true">
+          ${grid}
+          <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#d9dde3" stroke-width="1"/>
+          <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#d9dde3" stroke-width="1"/>
+          ${yTicks}
+          <text x="${padL}" y="${H - 4}" text-anchor="start" font-size="${axisFont}" font-weight="800" fill="#343843">${escapeHtml(firstLabel)}</text>
+          <text x="${W - padR}" y="${H - 4}" text-anchor="end" font-size="${axisFont}" font-weight="800" fill="#343843">${escapeHtml(lastLabel)}</text>
+          <path d="${areaD}" fill="${color}" opacity=".10"/>
+          <path d="${lineD}" fill="none" stroke="${color}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="6" fill="${color}"/>
+        </svg>
+      `;
+    }
+
+    function buildRankRow(row, rank) {
+      const style = WEEKLY_RANKING_STYLES[rank - 1] || WEEKLY_RANKING_STYLES[0];
+      const sleeve = row.sleeve;
+      const releaseDate = escapeHtml(formatReleaseDate(sleeve));
+      const categoryTags = buildCategoryTagsHtml(sleeve);
+      const smallCrown = rank === 1 ? `<div class="small-crown">♛</div>` : "";
+      return `
+        <article class="rank-row" style="--rank-bg:${style.bg};--rank-color:${style.rank};--chart-color:${style.chart};">
+          <div class="rank-medal"><div class="rank-medal-inner">${smallCrown}<div class="rank-number">${rank}</div><div class="laurel">〈〉</div></div></div>
+          <div class="sleeve-info">
+            <div class="sleeve-art">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}</div>
+            <div class="sleeve-copy"><div class="sleeve-name">${buildNameHtml(sleeve.name)}</div><div class="release"><span class="release-badge">発売日</span><span>${releaseDate}</span></div>${categoryTags}</div>
+          </div>
+          <div class="price-box"><span class="price-badge">現在価格</span><div class="price">${formatPrice(row.latest.price)}</div><div class="prev">前回価格：${formatPrice(row.prev.price)}</div></div>
+          <div class="delta-box"><span class="delta-badge">前回比</span><div class="delta">${formatPercent(row.rate)}</div><div class="delta-arrow">➜</div></div>
+          <div class="chart-card"><div class="chart-title">価格推移 (直近データ)</div>${buildChartSvg(row, style.chart)}</div>
+        </article>
+      `;
+    }
+
+    async function loadWeeklyRankingData() {
+      const sources = [
+        { url: WEEKLY_RANKING_GAS_URL, cache: "no-store", label: "GAS" },
+        { url: "./data.json", cache: "reload", label: "data.json" }
+      ];
+      let lastError = null;
+      for (const source of sources) {
+        try {
+          const res = await fetch(source.url, { cache: source.cache });
+          if (!res.ok) throw new Error(`${source.label} の取得に失敗しました (${res.status})`);
+          const data = await res.json();
+          if (Array.isArray(data && data.sleeves)) return data;
+          throw new Error(`${source.label} に sleeves がありません`);
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error("ランキングデータの取得に失敗しました");
+    }
+
+    async function renderWeeklyRanking() {
+      const data = await loadWeeklyRankingData();
+      const sleeves = Array.isArray(data && data.sleeves) ? data.sleeves : [];
+      const { latestWeek, rows } = buildSurgeRows(sleeves);
+      const topRows = rows.slice(0, 5);
+      if (!latestWeek || topRows.length === 0) return;
+
+      const periodDates = document.querySelectorAll(".period-date");
+      if (periodDates[0]) periodDates[0].textContent = formatDateLabel(latestWeek);
+      if (periodDates[1]) periodDates[1].textContent = formatDateLabel(addDays(latestWeek, 6));
+
+      const firstRankRow = document.querySelector(".rank-row");
+      const parent = firstRankRow && firstRankRow.parentElement;
+      if (!parent) return;
+      document.querySelectorAll(".rank-row").forEach((row) => row.remove());
+      const footer = document.querySelector(".footer");
+      const html = topRows.map((row, index) => buildRankRow(row, index + 1)).join("");
+      if (footer) footer.insertAdjacentHTML("beforebegin", html);
+      else parent.insertAdjacentHTML("beforeend", html);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderWeeklyRanking().catch((error) => {
+        console.error(error);
+      });
+    });
+  </script>
+</body>
+</html>
