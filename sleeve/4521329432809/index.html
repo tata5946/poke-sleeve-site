@@ -7,12 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022"
      crossorigin="anonymous"></script>
-  <title>にたものどうし ゾロア＆ヒスイゾロア | ポケスリ相場ナビ</title>
-  <meta name="description" content="にたものどうし ゾロア＆ヒスイゾロア / 発売年 2025 / シリーズ 公式 / 状態 未開封 の価格推移ページです。" />
-  <meta property="og:title" content="にたものどうし ゾロア＆ヒスイゾロア | ポケスリ相場ナビ" />
-  <meta property="og:description" content="にたものどうし ゾロア＆ヒスイゾロア / 発売年 2025 / シリーズ 公式 / 状態 未開封 の価格推移ページです。" />
-  <meta property="og:image" content="https://drive.google.com/thumbnail?id=1g8Sq-7yiowjN6SdTcMen-LzjDkd0ZIHl&sz=w1200" />
-  <meta property="og:url" content="https://pokesuri-navi.com/sleeve/4521329432809/" />
+    <title>にたものどうし ゾロア＆ヒスイゾロア | ポケスリ相場ナビ</title>
+    <meta name="description" content="にたものどうし ゾロア＆ヒスイゾロア / 発売年 2025 / シリーズ 公式 / 状態 未開封 の価格推移ページです。" />
+    <meta property="og:title" content="にたものどうし ゾロア＆ヒスイゾロア | ポケスリ相場ナビ" />
+    <meta property="og:description" content="にたものどうし ゾロア＆ヒスイゾロア / 発売年 2025 / シリーズ 公式 / 状態 未開封 の価格推移ページです。" />
+    <meta property="og:image" content="https://drive.google.com/thumbnail?id=1g8Sq-7yiowjN6SdTcMen-LzjDkd0ZIHl&sz=w1200" />
+    <meta property="og:url" content="https://pokesuri-navi.com/sleeve/4521329432809/" />
+  <link rel="canonical" href="/sleeve/4521329432809/" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -396,10 +397,15 @@
       overflow: hidden;
     }
 
-    svg.chart {
+    svg.chart,
+    img.chart {
       width: 100%;
       height: auto;
       display: block;
+    }
+
+    img.chart {
+      background: #fff;
     }
 
     .chart-tooltip {
@@ -2059,7 +2065,7 @@
     </main>
   </div>
 
-    <script>window.__SLEEVE_PAGE_ID = "432809";</script>
+    <script>window.__SLEEVE_PAGE_ID = "432809";window.__SLEEVE_PAGE_DATA = {"id":"432809","name":"にたものどうし ゾロア＆ヒスイゾロア","imageUrl":"https://drive.google.com/thumbnail?id=1g8Sq-7yiowjN6SdTcMen-LzjDkd0ZIHl\u0026sz=w1200","releaseYear":2025,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンセンター","note":"","category1":"ゾロア","category2":"","category3":"","category4":"","category5":"","category6":"","category7":"ヒスイ","category8":"にたものどうしシリーズ","category9":"","pokemonCategories":["ゾロア"],"trainerCategories":[],"categoryTags":["ヒスイ","にたものどうしシリーズ"],"categories":["ゾロア","ヒスイ","にたものどうしシリーズ"],"weeklyPrices":[{"week":"2026-01-05","price":null,"count":0},{"week":"2026-01-12","price":null,"count":0},{"week":"2026-01-19","price":null,"count":0},{"week":"2026-01-26","price":null,"count":0},{"week":"2026-02-02","price":null,"count":0},{"week":"2026-02-09","price":null,"count":0},{"week":"2026-02-16","price":null,"count":0},{"week":"2026-02-23","price":null,"count":0},{"week":"2026-03-02","price":null,"count":0},{"week":"2026-03-09","price":null,"count":0},{"week":"2026-03-16","price":null,"count":0},{"week":"2026-03-23","price":null,"count":0},{"week":"2026-03-30","price":1299,"count":1},{"week":"2026-04-06","price":1299,"count":1},{"week":"2026-04-13","price":null,"count":0},{"week":"2026-04-20","price":799,"count":1},{"week":"2026-04-27","price":null,"count":0}],"monthlyPrices":[{"month":"2025-07-01","price":1500,"count":null,"source":"","shop":"","note":""},{"month":"2025-08-01","price":1299,"count":null,"source":"","shop":"","note":""},{"month":"2025-09-01","price":1111,"count":null,"source":"","shop":"","note":""},{"month":"2025-10-01","price":999.5,"count":null,"source":"","shop":"","note":""},{"month":"2025-12-01","price":1333,"count":null,"source":"","shop":"","note":""},{"month":"2026-03-01","price":1299,"count":null,"source":"","shop":"","note":""},{"month":"2026-04-01","price":1049,"count":null,"source":"","shop":"","note":""}],"yearlyPrices":[{"year":2025,"price":1111,"count":null},{"year":2026,"price":1299,"count":null}],"pricesByYear":{"2025":1111,"2026":1299}};</script>
 
 <script src="./assets/common.js?v=20260501c"></script>
 
@@ -4396,6 +4402,38 @@
       return ticks;
     }
 
+    function svgMarkupToImageSrc(svgMarkup) {
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgMarkup)}`;
+    }
+
+    function rasterizeChartImage(img, svgMarkup, width, height) {
+      if (!img) return;
+      const svgSrc = svgMarkupToImageSrc(svgMarkup);
+      img.src = svgSrc;
+      try {
+        const raster = new Image();
+        raster.onload = () => {
+          try {
+            const scale = Math.max(2, Math.ceil(window.devicePixelRatio || 1));
+            const canvas = document.createElement("canvas");
+            canvas.width = width * scale;
+            canvas.height = height * scale;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) return;
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(raster, 0, 0, canvas.width, canvas.height);
+            img.src = canvas.toDataURL("image/png");
+          } catch (error) {
+            img.src = svgSrc;
+          }
+        };
+        raster.src = svgSrc;
+      } catch (error) {
+        img.src = svgSrc;
+      }
+    }
+
     function getPriceSourceBoundary(points) {
       const list = Array.isArray(points) ? points : [];
       let leftIndex = -1;
@@ -4575,43 +4613,47 @@
         `;
       }).join("");
 
+      const svgMarkup = `
+        <svg class="chart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}">
+          <defs>
+            <linearGradient id="priceAreaGrad-${escapeHtml(containerId)}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1e5bd7" stop-opacity="0.32"></stop>
+              <stop offset="100%" stop-color="#1e5bd7" stop-opacity="0.04"></stop>
+            </linearGradient>
+          </defs>
+          <g>${yGrid.join("")}</g>
+          <g>${yearGuides.join("")}</g>
+          <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
+          <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
+          <path d="${areaD}" fill="url(#priceAreaGrad-${escapeHtml(containerId)})"></path>
+          <g>${volumeBars}</g>
+          <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="${isMobileView ? 5.5 : 4.2}" stroke-linecap="round" stroke-linejoin="round"></path>
+          <g>${boundaryMarks}</g>
+          ${mode === "all" ? `<line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"></line>` : ""}
+          <text x="${firstLabelX}" y="${Math.max(24, firstY - 18)}" text-anchor="start" font-size="${labelFontSize}" font-weight="900" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">開始 ¥${first.price.toLocaleString()}</text>
+          ${latestCallout}
+          ${highLabel}
+          ${lowLabel}
+          <g>${markers}</g>
+          <g>${yLabels.join("")}</g>
+          <g>${xLabels.join("")}</g>
+        </svg>
+      `;
+
       el.innerHTML = `
         <div class="chart-wrap">
           <div class="chart-title">${escapeHtml(title)}</div>
           <div class="chart-tooltip"></div>
           <div class="chart-viewport">
-            <svg class="chart" viewBox="0 0 ${W} ${H}">
-              <defs>
-                <linearGradient id="priceAreaGrad-${escapeHtml(containerId)}" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#1e5bd7" stop-opacity="0.32"></stop>
-                  <stop offset="100%" stop-color="#1e5bd7" stop-opacity="0.04"></stop>
-                </linearGradient>
-              </defs>
-              <g>${yGrid.join("")}</g>
-              <g>${yearGuides.join("")}</g>
-              <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
-              <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
-              <path d="${areaD}" fill="url(#priceAreaGrad-${escapeHtml(containerId)})"></path>
-              <g>${volumeBars}</g>
-              <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="${isMobileView ? 5.5 : 4.2}" stroke-linecap="round" stroke-linejoin="round"></path>
-              <g>${boundaryMarks}</g>
-              ${mode === "all" ? `<line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"></line>` : ""}
-              <text x="${firstLabelX}" y="${Math.max(24, firstY - 18)}" text-anchor="start" font-size="${labelFontSize}" font-weight="900" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">開始 ¥${first.price.toLocaleString()}</text>
-              ${latestCallout}
-              ${highLabel}
-              ${lowLabel}
-              <g>${markers}</g>
-              <g>${yLabels.join("")}</g>
-              <g>${xLabels.join("")}</g>
-              <rect class="chart-hit-area" x="${padL}" y="${padT}" width="${chartW}" height="${chartH}" fill="transparent"></rect>
-            </svg>
+            <img class="chart chart-image" src="${svgMarkupToImageSrc(svgMarkup)}" alt="${escapeHtml(title)}">
           </div>
         </div>
       `;
 
       const wrap = el.querySelector(".chart-wrap");
       const tip = el.querySelector(".chart-tooltip");
-      const hitNodes = Array.from(el.querySelectorAll(".chart-hit-point"));
+      const chartImage = el.querySelector(".chart-image");
+      rasterizeChartImage(chartImage, svgMarkup, W, H);
       const showTip = (ev, index) => {
         const point = data[index];
         if (!wrap || !tip || !point) return;
@@ -4626,12 +4668,34 @@
       const hideTip = () => {
         if (tip) tip.style.display = "none";
       };
-      hitNodes.forEach((node) => {
-        const index = Number(node.getAttribute("data-hit"));
-        node.addEventListener("mouseenter", (ev) => showTip(ev, index));
-        node.addEventListener("mousemove", (ev) => showTip(ev, index));
-        node.addEventListener("click", (ev) => showTip(ev, index));
-      });
+      const nearestIndexFromEvent = (ev) => {
+        if (!chartImage) return -1;
+        const rect = chartImage.getBoundingClientRect();
+        const svgX = ((ev.clientX - rect.left) / Math.max(1, rect.width)) * W;
+        const svgY = ((ev.clientY - rect.top) / Math.max(1, rect.height)) * H;
+        if (svgX < padL || svgX > W - padR || svgY < padT || svgY > H - padB) return -1;
+        let bestIndex = -1;
+        let bestDistance = Infinity;
+        data.forEach((point, index) => {
+          const distance = Math.abs(xToPx(point.timestamp) - svgX);
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            bestIndex = index;
+          }
+        });
+        return bestIndex;
+      };
+      if (chartImage) {
+        chartImage.addEventListener("mousemove", (ev) => {
+          const index = nearestIndexFromEvent(ev);
+          if (index >= 0) showTip(ev, index);
+          else hideTip();
+        });
+        chartImage.addEventListener("click", (ev) => {
+          const index = nearestIndexFromEvent(ev);
+          if (index >= 0) showTip(ev, index);
+        });
+      }
       if (wrap) wrap.addEventListener("mouseleave", hideTip);
     }
 
