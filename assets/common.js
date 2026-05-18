@@ -100,6 +100,7 @@ const HEADER_HTML = `
         <a href="./growth.html" data-nav="growth"><span class="nav-icon" aria-hidden="true">💹</span>高騰率</a>
         <a href="./surge.html" data-nav="surge"><span class="nav-icon" aria-hidden="true">🔥</span>急上昇</a>
         <a href="./index-market.html" data-nav="market"><span class="nav-icon" aria-hidden="true">📈</span>スリーブ指数</a>
+        <a href="./articles.html" data-nav="articles"><span class="nav-icon" aria-hidden="true">📝</span>記事</a>
         <a href="./contact.html" data-nav="contact"><span class="nav-icon" aria-hidden="true">✉️</span>お問い合わせ</a>
       </nav>
     </div>
@@ -152,12 +153,14 @@ function buildDashboardSidebarHtml(activeSidebar = "") {
     <a class="${itemClass("access-ranking")}" href="${escapeHtml(buildSiteHref("access-ranking.html"))}"><span class="sidebar-link-icon" aria-hidden="true">◉</span><span>アクセスランキング</span></a>
     <a class="${itemClass("growth")}" href="${escapeHtml(buildSiteHref("growth.html"))}"><span class="sidebar-link-icon" aria-hidden="true">↗</span><span>高騰率ランキング</span></a>
     <a class="${itemClass("market")}" href="${escapeHtml(buildSiteHref("index-market.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⌁</span><span>市場状況</span></a>
+    <a class="${itemClass("articles")}" href="${escapeHtml(buildSiteHref("articles.html"))}"><span class="sidebar-link-icon" aria-hidden="true">✎</span><span>記事</span></a>
   </nav>
   `;
 }
 
 function getCurrentTopbarKey() {
   const path = String(location.pathname || "").toLowerCase();
+  if (path.includes("article")) return "articles";
   if (path.includes("policy")) return "policy";
   if (path.includes("contact")) return "contact";
   if (path.includes("market") || path.includes("ranking") || path.includes("growth") || path.includes("surge") || path.includes("access-ranking")) return "market";
@@ -177,6 +180,7 @@ function buildDashboardTopbarHtml(activeTopbar = getCurrentTopbarKey()) {
   <nav class="topbar-tabs" aria-label="上部メニュー">
     <a class="${itemClass("dashboard")}" href="${escapeHtml(buildSiteHref("index.html"))}">ホーム</a>
     <a class="${itemClass("market")}" href="${escapeHtml(buildSiteHref("index-market.html"))}">市場状況</a>
+    <a class="${itemClass("articles")}" href="${escapeHtml(buildSiteHref("articles.html"))}">記事</a>
     <a class="${itemClass("policy")}" href="${escapeHtml(buildSiteHref("policy.html"))}">プライバシーポリシー</a>
     <a class="${itemClass("contact")}" href="${escapeHtml(buildSiteHref("contact.html"))}">お問い合わせ</a>
   </nav>
@@ -197,6 +201,7 @@ function getCurrentNavKey() {
   else if (path.includes("growth")) key = "growth";
   else if (path.includes("surge")) key = "surge";
   else if (path.includes("market")) key = "market";
+  else if (path.includes("article")) key = "articles";
   else if (path.includes("contact")) key = "contact";
   else if (path.includes("detail") || path.includes("/sleeve/")) key = "zukan";
   else if (path === "/" || path.endsWith("/index.html")) key = "index";

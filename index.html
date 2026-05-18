@@ -30,6 +30,73 @@
     .home-shell, .home-section { display: grid; }
     .home-shell { gap: 36px; }
     .home-section { gap: 24px; }
+    .home-articles {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid #d7e0ee;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.05);
+    }
+    .home-articles-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .home-articles-title {
+      margin: 0;
+      color: #162238;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: 22px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+    .home-articles-more {
+      color: #1e5bd7;
+      font-size: 13px;
+      font-weight: 900;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .home-article-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .home-article-card {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border: 1px solid #d7e0ee;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      color: #162238;
+      text-decoration: none;
+    }
+    .home-article-card:hover {
+      text-decoration: none;
+      border-color: #bccbe1;
+    }
+    .home-article-meta {
+      color: #667085;
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .home-article-title {
+      margin: 0;
+      color: #162238;
+      font-size: 16px;
+      line-height: 1.42;
+      font-weight: 900;
+    }
+    .home-article-excerpt {
+      margin: 0;
+      color: #667085;
+      font-size: 12px;
+      line-height: 1.7;
+    }
     .home-card {
       background: #fff;
       border: 1px solid #d7e0ee;
@@ -3555,6 +3622,9 @@
         grid-template-columns: 1fr;
         gap: 10px;
       }
+      body.home-page .home-article-grid {
+        grid-template-columns: 1fr;
+      }
       body.home-page .mobile-category-discovery {
         display: grid;
         gap: 0;
@@ -3914,6 +3984,15 @@
             </div>
           </div>
         </section>
+        <section class="home-articles reveal-on-scroll" style="--reveal-delay: 176ms;" aria-label="最新記事">
+          <div class="home-articles-head">
+            <h2 class="home-articles-title">最新記事</h2>
+            <a class="home-articles-more" href="./articles.html">すべて読む</a>
+          </div>
+          <div id="homeArticleGrid" class="home-article-grid">
+            <div class="home-empty">記事を読み込み中です。</div>
+          </div>
+        </section>
         <section id="mobileCategoryDiscovery" class="mobile-category-discovery reveal-on-scroll" style="--reveal-delay: 190ms;" aria-label="スリーブカテゴリ">
           <div class="mobile-category-head">
             <div class="mobile-category-title-wrap">
@@ -3950,7 +4029,7 @@
     </main>
   </div>
 
-  <script src="./assets/common.js?v=20260518a"></script>
+  <script src="./assets/common.js?v=20260518b"></script>
   <script>
     const ACCESS_RANKING_ENDPOINT = window.GAS_URL || "";
     const ACCESS_RANKING_CACHE_KEY = "home_access_ranking_cache_v1";
@@ -4030,6 +4109,67 @@
         }
       } catch (_) {}
       return await window.common.loadData();
+    }
+
+    const HOME_ARTICLE_LOCAL_KEY = "pokeSleeve:articles:local:v1";
+
+    function formatHomeArticleDate(value) {
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return "";
+      return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    function normalizeHomeArticle(article) {
+      if (!article || typeof article !== "object") return null;
+      const slug = String(article.slug || article.id || "").trim();
+      const title = String(article.title || "").trim();
+      if (!slug || !title || String(article.status || "published") === "draft") return null;
+      return {
+        slug,
+        title,
+        excerpt: String(article.excerpt || "").trim(),
+        category: String(article.category || "記事").trim(),
+        publishedAt: String(article.publishedAt || article.updatedAt || "").trim()
+      };
+    }
+
+    async function loadHomeArticles() {
+      let fileArticles = [];
+      try {
+        const res = await fetch("./articles.json", { cache: "reload", headers: { "Accept": "application/json" } });
+        if (res.ok) {
+          const data = await res.json();
+          fileArticles = Array.isArray(data?.articles) ? data.articles : [];
+        }
+      } catch (_) {}
+      let localArticles = [];
+      try {
+        const raw = localStorage.getItem(HOME_ARTICLE_LOCAL_KEY);
+        const data = raw ? JSON.parse(raw) : [];
+        localArticles = Array.isArray(data) ? data : [];
+      } catch (_) {}
+      const map = new Map();
+      [...fileArticles, ...localArticles].forEach((item) => {
+        const article = normalizeHomeArticle(item);
+        if (article) map.set(article.slug, article);
+      });
+      return Array.from(map.values()).sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt))).slice(0, 3);
+    }
+
+    function renderHomeArticles(articles) {
+      const el = document.getElementById("homeArticleGrid");
+      if (!el) return;
+      if (!articles.length) {
+        el.innerHTML = `<div class="home-empty">記事はまだありません。</div>`;
+        return;
+      }
+      el.innerHTML = articles.map((article) => `
+        <a class="home-article-card" href="./article.html?id=${encodeURIComponent(article.slug)}">
+          <div class="home-article-meta">${escapeHtml(article.category)} / ${escapeHtml(formatHomeArticleDate(article.publishedAt))}</div>
+          <h3 class="home-article-title">${escapeHtml(article.title)}</h3>
+          <p class="home-article-excerpt">${escapeHtml(article.excerpt || "記事を読む")}</p>
+        </a>
+      `).join("");
     }
 
     const weeklyPairCache = new WeakMap();
@@ -4769,6 +4909,14 @@
       renderMobileCategoryDiscovery(sleeves);
       initScrollReveal();
 
+      runDeferred(async () => {
+        try {
+          renderHomeArticles(await loadHomeArticles());
+        } catch (_) {
+          renderHomeArticles([]);
+        }
+      });
+
       runDeferred(() => {
         const marketSeries = buildHomeMarketIndexSeries(sleeves);
         renderMarketSnapshot(marketSeries, sleeves);
@@ -4795,6 +4943,7 @@
 </body>
 
 </html>
+
 
 
 

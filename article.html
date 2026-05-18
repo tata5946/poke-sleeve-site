@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022" crossorigin="anonymous"></script>
+  <title>記事 - ポケスリ相場ナビ</title>
+  <meta name="description" content="ポケカスリーブ相場の記事ページです。" />
+  <meta property="og:title" content="記事 - ポケスリ相場ナビ" />
+  <meta property="og:description" content="ポケカスリーブ相場の記事ページです。" />
+  <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
+  <meta property="og:url" content="https://pokesuri-navi.com/article.html" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/site.css?v=20260501c" />
+  <style>
+    .article-page {
+      display: grid;
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .article-detail {
+      overflow: hidden;
+      border: 1px solid #d7e1f0;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, .05);
+    }
+
+    .article-cover {
+      width: 100%;
+      aspect-ratio: 16 / 7;
+      object-fit: cover;
+      background:
+        radial-gradient(circle at 20% 18%, rgba(255, 204, 0, .34), transparent 30%),
+        radial-gradient(circle at 82% 16%, rgba(30, 91, 215, .2), transparent 28%),
+        linear-gradient(135deg, #f8fbff, #edf4ff);
+    }
+
+    .article-head {
+      display: grid;
+      gap: 10px;
+      padding: clamp(20px, 4vw, 34px);
+      border-bottom: 1px solid #eef2f7;
+    }
+
+    .article-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: #667085;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .article-detail-title {
+      margin: 0;
+      color: #111827;
+      font-size: clamp(30px, 4.8vw, 48px);
+      line-height: 1.14;
+      font-weight: 900;
+    }
+
+    .article-detail-excerpt {
+      max-width: 780px;
+      margin: 0;
+      color: #667085;
+      font-size: 15px;
+      line-height: 1.8;
+      font-weight: 600;
+    }
+
+    .article-body {
+      max-width: 840px;
+      padding: clamp(22px, 4vw, 38px);
+      color: #243044;
+      font-size: 16px;
+      line-height: 2;
+    }
+
+    .article-body h2,
+    .article-body h3 {
+      margin: 2em 0 .6em;
+      color: #111827;
+      line-height: 1.35;
+      font-weight: 900;
+    }
+
+    .article-body h2 { font-size: 1.65em; }
+    .article-body h3 { font-size: 1.28em; }
+    .article-body p { margin: 0 0 1.25em; }
+    .article-body img { max-width: 100%; border-radius: 14px; }
+    .article-body blockquote {
+      margin: 1.4em 0;
+      padding: 14px 18px;
+      border-left: 4px solid #1e5bd7;
+      background: #f4f8ff;
+      color: #344054;
+      font-weight: 700;
+    }
+
+    .article-empty {
+      padding: 22px;
+      border: 1px dashed #bccbe1;
+      border-radius: 18px;
+      background: rgba(255,255,255,.72);
+      color: #667085;
+      font-weight: 800;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body class="page-content-focus" data-hide-global-header="1">
+  <div id="site-header"></div>
+
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー">
+      <div id="dashboardSidebarSlot" data-dashboard-sidebar-active="articles"></div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot" data-dashboard-topbar-active="articles"></div>
+      </header>
+      <div class="dashboard-content">
+        <div class="container page-shell page-shell--content">
+          <nav class="breadcrumb" aria-label="パンくず">
+            <a href="./index.html">ホーム</a>
+            <span class="breadcrumb-sep" aria-hidden="true">></span>
+            <a href="./articles.html">記事</a>
+            <span class="breadcrumb-sep" aria-hidden="true">></span>
+            <span id="breadcrumbTitle" class="breadcrumb-current" aria-current="page">読み込み中</span>
+          </nav>
+
+          <div id="articleMount" class="article-page">
+            <div class="article-empty">記事を読み込み中です。</div>
+          </div>
+
+          <div id="site-footer"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="./assets/common.js?v=20260518b"></script>
+  <script>
+    window.common.setupDashboardChrome({ sidebarActive: "articles", topbarActive: "articles" });
+  </script>
+  <script>
+    const ARTICLE_LOCAL_KEY = "pokeSleeve:articles:local:v1";
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatDate(value) {
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return "";
+      return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    function normalizeArticle(article) {
+      if (!article || typeof article !== "object") return null;
+      const slug = String(article.slug || article.id || "").trim();
+      const title = String(article.title || "").trim();
+      if (!slug || !title) return null;
+      return {
+        id: String(article.id || slug),
+        slug,
+        title,
+        excerpt: String(article.excerpt || "").trim(),
+        category: String(article.category || "相場コラム").trim(),
+        coverImage: String(article.coverImage || "").trim(),
+        publishedAt: String(article.publishedAt || article.updatedAt || "").trim(),
+        status: String(article.status || "published").trim(),
+        html: String(article.html || "")
+      };
+    }
+
+    async function loadArticles() {
+      let fileArticles = [];
+      try {
+        const res = await fetch("./articles.json", { cache: "reload", headers: { "Accept": "application/json" } });
+        if (res.ok) {
+          const data = await res.json();
+          fileArticles = Array.isArray(data?.articles) ? data.articles : [];
+        }
+      } catch (_) {}
+
+      let localArticles = [];
+      try {
+        const raw = localStorage.getItem(ARTICLE_LOCAL_KEY);
+        const data = raw ? JSON.parse(raw) : [];
+        localArticles = Array.isArray(data) ? data : [];
+      } catch (_) {}
+
+      const map = new Map();
+      [...fileArticles, ...localArticles].forEach((item) => {
+        const article = normalizeArticle(item);
+        if (article && article.status !== "draft") map.set(article.slug, article);
+      });
+      return Array.from(map.values()).sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
+    }
+
+    function renderArticle(article) {
+      const mount = document.getElementById("articleMount");
+      const crumb = document.getElementById("breadcrumbTitle");
+      if (!mount) return;
+      if (!article) {
+        if (crumb) crumb.textContent = "記事が見つかりません";
+        document.title = "記事が見つかりません - ポケスリ相場ナビ";
+        mount.innerHTML = `<div class="article-empty">記事が見つかりませんでした。<br><a href="./articles.html">記事一覧へ戻る</a></div>`;
+        return;
+      }
+      if (crumb) crumb.textContent = article.title;
+      document.title = `${article.title} - ポケスリ相場ナビ`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc && article.excerpt) metaDesc.setAttribute("content", article.excerpt);
+      mount.innerHTML = `
+        <article class="article-detail">
+          ${article.coverImage ? `<img class="article-cover" src="${escapeHtml(article.coverImage)}" alt="">` : `<div class="article-cover" aria-hidden="true"></div>`}
+          <header class="article-head">
+            <div class="article-meta">
+              <span>${escapeHtml(article.category || "記事")}</span>
+              <span>${escapeHtml(formatDate(article.publishedAt))}</span>
+            </div>
+            <h1 class="article-detail-title">${escapeHtml(article.title)}</h1>
+            ${article.excerpt ? `<p class="article-detail-excerpt">${escapeHtml(article.excerpt)}</p>` : ""}
+          </header>
+          <div class="article-body">${article.html || "<p>本文がありません。</p>"}</div>
+        </article>
+      `;
+    }
+
+    const id = new URLSearchParams(location.search).get("id") || "";
+    loadArticles().then((articles) => {
+      renderArticle(articles.find((article) => article.slug === id) || null);
+    }).catch(() => renderArticle(null));
+  </script>
+</body>
+
+</html>
+
