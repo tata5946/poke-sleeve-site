@@ -2534,12 +2534,97 @@ footer.site-footer {
     text-decoration: underline;
 }
 
+.article-sleeve-image-only {
+    display: grid;
+    justify-items: center;
+    margin: 1.4em 0;
+}
+
+.article-sleeve-image-only img {
+    width: min(100%, 420px);
+    max-height: 560px;
+    object-fit: contain;
+    border-radius: 18px;
+    background: #f3f6fb;
+    box-shadow: 0 14px 30px rgba(15, 23, 42, .08);
+}
+
+.article-sleeve-embed .chart-wrap {
+    position: relative;
+    margin-top: 0;
+    border: 1px solid var(--border, #d7e1f0);
+    border-radius: 14px;
+    background:
+        radial-gradient(circle at top left, rgba(30, 91, 215, .07), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+    box-shadow: 0 8px 18px rgba(16, 24, 40, .07);
+    padding: 10px;
+    overflow: hidden;
+}
+
+.article-sleeve-embed .chart-viewport {
+    width: 100%;
+    overflow: hidden;
+}
+
+.article-sleeve-embed svg.chart,
+.article-sleeve-embed img.chart {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.article-sleeve-embed .single-observation-card {
+    display: grid;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid #d7e1f0;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.article-sleeve-embed .single-observation-title {
+    margin: 0;
+    color: #667085;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.article-sleeve-embed .single-observation-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.article-sleeve-embed .single-observation-item {
+    padding: 12px;
+    border-radius: 12px;
+    background: #f8fbff;
+}
+
+.article-sleeve-embed .single-observation-item .label {
+    color: #667085;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.article-sleeve-embed .single-observation-item .value {
+    margin-top: 4px;
+    color: #111827;
+    font-size: 18px;
+    font-weight: 900;
+}
+
 @media (max-width: 700px) {
     .article-sleeve-embed__top {
         grid-template-columns: 96px minmax(0, 1fr);
     }
 
     .article-sleeve-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .article-sleeve-embed .single-observation-grid {
         grid-template-columns: 1fr;
     }
 }

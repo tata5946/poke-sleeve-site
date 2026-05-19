@@ -407,6 +407,7 @@
             </div>
           </div>
           <div class="admin-actions">
+            <button id="insertSleeveImageBtn" type="button" class="btn-admin secondary">画像だけ挿入</button>
             <button id="insertSleeveCardBtn" type="button" class="btn-admin secondary">概要カード挿入</button>
             <button id="insertSleeveGraphBtn" type="button" class="btn-admin secondary">グラフ挿入</button>
             <button id="insertSleeveBundleBtn" type="button" class="btn-admin">概要＋グラフ挿入</button>
@@ -508,8 +509,8 @@
     function sanitizeHtml(html) {
       const template = document.createElement("template");
       template.innerHTML = String(html || "");
-      const allowedTags = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "H2", "H3", "UL", "OL", "LI", "A", "IMG", "BLOCKQUOTE", "SPAN", "DIV", "SECTION", "FONT", "SVG", "G", "PATH", "POLYLINE", "LINE", "CIRCLE", "RECT", "TEXT"]);
-      const allowedAttrs = new Set(["href", "src", "alt", "title", "style", "target", "rel", "face", "color", "size", "class", "data-sleeve-id", "viewBox", "viewbox", "xmlns", "role", "aria-hidden", "d", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "points", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "width", "height", "opacity", "font-size", "font-weight"]);
+      const allowedTags = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "H2", "H3", "UL", "OL", "LI", "A", "IMG", "BLOCKQUOTE", "SPAN", "DIV", "SECTION", "FIGURE", "FONT", "SVG", "G", "PATH", "POLYLINE", "LINE", "CIRCLE", "RECT", "TEXT"]);
+      const allowedAttrs = new Set(["href", "src", "alt", "title", "style", "target", "rel", "face", "color", "size", "class", "data-sleeve-id", "viewBox", "viewbox", "xmlns", "role", "aria-hidden", "d", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "stroke-dasharray", "points", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "width", "height", "opacity", "font-size", "font-weight", "text-anchor"]);
 
       const walk = (node) => {
         for (const child of Array.from(node.children)) {
@@ -616,8 +617,44 @@
         .sort((a, b) => a.timestamp - b.timestamp);
     }
 
+    function buildMonthlySeries(sleeve) {
+      return positiveRows(normalizeMonthlyRows(sleeve)).map((row) => ({
+        type: "monthly",
+        date: row.date,
+        timestamp: row.timestamp,
+        price: Math.round(row.price),
+        count: null
+      }));
+    }
+
+    function buildWeeklySeries(sleeve) {
+      return positiveRows(normalizeWeeklyRows(sleeve)).map((row) => ({
+        type: "weekly",
+        date: row.date,
+        timestamp: row.timestamp,
+        price: Math.round(row.price),
+        count: Number.isFinite(row.count) ? Math.round(row.count) : null
+      }));
+    }
+
     function positiveRows(rows) {
       return rows.filter((row) => Number.isFinite(row.price) && row.price > 0);
+    }
+
+    function dedupeSeriesByDate(points) {
+      const priorityOf = (type) => type === "monthly" ? 2 : type === "weekly" ? 1 : 0;
+      const map = new Map();
+      for (const point of points) {
+        const key = String(point?.date || "");
+        if (!key) continue;
+        const prev = map.get(key);
+        if (!prev || priorityOf(point.type) >= priorityOf(prev.type)) map.set(key, point);
+      }
+      return Array.from(map.values()).sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function buildFullPeriodSeries(sleeve) {
+      return dedupeSeriesByDate([...buildMonthlySeries(sleeve), ...buildWeeklySeries(sleeve)]);
     }
 
     function getRecentSeries(sleeve) {
@@ -731,44 +768,204 @@
       return selectedSleeve;
     }
 
-    function buildSleeveChartSvg(sleeve, stats) {
-      const rows = Array.isArray(stats?.series) ? stats.series : [];
-      const W = 760;
-      const H = 260;
-      const chart = { x: 58, y: 28, w: 664, h: 160 };
-      if (!rows.length) {
+    function formatDiffAmount(value) {
+      if (!Number.isFinite(value)) return "-";
+      const sign = value > 0 ? "+" : value < 0 ? "-" : "±";
+      return `${sign}${Math.abs(Math.round(value)).toLocaleString()}円`;
+    }
+
+    function formatDiffRate(value) {
+      if (!Number.isFinite(value)) return "-";
+      const sign = value > 0 ? "+" : value < 0 ? "-" : "±";
+      return `${sign}${Math.abs(value).toFixed(0)}%`;
+    }
+
+    function startOfMonthTs(timestamp) {
+      const d = new Date(timestamp);
+      return new Date(d.getFullYear(), d.getMonth(), 1).getTime();
+    }
+
+    function addMonthsTs(timestamp, count) {
+      const d = new Date(timestamp);
+      return new Date(d.getFullYear(), d.getMonth() + count, 1).getTime();
+    }
+
+    function buildCalendarMonthTicks(minTs, maxTs) {
+      const ticks = [];
+      const startTs = startOfMonthTs(minTs);
+      const endTs = startOfMonthTs(maxTs);
+      for (let ts = startTs; ts <= endTs; ts = addMonthsTs(ts, 1)) {
+        const d = new Date(ts);
+        ticks.push({ ts, year: d.getFullYear(), month: d.getMonth() + 1 });
+      }
+      return ticks;
+    }
+
+    function getPriceSourceBoundary(points) {
+      let leftIndex = -1;
+      let rightIndex = -1;
+      for (let i = 0; i < points.length; i++) {
+        const date = String(points[i]?.date || "").trim();
+        if (/^2024-\d{2}-\d{2}$/.test(date)) leftIndex = i;
+        if (leftIndex >= 0 && i > leftIndex && /^2025-\d{2}-\d{2}$/.test(date)) {
+          rightIndex = i;
+          break;
+        }
+      }
+      if (leftIndex < 0 || rightIndex < 0 || rightIndex <= leftIndex) return null;
+      return {
+        leftIndex,
+        rightIndex,
+        leftLabel: "買取相場ベース",
+        rightLabel: "メルカリ実売ベース"
+      };
+    }
+
+    function buildSleeveChartSvg(sleeve) {
+      const data = buildFullPeriodSeries(sleeve);
+      if (!data.length) {
         return `<p class="article-sleeve-embed__note">表示できる価格推移データがありません。</p>`;
       }
-      const prices = rows.map((row) => row.price);
-      const min = Math.min(...prices);
-      const max = Math.max(...prices);
-      const span = Math.max(1, max - min);
-      const points = rows.map((row, index) => {
-        const x = chart.x + (rows.length === 1 ? chart.w / 2 : (index / (rows.length - 1)) * chart.w);
-        const y = chart.y + chart.h - ((row.price - min) / span) * chart.h;
-        return { x, y, row };
-      });
-      const pointText = points.map((pt) => `${pt.x.toFixed(1)},${pt.y.toFixed(1)}`).join(" ");
-      const areaD = `M ${points[0].x.toFixed(1)} ${chart.y + chart.h} L ${pointText.replaceAll(",", " ")} L ${points[points.length - 1].x.toFixed(1)} ${chart.y + chart.h} Z`;
-      const labels = [0, Math.floor((rows.length - 1) / 2), rows.length - 1].filter((v, i, arr) => arr.indexOf(v) === i);
-      const firstLabel = labels[0];
-      const middleLabel = labels[Math.floor(labels.length / 2)];
-      const lastLabel = labels[labels.length - 1];
+      if (data.length === 1) {
+        const point = data[0];
+        return `
+          <div class="single-observation-card">
+            <p class="single-observation-title">現在確認できる価格</p>
+            <div class="single-observation-grid">
+              <div class="single-observation-item"><div class="label">観測価格</div><div class="value">${point.price.toLocaleString()}円</div></div>
+              <div class="single-observation-item"><div class="label">観測日</div><div class="value">${escapeHtml(formatDateLabel(point.date))}</div></div>
+            </div>
+          </div>
+        `;
+      }
+
+      const W = 940;
+      const H = 480;
+      const padL = 86;
+      const padR = 130;
+      const padT = 26;
+      const padB = 92;
+      const chartW = W - padL - padR;
+      const chartH = H - padT - padB;
+      const xMin = Math.min(...data.map((item) => item.timestamp));
+      const xMax = Math.max(...data.map((item) => item.timestamp));
+      const spanX = Math.max(24 * 60 * 60 * 1000, xMax - xMin);
+      const prices = data.map((item) => item.price);
+      const yMinRaw = Math.min(...prices);
+      const yMaxRaw = Math.max(...prices);
+      const ySpanRaw = Math.max(1, yMaxRaw - yMinRaw);
+      const yPad = Math.max(20, Math.round(ySpanRaw * 0.08));
+      const yMin = yMinRaw - yPad;
+      const yMax = yMaxRaw + yPad;
+      const xToPx = (ts) => padL + ((ts - xMin) / spanX) * chartW;
+      const yToPx = (v) => padT + (1 - ((v - yMin) / Math.max(1, yMax - yMin))) * chartH;
+
+      const yGrid = [];
+      const yLabels = [];
+      for (let i = 0; i <= 3; i++) {
+        const v = yMin + (i / 3) * (yMax - yMin);
+        const y = yToPx(v);
+        yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#dce4f0"></line>`);
+        yLabels.push(`<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="15" fill="#111827">${Math.round(v).toLocaleString()}</text>`);
+      }
+
+      const monthTicks = buildCalendarMonthTicks(xMin, xMax);
+      const labelStep = monthTicks.length > 36 ? 6 : monthTicks.length > 18 ? 3 : 2;
+      const xLabels = monthTicks
+        .filter((tick) => tick.month === 1 || ((tick.month - 1) % labelStep === 0))
+        .map((tick, index, arr) => {
+          const x = xToPx(tick.ts);
+          const label = `${String(tick.year).slice(-2)}/${tick.month}`;
+          const anchor = index === 0 ? "start" : (index === arr.length - 1 ? "end" : "middle");
+          return `<text x="${x}" y="${H - 16}" text-anchor="${anchor}" font-size="16" fill="#111827">${escapeHtml(label)}</text>`;
+        });
+      const yearGuides = monthTicks
+        .filter((tick) => tick.month === 1)
+        .map((tick) => {
+          const x = xToPx(tick.ts);
+          return `
+            <line x1="${x}" y1="${padT}" x2="${x}" y2="${H - padB}" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"></line>
+            <text x="${Math.min(x + 6, W - padR - 4)}" y="${padT + 18}" text-anchor="start" font-size="13.5" font-weight="800" fill="#64748b">${tick.year}</text>
+          `;
+        });
+
+      const lineD = data.map((point, index) => `${index === 0 ? "M" : "L"} ${xToPx(point.timestamp)} ${yToPx(point.price)}`).join(" ");
+      const areaD = `${lineD} L ${xToPx(data[data.length - 1].timestamp)} ${H - padB} L ${xToPx(data[0].timestamp)} ${H - padB} Z`;
+      const first = data[0];
+      const latest = data[data.length - 1];
+      const firstX = xToPx(first.timestamp);
+      const firstY = yToPx(first.price);
+      const latestX = xToPx(latest.timestamp);
+      const latestY = yToPx(latest.price);
+      const diffPrice = latest.price - first.price;
+      const diffRate = first.price > 0 ? ((latest.price / first.price) - 1) * 100 : null;
+      const firstLabelX = Math.min(firstX + 8, W - padR - 150);
+      const latestInfoX = W - 136;
+      const latestInfoY = H - padB + 34;
+      const latestLeaderEndX = latestInfoX - 12;
+      const latestLeaderBottomY = latestInfoY - 18;
+      const latestLeaderStartX = latestX + 11;
+      const latestCallout = `
+        <path d="M ${latestLeaderStartX} ${latestY} L ${latestLeaderEndX} ${latestY} L ${latestLeaderEndX} ${latestLeaderBottomY}" fill="none" stroke="#1e3a5f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <text x="${latestInfoX}" y="${latestInfoY}" text-anchor="start" font-size="15" font-weight="900" fill="#111827">現在 ¥${latest.price.toLocaleString()}</text>
+        <text x="${latestInfoX}" y="${latestInfoY + 18}" text-anchor="start" font-size="13.5" font-weight="900" fill="${diffPrice >= 0 ? "#0f766e" : "#b42318"}">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
+      `;
+      const highIndex = prices.findIndex((value) => value === yMaxRaw);
+      const lowIndex = prices.findIndex((value) => value === yMinRaw);
+      const highPoint = highIndex >= 0 ? data[highIndex] : null;
+      const lowPoint = lowIndex >= 0 ? data[lowIndex] : null;
+      const highLabel = highPoint && highIndex !== 0 && highIndex !== data.length - 1
+        ? `<text x="${Math.min(xToPx(highPoint.timestamp) + 6, W - padR - 84)}" y="${Math.max(18, yToPx(highPoint.price) - 10)}" text-anchor="start" font-size="13.5" font-weight="700" fill="#64748b">高値 ¥${highPoint.price.toLocaleString()}</text>`
+        : "";
+      const lowLabel = lowPoint && lowIndex !== 0 && lowIndex !== data.length - 1 && lowIndex !== highIndex
+        ? `<text x="${Math.min(xToPx(lowPoint.timestamp) + 6, W - padR - 84)}" y="${Math.min(H - padB - 8, yToPx(lowPoint.price) + 16)}" text-anchor="start" font-size="13.5" font-weight="700" fill="#64748b">安値 ¥${lowPoint.price.toLocaleString()}</text>`
+        : "";
+      const sourceBoundary = getPriceSourceBoundary(data);
+      const boundaryX = sourceBoundary
+        ? (xToPx(data[sourceBoundary.leftIndex].timestamp) + xToPx(data[sourceBoundary.rightIndex].timestamp)) / 2
+        : null;
+      const boundaryMarks = sourceBoundary && Number.isFinite(boundaryX)
+        ? `
+          <line x1="${boundaryX}" y1="${padT}" x2="${boundaryX}" y2="${H - padB}" stroke="#1e3a5f" stroke-width="3" stroke-dasharray="8 8"></line>
+          <text x="${Math.max(padL + 18, (padL + boundaryX) / 2)}" y="${padT + 18}" text-anchor="middle" font-size="13.5" font-weight="900" fill="#475467">${escapeHtml(sourceBoundary.leftLabel)}</text>
+          <text x="${Math.min(W - padR - 18, (boundaryX + (W - padR)) / 2)}" y="${padT + 18}" text-anchor="middle" font-size="13.5" font-weight="900" fill="#1e3a5f">${escapeHtml(sourceBoundary.rightLabel)}</text>
+        `
+        : "";
+      const markers = data.map((point, index) => {
+        const cx = xToPx(point.timestamp);
+        const cy = yToPx(point.price);
+        const isLatest = index === data.length - 1;
+        const isFirst = index === 0;
+        const radius = isLatest || isFirst ? 9 : 7;
+        const halo = isLatest ? `<circle cx="${cx}" cy="${cy}" r="${radius + 5}" fill="rgba(30,91,215,0.14)"></circle>` : "";
+        return `
+          ${halo}<circle cx="${cx}" cy="${cy}" r="${radius}" fill="#1e5bd7" stroke="${isLatest ? "#0f172a" : "#1e5bd7"}" stroke-width="${isLatest ? 2.4 : 1.8}"></circle>
+          ${isFirst ? `<circle cx="${cx}" cy="${cy}" r="${radius + 4}" fill="none" stroke="rgba(15,23,42,0.16)" stroke-width="1.8"></circle>` : ""}
+        `;
+      }).join("");
+
       return `
-        <svg class="article-sleeve-chart" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img">
-          <rect x="0" y="0" width="${W}" height="${H}" rx="18" fill="#ffffff"></rect>
-          <line x1="${chart.x}" y1="${chart.y}" x2="${chart.x + chart.w}" y2="${chart.y}" stroke="#e4eaf3" stroke-width="2"></line>
-          <line x1="${chart.x}" y1="${chart.y + chart.h / 2}" x2="${chart.x + chart.w}" y2="${chart.y + chart.h / 2}" stroke="#e4eaf3" stroke-width="2"></line>
-          <line x1="${chart.x}" y1="${chart.y + chart.h}" x2="${chart.x + chart.w}" y2="${chart.y + chart.h}" stroke="#d5deeb" stroke-width="2"></line>
-          <path d="${areaD}" fill="#2563eb" opacity=".12"></path>
-          <polyline points="${pointText}" fill="none" stroke="#2563eb" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline>
-          <circle cx="${points[points.length - 1].x.toFixed(1)}" cy="${points[points.length - 1].y.toFixed(1)}" r="8" fill="#ffffff" stroke="#2563eb" stroke-width="5"></circle>
-          <text x="${chart.x}" y="224" font-size="18" font-weight="800" fill="#667085">${escapeHtml(formatDateLabel(rows[firstLabel].date).slice(5))}</text>
-          <text x="${chart.x + chart.w / 2 - 26}" y="224" font-size="18" font-weight="800" fill="#667085">${escapeHtml(formatDateLabel(rows[middleLabel].date).slice(5))}</text>
-          <text x="${chart.x + chart.w - 54}" y="224" font-size="18" font-weight="800" fill="#667085">${escapeHtml(formatDateLabel(rows[lastLabel].date).slice(5))}</text>
-          <text x="${chart.x}" y="248" font-size="18" font-weight="900" fill="#111827">${escapeHtml(formatPrice(min))}</text>
-          <text x="${chart.x + chart.w - 110}" y="248" font-size="18" font-weight="900" fill="#111827">${escapeHtml(formatPrice(max))}</text>
-        </svg>
+        <div class="chart-wrap article-sleeve-chart-wrap">
+          <div class="chart-viewport">
+            <svg class="chart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}">
+              <g>${yGrid.join("")}</g>
+              <g>${yearGuides.join("")}</g>
+              <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
+              <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
+              <path d="${areaD}" fill="rgba(30,91,215,0.16)"></path>
+              <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <g>${boundaryMarks}</g>
+              <line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"></line>
+              <text x="${firstLabelX}" y="${Math.max(24, firstY - 18)}" text-anchor="start" font-size="16" font-weight="900" fill="#475467">開始 ¥${first.price.toLocaleString()}</text>
+              ${latestCallout}
+              ${highLabel}
+              ${lowLabel}
+              <g>${markers}</g>
+              <g>${yLabels.join("")}</g>
+              <g>${xLabels.join("")}</g>
+            </svg>
+          </div>
+        </div>
       `;
     }
 
@@ -800,17 +997,21 @@
       `;
     }
 
+    function buildSleeveImageHtml(sleeve) {
+      if (!sleeve.imageUrl) {
+        return `<p class="article-sleeve-embed__note">このスリーブには画像URLが登録されていません。</p>`;
+      }
+      return `
+        <figure class="article-sleeve-image-only" data-sleeve-id="${escapeHtml(sleeve.id || "")}">
+          <img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name || "")}">
+        </figure>
+      `;
+    }
+
     function buildSleeveGraphHtml(sleeve) {
-      const stats = buildSleeveStats(sleeve);
-      const latestLabel = stats.latest?.date ? formatDateLabel(stats.latest.date) : "-";
       return `
         <section class="article-sleeve-embed" data-sleeve-id="${escapeHtml(sleeve.id || "")}">
-          <div class="article-sleeve-embed__body">
-            <p class="article-sleeve-embed__eyebrow">PRICE TREND</p>
-            <h3 class="article-sleeve-embed__title">${escapeHtml(sleeve.name || "このスリーブ")} の価格推移</h3>
-            ${buildSleeveChartSvg(sleeve, stats)}
-            <p class="article-sleeve-embed__note">表示期間は直近の有効データを元に自動選択しています。最終観測: ${escapeHtml(latestLabel)}</p>
-          </div>
+          ${buildSleeveChartSvg(sleeve)}
         </section>
       `;
     }
@@ -830,7 +1031,9 @@
     function insertSleeveMaterial(kind) {
       const sleeve = getSelectedSleeve();
       if (!sleeve) return;
-      const html = kind === "card"
+      const html = kind === "image"
+        ? buildSleeveImageHtml(sleeve)
+        : kind === "card"
         ? buildSleeveCardHtml(sleeve)
         : kind === "graph"
           ? buildSleeveGraphHtml(sleeve)
@@ -969,6 +1172,7 @@
         selectedSleeve = resolveSleeveFromInput();
         updateSleevePreview(selectedSleeve);
       });
+      qs("insertSleeveImageBtn").addEventListener("click", () => insertSleeveMaterial("image"));
       qs("insertSleeveCardBtn").addEventListener("click", () => insertSleeveMaterial("card"));
       qs("insertSleeveGraphBtn").addEventListener("click", () => insertSleeveMaterial("graph"));
       qs("insertSleeveBundleBtn").addEventListener("click", () => insertSleeveMaterial("bundle"));
