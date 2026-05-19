@@ -2412,3 +2412,134 @@ footer.site-footer {
         width: 100%;
     }
 }
+
+/* article sleeve embeds */
+.article-sleeve-embed {
+    display: grid;
+    gap: 16px;
+    margin: 1.4em 0;
+    padding: clamp(16px, 3vw, 22px);
+    border: 1px solid #d7e1f0;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, .06);
+}
+
+.article-sleeve-embed__top {
+    display: grid;
+    grid-template-columns: 132px minmax(0, 1fr);
+    gap: 18px;
+    align-items: center;
+}
+
+.article-sleeve-embed__image {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: contain;
+    border-radius: 14px;
+    background: #f3f6fb;
+}
+
+.article-sleeve-embed__body {
+    display: grid;
+    gap: 10px;
+}
+
+.article-sleeve-embed__eyebrow {
+    margin: 0;
+    color: #1e5bd7;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .08em;
+}
+
+.article-sleeve-embed__title {
+    margin: 0;
+    color: #111827;
+    font-size: clamp(20px, 3vw, 28px);
+    line-height: 1.28;
+    font-weight: 900;
+}
+
+.article-sleeve-embed__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.article-sleeve-embed__meta li {
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #eff4ff;
+    color: #1849a9;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.article-sleeve-embed__note {
+    margin: 0;
+    color: #667085;
+    font-size: 13px;
+    line-height: 1.7;
+    font-weight: 700;
+}
+
+.article-sleeve-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.article-sleeve-metric {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #e4eaf3;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.article-sleeve-metric span {
+    color: #667085;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.article-sleeve-metric strong {
+    color: #111827;
+    font-size: clamp(16px, 2.4vw, 22px);
+    line-height: 1.2;
+    font-weight: 900;
+}
+
+.article-sleeve-chart {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.article-sleeve-link {
+    width: fit-content;
+    color: #1e5bd7;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.article-sleeve-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+    .article-sleeve-embed__top {
+        grid-template-columns: 96px minmax(0, 1fr);
+    }
+
+    .article-sleeve-metrics {
+        grid-template-columns: 1fr;
+    }
+}

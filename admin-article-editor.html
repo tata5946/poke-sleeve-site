@@ -172,6 +172,51 @@
       line-height: 1.65;
     }
 
+    .sleeve-tool {
+      display: grid;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid #d5deeb;
+      border-radius: 16px;
+      background: #f8fbff;
+    }
+
+    .sleeve-tool-preview {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      min-height: 92px;
+      padding: 10px;
+      border: 1px solid #e4eaf3;
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .sleeve-tool-preview img {
+      width: 72px;
+      aspect-ratio: 4 / 5;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #f3f6fb;
+    }
+
+    .sleeve-tool-preview strong {
+      display: block;
+      color: #111827;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .sleeve-tool-preview span {
+      display: block;
+      margin-top: 4px;
+      color: var(--admin-muted);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
     .toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -346,6 +391,27 @@
             <input id="dateInput" type="date" />
           </div>
         </div>
+        <section class="sleeve-tool" aria-label="スリーブ素材">
+          <h2 class="panel-title">スリーブ素材</h2>
+          <p class="hint">登録済みスリーブから、画像・概要・価格指標・価格推移グラフを本文へ差し込めます。</p>
+          <div class="field">
+            <label for="sleeveInput">対象スリーブ</label>
+            <input id="sleeveInput" list="sleeveOptions" placeholder="名前またはIDで検索" autocomplete="off" />
+            <datalist id="sleeveOptions"></datalist>
+          </div>
+          <div id="sleevePreview" class="sleeve-tool-preview">
+            <div></div>
+            <div>
+              <strong>データ読み込み中</strong>
+              <span>スリーブを選ぶと概要を確認できます。</span>
+            </div>
+          </div>
+          <div class="admin-actions">
+            <button id="insertSleeveCardBtn" type="button" class="btn-admin secondary">概要カード挿入</button>
+            <button id="insertSleeveGraphBtn" type="button" class="btn-admin secondary">グラフ挿入</button>
+            <button id="insertSleeveBundleBtn" type="button" class="btn-admin">概要＋グラフ挿入</button>
+          </div>
+        </section>
         <div class="admin-actions">
           <button id="newBtn" type="button" class="btn-admin">新規</button>
           <button id="draftBtn" type="button" class="btn-admin secondary">下書き保存</button>
@@ -398,9 +464,12 @@
     </section>
   </main>
 
+  <script src="./assets/common.js?v=20260518b"></script>
   <script>
     const ARTICLE_LOCAL_KEY = "pokeSleeve:articles:local:v1";
     let currentId = "";
+    let sleeveData = [];
+    let selectedSleeve = null;
 
     const qs = (id) => document.getElementById(id);
 
@@ -439,27 +508,31 @@
     function sanitizeHtml(html) {
       const template = document.createElement("template");
       template.innerHTML = String(html || "");
-      const allowedTags = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "H2", "H3", "UL", "OL", "LI", "A", "IMG", "BLOCKQUOTE", "SPAN", "DIV", "FONT"]);
-      const allowedAttrs = new Set(["href", "src", "alt", "title", "style", "target", "rel", "face", "color", "size"]);
+      const allowedTags = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "H2", "H3", "UL", "OL", "LI", "A", "IMG", "BLOCKQUOTE", "SPAN", "DIV", "SECTION", "FONT", "SVG", "G", "PATH", "POLYLINE", "LINE", "CIRCLE", "RECT", "TEXT"]);
+      const allowedAttrs = new Set(["href", "src", "alt", "title", "style", "target", "rel", "face", "color", "size", "class", "data-sleeve-id", "viewBox", "viewbox", "xmlns", "role", "aria-hidden", "d", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "points", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "width", "height", "opacity", "font-size", "font-weight"]);
 
       const walk = (node) => {
         for (const child of Array.from(node.children)) {
-          if (!allowedTags.has(child.tagName)) {
+          const tagName = child.tagName.toUpperCase();
+          if (!allowedTags.has(tagName)) {
             child.replaceWith(...Array.from(child.childNodes));
             continue;
           }
           for (const attr of Array.from(child.attributes)) {
             if (!allowedAttrs.has(attr.name)) child.removeAttribute(attr.name);
           }
-          if (child.tagName === "A") {
+          if (tagName === "A") {
             const href = child.getAttribute("href") || "";
             if (!/^(https?:|\.\/|\/|#)/i.test(href)) child.removeAttribute("href");
             child.setAttribute("target", "_blank");
             child.setAttribute("rel", "noopener");
           }
-          if (child.tagName === "IMG") {
+          if (tagName === "IMG") {
             const src = child.getAttribute("src") || "";
             if (!/^https?:/i.test(src)) child.remove();
+          }
+          if (tagName === "SVG") {
+            child.setAttribute("aria-hidden", "true");
           }
           if (child.hasAttribute("style")) {
             const style = child.getAttribute("style") || "";
@@ -486,6 +559,284 @@
 
     function writeStoredArticles(articles) {
       localStorage.setItem(ARTICLE_LOCAL_KEY, JSON.stringify(articles));
+    }
+
+    function parseDate(value) {
+      const d = new Date(String(value || ""));
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function formatDateLabel(value) {
+      const d = parseDate(value);
+      if (!d) return "-";
+      return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    function formatPrice(value) {
+      const num = Number(value);
+      return Number.isFinite(num) && num > 0 ? `約${Math.round(num).toLocaleString()}円` : "-";
+    }
+
+    function formatPercent(value) {
+      const num = Number(value);
+      if (!Number.isFinite(num)) return "-";
+      return `${num > 0 ? "+" : ""}${num.toFixed(1)}%`;
+    }
+
+    function normalizeWeeklyRows(sleeve) {
+      return (Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [])
+        .map((row) => {
+          const date = String(row?.week || "").trim();
+          const price = Number(row?.price);
+          const count = Number(row?.count);
+          return {
+            date,
+            timestamp: parseDate(date)?.getTime() || 0,
+            price: Number.isFinite(price) && price > 0 ? price : null,
+            count: Number.isFinite(count) ? count : 0
+          };
+        })
+        .filter((row) => row.timestamp > 0)
+        .sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function normalizeMonthlyRows(sleeve) {
+      return (Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [])
+        .map((row) => {
+          const date = String(row?.month || row?.week || "").trim();
+          const price = Number(row?.price);
+          return {
+            date,
+            timestamp: parseDate(date)?.getTime() || 0,
+            price: Number.isFinite(price) && price > 0 ? price : null,
+            count: 1
+          };
+        })
+        .filter((row) => row.timestamp > 0 && row.price != null)
+        .sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function positiveRows(rows) {
+      return rows.filter((row) => Number.isFinite(row.price) && row.price > 0);
+    }
+
+    function getRecentSeries(sleeve) {
+      const weekly = positiveRows(normalizeWeeklyRows(sleeve));
+      if (weekly.length >= 4) {
+        const latestTs = weekly[weekly.length - 1].timestamp;
+        const recent = weekly.filter((row) => row.timestamp >= latestTs - 90 * 24 * 60 * 60 * 1000);
+        return recent.length >= 4 ? recent : weekly.slice(-8);
+      }
+      return positiveRows(normalizeMonthlyRows(sleeve)).slice(-8);
+    }
+
+    function buildSleeveStats(sleeve) {
+      const series = getRecentSeries(sleeve);
+      const latest = series[series.length - 1] || null;
+      const first = series[0] || null;
+      const prev = series.length >= 2 ? series[series.length - 2] : null;
+      const weekly = positiveRows(normalizeWeeklyRows(sleeve));
+      const latestTs = (weekly[weekly.length - 1]?.timestamp || latest?.timestamp || Date.now());
+      const tradeCount30 = weekly
+        .filter((row) => row.timestamp >= latestTs - 30 * 24 * 60 * 60 * 1000)
+        .reduce((sum, row) => sum + (Number.isFinite(row.count) ? row.count : 0), 0);
+      return {
+        series,
+        latest,
+        first,
+        tradeCount30,
+        growthMultiple: first && latest && first.price > 0 ? latest.price / first.price : null,
+        changePct: prev && latest && prev.price > 0 ? ((latest.price - prev.price) / prev.price) * 100 : null
+      };
+    }
+
+    function buildSleeveOptionLabel(sleeve) {
+      return `${String(sleeve?.name || "").trim()} (${String(sleeve?.id || "").trim()})`;
+    }
+
+    function getSleeveTags(sleeve) {
+      return [
+        String(sleeve?.releaseYear || "").trim(),
+        String(sleeve?.series || "").trim(),
+        String(sleeve?.condition || "").trim(),
+        String(sleeve?.acquisitionType || "").trim(),
+        ...(Array.isArray(sleeve?.categories) ? sleeve.categories : [])
+      ].filter(Boolean).slice(0, 6);
+    }
+
+    function buildSleeveHref(sleeve) {
+      if (window.common && typeof window.common.buildSleeveDetailHref === "function") {
+        return window.common.buildSleeveDetailHref(sleeve?.id || "");
+      }
+      const id = String(sleeve?.id || "").trim();
+      const routeId = /^\d{6,7}$/.test(id) ? `4521329${id}` : id;
+      return routeId ? `./sleeve/${encodeURIComponent(routeId)}/` : "./sleeves/";
+    }
+
+    function resolveSleeveFromInput() {
+      const raw = String(qs("sleeveInput")?.value || "").trim();
+      if (!raw) return null;
+      return sleeveData.find((sleeve) => String(sleeve.id || "") === raw)
+        || sleeveData.find((sleeve) => buildSleeveOptionLabel(sleeve) === raw)
+        || sleeveData.find((sleeve) => String(sleeve.name || "").trim() === raw)
+        || null;
+    }
+
+    function updateSleevePreview(sleeve) {
+      const preview = qs("sleevePreview");
+      if (!preview) return;
+      if (!sleeve) {
+        preview.innerHTML = `
+          <div></div>
+          <div>
+            <strong>スリーブ未選択</strong>
+            <span>名前またはIDで検索して、本文へ差し込む素材を選んでください。</span>
+          </div>
+        `;
+        return;
+      }
+      const stats = buildSleeveStats(sleeve);
+      const tags = getSleeveTags(sleeve).join(" / ") || "タグなし";
+      preview.innerHTML = `
+        ${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="">` : "<div></div>"}
+        <div>
+          <strong>${escapeHtml(sleeve.name || "名称未設定")}</strong>
+          <span>ID ${escapeHtml(sleeve.id || "-")} / ${escapeHtml(tags)}<br>最新: ${escapeHtml(formatPrice(stats.latest?.price))} / 30日取引: ${stats.tradeCount30 || 0}件</span>
+        </div>
+      `;
+    }
+
+    async function loadSleevesForTool() {
+      try {
+        const data = window.common && typeof window.common.loadData === "function"
+          ? await window.common.loadData({ forceRefresh: false })
+          : await fetch("./data.json", { cache: "reload" }).then((res) => res.json());
+        sleeveData = Array.isArray(data?.sleeves) ? data.sleeves.filter((sleeve) => sleeve && sleeve.id && sleeve.name) : [];
+      } catch (_) {
+        sleeveData = [];
+      }
+
+      const datalist = qs("sleeveOptions");
+      if (datalist) {
+        const sorted = sleeveData.slice().sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ja"));
+        datalist.innerHTML = sorted.map((sleeve) => `<option value="${escapeHtml(buildSleeveOptionLabel(sleeve))}"></option>`).join("");
+      }
+      updateSleevePreview(null);
+    }
+
+    function getSelectedSleeve() {
+      const resolved = resolveSleeveFromInput();
+      if (resolved) selectedSleeve = resolved;
+      if (!selectedSleeve) setStatus("先にスリーブ素材を選んでください。", "ng");
+      return selectedSleeve;
+    }
+
+    function buildSleeveChartSvg(sleeve, stats) {
+      const rows = Array.isArray(stats?.series) ? stats.series : [];
+      const W = 760;
+      const H = 260;
+      const chart = { x: 58, y: 28, w: 664, h: 160 };
+      if (!rows.length) {
+        return `<p class="article-sleeve-embed__note">表示できる価格推移データがありません。</p>`;
+      }
+      const prices = rows.map((row) => row.price);
+      const min = Math.min(...prices);
+      const max = Math.max(...prices);
+      const span = Math.max(1, max - min);
+      const points = rows.map((row, index) => {
+        const x = chart.x + (rows.length === 1 ? chart.w / 2 : (index / (rows.length - 1)) * chart.w);
+        const y = chart.y + chart.h - ((row.price - min) / span) * chart.h;
+        return { x, y, row };
+      });
+      const pointText = points.map((pt) => `${pt.x.toFixed(1)},${pt.y.toFixed(1)}`).join(" ");
+      const areaD = `M ${points[0].x.toFixed(1)} ${chart.y + chart.h} L ${pointText.replaceAll(",", " ")} L ${points[points.length - 1].x.toFixed(1)} ${chart.y + chart.h} Z`;
+      const labels = [0, Math.floor((rows.length - 1) / 2), rows.length - 1].filter((v, i, arr) => arr.indexOf(v) === i);
+      const firstLabel = labels[0];
+      const middleLabel = labels[Math.floor(labels.length / 2)];
+      const lastLabel = labels[labels.length - 1];
+      return `
+        <svg class="article-sleeve-chart" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img">
+          <rect x="0" y="0" width="${W}" height="${H}" rx="18" fill="#ffffff"></rect>
+          <line x1="${chart.x}" y1="${chart.y}" x2="${chart.x + chart.w}" y2="${chart.y}" stroke="#e4eaf3" stroke-width="2"></line>
+          <line x1="${chart.x}" y1="${chart.y + chart.h / 2}" x2="${chart.x + chart.w}" y2="${chart.y + chart.h / 2}" stroke="#e4eaf3" stroke-width="2"></line>
+          <line x1="${chart.x}" y1="${chart.y + chart.h}" x2="${chart.x + chart.w}" y2="${chart.y + chart.h}" stroke="#d5deeb" stroke-width="2"></line>
+          <path d="${areaD}" fill="#2563eb" opacity=".12"></path>
+          <polyline points="${pointText}" fill="none" stroke="#2563eb" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <circle cx="${points[points.length - 1].x.toFixed(1)}" cy="${points[points.length - 1].y.toFixed(1)}" r="8" fill="#ffffff" stroke="#2563eb" stroke-width="5"></circle>
+          <text x="${chart.x}" y="224" font-size="18" font-weight="800" fill="#667085">${escapeHtml(formatDateLabel(rows[firstLabel].date).slice(5))}</text>
+          <text x="${chart.x + chart.w / 2 - 26}" y="224" font-size="18" font-weight="800" fill="#667085">${escapeHtml(formatDateLabel(rows[middleLabel].date).slice(5))}</text>
+          <text x="${chart.x + chart.w - 54}" y="224" font-size="18" font-weight="800" fill="#667085">${escapeHtml(formatDateLabel(rows[lastLabel].date).slice(5))}</text>
+          <text x="${chart.x}" y="248" font-size="18" font-weight="900" fill="#111827">${escapeHtml(formatPrice(min))}</text>
+          <text x="${chart.x + chart.w - 110}" y="248" font-size="18" font-weight="900" fill="#111827">${escapeHtml(formatPrice(max))}</text>
+        </svg>
+      `;
+    }
+
+    function buildSleeveCardHtml(sleeve) {
+      const stats = buildSleeveStats(sleeve);
+      const tags = getSleeveTags(sleeve);
+      const noteParts = [
+        sleeve.note ? String(sleeve.note).trim() : "",
+        stats.latest?.date ? `最終観測: ${formatDateLabel(stats.latest.date)}` : ""
+      ].filter(Boolean);
+      return `
+        <section class="article-sleeve-embed" data-sleeve-id="${escapeHtml(sleeve.id || "")}">
+          <div class="article-sleeve-embed__top">
+            ${sleeve.imageUrl ? `<img class="article-sleeve-embed__image" src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name || "")}">` : `<div class="article-sleeve-embed__image"></div>`}
+            <div class="article-sleeve-embed__body">
+              <p class="article-sleeve-embed__eyebrow">SLEEVE PICKUP</p>
+              <h2 class="article-sleeve-embed__title">${escapeHtml(sleeve.name || "名称未設定")}</h2>
+              <ul class="article-sleeve-embed__meta">${tags.map((tag) => `<li>${escapeHtml(tag)}</li>`).join("")}</ul>
+              ${noteParts.length ? `<p class="article-sleeve-embed__note">${escapeHtml(noteParts.join(" / "))}</p>` : ""}
+              <a class="article-sleeve-link" href="${escapeHtml(buildSleeveHref(sleeve))}" target="_blank" rel="noopener">スリーブ詳細を見る</a>
+            </div>
+          </div>
+          <div class="article-sleeve-metrics">
+            <div class="article-sleeve-metric"><span>最新相場</span><strong>${escapeHtml(formatPrice(stats.latest?.price))}</strong></div>
+            <div class="article-sleeve-metric"><span>直近変化</span><strong>${escapeHtml(formatPercent(stats.changePct))}</strong></div>
+            <div class="article-sleeve-metric"><span>30日取引数</span><strong>${stats.tradeCount30 ? `約${stats.tradeCount30.toLocaleString()}件` : "-"}</strong></div>
+          </div>
+        </section>
+      `;
+    }
+
+    function buildSleeveGraphHtml(sleeve) {
+      const stats = buildSleeveStats(sleeve);
+      const latestLabel = stats.latest?.date ? formatDateLabel(stats.latest.date) : "-";
+      return `
+        <section class="article-sleeve-embed" data-sleeve-id="${escapeHtml(sleeve.id || "")}">
+          <div class="article-sleeve-embed__body">
+            <p class="article-sleeve-embed__eyebrow">PRICE TREND</p>
+            <h3 class="article-sleeve-embed__title">${escapeHtml(sleeve.name || "このスリーブ")} の価格推移</h3>
+            ${buildSleeveChartSvg(sleeve, stats)}
+            <p class="article-sleeve-embed__note">表示期間は直近の有効データを元に自動選択しています。最終観測: ${escapeHtml(latestLabel)}</p>
+          </div>
+        </section>
+      `;
+    }
+
+    function insertHtmlAtCursor(html) {
+      const editor = qs("editor");
+      editor.focus();
+      const normalized = sanitizeHtml(html);
+      if (document.queryCommandSupported && document.queryCommandSupported("insertHTML")) {
+        document.execCommand("insertHTML", false, normalized);
+      } else {
+        editor.insertAdjacentHTML("beforeend", normalized);
+      }
+      updatePreview();
+    }
+
+    function insertSleeveMaterial(kind) {
+      const sleeve = getSelectedSleeve();
+      if (!sleeve) return;
+      const html = kind === "card"
+        ? buildSleeveCardHtml(sleeve)
+        : kind === "graph"
+          ? buildSleeveGraphHtml(sleeve)
+          : `${buildSleeveCardHtml(sleeve)}${buildSleeveGraphHtml(sleeve)}`;
+      insertHtmlAtCursor(html);
+      setStatus("スリーブ素材を本文へ挿入しました。", "ok");
     }
 
     function readForm(status) {
@@ -592,6 +943,7 @@
       qs("dateInput").value = todayISO();
       fillForm(null);
       renderArticleList();
+      loadSleevesForTool();
 
       document.querySelectorAll("[data-command]").forEach((button) => {
         button.addEventListener("click", () => exec(button.dataset.command));
@@ -613,6 +965,13 @@
         if (url) exec("insertImage", url);
       });
       qs("quoteBtn").addEventListener("click", () => exec("formatBlock", "blockquote"));
+      qs("sleeveInput").addEventListener("change", () => {
+        selectedSleeve = resolveSleeveFromInput();
+        updateSleevePreview(selectedSleeve);
+      });
+      qs("insertSleeveCardBtn").addEventListener("click", () => insertSleeveMaterial("card"));
+      qs("insertSleeveGraphBtn").addEventListener("click", () => insertSleeveMaterial("graph"));
+      qs("insertSleeveBundleBtn").addEventListener("click", () => insertSleeveMaterial("bundle"));
       qs("editor").addEventListener("input", updatePreview);
       ["titleInput", "excerptInput", "categoryInput", "coverInput", "dateInput"].forEach((id) => {
         qs(id).addEventListener("input", updatePreview);
