@@ -164,6 +164,45 @@
       font-family: "Inter", "Noto Sans JP", sans-serif;
       font-weight: 900;
     }
+    .abyss-mini-chart {
+      position: relative;
+      min-height: 86px;
+      overflow: hidden;
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 14px 12px, rgba(15, 118, 110, 0.10), transparent 26px),
+        linear-gradient(180deg, #f8fafc 0%, #eef5f4 100%);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .abyss-mini-chart svg {
+      display: block;
+      width: 100%;
+      height: 86px;
+    }
+    .abyss-mini-chart-empty {
+      min-height: 86px;
+      display: grid;
+      place-items: center;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .abyss-mini-chart-label {
+      position: absolute;
+      left: 8px;
+      color: #64748b;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 900;
+      pointer-events: none;
+    }
+    .abyss-mini-chart-label--max {
+      top: 8px;
+    }
+    .abyss-mini-chart-label--min {
+      bottom: 8px;
+    }
     .abyss-empty {
       padding: 18px;
       border-radius: 8px;
@@ -331,6 +370,69 @@
       return null;
     }
 
+    function getMiniChartPoints(sleeve) {
+      const rows = Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [];
+      return rows
+        .map((row) => {
+          const week = String(row?.week || "").trim();
+          const price = Number(row?.price);
+          if (!week || !Number.isFinite(price) || price <= 0) return null;
+          return { week, price };
+        })
+        .filter(Boolean)
+        .slice(-14);
+    }
+
+    function formatMiniYen(value) {
+      if (!Number.isFinite(value)) return "";
+      if (Math.abs(value) >= 10000) return `\u00a5${(value / 10000).toFixed(1)}\u4e07`;
+      return `\u00a5${Math.round(value).toLocaleString()}`;
+    }
+
+    function buildMiniPriceChart(sleeve) {
+      const points = getMiniChartPoints(sleeve);
+      if (points.length < 2) {
+        return `<div class="abyss-mini-chart abyss-mini-chart-empty">\u4fa1\u683c\u63a8\u79fb\u3092\u89b3\u6e2c\u4e2d</div>`;
+      }
+      const W = 260;
+      const H = 86;
+      const padX = 12;
+      const padT = 10;
+      const padB = 12;
+      const prices = points.map((point) => point.price);
+      const min = Math.min(...prices);
+      const max = Math.max(...prices);
+      const range = Math.max(1, max - min);
+      const x = (index) => padX + (points.length === 1 ? 0 : (index / (points.length - 1)) * (W - padX * 2));
+      const y = (price) => padT + ((max - price) / range) * (H - padT - padB);
+      const line = points.map((point, index) => `${x(index).toFixed(1)},${y(point.price).toFixed(1)}`).join(" ");
+      const area = `${line} ${x(points.length - 1).toFixed(1)},${H - padB} ${padX},${H - padB}`;
+      const latest = points[points.length - 1];
+      const latestX = x(points.length - 1);
+      const latestY = y(latest.price);
+      const midY = padT + (H - padT - padB) / 2;
+      return `
+        <div class="abyss-mini-chart" aria-label="\u4fa1\u683c\u63a8\u79fb\u30b0\u30e9\u30d5">
+          <span class="abyss-mini-chart-label abyss-mini-chart-label--max">${escapeHtml(formatMiniYen(max))}</span>
+          <span class="abyss-mini-chart-label abyss-mini-chart-label--min">${escapeHtml(formatMiniYen(min))}</span>
+          <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="abyssMiniGrad-${escapeHtml(String(sleeve?.id || ""))}" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0f766e" stop-opacity="0.20"></stop>
+                <stop offset="100%" stop-color="#0f766e" stop-opacity="0.02"></stop>
+              </linearGradient>
+            </defs>
+            <line x1="${padX}" y1="${padT}" x2="${W - padX}" y2="${padT}" stroke="rgba(100,116,139,0.16)" stroke-width="1"></line>
+            <line x1="${padX}" y1="${midY.toFixed(1)}" x2="${W - padX}" y2="${midY.toFixed(1)}" stroke="rgba(100,116,139,0.12)" stroke-width="1"></line>
+            <line x1="${padX}" y1="${H - padB}" x2="${W - padX}" y2="${H - padB}" stroke="rgba(100,116,139,0.16)" stroke-width="1"></line>
+            <polygon points="${escapeHtml(area)}" fill="url(#abyssMiniGrad-${escapeHtml(String(sleeve?.id || ""))})"></polygon>
+            <polyline points="${escapeHtml(line)}" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <circle cx="${latestX.toFixed(1)}" cy="${latestY.toFixed(1)}" r="4" fill="#ffffff" stroke="#0f766e" stroke-width="2"></circle>
+          </svg>
+        </div>
+      `;
+    }
+
     function formatReleaseDate(value) {
       const text = String(value || "").trim();
       if (!text) return "\u767a\u58f2\u65e5\u672a\u767b\u9332";
@@ -353,6 +455,7 @@
             <p class="abyss-name">${escapeHtml(name)}</p>
             <p class="abyss-meta">${escapeHtml(formatReleaseDate(sleeve.releaseDate))}</p>
             <p class="abyss-meta abyss-price">${price != null ? `\u6700\u65b0 \u00a5${Math.round(price).toLocaleString()}` : "\u76f8\u5834\u89b3\u6e2c\u4e2d"}</p>
+            ${buildMiniPriceChart(sleeve)}
           </a>
         `;
       }).join("");
