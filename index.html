@@ -4850,20 +4850,97 @@
       if (!track) return;
       const href = getReleaseFeatureHref();
       const imageSrc = "./assets/abyss-eye-banner.png";
-      const cards = Array.from({ length: 5 }, (_, index) => `
-        <a class="release-feature-card release-feature-card--image" href="${escapeHtml(href)}" aria-label="アビスアイ発売関連デッキシールドを見る">
-          <img class="release-feature-image" src="${escapeHtml(imageSrc)}" alt="アビスアイ発売関連デッキシールド" loading="${index === 1 ? "eager" : "lazy"}" decoding="async">
+      const dotCount = 5;
+      const loopSets = 3;
+      const cards = Array.from({ length: dotCount * loopSets }, (_, index) => {
+        const logicalIndex = index % dotCount;
+        return `
+        <a class="release-feature-card release-feature-card--image" href="${escapeHtml(href)}" data-banner-index="${logicalIndex}" aria-label="アビスアイ発売関連デッキシールドを見る">
+          <img class="release-feature-image" src="${escapeHtml(imageSrc)}" alt="アビスアイ発売関連デッキシールド" loading="${index === dotCount + 1 ? "eager" : "lazy"}" decoding="async">
         </a>
-      `);
+      `;
+      });
       track.innerHTML = cards.join("");
+      track.dataset.loopSize = String(dotCount);
       const dots = document.getElementById("releaseBannerDots");
       if (dots) {
-        dots.innerHTML = cards.map((_, index) => `<span class="release-banner-dot${index === 1 ? " is-active" : ""}"></span>`).join("");
+        dots.innerHTML = Array.from({ length: dotCount }, (_, index) => `<span class="release-banner-dot${index === 1 ? " is-active" : ""}"></span>`).join("");
       }
       requestAnimationFrame(() => {
-        const secondCard = track.querySelectorAll(".release-feature-card")[1];
-        if (secondCard) secondCard.scrollIntoView({ inline: "center", block: "nearest" });
+        const initialCard = track.querySelectorAll(".release-feature-card")[dotCount + 1];
+        if (initialCard) initialCard.scrollIntoView({ inline: "center", block: "nearest" });
+        updateReleaseBannerDots(track);
       });
+    }
+
+    function getCenteredReleaseBannerIndex(track) {
+      const cards = Array.from(track.querySelectorAll(".release-feature-card"));
+      if (!cards.length) return 0;
+      const trackRect = track.getBoundingClientRect();
+      const center = trackRect.left + trackRect.width / 2;
+      let bestIndex = 0;
+      let bestDistance = Infinity;
+      cards.forEach((card, index) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(cardCenter - center);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          bestIndex = index;
+        }
+      });
+      return bestIndex;
+    }
+
+    function updateReleaseBannerDots(track) {
+      const loopSize = Number(track?.dataset?.loopSize || 0);
+      if (!track || !loopSize) return;
+      const centeredIndex = getCenteredReleaseBannerIndex(track);
+      const activeIndex = ((centeredIndex % loopSize) + loopSize) % loopSize;
+      const dots = document.querySelectorAll("#releaseBannerDots .release-banner-dot");
+      dots.forEach((dot, index) => dot.classList.toggle("is-active", index === activeIndex));
+    }
+
+    function normalizeReleaseBannerLoop(track) {
+      const loopSize = Number(track?.dataset?.loopSize || 0);
+      if (!track || !loopSize) return;
+      const cards = Array.from(track.querySelectorAll(".release-feature-card"));
+      if (cards.length < loopSize * 3) return;
+      const centeredIndex = getCenteredReleaseBannerIndex(track);
+      let targetIndex = centeredIndex;
+      if (centeredIndex < loopSize) targetIndex = centeredIndex + loopSize;
+      if (centeredIndex >= loopSize * 2) targetIndex = centeredIndex - loopSize;
+      if (targetIndex === centeredIndex) return;
+      const before = track.scrollLeft;
+      cards[targetIndex].scrollIntoView({ inline: "center", block: "nearest" });
+      track.scrollLeft = track.scrollLeft;
+      if (Math.abs(track.scrollLeft - before) < 1) cards[targetIndex].scrollIntoView({ inline: "center", block: "nearest" });
+    }
+
+    function wireReleaseBannerCarousel() {
+      const track = document.getElementById("releaseBannerTrack");
+      const next = document.getElementById("releaseBannerNext");
+      if (!track || track.dataset.carouselWired === "1") return;
+      track.dataset.carouselWired = "1";
+      let scrollTimer = null;
+      track.addEventListener("scroll", () => {
+        updateReleaseBannerDots(track);
+        window.clearTimeout(scrollTimer);
+        scrollTimer = window.setTimeout(() => {
+          normalizeReleaseBannerLoop(track);
+          updateReleaseBannerDots(track);
+        }, 120);
+      }, { passive: true });
+      if (next && next.dataset.wired !== "1") {
+        next.dataset.wired = "1";
+        next.addEventListener("click", () => {
+          const card = track.querySelector(".release-feature-card");
+          const style = window.getComputedStyle(track);
+          const gap = Number.parseFloat(style.columnGap || style.gap || "0") || 0;
+          const amount = card ? card.getBoundingClientRect().width + gap : track.clientWidth * 0.72;
+          track.scrollBy({ left: amount, behavior: "smooth" });
+        });
+      }
     }
 
     function formatPercent(rate, digits = 1) {
@@ -5382,17 +5459,7 @@
       wireSidebarCategoryToggle();
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
       renderReleaseBanner(sleeves);
-      const releaseNext = document.getElementById("releaseBannerNext");
-      const releaseTrack = document.getElementById("releaseBannerTrack");
-      if (releaseNext && releaseTrack && releaseNext.dataset.wired !== "1") {
-        releaseNext.dataset.wired = "1";
-        releaseNext.addEventListener("click", () => {
-          const card = releaseTrack.querySelector(".release-feature-card");
-          const gap = 44;
-          const amount = card ? card.getBoundingClientRect().width + gap : releaseTrack.clientWidth * 0.72;
-          releaseTrack.scrollBy({ left: amount, behavior: "smooth" });
-        });
-      }
+      wireReleaseBannerCarousel();
 
       const priceRank = sleeves.map((s) => ({ s, price: getLatestWeeklyPrice(s) })).filter((row) => row.price != null).sort((a, b) => b.price - a.price).slice(0, 10).map((row) => row.s);
       const surgeRank = sleeves.map((s) => {
