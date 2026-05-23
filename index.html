@@ -2620,6 +2620,111 @@
     .release-banner-dot.is-active {
       background: #0f172a;
     }
+    .release-banner-track--single {
+      display: block;
+    }
+    .release-feature-card {
+      position: relative;
+      display: block;
+      min-height: 216px;
+      overflow: hidden;
+      border-radius: 8px;
+      color: #fff;
+      text-decoration: none;
+      background:
+        linear-gradient(100deg, rgba(7, 13, 31, 0.95) 0%, rgba(13, 32, 75, 0.86) 46%, rgba(19, 111, 125, 0.22) 100%),
+        linear-gradient(135deg, #08111f 0%, #153d7a 48%, #e0b54b 100%);
+      box-shadow: 0 22px 44px rgba(15, 23, 42, 0.14);
+      isolation: isolate;
+    }
+    .release-feature-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 26px 52px rgba(15, 23, 42, 0.18);
+    }
+    .release-feature-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        linear-gradient(90deg, rgba(15, 23, 42, 0.96) 0%, rgba(15, 23, 42, 0.8) 44%, rgba(15, 23, 42, 0.16) 100%),
+        repeating-linear-gradient(135deg, rgba(255,255,255,.09) 0 1px, transparent 1px 18px);
+    }
+    .release-feature-body {
+      position: relative;
+      z-index: 2;
+      min-height: 216px;
+      display: grid;
+      align-content: center;
+      gap: 12px;
+      width: min(58%, 620px);
+      padding: 28px 34px;
+    }
+    .release-feature-chip {
+      width: fit-content;
+      max-width: 100%;
+      padding: 7px 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,.15);
+      color: rgba(255,255,255,.92);
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 900;
+    }
+    .release-feature-title {
+      margin: 0;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: clamp(26px, 3.1vw, 42px);
+      line-height: 1.12;
+      color: #fff;
+      font-weight: 900;
+    }
+    .release-feature-copy {
+      margin: 0;
+      color: rgba(255,255,255,.84);
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 700;
+    }
+    .release-feature-cta {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 13px;
+      border-radius: 8px;
+      background: #fff;
+      color: #0f172a;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .release-feature-products {
+      position: absolute;
+      inset: 18px 18px 18px auto;
+      width: min(42%, 470px);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .release-feature-product {
+      width: clamp(74px, 8.5vw, 112px);
+      aspect-ratio: 2 / 3;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 8px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 18px 26px rgba(0, 0, 0, 0.22);
+      transform: rotate(var(--tilt, 0deg)) translateY(var(--lift, 0px));
+    }
+    .release-feature-product img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 6px;
+    }
     .dashboard-hero {
       display: grid;
       grid-template-columns: minmax(0, 1.7fr) 340px;
@@ -3331,6 +3436,17 @@
       .release-banner-card {
         scroll-snap-align: start;
       }
+      .release-banner-track--single {
+        display: block;
+        overflow: visible;
+        padding-bottom: 0;
+      }
+      .release-feature-body {
+        width: 64%;
+      }
+      .release-feature-products {
+        width: 38%;
+      }
       .dashboard-lower {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -3630,6 +3746,33 @@
       body.home-page .release-banner-image {
         width: 42%;
         right: -16px;
+      }
+      body.home-page .release-banner-track--single {
+        display: block;
+        overflow: visible;
+        padding-bottom: 0;
+      }
+      body.home-page .release-feature-card {
+        min-height: 176px;
+      }
+      body.home-page .release-feature-body {
+        min-height: 176px;
+        width: 72%;
+        padding: 18px;
+      }
+      body.home-page .release-feature-title {
+        font-size: 22px;
+      }
+      body.home-page .release-feature-copy {
+        font-size: 12px;
+      }
+      body.home-page .release-feature-products {
+        inset: 12px 8px 12px auto;
+        width: 34%;
+        gap: 6px;
+      }
+      body.home-page .release-feature-product {
+        width: 58px;
       }
       body.home-page .dashboard-hero {
         gap: 10px;
@@ -4053,19 +4196,9 @@
 
       <div class="dashboard-content">
         <section class="release-banner reveal-on-scroll" style="--reveal-delay: 48ms;" aria-label="新発売スリーブ特集">
-          <div class="release-banner-head">
-            <div>
-              <p class="release-banner-kicker">NEW RELEASE</p>
-              <h2 class="release-banner-title">新発売スリーブ特集</h2>
-            </div>
-            <a id="releaseBannerMore" class="release-banner-more" href="./sleeves/">すべて見る</a>
+          <div id="releaseBannerTrack" class="release-banner-track release-banner-track--single">
+            <div class="release-feature-card skeleton-block"></div>
           </div>
-          <div id="releaseBannerTrack" class="release-banner-track">
-            <div class="release-banner-card skeleton-block"></div>
-            <div class="release-banner-card skeleton-block"></div>
-            <div class="release-banner-card skeleton-block"></div>
-          </div>
-          <div id="releaseBannerDots" class="release-banner-dots" aria-hidden="true"></div>
         </section>
 
         <section class="dashboard-hero" aria-label="市場ヒーロー">
@@ -4661,34 +4794,29 @@
 
     function renderReleaseBanner(sleeves) {
       const track = document.getElementById("releaseBannerTrack");
-      const dots = document.getElementById("releaseBannerDots");
-      const more = document.getElementById("releaseBannerMore");
       if (!track) return;
       const href = getReleaseFeatureHref();
-      if (more) more.href = href;
       const rows = buildReleaseBannerRows(sleeves);
-      if (!rows.length) {
-        track.innerHTML = `<a class="release-banner-card" href="${escapeHtml(href)}"><div class="release-banner-body"><span class="release-banner-chip">NEW RELEASE</span><h3 class="release-banner-name">新発売スリーブを準備中</h3><p class="release-banner-meta">最新データが反映されるとここに表示されます。</p></div></a>`;
-        if (dots) dots.innerHTML = "";
-        return;
-      }
-      track.innerHTML = rows.map(({ sleeve }) => {
-        const latestPrice = getLatestWeeklyPrice(sleeve);
-        const priceText = latestPrice != null ? `最新 ¥${Math.round(latestPrice).toLocaleString()}` : "相場観測中";
-        return `
-          <a class="release-banner-card" href="${escapeHtml(getDetailHref(sleeve.id ?? ""))}">
-            <div class="release-banner-image">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
-            <div class="release-banner-body">
-              <span class="release-banner-chip">NEW RELEASE</span>
-              <h3 class="release-banner-name">${escapeHtml(sleeve.name ?? "")}</h3>
-              <p class="release-banner-meta">${escapeHtml(formatReleaseLabel(sleeve.releaseDate))} / ${escapeHtml(priceText)}</p>
-            </div>
-          </a>
-        `;
+      const productHtml = rows.slice(0, 5).map(({ sleeve }, index) => {
+        const tilts = [-7, 4, -3, 6, -5];
+        const lifts = [8, -10, 0, 12, -5];
+        return sleeve.imageUrl ? `
+          <span class="release-feature-product" style="--tilt:${tilts[index] || 0}deg;--lift:${lifts[index] || 0}px;">
+            <img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.closest('.release-feature-product').style.display='none';">
+          </span>
+        ` : "";
       }).join("");
-      if (dots) {
-        dots.innerHTML = rows.map((_, index) => `<span class="release-banner-dot${index === 0 ? " is-active" : ""}"></span>`).join("");
-      }
+      track.innerHTML = `
+        <a class="release-feature-card" href="${escapeHtml(href)}" aria-label="アビスアイ発売関連デッキシールドを見る">
+          <div class="release-feature-body">
+            <span class="release-feature-chip">FEATURE / NOW BUILDING</span>
+            <h2 class="release-feature-title">アビスアイ発売関連<br>デッキシールド</h2>
+            <p class="release-feature-copy">新発売・関連スリーブをまとめてチェック</p>
+            <span class="release-feature-cta">特集を見る</span>
+          </div>
+          <div class="release-feature-products" aria-hidden="true">${productHtml}</div>
+        </a>
+      `;
     }
 
     function formatPercent(rate, digits = 1) {
