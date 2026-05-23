@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>アビスアイ発売関連デッキシールド | ポケスリ相場ナビ</title>
-  <meta name="description" content="アビスアイ発売関連の新規・再販デッキシールドをまとめて確認できます。" />
-  <meta property="og:title" content="アビスアイ発売関連デッキシールド | ポケスリ相場ナビ" />
-  <meta property="og:description" content="アビスアイ発売関連の新規・再販デッキシールドをまとめて確認できます。" />
+  <title>&#12450;&#12499;&#12473;&#12450;&#12452;&#30330;&#22770;&#38306;&#36899;&#12487;&#12483;&#12461;&#12471;&#12540;&#12523;&#12489; | &#12509;&#12465;&#12473;&#12522;&#30456;&#22580;&#12490;&#12499;</title>
+  <meta name="description" content="&#12450;&#12499;&#12473;&#12450;&#12452;&#30330;&#22770;&#38306;&#36899;&#12398;&#26032;&#35215;&#12539;&#20877;&#36009;&#12487;&#12483;&#12461;&#12471;&#12540;&#12523;&#12489;&#12434;&#12414;&#12392;&#12417;&#12390;&#30906;&#35469;&#12391;&#12365;&#12414;&#12377;&#12290;" />
+  <meta property="og:title" content="&#12450;&#12499;&#12473;&#12450;&#12452;&#30330;&#22770;&#38306;&#36899;&#12487;&#12483;&#12461;&#12471;&#12540;&#12523;&#12489; | &#12509;&#12465;&#12473;&#12522;&#30456;&#22580;&#12490;&#12499;" />
+  <meta property="og:description" content="&#12450;&#12499;&#12473;&#12450;&#12452;&#30330;&#22770;&#38306;&#36899;&#12398;&#26032;&#35215;&#12539;&#20877;&#36009;&#12487;&#12483;&#12461;&#12471;&#12540;&#12523;&#12489;&#12434;&#12414;&#12392;&#12417;&#12390;&#30906;&#35469;&#12391;&#12365;&#12414;&#12377;&#12290;" />
   <meta property="og:image" content="https://pokesuri-navi.com/assets/abyss-eye-banner.png" />
   <meta property="og:url" content="https://pokesuri-navi.com/abyss-eye.html" />
 
@@ -16,104 +16,118 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/site.css?v=20260501c" />
   <style>
-    body {
-      margin: 0;
-      color: #0f172a;
-      background:
-        radial-gradient(circle at 18% 0%, rgba(124, 58, 237, 0.12), transparent 30%),
-        radial-gradient(circle at 85% 16%, rgba(236, 72, 153, 0.10), transparent 28%),
-        linear-gradient(180deg, #f7f9fd 0%, #eef3fb 100%);
-      font-family: "Noto Sans JP", system-ui, sans-serif;
-    }
-    .page-shell {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 28px 0 72px;
+    .abyss-page {
       display: grid;
-      gap: 28px;
+      gap: 24px;
     }
-    .feature-hero {
+    .abyss-hero {
       display: grid;
       gap: 18px;
     }
-    .feature-hero-image {
+    .abyss-hero-image {
       display: block;
       width: 100%;
-      max-height: 360px;
+      max-height: 330px;
       object-fit: cover;
       border-radius: 8px;
       background: #0f172a;
       box-shadow: 0 22px 48px rgba(15, 23, 42, 0.16);
     }
-    .feature-kicker {
-      margin: 0;
+    .abyss-kicker {
+      margin: 0 0 8px;
       color: #7c3aed;
       font-family: "Inter", "Noto Sans JP", sans-serif;
       font-size: 12px;
       font-weight: 900;
       letter-spacing: 0;
     }
-    .feature-title {
+    .abyss-title {
       margin: 0;
-      font-family: "Noto Sans JP", system-ui, sans-serif;
+      color: #0f172a;
       font-size: clamp(28px, 4vw, 44px);
       line-height: 1.12;
       font-weight: 900;
-      color: #0f172a;
     }
-    .feature-copy {
-      margin: 0;
+    .abyss-copy {
       max-width: 760px;
+      margin: 10px 0 0;
       color: #475569;
       font-size: 15px;
       line-height: 1.8;
       font-weight: 700;
     }
-    .feature-section {
+    .abyss-summary {
       display: grid;
-      gap: 16px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
     }
-    .section-head {
+    .abyss-summary-item {
+      padding: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 8px;
+      background: rgba(255,255,255,.94);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+    }
+    .abyss-summary-label {
+      margin: 0 0 8px;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .abyss-summary-value {
+      margin: 0;
+      color: #0f172a;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .abyss-section {
+      display: grid;
+      gap: 14px;
+    }
+    .abyss-section-head {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
       gap: 16px;
-      padding-top: 6px;
     }
-    .section-title {
+    .abyss-section-title {
       margin: 0;
+      color: #0f172a;
       font-size: 24px;
       line-height: 1.2;
       font-weight: 900;
     }
-    .section-count {
+    .abyss-section-count {
       color: #64748b;
       font-size: 13px;
       font-weight: 900;
     }
-    .sleeve-grid {
+    .abyss-grid {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 14px;
     }
-    .sleeve-card {
+    .abyss-card {
       min-width: 0;
       display: grid;
       gap: 10px;
       padding: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255,255,255,.96);
       color: #0f172a;
       text-decoration: none;
       box-shadow: 0 14px 30px rgba(15, 23, 42, 0.07);
-      border: 1px solid rgba(148, 163, 184, 0.22);
       transition: transform .18s ease, box-shadow .18s ease;
     }
-    .sleeve-card:hover {
+    .abyss-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 20px 38px rgba(15, 23, 42, 0.12);
+      text-decoration: none;
     }
-    .sleeve-thumb {
+    .abyss-thumb {
       aspect-ratio: 1 / 1;
       display: grid;
       place-items: center;
@@ -121,15 +135,15 @@
       border-radius: 8px;
       background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
     }
-    .sleeve-thumb img {
+    .abyss-thumb img {
       width: 100%;
       height: 100%;
       object-fit: contain;
       padding: 8px;
     }
-    .sleeve-name {
-      margin: 0;
+    .abyss-name {
       min-height: 42px;
+      margin: 0;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -138,100 +152,134 @@
       line-height: 1.45;
       font-weight: 900;
     }
-    .sleeve-meta {
+    .abyss-meta {
       margin: 0;
       color: #64748b;
       font-size: 12px;
       line-height: 1.45;
       font-weight: 700;
     }
-    .sleeve-price {
+    .abyss-price {
       color: #0f766e;
       font-family: "Inter", "Noto Sans JP", sans-serif;
       font-weight: 900;
     }
-    .page-empty {
+    .abyss-empty {
       padding: 18px;
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255,255,255,.9);
       color: #64748b;
       font-weight: 800;
     }
-    @media (max-width: 980px) {
-      .sleeve-grid {
+    @media (max-width: 1100px) {
+      .abyss-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
-    @media (max-width: 640px) {
-      .page-shell {
-        width: min(100% - 20px, 1180px);
-        padding-top: 14px;
-        gap: 20px;
+    @media (max-width: 700px) {
+      .abyss-summary {
+        grid-template-columns: 1fr;
       }
-      .feature-hero-image {
-        max-height: 220px;
-      }
-      .sleeve-grid {
+      .abyss-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
       }
-      .sleeve-card {
-        padding: 10px;
+      .abyss-hero-image {
+        max-height: 220px;
       }
     }
   </style>
 </head>
 
-<body class="page-content-focus">
+<body class="page-content-focus" data-hide-global-header="1">
   <div id="site-header"></div>
-  <main class="page-shell">
-    <section class="feature-hero" aria-label="アビスアイ発売関連デッキシールド">
-      <img class="feature-hero-image" src="./assets/abyss-eye-banner.png" alt="アビスアイ発売関連デッキシールド" decoding="async">
-      <div>
-        <p class="feature-kicker">FEATURE</p>
-        <h1 class="feature-title">アビスアイ発売関連デッキシールド</h1>
-      </div>
-      <p class="feature-copy">新規発売と再販の関連スリーブをまとめました。各カードから個別ページで相場推移を確認できます。</p>
-    </section>
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="&#12469;&#12452;&#12489;&#12496;&#12540;">
+      <div id="dashboardSidebarSlot" data-dashboard-sidebar-active="zukan"></div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot" data-dashboard-topbar-active="zukan"></div>
+      </header>
+      <div class="dashboard-content">
+        <div class="container page-shell page-shell--content">
+          <nav class="breadcrumb" aria-label="&#12497;&#12531;&#12367;&#12378;">
+            <a href="./index.html">&#12507;&#12540;&#12512;</a>
+            <span class="breadcrumb-sep" aria-hidden="true">&gt;</span>
+            <span class="breadcrumb-current" aria-current="page">&#12450;&#12499;&#12473;&#12450;&#12452;&#30330;&#22770;&#38306;&#36899;&#12487;&#12483;&#12461;&#12471;&#12540;&#12523;&#12489;</span>
+          </nav>
 
-    <section class="feature-section" aria-labelledby="newSleevesTitle">
-      <div class="section-head">
-        <h2 id="newSleevesTitle" class="section-title">新規</h2>
-        <span class="section-count">5件</span>
-      </div>
-      <div id="newSleeveGrid" class="sleeve-grid">
-        <div class="page-empty">読み込み中です。</div>
-      </div>
-    </section>
+          <main class="abyss-page">
+            <section class="abyss-hero" aria-label="&#12450;&#12499;&#12473;&#12450;&#12452;&#30330;&#22770;&#38306;&#36899;&#12487;&#12483;&#12461;&#12471;&#12540;&#12523;&#12489;">
+              <img class="abyss-hero-image" src="./assets/abyss-eye-banner.png" alt="&#12450;&#12499;&#12473;&#12450;&#12452;&#30330;&#22770;&#38306;&#36899;&#12487;&#12483;&#12461;&#12471;&#12540;&#12523;&#12489;" decoding="async">
+              <div>
+                <p class="abyss-kicker">FEATURE</p>
+                <h1 class="abyss-title">&#12450;&#12499;&#12473;&#12450;&#12452;&#30330;&#22770;&#38306;&#36899;&#12487;&#12483;&#12461;&#12471;&#12540;&#12523;&#12489;</h1>
+                <p class="abyss-copy">&#26032;&#35215;&#30330;&#22770;&#12392;&#20877;&#36009;&#12398;&#38306;&#36899;&#12473;&#12522;&#12540;&#12502;&#12434;&#12414;&#12392;&#12417;&#12414;&#12375;&#12383;&#12290;&#21508;&#12459;&#12540;&#12489;&#12363;&#12425;&#20491;&#21029;&#12506;&#12540;&#12472;&#12391;&#30456;&#22580;&#25512;&#31227;&#12434;&#30906;&#35469;&#12391;&#12365;&#12414;&#12377;&#12290;</p>
+              </div>
+            </section>
 
-    <section class="feature-section" aria-labelledby="restockSleevesTitle">
-      <div class="section-head">
-        <h2 id="restockSleevesTitle" class="section-title">再販</h2>
-        <span class="section-count">7件</span>
+            <section class="abyss-summary" aria-label="&#29305;&#38598;&#12469;&#12510;&#12522;&#12540;">
+              <div class="abyss-summary-item">
+                <p class="abyss-summary-label">&#26032;&#35215;</p>
+                <p class="abyss-summary-value">5</p>
+              </div>
+              <div class="abyss-summary-item">
+                <p class="abyss-summary-label">&#20877;&#36009;</p>
+                <p class="abyss-summary-value">7</p>
+              </div>
+              <div class="abyss-summary-item">
+                <p class="abyss-summary-label">&#21512;&#35336;</p>
+                <p class="abyss-summary-value">12</p>
+              </div>
+            </section>
+
+            <section class="abyss-section" aria-labelledby="newSleevesTitle">
+              <div class="abyss-section-head">
+                <h2 id="newSleevesTitle" class="abyss-section-title">&#26032;&#35215;</h2>
+                <span class="abyss-section-count">5&#20214;</span>
+              </div>
+              <div id="newSleeveGrid" class="abyss-grid">
+                <div class="abyss-empty">&#35501;&#12415;&#36796;&#12415;&#20013;&#12391;&#12377;&#12290;</div>
+              </div>
+            </section>
+
+            <section class="abyss-section" aria-labelledby="restockSleevesTitle">
+              <div class="abyss-section-head">
+                <h2 id="restockSleevesTitle" class="abyss-section-title">&#20877;&#36009;</h2>
+                <span class="abyss-section-count">7&#20214;</span>
+              </div>
+              <div id="restockSleeveGrid" class="abyss-grid">
+                <div class="abyss-empty">&#35501;&#12415;&#36796;&#12415;&#20013;&#12391;&#12377;&#12290;</div>
+              </div>
+            </section>
+          </main>
+
+          <div id="site-footer"></div>
+        </div>
       </div>
-      <div id="restockSleeveGrid" class="sleeve-grid">
-        <div class="page-empty">読み込み中です。</div>
-      </div>
-    </section>
-  </main>
+    </main>
+  </div>
 
   <script src="./assets/common.js?v=20260518b"></script>
   <script>
+    window.common.setupDashboardChrome({ sidebarActive: "zukan", topbarActive: "zukan" });
+
     const NEW_SLEEVE_ITEMS = [
-      ["462585", "メガダークライ"],
-      ["462462", "モルペコ"],
-      ["462455", "シルヴァディ＆グラジオ"],
-      ["462486", "ばけがくれ"],
-      ["462509", "ムク＆メガシャンデラ"]
+      ["462585", "\u30e1\u30ac\u30c0\u30fc\u30af\u30e9\u30a4"],
+      ["462462", "\u30e2\u30eb\u30da\u30b3"],
+      ["462455", "\u30b7\u30eb\u30f4\u30a1\u30c7\u30a3\uff06\u30b0\u30e9\u30b8\u30aa"],
+      ["462486", "\u3070\u3051\u304c\u304f\u308c"],
+      ["462509", "\u30e0\u30af\uff06\u30e1\u30ac\u30b7\u30e3\u30f3\u30c7\u30e9"]
     ];
     const RESTOCK_SLEEVE_ITEMS = [
       ["394909", "DOWASURE"],
-      ["323169", "クレヨンミミッキュ"],
-      ["382296", "プレイルーム"],
-      ["373553", "飛翔リザードン"],
-      ["432069", "進化の軌跡 シャンデラ"],
-      ["367798", "COOL×METAL ルカリオ"],
-      ["359571", "ゲンガー"]
+      ["323169", "\u30af\u30ec\u30e8\u30f3\u30df\u30df\u30c3\u30ad\u30e5"],
+      ["382296", "\u30d7\u30ec\u30a4\u30eb\u30fc\u30e0"],
+      ["373553", "\u98db\u7fd4\u30ea\u30b6\u30fc\u30c9\u30f3"],
+      ["432069", "\u9032\u5316\u306e\u8ecc\u8de1 \u30b7\u30e3\u30f3\u30c7\u30e9"],
+      ["367798", "COOL\u00d7METAL \u30eb\u30ab\u30ea\u30aa"],
+      ["359571", "\u30b2\u30f3\u30ac\u30fc"]
     ];
 
     function escapeHtml(value) {
@@ -285,10 +333,10 @@
 
     function formatReleaseDate(value) {
       const text = String(value || "").trim();
-      if (!text) return "発売日未登録";
+      if (!text) return "\u767a\u58f2\u65e5\u672a\u767b\u9332";
       const d = new Date(text);
       if (Number.isNaN(d.getTime())) return text;
-      return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}発売`;
+      return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}\u767a\u58f2`;
     }
 
     function renderItems(targetId, items, sleeveMap) {
@@ -300,11 +348,11 @@
         const price = getLatestPrice(sleeve);
         const imageUrl = String(sleeve.imageUrl || "").trim();
         return `
-          <a class="sleeve-card" href="${escapeHtml(getDetailHref(id))}">
-            <div class="sleeve-thumb">${imageUrl ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(name)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
-            <p class="sleeve-name">${escapeHtml(name)}</p>
-            <p class="sleeve-meta">${escapeHtml(formatReleaseDate(sleeve.releaseDate))}</p>
-            <p class="sleeve-meta sleeve-price">${price != null ? `最新 ¥${Math.round(price).toLocaleString()}` : "相場観測中"}</p>
+          <a class="abyss-card" href="${escapeHtml(getDetailHref(id))}">
+            <div class="abyss-thumb">${imageUrl ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(name)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
+            <p class="abyss-name">${escapeHtml(name)}</p>
+            <p class="abyss-meta">${escapeHtml(formatReleaseDate(sleeve.releaseDate))}</p>
+            <p class="abyss-meta abyss-price">${price != null ? `\u6700\u65b0 \u00a5${Math.round(price).toLocaleString()}` : "\u76f8\u5834\u89b3\u6e2c\u4e2d"}</p>
           </a>
         `;
       }).join("");
@@ -321,7 +369,7 @@
       console.error(error);
       ["newSleeveGrid", "restockSleeveGrid"].forEach((id) => {
         const el = document.getElementById(id);
-        if (el) el.innerHTML = `<div class="page-empty">データの読み込みに失敗しました。</div>`;
+        if (el) el.innerHTML = `<div class="abyss-empty">\u30c7\u30fc\u30bf\u306e\u8aad\u307f\u8fbc\u307f\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002</div>`;
       });
     });
   </script>
