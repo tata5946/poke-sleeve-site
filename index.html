@@ -2459,6 +2459,167 @@
       gap: 28px;
       align-content: start;
     }
+    .release-banner {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+    .release-banner-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      min-width: 0;
+    }
+    .release-banner-kicker {
+      margin: 0 0 4px;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      font-size: 11px;
+      line-height: 1;
+      letter-spacing: 0;
+      color: #64748b;
+      font-weight: 900;
+    }
+    .release-banner-title {
+      margin: 0;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: 20px;
+      line-height: 1.2;
+      color: #0f172a;
+      font-weight: 900;
+    }
+    .release-banner-more {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.88);
+      color: #0f172a;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+    }
+    .release-banner-track {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      min-width: 0;
+    }
+    .release-banner-card {
+      position: relative;
+      min-height: 178px;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #fff;
+      text-decoration: none;
+      box-shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
+      isolation: isolate;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .release-banner-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 22px 42px rgba(15, 23, 42, 0.16);
+    }
+    .release-banner-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.72) 46%, rgba(20, 184, 166, 0.22) 100%),
+        linear-gradient(45deg, #0f172a 0%, #1d4ed8 48%, #f59e0b 100%);
+    }
+    .release-banner-card:nth-child(2)::before {
+      background:
+        linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.66) 46%, rgba(245, 158, 11, 0.24) 100%),
+        linear-gradient(45deg, #111827 0%, #0f766e 48%, #f97316 100%);
+    }
+    .release-banner-card:nth-child(3)::before {
+      background:
+        linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.68) 46%, rgba(244, 63, 94, 0.24) 100%),
+        linear-gradient(45deg, #111827 0%, #7c3aed 48%, #ef4444 100%);
+    }
+    .release-banner-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(90deg, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.66) 46%, rgba(15, 23, 42, 0.16) 100%);
+    }
+    .release-banner-image {
+      position: absolute;
+      right: -10px;
+      bottom: -20px;
+      width: 44%;
+      height: 118%;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+    .release-banner-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 18px 24px rgba(0,0,0,.22));
+    }
+    .release-banner-body {
+      min-height: 178px;
+      display: grid;
+      align-content: end;
+      gap: 9px;
+      width: 72%;
+      padding: 22px;
+    }
+    .release-banner-chip {
+      width: fit-content;
+      max-width: 100%;
+      padding: 6px 9px;
+      border-radius: 6px;
+      background: rgba(255,255,255,.16);
+      color: rgba(255,255,255,.92);
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 900;
+    }
+    .release-banner-name {
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: 22px;
+      line-height: 1.18;
+      color: #fff;
+      font-weight: 900;
+    }
+    .release-banner-meta {
+      margin: 0;
+      color: rgba(255,255,255,.84);
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+    .release-banner-dots {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      min-height: 8px;
+    }
+    .release-banner-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #cbd5e1;
+    }
+    .release-banner-dot.is-active {
+      background: #0f172a;
+    }
     .dashboard-hero {
       display: grid;
       grid-template-columns: minmax(0, 1.7fr) 340px;
@@ -3158,6 +3319,18 @@
       .dashboard-hero {
         grid-template-columns: 1fr;
       }
+      .release-banner-track {
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(300px, 68vw);
+        grid-template-columns: none;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 4px;
+      }
+      .release-banner-card {
+        scroll-snap-align: start;
+      }
       .dashboard-lower {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -3426,6 +3599,37 @@
       body.home-page .dashboard-content {
         padding: 12px 12px 0;
         gap: 12px;
+      }
+      body.home-page .release-banner {
+        gap: 10px;
+      }
+      body.home-page .release-banner-head {
+        align-items: center;
+      }
+      body.home-page .release-banner-title {
+        font-size: 17px;
+      }
+      body.home-page .release-banner-track {
+        grid-auto-columns: minmax(260px, 84vw);
+        gap: 10px;
+      }
+      body.home-page .release-banner-card {
+        min-height: 154px;
+      }
+      body.home-page .release-banner-body {
+        min-height: 154px;
+        width: 76%;
+        padding: 16px;
+      }
+      body.home-page .release-banner-name {
+        font-size: 18px;
+      }
+      body.home-page .release-banner-meta {
+        font-size: 12px;
+      }
+      body.home-page .release-banner-image {
+        width: 42%;
+        right: -16px;
       }
       body.home-page .dashboard-hero {
         gap: 10px;
@@ -3848,6 +4052,22 @@
       </header>
 
       <div class="dashboard-content">
+        <section class="release-banner reveal-on-scroll" style="--reveal-delay: 48ms;" aria-label="新発売スリーブ特集">
+          <div class="release-banner-head">
+            <div>
+              <p class="release-banner-kicker">NEW RELEASE</p>
+              <h2 class="release-banner-title">新発売スリーブ特集</h2>
+            </div>
+            <a id="releaseBannerMore" class="release-banner-more" href="./sleeves/">すべて見る</a>
+          </div>
+          <div id="releaseBannerTrack" class="release-banner-track">
+            <div class="release-banner-card skeleton-block"></div>
+            <div class="release-banner-card skeleton-block"></div>
+            <div class="release-banner-card skeleton-block"></div>
+          </div>
+          <div id="releaseBannerDots" class="release-banner-dots" aria-hidden="true"></div>
+        </section>
+
         <section class="dashboard-hero" aria-label="市場ヒーロー">
           <div id="marketSnapshotCard" class="hero-main-card reveal-on-scroll" style="--reveal-delay: 64ms;">
             <div class="daily-pick-skeleton">
@@ -4098,6 +4318,15 @@
       }
     }
     async function loadHomePrimaryData() {
+      if (window.GAS_URL) {
+        try {
+          const freshData = await window.common.fetchJsonWithTimeout(window.GAS_URL, {
+            timeoutMs: 12000,
+            cacheMode: "no-store"
+          });
+          if (Array.isArray(freshData?.sleeves)) return freshData;
+        } catch (_) {}
+      }
       try {
         const localUrl = new URL("./data.json", document.baseURI || location.href).href;
         const localData = await window.common.fetchJsonWithTimeout(localUrl, {
@@ -4373,6 +4602,93 @@
     function getDetailHref(sleeveId) {
       if (window.common && typeof window.common.buildSleeveDetailHref === "function") return window.common.buildSleeveDetailHref(sleeveId ?? "");
       return `./sleeve/${encodeURIComponent(sleeveId ?? "")}/`;
+    }
+
+    function getReleaseFeatureHref() {
+      if (window.common && typeof window.common.buildSleeveCategoryHref === "function") {
+        return window.common.buildSleeveCategoryHref("", "新発売");
+      }
+      const params = new URLSearchParams();
+      params.set("tag", "新発売");
+      return `./sleeves/?${params.toString()}`;
+    }
+
+    function parseReleaseTime(value) {
+      const text = String(value || "").trim();
+      if (!text) return null;
+      const time = new Date(text).getTime();
+      return Number.isFinite(time) ? time : null;
+    }
+
+    function formatReleaseLabel(value) {
+      const time = parseReleaseTime(value);
+      if (time == null) return "発売日未登録";
+      const d = new Date(time);
+      return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}発売`;
+    }
+
+    function sleeveHasNewReleaseTag(sleeve) {
+      const values = [
+        sleeve?.category1, sleeve?.category2, sleeve?.category3, sleeve?.category4, sleeve?.category5,
+        sleeve?.category6, sleeve?.category7, sleeve?.category8, sleeve?.category9,
+        ...(Array.isArray(sleeve?.categoryTags) ? sleeve.categoryTags : []),
+        ...(Array.isArray(sleeve?.categories) ? sleeve.categories : [])
+      ];
+      return values.some((value) => String(value || "").trim() === "新発売");
+    }
+
+    function buildReleaseBannerRows(sleeves) {
+      const list = Array.isArray(sleeves) ? sleeves : [];
+      const withDates = list
+        .filter((sleeve) => String(sleeve?.id || "").trim() && String(sleeve?.name || "").trim())
+        .map((sleeve) => ({
+          sleeve,
+          releaseTime: parseReleaseTime(sleeve?.releaseDate),
+          tagged: sleeveHasNewReleaseTag(sleeve)
+        }));
+      const latestReleaseTime = Math.max(
+        ...withDates.map((row) => row.releaseTime).filter((time) => time != null)
+      );
+      const cutoff = Number.isFinite(latestReleaseTime) ? latestReleaseTime - (180 * 24 * 60 * 60 * 1000) : null;
+      return withDates
+        .filter((row) => row.tagged || (cutoff != null && row.releaseTime != null && row.releaseTime >= cutoff))
+        .sort((a, b) => {
+          if (a.tagged !== b.tagged) return a.tagged ? -1 : 1;
+          return (b.releaseTime || 0) - (a.releaseTime || 0);
+        })
+        .slice(0, 6);
+    }
+
+    function renderReleaseBanner(sleeves) {
+      const track = document.getElementById("releaseBannerTrack");
+      const dots = document.getElementById("releaseBannerDots");
+      const more = document.getElementById("releaseBannerMore");
+      if (!track) return;
+      const href = getReleaseFeatureHref();
+      if (more) more.href = href;
+      const rows = buildReleaseBannerRows(sleeves);
+      if (!rows.length) {
+        track.innerHTML = `<a class="release-banner-card" href="${escapeHtml(href)}"><div class="release-banner-body"><span class="release-banner-chip">NEW RELEASE</span><h3 class="release-banner-name">新発売スリーブを準備中</h3><p class="release-banner-meta">最新データが反映されるとここに表示されます。</p></div></a>`;
+        if (dots) dots.innerHTML = "";
+        return;
+      }
+      track.innerHTML = rows.map(({ sleeve }) => {
+        const latestPrice = getLatestWeeklyPrice(sleeve);
+        const priceText = latestPrice != null ? `最新 ¥${Math.round(latestPrice).toLocaleString()}` : "相場観測中";
+        return `
+          <a class="release-banner-card" href="${escapeHtml(getDetailHref(sleeve.id ?? ""))}">
+            <div class="release-banner-image">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
+            <div class="release-banner-body">
+              <span class="release-banner-chip">NEW RELEASE</span>
+              <h3 class="release-banner-name">${escapeHtml(sleeve.name ?? "")}</h3>
+              <p class="release-banner-meta">${escapeHtml(formatReleaseLabel(sleeve.releaseDate))} / ${escapeHtml(priceText)}</p>
+            </div>
+          </a>
+        `;
+      }).join("");
+      if (dots) {
+        dots.innerHTML = rows.map((_, index) => `<span class="release-banner-dot${index === 0 ? " is-active" : ""}"></span>`).join("");
+      }
     }
 
     function formatPercent(rate, digits = 1) {
@@ -4890,6 +5206,7 @@
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
       wireSidebarCategoryToggle();
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
+      renderReleaseBanner(sleeves);
 
       const priceRank = sleeves.map((s) => ({ s, price: getLatestWeeklyPrice(s) })).filter((row) => row.price != null).sort((a, b) => b.price - a.price).slice(0, 10).map((row) => row.s);
       const surgeRank = sleeves.map((s) => {
