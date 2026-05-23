@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>アビスアイ発売関連デッキシールド | ポケスリ相場ナビ</title>
+  <meta name="description" content="アビスアイ発売関連の新規・再販デッキシールドをまとめて確認できます。" />
+  <meta property="og:title" content="アビスアイ発売関連デッキシールド | ポケスリ相場ナビ" />
+  <meta property="og:description" content="アビスアイ発売関連の新規・再販デッキシールドをまとめて確認できます。" />
+  <meta property="og:image" content="https://pokesuri-navi.com/assets/abyss-eye-banner.png" />
+  <meta property="og:url" content="https://pokesuri-navi.com/abyss-eye.html" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/site.css?v=20260501c" />
+  <style>
+    body {
+      margin: 0;
+      color: #0f172a;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(124, 58, 237, 0.12), transparent 30%),
+        radial-gradient(circle at 85% 16%, rgba(236, 72, 153, 0.10), transparent 28%),
+        linear-gradient(180deg, #f7f9fd 0%, #eef3fb 100%);
+      font-family: "Noto Sans JP", system-ui, sans-serif;
+    }
+    .page-shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 72px;
+      display: grid;
+      gap: 28px;
+    }
+    .feature-hero {
+      display: grid;
+      gap: 18px;
+    }
+    .feature-hero-image {
+      display: block;
+      width: 100%;
+      max-height: 360px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #0f172a;
+      box-shadow: 0 22px 48px rgba(15, 23, 42, 0.16);
+    }
+    .feature-kicker {
+      margin: 0;
+      color: #7c3aed;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+    .feature-title {
+      margin: 0;
+      font-family: "Noto Sans JP", system-ui, sans-serif;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.12;
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .feature-copy {
+      margin: 0;
+      max-width: 760px;
+      color: #475569;
+      font-size: 15px;
+      line-height: 1.8;
+      font-weight: 700;
+    }
+    .feature-section {
+      display: grid;
+      gap: 16px;
+    }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 6px;
+    }
+    .section-title {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+    .section-count {
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .sleeve-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .sleeve-card {
+      min-width: 0;
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      color: #0f172a;
+      text-decoration: none;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.07);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .sleeve-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 38px rgba(15, 23, 42, 0.12);
+    }
+    .sleeve-thumb {
+      aspect-ratio: 1 / 1;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+    .sleeve-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 8px;
+    }
+    .sleeve-name {
+      margin: 0;
+      min-height: 42px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 900;
+    }
+    .sleeve-meta {
+      margin: 0;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+    .sleeve-price {
+      color: #0f766e;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      font-weight: 900;
+    }
+    .page-empty {
+      padding: 18px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #64748b;
+      font-weight: 800;
+    }
+    @media (max-width: 980px) {
+      .sleeve-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 640px) {
+      .page-shell {
+        width: min(100% - 20px, 1180px);
+        padding-top: 14px;
+        gap: 20px;
+      }
+      .feature-hero-image {
+        max-height: 220px;
+      }
+      .sleeve-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .sleeve-card {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body class="page-content-focus">
+  <div id="site-header"></div>
+  <main class="page-shell">
+    <section class="feature-hero" aria-label="アビスアイ発売関連デッキシールド">
+      <img class="feature-hero-image" src="./assets/abyss-eye-banner.png" alt="アビスアイ発売関連デッキシールド" decoding="async">
+      <div>
+        <p class="feature-kicker">FEATURE</p>
+        <h1 class="feature-title">アビスアイ発売関連デッキシールド</h1>
+      </div>
+      <p class="feature-copy">新規発売と再販の関連スリーブをまとめました。各カードから個別ページで相場推移を確認できます。</p>
+    </section>
+
+    <section class="feature-section" aria-labelledby="newSleevesTitle">
+      <div class="section-head">
+        <h2 id="newSleevesTitle" class="section-title">新規</h2>
+        <span class="section-count">5件</span>
+      </div>
+      <div id="newSleeveGrid" class="sleeve-grid">
+        <div class="page-empty">読み込み中です。</div>
+      </div>
+    </section>
+
+    <section class="feature-section" aria-labelledby="restockSleevesTitle">
+      <div class="section-head">
+        <h2 id="restockSleevesTitle" class="section-title">再販</h2>
+        <span class="section-count">7件</span>
+      </div>
+      <div id="restockSleeveGrid" class="sleeve-grid">
+        <div class="page-empty">読み込み中です。</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./assets/common.js?v=20260518b"></script>
+  <script>
+    const NEW_SLEEVE_ITEMS = [
+      ["462585", "メガダークライ"],
+      ["462462", "モルペコ"],
+      ["462455", "シルヴァディ＆グラジオ"],
+      ["462486", "ばけがくれ"],
+      ["462509", "ムク＆メガシャンデラ"]
+    ];
+    const RESTOCK_SLEEVE_ITEMS = [
+      ["394909", "DOWASURE"],
+      ["323169", "クレヨンミミッキュ"],
+      ["382296", "プレイルーム"],
+      ["373553", "飛翔リザードン"],
+      ["432069", "進化の軌跡 シャンデラ"],
+      ["367798", "COOL×METAL ルカリオ"],
+      ["359571", "ゲンガー"]
+    ];
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function loadFeatureData() {
+      if (window.GAS_URL && window.common && typeof window.common.fetchJsonWithTimeout === "function") {
+        try {
+          const freshData = await window.common.fetchJsonWithTimeout(window.GAS_URL, {
+            timeoutMs: 12000,
+            cacheMode: "no-store"
+          });
+          if (Array.isArray(freshData?.sleeves)) return freshData;
+        } catch (_) {}
+      }
+      if (window.common && typeof window.common.loadData === "function") return await window.common.loadData();
+      const res = await fetch("./data.json", { cache: "reload" });
+      return await res.json();
+    }
+
+    function buildSleeveMap(sleeves) {
+      const map = new Map();
+      for (const sleeve of Array.isArray(sleeves) ? sleeves : []) {
+        const id = String(sleeve?.id || "").trim();
+        if (id) map.set(id, sleeve);
+      }
+      return map;
+    }
+
+    function getDetailHref(id) {
+      if (window.common && typeof window.common.buildSleeveDetailHref === "function") {
+        return window.common.buildSleeveDetailHref(id);
+      }
+      return `./sleeve/${encodeURIComponent(id)}/`;
+    }
+
+    function getLatestPrice(sleeve) {
+      const rows = Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [];
+      for (let i = rows.length - 1; i >= 0; i--) {
+        const price = Number(rows[i]?.price);
+        if (Number.isFinite(price) && price > 0) return price;
+      }
+      return null;
+    }
+
+    function formatReleaseDate(value) {
+      const text = String(value || "").trim();
+      if (!text) return "発売日未登録";
+      const d = new Date(text);
+      if (Number.isNaN(d.getTime())) return text;
+      return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}発売`;
+    }
+
+    function renderItems(targetId, items, sleeveMap) {
+      const root = document.getElementById(targetId);
+      if (!root) return;
+      root.innerHTML = items.map(([id, fallbackName]) => {
+        const sleeve = sleeveMap.get(id) || {};
+        const name = String(sleeve.name || fallbackName || id);
+        const price = getLatestPrice(sleeve);
+        const imageUrl = String(sleeve.imageUrl || "").trim();
+        return `
+          <a class="sleeve-card" href="${escapeHtml(getDetailHref(id))}">
+            <div class="sleeve-thumb">${imageUrl ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(name)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
+            <p class="sleeve-name">${escapeHtml(name)}</p>
+            <p class="sleeve-meta">${escapeHtml(formatReleaseDate(sleeve.releaseDate))}</p>
+            <p class="sleeve-meta sleeve-price">${price != null ? `最新 ¥${Math.round(price).toLocaleString()}` : "相場観測中"}</p>
+          </a>
+        `;
+      }).join("");
+    }
+
+    async function main() {
+      const data = await loadFeatureData();
+      const sleeveMap = buildSleeveMap(data?.sleeves);
+      renderItems("newSleeveGrid", NEW_SLEEVE_ITEMS, sleeveMap);
+      renderItems("restockSleeveGrid", RESTOCK_SLEEVE_ITEMS, sleeveMap);
+    }
+
+    main().catch((error) => {
+      console.error(error);
+      ["newSleeveGrid", "restockSleeveGrid"].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `<div class="page-empty">データの読み込みに失敗しました。</div>`;
+      });
+    });
+  </script>
+</body>
+
+</html>

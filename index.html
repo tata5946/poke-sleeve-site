@@ -4796,12 +4796,7 @@
     }
 
     function getReleaseFeatureHref() {
-      if (window.common && typeof window.common.buildSleeveCategoryHref === "function") {
-        return window.common.buildSleeveCategoryHref("", "新発売");
-      }
-      const params = new URLSearchParams();
-      params.set("tag", "新発売");
-      return `./sleeves/?${params.toString()}`;
+      return "./abyss-eye.html";
     }
 
     function parseReleaseTime(value) {
