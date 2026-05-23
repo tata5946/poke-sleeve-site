@@ -4509,25 +4509,6 @@
       }
     }
     async function loadHomePrimaryData() {
-      if (window.GAS_URL) {
-        try {
-          const freshData = await window.common.fetchJsonWithTimeout(window.GAS_URL, {
-            timeoutMs: 12000,
-            cacheMode: "no-store"
-          });
-          if (Array.isArray(freshData?.sleeves)) return freshData;
-        } catch (_) {}
-      }
-      try {
-        const localUrl = new URL("./data.json", document.baseURI || location.href).href;
-        const localData = await window.common.fetchJsonWithTimeout(localUrl, {
-          timeoutMs: 2500,
-          cacheMode: "reload"
-        });
-        if (Array.isArray(localData?.sleeves) && localData.sleeves.length) {
-          return localData;
-        }
-      } catch (_) {}
       return await window.common.loadData();
     }
 
@@ -4849,7 +4830,7 @@
       const track = document.getElementById("releaseBannerTrack");
       if (!track) return;
       const href = getReleaseFeatureHref();
-      const imageSrc = "./assets/abyss-eye-banner.png";
+      const imageSrc = "./assets/abyss-eye-banner-home.jpg";
       const dotCount = 5;
       const loopSets = 3;
       const cards = Array.from({ length: dotCount * loopSets }, (_, index) => {
@@ -5454,12 +5435,12 @@
         throw new Error("共通データローダーの初期化に失敗しました。");
       }
       wireDashboardSearch();
+      renderReleaseBanner([]);
+      wireReleaseBannerCarousel();
       const data = await loadHomePrimaryData();
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
       wireSidebarCategoryToggle();
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
-      renderReleaseBanner(sleeves);
-      wireReleaseBannerCarousel();
 
       const priceRank = sleeves.map((s) => ({ s, price: getLatestWeeklyPrice(s) })).filter((row) => row.price != null).sort((a, b) => b.price - a.price).slice(0, 10).map((row) => row.s);
       const surgeRank = sleeves.map((s) => {
