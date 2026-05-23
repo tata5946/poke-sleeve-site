@@ -2629,7 +2629,10 @@
       overscroll-behavior-x: contain;
       scroll-snap-type: x mandatory;
       padding: 0 max(20px, calc((100% - var(--release-card-width)) / 2)) 16px;
-      scrollbar-width: thin;
+      scrollbar-width: none;
+    }
+    .release-banner-track--single::-webkit-scrollbar {
+      display: none;
     }
     .release-banner-next {
       position: absolute;
