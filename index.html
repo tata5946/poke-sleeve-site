@@ -2725,6 +2725,20 @@
       object-fit: contain;
       padding: 6px;
     }
+    .release-feature-card--image {
+      min-height: 0;
+      background: #0f172a;
+    }
+    .release-feature-card--image::before {
+      display: none;
+    }
+    .release-feature-image {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1532 / 324;
+      object-fit: cover;
+      background: #0f172a;
+    }
     .dashboard-hero {
       display: grid;
       grid-template-columns: minmax(0, 1.7fr) 340px;
@@ -3774,6 +3788,12 @@
       body.home-page .release-feature-product {
         width: 58px;
       }
+      body.home-page .release-feature-card--image {
+        min-height: 0;
+      }
+      body.home-page .release-feature-image {
+        aspect-ratio: 1532 / 324;
+      }
       body.home-page .dashboard-hero {
         gap: 10px;
       }
@@ -4796,25 +4816,10 @@
       const track = document.getElementById("releaseBannerTrack");
       if (!track) return;
       const href = getReleaseFeatureHref();
-      const rows = buildReleaseBannerRows(sleeves);
-      const productHtml = rows.slice(0, 5).map(({ sleeve }, index) => {
-        const tilts = [-7, 4, -3, 6, -5];
-        const lifts = [8, -10, 0, 12, -5];
-        return sleeve.imageUrl ? `
-          <span class="release-feature-product" style="--tilt:${tilts[index] || 0}deg;--lift:${lifts[index] || 0}px;">
-            <img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name ?? "")}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.closest('.release-feature-product').style.display='none';">
-          </span>
-        ` : "";
-      }).join("");
+      const imageSrc = "./assets/abyss-eye-banner.png";
       track.innerHTML = `
-        <a class="release-feature-card" href="${escapeHtml(href)}" aria-label="アビスアイ発売関連デッキシールドを見る">
-          <div class="release-feature-body">
-            <span class="release-feature-chip">FEATURE / NOW BUILDING</span>
-            <h2 class="release-feature-title">アビスアイ発売関連<br>デッキシールド</h2>
-            <p class="release-feature-copy">新発売・関連スリーブをまとめてチェック</p>
-            <span class="release-feature-cta">特集を見る</span>
-          </div>
-          <div class="release-feature-products" aria-hidden="true">${productHtml}</div>
+        <a class="release-feature-card release-feature-card--image" href="${escapeHtml(href)}" aria-label="アビスアイ発売関連デッキシールドを見る">
+          <img class="release-feature-image" src="${escapeHtml(imageSrc)}" alt="アビスアイ発売関連デッキシールド" loading="eager" decoding="async">
         </a>
       `;
     }
