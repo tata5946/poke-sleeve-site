@@ -56,32 +56,6 @@
       line-height: 1.8;
       font-weight: 700;
     }
-    .abyss-summary {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-    .abyss-summary-item {
-      padding: 16px;
-      border: 1px solid rgba(148, 163, 184, 0.22);
-      border-radius: 8px;
-      background: rgba(255,255,255,.94);
-      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
-    }
-    .abyss-summary-label {
-      margin: 0 0 8px;
-      color: #64748b;
-      font-size: 12px;
-      font-weight: 900;
-    }
-    .abyss-summary-value {
-      margin: 0;
-      color: #0f172a;
-      font-family: "Inter", "Noto Sans JP", sans-serif;
-      font-size: 24px;
-      font-weight: 900;
-      line-height: 1;
-    }
     .abyss-section {
       display: grid;
       gap: 14px;
@@ -216,9 +190,6 @@
       }
     }
     @media (max-width: 700px) {
-      .abyss-summary {
-        grid-template-columns: 1fr;
-      }
       .abyss-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
@@ -255,21 +226,6 @@
                 <p class="abyss-kicker">FEATURE</p>
                 <h1 class="abyss-title">&#12450;&#12499;&#12473;&#12450;&#12452;&#30330;&#22770;&#38306;&#36899;&#12487;&#12483;&#12461;&#12471;&#12540;&#12523;&#12489;</h1>
                 <p class="abyss-copy">&#26032;&#35215;&#30330;&#22770;&#12392;&#20877;&#36009;&#12398;&#38306;&#36899;&#12473;&#12522;&#12540;&#12502;&#12434;&#12414;&#12392;&#12417;&#12414;&#12375;&#12383;&#12290;&#21508;&#12459;&#12540;&#12489;&#12363;&#12425;&#20491;&#21029;&#12506;&#12540;&#12472;&#12391;&#30456;&#22580;&#25512;&#31227;&#12434;&#30906;&#35469;&#12391;&#12365;&#12414;&#12377;&#12290;</p>
-              </div>
-            </section>
-
-            <section class="abyss-summary" aria-label="&#29305;&#38598;&#12469;&#12510;&#12522;&#12540;">
-              <div class="abyss-summary-item">
-                <p class="abyss-summary-label">&#26032;&#35215;</p>
-                <p class="abyss-summary-value">5</p>
-              </div>
-              <div class="abyss-summary-item">
-                <p class="abyss-summary-label">&#20877;&#36009;</p>
-                <p class="abyss-summary-value">7</p>
-              </div>
-              <div class="abyss-summary-item">
-                <p class="abyss-summary-label">&#21512;&#35336;</p>
-                <p class="abyss-summary-value">12</p>
               </div>
             </section>
 
@@ -331,15 +287,6 @@
     }
 
     async function loadFeatureData() {
-      if (window.GAS_URL && window.common && typeof window.common.fetchJsonWithTimeout === "function") {
-        try {
-          const freshData = await window.common.fetchJsonWithTimeout(window.GAS_URL, {
-            timeoutMs: 12000,
-            cacheMode: "no-store"
-          });
-          if (Array.isArray(freshData?.sleeves)) return freshData;
-        } catch (_) {}
-      }
       if (window.common && typeof window.common.loadData === "function") return await window.common.loadData();
       const res = await fetch("./data.json", { cache: "reload" });
       return await res.json();
