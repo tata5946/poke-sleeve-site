@@ -2621,7 +2621,16 @@
       background: #0f172a;
     }
     .release-banner-track--single {
-      display: block;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(520px, 72%);
+      grid-template-columns: none;
+      gap: 16px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      padding: 2px 6px 10px 2px;
+      scrollbar-width: thin;
     }
     .release-feature-card {
       position: relative;
@@ -2728,6 +2737,7 @@
     .release-feature-card--image {
       min-height: 0;
       background: #0f172a;
+      scroll-snap-align: start;
     }
     .release-feature-card--image::before {
       display: none;
@@ -2735,8 +2745,8 @@
     .release-feature-image {
       display: block;
       width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: contain;
+      height: 220px;
+      object-fit: cover;
       background: #0f172a;
     }
     .dashboard-hero {
@@ -3451,9 +3461,11 @@
         scroll-snap-align: start;
       }
       .release-banner-track--single {
-        display: block;
-        overflow: visible;
-        padding-bottom: 0;
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(420px, 78%);
+        overflow-x: auto;
+        padding-bottom: 10px;
       }
       .release-feature-body {
         width: 64%;
@@ -3762,9 +3774,11 @@
         right: -16px;
       }
       body.home-page .release-banner-track--single {
-        display: block;
-        overflow: visible;
-        padding-bottom: 0;
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(280px, 88%);
+        overflow-x: auto;
+        padding-bottom: 8px;
       }
       body.home-page .release-feature-card {
         min-height: 176px;
@@ -3792,7 +3806,7 @@
         min-height: 0;
       }
       body.home-page .release-feature-image {
-        aspect-ratio: 16 / 9;
+        height: 158px;
       }
       body.home-page .dashboard-hero {
         gap: 10px;
@@ -4820,6 +4834,9 @@
       track.innerHTML = `
         <a class="release-feature-card release-feature-card--image" href="${escapeHtml(href)}" aria-label="アビスアイ発売関連デッキシールドを見る">
           <img class="release-feature-image" src="${escapeHtml(imageSrc)}" alt="アビスアイ発売関連デッキシールド" loading="eager" decoding="async">
+        </a>
+        <a class="release-feature-card release-feature-card--image" href="${escapeHtml(href)}" aria-label="アビスアイ発売関連デッキシールドを見る">
+          <img class="release-feature-image" src="${escapeHtml(imageSrc)}" alt="アビスアイ発売関連デッキシールド" loading="lazy" decoding="async">
         </a>
       `;
     }
