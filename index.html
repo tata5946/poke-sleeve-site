@@ -2460,8 +2460,9 @@
       align-content: start;
     }
     .release-banner {
+      position: relative;
       display: grid;
-      gap: 12px;
+      gap: 10px;
       min-width: 0;
     }
     .release-banner-head {
@@ -2621,16 +2622,31 @@
       background: #0f172a;
     }
     .release-banner-track--single {
-      display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(520px, 72%);
-      grid-template-columns: none;
-      gap: 16px;
+      --release-card-width: clamp(560px, 52vw, 720px);
+      display: flex;
+      gap: 44px;
       overflow-x: auto;
       overscroll-behavior-x: contain;
       scroll-snap-type: x mandatory;
-      padding: 2px 6px 10px 2px;
+      padding: 0 max(20px, calc((100% - var(--release-card-width)) / 2)) 16px;
       scrollbar-width: thin;
+    }
+    .release-banner-next {
+      position: absolute;
+      right: 22px;
+      top: 50%;
+      z-index: 3;
+      width: 54px;
+      height: 54px;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.38);
+      color: #fff;
+      font-size: 32px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 18px 34px rgba(15, 23, 42, 0.22);
+      transform: translateY(-50%);
     }
     .release-feature-card {
       position: relative;
@@ -2735,9 +2751,10 @@
       padding: 6px;
     }
     .release-feature-card--image {
+      flex: 0 0 var(--release-card-width);
       min-height: 0;
       background: #0f172a;
-      scroll-snap-align: start;
+      scroll-snap-align: center;
     }
     .release-feature-card--image::before {
       display: none;
@@ -2745,7 +2762,7 @@
     .release-feature-image {
       display: block;
       width: 100%;
-      height: 220px;
+      height: 248px;
       object-fit: cover;
       background: #0f172a;
     }
@@ -3461,11 +3478,9 @@
         scroll-snap-align: start;
       }
       .release-banner-track--single {
-        display: grid;
-        grid-auto-flow: column;
-        grid-auto-columns: minmax(420px, 78%);
-        overflow-x: auto;
-        padding-bottom: 10px;
+        --release-card-width: min(680px, 72vw);
+        gap: 34px;
+        padding-bottom: 14px;
       }
       .release-feature-body {
         width: 64%;
@@ -3774,11 +3789,15 @@
         right: -16px;
       }
       body.home-page .release-banner-track--single {
-        display: grid;
-        grid-auto-flow: column;
-        grid-auto-columns: minmax(280px, 88%);
-        overflow-x: auto;
-        padding-bottom: 8px;
+        --release-card-width: 82vw;
+        gap: 14px;
+        padding: 0 max(10px, calc((100% - var(--release-card-width)) / 2)) 8px;
+      }
+      body.home-page .release-banner-next {
+        right: 16px;
+        width: 42px;
+        height: 42px;
+        font-size: 26px;
       }
       body.home-page .release-feature-card {
         min-height: 176px;
@@ -3806,7 +3825,7 @@
         min-height: 0;
       }
       body.home-page .release-feature-image {
-        height: 158px;
+        height: 156px;
       }
       body.home-page .dashboard-hero {
         gap: 10px;
@@ -4233,6 +4252,8 @@
           <div id="releaseBannerTrack" class="release-banner-track release-banner-track--single">
             <div class="release-feature-card skeleton-block"></div>
           </div>
+          <button id="releaseBannerNext" class="release-banner-next" type="button" aria-label="次のバナーへ">›</button>
+          <div id="releaseBannerDots" class="release-banner-dots" aria-hidden="true"></div>
         </section>
 
         <section class="dashboard-hero" aria-label="市場ヒーロー">
@@ -4831,14 +4852,20 @@
       if (!track) return;
       const href = getReleaseFeatureHref();
       const imageSrc = "./assets/abyss-eye-banner.png";
-      track.innerHTML = `
+      const cards = Array.from({ length: 5 }, (_, index) => `
         <a class="release-feature-card release-feature-card--image" href="${escapeHtml(href)}" aria-label="アビスアイ発売関連デッキシールドを見る">
-          <img class="release-feature-image" src="${escapeHtml(imageSrc)}" alt="アビスアイ発売関連デッキシールド" loading="eager" decoding="async">
+          <img class="release-feature-image" src="${escapeHtml(imageSrc)}" alt="アビスアイ発売関連デッキシールド" loading="${index === 1 ? "eager" : "lazy"}" decoding="async">
         </a>
-        <a class="release-feature-card release-feature-card--image" href="${escapeHtml(href)}" aria-label="アビスアイ発売関連デッキシールドを見る">
-          <img class="release-feature-image" src="${escapeHtml(imageSrc)}" alt="アビスアイ発売関連デッキシールド" loading="lazy" decoding="async">
-        </a>
-      `;
+      `);
+      track.innerHTML = cards.join("");
+      const dots = document.getElementById("releaseBannerDots");
+      if (dots) {
+        dots.innerHTML = cards.map((_, index) => `<span class="release-banner-dot${index === 1 ? " is-active" : ""}"></span>`).join("");
+      }
+      requestAnimationFrame(() => {
+        const secondCard = track.querySelectorAll(".release-feature-card")[1];
+        if (secondCard) secondCard.scrollIntoView({ inline: "center", block: "nearest" });
+      });
     }
 
     function formatPercent(rate, digits = 1) {
@@ -5357,6 +5384,17 @@
       wireSidebarCategoryToggle();
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
       renderReleaseBanner(sleeves);
+      const releaseNext = document.getElementById("releaseBannerNext");
+      const releaseTrack = document.getElementById("releaseBannerTrack");
+      if (releaseNext && releaseTrack && releaseNext.dataset.wired !== "1") {
+        releaseNext.dataset.wired = "1";
+        releaseNext.addEventListener("click", () => {
+          const card = releaseTrack.querySelector(".release-feature-card");
+          const gap = 44;
+          const amount = card ? card.getBoundingClientRect().width + gap : releaseTrack.clientWidth * 0.72;
+          releaseTrack.scrollBy({ left: amount, behavior: "smooth" });
+        });
+      }
 
       const priceRank = sleeves.map((s) => ({ s, price: getLatestWeeklyPrice(s) })).filter((row) => row.price != null).sort((a, b) => b.price - a.price).slice(0, 10).map((row) => row.s);
       const surgeRank = sleeves.map((s) => {
