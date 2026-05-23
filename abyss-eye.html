@@ -138,6 +138,25 @@
       font-family: "Inter", "Noto Sans JP", sans-serif;
       font-weight: 900;
     }
+    .abyss-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      min-height: 24px;
+    }
+    .abyss-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      max-width: 100%;
+      padding: 0 7px;
+      border-radius: 6px;
+      background: #eef2ff;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 900;
+    }
     .abyss-mini-chart {
       position: relative;
       min-height: 86px;
@@ -242,7 +261,7 @@
             <section class="abyss-section" aria-labelledby="restockSleevesTitle">
               <div class="abyss-section-head">
                 <h2 id="restockSleevesTitle" class="abyss-section-title">&#20877;&#36009;</h2>
-                <span class="abyss-section-count">7&#20214;</span>
+                <span class="abyss-section-count">8&#20214;</span>
               </div>
               <div id="restockSleeveGrid" class="abyss-grid">
                 <div class="abyss-empty">&#35501;&#12415;&#36796;&#12415;&#20013;&#12391;&#12377;&#12290;</div>
@@ -274,7 +293,8 @@
       ["373553", "\u98db\u7fd4\u30ea\u30b6\u30fc\u30c9\u30f3"],
       ["432069", "\u9032\u5316\u306e\u8ecc\u8de1 \u30b7\u30e3\u30f3\u30c7\u30e9"],
       ["367798", "COOL\u00d7METAL \u30eb\u30ab\u30ea\u30aa"],
-      ["359571", "\u30b2\u30f3\u30ac\u30fc"]
+      ["359571", "\u30b2\u30f3\u30ac\u30fc"],
+      ["367897", "\u3061\u304b\u3089\u3064\u304d\u305f"]
     ];
 
     function escapeHtml(value) {
@@ -388,6 +408,26 @@
       return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}\u767a\u58f2`;
     }
 
+    function getCategoryLabels(sleeve) {
+      const values = [];
+      const push = (value) => {
+        const text = String(value || "").trim();
+        if (text && !values.includes(text)) values.push(text);
+      };
+      if (window.common && typeof window.common.getSleeveCategoryValues === "function") {
+        window.common.getSleeveCategoryValues(sleeve, [
+          "category1", "category2", "category3",
+          "category4", "category5", "category6",
+          "category7", "category8", "category9"
+        ]).forEach(push);
+      } else {
+        ["category1", "category2", "category3", "category4", "category5", "category6", "category7", "category8", "category9"].forEach((key) => push(sleeve?.[key]));
+      }
+      if (Array.isArray(sleeve?.categoryTags)) sleeve.categoryTags.forEach(push);
+      if (Array.isArray(sleeve?.categories)) sleeve.categories.forEach(push);
+      return values.slice(0, 4);
+    }
+
     function renderItems(targetId, items, sleeveMap) {
       const root = document.getElementById(targetId);
       if (!root) return;
@@ -396,10 +436,12 @@
         const name = String(sleeve.name || fallbackName || id);
         const price = getLatestPrice(sleeve);
         const imageUrl = String(sleeve.imageUrl || "").trim();
+        const tags = getCategoryLabels(sleeve);
         return `
           <a class="abyss-card" href="${escapeHtml(getDetailHref(id))}">
             <div class="abyss-thumb">${imageUrl ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(name)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}</div>
             <p class="abyss-name">${escapeHtml(name)}</p>
+            <div class="abyss-tags">${tags.map((tag) => `<span class="abyss-tag">${escapeHtml(tag)}</span>`).join("")}</div>
             <p class="abyss-meta">${escapeHtml(formatReleaseDate(sleeve.releaseDate))}</p>
             <p class="abyss-meta abyss-price">${price != null ? `\u6700\u65b0 \u00a5${Math.round(price).toLocaleString()}` : "\u76f8\u5834\u89b3\u6e2c\u4e2d"}</p>
             ${buildMiniPriceChart(sleeve)}
