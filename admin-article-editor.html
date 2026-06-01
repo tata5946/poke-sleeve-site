@@ -550,6 +550,42 @@
       word-break: break-all;
     }
 
+    .editor .note-image-block {
+      position: relative;
+      margin: 1.8em 0;
+    }
+
+    .editor .note-image-block img {
+      display: block;
+      width: 100%;
+      max-height: 680px;
+      object-fit: contain;
+      border: 1px solid #e4e7ec;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .editor .note-image-caption {
+      min-height: 1.8em;
+      margin-top: 8px;
+      color: #667085;
+      font-size: 13px;
+      line-height: 1.7;
+      text-align: center;
+      outline: none;
+      white-space: pre-wrap;
+    }
+
+    .editor .note-image-caption:empty::before {
+      content: attr(data-placeholder);
+      color: #b8c0cc;
+      pointer-events: none;
+    }
+
+    .editor .note-image-caption:focus {
+      color: #344054;
+    }
+
     .is-mirrored-hidden {
       display: none;
     }
@@ -805,7 +841,7 @@
     function sanitizeHtml(html) {
       const template = document.createElement("template");
       template.innerHTML = String(html || "");
-      const allowedTags = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "S", "DEL", "H2", "H3", "UL", "OL", "LI", "A", "IMG", "BLOCKQUOTE", "HR", "PRE", "CODE", "SPAN", "DIV", "SECTION", "FIGURE", "FONT", "SVG", "G", "PATH", "POLYLINE", "LINE", "CIRCLE", "RECT", "TEXT"]);
+      const allowedTags = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "S", "DEL", "H2", "H3", "UL", "OL", "LI", "A", "IMG", "BLOCKQUOTE", "HR", "PRE", "CODE", "SPAN", "DIV", "SECTION", "FIGURE", "FIGCAPTION", "FONT", "SVG", "G", "PATH", "POLYLINE", "LINE", "CIRCLE", "RECT", "TEXT"]);
       const allowedAttrs = new Set(["href", "src", "alt", "title", "style", "target", "rel", "face", "color", "size", "class", "data-sleeve-id", "viewBox", "viewbox", "xmlns", "role", "aria-hidden", "d", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "stroke-dasharray", "points", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "width", "height", "opacity", "font-size", "font-weight", "text-anchor"]);
 
       const walk = (node) => {
@@ -826,10 +862,14 @@
           }
           if (tagName === "IMG") {
             const src = child.getAttribute("src") || "";
-            if (!/^https?:/i.test(src)) child.remove();
+            if (!/^(https?:|data:image\/)/i.test(src)) child.remove();
           }
           if (tagName === "SVG") {
             child.setAttribute("aria-hidden", "true");
+          }
+          if (tagName === "FIGCAPTION" && !String(child.textContent || "").trim()) {
+            child.remove();
+            continue;
           }
           if (child.hasAttribute("style")) {
             const style = child.getAttribute("style") || "";
@@ -1298,8 +1338,9 @@
         return `<p class="article-sleeve-embed__note">このスリーブには画像URLが登録されていません。</p>`;
       }
       return `
-        <figure class="article-sleeve-image-only" data-sleeve-id="${escapeHtml(sleeve.id || "")}">
+        <figure class="article-sleeve-image-only note-image-block" data-sleeve-id="${escapeHtml(sleeve.id || "")}">
           <img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name || "")}">
+          <figcaption class="note-image-caption" contenteditable="true" data-placeholder="キャプションを入力"></figcaption>
         </figure>
       `;
     }
@@ -1321,7 +1362,70 @@
       } else {
         editor.insertAdjacentHTML("beforeend", normalized);
       }
+      ensureEditableImageCaptions(editor);
       updatePreview();
+    }
+
+    function buildEditableImageHtml(src, alt = "", caption = "") {
+      return `
+        <figure class="note-image-block">
+          <img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}">
+          <figcaption class="note-image-caption" contenteditable="true" data-placeholder="キャプションを入力">${escapeHtml(caption)}</figcaption>
+        </figure>
+        <p><br></p>
+      `;
+    }
+
+    function ensureEditableImageCaptions(root = qs("editor")) {
+      if (!root) return;
+      const rawImages = Array.from(root.querySelectorAll("img")).filter((img) => !img.closest(".article-sleeve-embed") && !img.closest(".note-image-block"));
+      for (const img of rawImages) {
+        const figure = document.createElement("figure");
+        figure.className = "note-image-block";
+        const caption = document.createElement("figcaption");
+        caption.className = "note-image-caption";
+        caption.contentEditable = "true";
+        caption.dataset.placeholder = "キャプションを入力";
+        caption.textContent = img.getAttribute("title") || "";
+        img.replaceWith(figure);
+        figure.appendChild(img);
+        figure.appendChild(caption);
+      }
+
+      root.querySelectorAll(".note-image-block").forEach((figure) => {
+        if (figure.closest(".article-sleeve-embed") && !figure.classList.contains("article-sleeve-image-only")) return;
+        let caption = figure.querySelector("figcaption");
+        if (!caption) {
+          caption = document.createElement("figcaption");
+          figure.appendChild(caption);
+        }
+        caption.classList.add("note-image-caption");
+        caption.contentEditable = "true";
+        caption.dataset.placeholder = "キャプションを入力";
+      });
+    }
+
+    function handleEditorPaste(event) {
+      const items = Array.from(event.clipboardData?.items || []);
+      const imageItem = items.find((item) => item.kind === "file" && /^image\//i.test(item.type || ""));
+      if (!imageItem) {
+        setTimeout(() => {
+          ensureEditableImageCaptions(qs("editor"));
+          updatePreview();
+        }, 0);
+        return;
+      }
+
+      const file = imageItem.getAsFile();
+      if (!file) return;
+      event.preventDefault();
+      const reader = new FileReader();
+      reader.onload = () => {
+        insertHtmlAtCursor(buildEditableImageHtml(String(reader.result || ""), file.name || ""));
+        setStatus("画像を貼り付けました。必要なら画像下のキャプションを入力してください。", "ok");
+      };
+      reader.onerror = () => setStatus("画像の貼り付けに失敗しました。画像URLで挿入してください。", "ng");
+      reader.readAsDataURL(file);
     }
 
     function insertSleeveMaterial(kind) {
@@ -1511,7 +1615,7 @@
         setStatus("https:// から始まる画像URLを入力してください。", "ng");
         return;
       }
-      insertHtmlAtCursor(`<figure><img src="${escapeHtml(safeUrl)}" alt=""></figure><p><br></p>`);
+      insertHtmlAtCursor(buildEditableImageHtml(safeUrl));
     }
 
     function insertCodeBlock() {
@@ -1718,7 +1822,10 @@
       });
       qs("coverInput").addEventListener("input", updateCoverDropPreview);
       qs("editor").addEventListener("keydown", applyMarkdownShortcut);
+      qs("editor").addEventListener("paste", handleEditorPaste);
+      qs("editor").addEventListener("input", () => ensureEditableImageCaptions(qs("editor")));
       refreshWritingSurfaceFromForm();
+      ensureEditableImageCaptions(qs("editor"));
       initSelectionToolbar();
       initBlockInserter();
     }
@@ -1768,8 +1875,7 @@
         if (url) exec("createLink", url);
       });
       qs("imageBtn").addEventListener("click", () => {
-        const url = prompt("画像URLを入力してください");
-        if (url) exec("insertImage", url);
+        insertImageByUrl();
       });
       qs("quoteBtn").addEventListener("click", () => exec("formatBlock", "blockquote"));
       qs("sleeveInput").addEventListener("change", () => {
