@@ -344,6 +344,302 @@
         display: grid;
       }
     }
+
+    body.admin-article-page {
+      background: #fff;
+    }
+
+    .admin-shell {
+      max-width: 1240px;
+      padding-top: 0;
+    }
+
+    .admin-hero {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      margin: 0 -20px 8px;
+      border-width: 0 0 1px;
+      border-radius: 0;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .06);
+      backdrop-filter: blur(16px);
+    }
+
+    .admin-hero h1 {
+      font-size: 22px;
+    }
+
+    .admin-hero p {
+      display: none;
+    }
+
+    .editor-layout {
+      grid-template-columns: minmax(0, 760px) 320px;
+      justify-content: center;
+      align-items: start;
+    }
+
+    .editor-layout > aside.admin-panel {
+      order: 2;
+      position: sticky;
+      top: 92px;
+      max-height: calc(100vh - 112px);
+      overflow: auto;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .08);
+    }
+
+    .editor-layout > section.admin-panel:nth-of-type(1) {
+      order: 1;
+      padding: 0 12px 80px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .editor-layout > section.admin-panel:nth-of-type(1) > .panel-title,
+    .editor-layout > section.admin-panel:nth-of-type(1) > .toolbar {
+      display: none;
+    }
+
+    .editor-layout > section.admin-panel:nth-of-type(2) {
+      display: none;
+    }
+
+    .note-writing-head {
+      display: grid;
+      gap: 18px;
+      margin: 28px 0 8px;
+    }
+
+    .note-cover-drop {
+      display: grid;
+      place-items: center;
+      min-height: 164px;
+      border: 1px dashed #d0d7de;
+      border-radius: 14px;
+      background: #f6f8fa;
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 800;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .note-cover-drop.has-image {
+      min-height: 220px;
+      border-style: solid;
+      background-size: cover;
+      background-position: center;
+      color: transparent;
+    }
+
+    .note-title-input,
+    .note-excerpt-input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      box-sizing: border-box;
+      color: #111827;
+      font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+    }
+
+    .note-title-input {
+      min-height: 76px;
+      font-size: clamp(34px, 5vw, 52px);
+      font-weight: 900;
+      line-height: 1.22;
+      letter-spacing: 0;
+      resize: none;
+    }
+
+    .note-title-input::placeholder,
+    .note-excerpt-input::placeholder {
+      color: #c3cad5;
+    }
+
+    .note-excerpt-input {
+      min-height: 34px;
+      color: #667085;
+      font-size: 17px;
+      line-height: 1.8;
+      resize: vertical;
+    }
+
+    .editor {
+      min-height: 66vh;
+      padding: 18px 0 120px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #1f2937;
+      font-size: 18px;
+      line-height: 2.05;
+      letter-spacing: 0;
+    }
+
+    .editor:focus {
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    .editor:empty::before {
+      content: "本文を書く";
+      color: #c3cad5;
+      pointer-events: none;
+    }
+
+    .editor h2 {
+      margin: 2.1em 0 .8em;
+      font-size: 1.72em;
+    }
+
+    .editor h3 {
+      margin: 1.8em 0 .6em;
+      font-size: 1.34em;
+    }
+
+    .editor blockquote {
+      margin: 1.6em 0;
+      padding: 1.2em 1.4em;
+      border: 0;
+      border-radius: 8px;
+      background: #f2f4f7;
+      color: #344054;
+    }
+
+    .editor pre {
+      margin: 1.6em 0;
+      padding: 16px;
+      border-radius: 10px;
+      background: #111827;
+      color: #f9fafb;
+      overflow: auto;
+      line-height: 1.7;
+    }
+
+    .editor hr {
+      width: 72px;
+      margin: 2.4em auto;
+      border: 0;
+      border-top: 2px solid #d0d5dd;
+    }
+
+    .editor .article-embed-card {
+      margin: 1.5em 0;
+      border: 1px solid #d5deeb;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .editor .article-embed-card a {
+      display: grid;
+      gap: 4px;
+      padding: 14px 16px;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .editor .article-embed-card span {
+      color: #667085;
+      font-size: 13px;
+      word-break: break-all;
+    }
+
+    .is-mirrored-hidden {
+      display: none;
+    }
+
+    .selection-toolbar,
+    .block-insert-menu {
+      position: fixed;
+      z-index: 80;
+      display: none;
+      align-items: center;
+      gap: 4px;
+      padding: 6px;
+      border: 1px solid #d0d7de;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .98);
+      box-shadow: 0 16px 36px rgba(15, 23, 42, .16);
+      backdrop-filter: blur(12px);
+    }
+
+    .selection-toolbar.is-visible,
+    .block-insert-menu.is-visible {
+      display: flex;
+    }
+
+    .selection-toolbar button,
+    .block-insert-button,
+    .block-insert-menu button {
+      min-width: 34px;
+      min-height: 34px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #344054;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .selection-toolbar button:hover,
+    .block-insert-button:hover,
+    .block-insert-menu button:hover {
+      background: #f2f4f7;
+    }
+
+    .block-insert-button {
+      position: fixed;
+      z-index: 70;
+      display: none;
+      border: 1px solid #d0d7de;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, .10);
+    }
+
+    .block-insert-button.is-visible {
+      display: inline-grid;
+      place-items: center;
+    }
+
+    .block-insert-menu {
+      flex-direction: column;
+      align-items: stretch;
+      width: 228px;
+      padding: 8px;
+    }
+
+    .block-insert-menu button {
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 0 10px;
+      text-align: left;
+    }
+
+    @media (max-width: 980px) {
+      .editor-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .editor-layout > aside.admin-panel {
+        order: 2;
+        position: static;
+        max-height: none;
+      }
+
+      .editor-layout > section.admin-panel:nth-of-type(1) {
+        padding-inline: 0;
+      }
+    }
   </style>
 </head>
 
@@ -509,7 +805,7 @@
     function sanitizeHtml(html) {
       const template = document.createElement("template");
       template.innerHTML = String(html || "");
-      const allowedTags = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "H2", "H3", "UL", "OL", "LI", "A", "IMG", "BLOCKQUOTE", "SPAN", "DIV", "SECTION", "FIGURE", "FONT", "SVG", "G", "PATH", "POLYLINE", "LINE", "CIRCLE", "RECT", "TEXT"]);
+      const allowedTags = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "S", "DEL", "H2", "H3", "UL", "OL", "LI", "A", "IMG", "BLOCKQUOTE", "HR", "PRE", "CODE", "SPAN", "DIV", "SECTION", "FIGURE", "FONT", "SVG", "G", "PATH", "POLYLINE", "LINE", "CIRCLE", "RECT", "TEXT"]);
       const allowedAttrs = new Set(["href", "src", "alt", "title", "style", "target", "rel", "face", "color", "size", "class", "data-sleeve-id", "viewBox", "viewbox", "xmlns", "role", "aria-hidden", "d", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "stroke-dasharray", "points", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "width", "height", "opacity", "font-size", "font-weight", "text-anchor"]);
 
       const walk = (node) => {
@@ -1073,6 +1369,7 @@
       qs("dateInput").value = article?.publishedAt || todayISO();
       qs("editor").innerHTML = article?.html || "<p>ここに本文を書いてください。</p>";
       updatePreview();
+      refreshWritingSurfaceFromForm();
     }
 
     function saveArticle(status) {
@@ -1120,6 +1417,312 @@
       updatePreview();
     }
 
+    function dispatchInput(el) {
+      if (!el) return;
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+
+    function autoGrowTextarea(el) {
+      if (!el) return;
+      el.style.height = "auto";
+      el.style.height = `${Math.max(el.scrollHeight, 34)}px`;
+    }
+
+    function updateCoverDropPreview() {
+      const cover = qs("coverInput");
+      const drop = document.getElementById("noteCoverDrop");
+      if (!cover || !drop) return;
+      const url = cover.value.trim();
+      drop.classList.toggle("has-image", !!url);
+      drop.style.backgroundImage = url ? `url("${url.replaceAll('"', "%22")}")` : "";
+      drop.textContent = url ? "カバー画像を変更" : "カバー画像を追加";
+    }
+
+    function refreshWritingSurfaceFromForm() {
+      const title = document.getElementById("writingTitleInput");
+      const excerpt = document.getElementById("writingExcerptInput");
+      if (title && title.value !== qs("titleInput").value) title.value = qs("titleInput").value;
+      if (excerpt && excerpt.value !== qs("excerptInput").value) excerpt.value = qs("excerptInput").value;
+      autoGrowTextarea(title);
+      autoGrowTextarea(excerpt);
+      updateCoverDropPreview();
+    }
+
+    function getEditorSelection() {
+      const editor = qs("editor");
+      const selection = window.getSelection();
+      if (!editor || !selection || !selection.rangeCount) return null;
+      const node = selection.anchorNode;
+      if (!node || !editor.contains(node)) return null;
+      return selection;
+    }
+
+    function getSelectionRect(selection) {
+      if (!selection || !selection.rangeCount) return null;
+      const range = selection.getRangeAt(0).cloneRange();
+      let rect = range.getBoundingClientRect();
+      if ((!rect || (!rect.width && !rect.height)) && range.getClientRects().length) {
+        rect = range.getClientRects()[0];
+      }
+      if (!rect || (!rect.width && !rect.height)) {
+        const block = getCurrentTextBlock();
+        rect = block ? block.getBoundingClientRect() : null;
+      }
+      return rect;
+    }
+
+    function getCurrentTextBlock() {
+      const editor = qs("editor");
+      const selection = getEditorSelection();
+      if (!editor || !selection) return null;
+      let node = selection.anchorNode;
+      if (node && node.nodeType === Node.TEXT_NODE) node = node.parentElement;
+      while (node && node !== editor) {
+        if (/^(P|H2|H3|LI|BLOCKQUOTE|PRE|DIV)$/i.test(node.nodeName)) return node;
+        node = node.parentElement;
+      }
+      return null;
+    }
+
+    function insertEmbedCard() {
+      const url = prompt("埋め込みURLを入力してください");
+      if (!url) return;
+      const safeUrl = String(url).trim();
+      if (!/^https?:\/\//i.test(safeUrl)) {
+        setStatus("https:// から始まるURLを入力してください。", "ng");
+        return;
+      }
+      insertHtmlAtCursor(`
+        <div class="article-embed-card">
+          <a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener">
+            <strong>リンクカード</strong>
+            <span>${escapeHtml(safeUrl)}</span>
+          </a>
+        </div>
+        <p><br></p>
+      `);
+    }
+
+    function insertImageByUrl() {
+      const url = prompt("画像URLを入力してください");
+      if (!url) return;
+      const safeUrl = String(url).trim();
+      if (!/^https?:\/\//i.test(safeUrl)) {
+        setStatus("https:// から始まる画像URLを入力してください。", "ng");
+        return;
+      }
+      insertHtmlAtCursor(`<figure><img src="${escapeHtml(safeUrl)}" alt=""></figure><p><br></p>`);
+    }
+
+    function insertCodeBlock() {
+      insertHtmlAtCursor("<pre><code>code</code></pre><p><br></p>");
+    }
+
+    function insertBlock(kind) {
+      const editor = qs("editor");
+      if (!editor) return;
+      editor.focus();
+      if (kind === "image") return insertImageByUrl();
+      if (kind === "embed") return insertEmbedCard();
+      if (kind === "h2") return exec("formatBlock", "h2");
+      if (kind === "h3") return exec("formatBlock", "h3");
+      if (kind === "ul") return exec("insertUnorderedList");
+      if (kind === "ol") return exec("insertOrderedList");
+      if (kind === "quote") return exec("formatBlock", "blockquote");
+      if (kind === "code") return insertCodeBlock();
+      if (kind === "hr") return insertHtmlAtCursor("<hr><p><br></p>");
+      if (kind === "sleeve") return insertSleeveMaterial("bundle");
+    }
+
+    function applyMarkdownShortcut(event) {
+      if (event.key !== " ") return;
+      const block = getCurrentTextBlock();
+      if (!block) return;
+      const text = block.textContent || "";
+      const rules = [
+        { pattern: /^###$/, run: () => exec("formatBlock", "h3") },
+        { pattern: /^##$/, run: () => exec("formatBlock", "h2") },
+        { pattern: /^>$/, run: () => exec("formatBlock", "blockquote") },
+        { pattern: /^-$/, run: () => exec("insertUnorderedList") },
+        { pattern: /^1\.$/, run: () => exec("insertOrderedList") },
+        { pattern: /^```$/, run: () => insertCodeBlock() }
+      ];
+      const matched = rules.find((rule) => rule.pattern.test(text.trim()));
+      if (!matched) return;
+      event.preventDefault();
+      block.textContent = "";
+      matched.run();
+      updatePreview();
+    }
+
+    function initSelectionToolbar() {
+      const toolbar = document.createElement("div");
+      toolbar.className = "selection-toolbar";
+      toolbar.setAttribute("role", "toolbar");
+      toolbar.setAttribute("aria-label", "選択テキストの装飾");
+      toolbar.innerHTML = `
+        <button type="button" data-format="h2" title="大見出し">大</button>
+        <button type="button" data-format="h3" title="小見出し">小</button>
+        <button type="button" data-command="bold" title="太字">B</button>
+        <button type="button" data-command="strikeThrough" title="取り消し線">S</button>
+        <button type="button" data-command="insertUnorderedList" title="箇条書き">・</button>
+        <button type="button" data-command="insertOrderedList" title="番号付きリスト">1.</button>
+        <button type="button" data-command="justifyCenter" title="中央寄せ">中</button>
+        <button type="button" data-command="justifyRight" title="右寄せ">右</button>
+        <button type="button" data-action="link" title="リンク">リンク</button>
+        <button type="button" data-format="blockquote" title="引用">引用</button>
+        <button type="button" data-action="delete" title="削除">削除</button>
+      `;
+      document.body.appendChild(toolbar);
+
+      const updateToolbar = () => {
+        const selection = getEditorSelection();
+        if (!selection || selection.isCollapsed) {
+          toolbar.classList.remove("is-visible");
+          return;
+        }
+        const rect = getSelectionRect(selection);
+        if (!rect) return;
+        toolbar.style.left = `${Math.max(12, rect.left + rect.width / 2 - toolbar.offsetWidth / 2)}px`;
+        toolbar.style.top = `${Math.max(12, rect.top - 52)}px`;
+        toolbar.classList.add("is-visible");
+      };
+
+      toolbar.addEventListener("mousedown", (event) => event.preventDefault());
+      toolbar.addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (!button) return;
+        const command = button.dataset.command;
+        const format = button.dataset.format;
+        const action = button.dataset.action;
+        if (command) exec(command);
+        if (format) exec("formatBlock", format);
+        if (action === "link") {
+          const url = prompt("リンクURLを入力してください");
+          if (url) exec("createLink", url);
+        }
+        if (action === "delete") exec("delete");
+        setTimeout(updateToolbar, 0);
+      });
+
+      document.addEventListener("selectionchange", updateToolbar);
+      qs("editor").addEventListener("keyup", updateToolbar);
+      qs("editor").addEventListener("mouseup", updateToolbar);
+      window.addEventListener("scroll", () => toolbar.classList.remove("is-visible"), { passive: true });
+    }
+
+    function initBlockInserter() {
+      const editor = qs("editor");
+      const button = document.createElement("button");
+      const menu = document.createElement("div");
+      button.type = "button";
+      button.id = "blockInsertButton";
+      button.className = "block-insert-button";
+      button.textContent = "+";
+      button.setAttribute("aria-label", "ブロックを追加");
+      menu.className = "block-insert-menu";
+      menu.setAttribute("role", "menu");
+      menu.innerHTML = `
+        <button type="button" data-block-kind="image">画像</button>
+        <button type="button" data-block-kind="embed">埋め込み</button>
+        <button type="button" data-block-kind="h2">大見出し</button>
+        <button type="button" data-block-kind="h3">小見出し</button>
+        <button type="button" data-block-kind="ul">箇条書きリスト</button>
+        <button type="button" data-block-kind="ol">番号付きリスト</button>
+        <button type="button" data-block-kind="quote">引用</button>
+        <button type="button" data-block-kind="code">コード</button>
+        <button type="button" data-block-kind="hr">区切り線</button>
+        <button type="button" data-block-kind="sleeve">スリーブ素材</button>
+      `;
+      document.body.appendChild(button);
+      document.body.appendChild(menu);
+
+      const positionButton = () => {
+        const selection = getEditorSelection();
+        if (!selection || !selection.isCollapsed || document.activeElement !== editor) {
+          button.classList.remove("is-visible");
+          menu.classList.remove("is-visible");
+          return;
+        }
+        const rect = getSelectionRect(selection) || editor.getBoundingClientRect();
+        const editorRect = editor.getBoundingClientRect();
+        button.style.left = `${Math.max(8, editorRect.left - 48)}px`;
+        button.style.top = `${Math.max(76, rect.top - 7)}px`;
+        button.classList.add("is-visible");
+      };
+
+      button.addEventListener("mousedown", (event) => event.preventDefault());
+      button.addEventListener("click", () => {
+        const rect = button.getBoundingClientRect();
+        menu.style.left = `${rect.right + 8}px`;
+        menu.style.top = `${rect.top}px`;
+        menu.classList.toggle("is-visible");
+      });
+      menu.addEventListener("mousedown", (event) => event.preventDefault());
+      menu.addEventListener("click", (event) => {
+        const menuButton = event.target.closest("[data-block-kind]");
+        if (!menuButton) return;
+        menu.classList.remove("is-visible");
+        insertBlock(menuButton.dataset.blockKind);
+      });
+      document.addEventListener("click", (event) => {
+        if (event.target === button || menu.contains(event.target)) return;
+        menu.classList.remove("is-visible");
+      });
+      editor.addEventListener("focus", positionButton);
+      editor.addEventListener("click", positionButton);
+      editor.addEventListener("keyup", positionButton);
+      document.addEventListener("selectionchange", positionButton);
+      window.addEventListener("scroll", positionButton, { passive: true });
+    }
+
+    function initNoteLikeWritingSurface() {
+      const editorPanel = qs("editor")?.closest(".admin-panel");
+      const toolbar = editorPanel?.querySelector(".toolbar");
+      if (!editorPanel || !toolbar || document.getElementById("writingTitleInput")) return;
+
+      ["titleInput", "excerptInput", "coverInput"].forEach((id) => {
+        qs(id)?.closest(".field")?.classList.add("is-mirrored-hidden");
+      });
+
+      const head = document.createElement("div");
+      head.className = "note-writing-head";
+      head.innerHTML = `
+        <button id="noteCoverDrop" class="note-cover-drop" type="button">カバー画像を追加</button>
+        <textarea id="writingTitleInput" class="note-title-input" rows="1" placeholder="タイトル"></textarea>
+        <textarea id="writingExcerptInput" class="note-excerpt-input" rows="1" placeholder="リード文を書く（任意）"></textarea>
+      `;
+      editorPanel.insertBefore(head, toolbar);
+
+      const writingTitle = document.getElementById("writingTitleInput");
+      const writingExcerpt = document.getElementById("writingExcerptInput");
+      const coverDrop = document.getElementById("noteCoverDrop");
+
+      writingTitle.addEventListener("input", () => {
+        qs("titleInput").value = writingTitle.value;
+        autoGrowTextarea(writingTitle);
+        updatePreview();
+      });
+      writingExcerpt.addEventListener("input", () => {
+        qs("excerptInput").value = writingExcerpt.value;
+        autoGrowTextarea(writingExcerpt);
+        updatePreview();
+      });
+      coverDrop.addEventListener("click", () => {
+        const current = qs("coverInput").value.trim();
+        const url = prompt("カバー画像URLを入力してください", current);
+        if (url == null) return;
+        qs("coverInput").value = url.trim();
+        dispatchInput(qs("coverInput"));
+        updateCoverDropPreview();
+      });
+      qs("coverInput").addEventListener("input", updateCoverDropPreview);
+      qs("editor").addEventListener("keydown", applyMarkdownShortcut);
+      refreshWritingSurfaceFromForm();
+      initSelectionToolbar();
+      initBlockInserter();
+    }
+
     function downloadJson() {
       const articles = readStoredArticles().filter((article) => article.status === "published");
       const payload = JSON.stringify({ articles }, null, 2);
@@ -1145,6 +1748,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       qs("dateInput").value = todayISO();
       fillForm(null);
+      initNoteLikeWritingSurface();
       renderArticleList();
       loadSleevesForTool();
 
