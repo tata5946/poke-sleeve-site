@@ -4776,9 +4776,18 @@
       return `./sleeve/${encodeURIComponent(sleeveId ?? "")}/`;
     }
 
-    function getReleaseFeatureHref() {
-      return "./abyss-eye.html";
-    }
+    const RELEASE_FEATURE_BANNERS = [
+      {
+        href: "./abyss-eye.html",
+        imageSrc: "./assets/abyss-eye-banner-home.jpg",
+        label: "アビスアイ発売関連デッキシールド"
+      },
+      {
+        href: "./ninzyasupina.html",
+        imageSrc: "./assets/ninzyasupina---banner.png",
+        label: "ニンジャスピナー発売関連デッキシールド"
+      }
+    ];
 
     function parseReleaseTime(value) {
       const text = String(value || "").trim();
@@ -4829,15 +4838,15 @@
     function renderReleaseBanner(sleeves) {
       const track = document.getElementById("releaseBannerTrack");
       if (!track) return;
-      const href = getReleaseFeatureHref();
-      const imageSrc = "./assets/abyss-eye-banner-home.jpg";
-      const dotCount = 5;
+      const banners = RELEASE_FEATURE_BANNERS;
+      const dotCount = banners.length;
       const loopSets = 3;
       const cards = Array.from({ length: dotCount * loopSets }, (_, index) => {
         const logicalIndex = index % dotCount;
+        const banner = banners[logicalIndex];
         return `
-        <a class="release-feature-card release-feature-card--image" href="${escapeHtml(href)}" data-banner-index="${logicalIndex}" aria-label="アビスアイ発売関連デッキシールドを見る">
-          <img class="release-feature-image" src="${escapeHtml(imageSrc)}" alt="アビスアイ発売関連デッキシールド" loading="${index === dotCount + 1 ? "eager" : "lazy"}" decoding="async">
+        <a class="release-feature-card release-feature-card--image" href="${escapeHtml(banner.href)}" data-banner-index="${logicalIndex}" aria-label="${escapeHtml(banner.label)}を見る">
+          <img class="release-feature-image" src="${escapeHtml(banner.imageSrc)}" alt="${escapeHtml(banner.label)}" loading="${index === dotCount + 1 ? "eager" : "lazy"}" decoding="async">
         </a>
       `;
       });
