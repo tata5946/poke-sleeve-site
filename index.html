@@ -2756,6 +2756,7 @@
     .release-feature-card--image {
       flex: 0 0 var(--release-card-width);
       min-height: 0;
+      aspect-ratio: 16 / 9;
       background: #0f172a;
       scroll-snap-align: center;
     }
@@ -2765,8 +2766,8 @@
     .release-feature-image {
       display: block;
       width: 100%;
-      height: 248px;
-      object-fit: cover;
+      height: 100%;
+      object-fit: contain;
       background: #0f172a;
     }
     .dashboard-hero {
@@ -3828,7 +3829,7 @@
         min-height: 0;
       }
       body.home-page .release-feature-image {
-        height: 156px;
+        height: 100%;
       }
       body.home-page .dashboard-hero {
         gap: 10px;
