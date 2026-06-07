@@ -5,9 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ニンジャスピナー発売関連デッキシールド | ポケスリ相場ナビ</title>
-  <meta name="description" content="ニンジャスピナー発売関連のデッキシールドをまとめて確認できます。" />
+  <meta name="description" content="ニンジャスピナー発売関連の新規・再販デッキシールドをまとめて確認できます。" />
   <meta property="og:title" content="ニンジャスピナー発売関連デッキシールド | ポケスリ相場ナビ" />
-  <meta property="og:description" content="ニンジャスピナー発売関連のデッキシールドをまとめて確認できます。" />
+  <meta property="og:description" content="ニンジャスピナー発売関連の新規・再販デッキシールドをまとめて確認できます。" />
   <meta property="og:image" content="https://pokesuri-navi.com/assets/ninzyasupina---banner.png" />
   <meta property="og:url" content="https://pokesuri-navi.com/ninzyasupina.html" />
 
@@ -244,16 +244,26 @@
               <div>
                 <p class="abyss-kicker">FEATURE</p>
                 <h1 class="abyss-title">ニンジャスピナー発売関連デッキシールド</h1>
-                <p class="abyss-copy">ニンジャスピナー発売にあわせて注目したい関連スリーブをまとめました。各カードから個別ページで相場推移を確認できます。</p>
+                <p class="abyss-copy">新規発売と再販の関連スリーブをまとめました。各カードから個別ページで相場推移を確認できます。</p>
               </div>
             </section>
 
-            <section class="abyss-section" aria-labelledby="featureSleevesTitle">
+            <section class="abyss-section" aria-labelledby="newSleevesTitle">
               <div class="abyss-section-head">
-                <h2 id="featureSleevesTitle" class="abyss-section-title">対象スリーブ</h2>
-                <span class="abyss-section-count">7件</span>
+                <h2 id="newSleevesTitle" class="abyss-section-title">新規</h2>
+                <span class="abyss-section-count">6件</span>
               </div>
-              <div id="featureSleeveGrid" class="abyss-grid">
+              <div id="newSleeveGrid" class="abyss-grid">
+                <div class="abyss-empty">&#35501;&#12415;&#36796;&#12415;&#20013;&#12391;&#12377;&#12290;</div>
+              </div>
+            </section>
+
+            <section class="abyss-section" aria-labelledby="restockSleevesTitle">
+              <div class="abyss-section-head">
+                <h2 id="restockSleevesTitle" class="abyss-section-title">再販</h2>
+                <span class="abyss-section-count">2件</span>
+              </div>
+              <div id="restockSleeveGrid" class="abyss-grid">
                 <div class="abyss-empty">&#35501;&#12415;&#36796;&#12415;&#20013;&#12391;&#12377;&#12290;</div>
               </div>
             </section>
@@ -269,14 +279,17 @@
   <script>
     window.common.setupDashboardChrome({ sidebarActive: "zukan", topbarActive: "zukan" });
 
-    const FEATURE_SLEEVE_ITEMS = [
+    const NEW_SLEEVE_ITEMS = [
       ["462240", "チラーミィ&チラチーノ"],
       ["462318", "ヌメラ&ヌメイル"],
       ["462332", "ミネズミ"],
       ["462301", "ホミカ&クロバット"],
       ["463674", "メガゲッコウガ"],
-      ["462288", "メガフラエッテ"],
-      ["432762", "メガゲンガー"]
+      ["462288", "メガフラエッテ"]
+    ];
+    const RESTOCK_SLEEVE_ITEMS = [
+      ["432762", "メガゲンガー"],
+      ["375649", "ピカチュウとハート"]
     ];
 
     function escapeHtml(value) {
@@ -435,12 +448,13 @@
     async function main() {
       const data = await loadFeatureData();
       const sleeveMap = buildSleeveMap(data?.sleeves);
-      renderItems("featureSleeveGrid", FEATURE_SLEEVE_ITEMS, sleeveMap);
+      renderItems("newSleeveGrid", NEW_SLEEVE_ITEMS, sleeveMap);
+      renderItems("restockSleeveGrid", RESTOCK_SLEEVE_ITEMS, sleeveMap);
     }
 
     main().catch((error) => {
       console.error(error);
-      ["featureSleeveGrid"].forEach((id) => {
+      ["newSleeveGrid", "restockSleeveGrid"].forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = `<div class="abyss-empty">\u30c7\u30fc\u30bf\u306e\u8aad\u307f\u8fbc\u307f\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002</div>`;
       });
