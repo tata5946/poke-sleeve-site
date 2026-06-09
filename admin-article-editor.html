@@ -862,7 +862,7 @@
           }
           if (tagName === "IMG") {
             const src = child.getAttribute("src") || "";
-            if (!/^(https?:|data:image\/)/i.test(src)) child.remove();
+            if (!/^https?:\/\//i.test(src)) child.remove();
           }
           if (tagName === "SVG") {
             child.setAttribute("aria-hidden", "true");
@@ -896,6 +896,40 @@
 
     function writeStoredArticles(articles) {
       localStorage.setItem(ARTICLE_LOCAL_KEY, JSON.stringify(articles));
+    }
+
+    function isStorageQuotaError(error) {
+      return error && (
+        error.name === "QuotaExceededError" ||
+        error.name === "NS_ERROR_DOM_QUOTA_REACHED" ||
+        error.code === 22 ||
+        error.code === 1014
+      );
+    }
+
+    function hasEmbeddedDataImages(root = qs("editor")) {
+      return !!root && Array.from(root.querySelectorAll("img")).some((img) => /^data:image\//i.test(img.getAttribute("src") || ""));
+    }
+
+    function downloadArticlesPayload(articles, filename = "articles.json") {
+      const payload = JSON.stringify({ articles }, null, 2);
+      const blob = new Blob([payload], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function compactArticleForStorage(article) {
+      if (!article || typeof article !== "object") return article;
+      const next = { ...article };
+      next.html = sanitizeHtml(next.html || "");
+      if (/^data:image\//i.test(String(next.coverImage || ""))) next.coverImage = "";
+      return next;
     }
 
     function parseDate(value) {
@@ -1416,16 +1450,8 @@
         return;
       }
 
-      const file = imageItem.getAsFile();
-      if (!file) return;
       event.preventDefault();
-      const reader = new FileReader();
-      reader.onload = () => {
-        insertHtmlAtCursor(buildEditableImageHtml(String(reader.result || ""), file.name || ""));
-        setStatus("画像を貼り付けました。必要なら画像下のキャプションを入力してください。", "ok");
-      };
-      reader.onerror = () => setStatus("画像の貼り付けに失敗しました。画像URLで挿入してください。", "ng");
-      reader.readAsDataURL(file);
+      setStatus("貼り付け画像は保存容量を超えやすいため挿入できません。画像ボタンからhttps://で始まる画像URLを挿入してください。", "ng");
     }
 
     function insertSleeveMaterial(kind) {
@@ -1445,6 +1471,7 @@
     function readForm(status) {
       const title = qs("titleInput").value.trim();
       if (!title) throw new Error("タイトルを入力してください。");
+      if (hasEmbeddedDataImages()) throw new Error("貼り付け画像は保存容量を超えやすいため保存できません。画像はhttps://で始まるURLから挿入してください。");
       const slug = slugify(qs("slugInput").value || title);
       const html = sanitizeHtml(qs("editor").innerHTML);
       if (!html || html === "<br>") throw new Error("本文を入力してください。");
@@ -1479,8 +1506,17 @@
     function saveArticle(status) {
       const article = readForm(status);
       const articles = readStoredArticles();
-      const next = [article, ...articles.filter((item) => item.slug !== article.slug && item.id !== article.id)];
-      writeStoredArticles(next);
+      const next = [article, ...articles.filter((item) => item.slug !== article.slug && item.id !== article.id)].map(compactArticleForStorage);
+      try {
+        writeStoredArticles(next);
+      } catch (error) {
+        if (isStorageQuotaError(error)) {
+          downloadArticlesPayload(next.filter((item) => item.status === "published"), `articles-recovery-${todayISO()}.json`);
+          setStatus("保存容量の上限を超えました。公開記事の退避JSONをダウンロードしました。画像はURL挿入にしてください。", "ng");
+          return article;
+        }
+        throw error;
+      }
       currentId = article.id;
       renderArticleList();
       updatePreview();
