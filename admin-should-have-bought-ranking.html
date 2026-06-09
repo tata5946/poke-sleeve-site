@@ -999,14 +999,13 @@
       const style = WEEKLY_RANKING_STYLES[rank - 1] || WEEKLY_RANKING_STYLES[0];
       const sleeve = row.sleeve;
       const releaseDate = escapeHtml(formatReleaseDate(sleeve));
-      const categoryTags = buildCategoryTagsHtml(sleeve);
       const smallCrown = rank === 1 ? `<div class="small-crown">♛</div>` : "";
       return `
         <article class="rank-row" style="--rank-bg:${style.bg};--rank-color:${style.rank};--chart-color:${style.chart};">
           <div class="rank-medal"><div class="rank-medal-inner">${smallCrown}<div class="rank-number">${rank}</div><div class="laurel">〈〉</div></div></div>
           <div class="sleeve-info">
             <div class="sleeve-art">${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}</div>
-            <div class="sleeve-copy"><div class="sleeve-name">${buildNameHtml(sleeve.name)}</div><div class="release"><span class="release-badge">発売日</span><span>${releaseDate}</span></div>${categoryTags}</div>
+            <div class="sleeve-copy"><div class="sleeve-name">${buildNameHtml(sleeve.name)}</div><div class="release"><span class="release-badge">発売日</span><span>${releaseDate}</span></div></div>
           </div>
           <div class="price-box"><span class="price-badge">最新価格</span><div class="price">${formatPrice(row.latest.price)}</div><div class="prev">4月価格：${formatPrice(row.prev.price)}</div></div>
           <div class="delta-box"><span class="delta-badge">4月比</span><div class="delta">${formatPercent(row.rate)}</div><div class="delta-arrow">➜</div></div>
