@@ -4550,9 +4550,13 @@
       } catch (_) {}
       let localArticles = [];
       try {
-        const raw = localStorage.getItem(HOME_ARTICLE_LOCAL_KEY);
-        const data = raw ? JSON.parse(raw) : [];
-        localArticles = Array.isArray(data) ? data : [];
+        if (window.common?.readLocalArticles) {
+          localArticles = await window.common.readLocalArticles(HOME_ARTICLE_LOCAL_KEY);
+        } else {
+          const raw = localStorage.getItem(HOME_ARTICLE_LOCAL_KEY);
+          const data = raw ? JSON.parse(raw) : [];
+          localArticles = Array.isArray(data) ? data : [];
+        }
       } catch (_) {}
       const map = new Map();
       [...fileArticles, ...localArticles].forEach((item) => {

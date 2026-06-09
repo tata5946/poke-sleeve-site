@@ -11,6 +11,10 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbxo7yT3rejT_pNMIwYcE_yj
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
 const LOCAL_DATA_URL = "./data.json";
+const ARTICLE_DB_NAME = "pokeSleeveArticleStore";
+const ARTICLE_DB_VERSION = 1;
+const ARTICLE_STORE_NAME = "kv";
+const ARTICLE_STORE_KEY = "articles";
 const DATA_CACHE_KEY = "pokeSleeve:dataCache:v12";
 const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v12";
 const DATA_CACHE_TTL_MS = 5 * 60 * 1000;
@@ -243,6 +247,92 @@ function toISODate(d) {
 function numOrNull(v) {
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
+}
+
+function openArticleDb() {
+  return new Promise((resolve, reject) => {
+    if (!("indexedDB" in window)) {
+      reject(new Error("IndexedDB is not available."));
+      return;
+    }
+    const request = indexedDB.open(ARTICLE_DB_NAME, ARTICLE_DB_VERSION);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(ARTICLE_STORE_NAME)) db.createObjectStore(ARTICLE_STORE_NAME);
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error("Failed to open article database."));
+  });
+}
+
+async function readIndexedDbArticles() {
+  try {
+    const db = await openArticleDb();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction(ARTICLE_STORE_NAME, "readonly");
+      const store = tx.objectStore(ARTICLE_STORE_NAME);
+      const request = store.get(ARTICLE_STORE_KEY);
+      request.onsuccess = () => resolve(Array.isArray(request.result) ? request.result : []);
+      request.onerror = () => reject(request.error || new Error("Failed to read article database."));
+      tx.oncomplete = () => db.close();
+      tx.onabort = () => db.close();
+    });
+  } catch (_) {
+    return [];
+  }
+}
+
+async function writeIndexedDbArticles(articles) {
+  const db = await openArticleDb();
+  return await new Promise((resolve, reject) => {
+    const tx = db.transaction(ARTICLE_STORE_NAME, "readwrite");
+    const store = tx.objectStore(ARTICLE_STORE_NAME);
+    const request = store.put(Array.isArray(articles) ? articles : [], ARTICLE_STORE_KEY);
+    request.onerror = () => reject(request.error || new Error("Failed to write article database."));
+    tx.oncomplete = () => { db.close(); resolve(); };
+    tx.onabort = () => { db.close(); reject(tx.error || new Error("Article database write was aborted.")); };
+  });
+}
+
+function readLocalStorageArticles(key = "pokeSleeve:articles:local:v1") {
+  try {
+    const raw = localStorage.getItem(key);
+    const data = raw ? JSON.parse(raw) : [];
+    return Array.isArray(data) ? data : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+async function readLocalArticles(key = "pokeSleeve:articles:local:v1") {
+  const map = new Map();
+  for (const article of readLocalStorageArticles(key)) {
+    const id = String(article?.id || article?.slug || "").trim();
+    if (id) map.set(id, article);
+  }
+  for (const article of await readIndexedDbArticles()) {
+    const id = String(article?.id || article?.slug || "").trim();
+    if (id) map.set(id, article);
+  }
+  return Array.from(map.values());
+}
+
+async function writeLocalArticles(articles, key = "pokeSleeve:articles:local:v1") {
+  const list = Array.isArray(articles) ? articles : [];
+  try {
+    await writeIndexedDbArticles(list);
+  } catch (_) {
+    localStorage.setItem(key, JSON.stringify(list));
+    return;
+  }
+  try {
+    const lite = list.map((article) => ({
+      ...article,
+      html: String(article?.html || "").replace(/\ssrc="data:image\/[^"]+"/gi, ""),
+      coverImage: /^data:image\//i.test(String(article?.coverImage || "")) ? "" : article?.coverImage
+    }));
+    localStorage.setItem(key, JSON.stringify(lite));
+  } catch (_) {}
 }
 
 function sumWeeklyTradeCounts(sleeve) {
@@ -1764,6 +1854,8 @@ window.common = {
   escapeHtml,
   toISODate,
   numOrNull,
+  readLocalArticles,
+  writeLocalArticles,
   getFlowMetrics,
   buildFlowBadgeHtml,
   uniq,
