@@ -1225,6 +1225,10 @@
       return `${y}-${m}-${day}`;
     }
 
+    function isLegacyMonthlyRow(weekISO) {
+      return String(weekISO || "").slice(-2) === "01" && String(weekISO || "") < "2026-01-01";
+    }
+
     function numOrNull(v) {
       const n = Number(v);
       return Number.isFinite(n) ? n : null;
@@ -1280,7 +1284,7 @@
       for (const x of arr) {
         const weekISO = toISODate(x.week);
         if (!weekISO) continue;
-        if (String(weekISO).slice(-2) === "01") continue;
+        if (isLegacyMonthlyRow(weekISO)) continue;
 
         const price = numOrNull(x.price);
         const count = numOrNull(x.count);
@@ -1306,7 +1310,7 @@
       for (const x of arr) {
         const weekISO = toISODate(x.week);
         if (!weekISO) continue;
-        if (String(weekISO).slice(-2) === "01") continue;
+        if (isLegacyMonthlyRow(weekISO)) continue;
 
         const price = numOrNull(x.price);
         const count = numOrNull(x.count);

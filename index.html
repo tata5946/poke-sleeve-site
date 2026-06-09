@@ -4465,6 +4465,10 @@
       return `${y}-${m}-${day}`;
     }
 
+    function isLegacyMonthlyRow(weekISO) {
+      return String(weekISO || "").slice(-2) === "01" && String(weekISO || "") < "2026-01-01";
+    }
+
     function numOrNull(v) {
       const n = Number(v);
       return Number.isFinite(n) ? n : null;
@@ -4588,7 +4592,7 @@
       const map = new Map();
       for (const row of arr) {
         const weekISO = toISODate(row?.week);
-        if (weekISO && String(weekISO).slice(-2) === "01") continue;
+        if (weekISO && isLegacyMonthlyRow(weekISO)) continue;
         const price = numOrNull(row?.price);
         const count = numOrNull(row?.count);
         const hasTrade = count == null ? (price != null) : (count > 0 && price != null);
@@ -4717,7 +4721,7 @@
           const week = toISODate(x?.week);
           const price = numOrNull(x?.price);
           const count = numOrNull(x?.count);
-          if (!week || !(price > 0) || !Number.isFinite(count) || String(week).slice(-2) === "01") return null;
+          if (!week || !(price > 0) || !Number.isFinite(count) || isLegacyMonthlyRow(week)) return null;
           return { week, price, count };
         })
         .filter(Boolean)
