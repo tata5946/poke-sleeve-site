@@ -168,6 +168,151 @@
       font-weight: 800;
       text-align: center;
     }
+
+    @media (max-width: 700px) {
+      body.page-content-focus {
+        background: #fff;
+      }
+
+      .dashboard-content {
+        padding: 0;
+        background: #fff;
+      }
+
+      .page-shell--content {
+        padding: 0 18px 28px;
+      }
+
+      .breadcrumb {
+        display: none;
+      }
+
+      .article-page {
+        gap: 0;
+        margin-top: 0;
+      }
+
+      .article-detail {
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .article-cover {
+        width: calc(100% + 36px);
+        margin: 0 -18px;
+        aspect-ratio: 16 / 9;
+        border-radius: 0;
+      }
+
+      .article-cover[aria-hidden="true"] {
+        display: none;
+      }
+
+      .article-head {
+        gap: 12px;
+        padding: 24px 0 18px;
+        border-bottom: 0;
+      }
+
+      .article-meta {
+        gap: 8px;
+        color: #6b7280;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .article-meta span:first-child {
+        display: none;
+      }
+
+      .article-detail-title {
+        font-size: 24px;
+        line-height: 1.42;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .article-detail-excerpt {
+        color: #5f6368;
+        font-size: 13px;
+        line-height: 1.9;
+        font-weight: 500;
+      }
+
+      .article-body {
+        max-width: none;
+        padding: 0 0 34px;
+        color: #242424;
+        font-size: 15px;
+        line-height: 2.05;
+        font-weight: 400;
+        letter-spacing: 0;
+      }
+
+      .article-body h2,
+      .article-body h3 {
+        color: #242424;
+        font-weight: 800;
+        line-height: 1.45;
+      }
+
+      .article-body h2 {
+        margin: 2.2em 0 .75em;
+        font-size: 20px;
+      }
+
+      .article-body h3 {
+        margin: 2em 0 .7em;
+        font-size: 17px;
+      }
+
+      .article-body p {
+        margin: 0 0 1.45em;
+      }
+
+      .article-body img {
+        border-radius: 8px;
+      }
+
+      .article-body .note-image-block {
+        margin: 1.7em 0;
+      }
+
+      .article-body .note-image-block img {
+        max-height: none;
+        border-color: #e5e7eb;
+      }
+
+      .article-body .note-image-caption {
+        margin-top: 6px;
+        color: #6b7280;
+        font-size: 11px;
+        line-height: 1.7;
+      }
+
+      .article-body blockquote {
+        margin: 1.6em 0;
+        padding: 12px 14px;
+        border-left-color: #d1d5db;
+        background: #f7f7f7;
+        color: #374151;
+        font-weight: 500;
+      }
+
+      .article-body pre {
+        margin: 1.5em -4px;
+        padding: 14px;
+        border-radius: 8px;
+        font-size: 13px;
+      }
+
+      .article-embed-card {
+        border-radius: 10px;
+      }
+    }
   </style>
 </head>
 
