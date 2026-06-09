@@ -190,9 +190,15 @@
       .article-page {
         gap: 0;
         margin-top: 0;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
       }
 
       .article-detail {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
         overflow: visible;
         border: 0;
         border-radius: 0;
@@ -201,10 +207,11 @@
       }
 
       .article-cover {
-        width: calc(100% + 36px);
-        margin: 0 -18px;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
         aspect-ratio: 16 / 9;
-        border-radius: 0;
+        border-radius: 8px;
       }
 
       .article-cover[aria-hidden="true"] {
@@ -243,13 +250,24 @@
       }
 
       .article-body {
+        width: 100%;
         max-width: none;
+        min-width: 0;
+        overflow-wrap: anywhere;
+        word-break: normal;
         padding: 0 0 34px;
         color: #242424;
         font-size: 15px;
         line-height: 2.05;
         font-weight: 400;
         letter-spacing: 0;
+      }
+
+      .article-body *,
+      .article-body *::before,
+      .article-body *::after {
+        box-sizing: border-box;
+        max-width: 100%;
       }
 
       .article-body h2,
@@ -274,6 +292,10 @@
       }
 
       .article-body img {
+        display: block;
+        width: auto;
+        height: auto;
+        max-width: 100%;
         border-radius: 8px;
       }
 
@@ -303,14 +325,27 @@
       }
 
       .article-body pre {
+        max-width: 100%;
         margin: 1.5em -4px;
         padding: 14px;
         border-radius: 8px;
         font-size: 13px;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
       }
 
       .article-embed-card {
+        width: 100%;
+        max-width: 100%;
         border-radius: 10px;
+      }
+
+      .article-body iframe,
+      .article-body video,
+      .article-body canvas,
+      .article-body table {
+        width: 100%;
+        max-width: 100%;
       }
     }
   </style>
