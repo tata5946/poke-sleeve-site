@@ -920,7 +920,15 @@
           fromIndex = idx + sep.length;
         }
       }
-      if (splitAt < 0 || bestDistance > 4) splitAt = midpoint;
+      const maxLineChars = 10;
+      if (
+        splitAt < 0 ||
+        bestDistance > 3 ||
+        splitAt > maxLineChars ||
+        (text.length - splitAt) > maxLineChars
+      ) {
+        splitAt = midpoint;
+      }
       return `${escapeHtml(text.slice(0, splitAt))}<br>${escapeHtml(text.slice(splitAt))}`;
     }
 
