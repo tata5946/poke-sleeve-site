@@ -294,6 +294,80 @@
       border-radius: 12px;
     }
 
+    .preview .article-table-wrap,
+    .editor .article-table-wrap {
+      max-width: 100%;
+      margin: 1.7em 0;
+      overflow-x: auto;
+    }
+
+    .preview table,
+    .editor table {
+      width: 100%;
+      min-width: 520px;
+      border-collapse: collapse;
+      border: 1px solid #d5deeb;
+      background: #fff;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .preview th,
+    .preview td,
+    .editor th,
+    .editor td {
+      padding: 10px 12px;
+      border: 1px solid #d5deeb;
+      vertical-align: top;
+    }
+
+    .preview th,
+    .editor th {
+      background: #f4f7fb;
+      color: #111827;
+      font-weight: 900;
+      text-align: left;
+    }
+
+    .preview .article-toc,
+    .editor .article-toc {
+      margin: 1.7em 0;
+      padding: 16px 18px;
+      border: 1px solid #d5deeb;
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    .preview .article-toc__title,
+    .editor .article-toc__title {
+      display: block;
+      margin-bottom: 8px;
+      color: #111827;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .preview .article-toc ol,
+    .editor .article-toc ol {
+      display: grid;
+      gap: 4px;
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    .preview .article-toc a,
+    .editor .article-toc a {
+      color: #1e5bd7;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .preview .article-toc__item--h3,
+    .editor .article-toc__item--h3 {
+      margin-left: 1em;
+      font-size: .92em;
+    }
+
     .article-list {
       display: grid;
       gap: 8px;
@@ -972,8 +1046,8 @@
     function sanitizeHtml(html) {
       const template = document.createElement("template");
       template.innerHTML = String(html || "");
-      const allowedTags = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "S", "DEL", "H2", "H3", "UL", "OL", "LI", "A", "IMG", "BLOCKQUOTE", "HR", "PRE", "CODE", "SPAN", "DIV", "SECTION", "FIGURE", "FIGCAPTION", "FONT", "SVG", "G", "PATH", "POLYLINE", "LINE", "CIRCLE", "RECT", "TEXT"]);
-      const allowedAttrs = new Set(["href", "src", "alt", "title", "style", "target", "rel", "face", "color", "size", "class", "data-sleeve-id", "viewBox", "viewbox", "xmlns", "role", "aria-hidden", "d", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "stroke-dasharray", "points", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "width", "height", "opacity", "font-size", "font-weight", "text-anchor"]);
+      const allowedTags = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "S", "DEL", "H2", "H3", "UL", "OL", "LI", "A", "IMG", "BLOCKQUOTE", "HR", "PRE", "CODE", "SPAN", "DIV", "SECTION", "FIGURE", "FIGCAPTION", "FONT", "TABLE", "THEAD", "TBODY", "TR", "TH", "TD", "CAPTION", "SVG", "G", "PATH", "POLYLINE", "LINE", "CIRCLE", "RECT", "TEXT"]);
+      const allowedAttrs = new Set(["href", "src", "alt", "title", "style", "target", "rel", "face", "color", "size", "class", "id", "scope", "colspan", "rowspan", "data-sleeve-id", "viewBox", "viewbox", "xmlns", "role", "aria-hidden", "aria-label", "d", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "stroke-dasharray", "points", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "width", "height", "opacity", "font-size", "font-weight", "text-anchor"]);
 
       const walk = (node) => {
         for (const child of Array.from(node.children)) {
@@ -2011,6 +2085,103 @@
       insertHtmlAtCursor(buildEditableImageHtml(safeUrl));
     }
 
+    function buildHeadingAnchorId(text, index) {
+      const base = String(text || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/_+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+      return base || `section-${index + 1}`;
+    }
+
+    function collectArticleHeadings() {
+      const editor = qs("editor");
+      if (!editor) return [];
+      const used = new Set();
+      return Array.from(editor.querySelectorAll("h2, h3")).map((heading, index) => {
+        const text = String(heading.textContent || "").trim() || `見出し ${index + 1}`;
+        let id = String(heading.getAttribute("id") || "").trim();
+        if (!id) id = buildHeadingAnchorId(text, index);
+        let uniqueId = id;
+        let suffix = 2;
+        while (used.has(uniqueId)) {
+          uniqueId = `${id}-${suffix}`;
+          suffix += 1;
+        }
+        used.add(uniqueId);
+        heading.setAttribute("id", uniqueId);
+        return { id: uniqueId, text, level: heading.tagName.toLowerCase() };
+      });
+    }
+
+    function buildArticleTocHtml(headings) {
+      return `
+        <div class="article-toc" role="navigation" aria-label="目次">
+          <strong class="article-toc__title">目次</strong>
+          <ol>
+            ${headings.map((heading) => `
+              <li class="article-toc__item article-toc__item--${escapeHtml(heading.level)}">
+                <a href="#${escapeHtml(heading.id)}">${escapeHtml(heading.text)}</a>
+              </li>
+            `).join("")}
+          </ol>
+        </div>
+        <p><br></p>
+      `;
+    }
+
+    function insertTocBlock() {
+      const editor = qs("editor");
+      const headings = collectArticleHeadings();
+      if (!headings.length) {
+        setStatus("目次にする見出しがありません。先に大見出し・小見出しを追加してください。", "ng");
+        return;
+      }
+      const html = sanitizeHtml(buildArticleTocHtml(headings));
+      const existing = editor.querySelector(".article-toc");
+      if (existing) {
+        existing.outerHTML = html;
+        updatePreview();
+        setStatus("目次を更新しました。", "ok");
+        return;
+      }
+      insertHtmlAtCursor(html);
+      setStatus("目次を追加しました。", "ok");
+    }
+
+    function insertTableBlock() {
+      insertHtmlAtCursor(`
+        <div class="article-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">項目</th>
+                <th scope="col">内容</th>
+                <th scope="col">メモ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>例: 商品名</td>
+                <td>例: プレミアム・グロス</td>
+                <td>例: 未開封</td>
+              </tr>
+              <tr>
+                <td>例: 相場</td>
+                <td>例: 約1,200円</td>
+                <td>例: 前週比 +8%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p><br></p>
+      `);
+      setStatus("表を追加しました。セルをクリックして編集できます。", "ok");
+    }
+
     function insertCodeBlock() {
       insertHtmlAtCursor("<pre><code>code</code></pre><p><br></p>");
     }
@@ -2028,6 +2199,8 @@
       if (kind === "quote") return exec("formatBlock", "blockquote");
       if (kind === "code") return insertCodeBlock();
       if (kind === "hr") return insertHtmlAtCursor("<hr><p><br></p>");
+      if (kind === "table") return insertTableBlock();
+      if (kind === "toc") return insertTocBlock();
       if (kind === "sleeve") return insertSleeveMaterial("bundle");
     }
 
@@ -2127,6 +2300,8 @@
         <button type="button" data-block-kind="ul">箇条書きリスト</button>
         <button type="button" data-block-kind="ol">番号付きリスト</button>
         <button type="button" data-block-kind="quote">引用</button>
+        <button type="button" data-block-kind="table">表</button>
+        <button type="button" data-block-kind="toc">目次</button>
         <button type="button" data-block-kind="code">コード</button>
         <button type="button" data-block-kind="hr">区切り線</button>
         <button type="button" data-block-kind="sleeve">スリーブ素材</button>
