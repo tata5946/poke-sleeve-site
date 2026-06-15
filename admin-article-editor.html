@@ -795,6 +795,7 @@
     }
 
     .selection-toolbar,
+    .table-edit-toolbar,
     .block-insert-menu {
       position: fixed;
       z-index: 80;
@@ -810,11 +811,13 @@
     }
 
     .selection-toolbar.is-visible,
+    .table-edit-toolbar.is-visible,
     .block-insert-menu.is-visible {
       display: flex;
     }
 
     .selection-toolbar button,
+    .table-edit-toolbar button,
     .block-insert-button,
     .block-insert-menu button {
       min-width: 34px;
@@ -830,9 +833,20 @@
     }
 
     .selection-toolbar button:hover,
+    .table-edit-toolbar button:hover,
     .block-insert-button:hover,
     .block-insert-menu button:hover {
       background: #f2f4f7;
+    }
+
+    .table-edit-toolbar {
+      gap: 6px;
+      z-index: 86;
+    }
+
+    .table-edit-toolbar button {
+      padding: 0 10px;
+      white-space: nowrap;
     }
 
     .block-insert-button {
@@ -2182,6 +2196,166 @@
       setStatus("表を追加しました。セルをクリックして編集できます。", "ok");
     }
 
+    function initTableEditingTools() {
+      const editor = qs("editor");
+      if (!editor || document.getElementById("tableEditToolbar")) return;
+
+      const toolbar = document.createElement("div");
+      toolbar.id = "tableEditToolbar";
+      toolbar.className = "table-edit-toolbar";
+      toolbar.setAttribute("role", "toolbar");
+      toolbar.setAttribute("aria-label", "表の編集");
+      toolbar.innerHTML = `
+        <button type="button" data-table-action="add-row" title="選択セルの下に行を追加">+行</button>
+        <button type="button" data-table-action="add-column" title="選択セルの右に列を追加">+列</button>
+        <button type="button" data-table-action="delete-row" title="選択中の行を削除">-行</button>
+        <button type="button" data-table-action="delete-column" title="選択中の列を削除">-列</button>
+      `;
+      document.body.appendChild(toolbar);
+
+      let activeCell = null;
+
+      const getCell = (target) => {
+        const element = target?.nodeType === Node.TEXT_NODE ? target.parentElement : target;
+        const cell = element?.closest?.("td, th");
+        return cell && editor.contains(cell) ? cell : null;
+      };
+
+      const getCellIndex = (cell) => Array.from(cell.parentElement?.children || []).indexOf(cell);
+      const getColumnCount = (table) => Math.max(1, ...Array.from(table.querySelectorAll("tr")).map((row) => row.children.length));
+
+      const createTableCell = (tagName, text = "") => {
+        const cell = document.createElement(tagName);
+        if (tagName === "th") cell.setAttribute("scope", "col");
+        cell.innerHTML = text ? escapeHtml(text) : "<br>";
+        return cell;
+      };
+
+      const focusCell = (cell) => {
+        if (!cell) return;
+        activeCell = cell;
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(cell);
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        updateToolbarPosition();
+      };
+
+      function updateToolbarPosition(cell = activeCell) {
+        if (!cell || !editor.contains(cell)) {
+          toolbar.classList.remove("is-visible");
+          activeCell = null;
+          return;
+        }
+        activeCell = cell;
+        const rect = cell.getBoundingClientRect();
+        toolbar.style.left = `${Math.max(12, Math.min(window.innerWidth - toolbar.offsetWidth - 12, rect.left))}px`;
+        toolbar.style.top = `${Math.max(12, rect.top - 48)}px`;
+        toolbar.classList.add("is-visible");
+      }
+
+      const addRow = () => {
+        if (!activeCell) return;
+        const table = activeCell.closest("table");
+        const row = activeCell.closest("tr");
+        const tbody = table.tBodies[0] || table.createTBody();
+        const newRow = document.createElement("tr");
+        const columnCount = getColumnCount(table);
+        for (let i = 0; i < columnCount; i++) newRow.appendChild(createTableCell("td"));
+        if (row?.parentElement?.tagName === "TBODY") row.after(newRow);
+        else tbody.prepend(newRow);
+        focusCell(newRow.children[Math.max(0, Math.min(getCellIndex(activeCell), columnCount - 1))]);
+        updatePreview();
+        setStatus("表に行を追加しました。", "ok");
+      };
+
+      const addColumn = () => {
+        if (!activeCell) return;
+        const table = activeCell.closest("table");
+        const columnIndex = getCellIndex(activeCell);
+        let newActiveCell = null;
+        table.querySelectorAll("tr").forEach((row) => {
+          const isHeader = row.parentElement?.tagName === "THEAD";
+          const newCell = createTableCell(isHeader ? "th" : "td", isHeader ? "見出し" : "");
+          const current = row.children[columnIndex];
+          if (current?.nextSibling) row.insertBefore(newCell, current.nextSibling);
+          else row.appendChild(newCell);
+          if (row === activeCell.parentElement) newActiveCell = newCell;
+        });
+        focusCell(newActiveCell);
+        updatePreview();
+        setStatus("表に列を追加しました。", "ok");
+      };
+
+      const deleteRow = () => {
+        if (!activeCell) return;
+        const row = activeCell.closest("tr");
+        const tbody = activeCell.closest("tbody");
+        if (!tbody || row.parentElement !== tbody) {
+          setStatus("見出し行は削除できません。本文行を選択してください。", "ng");
+          return;
+        }
+        if (tbody.rows.length <= 1) {
+          setStatus("最後の1行は削除できません。不要なら表ごと選択して削除してください。", "ng");
+          return;
+        }
+        const nextCell = row.nextElementSibling?.children[getCellIndex(activeCell)] || row.previousElementSibling?.children[getCellIndex(activeCell)];
+        row.remove();
+        focusCell(nextCell);
+        updatePreview();
+        setStatus("表の行を削除しました。", "ok");
+      };
+
+      const deleteColumn = () => {
+        if (!activeCell) return;
+        const table = activeCell.closest("table");
+        const columnCount = getColumnCount(table);
+        if (columnCount <= 1) {
+          setStatus("最後の1列は削除できません。不要なら表ごと選択して削除してください。", "ng");
+          return;
+        }
+        const columnIndex = getCellIndex(activeCell);
+        let nextCell = null;
+        table.querySelectorAll("tr").forEach((row) => {
+          const cell = row.children[columnIndex];
+          const candidate = row === activeCell.parentElement
+            ? cell?.nextElementSibling || cell?.previousElementSibling
+            : null;
+          if (candidate) nextCell = candidate;
+          cell?.remove();
+        });
+        focusCell(nextCell);
+        updatePreview();
+        setStatus("表の列を削除しました。", "ok");
+      };
+
+      editor.addEventListener("click", (event) => {
+        const cell = getCell(event.target);
+        if (cell) updateToolbarPosition(cell);
+        else toolbar.classList.remove("is-visible");
+      });
+      editor.addEventListener("keyup", () => {
+        const cell = getCell(window.getSelection()?.anchorNode);
+        if (cell) updateToolbarPosition(cell);
+      });
+      toolbar.addEventListener("mousedown", (event) => event.preventDefault());
+      toolbar.addEventListener("click", (event) => {
+        const action = event.target.closest("button")?.dataset.tableAction;
+        if (action === "add-row") addRow();
+        if (action === "add-column") addColumn();
+        if (action === "delete-row") deleteRow();
+        if (action === "delete-column") deleteColumn();
+      });
+      document.addEventListener("click", (event) => {
+        if (toolbar.contains(event.target) || getCell(event.target)) return;
+        toolbar.classList.remove("is-visible");
+      });
+      window.addEventListener("scroll", () => updateToolbarPosition(), { passive: true });
+      window.addEventListener("resize", () => updateToolbarPosition(), { passive: true });
+    }
+
     function insertCodeBlock() {
       insertHtmlAtCursor("<pre><code>code</code></pre><p><br></p>");
     }
@@ -2407,6 +2581,7 @@
       ensureEditableImageCaptions(qs("editor"));
       initSelectionToolbar();
       initBlockInserter();
+      initTableEditingTools();
     }
 
     function downloadJson() {
