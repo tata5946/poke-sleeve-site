@@ -428,12 +428,142 @@
       cursor: pointer;
     }
 
+    .note-cover-drop.is-dragover {
+      border-color: #1e5bd7;
+      background: #eef4ff;
+      color: #1e3a5f;
+      box-shadow: inset 0 0 0 2px rgba(30, 91, 215, .16);
+    }
+
     .note-cover-drop.has-image {
       min-height: 220px;
       border-style: solid;
       background-size: cover;
       background-position: center;
       color: transparent;
+    }
+
+    .cover-picker-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, .42);
+    }
+
+    .cover-picker-backdrop.is-visible {
+      display: grid;
+    }
+
+    .cover-picker {
+      width: min(760px, 100%);
+      max-height: min(720px, calc(100vh - 40px));
+      overflow: auto;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, .24);
+    }
+
+    .cover-picker__head,
+    .cover-picker__body,
+    .cover-picker__foot {
+      padding: 18px 20px;
+    }
+
+    .cover-picker__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid #e4e7ec;
+    }
+
+    .cover-picker__head h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .cover-picker__close {
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 999px;
+      background: #f2f4f7;
+      color: #344054;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .cover-picker__body {
+      display: grid;
+      gap: 18px;
+    }
+
+    .cover-picker__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .cover-picker__url {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+    }
+
+    .cover-picker__url input {
+      min-width: 0;
+    }
+
+    .cover-picker__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+    }
+
+    .cover-picker__image {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      border: 1px solid #d0d5dd;
+      border-radius: 10px;
+      background: #f6f8fa;
+      cursor: pointer;
+    }
+
+    .cover-picker__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cover-picker__image:hover,
+    .cover-picker__image:focus-visible {
+      border-color: #1e5bd7;
+      outline: 3px solid rgba(30, 91, 215, .16);
+    }
+
+    .cover-picker__empty {
+      grid-column: 1 / -1;
+      margin: 0;
+      padding: 18px;
+      border: 1px dashed #d0d5dd;
+      border-radius: 10px;
+      background: #f8fafc;
+      color: #667085;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .cover-picker__foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid #e4e7ec;
     }
 
     .note-title-input,
@@ -1578,6 +1708,216 @@
       el.dispatchEvent(new Event("input", { bubbles: true }));
     }
 
+    function isUsableImageSrc(value) {
+      return /^(https?:|data:image\/|\.\/|\/)/i.test(String(value || "").trim());
+    }
+
+    function setCoverImageValue(value, message = "") {
+      const cover = qs("coverInput");
+      if (!cover) return;
+      cover.value = String(value || "").trim();
+      dispatchInput(cover);
+      updateCoverDropPreview();
+      if (message) setStatus(message, "ok");
+    }
+
+    function readImageFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(reader.error || new Error("Failed to read image."));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function applyCoverImageFile(file) {
+      if (!file || !/^image\//i.test(file.type || "")) {
+        setStatus("画像ファイルを選択してください。", "ng");
+        return;
+      }
+      try {
+        const dataUrl = await readImageFileAsDataUrl(file);
+        setCoverImageValue(dataUrl, "カバー画像を設定しました。");
+        closeCoverImagePicker();
+      } catch (_) {
+        setStatus("カバー画像の読み込みに失敗しました。", "ng");
+      }
+    }
+
+    function collectCoverImageChoices() {
+      const seen = new Set();
+      const choices = [];
+      const add = (src) => {
+        const value = String(src || "").trim();
+        if (!value || seen.has(value) || !isUsableImageSrc(value)) return;
+        seen.add(value);
+        choices.push(value);
+      };
+
+      add(qs("coverInput")?.value);
+      qs("editor")?.querySelectorAll("img").forEach((img) => add(img.getAttribute("src")));
+      readStoredArticles().forEach((article) => {
+        add(article?.coverImage);
+        const template = document.createElement("template");
+        template.innerHTML = String(article?.html || "");
+        template.content.querySelectorAll("img").forEach((img) => add(img.getAttribute("src")));
+      });
+      return choices;
+    }
+
+    function ensureCoverImagePicker() {
+      let backdrop = document.getElementById("coverPickerBackdrop");
+      if (backdrop) return backdrop;
+
+      backdrop = document.createElement("div");
+      backdrop.id = "coverPickerBackdrop";
+      backdrop.className = "cover-picker-backdrop";
+      backdrop.innerHTML = `
+        <div class="cover-picker" role="dialog" aria-modal="true" aria-labelledby="coverPickerTitle">
+          <div class="cover-picker__head">
+            <h2 id="coverPickerTitle">カバー画像を選択</h2>
+            <button class="cover-picker__close" type="button" data-cover-close aria-label="閉じる">×</button>
+          </div>
+          <div class="cover-picker__body">
+            <div class="cover-picker__actions">
+              <button class="btn-admin" type="button" data-cover-file>PCから画像を選択</button>
+              <button class="btn-admin secondary" type="button" data-cover-remove>カバーを削除</button>
+              <input id="coverFileInput" type="file" accept="image/*" hidden>
+            </div>
+            <div class="cover-picker__url">
+              <input id="coverUrlPickerInput" type="text" placeholder="画像URLを貼り付け">
+              <button class="btn-admin secondary" type="button" data-cover-url-apply>URLを適用</button>
+            </div>
+            <section>
+              <h3 class="panel-title">本文・保存済み記事の画像</h3>
+              <div id="coverPickerGrid" class="cover-picker__grid"></div>
+            </section>
+          </div>
+          <div class="cover-picker__foot">
+            <button class="btn-admin secondary" type="button" data-cover-close>閉じる</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(backdrop);
+
+      const fileInput = backdrop.querySelector("#coverFileInput");
+      backdrop.querySelector("[data-cover-file]").addEventListener("click", () => fileInput.click());
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files?.[0];
+        fileInput.value = "";
+        if (file) applyCoverImageFile(file);
+      });
+      backdrop.querySelector("[data-cover-remove]").addEventListener("click", () => {
+        setCoverImageValue("", "カバー画像を削除しました。");
+        closeCoverImagePicker();
+      });
+      backdrop.querySelector("[data-cover-url-apply]").addEventListener("click", () => {
+        const input = backdrop.querySelector("#coverUrlPickerInput");
+        const value = String(input.value || "").trim();
+        if (!value) return;
+        if (!isUsableImageSrc(value)) {
+          setStatus("画像URLは https:// または ./assets/... の形式で入力してください。", "ng");
+          return;
+        }
+        setCoverImageValue(value, "カバー画像URLを設定しました。");
+        closeCoverImagePicker();
+      });
+      backdrop.addEventListener("click", (event) => {
+        if (event.target === backdrop || event.target.closest("[data-cover-close]")) closeCoverImagePicker();
+      });
+      backdrop.addEventListener("paste", handleCoverPaste);
+      return backdrop;
+    }
+
+    function renderCoverImagePicker() {
+      const backdrop = ensureCoverImagePicker();
+      const grid = backdrop.querySelector("#coverPickerGrid");
+      const urlInput = backdrop.querySelector("#coverUrlPickerInput");
+      const current = qs("coverInput")?.value.trim() || "";
+      urlInput.value = current && !current.startsWith("data:image/") ? current : "";
+      const choices = collectCoverImageChoices();
+      if (!choices.length) {
+        grid.innerHTML = `<p class="cover-picker__empty">本文に貼り付けた画像や保存済み記事の画像がここに表示されます。PC内の画像は「PCから画像を選択」から選べます。</p>`;
+        return;
+      }
+      grid.innerHTML = choices.map((src, index) => `
+        <button class="cover-picker__image" type="button" data-cover-choice="${index}" aria-label="画像${index + 1}をカバーに設定">
+          <img src="${escapeHtml(src)}" alt="">
+        </button>
+      `).join("");
+      grid.querySelectorAll("[data-cover-choice]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const src = choices[Number(button.dataset.coverChoice)];
+          setCoverImageValue(src, "カバー画像を設定しました。");
+          closeCoverImagePicker();
+        });
+      });
+    }
+
+    function openCoverImagePicker() {
+      renderCoverImagePicker();
+      const backdrop = ensureCoverImagePicker();
+      backdrop.classList.add("is-visible");
+      backdrop.querySelector("#coverUrlPickerInput")?.focus();
+    }
+
+    function closeCoverImagePicker() {
+      document.getElementById("coverPickerBackdrop")?.classList.remove("is-visible");
+    }
+
+    function getImageFileFromItems(items) {
+      return Array.from(items || [])
+        .find((item) => item.kind === "file" && /^image\//i.test(item.type || ""))
+        ?.getAsFile();
+    }
+
+    function getImageSrcFromTransfer(dataTransfer) {
+      const uri = String(dataTransfer?.getData("text/uri-list") || dataTransfer?.getData("text/plain") || "").trim();
+      if (isUsableImageSrc(uri)) return uri;
+      const html = String(dataTransfer?.getData("text/html") || "");
+      if (!html) return "";
+      const template = document.createElement("template");
+      template.innerHTML = html;
+      const src = template.content.querySelector("img")?.getAttribute("src") || "";
+      return isUsableImageSrc(src) ? src : "";
+    }
+
+    async function handleCoverPaste(event) {
+      const file = getImageFileFromItems(event.clipboardData?.items);
+      if (file) {
+        event.preventDefault();
+        event.stopPropagation();
+        await applyCoverImageFile(file);
+        return;
+      }
+      const target = event.target;
+      if (target?.matches?.("input, textarea") || target?.isContentEditable) return;
+      const src = getImageSrcFromTransfer(event.clipboardData);
+      if (src) {
+        event.preventDefault();
+        event.stopPropagation();
+        setCoverImageValue(src, "カバー画像を貼り付けました。");
+        closeCoverImagePicker();
+      }
+    }
+
+    async function handleCoverDrop(event) {
+      event.preventDefault();
+      const drop = document.getElementById("noteCoverDrop");
+      drop?.classList.remove("is-dragover");
+      const file = Array.from(event.dataTransfer?.files || []).find((item) => /^image\//i.test(item.type || ""));
+      if (file) {
+        await applyCoverImageFile(file);
+        return;
+      }
+      const src = getImageSrcFromTransfer(event.dataTransfer);
+      if (src) {
+        setCoverImageValue(src, "カバー画像を設定しました。");
+        return;
+      }
+      setStatus("画像ファイルまたは画像URLをドロップしてください。", "ng");
+    }
+
     function autoGrowTextarea(el) {
       if (!el) return;
       el.style.height = "auto";
@@ -1590,8 +1930,9 @@
       if (!cover || !drop) return;
       const url = cover.value.trim();
       drop.classList.toggle("has-image", !!url);
+      drop.classList.remove("is-dragover");
       drop.style.backgroundImage = url ? `url("${url.replaceAll('"', "%22")}")` : "";
-      drop.textContent = url ? "カバー画像を変更" : "カバー画像を追加";
+      drop.textContent = url ? "カバー画像を変更" : "カバー画像を追加（クリック・ドロップ・貼り付け）";
     }
 
     function refreshWritingSurfaceFromForm() {
@@ -1844,7 +2185,7 @@
       const head = document.createElement("div");
       head.className = "note-writing-head";
       head.innerHTML = `
-        <button id="noteCoverDrop" class="note-cover-drop" type="button">カバー画像を追加</button>
+        <button id="noteCoverDrop" class="note-cover-drop" type="button">カバー画像を追加（クリック・ドロップ・貼り付け）</button>
         <textarea id="writingTitleInput" class="note-title-input" rows="1" placeholder="タイトル"></textarea>
         <textarea id="writingExcerptInput" class="note-excerpt-input" rows="1" placeholder="リード文を書く（任意）"></textarea>
       `;
@@ -1864,13 +2205,24 @@
         autoGrowTextarea(writingExcerpt);
         updatePreview();
       });
-      coverDrop.addEventListener("click", () => {
-        const current = qs("coverInput").value.trim();
-        const url = prompt("カバー画像URLを入力してください", current);
-        if (url == null) return;
-        qs("coverInput").value = url.trim();
-        dispatchInput(qs("coverInput"));
-        updateCoverDropPreview();
+      coverDrop.addEventListener("click", openCoverImagePicker);
+      coverDrop.addEventListener("paste", handleCoverPaste);
+      coverDrop.addEventListener("dragenter", (event) => {
+        event.preventDefault();
+        coverDrop.classList.add("is-dragover");
+      });
+      coverDrop.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        coverDrop.classList.add("is-dragover");
+      });
+      coverDrop.addEventListener("dragleave", () => coverDrop.classList.remove("is-dragover"));
+      coverDrop.addEventListener("drop", handleCoverDrop);
+      document.addEventListener("paste", (event) => {
+        const pickerOpen = document.getElementById("coverPickerBackdrop")?.classList.contains("is-visible");
+        if (document.activeElement === coverDrop || pickerOpen) handleCoverPaste(event);
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeCoverImagePicker();
       });
       qs("coverInput").addEventListener("input", updateCoverDropPreview);
       qs("editor").addEventListener("keydown", applyMarkdownShortcut);
