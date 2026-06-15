@@ -2220,6 +2220,7 @@
         const cell = element?.closest?.("td, th");
         return cell && editor.contains(cell) ? cell : null;
       };
+      const getCurrentTableCell = (event) => getCell(event?.target) || getCell(window.getSelection()?.anchorNode);
 
       const getCellIndex = (cell) => Array.from(cell.parentElement?.children || []).indexOf(cell);
       const getColumnCount = (table) => Math.max(1, ...Array.from(table.querySelectorAll("tr")).map((row) => row.children.length));
@@ -2336,7 +2337,22 @@
         if (cell) updateToolbarPosition(cell);
         else toolbar.classList.remove("is-visible");
       });
+      editor.addEventListener("keydown", (event) => {
+        if (!getCurrentTableCell(event)) return;
+        if (event.key === "Tab") return;
+        toolbar.classList.remove("is-visible");
+      });
+      editor.addEventListener("beforeinput", (event) => {
+        if (getCurrentTableCell(event)) toolbar.classList.remove("is-visible");
+      });
+      editor.addEventListener("paste", (event) => {
+        if (getCurrentTableCell(event)) toolbar.classList.remove("is-visible");
+      });
+      editor.addEventListener("compositionstart", (event) => {
+        if (getCurrentTableCell(event)) toolbar.classList.remove("is-visible");
+      });
       editor.addEventListener("keyup", () => {
+        if (!toolbar.classList.contains("is-visible")) return;
         const cell = getCell(window.getSelection()?.anchorNode);
         if (cell) updateToolbarPosition(cell);
       });
@@ -2352,8 +2368,12 @@
         if (toolbar.contains(event.target) || getCell(event.target)) return;
         toolbar.classList.remove("is-visible");
       });
-      window.addEventListener("scroll", () => updateToolbarPosition(), { passive: true });
-      window.addEventListener("resize", () => updateToolbarPosition(), { passive: true });
+      window.addEventListener("scroll", () => {
+        if (toolbar.classList.contains("is-visible")) updateToolbarPosition();
+      }, { passive: true });
+      window.addEventListener("resize", () => {
+        if (toolbar.classList.contains("is-visible")) updateToolbarPosition();
+      }, { passive: true });
     }
 
     function insertCodeBlock() {
