@@ -1,6 +1,19 @@
 {
   "articles": [
     {
+      "id": "june-19-restock",
+      "slug": "june-19-restock",
+      "title": "6/19再販デッキシールド特集",
+      "excerpt": "6/19再販の関連スリーブをまとめます。各カードから個別ページで相場推移を確認できます。",
+      "category": "FEATURE",
+      "coverImage": "./assets/image.png",
+      "publishedAt": "2026-06-18",
+      "updatedAt": "2026-06-18T00:00:00.000Z",
+      "status": "published",
+      "linkUrl": "./june-19-restock.html",
+      "html": ""
+    },
+    {
       "id": "chaos-rising",
       "slug": "chaos-rising",
       "title": "ニンジャスピナー発売関連デッキシールド",

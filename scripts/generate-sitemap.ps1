@@ -37,6 +37,11 @@ $staticPages = @(
   "growth.html",
   "surge.html",
   "index-market.html",
+  "articles.html",
+  "article.html",
+  "abyss-eye.html",
+  "chaos-rising.html",
+  "june-19-restock.html",
   "contact.html",
   "contact-complete.html",
   "policy.html"
