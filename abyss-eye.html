@@ -330,10 +330,23 @@
     }
 
     function getLatestPrice(sleeve) {
-      const rows = Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [];
-      for (let i = rows.length - 1; i >= 0; i--) {
-        const price = Number(rows[i]?.price);
-        if (Number.isFinite(price) && price > 0) return price;
+      const rowSets = [
+        Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [],
+        Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [],
+        Array.isArray(sleeve?.yearlyPrices) ? sleeve.yearlyPrices : []
+      ];
+      for (const rows of rowSets) {
+        for (let i = rows.length - 1; i >= 0; i--) {
+          const price = Number(rows[i]?.price);
+          if (Number.isFinite(price) && price > 0) return price;
+        }
+      }
+      if (sleeve?.pricesByYear && typeof sleeve.pricesByYear === "object") {
+        const years = Object.keys(sleeve.pricesByYear).sort();
+        for (let i = years.length - 1; i >= 0; i--) {
+          const price = Number(sleeve.pricesByYear[years[i]]);
+          if (Number.isFinite(price) && price > 0) return price;
+        }
       }
       return null;
     }
