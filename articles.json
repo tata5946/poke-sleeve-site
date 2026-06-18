@@ -14,6 +14,19 @@
       "html": ""
     },
     {
+      "id": "abyss-eye",
+      "slug": "abyss-eye",
+      "title": "アビスアイ発売関連デッキシールド",
+      "excerpt": "新規発売と再販の関連スリーブをまとめました。各カードから個別ページで相場推移を確認できます。",
+      "category": "FEATURE",
+      "coverImage": "./assets/abyss-eye-banner-home.jpg",
+      "publishedAt": "2026-06-18",
+      "updatedAt": "2026-06-18T00:00:00.000Z",
+      "status": "published",
+      "linkUrl": "./abyss-eye.html",
+      "html": ""
+    },
+    {
       "id": "article-2026-06-09",
       "slug": "article-2026-06-09",
       "title": "本サイトについて",
