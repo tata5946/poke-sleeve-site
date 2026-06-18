@@ -444,7 +444,7 @@
             <p class="abyss-name">${escapeHtml(name)}</p>
             <div class="abyss-tags">${tags.map((tag) => `<span class="abyss-tag">${escapeHtml(tag)}</span>`).join("")}</div>
             <p class="abyss-meta">${escapeHtml(formatReleaseDate(sleeve.releaseDate))}</p>
-            <p class="abyss-meta abyss-price">${price != null ? `\u6700\u65b0 \u00a5${Math.round(price).toLocaleString()}` : "\u76f8\u5834\u89b3\u6e2c\u4e2d"}</p>
+            <p class="abyss-meta abyss-price">${price != null ? `現在価格 \u00a5${Math.round(price).toLocaleString()}` : "\u76f8\u5834\u89b3\u6e2c\u4e2d"}</p>
             ${buildMiniPriceChart(sleeve)}
           </a>
         `;
