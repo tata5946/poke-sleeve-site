@@ -336,6 +336,7 @@
         coverImage: String(article.coverImage || "").trim(),
         publishedAt: String(article.publishedAt || article.updatedAt || "").trim(),
         status: String(article.status || "published").trim(),
+        linkUrl: String(article.linkUrl || "").trim(),
         html: String(article.html || "")
       };
     }
@@ -377,7 +378,7 @@
         return;
       }
       grid.innerHTML = articles.map((article) => {
-        const href = `./article.html?id=${encodeURIComponent(article.slug)}`;
+        const href = article.linkUrl || `./article.html?id=${encodeURIComponent(article.slug)}`;
         const image = article.coverImage
           ? `<img class="article-thumb" src="${escapeHtml(article.coverImage)}" alt="">`
           : `<div class="article-thumb" aria-hidden="true"></div>`;
