@@ -37,12 +37,10 @@ $staticPages = @(
   "surge.html",
   "index-market.html",
   "articles.html",
-  "article.html",
   "abyss-eye.html",
   "chaos-rising.html",
   "june-19-restock.html",
   "contact.html",
-  "contact-complete.html",
   "policy.html"
 ) | Select-Object -Unique
 

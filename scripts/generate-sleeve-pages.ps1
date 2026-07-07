@@ -52,7 +52,7 @@ foreach ($sleeve in @($data.sleeves)) {
   $rawImage = ([string]$sleeve.imageUrl).Trim()
   $ogImage = if ($rawImage) { $rawImage } else { $fallbackOgImage }
   $ogUrl = "https://pokesuri-navi.com/sleeve/$encodedId/"
-  $canonicalTag = '  <link rel="canonical" href="/sleeve/' + $encodedId + '/" />'
+  $canonicalTag = '  <link rel="canonical" href="https://pokesuri-navi.com/sleeve/' + $encodedId + '/" />'
   $inlinePageDataScript = '  <script>window.__SLEEVE_PAGE_ID = ' + $jsId + ';window.__SLEEVE_PAGE_DATA = ' + $jsSleeve + ';</script>'
 
   $content = $template
