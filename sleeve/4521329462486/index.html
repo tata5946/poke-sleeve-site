@@ -2158,9 +2158,10 @@
 
       const imageUrl = String(sleeve.imageUrl || "").trim();
       const price = Number.isFinite(latestObservation?.price) ? latestObservation.price : null;
-      const offerCount = Number.isFinite(latestObservation?.count) && latestObservation.count > 0
+      const observationCount = Number.isFinite(latestObservation?.count) && latestObservation.count > 0
         ? Math.round(latestObservation.count)
         : null;
+      const observationWeek = String(latestObservation?.week || "").trim();
       const descriptionParts = [
         name,
         releaseDateText ? `発売日 ${releaseDateText}` : "",
@@ -2177,15 +2178,39 @@
         url: location.href
       };
 
+      const additionalProperty = [];
       if (price != null) {
-        product.offers = {
-          "@type": "AggregateOffer",
-          lowPrice: price,
-          highPrice: price,
-          priceCurrency: "JPY",
-          offerCount: offerCount || 1,
-          url: location.href
-        };
+        additionalProperty.push(
+          {
+            "@type": "PropertyValue",
+            name: "相場価格",
+            value: price,
+            unitText: "JPY",
+            description: "メルカリの週次売買成立価格平均"
+          },
+          {
+            "@type": "PropertyValue",
+            name: "相場価格の算出方法",
+            value: "メルカリの週次売買成立価格平均"
+          }
+        );
+      }
+      if (observationWeek) {
+        additionalProperty.push({
+          "@type": "PropertyValue",
+          name: "直近観測週",
+          value: observationWeek
+        });
+      }
+      if (observationCount != null) {
+        additionalProperty.push({
+          "@type": "PropertyValue",
+          name: "直近観測件数",
+          value: observationCount
+        });
+      }
+      if (additionalProperty.length) {
+        product.additionalProperty = additionalProperty;
       }
 
       const script = getStructuredDataScript();
