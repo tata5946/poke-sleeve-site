@@ -533,6 +533,9 @@
       if (!article) {
         if (crumb) crumb.textContent = "記事が見つかりません";
         document.title = "記事が見つかりません - ポケスリ相場ナビ";
+        if (window.common && typeof window.common.setStructuredData === "function") {
+          window.common.setStructuredData("articleStructuredData", null);
+        }
         mount.innerHTML = `<div class="article-empty">記事が見つかりませんでした。<br><a href="./articles.html">記事一覧へ戻る</a></div>`;
         return;
       }
@@ -540,6 +543,16 @@
       document.title = `${article.title} - ポケスリ相場ナビ`;
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc && article.excerpt) metaDesc.setAttribute("content", article.excerpt);
+      if (window.common && typeof window.common.updateArticleStructuredData === "function") {
+        window.common.updateArticleStructuredData("articleStructuredData", {
+          title: article.title,
+          description: article.excerpt,
+          image: article.coverImage,
+          datePublished: article.publishedAt,
+          dateModified: article.updatedAt || article.publishedAt,
+          url: location.href
+        });
+      }
       mount.innerHTML = `
         <article class="article-detail">
           ${article.coverImage ? `<img class="article-cover" src="${escapeHtml(article.coverImage)}" alt="">` : `<div class="article-cover" aria-hidden="true"></div>`}

@@ -580,6 +580,111 @@ function buildSleeveDetailHref(id) {
   return buildSiteHref(`sleeve/${encodeURIComponent(routeId)}/`);
 }
 
+function setStructuredData(id, data) {
+  const scriptId = String(id || "").trim();
+  if (!scriptId) return;
+  let el = document.getElementById(scriptId);
+  if (!data) {
+    if (el) el.remove();
+    return;
+  }
+  if (!el) {
+    el = document.createElement("script");
+    el.type = "application/ld+json";
+    el.id = scriptId;
+    document.head.appendChild(el);
+  }
+  el.textContent = JSON.stringify(data);
+}
+
+function getCanonicalPageUrl() {
+  const canonical = document.querySelector('link[rel="canonical"]');
+  const href = canonical ? canonical.getAttribute("href") : "";
+  return new URL(href || location.href, document.baseURI).toString();
+}
+
+function buildSleeveListItemStructuredData(entry, index) {
+  const sleeve = entry?.sleeve || entry?.s || entry;
+  if (!sleeve || typeof sleeve !== "object") return null;
+  const isArticle = !!(entry?.title || sleeve?.title);
+  const name = String(entry?.name || entry?.title || sleeve?.name || sleeve?.title || "").trim();
+  const id = String(entry?.id || sleeve?.id || "").trim();
+  if (!name && !id) return null;
+  const rawHref = String(entry?.url || entry?.href || entry?.linkUrl || entry?.detailHref || "").trim()
+    || (isArticle && (entry?.slug || sleeve?.slug) ? buildSiteHref(`article.html?id=${encodeURIComponent(entry?.slug || sleeve?.slug)}`) : "")
+    || buildSleeveDetailHref(id);
+  const href = new URL(rawHref, document.baseURI).toString();
+  const item = {
+    "@type": isArticle ? "Article" : "Thing",
+    name: name || `ID: ${id}`,
+    url: href
+  };
+  const image = String(entry?.imageUrl || entry?.coverImage || sleeve?.imageUrl || sleeve?.coverImage || "").trim();
+  if (image) item.image = image;
+  return {
+    "@type": "ListItem",
+    position: index + 1,
+    url: href,
+    item
+  };
+}
+
+function updateItemListStructuredData(id, items, options = {}) {
+  const itemListElement = (Array.isArray(items) ? items : [])
+    .map((item, index) => buildSleeveListItemStructuredData(item, index))
+    .filter(Boolean)
+    .slice(0, Number.isFinite(options.limit) ? Math.max(1, options.limit) : 50);
+
+  if (!itemListElement.length) {
+    setStructuredData(id, null);
+    return;
+  }
+
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: String(options.name || document.title || "ポケスリ相場ナビ").replace(/\s*[|-]\s*ポケスリ相場ナビ\s*$/, ""),
+    url: getCanonicalPageUrl(),
+    numberOfItems: itemListElement.length,
+    itemListElement
+  };
+  const description = String(options.description || document.querySelector('meta[name="description"]')?.getAttribute("content") || "").trim();
+  if (description) data.description = description;
+  setStructuredData(id, data);
+}
+
+function updateArticleStructuredData(id, article = {}) {
+  const headline = String(article.headline || article.title || document.querySelector("h1")?.textContent || document.title || "").trim();
+  if (!headline) {
+    setStructuredData(id, null);
+    return;
+  }
+  const description = String(article.description || article.excerpt || document.querySelector('meta[name="description"]')?.getAttribute("content") || "").trim();
+  const image = String(article.image || article.coverImage || document.querySelector('meta[property="og:image"]')?.getAttribute("content") || "").trim();
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline,
+    description,
+    image: image || undefined,
+    datePublished: String(article.datePublished || article.publishedAt || "").trim() || undefined,
+    dateModified: String(article.dateModified || article.updatedAt || article.publishedAt || "").trim() || undefined,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": String(article.url || "").trim() || getCanonicalPageUrl()
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "ポケスリ相場ナビ",
+      logo: {
+        "@type": "ImageObject",
+        url: buildSiteHref("assets/favicon.svg")
+      }
+    }
+  };
+  setStructuredData(id, data);
+}
+
 function buildCategoryNavMarkup(sleeves) {
   const configs = [
     { key: "pokemon", label: "ポケモン" },
@@ -1875,6 +1980,9 @@ window.common = {
   loadData,
   buildSiteHref,
   buildSleeveDetailHref,
+  setStructuredData,
+  updateItemListStructuredData,
+  updateArticleStructuredData,
   buildCategoryNavMarkup,
   renderCategoryNav,
   ensureCategoryNavsRendered,

@@ -1577,6 +1577,11 @@
           const badge = document.getElementById("resultCountBadge");
           if (badge) badge.textContent = "0";
           renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, sortOrder, total: 0, group: normalizedGroup, tag: normalizedTag, type: normalizedType });
+          if (window.common && typeof window.common.updateItemListStructuredData === "function") {
+            window.common.updateItemListStructuredData("sleevesItemListStructuredData", [], {
+              name: "ポケカスリーブ図鑑"
+            });
+          }
           list.innerHTML = '<div class="zukan-empty">条件に一致するスリーブがありません。キーワードや価格帯をゆるめて、もう一度探してみてください。</div>';
           return;
         }
@@ -1586,6 +1591,12 @@
         const badge = document.getElementById("resultCountBadge");
         if (badge) badge.textContent = `${filtered.length.toLocaleString()}`;
         renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, sortOrder, total: filtered.length, group: normalizedGroup, tag: normalizedTag, type: normalizedType });
+        if (window.common && typeof window.common.updateItemListStructuredData === "function") {
+          window.common.updateItemListStructuredData("sleevesItemListStructuredData", filtered, {
+            name: "ポケカスリーブ図鑑",
+            description: "ポケカスリーブの図鑑一覧です。"
+          });
+        }
 
         const frag = document.createDocumentFragment();
 

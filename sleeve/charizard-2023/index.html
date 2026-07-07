@@ -396,10 +396,15 @@
       overflow: hidden;
     }
 
-    svg.chart {
+    svg.chart,
+    img.chart {
       width: 100%;
       height: auto;
       display: block;
+    }
+
+    img.chart {
+      background: #fff;
     }
 
     .chart-tooltip {
@@ -2146,13 +2151,16 @@
       return el;
     }
 
-    function updateProductStructuredData(sleeve, latestPrice, releaseDateText) {
+    function updateProductStructuredData(sleeve, latestObservation, releaseDateText) {
       if (!sleeve || typeof sleeve !== "object") return;
       const name = String(sleeve.name || "").trim();
       if (!name) return;
 
       const imageUrl = String(sleeve.imageUrl || "").trim();
-      const price = Number.isFinite(latestPrice) ? latestPrice : null;
+      const price = Number.isFinite(latestObservation?.price) ? latestObservation.price : null;
+      const offerCount = Number.isFinite(latestObservation?.count) && latestObservation.count > 0
+        ? Math.round(latestObservation.count)
+        : null;
       const descriptionParts = [
         name,
         releaseDateText ? `発売日 ${releaseDateText}` : "",
@@ -2165,14 +2173,18 @@
         "@type": "Product",
         name,
         description: descriptionParts.join(" / "),
-        image: imageUrl || undefined
+        image: imageUrl || undefined,
+        url: location.href
       };
 
       if (price != null) {
         product.offers = {
-          "@type": "Offer",
-          price,
-          priceCurrency: "JPY"
+          "@type": "AggregateOffer",
+          lowPrice: price,
+          highPrice: price,
+          priceCurrency: "JPY",
+          offerCount: offerCount || 1,
+          url: location.href
         };
       }
 
@@ -4428,7 +4440,6 @@
       }
     }
 
-
     function getPriceSourceBoundary(points) {
       const list = Array.isArray(points) ? points : [];
       let leftIndex = -1;
@@ -4449,6 +4460,46 @@
         rightLabel: "メルカリ実売ベース",
         note: "25/1以降はメルカリの売却データを参照。買取価格（業者卸値）から実売価格（エンドユーザー価格）への切り替えに伴い、価格に不連続な上昇が含まれています。"
       };
+    }
+
+    function getNicePriceStep(rawStep) {
+      const value = Number(rawStep);
+      if (!Number.isFinite(value) || value <= 0) return 100;
+      const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
+      const normalized = value / magnitude;
+      const niceNormalized = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
+      return Math.max(100, niceNormalized * magnitude);
+    }
+
+    function buildNicePriceAxis(minPrice, maxPrice) {
+      const min = Number(minPrice);
+      const max = Number(maxPrice);
+      if (!Number.isFinite(min) || !Number.isFinite(max)) {
+        return { min: 0, max: 1000, ticks: [0, 500, 1000] };
+      }
+
+      const rawSpan = Math.max(1, max - min);
+      const paddedMin = Math.max(0, min - rawSpan * 0.08);
+      const paddedMax = max + rawSpan * 0.08;
+      let step = getNicePriceStep((paddedMax - paddedMin) / 3);
+      let axisMin = Math.max(0, Math.floor(paddedMin / step) * step);
+      let axisMax = Math.ceil(paddedMax / step) * step;
+      if (axisMax <= axisMin) axisMax = axisMin + step;
+
+      let tickCount = Math.round((axisMax - axisMin) / step) + 1;
+      while (tickCount > 6) {
+        step = getNicePriceStep(step * 1.6);
+        axisMin = Math.max(0, Math.floor(paddedMin / step) * step);
+        axisMax = Math.ceil(paddedMax / step) * step;
+        if (axisMax <= axisMin) axisMax = axisMin + step;
+        tickCount = Math.round((axisMax - axisMin) / step) + 1;
+      }
+
+      const ticks = [];
+      for (let value = axisMin; value <= axisMax + step * 0.001; value += step) {
+        ticks.push(Math.round(value));
+      }
+      return { min: axisMin, max: axisMax, ticks };
     }
 
     function renderPriceAreaChart(containerId, title, points, mode) {
@@ -4479,21 +4530,19 @@
       const prices = data.map((item) => item.price);
       const yMinRaw = Math.min(...prices);
       const yMaxRaw = Math.max(...prices);
-      const ySpanRaw = Math.max(1, yMaxRaw - yMinRaw);
-      const yPad = Math.max(20, Math.round(ySpanRaw * 0.08));
-      const yMin = yMinRaw - yPad;
-      const yMax = yMaxRaw + yPad;
+      const niceAxis = buildNicePriceAxis(yMinRaw, yMaxRaw);
+      const yMin = niceAxis.min;
+      const yMax = niceAxis.max;
       const xToPx = (ts) => padL + ((ts - xMin) / spanX) * chartW;
       const yToPx = (v) => padT + (1 - ((v - yMin) / Math.max(1, yMax - yMin))) * chartH;
       const sourceBoundary = (mode === "all" || mode === "monthly") ? getPriceSourceBoundary(data) : null;
 
       const yGrid = [];
       const yLabels = [];
-      for (let i = 0; i <= 3; i++) {
-        const v = yMin + (i / 3) * (yMax - yMin);
+      for (const v of niceAxis.ticks) {
         const y = yToPx(v);
         yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#dce4f0"></line>`);
-        yLabels.push(`<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="#111827">${Math.round(v).toLocaleString()}</text>`);
+        yLabels.push(`<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="#111827">${v.toLocaleString()}</text>`);
       }
 
       let xLabels = [];
@@ -4609,7 +4658,7 @@
       }).join("");
 
       const svgMarkup = `
-        <svg class="chart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}">
+        <svg class="chart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" style="font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic UI','Meiryo',sans-serif;">
           <defs>
             <linearGradient id="priceAreaGrad-${escapeHtml(containerId)}" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#1e5bd7" stop-opacity="0.32"></stop>
@@ -4693,7 +4742,6 @@
       }
       if (wrap) wrap.addEventListener("mouseleave", hideTip);
     }
-
 
     function getSeriesForMode(sleeve, mode) {
       if (mode === "monthly") {
@@ -4810,7 +4858,7 @@
 
       const fullPeriodSeries = buildFullPeriodSeries(s);
       const latestObservation = fullPeriodSeries.length ? fullPeriodSeries[fullPeriodSeries.length - 1] : null;
-      updateProductStructuredData(s, latestObservation ? latestObservation.price : null, releaseDateText);
+      updateProductStructuredData(s, latestObservation, releaseDateText);
       updateFaqStructuredData(s, latestObservation ? latestObservation.price : null, releaseDateText);
       const chartTitleEl = document.getElementById("priceSectionTitle");
       const modeNoteEl = document.getElementById("chartModeNote");
@@ -4926,8 +4974,6 @@
 </body>
 
 </html>
-
-
 
 
 

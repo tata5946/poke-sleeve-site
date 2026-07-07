@@ -2148,13 +2148,16 @@
       return el;
     }
 
-    function updateProductStructuredData(sleeve, latestPrice, releaseDateText) {
+    function updateProductStructuredData(sleeve, latestObservation, releaseDateText) {
       if (!sleeve || typeof sleeve !== "object") return;
       const name = String(sleeve.name || "").trim();
       if (!name) return;
 
       const imageUrl = String(sleeve.imageUrl || "").trim();
-      const price = Number.isFinite(latestPrice) ? latestPrice : null;
+      const price = Number.isFinite(latestObservation?.price) ? latestObservation.price : null;
+      const offerCount = Number.isFinite(latestObservation?.count) && latestObservation.count > 0
+        ? Math.round(latestObservation.count)
+        : null;
       const descriptionParts = [
         name,
         releaseDateText ? `発売日 ${releaseDateText}` : "",
@@ -2167,14 +2170,18 @@
         "@type": "Product",
         name,
         description: descriptionParts.join(" / "),
-        image: imageUrl || undefined
+        image: imageUrl || undefined,
+        url: location.href
       };
 
       if (price != null) {
         product.offers = {
-          "@type": "Offer",
-          price,
-          priceCurrency: "JPY"
+          "@type": "AggregateOffer",
+          lowPrice: price,
+          highPrice: price,
+          priceCurrency: "JPY",
+          offerCount: offerCount || 1,
+          url: location.href
         };
       }
 
@@ -4848,7 +4855,7 @@
 
       const fullPeriodSeries = buildFullPeriodSeries(s);
       const latestObservation = fullPeriodSeries.length ? fullPeriodSeries[fullPeriodSeries.length - 1] : null;
-      updateProductStructuredData(s, latestObservation ? latestObservation.price : null, releaseDateText);
+      updateProductStructuredData(s, latestObservation, releaseDateText);
       updateFaqStructuredData(s, latestObservation ? latestObservation.price : null, releaseDateText);
       const chartTitleEl = document.getElementById("priceSectionTitle");
       const modeNoteEl = document.getElementById("chartModeNote");

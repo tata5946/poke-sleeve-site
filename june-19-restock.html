@@ -267,6 +267,13 @@
 
   <script src="./assets/common.js?v=20260706a"></script>
   <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.common && typeof window.common.updateArticleStructuredData === "function") {
+        window.common.updateArticleStructuredData("articleStructuredData");
+      }
+    });
+  </script>
+  <script>
     window.common.setupDashboardChrome({ sidebarActive: "zukan", topbarActive: "zukan" });
 
     const RESTOCK_SLEEVE_ITEMS = [

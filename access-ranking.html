@@ -924,6 +924,12 @@
 
       renderActiveFilters(filters.releaseYearSel, filters.seriesSel, filters.priceBandSel);
       if (countInfo) countInfo.textContent = `${rows.length}件`;
+      if (window.common && typeof window.common.updateItemListStructuredData === "function") {
+        window.common.updateItemListStructuredData("accessRankingItemListStructuredData", rows, {
+          name: "ポケカスリーブアクセスランキング",
+          description: "ポケカスリーブのアクセスランキング一覧です。"
+        });
+      }
 
       if (!rows.length) {
         root.innerHTML = '<div class="card"><div class="title">データなし</div><div class="meta">ランキングデータがありません。</div></div>';

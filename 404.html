@@ -815,13 +815,16 @@
       return el;
     }
 
-    function updateProductStructuredData(sleeve, latestPrice, releaseDateText) {
+    function updateProductStructuredData(sleeve, latestObservation, releaseDateText) {
       if (!sleeve || typeof sleeve !== "object") return;
       const name = String(sleeve.name || "").trim();
       if (!name) return;
 
       const imageUrl = String(sleeve.imageUrl || "").trim();
-      const price = Number.isFinite(latestPrice) ? latestPrice : null;
+      const price = Number.isFinite(latestObservation?.avgPrice) ? latestObservation.avgPrice : null;
+      const offerCount = Number.isFinite(latestObservation?.tradeCount) && latestObservation.tradeCount > 0
+        ? Math.round(latestObservation.tradeCount)
+        : null;
       const descriptionParts = [
         name,
         releaseDateText ? `発売日 ${releaseDateText}` : "",
@@ -834,14 +837,18 @@
         "@type": "Product",
         name,
         description: descriptionParts.join(" / "),
-        image: imageUrl || undefined
+        image: imageUrl || undefined,
+        url: location.href
       };
 
       if (price != null) {
         product.offers = {
-          "@type": "Offer",
-          price,
-          priceCurrency: "JPY"
+          "@type": "AggregateOffer",
+          lowPrice: price,
+          highPrice: price,
+          priceCurrency: "JPY",
+          offerCount: offerCount || 1,
+          url: location.href
         };
       }
 
@@ -2379,7 +2386,7 @@
 
       const observationRows = normalizeObservationRows(s.weeklyPrices);
       const latestObservation = observationRows.filter((row) => row.hasTrade && Number.isFinite(row.avgPrice)).slice(-1)[0] || null;
-      updateProductStructuredData(s, latestObservation ? latestObservation.avgPrice : null, releaseDateText);
+      updateProductStructuredData(s, latestObservation, releaseDateText);
       updateFaqStructuredData(s, latestObservation ? latestObservation.avgPrice : null, releaseDateText);
       const chartTitleEl = document.getElementById("priceSectionTitle");
       const modeNoteEl = document.getElementById("chartModeNote");

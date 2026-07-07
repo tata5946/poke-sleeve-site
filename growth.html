@@ -1458,6 +1458,12 @@
 
         const c = document.getElementById("countInfo");
         if (c) c.textContent = `${rows.length.toLocaleString()}件`;
+        if (window.common && typeof window.common.updateItemListStructuredData === "function") {
+          window.common.updateItemListStructuredData("growthItemListStructuredData", rows, {
+            name: "ポケカスリーブ高騰率ランキング",
+            description: "ポケカスリーブの高騰率ランキング一覧です。"
+          });
+        }
 
         if (rows.length === 0) {
           list.innerHTML = `<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致するスリーブがありません</div></div>`;

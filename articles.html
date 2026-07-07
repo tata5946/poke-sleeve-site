@@ -374,6 +374,11 @@
       const grid = document.getElementById("articleGrid");
       if (!grid) return;
       if (!articles.length) {
+        if (window.common && typeof window.common.updateItemListStructuredData === "function") {
+          window.common.updateItemListStructuredData("articlesItemListStructuredData", [], {
+            name: "ポケスリ相場ナビ 記事一覧"
+          });
+        }
         grid.innerHTML = `<div class="article-empty">公開中の記事はまだありません。</div>`;
         return;
       }
@@ -396,6 +401,15 @@
           </a>
         `;
       }).join("");
+      if (window.common && typeof window.common.updateItemListStructuredData === "function") {
+        window.common.updateItemListStructuredData("articlesItemListStructuredData", articles.map((article) => ({
+          ...article,
+          href: article.linkUrl || `./article.html?id=${encodeURIComponent(article.slug)}`
+        })), {
+          name: "ポケスリ相場ナビ 記事一覧",
+          description: "ポケカスリーブ相場の記事一覧です。"
+        });
+      }
     }
 
     loadArticles().then(renderArticles).catch(() => {
