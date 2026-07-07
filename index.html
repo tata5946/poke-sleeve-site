@@ -4535,6 +4535,7 @@
         title,
         excerpt: String(article.excerpt || "").trim(),
         category: String(article.category || "記事").trim(),
+        linkUrl: String(article.linkUrl || "").trim(),
         publishedAt: String(article.publishedAt || article.updatedAt || "").trim()
       };
     }
@@ -4574,7 +4575,7 @@
         return;
       }
       el.innerHTML = articles.map((article) => `
-        <a class="home-article-card" href="./article.html?id=${encodeURIComponent(article.slug)}">
+        <a class="home-article-card" href="${escapeHtml(article.linkUrl || "./article.html?id=" + encodeURIComponent(article.slug))}">
           <div class="home-article-meta">${escapeHtml(article.category)} / ${escapeHtml(formatHomeArticleDate(article.publishedAt))}</div>
           <h3 class="home-article-title">${escapeHtml(article.title)}</h3>
           <p class="home-article-excerpt">${escapeHtml(article.excerpt || "記事を読む")}</p>
