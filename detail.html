@@ -2209,6 +2209,17 @@
       if (additionalProperty.length) {
         product.additionalProperty = additionalProperty;
       }
+      if (price != null) {
+        product.offers = {
+          "@type": "Offer",
+          url: buildMercariSearchUrl(name),
+          priceCurrency: "JPY",
+          price,
+          availability: "https://schema.org/InStock",
+          itemCondition: "https://schema.org/UsedCondition",
+          description: "メルカリの週次売買成立価格平均を参考価格として掲載"
+        };
+      }
 
       const script = getStructuredDataScript();
       script.textContent = JSON.stringify(product);
