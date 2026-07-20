@@ -2112,6 +2112,32 @@
       return String(getParam("id") || "").trim();
     }
 
+    function getCanonicalSleeveUrl(id) {
+      const sleeveId = String(id || "").trim();
+      if (!sleeveId) return "";
+      if (window.common && typeof window.common.buildSleeveDetailHref === "function") {
+        return window.common.buildSleeveDetailHref(sleeveId);
+      }
+      const routeId = /^\d{6,7}$/.test(sleeveId) ? `4521329${sleeveId}` : sleeveId;
+      return new URL(`./sleeve/${encodeURIComponent(routeId)}/`, document.baseURI).toString();
+    }
+
+    function setCanonicalSleeveUrl(id) {
+      const canonicalUrl = getCanonicalSleeveUrl(id);
+      if (!canonicalUrl) return;
+
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement("link");
+        canonical.rel = "canonical";
+        document.head.appendChild(canonical);
+      }
+      canonical.href = canonicalUrl;
+
+      const ogUrl = document.querySelector('meta[property="og:url"]');
+      if (ogUrl) ogUrl.setAttribute("content", canonicalUrl);
+    }
+
     function getEmbeddedSleeveData() {
       const embedded = window.__SLEEVE_PAGE_DATA;
       if (!embedded || typeof embedded !== "object") return null;
@@ -3427,6 +3453,8 @@
     }
 
     function currentShareUrl() {
+      const canonicalUrl = getCanonicalSleeveUrl(getSleeveId());
+      if (canonicalUrl) return canonicalUrl;
       const u = new URL(location.href);
       u.hash = "";
       return u.toString();
@@ -4961,14 +4989,6 @@
         return;
       }
 
-      if (!window.__SLEEVE_PAGE_ID && !getSleeveIdFromPath()) {
-        const nextHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
-          ? window.common.buildSleeveDetailHref(id)
-          : `./sleeve/${encodeURIComponent(id)}/`;
-        location.replace(nextHref);
-        return;
-      }
-
       const embeddedSleeve = getEmbeddedSleeveData();
       let s = embeddedSleeve && String(embeddedSleeve.id || "") === String(id) ? embeddedSleeve : null;
       let sleeves = [];
@@ -4991,6 +5011,7 @@
       logAccess(location.href);
 
       document.title = `${s.name || "スリーブ相場"} - ポケスリ相場ナビ`;
+      setCanonicalSleeveUrl(s.id || id);
 
       const img = document.getElementById("img");
       img.referrerPolicy = "no-referrer";
@@ -5007,6 +5028,7 @@
 </body>
 
 </html>
+
 
 
 
