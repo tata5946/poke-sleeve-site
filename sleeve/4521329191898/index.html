@@ -2067,7 +2067,7 @@
 
     <script>window.__SLEEVE_PAGE_ID = "191898";window.__SLEEVE_PAGE_DATA = {"id":"191898","name":"シロナの全力","imageUrl":"https://drive.google.com/thumbnail?id=1nVF590062jiWH2Gxz3ZYjBZB_Qbj4CFe\u0026sz=w1200","releaseDate":"2017-12-08","releaseYear":2017,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンカードジム","note":"","category1":"ルカリオ","category2":"ガブリアス","category3":"","category4":"シロナ","category5":"","category6":"","category7":"限定デッキシールド","category8":"","category9":"","pokemonCategories":["ルカリオ","ガブリアス"],"trainerCategories":["シロナ"],"categoryTags":["限定デッキシールド"],"categories":["ルカリオ","ガブリアス","シロナ","限定デッキシールド"],"weeklyPrices":[{"week":"2025-01-01","price":null,"count":0},{"week":"2025-02-01","price":7400,"count":1},{"week":"2025-03-01","price":null,"count":0},{"week":"2025-04-01","price":null,"count":0},{"week":"2025-05-01","price":5800,"count":1},{"week":"2025-06-01","price":null,"count":0},{"week":"2025-07-01","price":null,"count":0},{"week":"2025-08-01","price":4444,"count":1},{"week":"2025-09-01","price":null,"count":0},{"week":"2025-10-01","price":null,"count":0},{"week":"2025-11-01","price":null,"count":0},{"week":"2025-12-01","price":3999,"count":1},{"week":"2026-01-05","price":null,"count":0},{"week":"2026-01-12","price":5999,"count":1},{"week":"2026-01-19","price":6900,"count":1},{"week":"2026-01-26","price":7444,"count":1},{"week":"2026-02-02","price":null,"count":0},{"week":"2026-02-09","price":null,"count":0},{"week":"2026-02-16","price":null,"count":0},{"week":"2026-02-23","price":null,"count":0},{"week":"2026-03-02","price":7388.5,"count":4},{"week":"2026-03-09","price":9880,"count":1},{"week":"2026-03-16","price":null,"count":0},{"week":"2026-03-23","price":null,"count":0},{"week":"2026-03-30","price":null,"count":0},{"week":"2026-04-06","price":6999,"count":1},{"week":"2026-04-13","price":6999,"count":1},{"week":"2026-04-20","price":null,"count":0},{"week":"2026-04-27","price":null,"count":0},{"week":"2026-05-04","price":null,"count":0},{"week":"2026-05-11","price":null,"count":0},{"week":"2026-05-18","price":null,"count":0},{"week":"2026-05-25","price":null,"count":0},{"week":"2026-06-01","price":null,"count":0},{"week":"2026-06-08","price":5985,"count":1},{"week":"2026-06-15","price":8888,"count":1},{"week":"2026-06-22","price":null,"count":0},{"week":"2026-06-29","price":3200,"count":1},{"week":"2026-07-06","price":null,"count":0},{"week":"2026-07-13","price":null,"count":0}],"monthlyPrices":[{"month":"2024-01-01","price":4500,"count":null,"source":"","shop":"","note":""},{"month":"2024-02-01","price":4500,"count":null,"source":"","shop":"","note":""},{"month":"2024-04-01","price":4250,"count":null,"source":"","shop":"","note":""},{"month":"2024-05-01","price":4500,"count":null,"source":"","shop":"","note":""},{"month":"2024-06-01","price":4500,"count":null,"source":"","shop":"","note":""},{"month":"2024-07-01","price":4250,"count":null,"source":"","shop":"","note":""},{"month":"2024-08-01","price":4500,"count":null,"source":"","shop":"","note":""},{"month":"2024-09-01","price":5000,"count":null,"source":"","shop":"","note":""},{"month":"2024-10-01","price":6000,"count":null,"source":"","shop":"","note":""},{"month":"2024-11-01","price":4500,"count":null,"source":"","shop":"","note":""},{"month":"2024-12-01","price":5500,"count":null,"source":"","shop":"","note":""},{"month":"2025-02-01","price":7400,"count":null,"source":"","shop":"","note":""},{"month":"2025-05-01","price":5800,"count":null,"source":"","shop":"","note":""},{"month":"2025-08-01","price":4444,"count":null,"source":"","shop":"","note":""},{"month":"2025-12-01","price":3999,"count":null,"source":"","shop":"","note":""},{"month":"2026-01-01","price":6900,"count":null,"source":"","shop":"","note":""},{"month":"2026-03-01","price":7777,"count":null,"source":"","shop":"","note":""},{"month":"2026-04-01","price":6999,"count":null,"source":"","shop":"","note":""},{"month":"2026-06-01","price":7436.5,"count":null,"source":"","shop":"","note":""},{"month":"2026-07-01","price":4933,"count":null,"source":"","shop":"","note":""}],"yearlyPrices":[{"year":2024,"price":4500,"count":null},{"year":2025,"price":5122,"count":null},{"year":2026,"price":6999,"count":null}],"pricesByYear":{"2024":4500,"2025":5122,"2026":6999}};</script>
 
-<script src="./assets/common.js?v=20260713a"></script>
+<script src="./assets/common.js?v=20260713b"></script>
 
   <script>
     function escapeHtml(str) {
@@ -2114,6 +2114,32 @@
       const pathId = getSleeveIdFromPath();
       if (pathId) return normalizeSleeveDataId(pathId);
       return String(getParam("id") || "").trim();
+    }
+
+    function getCanonicalSleeveUrl(id) {
+      const sleeveId = String(id || "").trim();
+      if (!sleeveId) return "";
+      if (window.common && typeof window.common.buildSleeveDetailHref === "function") {
+        return window.common.buildSleeveDetailHref(sleeveId);
+      }
+      const routeId = /^\d{6,7}$/.test(sleeveId) ? `4521329${sleeveId}` : sleeveId;
+      return new URL(`./sleeve/${encodeURIComponent(routeId)}/`, document.baseURI).toString();
+    }
+
+    function setCanonicalSleeveUrl(id) {
+      const canonicalUrl = getCanonicalSleeveUrl(id);
+      if (!canonicalUrl) return;
+
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement("link");
+        canonical.rel = "canonical";
+        document.head.appendChild(canonical);
+      }
+      canonical.href = canonicalUrl;
+
+      const ogUrl = document.querySelector('meta[property="og:url"]');
+      if (ogUrl) ogUrl.setAttribute("content", canonicalUrl);
     }
 
     function getEmbeddedSleeveData() {
@@ -3431,6 +3457,8 @@
     }
 
     function currentShareUrl() {
+      const canonicalUrl = getCanonicalSleeveUrl(getSleeveId());
+      if (canonicalUrl) return canonicalUrl;
       const u = new URL(location.href);
       u.hash = "";
       return u.toString();
@@ -4965,14 +4993,6 @@
         return;
       }
 
-      if (!window.__SLEEVE_PAGE_ID && !getSleeveIdFromPath()) {
-        const nextHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
-          ? window.common.buildSleeveDetailHref(id)
-          : `./sleeve/${encodeURIComponent(id)}/`;
-        location.replace(nextHref);
-        return;
-      }
-
       const embeddedSleeve = getEmbeddedSleeveData();
       let s = embeddedSleeve && String(embeddedSleeve.id || "") === String(id) ? embeddedSleeve : null;
       let sleeves = [];
@@ -4995,6 +5015,7 @@
       logAccess(location.href);
 
       document.title = `${s.name || "スリーブ相場"} - ポケスリ相場ナビ`;
+      setCanonicalSleeveUrl(s.id || id);
 
       const img = document.getElementById("img");
       img.referrerPolicy = "no-referrer";
