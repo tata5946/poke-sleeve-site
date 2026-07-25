@@ -18,6 +18,62 @@ function Get-SleeveRouteId([string]$Id) {
   return $sleeveId
 }
 
+function ConvertTo-HtmlText([object]$Value) {
+  return [System.Net.WebUtility]::HtmlEncode([string]$Value)
+}
+
+function Get-LatestTrade([object]$Sleeve) {
+  $rows = @($Sleeve.weeklyPrices) | Where-Object {
+    $null -ne $_.price -and [double]$_.price -gt 0
+  } | Sort-Object { [datetime]$_.week }
+  if ($rows.Count -gt 0) { return $rows[-1] }
+  return $null
+}
+
+function Get-StaticSleeveBadges([object]$Sleeve) {
+  $values = @($Sleeve.series, $Sleeve.condition, $Sleeve.type) |
+    Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } |
+    Select-Object -Unique
+  if ($values.Count -eq 0) { return '<div id="badges" class="badges"></div>' }
+  $items = $values | ForEach-Object {
+    '<span class="badge">' + (ConvertTo-HtmlText $_) + '</span>'
+  }
+  return '<div id="badges" class="badges">' + ($items -join '') + '</div>'
+}
+
+function Get-StaticSleeveInfo([object]$Sleeve) {
+  $pairs = @(
+    @('&#30330;&#22770;&#26085;', $Sleeve.releaseDate),
+    @('&#30330;&#22770;&#24180;', $Sleeve.releaseYear),
+    @('&#12471;&#12522;&#12540;&#12474;', $Sleeve.series),
+    @('&#29366;&#24907;', $Sleeve.condition),
+    @('&#31278;&#21029;', $Sleeve.type),
+    @('&#20837;&#25163;&#21306;&#20998;', $Sleeve.acquisitionType)
+  )
+  $lines = @()
+  foreach ($pair in $pairs) {
+    if (-not [string]::IsNullOrWhiteSpace([string]$pair[1])) {
+      $lines += '<div class="detail-info-row"><span>' + $pair[0] + '</span><strong>' + (ConvertTo-HtmlText $pair[1]) + '</strong></div>'
+    }
+  }
+  if (-not [string]::IsNullOrWhiteSpace([string]$Sleeve.note)) {
+    $lines += '<div class="detail-note-box">' + (ConvertTo-HtmlText $Sleeve.note) + '</div>'
+  }
+  if ($lines.Count -eq 0) { return '<div id="detailInfo" class="detail-info-card" hidden></div>' }
+  return '<div id="detailInfo" class="detail-info-card">' + ($lines -join '') + '</div>'
+}
+
+function Get-StaticSleeveTags([object]$Sleeve) {
+  $values = @($Sleeve.categories) |
+    Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } |
+    Select-Object -Unique
+  if ($values.Count -eq 0) { return '<div id="detailTags" class="detail-tag-list" hidden></div>' }
+  $items = $values | ForEach-Object {
+    '<a class="detail-tag" href="./sleeves/?tag=' + [System.Uri]::EscapeDataString([string]$_) + '">' + (ConvertTo-HtmlText $_) + '</a>'
+  }
+  return '<div id="detailTags" class="detail-tag-list">' + ($items -join '') + '</div>'
+}
+
 Assert-Exists -Path $DataPath -Label "Data file"
 Assert-Exists -Path $TemplatePath -Label "Template"
 
@@ -54,6 +110,10 @@ foreach ($sleeve in @($data.sleeves)) {
   $ogUrl = "https://pokesuri-navi.com/sleeve/$encodedId/"
   $canonicalTag = '  <link rel="canonical" href="https://pokesuri-navi.com/sleeve/' + $encodedId + '/" />'
   $inlinePageDataScript = '  <script>window.__SLEEVE_PAGE_ID = ' + $jsId + ';window.__SLEEVE_PAGE_DATA = ' + $jsSleeve + ';</script>'
+  $latestTrade = Get-LatestTrade $sleeve
+  $latestPriceText = if ($latestTrade) { ([double]$latestTrade.price).ToString("N0") + "円" } else { "-" }
+  $latestDateText = if ($latestTrade) { "最終観測日: " + ([string]$latestTrade.week).Substring(0, [Math]::Min(10, ([string]$latestTrade.week).Length)) } else { "最終観測日: -" }
+  $latestCountText = if ($latestTrade -and $null -ne $latestTrade.count -and [double]$latestTrade.count -gt 0) { $latestDateText + " / 取引件数: " + ([string]$latestTrade.count) + "件" } else { $latestDateText }
 
   $content = $template
   $content = $content -replace '<head>', ("<head>`r`n" + $baseTag)
@@ -82,6 +142,15 @@ foreach ($sleeve in @($data.sleeves)) {
     ($inlinePageDataScript + "`r`n`r`n" + '$0'),
     1
   )
+  $content = $content.Replace('<span id="breadcrumbCurrent" class="breadcrumb-current" aria-current="page">読み込み中...</span>', '<span id="breadcrumbCurrent" class="breadcrumb-current" aria-current="page">' + (ConvertTo-HtmlText $name) + '</span>')
+  $content = $content.Replace('<img id="img" class="thumb" alt="" />', '<img id="img" class="thumb" src="' + (ConvertTo-HtmlText $ogImage) + '" alt="' + (ConvertTo-HtmlText $name) + '" referrerpolicy="no-referrer" />')
+  $content = $content.Replace('<h2 id="name" class="name">読み込み中...</h2>', '<h2 id="name" class="name">' + (ConvertTo-HtmlText $name) + '</h2>')
+  $content = $content.Replace('<div id="badges" class="badges"></div>', (Get-StaticSleeveBadges $sleeve))
+  $content = $content.Replace('<div id="detailInfo" class="detail-info-card" hidden></div>', (Get-StaticSleeveInfo $sleeve))
+  $content = $content.Replace('<div id="detailTags" class="detail-tag-list" hidden></div>', (Get-StaticSleeveTags $sleeve))
+  $content = $content.Replace('<div id="latestWeekly" class="value">-</div>', '<div id="latestWeekly" class="value">' + (ConvertTo-HtmlText $latestPriceText) + '</div>')
+  $content = $content.Replace('<div id="weeklyDelta" class="delta" style="margin-top:6px;"></div>', '<div id="weeklyDelta" class="delta flat" style="margin-top:6px;">価格推移データを掲載</div>')
+  $content = $content.Replace('<div id="weeklyCount" class="meta" style="margin-top:6px;">最終観測日: -</div>', '<div id="weeklyCount" class="meta" style="margin-top:6px;">' + (ConvertTo-HtmlText $latestCountText) + '</div>')
 
   $targetDir = Join-Path $OutputRoot $routeId
   if (-not (Test-Path -LiteralPath $targetDir)) {
