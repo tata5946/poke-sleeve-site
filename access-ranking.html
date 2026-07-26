@@ -467,9 +467,10 @@
       }
       .podium-price,
       .podium-card:not(.podium-card--rank1) .podium-price {
-        font-size: 18px;
+        font-size: 17px;
         line-height: 1.12;
-        overflow-wrap: anywhere;
+        white-space: nowrap;
+        overflow-wrap: normal;
       }
       .podium-market-row {
         grid-template-columns: 1fr;
@@ -519,21 +520,22 @@
         grid-area: meta;
       }
       .compact-price-row {
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr);
         min-width: 0;
-        gap: 6px;
-        align-items: end;
+        gap: 2px;
+        align-items: start;
       }
       .compact-price {
         min-width: 0;
-        font-size: 16px;
+        font-size: 15px;
         line-height: 1.08;
-        overflow-wrap: anywhere;
+        white-space: nowrap;
+        overflow-wrap: normal;
       }
       .compact-delta {
-        max-width: 42px;
-        white-space: normal;
-        text-align: right;
+        max-width: none;
+        white-space: nowrap;
+        text-align: left;
         line-height: 1.1;
       }
       .compact-market-row .sleeve-sparkline {
