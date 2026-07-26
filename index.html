@@ -4494,20 +4494,75 @@
       }
     }
 
+    function normalizeSleeveDataId(id) {
+      const sleeveId = String(id || "").trim();
+      if (/^4521329\d{6,7}$/.test(sleeveId)) return sleeveId.slice(7);
+      return sleeveId;
+    }
+
+    function getSleeveIdFromAccessRankingItem(item) {
+      const direct = item?.sleeveId ?? item?.sleeve_id ?? item?.id ?? item?.itemId ?? item?.item_id;
+      const directId = normalizeSleeveDataId(direct);
+      if (directId) return directId;
+
+      const source = String(item?.page || item?.url || item?.path || item?.href || "").trim();
+      if (!source) return "";
+      try {
+        const url = source.startsWith("http") ? new URL(source) : new URL(source, location.origin);
+        const segments = url.pathname.split("/").filter(Boolean);
+        const sleeveIndex = segments.findIndex((segment) => segment === "sleeve");
+        if (sleeveIndex >= 0 && sleeveIndex < segments.length - 1) {
+          return normalizeSleeveDataId(decodeURIComponent(segments[sleeveIndex + 1] || ""));
+        }
+        const queryId = url.searchParams.get("id") || url.searchParams.get("sleeveId");
+        return normalizeSleeveDataId(queryId);
+      } catch (_) {
+        const match = source.match(/(?:^|\/)sleeve\/([^/?#]+)/);
+        return match ? normalizeSleeveDataId(decodeURIComponent(match[1])) : "";
+      }
+    }
+
+    function getAccessCountFromRankingItem(item) {
+      const value = item?.access ?? item?.count ?? item?.views ?? item?.pv ?? item?.pageviews ?? item?.accessCount ?? item?.access_count;
+      const n = Number(value);
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    }
+
+    function normalizeAccessRankingResponse(data) {
+      const source = Array.isArray(data?.ranking)
+        ? data.ranking
+        : Array.isArray(data?.rows)
+          ? data.rows
+          : Array.isArray(data?.items)
+            ? data.items
+            : Array.isArray(data)
+              ? data
+              : [];
+      const byId = new Map();
+      for (const item of source) {
+        const id = getSleeveIdFromAccessRankingItem(item);
+        if (!id) continue;
+        const access = getAccessCountFromRankingItem(item);
+        if (access <= 0) continue;
+        byId.set(id, (byId.get(id) || 0) + access);
+      }
+      return Array.from(byId.entries()).map(([id, access]) => ({ id, access }));
+    }
+
     async function loadAccessRanking() {
       try {
         const raw = sessionStorage.getItem(ACCESS_RANKING_CACHE_KEY);
         if (raw) {
           const cached = JSON.parse(raw);
           if (cached && Array.isArray(cached.data) && Number.isFinite(cached.fetchedAt) && (Date.now() - cached.fetchedAt) < ACCESS_RANKING_CACHE_TTL_MS) {
-            return cached.data;
+            return normalizeAccessRankingResponse(cached.data);
           }
         }
       } catch (_) {}
       if (!ACCESS_RANKING_ENDPOINT) return [];
       try {
         const data = await fetchRankingJsonWithTimeout(`${ACCESS_RANKING_ENDPOINT}?mode=ranking`, { timeoutMs: 10000 });
-        const list = Array.isArray(data?.ranking) ? data.ranking : [];
+        const list = normalizeAccessRankingResponse(data);
         try { sessionStorage.setItem(ACCESS_RANKING_CACHE_KEY, JSON.stringify({ fetchedAt: Date.now(), data: list })); } catch (_) {}
         return list;
       } catch (_) {

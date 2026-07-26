@@ -2319,13 +2319,20 @@
       return next;
     }
 
-    async function logAccess(pageUrl) {
+    async function logAccess(pageUrl, sleeveId) {
       const endpoint = (window.common && window.common.GAS_URL) || window.GAS_URL || "";
       if (!endpoint) return;
 
+      const normalizedSleeveId = normalizeSleeveDataId(sleeveId || getSleeveId());
+      const canonicalUrl = getCanonicalSleeveUrl(normalizedSleeveId);
       const body = {
         action: "access",
-        page: String(pageUrl || location.href),
+        type: "sleeve",
+        sleeveId: normalizedSleeveId,
+        id: normalizedSleeveId,
+        page: String(canonicalUrl || pageUrl || location.href),
+        path: location.pathname || "",
+        referrer: document.referrer || "",
         userAgent: navigator.userAgent || "",
         userId: getOrCreateAccessUserId()
       };
@@ -5012,10 +5019,9 @@
         return;
       }
 
-      logAccess(location.href);
-
       document.title = `${s.name || "スリーブ相場"} - ポケスリ相場ナビ`;
       setCanonicalSleeveUrl(s.id || id);
+      logAccess(getCanonicalSleeveUrl(s.id || id), s.id || id);
 
       const img = document.getElementById("img");
       img.referrerPolicy = "no-referrer";

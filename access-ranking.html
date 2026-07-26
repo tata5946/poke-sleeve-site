@@ -646,6 +646,62 @@
       return { min: a, max: b };
     }
 
+    function normalizeSleeveDataId(id) {
+      const sleeveId = String(id || "").trim();
+      if (/^4521329\d{6,7}$/.test(sleeveId)) return sleeveId.slice(7);
+      return sleeveId;
+    }
+
+    function getSleeveIdFromRankingItem(item) {
+      const direct = item?.sleeveId ?? item?.sleeve_id ?? item?.id ?? item?.itemId ?? item?.item_id;
+      const directId = normalizeSleeveDataId(direct);
+      if (directId) return directId;
+
+      const source = String(item?.page || item?.url || item?.path || item?.href || "").trim();
+      if (!source) return "";
+      try {
+        const url = source.startsWith("http") ? new URL(source) : new URL(source, location.origin);
+        const segments = url.pathname.split("/").filter(Boolean);
+        const sleeveIndex = segments.findIndex((segment) => segment === "sleeve");
+        if (sleeveIndex >= 0 && sleeveIndex < segments.length - 1) {
+          return normalizeSleeveDataId(decodeURIComponent(segments[sleeveIndex + 1] || ""));
+        }
+        const queryId = url.searchParams.get("id") || url.searchParams.get("sleeveId");
+        return normalizeSleeveDataId(queryId);
+      } catch (_) {
+        const match = source.match(/(?:^|\/)sleeve\/([^/?#]+)/);
+        return match ? normalizeSleeveDataId(decodeURIComponent(match[1])) : "";
+      }
+    }
+
+    function getAccessCountFromRankingItem(item) {
+      const value = item?.access ?? item?.count ?? item?.views ?? item?.pv ?? item?.pageviews ?? item?.accessCount ?? item?.access_count;
+      const n = Number(value);
+      return Number.isFinite(n) && n > 0 ? n : 0;
+    }
+
+    function normalizeAccessRankingResponse(data) {
+      const source = Array.isArray(data?.ranking)
+        ? data.ranking
+        : Array.isArray(data?.rows)
+          ? data.rows
+          : Array.isArray(data?.items)
+            ? data.items
+            : Array.isArray(data)
+              ? data
+              : [];
+      const byId = new Map();
+      for (const item of source) {
+        const id = getSleeveIdFromRankingItem(item);
+        if (!id) continue;
+        const access = getAccessCountFromRankingItem(item);
+        if (access <= 0) continue;
+        const prev = byId.get(id) || 0;
+        byId.set(id, prev + access);
+      }
+      return Array.from(byId.entries()).map(([id, access]) => ({ id, access }));
+    }
+
     async function fetchRanking() {
       const baseUrl = (window.common && window.common.GAS_URL) || window.GAS_URL || "";
       if (!baseUrl) throw new Error("GAS_URL が未設定です。assets/common.js を確認してください。");
@@ -655,7 +711,7 @@
         if (raw) {
           const parsed = JSON.parse(raw);
           if (parsed && Number.isFinite(parsed.cachedAt) && (Date.now() - parsed.cachedAt) <= ACCESS_RANKING_CACHE_TTL_MS) {
-            return parsed.data;
+            return normalizeAccessRankingResponse(parsed.data);
           }
         }
       } catch (_) { }
@@ -675,7 +731,7 @@
         }));
       } catch (_) { }
 
-      return data;
+      return normalizeAccessRankingResponse(data);
     }
 
     function buildSleeveMap(data) {
@@ -980,7 +1036,7 @@
           window.common.loadData()
         ]);
 
-        const ranking = Array.isArray(rankingData && rankingData.ranking) ? rankingData.ranking : [];
+        const ranking = Array.isArray(rankingData) ? rankingData : normalizeAccessRankingResponse(rankingData);
         const sleeveMap = buildSleeveMap(masterData);
         const sleeves = Array.isArray(masterData && masterData.sleeves) ? masterData.sleeves : [];
         const releaseYears = uniq(sleeves.map((s) => s.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
