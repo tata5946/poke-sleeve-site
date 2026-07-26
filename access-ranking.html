@@ -604,7 +604,7 @@
 
   <script src="./assets/common.js?v=20260713b"></script>
   <script>
-    const ACCESS_RANKING_CACHE_KEY = "access-ranking-cache-v1";
+    const ACCESS_RANKING_CACHE_KEY = "access-ranking-cache-v2";
     const ACCESS_RANKING_CACHE_TTL_MS = 5 * 60 * 1000;
 
     function escapeHtml(str) {
@@ -718,7 +718,7 @@
 
       const url = baseUrl + "?mode=ranking";
       const res = await fetch(url, {
-        cache: "default",
+        cache: "no-store",
         headers: { "Accept": "application/json" }
       });
       if (!res.ok) throw new Error(`ランキング取得に失敗しました（HTTP ${res.status}）`);

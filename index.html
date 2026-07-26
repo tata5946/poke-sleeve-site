@@ -4445,7 +4445,7 @@
   <script src="./assets/common.js?v=20260713b"></script>
   <script>
     const ACCESS_RANKING_ENDPOINT = window.GAS_URL || "";
-    const ACCESS_RANKING_CACHE_KEY = "home_access_ranking_cache_v1";
+    const ACCESS_RANKING_CACHE_KEY = "home_access_ranking_cache_v2";
     const ACCESS_RANKING_CACHE_TTL_MS = 5 * 60 * 1000;
 
     function escapeHtml(str) {
@@ -4561,7 +4561,7 @@
       } catch (_) {}
       if (!ACCESS_RANKING_ENDPOINT) return [];
       try {
-        const data = await fetchRankingJsonWithTimeout(`${ACCESS_RANKING_ENDPOINT}?mode=ranking`, { timeoutMs: 10000 });
+        const data = await fetchRankingJsonWithTimeout(`${ACCESS_RANKING_ENDPOINT}?mode=ranking`, { timeoutMs: 10000, cacheMode: "no-store" });
         const list = normalizeAccessRankingResponse(data);
         try { sessionStorage.setItem(ACCESS_RANKING_CACHE_KEY, JSON.stringify({ fetchedAt: Date.now(), data: list })); } catch (_) {}
         return list;
