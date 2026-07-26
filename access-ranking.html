@@ -845,7 +845,6 @@
     }
 
     function buildPodiumCard(row, rank) {
-      const accessText = `${row.access.toLocaleString()}アクセス`;
       const latestPriceText = row.latestPrice == null ? "—" : `${row.latestPrice.toLocaleString()}円`;
       const minText = row.range.min == null ? "—" : `${row.range.min.toLocaleString()}円`;
       const maxText = row.range.max == null ? "—" : `${row.range.max.toLocaleString()}円`;
@@ -862,10 +861,6 @@
             <div class="podium-kicker">TOP ${rank} SLEEVE</div>
             <h${rank === 1 ? "2" : "3"} class="podium-title">${escapeHtml(row.name)}</h${rank === 1 ? "2" : "3"}>
             <div class="podium-metrics">
-              <div class="podium-metric">
-                <span class="podium-metric-label">アクセス数</span>
-                <div class="podium-price">${accessText}</div>
-              </div>
               <div class="podium-metric">
                 <span class="podium-metric-label">最新価格</span>
                 <div class="podium-price">${latestPriceText}</div>
@@ -928,8 +923,8 @@
         <h3 class="compact-card-title">${escapeHtml(row.name)}</h3>
         <div class="compact-market-row">
           <div class="compact-price-row">
-            <div class="compact-price">${Number.isFinite(row.access) ? row.access.toLocaleString() : 0}アクセス</div>
-            <div class="compact-delta flat">${row.latestPrice == null ? "価格なし" : `${row.latestPrice.toLocaleString()}円`}</div>
+            <div class="compact-price">${row.latestPrice == null ? "価格なし" : `${row.latestPrice.toLocaleString()}円`}</div>
+            <div class="compact-delta flat">最新価格</div>
           </div>
           ${sparklineHtml}
         </div>
