@@ -231,6 +231,7 @@
     .podium-card {
       display: grid;
       position: relative;
+      min-width: 0;
       overflow: hidden;
       border-radius: 20px;
       border: 1px solid #f0dca7;
@@ -247,8 +248,8 @@
 
     .podium-card--rank1 {
       display: grid;
-      grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
-      align-items: center;
+      grid-template-columns: minmax(0, 1fr);
+      align-content: start;
       gap: 14px;
       padding: 14px;
       background:
@@ -261,15 +262,16 @@
     .podium-badge { position:absolute; top:12px; left:12px; z-index:2; display:inline-flex; align-items:center; gap:6px; padding:8px 10px; border-radius:999px; background:rgba(17,24,39,.84); color:#fff; font-size:12px; font-weight:900; }
     .podium-media { display:block; border-radius:16px; overflow:hidden; background:rgba(255,255,255,.84); box-shadow: inset 0 0 0 1px rgba(15,23,42,.04); padding:10px; }
     .podium-media img { width:100%; object-fit:contain; object-position:center; display:block; background:#f4f6fa; }
-    .podium-card--rank1 .podium-media img { height:280px; }
+    .podium-card--rank1 .podium-media img { height:210px; }
     .podium-card:not(.podium-card--rank1) .podium-media img { height:150px; }
-    .podium-content { display:grid; gap:8px; margin-top:10px; }
+    .podium-content { display:grid; gap:8px; min-width:0; margin-top:10px; }
     .podium-card--rank1 .podium-content { margin-top:0; }
     .podium-kicker { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:900; letter-spacing:.05em; color:#7a5b00; text-transform:uppercase; }
     .podium-card:not(.podium-card--rank1) .podium-kicker { color:#52606d; }
     .podium-title { margin:0; font-size:20px; line-height:1.3; font-weight:900; color:#101828; }
     .podium-card:not(.podium-card--rank1) .podium-title { font-size:16px; }
     .podium-metrics { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .podium-card--rank1 .podium-metrics { grid-template-columns:repeat(3,minmax(0,1fr)); }
     .podium-metric { padding:10px; border-radius:14px; background:rgba(255,255,255,.78); border:1px solid rgba(255,255,255,.72); }
     .podium-metric-label { display:block; font-size:11px; color:#667085; font-weight:800; margin-bottom:4px; }
     .podium-price { font-size:24px; font-weight:900; line-height:1.1; color:#111827; }
@@ -882,7 +884,7 @@
               <span class="podium-chip">ID ${escapeHtml(row.id)}</span>
             </div>
             <div class="podium-actions">
-              <a class="btn" data-sleeve-link="1" href="${row.detailHref}">価格推移を見る →</a>
+              <span class="btn">価格推移を見る →</span>
             </div>
           </div>
         </a>
