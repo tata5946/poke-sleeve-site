@@ -449,17 +449,28 @@
         overflow: hidden;
       }
       .podium-metrics {
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 4px 7px;
-        align-items: center;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 4px;
+        align-items: stretch;
       }
       .podium-metric {
-        padding: 0;
-        border: 0;
-        border-radius: 0;
-        background: transparent;
+        min-width: 0;
+        padding: 6px 8px;
+        border-radius: 8px;
+        background: rgba(248,250,252,.86);
+        border: 1px solid rgba(226,232,240,.8);
       }
-      .podium-metric:nth-child(n+3) { display: none; }
+      .podium-metric:nth-child(n+2) { display: none; }
+      .podium-metric-label {
+        font-size: 10px;
+        margin-bottom: 2px;
+      }
+      .podium-price,
+      .podium-card:not(.podium-card--rank1) .podium-price {
+        font-size: 18px;
+        line-height: 1.12;
+        overflow-wrap: anywhere;
+      }
       .podium-market-row {
         grid-template-columns: 1fr;
         gap: 5px;
@@ -509,8 +520,21 @@
       }
       .compact-price-row {
         grid-template-columns: minmax(0, 1fr) auto;
-        gap: 3px 8px;
-        align-items: center;
+        min-width: 0;
+        gap: 6px;
+        align-items: end;
+      }
+      .compact-price {
+        min-width: 0;
+        font-size: 16px;
+        line-height: 1.08;
+        overflow-wrap: anywhere;
+      }
+      .compact-delta {
+        max-width: 42px;
+        white-space: normal;
+        text-align: right;
+        line-height: 1.1;
       }
       .compact-market-row .sleeve-sparkline {
         width: 72px;
