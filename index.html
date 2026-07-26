@@ -3649,23 +3649,23 @@
         bottom: calc(12px + env(safe-area-inset-bottom, 0px));
         z-index: 30;
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 8px;
-        padding: 10px;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 5px;
+        padding: 8px;
         border-radius: 20px;
         background: rgba(255,255,255,.92);
         backdrop-filter: blur(18px);
         box-shadow: 0 18px 38px rgba(15, 23, 42, 0.14);
       }
       .mobile-bottom-link {
-        min-height: 52px;
+        min-height: 50px;
         display: grid;
         place-items: center;
-        gap: 4px;
-        border-radius: 14px;
+        gap: 3px;
+        border-radius: 13px;
         color: #5b6779;
         text-decoration: none;
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 800;
         line-height: 1;
       }
@@ -3674,7 +3674,7 @@
         color: #fff;
       }
       .mobile-bottom-link span[aria-hidden="true"] {
-        font-size: 18px;
+        font-size: 17px;
         line-height: 1;
       }
     }
@@ -4196,8 +4196,8 @@
       }
       body.home-page .mobile-bottom-link {
         min-height: 48px;
-        border-radius: 14px;
-        font-size: 10px;
+        border-radius: 13px;
+        font-size: 9px;
       }
       body.home-page .mobile-bottom-link.is-active {
         background: #0b1b3f;
@@ -4435,6 +4435,7 @@
       <nav class="mobile-bottom-nav" aria-label="モバイルナビゲーション">
         <a class="mobile-bottom-link is-active" href="./index.html"><span aria-hidden="true">⌂</span><span>ホーム</span></a>
         <a class="mobile-bottom-link" href="./sleeves/" aria-label="スリーブ図鑑"><span aria-hidden="true">▤</span><span>図鑑</span></a>
+        <a class="mobile-bottom-link" href="./access-ranking.html" aria-label="アクセスランキング"><span aria-hidden="true">◉</span><span>閲覧</span></a>
         <a class="mobile-bottom-link" href="./surge.html"><span aria-hidden="true">↗</span><span>急上昇</span></a>
         <a class="mobile-bottom-link" href="./growth.html"><span aria-hidden="true">△</span><span>高騰率</span></a>
         <a class="mobile-bottom-link" href="./ranking.html" aria-label="価格ランキング"><span aria-hidden="true">¥</span><span>価格</span></a>

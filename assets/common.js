@@ -218,6 +218,7 @@ function buildMobileBottomNavHtml(activeKey = getCurrentNavKey()) {
   <nav class="mobile-bottom-nav" aria-label="モバイルナビゲーション" data-common-mobile-bottom-nav="1">
     <a class="${itemClass("index")}" href="${escapeHtml(buildSiteHref("index.html"))}"><span aria-hidden="true">⌂</span><span>ホーム</span></a>
     <a class="${itemClass("zukan")}" href="${escapeHtml(buildSiteHref("sleeves/"))}" aria-label="スリーブ図鑑"><span aria-hidden="true">▤</span><span>図鑑</span></a>
+    <a class="${itemClass("access-ranking")}" href="${escapeHtml(buildSiteHref("access-ranking.html"))}" aria-label="アクセスランキング"><span aria-hidden="true">◉</span><span>閲覧</span></a>
     <a class="${itemClass("surge")}" href="${escapeHtml(buildSiteHref("surge.html"))}"><span aria-hidden="true">↗</span><span>急上昇</span></a>
     <a class="${itemClass("growth")}" href="${escapeHtml(buildSiteHref("growth.html"))}"><span aria-hidden="true">△</span><span>高騰率</span></a>
     <a class="${itemClass("ranking")}" href="${escapeHtml(buildSiteHref("ranking.html"))}" aria-label="価格ランキング"><span aria-hidden="true">¥</span><span>価格</span></a>
@@ -1595,6 +1596,7 @@ function injectDashboardChrome({ sidebarActive = "", topbarActive = "", sidebarS
 function getMobileBottomNavKeyFromHref(href) {
   const value = String(href || "");
   if (value.includes("sleeves")) return "zukan";
+  if (value.includes("access-ranking")) return "access-ranking";
   if (value.includes("surge")) return "surge";
   if (value.includes("growth")) return "growth";
   if (value.includes("ranking")) return "ranking";
