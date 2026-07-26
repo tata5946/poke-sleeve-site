@@ -1013,6 +1013,7 @@
               <select id="sortOrder">
                 <option value="priceDesc">価格が高い順</option>
                 <option value="priceAsc">価格が安い順</option>
+                <option value="tradeCountDesc">取引件数が多い順</option>
                 <option value="nameAsc">名前順</option>
                 <option value="releaseDesc">発売年が新しい順</option>
               </select>
@@ -1303,9 +1304,12 @@
         filtered.sort((a, b) => {
           const pa = getCardPrice(a) ?? -1;
           const pb = getCardPrice(b) ?? -1;
+          const ta = getTotalTradeCount(a) ?? 0;
+          const tb = getTotalTradeCount(b) ?? 0;
 
           switch (sortOrder) {
             case "priceAsc": return pa - pb;
+            case "tradeCountDesc": return (tb - ta) || (pb - pa);
             case "nameAsc": return String(a.name ?? "").localeCompare(String(b.name ?? ""));
             case "releaseDesc": return (Number(b.releaseYear) || 0) - (Number(a.releaseYear) || 0);
             default: return pb - pa;
