@@ -1,4 +1,4 @@
-﻿/**
+/**
  * common.js
  * - header/footer を #site-header / #site-footer に注入
  * - 注入完了時に custom event "site:injected" を発火
@@ -10,13 +10,13 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbznly5pGUoraJhcfxrVQ5Cc49O9USh_xC3mDwmjl9eGY9guo1-fBSmmTztXUVRHL5OP/exec";
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
-const LOCAL_DATA_URL = "./data.json?v=20260713b";
+const LOCAL_DATA_URL = "./data.json?v=20260720a";
 const ARTICLE_DB_NAME = "pokeSleeveArticleStore";
 const ARTICLE_DB_VERSION = 1;
 const ARTICLE_STORE_NAME = "kv";
 const ARTICLE_STORE_KEY = "articles";
-const DATA_CACHE_KEY = "pokeSleeve:dataCache:v16";
-const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v16";
+const DATA_CACHE_KEY = "pokeSleeve:dataCache:v17";
+const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v17";
 const DATA_CACHE_TTL_MS = 5 * 60 * 1000;
 const DATA_STALE_MAX_MS = 10 * 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
