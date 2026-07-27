@@ -81,7 +81,7 @@ const HEADER_HTML = `
       <span class="menu-toggle-bar" aria-hidden="true"></span>
       <span class="menu-toggle-bar" aria-hidden="true"></span>
     </button>
-    <a href="./index.html" class="brand">
+    <a href="./" class="brand">
       <img class="site-title-logo site-title-logo--header" src="./assets/image.png?v=20260422a" alt="ポケスリ相場ナビ" />
     </a>
     <div class="header-search" aria-label="サイト内検索">
@@ -97,7 +97,7 @@ const HEADER_HTML = `
   <div class="header-bottom" id="headerPrimaryNav">
     <div class="header-bottom-inner">
       <nav class="nav" aria-label="メインメニュー">
-        <a href="./index.html" data-nav="index"><span class="nav-icon" aria-hidden="true">🏠</span>ホーム</a>
+        <a href="./" data-nav="index"><span class="nav-icon" aria-hidden="true">🏠</span>ホーム</a>
         <a href="./sleeves/" data-nav="zukan"><span class="nav-icon" aria-hidden="true">🗂️</span>図鑑</a>
         <a href="./ranking.html" data-nav="ranking"><span class="nav-icon" aria-hidden="true">👑</span>価格ランキング</a>
         <a href="./access-ranking.html" data-nav="access-ranking"><span class="nav-icon" aria-hidden="true">👀</span>アクセスランキング</a>
@@ -566,6 +566,7 @@ function buildSleeveTypeHref(typeValue) {
 
 function buildSiteHref(path) {
   const trimmed = String(path || "").replace(/^\.?\//, "");
+  if (trimmed === "index.html") return new URL("./", document.baseURI).toString();
   return new URL(trimmed, document.baseURI).toString();
 }
 

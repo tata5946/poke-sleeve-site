@@ -85,7 +85,7 @@ $html = New-Object System.Text.StringBuilder
 [void]$html.AppendLine('  <div id="site-header"></div>')
 [void]$html.AppendLine('  <main class="index-wrap">')
 [void]$html.AppendLine('    <nav class="breadcrumb" aria-label="breadcrumb">')
-[void]$html.AppendLine('      <a href="./index.html">&#12507;&#12540;&#12512;</a>')
+[void]$html.AppendLine('      <a href="./">&#12507;&#12540;&#12512;</a>')
 [void]$html.AppendLine('      <span class="breadcrumb-sep" aria-hidden="true">&gt;</span>')
 [void]$html.AppendLine('      <a href="./sleeves/">&#22259;&#37969;</a>')
 [void]$html.AppendLine('      <span class="breadcrumb-sep" aria-hidden="true">&gt;</span>')
