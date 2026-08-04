@@ -40,6 +40,7 @@ $staticPages = @(
   "articles.html",
   "abyss-eye.html",
   "chaos-rising.html",
+  "storm-emerald.html",
   "june-19-restock.html",
   "contact.html",
   "policy.html"
