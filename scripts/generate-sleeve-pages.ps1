@@ -1,4 +1,4 @@
-﻿param(
+param(
   [string]$DataPath = "data.json",
   [string]$TemplatePath = "detail.html",
   [string]$OutputRoot = "sleeve"
@@ -48,6 +48,7 @@ function Get-StaticSleeveInfo([object]$Sleeve) {
     @('&#12471;&#12522;&#12540;&#12474;', $Sleeve.series),
     @('&#29366;&#24907;', $Sleeve.condition),
     @('&#31278;&#21029;', $Sleeve.type),
+    @('&#12452;&#12521;&#12473;&#12488;&#12524;&#12540;&#12479;&#12540;', $Sleeve.illustrator),
     @('&#20837;&#25163;&#21306;&#20998;', $Sleeve.acquisitionType)
   )
   $lines = @()

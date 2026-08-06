@@ -120,7 +120,7 @@ foreach ($sleeve in $items) {
 [void]$html.AppendLine('    </ul>')
 [void]$html.AppendLine('  </main>')
 [void]$html.AppendLine('  <div id="site-footer"></div>')
-[void]$html.AppendLine('  <script src="./assets/common.js?v=20260727a"></script>')
+[void]$html.AppendLine('  <script src="./assets/common.js?v=20260806a"></script>')
 [void]$html.AppendLine('  <script>')
 [void]$html.AppendLine('    document.addEventListener("DOMContentLoaded", () => {')
 [void]$html.AppendLine('      if (window.common && typeof window.common.injectHeader === "function") window.common.injectHeader();')
@@ -133,3 +133,4 @@ foreach ($sleeve in $items) {
 
 Set-Content -LiteralPath $OutputPath -Value $html.ToString() -Encoding UTF8
 Write-Output "Generated $OutputPath"
+

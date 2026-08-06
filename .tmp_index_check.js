@@ -1,4 +1,4 @@
-﻿const GAS_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
+const GAS_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
 
     // -----------------------------
     // utils

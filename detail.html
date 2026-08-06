@@ -2063,7 +2063,7 @@
     </main>
   </div>
 
-  <script src="./assets/common.js?v=20260727a"></script>
+  <script src="./assets/common.js?v=20260806a"></script>
 
   <script>
     function escapeHtml(str) {
@@ -2180,6 +2180,7 @@
       if (!name) return;
 
       const imageUrl = String(sleeve.imageUrl || "").trim();
+      const illustratorText = getIllustratorText(sleeve);
       const price = Number.isFinite(latestObservation?.price) ? latestObservation.price : null;
       const observationCount = Number.isFinite(latestObservation?.count) && latestObservation.count > 0
         ? Math.round(latestObservation.count)
@@ -2188,6 +2189,7 @@
       const descriptionParts = [
         name,
         releaseDateText ? `発売日 ${releaseDateText}` : "",
+        illustratorText ? `イラストレーター ${illustratorText}` : "",
         sleeve.series ? `シリーズ ${String(sleeve.series).trim()}` : "",
         sleeve.condition ? `状態 ${String(sleeve.condition).trim()}` : ""
       ].filter(Boolean);
@@ -2223,6 +2225,13 @@
           "@type": "PropertyValue",
           name: "直近観測週",
           value: observationWeek
+        });
+      }
+      if (illustratorText) {
+        additionalProperty.push({
+          "@type": "PropertyValue",
+          name: "イラストレーター",
+          value: illustratorText
         });
       }
       if (observationCount != null) {
@@ -2469,6 +2478,23 @@
       return String(value ?? "").trim();
     }
 
+    function getFirstTextValue(...values) {
+      for (const value of values) {
+        const text = getTextValue(value);
+        if (text) return text;
+      }
+      return "";
+    }
+
+    function getIllustratorText(sleeve) {
+      return getFirstTextValue(
+        sleeve?.illustrator,
+        sleeve?.illustratorName,
+        sleeve?.artist,
+        sleeve?.["イラストレーター"]
+      );
+    }
+
     function getReleaseYearText(sleeve) {
       const year = String(sleeve?.releaseYear ?? sleeve?.release_year ?? sleeve?.["発売年"] ?? "").trim();
       return year ? `${year}年` : "";
@@ -2479,6 +2505,7 @@
         { label: "発売日", value: getReleaseDateText(sleeve) },
         { label: "公式/非公式", value: getTextValue(sleeve?.series) },
         { label: "種類", value: getTextValue(sleeve?.type) },
+        { label: "イラストレーター", value: getIllustratorText(sleeve) },
         { label: "販売元", value: getTextValue(sleeve?.acquisitionType) }
       ].filter((row) => row.value && row.value !== "不明");
     }
@@ -5034,6 +5061,7 @@
 </body>
 
 </html>
+
 
 
 
