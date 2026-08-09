@@ -1,4 +1,5 @@
 param(
+  [string]$DataPath = "data.json",
   [string]$TemplatePath = "detail.html",
   [string]$OutputRoot = "sleeve"
 )
@@ -13,7 +14,16 @@ $itemsJson = @'
   { "id": "427188", "name": "\u30dd\u30b1\u7d0b \u30ad\u30bf\u30ab\u30df\u306e\u91cc" },
   { "id": "301495", "name": "TAIKI-BANSEI" },
   { "id": "283708", "name": "\u30dd\u30ea\u30b4\u30f3\u30e1\u30fc\u30ab\u30fc" },
-  { "id": "306254", "name": "\u30d0\u30f3\u30ae\u30e9\u30b9" }
+  { "id": "306254", "name": "\u30d0\u30f3\u30ae\u30e9\u30b9" },
+  { "id": "2005001", "name": "\u30aa\u30d5\u30a3\u30b7\u30e3\u30eb\u30d7\u30ec\u30a4\u30e4\u30fc\u30ba\u3000\u30c7\u30c3\u30ad\u30b7\u30fc\u30eb\u30c9\u3008\u30ec\u30c3\u30c9\u3009" },
+  { "id": "2005002", "name": "\u30aa\u30d5\u30a3\u30b7\u30e3\u30eb\u30d7\u30ec\u30a4\u30e4\u30fc\u30ba\u3000\u30c7\u30c3\u30ad\u30b7\u30fc\u30eb\u30c9\u3008\u30db\u30ef\u30a4\u30c8\u3009" },
+  { "id": "319100", "name": "Pokemon Yurutto\u30af\u30c3\u30b7\u30e7\u30f3\u3067\u307e\u3063\u305f\u308a" },
+  { "id": "306407", "name": "\u30d0\u30b7\u30e3\u30fc\u30e2" },
+  { "id": "373171", "name": "\u30ed\u30b3\u30f3(\u30a2\u30ed\u30fc\u30e9\u306e\u3059\u304c\u305f)" },
+  { "id": "125527", "name": "\u30d0\u30c1\u30e5\u30eb" },
+  { "id": "427249", "name": "\u306a\u304b\u3088\u3057\u30d5\u30ec\u30f3\u30ba" },
+  { "id": "236483", "name": "SECRET TEAM F" },
+  { "id": "374581", "name": "\u30e9\u30c6\u30a3\u30a2\u30b9\u30fb\u30e9\u30c6\u30a3\u30aa\u30b9 \u591c\u666f" }
 ]
 '@
 
@@ -27,7 +37,11 @@ $labelsJson = @'
   "condition": "\u72b6\u614b",
   "type": "\u7a2e\u5225",
   "priceMissing": "\u4fa1\u683c\u30c7\u30fc\u30bf\u672a\u767b\u9332",
-  "descriptionSuffix": "\u306e\u4fa1\u683c\u63a8\u79fb\u30da\u30fc\u30b8\u3067\u3059\u3002"
+  "descriptionSuffix": "\u306e\u4fa1\u683c\u63a8\u79fb\u30da\u30fc\u30b8\u3067\u3059\u3002",
+  "yen": "\u5186",
+  "latestObserved": "\u6700\u7d42\u89b3\u6e2c\u65e5",
+  "tradeCount": "\u53d6\u5f15\u4ef6\u6570",
+  "countSuffix": "\u4ef6"
 }
 '@
 
@@ -45,6 +59,19 @@ function ConvertTo-JsJson([object]$Value) {
   return ConvertTo-Json $Value -Compress -Depth 100
 }
 
+function Get-TextValue([object]$Value) {
+  if ($null -eq $Value) { return "" }
+  return ([string]$Value).Trim()
+}
+
+function Get-LatestTrade([object]$Sleeve) {
+  $rows = @($Sleeve.weeklyPrices) | Where-Object {
+    $null -ne $_.price -and [double]$_.price -gt 0
+  } | Sort-Object { [datetime]$_.week }
+  if ($rows.Count -gt 0) { return $rows[-1] }
+  return $null
+}
+
 function Replace-Required([string]$Content, [string]$Pattern, [string]$Replacement) {
   $next = [regex]::Replace($Content, $Pattern, $Replacement, 1)
   if ($next -eq $Content) { throw "Template pattern not found: $Pattern" }
@@ -54,64 +81,115 @@ function Replace-Required([string]$Content, [string]$Pattern, [string]$Replaceme
 if (-not (Test-Path -LiteralPath $TemplatePath)) {
   throw "Template not found: $TemplatePath"
 }
+if (-not (Test-Path -LiteralPath $DataPath)) {
+  throw "Data not found: $DataPath"
+}
 if (-not (Test-Path -LiteralPath $OutputRoot)) {
   New-Item -ItemType Directory -Path $OutputRoot | Out-Null
 }
 
 $items = $itemsJson | ConvertFrom-Json
 $labels = $labelsJson | ConvertFrom-Json
+$data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$sleevesById = @{}
+foreach ($s in @($data.sleeves)) {
+  $sid = Get-TextValue $s.id
+  if ($sid) { $sleevesById[$sid] = $s }
+}
 $template = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
 $fallbackImage = "https://pokesuri-navi.com/assets/favicon.svg"
 
 foreach ($item in @($items)) {
   $id = [string]$item.id
-  $name = [string]$item.name
   $routeId = Get-SleeveRouteId $id
   $encodedRouteId = [System.Uri]::EscapeDataString($routeId)
   $canonical = "https://pokesuri-navi.com/sleeve/$encodedRouteId/"
 
-  $sleeve = [ordered]@{
-    id = $id
-    name = $name
-    imageUrl = "https://pokesuri-navi.com/assets/favicon.svg"
-    releaseDate = ""
-    releaseYear = ""
-    series = $labels.personal
-    condition = $labels.sealed
-    type = $labels.deckShield
-    feature = $labels.deckShield
-    acquisitionType = ""
-    illustrator = ""
-    note = ""
-    category1 = ""
-    category2 = ""
-    category3 = ""
-    category4 = ""
-    category5 = ""
-    category6 = ""
-    category7 = ""
-    category8 = ""
-    category9 = ""
-    pokemonCategories = @()
-    trainerCategories = @()
-    categoryTags = @()
-    categories = @($labels.personal)
-    weeklyPrices = @()
-    monthlyPrices = @()
-    yearlyPrices = @()
-    pricesByYear = @{}
+  if ($sleevesById.ContainsKey($id)) {
+    $sleeve = $sleevesById[$id]
+  } else {
+    $sleeve = [ordered]@{
+      id = $id
+      name = [string]$item.name
+      imageUrl = $fallbackImage
+      releaseDate = ""
+      releaseYear = ""
+      series = $labels.personal
+      condition = $labels.sealed
+      type = $labels.deckShield
+      feature = $labels.deckShield
+      acquisitionType = ""
+      illustrator = ""
+      note = ""
+      category1 = ""
+      category2 = ""
+      category3 = ""
+      category4 = ""
+      category5 = ""
+      category6 = ""
+      category7 = ""
+      category8 = ""
+      category9 = ""
+      pokemonCategories = @()
+      trainerCategories = @()
+      categoryTags = @()
+      categories = @($labels.personal)
+      weeklyPrices = @()
+      monthlyPrices = @()
+      yearlyPrices = @()
+      pricesByYear = @{}
+    }
   }
 
+  $name = Get-TextValue $sleeve.name
+  if (-not $name) { $name = [string]$item.name }
+  $imageUrl = Get-TextValue $sleeve.imageUrl
+  if (-not $imageUrl) { $imageUrl = $fallbackImage }
+  if (-not (Get-TextValue $sleeve.imageUrl)) {
+    $sleeve | Add-Member -NotePropertyName imageUrl -NotePropertyValue $imageUrl -Force
+  }
+  $series = Get-TextValue $sleeve.series
+  $condition = Get-TextValue $sleeve.condition
+  $type = Get-TextValue $sleeve.type
+  $releaseYear = Get-TextValue $sleeve.releaseYear
+
   $title = "$name | $($labels.siteName)"
-  $description = "$name / $($labels.personal) / $($labels.deckShield)$($labels.descriptionSuffix)"
+  $descParts = @($name, $series, $type, $releaseYear) | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) }
+  $description = (($descParts | Select-Object -Unique) -join " / ") + $labels.descriptionSuffix
   $inlineScript = '  <script>window.__SLEEVE_PAGE_ID = ' + (ConvertTo-JsJson $id) + ';window.__SLEEVE_PAGE_DATA = ' + (ConvertTo-JsJson $sleeve) + ';</script>'
-  $badges = '<div id="badges" class="badges"><span class="badge">' + (ConvertTo-HtmlText $labels.personal) + '</span><span class="badge">' + (ConvertTo-HtmlText $labels.sealed) + '</span><span class="badge">' + (ConvertTo-HtmlText $labels.deckShield) + '</span></div>'
-  $info = '<div id="detailInfo" class="detail-info-card">' +
-    '<div class="detail-info-row"><span>' + (ConvertTo-HtmlText $labels.series) + '</span><strong>' + (ConvertTo-HtmlText $labels.personal) + '</strong></div>' +
-    '<div class="detail-info-row"><span>' + (ConvertTo-HtmlText $labels.condition) + '</span><strong>' + (ConvertTo-HtmlText $labels.sealed) + '</strong></div>' +
-    '<div class="detail-info-row"><span>' + (ConvertTo-HtmlText $labels.type) + '</span><strong>' + (ConvertTo-HtmlText $labels.deckShield) + '</strong></div>' +
-    '</div>'
-  $tags = '<div id="detailTags" class="detail-tag-list"><a class="detail-tag" href="./sleeves/?group=type&amp;tag=%E5%80%8B%E4%BA%BA">' + (ConvertTo-HtmlText $labels.personal) + '</a></div>'
+  $badgeValues = @($series, $condition, $type) | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } | Select-Object -Unique
+  if ($badgeValues.Count -eq 0) { $badgeValues = @($labels.personal, $labels.deckShield) }
+  $badges = '<div id="badges" class="badges">' + (($badgeValues | ForEach-Object { '<span class="badge">' + (ConvertTo-HtmlText $_) + '</span>' }) -join '') + '</div>'
+  $infoRows = @()
+  foreach ($pair in @(
+    @($labels.series, $series),
+    @($labels.condition, $condition),
+    @($labels.type, $type),
+    @("releaseYear", $releaseYear),
+    @("releaseDate", (Get-TextValue $sleeve.releaseDate)),
+    @("acquisitionType", (Get-TextValue $sleeve.acquisitionType)),
+    @("illustrator", (Get-TextValue $sleeve.illustrator))
+  )) {
+    if (-not [string]::IsNullOrWhiteSpace([string]$pair[1])) {
+      $infoRows += '<div class="detail-info-row"><span>' + (ConvertTo-HtmlText $pair[0]) + '</span><strong>' + (ConvertTo-HtmlText $pair[1]) + '</strong></div>'
+    }
+  }
+  $info = if ($infoRows.Count) { '<div id="detailInfo" class="detail-info-card">' + ($infoRows -join '') + '</div>' } else { '<div id="detailInfo" class="detail-info-card" hidden></div>' }
+  $tagValues = @($sleeve.categories) | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } | Select-Object -Unique
+  $tags = if ($tagValues.Count) {
+    '<div id="detailTags" class="detail-tag-list">' + (($tagValues | ForEach-Object { '<a class="detail-tag" href="./sleeves/?tag=' + [System.Uri]::EscapeDataString([string]$_) + '">' + (ConvertTo-HtmlText $_) + '</a>' }) -join '') + '</div>'
+  } else {
+    '<div id="detailTags" class="detail-tag-list" hidden></div>'
+  }
+  $latestTrade = Get-LatestTrade $sleeve
+  $latestPriceText = if ($latestTrade) { ([double]$latestTrade.price).ToString("N0") + $labels.yen } else { "-" }
+  $weeklyCountText = if ($latestTrade) {
+    $week = Get-TextValue $latestTrade.week
+    $count = Get-TextValue $latestTrade.count
+    if ($count) { "$($labels.latestObserved): $week / $($labels.tradeCount): $count $($labels.countSuffix)" } else { "$($labels.latestObserved): $week" }
+  } else {
+    $labels.priceMissing
+  }
 
   $content = $template
   $content = Replace-Required $content '<head>' "<head>`r`n  <base href=""../../"" />"
@@ -119,7 +197,7 @@ foreach ($item in @($items)) {
   $content = Replace-Required $content '(?m)^\s*<meta name="description".*$' ('  <meta name="description" content="' + (ConvertTo-HtmlText $description) + '" />')
   $content = Replace-Required $content '(?m)^\s*<meta property="og:title".*$' ('  <meta property="og:title" content="' + (ConvertTo-HtmlText $title) + '" />')
   $content = Replace-Required $content '(?m)^\s*<meta property="og:description".*$' ('  <meta property="og:description" content="' + (ConvertTo-HtmlText $description) + '" />')
-  $content = Replace-Required $content '(?m)^\s*<meta property="og:image".*$' ('  <meta property="og:image" content="' + $fallbackImage + '" />')
+  $content = Replace-Required $content '(?m)^\s*<meta property="og:image".*$' ('  <meta property="og:image" content="' + (ConvertTo-HtmlText $imageUrl) + '" />')
   $content = Replace-Required $content '(?m)^\s*<meta property="og:url".*$' ('  <meta property="og:url" content="' + $canonical + '" />' + "`r`n  " + '<link rel="canonical" href="' + $canonical + '" />')
   $content = Replace-Required $content '<script src="\./assets/common\.js(?:\?[^"]*)?"></script>' ($inlineScript + "`r`n`r`n" + '$0')
   $content = Replace-Required $content '<span id="breadcrumbCurrent" class="breadcrumb-current" aria-current="page">.*?</span>' ('<span id="breadcrumbCurrent" class="breadcrumb-current" aria-current="page">' + (ConvertTo-HtmlText $name) + '</span>')
@@ -127,7 +205,8 @@ foreach ($item in @($items)) {
   $content = $content.Replace('<div id="badges" class="badges"></div>', $badges)
   $content = $content.Replace('<div id="detailInfo" class="detail-info-card" hidden></div>', $info)
   $content = $content.Replace('<div id="detailTags" class="detail-tag-list" hidden></div>', $tags)
-  $content = Replace-Required $content '<div id="weeklyCount" class="meta" style="margin-top:6px;">.*?</div>' ('<div id="weeklyCount" class="meta" style="margin-top:6px;">' + (ConvertTo-HtmlText $labels.priceMissing) + '</div>')
+  $content = $content.Replace('<div id="latestWeekly" class="value">-</div>', '<div id="latestWeekly" class="value">' + (ConvertTo-HtmlText $latestPriceText) + '</div>')
+  $content = Replace-Required $content '<div id="weeklyCount" class="meta" style="margin-top:6px;">.*?</div>' ('<div id="weeklyCount" class="meta" style="margin-top:6px;">' + (ConvertTo-HtmlText $weeklyCountText) + '</div>')
 
   $targetDir = Join-Path $OutputRoot $routeId
   if (-not (Test-Path -LiteralPath $targetDir)) {
