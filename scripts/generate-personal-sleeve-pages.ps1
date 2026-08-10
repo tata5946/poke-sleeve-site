@@ -1,7 +1,8 @@
 param(
   [string]$DataPath = "data.json",
   [string]$TemplatePath = "detail.html",
-  [string]$OutputRoot = "sleeve"
+  [string]$OutputRoot = "sleeve",
+  [switch]$All
 )
 
 $ErrorActionPreference = "Stop"
@@ -95,6 +96,14 @@ $sleevesById = @{}
 foreach ($s in @($data.sleeves)) {
   $sid = Get-TextValue $s.id
   if ($sid) { $sleevesById[$sid] = $s }
+}
+if ($All) {
+  $items = @($data.sleeves | Where-Object { (Get-TextValue $_.id) -and (Get-TextValue $_.name) } | ForEach-Object {
+    [pscustomobject]@{
+      id = Get-TextValue $_.id
+      name = Get-TextValue $_.name
+    }
+  })
 }
 $template = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
 $fallbackImage = "https://pokesuri-navi.com/assets/favicon.svg"
