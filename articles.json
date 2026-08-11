@@ -1,6 +1,19 @@
 {
   "articles": [
     {
+      "id": "storm-emerald",
+      "slug": "storm-emerald",
+      "title": "ストームエメラルダ発売関連デッキシールド",
+      "excerpt": "新規発売と再販の関連スリーブをまとめました。各カードから個別ページで相場推移を確認できます。",
+      "category": "FEATURE",
+      "coverImage": "./assets/storm-emerald-banner-display.jpg",
+      "publishedAt": "2026-08-06",
+      "updatedAt": "2026-08-06T00:00:00.000Z",
+      "status": "published",
+      "linkUrl": "./storm-emerald.html",
+      "html": ""
+    },
+    {
       "id": "june-19-restock",
       "slug": "june-19-restock",
       "title": "6/19再販デッキシールド特集",
