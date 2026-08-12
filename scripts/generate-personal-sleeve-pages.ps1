@@ -24,7 +24,13 @@ $itemsJson = @'
   { "id": "125527", "name": "\u30d0\u30c1\u30e5\u30eb" },
   { "id": "427249", "name": "\u306a\u304b\u3088\u3057\u30d5\u30ec\u30f3\u30ba" },
   { "id": "236483", "name": "SECRET TEAM F" },
-  { "id": "374581", "name": "\u30e9\u30c6\u30a3\u30a2\u30b9\u30fb\u30e9\u30c6\u30a3\u30aa\u30b9 \u591c\u666f" }
+  { "id": "374581", "name": "\u30e9\u30c6\u30a3\u30a2\u30b9\u30fb\u30e9\u30c6\u30a3\u30aa\u30b9 \u591c\u666f" },
+  { "id": "431994", "name": "\u30e1\u30ac\u30eb\u30ab\u30ea\u30aa" },
+  { "id": "432151", "name": "with elegance \u30e1\u30ac\u30a2\u30d6\u30bd\u30eb" },
+  { "id": "432144", "name": "with elegance \u30e1\u30ac\u30af\u30c1\u30fc\u30c8" },
+  { "id": "432120", "name": "PJCS2025" },
+  { "id": "432052", "name": "\u30c8\u30a6\u30b3" },
+  { "id": "432090", "name": "\u30c4\u30bf\u30fc\u30b8\u30e3\uff06\u30dd\u30ab\u30d6\uff06\u30df\u30b8\u30e5\u30de\u30eb" }
 ]
 '@
 
