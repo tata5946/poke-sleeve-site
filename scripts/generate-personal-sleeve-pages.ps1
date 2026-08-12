@@ -30,7 +30,18 @@ $itemsJson = @'
   { "id": "432144", "name": "with elegance \u30e1\u30ac\u30af\u30c1\u30fc\u30c8" },
   { "id": "432120", "name": "PJCS2025" },
   { "id": "432052", "name": "\u30c8\u30a6\u30b3" },
-  { "id": "432090", "name": "\u30c4\u30bf\u30fc\u30b8\u30e3\uff06\u30dd\u30ab\u30d6\uff06\u30df\u30b8\u30e5\u30de\u30eb" }
+  { "id": "432090", "name": "\u30c4\u30bf\u30fc\u30b8\u30e3\uff06\u30dd\u30ab\u30d6\uff06\u30df\u30b8\u30e5\u30de\u30eb" },
+  { "id": "432113", "name": "PSYCHO CYBER \u30e6\u30cb\u30e9\u30f3 \u30c0\u30d6\u30e9\u30f3 \u30e9\u30f3\u30af\u30eb\u30b9" },
+  { "id": "431383", "name": "\u30ec\u30b7\u30e9\u30e0" },
+  { "id": "431376", "name": "\u30bc\u30af\u30ed\u30e0" },
+  { "id": "431789", "name": "\u3064\u306a\u304c\u308b\u305b\u304b\u3044 -\u3072\u307f\u3064\u306e\u304b\u3044\u3060\u3093-" },
+  { "id": "427256", "name": "\u30ed\u30b1\u30c3\u30c8\u56e3\u306e\u6804\u5149" },
+  { "id": "431802", "name": "\u30ac\u30fc\u30c7\u30a3\uff06\u30d0\u30f3\u30ae\u30e9\u30b9\uff06\u30c7\u30f3\u30ea\u30e5\u30a6" },
+  { "id": "431819", "name": "\u30df\u30df\u30c3\u30ad\u30e5\uff06\u30bd\u30fc\u30ca\u30f3\u30b9" },
+  { "id": "431796", "name": "\u30d5\u30a1\u30a4\u30e4\u30fc\uff06\u30b5\u30f3\u30c0\u30fc\uff06\u30d5\u30ea\u30fc\u30b6\u30fc" },
+  { "id": "431772", "name": "Night Arcade" },
+  { "id": "431826", "name": "\u9032\u5316\u306e\u8ecc\u8de1 \u30af\u30ed\u30d0\u30c3\u30c8" },
+  { "id": "431208", "name": "\u30da\u30d1\u30fc\uff06\u30de\u30d5\u30a3\u30c6\u30a3\u30d5" }
 ]
 '@
 
