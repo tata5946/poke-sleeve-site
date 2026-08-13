@@ -41,7 +41,13 @@ $itemsJson = @'
   { "id": "431796", "name": "\u30d5\u30a1\u30a4\u30e4\u30fc\uff06\u30b5\u30f3\u30c0\u30fc\uff06\u30d5\u30ea\u30fc\u30b6\u30fc" },
   { "id": "431772", "name": "Night Arcade" },
   { "id": "431826", "name": "\u9032\u5316\u306e\u8ecc\u8de1 \u30af\u30ed\u30d0\u30c3\u30c8" },
-  { "id": "431208", "name": "\u30da\u30d1\u30fc\uff06\u30de\u30d5\u30a3\u30c6\u30a3\u30d5" }
+  { "id": "431208", "name": "\u30da\u30d1\u30fc\uff06\u30de\u30d5\u30a3\u30c6\u30a3\u30d5" },
+  { "id": "319094", "name": "Pok\u00e9mon Yurutto \u5bdd\u305d\u3079\u308a" },
+  { "id": "292090", "name": "\u58a8\u7d75\u5217\u4f1d \u30d4\u30ab\u30c1\u30e5\u30a6" },
+  { "id": "298726", "name": "24\u3058\u304b\u3093\u30dd\u30b1\u30e2\u30f3CHU \u30d4\u30ab\u30c1\u30e5\u30a6" },
+  { "id": "298740", "name": "24\u3058\u304b\u3093\u30dd\u30b1\u30e2\u30f3CHU \u30e8\u30fc\u30ae\u30e9\u30b9" },
+  { "id": "226859", "name": "\u30eb\u30b6\u30df\u30fc\u30cd\u30d5\u30a1\u30df\u30ea\u30fc" },
+  { "id": "265032", "name": "\u30d4\u30ab\u30c1\u30e5\u30a6\u3000\u30b8\u30e5\u30a8\u30eb" }
 ]
 '@
 
