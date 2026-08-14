@@ -1651,6 +1651,51 @@
       }
     }
 
+    .image-zoom-viewer {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(8px);
+    }
+
+    .image-zoom-viewer[hidden] {
+      display: none;
+    }
+
+    .image-zoom-viewer__image {
+      width: min(92vw, 720px);
+      max-height: 86vh;
+      object-fit: contain;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
+    }
+
+    .image-zoom-viewer__close {
+      position: fixed;
+      top: max(12px, env(safe-area-inset-top));
+      right: max(12px, env(safe-area-inset-right));
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.82);
+      color: #fff;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    body.image-zoom-open {
+      overflow: hidden;
+    }
+
     .name {
       grid-area: title;
       max-width: none;
@@ -4949,6 +4994,56 @@
       }
     }
 
+    function setupSleeveImageZoom() {
+      const img = document.getElementById("img");
+      if (!img || img.dataset.zoomReady === "1") return;
+      img.dataset.zoomReady = "1";
+      img.tabIndex = 0;
+      img.setAttribute("role", "button");
+      img.setAttribute("aria-label", "画像を拡大表示");
+
+      const viewer = document.createElement("div");
+      viewer.className = "image-zoom-viewer";
+      viewer.hidden = true;
+      viewer.innerHTML = `
+        <button type="button" class="image-zoom-viewer__close" aria-label="拡大画像を閉じる">&times;</button>
+        <img class="image-zoom-viewer__image" alt="">
+      `;
+      document.body.appendChild(viewer);
+
+      const viewerImage = viewer.querySelector(".image-zoom-viewer__image");
+      const closeButton = viewer.querySelector(".image-zoom-viewer__close");
+
+      const close = () => {
+        viewer.hidden = true;
+        document.body.classList.remove("image-zoom-open");
+      };
+
+      const open = () => {
+        const src = String(img.currentSrc || img.src || "").trim();
+        if (!src) return;
+        viewerImage.src = src;
+        viewerImage.alt = img.alt || "";
+        viewer.hidden = false;
+        document.body.classList.add("image-zoom-open");
+        closeButton.focus({ preventScroll: true });
+      };
+
+      img.addEventListener("click", open);
+      img.addEventListener("keydown", (ev) => {
+        if (ev.key !== "Enter" && ev.key !== " ") return;
+        ev.preventDefault();
+        open();
+      });
+      closeButton.addEventListener("click", close);
+      viewer.addEventListener("click", (ev) => {
+        if (ev.target === viewer) close();
+      });
+      document.addEventListener("keydown", (ev) => {
+        if (ev.key === "Escape" && !viewer.hidden) close();
+      });
+    }
+
     function renderSleevePage(s, relatedSleeves) {
       const releaseDateText = getReleaseDateText(s);
       const breadcrumbCurrent = document.getElementById("breadcrumbCurrent");
@@ -5065,6 +5160,7 @@
       img.referrerPolicy = "no-referrer";
       img.src = String(s.imageUrl || "").trim();
       img.alt = s.name || "";
+      setupSleeveImageZoom();
       renderSleevePage(s, sleeves);
       if (!sleeves.length) {
         refreshSleeveDataAfterRender(s, id);
