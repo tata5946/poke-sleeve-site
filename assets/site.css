@@ -3759,3 +3759,305 @@ footer.site-footer {
         font-size: 19px !important;
     }
 }
+
+/* Non-surge rankings: align sleeve presentation with the directory cards */
+:root body.page-market-list:not(.page-surge-ranking) .ranking-top3,
+:root body.page-market-list:not(.page-surge-ranking) .compact-grid,
+:root body.page-market-list:not(.page-surge-ranking) .ranking-list,
+:root body.page-market-list:not(.page-surge-ranking) #list.grid {
+    gap: 52px clamp(30px, 3vw, 52px) !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-card,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card--rank1,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card--rank2,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card--rank3,
+:root body.page-market-list:not(.page-surge-ranking) a.compact-card,
+:root body.page-market-list:not(.page-surge-ranking) .compact-card {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto 1fr !important;
+    align-content: start !important;
+    gap: 10px !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #172033 !important;
+    text-decoration: none !important;
+    transition: transform .26s ease !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-card:hover,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card:focus-visible,
+:root body.page-market-list:not(.page-surge-ranking) a.compact-card:hover,
+:root body.page-market-list:not(.page-surge-ranking) a.compact-card:focus-visible {
+    transform: translateY(-2px) !important;
+    box-shadow: none !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-media,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card--rank1 .podium-media,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card:not(.podium-card--rank1) .podium-media,
+:root body.page-market-list:not(.page-surge-ranking) .compact-thumb-wrap {
+    display: grid !important;
+    place-items: center !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    aspect-ratio: 4 / 3.75 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-media img,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card--rank1 .podium-media img,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card:not(.podium-card--rank1) .podium-media img,
+:root body.page-market-list:not(.page-surge-ranking) .compact-thumb {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    padding: 8px !important;
+    object-fit: contain !important;
+    transform: none !important;
+    transition: transform .26s ease !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-card:hover .podium-media img,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card:focus-visible .podium-media img,
+:root body.page-market-list:not(.page-surge-ranking) a.compact-card:hover .compact-thumb,
+:root body.page-market-list:not(.page-surge-ranking) a.compact-card:focus-visible .compact-thumb {
+    transform: scale(1.01) !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-content,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card--rank1 .podium-content,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card:not(.podium-card--rank1) .podium-content {
+    display: grid !important;
+    gap: 7px !important;
+    align-content: start !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 2px 2px !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-kicker {
+    display: none !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-title,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card--rank1 .podium-title,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card:not(.podium-card--rank1) .podium-title,
+:root body.page-market-list:not(.page-surge-ranking) .compact-card-title {
+    margin: 0 !important;
+    color: #172033 !important;
+    font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif !important;
+    font-size: 18px !important;
+    line-height: 1.42 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-badge,
+:root body.page-market-list:not(.page-surge-ranking) .compact-rank-badge {
+    color: #98a2b3 !important;
+    font-size: 13px !important;
+    line-height: 1 !important;
+    font-weight: 800 !important;
+    letter-spacing: 0 !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-metrics {
+    display: grid !important;
+    grid-template-columns: max-content auto !important;
+    align-items: end !important;
+    column-gap: 16px !important;
+    row-gap: 6px !important;
+    min-width: 0 !important;
+    margin-top: 2px !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-metric {
+    display: grid !important;
+    gap: 4px !important;
+    min-width: max-content !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-metric-label,
+:root body.page-market-list:not(.page-surge-ranking) .compact-delta {
+    color: #64748b !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+    font-weight: 400 !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-rate.is-up,
+:root body.page-market-list:not(.page-surge-ranking) .podium-diff,
+:root body.page-market-list:not(.page-surge-ranking) .compact-delta.is-up {
+    color: #b42318 !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-rate.is-down,
+:root body.page-market-list:not(.page-surge-ranking) .compact-delta.is-down {
+    color: #175cd3 !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-price,
+:root body.page-market-list:not(.page-surge-ranking) .podium-card:not(.podium-card--rank1) .podium-price,
+:root body.page-market-list:not(.page-surge-ranking) .compact-price {
+    color: #111827 !important;
+    font-family: "Inter", "Zen Kaku Gothic New", sans-serif !important;
+    font-size: 30px !important;
+    line-height: 1.2 !important;
+    font-weight: 800 !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .compact-market-row {
+    display: grid !important;
+    grid-template-columns: max-content minmax(128px, 1fr) !important;
+    align-items: end !important;
+    column-gap: 16px !important;
+    row-gap: 6px !important;
+    min-width: 0 !important;
+    margin-top: 2px !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .compact-price-row {
+    display: grid !important;
+    gap: 4px !important;
+    min-width: max-content !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-market-row {
+    display: block !important;
+    min-width: 0 !important;
+    margin-top: 0 !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .sleeve-sparkline {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+    display: grid !important;
+    place-items: center !important;
+    align-self: end !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #94a3b8 !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .sleeve-sparkline--empty {
+    display: none !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .sleeve-sparkline-grid,
+:root body.page-market-list:not(.page-surge-ranking) .sleeve-sparkline-axis {
+    stroke: rgba(71, 85, 105, .18) !important;
+    stroke-width: 1 !important;
+    vector-effect: non-scaling-stroke !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .sleeve-sparkline-area {
+    fill: rgba(5, 150, 105, .10) !important;
+    opacity: 1 !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .sleeve-sparkline-line {
+    fill: none !important;
+    stroke: #059669 !important;
+    stroke-width: 2 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    vector-effect: non-scaling-stroke !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .sleeve-sparkline-dot {
+    fill: #059669 !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .sleeve-sparkline-label {
+    fill: #7a8699 !important;
+    font-family: "Inter", "Zen Kaku Gothic New", sans-serif !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .sleeve-sparkline-label--axis {
+    fill: #98a2b3 !important;
+    font-size: 8.2px !important;
+    font-weight: 400 !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-chip-group,
+:root body.page-market-list:not(.page-surge-ranking) .compact-meta {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    margin-top: 2px !important;
+}
+
+:root body.page-market-list:not(.page-surge-ranking) .podium-chip,
+:root body.page-market-list:not(.page-surge-ranking) .compact-meta-item,
+:root body.page-market-list:not(.page-surge-ranking) .compact-tag {
+    display: inline-flex !important;
+    align-items: center !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: #667085 !important;
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    font-weight: 400 !important;
+}
+
+@media (max-width: 700px) {
+    :root body.page-market-list:not(.page-surge-ranking) .ranking-top3,
+    :root body.page-market-list:not(.page-surge-ranking) .compact-grid,
+    :root body.page-market-list:not(.page-surge-ranking) .ranking-list,
+    :root body.page-market-list:not(.page-surge-ranking) #list.grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 32px 18px !important;
+    }
+
+    :root body.page-market-list:not(.page-surge-ranking) .podium-title,
+    :root body.page-market-list:not(.page-surge-ranking) .podium-card--rank1 .podium-title,
+    :root body.page-market-list:not(.page-surge-ranking) .podium-card:not(.podium-card--rank1) .podium-title,
+    :root body.page-market-list:not(.page-surge-ranking) .compact-card-title {
+        font-size: 13px !important;
+        line-height: 1.45 !important;
+    }
+
+    :root body.page-market-list:not(.page-surge-ranking) .podium-price,
+    :root body.page-market-list:not(.page-surge-ranking) .podium-card:not(.podium-card--rank1) .podium-price,
+    :root body.page-market-list:not(.page-surge-ranking) .compact-price {
+        font-size: 20px !important;
+    }
+
+    :root body.page-market-list:not(.page-surge-ranking) .podium-metrics,
+    :root body.page-market-list:not(.page-surge-ranking) .compact-market-row {
+        grid-template-columns: 1fr !important;
+    }
+}
