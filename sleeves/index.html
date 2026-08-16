@@ -853,7 +853,7 @@
     .zukan-card-price-wrap,
     .zukan-price-panel {
       display: grid;
-      grid-template-columns: max-content minmax(96px, 1fr);
+      grid-template-columns: max-content minmax(128px, 1fr);
       align-items: end;
       column-gap: 16px;
       row-gap: 6px;
@@ -890,7 +890,7 @@
       --zukan-spark-line: #059669;
       --zukan-spark-area: rgba(5, 150, 105, .10);
       width: 100%;
-      height: 46px;
+      height: 58px;
       display: grid;
       place-items: center;
       align-self: end;
@@ -928,6 +928,12 @@
       display: block;
     }
 
+    .zukan-sparkline-axis {
+      stroke: rgba(71, 85, 105, .16);
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+    }
+
     .zukan-sparkline-grid {
       stroke: rgba(71, 85, 105, .18);
       stroke-width: 1;
@@ -945,6 +951,20 @@
       stroke-linecap: round;
       stroke-linejoin: round;
       vector-effect: non-scaling-stroke;
+    }
+
+    .zukan-sparkline-label {
+      fill: #7a8699;
+      font-family: "Inter", "Zen Kaku Gothic New", sans-serif;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .zukan-sparkline-label--axis {
+      fill: #98a2b3;
+      font-size: 8.2px;
+      font-weight: 400;
     }
 
     .zukan-sparkline-empty {
@@ -1299,7 +1319,7 @@
       }
 
       .zukan-sparkline {
-        height: 34px;
+        height: 58px;
       }
 
       .zukan-sparkline--empty {
@@ -1592,12 +1612,30 @@
       };
     }
 
+    function formatSparklinePriceLabel(value) {
+      if (!Number.isFinite(value)) return "";
+      if (Math.abs(value) >= 10000) {
+        const man = value / 10000;
+        return `${Number.isInteger(man) ? man.toFixed(0) : man.toFixed(1)}万`;
+      }
+      if (Math.abs(value) >= 1000) {
+        return `${Math.round(value / 100) / 10}千`;
+      }
+      return `${Math.round(value)}`;
+    }
+
+    function formatSparklineWeekLabel(value) {
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return "";
+      return `${d.getMonth() + 1}/${d.getDate()}`;
+    }
+
     function buildZukanSparkline(sleeve) {
       const pair = getWeeklyPair(sleeve);
-      const rows = Array.isArray(pair?.sorted) ? pair.sorted.slice(-8) : [];
-      const prices = rows
-        .map((row) => numOrNull(row?.price))
-        .filter((value) => Number.isFinite(value) && value > 0);
+      const rows = (Array.isArray(pair?.sorted) ? pair.sorted : [])
+        .filter((row) => Number.isFinite(numOrNull(row?.price)) && numOrNull(row?.price) > 0)
+        .slice(-8);
+      const prices = rows.map((row) => numOrNull(row.price));
 
       if (prices.length < 2) {
         return "";
@@ -1606,24 +1644,30 @@
       const first = prices[0];
       const last = prices[prices.length - 1];
       const trendClass = last > first ? "up" : last < first ? "down" : "flat";
-      const width = 124;
-      const height = 44;
-      const padX = 6;
-      const padY = 6;
+      const width = 160;
+      const height = 64;
+      const chartLeft = 30;
+      const chartRight = 156;
+      const chartTop = 8;
+      const chartBottom = 44;
       const min = Math.min(...prices);
       const max = Math.max(...prices);
       const range = Math.max(max - min, 1);
-      const step = (width - padX * 2) / Math.max(1, prices.length - 1);
+      const step = (chartRight - chartLeft) / Math.max(1, prices.length - 1);
       const points = prices.map((price, index) => {
-        const x = padX + (step * index);
-        const y = height - padY - (((price - min) / range) * (height - padY * 2));
+        const x = chartLeft + (step * index);
+        const y = chartBottom - (((price - min) / range) * (chartBottom - chartTop));
         return `${x.toFixed(1)},${y.toFixed(1)}`;
       }).join(" ");
-      const firstX = padX.toFixed(1);
-      const lastX = (padX + (step * (prices.length - 1))).toFixed(1);
-      const areaPoints = `${firstX},${height - padY} ${points} ${lastX},${height - padY}`;
+      const firstX = chartLeft.toFixed(1);
+      const lastX = (chartLeft + (step * (prices.length - 1))).toFixed(1);
+      const areaPoints = `${firstX},${chartBottom} ${points} ${lastX},${chartBottom}`;
+      const maxLabel = formatSparklinePriceLabel(max);
+      const minLabel = formatSparklinePriceLabel(min);
+      const startLabel = formatSparklineWeekLabel(rows[0]?.week);
+      const endLabel = formatSparklineWeekLabel(rows[rows.length - 1]?.week);
 
-      return `<span class="zukan-sparkline zukan-sparkline--${trendClass}" aria-label="直近${prices.length}週の価格推移"><svg viewBox="0 0 ${width} ${height}" focusable="false" aria-hidden="true" preserveAspectRatio="none"><line class="zukan-sparkline-grid" x1="${padX}" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}"></line><polygon class="zukan-sparkline-area" points="${areaPoints}"></polygon><polyline class="zukan-sparkline-line" points="${points}"></polyline></svg></span>`;
+      return `<span class="zukan-sparkline zukan-sparkline--${trendClass}" aria-label="直近${prices.length}週の価格推移。${minLabel}円から${maxLabel}円の範囲。"><svg viewBox="0 0 ${width} ${height}" focusable="false" aria-hidden="true"><line class="zukan-sparkline-axis" x1="${chartLeft}" y1="${chartTop}" x2="${chartLeft}" y2="${chartBottom}"></line><line class="zukan-sparkline-grid" x1="${chartLeft}" y1="${chartBottom}" x2="${chartRight}" y2="${chartBottom}"></line><text class="zukan-sparkline-label" x="2" y="${chartTop + 3}">${maxLabel}</text><text class="zukan-sparkline-label" x="2" y="${chartBottom + 2}">${minLabel}</text><text class="zukan-sparkline-label zukan-sparkline-label--axis" x="${chartLeft}" y="61">${startLabel}</text><text class="zukan-sparkline-label zukan-sparkline-label--axis" x="${chartRight}" y="61" text-anchor="end">${endLabel}</text><polygon class="zukan-sparkline-area" points="${areaPoints}"></polygon><polyline class="zukan-sparkline-line" points="${points}"></polyline></svg></span>`;
     }
 
     function getCardTags(sleeve, maxItems = 2) {
