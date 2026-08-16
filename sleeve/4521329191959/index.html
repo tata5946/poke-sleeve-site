@@ -137,6 +137,10 @@
       background: #f97316;
     }
 
+    .ai-diagnosis-grade--wait {
+      background: #dc2626;
+    }
+
     .ai-diagnosis-title {
       margin: 0 0 6px;
       color: #0f172a;
@@ -2744,84 +2748,146 @@
       return Number.isFinite(fallback) ? fallback : null;
     }
 
+    function getRowsWithinDays(rows, latestTs, days) {
+      if (!Number.isFinite(latestTs)) return [];
+      const startTs = latestTs - days * 24 * 60 * 60 * 1000;
+      return rows.filter((row) => Number.isFinite(row.timestamp) && row.timestamp >= startTs && row.timestamp <= latestTs);
+    }
+
+    function getMedianPrice(rows) {
+      const prices = rows
+        .map((row) => Number(row.avgPrice))
+        .filter((price) => Number.isFinite(price) && price > 0)
+        .sort((a, b) => a - b);
+      if (!prices.length) return null;
+      const middle = Math.floor(prices.length / 2);
+      return prices.length % 2 ? prices[middle] : (prices[middle - 1] + prices[middle]) / 2;
+    }
+
+    function formatDiagnosisYen(value) {
+      return Number.isFinite(value) ? `${Math.round(value).toLocaleString("ja-JP")}円` : "-";
+    }
+
+    function formatDiagnosisPercent(value) {
+      if (!Number.isFinite(value)) return "-";
+      const rounded = Math.round(Math.abs(value));
+      return `${rounded}%`;
+    }
+
+    function getDiagnosisPeriod(rows, latestTs) {
+      const rows3m = getRowsWithinDays(rows, latestTs, 92);
+      if (rows3m.length >= 2) return { rows: rows3m, label: "直近3か月", note: "" };
+
+      const rows6m = getRowsWithinDays(rows, latestTs, 183);
+      if (rows6m.length >= 2) {
+        return {
+          rows: rows6m,
+          label: "直近6か月",
+          note: "直近3か月の観測が少ないため、6か月の相場で見ています。"
+        };
+      }
+
+      return {
+        rows,
+        label: "全期間",
+        note: "最近の観測が少ないため、全期間の相場を参考にしています。"
+      };
+    }
+
+    function getNextCautiousDiagnosisLabel(label) {
+      if (label === "買いどきかも") return "相場どおり";
+      if (label === "相場どおり") return "ちょっと高め";
+      if (label === "ちょっと高め") return "今は待ちたい";
+      return label;
+    }
+
     function buildAiMarketDiagnosis(sleeve) {
       const rows = getMarketDiagnosisPriceRows(sleeve);
       const latest = rows.length ? rows[rows.length - 1] : null;
       const previous = rows.length >= 2 ? rows[rows.length - 2] : null;
+      if (!latest || !Number.isFinite(latest.avgPrice) || latest.avgPrice <= 0) return null;
+
       const latestTs = latest ? latest.timestamp : NaN;
-      const past30 = latest ? getNearestPastMarketRow(rows, latestTs, 30) : null;
-      const past180 = latest ? getNearestPastMarketRow(rows, latestTs, 183) : null;
+      const diagnosisPeriod = getDiagnosisPeriod(rows, latestTs);
+      const periodRows = diagnosisPeriod.rows.length ? diagnosisPeriod.rows : rows;
+      const medianPrice = getMedianPrice(periodRows);
+      if (!Number.isFinite(medianPrice) || medianPrice <= 0) return null;
+
       const changePrev = getMarketChangeRate(latest, previous);
-      const change30 = getMarketChangeRate(latest, past30);
-      const change180 = getMarketChangeRate(latest, past180);
+      const latestPrice = latest.avgPrice;
+      const diffRate = (latestPrice - medianPrice) / medianPrice;
+      const periodPrices = periodRows
+        .map((row) => Number(row.avgPrice))
+        .filter((price) => Number.isFinite(price) && price > 0);
+      const periodLow = Math.min(...periodPrices);
+      const periodHigh = Math.max(...periodPrices);
+      const rangePosition = periodHigh > periodLow ? (latestPrice - periodLow) / (periodHigh - periodLow) : 0.5;
       const highPrice = rows.reduce((max, row) => Math.max(max, Number(row.avgPrice) || 0), 0);
-      const latestPrice = latest && Number.isFinite(latest.avgPrice) ? latest.avgPrice : null;
-      const nearHigh = latestPrice != null && highPrice > 0 && latestPrice >= highPrice * 0.92;
-      const recentSpike = (changePrev != null && changePrev >= 0.25)
-        || (change30 != null && change30 >= 0.35)
-        || (previous && latestPrice != null && latestPrice - previous.avgPrice >= 1500 && changePrev != null && changePrev >= 0.15);
-      const rising = (change30 != null && change30 >= 0.08) || (change180 != null && change180 >= 0.18);
-      const recentTradeCount = latest
-        ? rows
-          .filter((row) => Number.isFinite(row.timestamp) && row.timestamp >= latestTs - 35 * 24 * 60 * 60 * 1000)
-          .reduce((sum, row) => sum + (Number.isFinite(row.tradeCount) ? row.tradeCount : 1), 0)
-        : 0;
-      const veryLowVolume = rows.length > 0 && (recentTradeCount <= 2 || (Number.isFinite(latest?.tradeCount) && latest.tradeCount <= 1 && rows.length <= 3));
+      const nearAllTimeHigh = rows.length >= 2 && highPrice > 0 && latestPrice >= highPrice * 0.92;
+      const recentSpike = changePrev != null && changePrev >= 0.3;
+      const veryThinData = periodRows.length <= 2 || rows.length <= 2;
 
-      const text = buildSleeveMarketText(sleeve);
-      const popular = includesAnyKeyword(text, [
-        "ピカチュウ", "イーブイ", "リザードン", "ゲンガー", "ルカリオ", "ミュウ",
-        "ミュウツー", "ブラッキー", "ニンフィア", "レックウザ", "サーナイト",
-        "カビゴン", "ポッチャマ", "リーリエ", "シロナ", "ナンジャモ"
-      ]);
-      const releaseYear = getSleeveReleaseYearNumber(sleeve);
-      const oldItem = Number.isFinite(releaseYear) && releaseYear <= new Date().getFullYear() - 5;
-      const scarce = oldItem || includesAnyKeyword(text, [
-        "限定", "イベント", "プロモ", "非売品", "配布", "抽選", "受注", "再販なし",
-        "完売", "ポケモンセンター", "ポケセン", "大会", "周年", "海外"
-      ]);
-      const themed = includesAnyKeyword(text, [
-        "ポンチョ", "テーマ", "コンセプト", "メガ", "メガシンカ", "テラスタル",
-        "ごっこ", "仮装", "着た", "じゃらし", "enjoy", "コレクション"
-      ]);
-
-      const strengths = [];
-      if (popular) strengths.push("人気キャラ");
-      if (scarce) strengths.push("限定性・古さ");
-      if (rising) strengths.push("価格推移");
-      if (themed) strengths.push("デザイン性");
-      if (!veryLowVolume && rows.length >= 3) strengths.push("取引データ");
-      if (!strengths.length) strengths.push("現在の相場データ");
-
-      const cautionReasons = [];
-      if (recentSpike) cautionReasons.push("直近で価格が大きく動いている");
-      if (nearHigh && rows.length >= 2) cautionReasons.push("過去の高値に近い");
-      if (veryLowVolume) cautionReasons.push("流通量が少なく価格がぶれやすい");
-
-      let label = "様子見";
+      let label = "相場どおり";
       let tone = "neutral";
-      if (cautionReasons.length >= 2 || (recentSpike && nearHigh) || (recentSpike && veryLowVolume)) {
-        label = "高値注意";
-        tone = "caution";
-      } else if ((popular || scarce || themed) && rising && !recentSpike && !veryLowVolume) {
-        label = "ウォッチ推奨";
+
+      if (diffRate <= -0.15 || (rangePosition <= 0.35 && diffRate <= 0.05)) {
+        label = "買いどきかも";
         tone = "watch";
-      } else if (recentSpike || nearHigh || veryLowVolume) {
-        label = "高値注意";
+      } else if (diffRate > 0.35 || (recentSpike && diffRate > 0.15) || (nearAllTimeHigh && diffRate > 0.15)) {
+        label = "今は待ちたい";
+        tone = "wait";
+      } else if (diffRate > 0.15 || rangePosition >= 0.8 || nearAllTimeHigh || recentSpike) {
+        label = "ちょっと高め";
         tone = "caution";
       }
 
-      const cautionText = cautionReasons.length
-        ? cautionReasons.slice(0, 2).join("・")
-        : label === "ウォッチ推奨"
-          ? "短期の値動きは変わる可能性がある"
-          : "判断材料がまだ限られる";
+      if (recentSpike && label !== "今は待ちたい") {
+        label = getNextCautiousDiagnosisLabel(label);
+      }
+
+      if (label === "買いどきかも") {
+        tone = "watch";
+      } else if (label === "ちょっと高め") {
+        tone = "caution";
+      } else if (label === "今は待ちたい") {
+        tone = "wait";
+      } else {
+        tone = "neutral";
+      }
+
+      const diffText = diffRate < -0.03
+        ? `${formatDiagnosisPercent(diffRate)}低い`
+        : diffRate > 0.03
+          ? `${formatDiagnosisPercent(diffRate)}高い`
+          : "ほぼ同じ";
+      const rangeText = periodHigh > periodLow
+        ? `レンジは${formatDiagnosisYen(periodLow)}〜${formatDiagnosisYen(periodHigh)}です。`
+        : `同じ価格帯での観測が中心です。`;
+      const previousText = changePrev != null && Math.abs(changePrev) >= 0.2
+        ? `前回からは${changePrev > 0 ? "約" + formatDiagnosisPercent(changePrev) + "上がっています" : "約" + formatDiagnosisPercent(changePrev) + "下がっています"}。`
+        : "";
+      const dataNote = veryThinData
+        ? "観測が少ないため、出品状態や送料込み価格もあわせて見てください。"
+        : "";
+      const periodNote = diagnosisPeriod.note ? `${diagnosisPeriod.note}` : "";
+      const advice = label === "買いどきかも"
+        ? "欲しいデザインなら候補に入れてよさそうです。"
+        : label === "ちょっと高め"
+          ? "急ぎでなければ、ほかの出品も見てからでよさそうです。"
+          : label === "今は待ちたい"
+            ? "急ぎでなければ、次の出品や価格の落ち着きを待つのがおすすめです。"
+            : "急がず、状態や送料込み価格を見て選ぶのがおすすめです。";
 
       return {
         label,
         tone,
-        reason: `${strengths.slice(0, 3).join("・")}の点で評価。ただし${cautionText}ため、購入は相場確認後がおすすめ。`,
-        factors: strengths.slice(0, 5)
+        reason: `${periodNote}今回の目安は${formatDiagnosisYen(latestPrice)}で、${diagnosisPeriod.label}の中央値${formatDiagnosisYen(medianPrice)}より${diffText}水準です。${rangeText}${previousText}${dataNote}${advice}`,
+        factors: [
+          `目安 ${formatDiagnosisYen(latestPrice)}`,
+          `${diagnosisPeriod.label}中央値 ${formatDiagnosisYen(medianPrice)}`,
+          `差 ${diffText}`,
+          `${diagnosisPeriod.label} ${formatDiagnosisYen(periodLow)}〜${formatDiagnosisYen(periodHigh)}`
+        ]
       };
     }
 
@@ -2841,7 +2907,7 @@
           <span class="ai-diagnosis-kicker">AI相場診断</span>
           <span class="ai-diagnosis-grade ai-diagnosis-grade--${escapeHtml(diagnosis.tone)}">${escapeHtml(diagnosis.label)}</span>
         </div>
-        <h3 class="ai-diagnosis-title">AI相場診断：${escapeHtml(diagnosis.label)}（ウォッチ推奨 / 様子見 / 高値注意）</h3>
+        <h3 class="ai-diagnosis-title">AI相場診断：${escapeHtml(diagnosis.label)}（買いどきかも / 相場どおり / ちょっと高め / 今は待ちたい）</h3>
         <p class="ai-diagnosis-reason">理由：${escapeHtml(diagnosis.reason)}</p>
         <div class="ai-diagnosis-factors" aria-label="評価ポイント">
           ${diagnosis.factors.map((factor) => `<span class="ai-diagnosis-factor">${escapeHtml(factor)}</span>`).join("")}
