@@ -1296,6 +1296,198 @@
       background: #162238; color: #fff; font-size: 15px; font-weight: 900;
       cursor: pointer; box-shadow: 0 12px 24px rgba(24, 40, 62, 0.14);
     }
+    .home-sleeve-search {
+      padding: 22px;
+      border-radius: 28px;
+      border: 1px solid rgba(203, 213, 225, 0.7);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.98), rgba(248,250,252,.94)) padding-box,
+        linear-gradient(135deg, rgba(96,165,250,.48), rgba(45,212,191,.38), rgba(251,191,36,.24)) border-box;
+      box-shadow: 0 24px 54px rgba(15, 23, 42, 0.08);
+      display: grid;
+      gap: 16px;
+    }
+    .home-sleeve-search-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .home-sleeve-search-kicker {
+      margin: 0 0 6px;
+      color: #2563eb;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .12em;
+    }
+    .home-sleeve-search-title {
+      margin: 0;
+      color: #0f172a;
+      font-size: clamp(22px, 2.4vw, 34px);
+      line-height: 1.2;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+    .home-sleeve-search-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 12px;
+      align-items: start;
+    }
+    .home-sleeve-search-field {
+      position: relative;
+      min-width: 0;
+    }
+    .home-sleeve-search-input {
+      width: 100%;
+      min-height: 58px;
+      padding: 0 18px 0 48px;
+      border-radius: 18px;
+      border: 1px solid #d4ddea;
+      background: #fff;
+      color: #0f172a;
+      font-size: 16px;
+      font-weight: 800;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.84);
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    .home-sleeve-search-input:focus {
+      border-color: #8ca7cc;
+      box-shadow: 0 0 0 4px rgba(140, 167, 204, 0.18);
+    }
+    .home-sleeve-search-icon {
+      position: absolute;
+      left: 18px;
+      top: 29px;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 20px;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .home-sleeve-search-field .search-autocomplete {
+      position: static;
+      margin-top: 8px;
+      max-height: min(42vh, 320px);
+    }
+    .home-sleeve-search-submit,
+    .home-sleeve-image-button {
+      min-height: 58px;
+      border-radius: 18px;
+      border: 0;
+      padding: 0 20px;
+      font-size: 15px;
+      font-weight: 950;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .home-sleeve-search-submit {
+      background: #111827;
+      color: #fff;
+      box-shadow: 0 14px 28px rgba(17, 24, 39, 0.16);
+    }
+    .home-sleeve-image-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: #fff;
+      color: #172033;
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.07);
+    }
+    .home-sleeve-search-submit:hover,
+    .home-sleeve-image-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.12);
+    }
+    .home-sleeve-image-button-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+    .home-sleeve-image-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .home-sleeve-search-preview {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid rgba(203, 213, 225, 0.72);
+      border-radius: 20px;
+      background: rgba(255,255,255,.72);
+    }
+    .home-sleeve-search-preview[hidden] { display: none; }
+    .home-sleeve-search-preview img {
+      width: 82px;
+      height: 82px;
+      object-fit: cover;
+      border-radius: 16px;
+      background: #eef2f7;
+    }
+    .home-sleeve-search-status {
+      margin: 0;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.7;
+    }
+    .home-sleeve-search-results {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .home-sleeve-search-results[hidden] { display: none; }
+    .home-sleeve-result {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 18px;
+      border: 1px solid rgba(203, 213, 225, 0.72);
+      background: rgba(255,255,255,.84);
+      color: #0f172a;
+      text-decoration: none;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .home-sleeve-result:hover {
+      transform: translateY(-1px);
+      border-color: #bfd0e6;
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+    }
+    .home-sleeve-result-thumb {
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      background: #eef2f7;
+      object-fit: cover;
+    }
+    .home-sleeve-result-main {
+      min-width: 0;
+      display: grid;
+      gap: 5px;
+    }
+    .home-sleeve-result-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 950;
+    }
+    .home-sleeve-result-meta {
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 800;
+    }
     .quick-links { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
     .quick-link {
       padding: 24px;
@@ -3832,6 +4024,39 @@
       body.home-page .release-feature-image {
         height: 100%;
       }
+      body.home-page .home-sleeve-search {
+        padding: 14px;
+        border-radius: 22px;
+        gap: 12px;
+      }
+      body.home-page .home-sleeve-search-title {
+        font-size: 22px;
+      }
+      body.home-page .home-sleeve-search-form {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      body.home-page .home-sleeve-search-input,
+      body.home-page .home-sleeve-search-submit,
+      body.home-page .home-sleeve-image-button {
+        min-height: 50px;
+        border-radius: 16px;
+      }
+      body.home-page .home-sleeve-search-icon {
+        top: 25px;
+      }
+      body.home-page .home-sleeve-search-results {
+        grid-template-columns: 1fr;
+      }
+      body.home-page .home-sleeve-search-preview {
+        grid-template-columns: 64px minmax(0, 1fr);
+        border-radius: 18px;
+      }
+      body.home-page .home-sleeve-search-preview img {
+        width: 64px;
+        height: 64px;
+        border-radius: 14px;
+      }
       body.home-page .dashboard-hero {
         gap: 10px;
       }
@@ -4262,6 +4487,32 @@
           </div>
           <button id="releaseBannerNext" class="release-banner-next" type="button" aria-label="次のバナーへ">›</button>
           <div id="releaseBannerDots" class="release-banner-dots" aria-hidden="true"></div>
+        </section>
+
+        <section class="home-sleeve-search reveal-on-scroll" style="--reveal-delay: 56ms;" aria-labelledby="homeSleeveSearchTitle">
+          <div class="home-sleeve-search-head">
+            <div>
+              <p class="home-sleeve-search-kicker">SLEEVE SEARCH</p>
+              <h1 id="homeSleeveSearchTitle" class="home-sleeve-search-title">デッキシールドを探す</h1>
+            </div>
+          </div>
+          <form id="homeSleeveSearchForm" class="home-sleeve-search-form" action="./sleeves/" method="get">
+            <div class="home-sleeve-search-field">
+              <span class="home-sleeve-search-icon" aria-hidden="true">⌕</span>
+              <input id="homeSleeveSearchInput" class="home-sleeve-search-input" name="q" type="search" placeholder="スリーブ名・ポケモン名・カテゴリで検索" autocomplete="off" />
+            </div>
+            <button class="home-sleeve-search-submit" type="submit">検索</button>
+            <label class="home-sleeve-image-button" for="homeSleeveImageInput">
+              <span class="home-sleeve-image-button-icon" aria-hidden="true">▧</span>
+              <span>画像で探す</span>
+            </label>
+            <input id="homeSleeveImageInput" class="home-sleeve-image-input" type="file" accept="image/*" capture="environment" />
+          </form>
+          <div id="homeSleeveSearchPreview" class="home-sleeve-search-preview" hidden>
+            <img id="homeSleeveSearchPreviewImage" alt="" />
+            <p id="homeSleeveSearchStatus" class="home-sleeve-search-status"></p>
+          </div>
+          <div id="homeSleeveSearchResults" class="home-sleeve-search-results" hidden></div>
         </section>
 
         <section class="dashboard-hero" aria-label="市場ヒーロー">
@@ -4848,6 +5099,273 @@
     function getDetailHref(sleeveId) {
       if (window.common && typeof window.common.buildSleeveDetailHref === "function") return window.common.buildSleeveDetailHref(sleeveId ?? "");
       return `./sleeve/${encodeURIComponent(sleeveId ?? "")}/`;
+    }
+
+    function normalizeHomeSearchText(value) {
+      return String(value ?? "")
+        .normalize("NFKC")
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .replace(/[‐‑‒–—―ーｰ\-_.・･]/g, "");
+    }
+
+    function getHomeSleeveSearchText(sleeve) {
+      const parts = [
+        sleeve?.name,
+        sleeve?.id,
+        sleeve?.series,
+        sleeve?.type,
+        sleeve?.feature,
+        sleeve?.illustrator,
+        sleeve?.acquisitionType,
+        ...(Array.isArray(sleeve?.categories) ? sleeve.categories : []),
+        ...(Array.isArray(sleeve?.pokemonCategories) ? sleeve.pokemonCategories : []),
+        ...(Array.isArray(sleeve?.trainerCategories) ? sleeve.trainerCategories : []),
+        ...(Array.isArray(sleeve?.categoryTags) ? sleeve.categoryTags : [])
+      ];
+      return normalizeHomeSearchText(parts.filter(Boolean).join(" "));
+    }
+
+    function findHomeSleevesByText(sleeves, query, limit = 8) {
+      const q = normalizeHomeSearchText(query);
+      if (!q) return [];
+      const starts = [];
+      const contains = [];
+      for (const sleeve of Array.isArray(sleeves) ? sleeves : []) {
+        const name = String(sleeve?.name || "").trim();
+        const id = String(sleeve?.id || "").trim();
+        if (!name || !id) continue;
+        const nameKey = normalizeHomeSearchText(name);
+        const haystack = getHomeSleeveSearchText(sleeve);
+        if (!haystack.includes(q)) continue;
+        const row = { sleeve, score: nameKey.startsWith(q) ? 0 : haystack.indexOf(q) + 1 };
+        if (nameKey.startsWith(q)) starts.push(row);
+        else contains.push(row);
+      }
+      starts.sort((a, b) => String(a.sleeve.name || "").length - String(b.sleeve.name || "").length);
+      contains.sort((a, b) => a.score - b.score);
+      return starts.concat(contains).slice(0, limit).map((row) => row.sleeve);
+    }
+
+    function renderHomeSleeveSearchResults(items, message = "") {
+      const resultsEl = document.getElementById("homeSleeveSearchResults");
+      const statusEl = document.getElementById("homeSleeveSearchStatus");
+      if (!resultsEl) return;
+      const rows = Array.isArray(items) ? items.filter(Boolean).slice(0, 8) : [];
+      if (statusEl && message) statusEl.textContent = message;
+      if (!rows.length) {
+        resultsEl.hidden = true;
+        resultsEl.innerHTML = "";
+        return;
+      }
+      resultsEl.innerHTML = rows.map((sleeve) => {
+        const latest = getLatestWeeklyPrice(sleeve);
+        const priceText = latest == null ? "価格未登録" : `${Number(latest).toLocaleString()}円`;
+        const imageUrl = String(sleeve?.imageUrl || "").trim();
+        return `
+          <a class="home-sleeve-result" href="${escapeHtml(getDetailHref(sleeve?.id))}">
+            <img class="home-sleeve-result-thumb" src="${escapeHtml(imageUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer"
+              onerror="this.onerror=null; this.style.visibility='hidden';">
+            <span class="home-sleeve-result-main">
+              <span class="home-sleeve-result-name">${escapeHtml(sleeve?.name || "名称未登録")}</span>
+              <span class="home-sleeve-result-meta">${escapeHtml(priceText)}</span>
+            </span>
+          </a>
+        `;
+      }).join("");
+      resultsEl.hidden = false;
+    }
+
+    function loadImageForProfile(src, timeoutMs = 4500) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const timer = setTimeout(() => {
+          img.onload = null;
+          img.onerror = null;
+          reject(new Error("image timeout"));
+        }, timeoutMs);
+        img.crossOrigin = "anonymous";
+        img.referrerPolicy = "no-referrer";
+        img.onload = () => {
+          clearTimeout(timer);
+          resolve(img);
+        };
+        img.onerror = () => {
+          clearTimeout(timer);
+          reject(new Error("image load failed"));
+        };
+        img.src = src;
+      });
+    }
+
+    function buildImageColorProfile(image) {
+      const size = 12;
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (!ctx) return null;
+      ctx.drawImage(image, 0, 0, size, size);
+      const data = ctx.getImageData(0, 0, size, size).data;
+      const vector = [];
+      for (let y = 0; y < size; y += 3) {
+        for (let x = 0; x < size; x += 3) {
+          let r = 0;
+          let g = 0;
+          let b = 0;
+          let count = 0;
+          for (let yy = y; yy < y + 3; yy += 1) {
+            for (let xx = x; xx < x + 3; xx += 1) {
+              const i = (yy * size + xx) * 4;
+              r += data[i];
+              g += data[i + 1];
+              b += data[i + 2];
+              count += 1;
+            }
+          }
+          vector.push(r / count / 255, g / count / 255, b / count / 255);
+        }
+      }
+      return vector;
+    }
+
+    function getImageProfileDistance(a, b) {
+      if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return Infinity;
+      let sum = 0;
+      for (let i = 0; i < a.length; i += 1) {
+        const d = a[i] - b[i];
+        sum += d * d;
+      }
+      return Math.sqrt(sum / a.length);
+    }
+
+    async function getImageProfileFromFile(file) {
+      const objectUrl = URL.createObjectURL(file);
+      try {
+        const img = await loadImageForProfile(objectUrl, 3000);
+        return buildImageColorProfile(img);
+      } finally {
+        URL.revokeObjectURL(objectUrl);
+      }
+    }
+
+    const homeImageProfileCache = new Map();
+    async function getImageProfileFromUrl(url) {
+      const key = String(url || "").trim();
+      if (!key) return null;
+      if (homeImageProfileCache.has(key)) return homeImageProfileCache.get(key);
+      try {
+        const img = await loadImageForProfile(key, 3200);
+        const profile = buildImageColorProfile(img);
+        homeImageProfileCache.set(key, profile);
+        return profile;
+      } catch (_) {
+        homeImageProfileCache.set(key, null);
+        return null;
+      }
+    }
+
+    async function runHomeImageSearch(sleeves, file) {
+      const preview = document.getElementById("homeSleeveSearchPreview");
+      const previewImg = document.getElementById("homeSleeveSearchPreviewImage");
+      const statusEl = document.getElementById("homeSleeveSearchStatus");
+      const input = document.getElementById("homeSleeveSearchInput");
+      if (!file || !preview || !previewImg || !statusEl) return;
+
+      const previewUrl = URL.createObjectURL(file);
+      previewImg.src = previewUrl;
+      preview.hidden = false;
+      statusEl.textContent = "画像から候補を探しています...";
+      renderHomeSleeveSearchResults([]);
+
+      let targetProfile = null;
+      try {
+        targetProfile = await getImageProfileFromFile(file);
+      } catch (_) {
+        targetProfile = null;
+      }
+
+      const filenameQuery = String(file.name || "").replace(/\.[^.]+$/, "");
+      if (!targetProfile) {
+        const fallback = findHomeSleevesByText(sleeves, filenameQuery, 8);
+        if (input && filenameQuery) input.value = filenameQuery;
+        renderHomeSleeveSearchResults(fallback, "画像を読み取れませんでした。ファイル名に近い候補を表示しています。");
+        return;
+      }
+
+      const catalog = (Array.isArray(sleeves) ? sleeves : [])
+        .filter((sleeve) => String(sleeve?.id || "").trim() && String(sleeve?.imageUrl || "").trim());
+      const scores = [];
+      let cursor = 0;
+      const workerCount = Math.min(8, catalog.length);
+      const worker = async () => {
+        while (cursor < catalog.length) {
+          const sleeve = catalog[cursor];
+          cursor += 1;
+          const profile = await getImageProfileFromUrl(String(sleeve.imageUrl || ""));
+          if (!profile) continue;
+          scores.push({ sleeve, distance: getImageProfileDistance(targetProfile, profile) });
+        }
+      };
+      await Promise.all(Array.from({ length: workerCount }, worker));
+
+      scores.sort((a, b) => a.distance - b.distance);
+      const visualResults = scores.slice(0, 8).map((row) => row.sleeve);
+      if (visualResults.length) {
+        renderHomeSleeveSearchResults(visualResults, "画像の見た目が近い候補を表示しています。");
+        return;
+      }
+      const fallback = findHomeSleevesByText(sleeves, filenameQuery, 8);
+      if (input && filenameQuery) input.value = filenameQuery;
+      renderHomeSleeveSearchResults(fallback, "画像照合に使えるサムネイルが少なかったため、名前検索も試してください。");
+    }
+
+    function wireHomeSleeveSearch(sleeves) {
+      const form = document.getElementById("homeSleeveSearchForm");
+      const input = document.getElementById("homeSleeveSearchInput");
+      const imageInput = document.getElementById("homeSleeveImageInput");
+      const field = input ? input.closest(".home-sleeve-search-field") : null;
+      if (!form || !input || input.dataset.homeSleeveSearchWired === "1") return;
+      input.dataset.homeSleeveSearchWired = "1";
+
+      if (window.common && typeof window.common.wireSleeveAutocomplete === "function") {
+        window.common.wireSleeveAutocomplete(input, {
+          minChars: 1,
+          maxItems: 8,
+          anchorEl: field || input.parentElement
+        });
+      }
+
+      input.addEventListener("input", () => {
+        const q = input.value.trim();
+        if (!q) {
+          renderHomeSleeveSearchResults([]);
+          return;
+        }
+        renderHomeSleeveSearchResults(findHomeSleevesByText(sleeves, q, 8));
+      });
+
+      form.addEventListener("submit", (event) => {
+        const q = input.value.trim();
+        if (window.common && typeof window.common.recordSearchHistory === "function") {
+          window.common.recordSearchHistory(q);
+        }
+        if (!q) {
+          event.preventDefault();
+          location.href = "./sleeves/";
+        }
+      });
+
+      if (imageInput) {
+        imageInput.addEventListener("change", () => {
+          const file = imageInput.files && imageInput.files[0];
+          if (!file) return;
+          runHomeImageSearch(sleeves, file).catch(() => {
+            const fallback = findHomeSleevesByText(sleeves, String(file.name || "").replace(/\.[^.]+$/, ""), 8);
+            renderHomeSleeveSearchResults(fallback, "画像検索に失敗しました。名前に近い候補を表示しています。");
+          });
+        });
+      }
     }
 
     const RELEASE_FEATURE_BANNERS = [
@@ -5527,6 +6045,7 @@
       wireReleaseBannerCarousel();
       const data = await loadHomePrimaryData();
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
+      wireHomeSleeveSearch(sleeves);
       wireSidebarCategoryToggle();
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
 
