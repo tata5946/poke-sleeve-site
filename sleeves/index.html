@@ -1403,29 +1403,10 @@
       }
     }
 
-    @media (max-width: 450px) {
-      .zukan-grid {
-        grid-template-columns: 1fr;
-        gap: 36px;
-      }
-
-      .zukan-filter-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .zukan-card-title {
-        font-size: 16px;
-      }
-
-      .zukan-card-price {
-        font-size: 24px;
-      }
-    }
-
     @media (max-width: 520px) {
       .zukan-grid {
-        grid-template-columns: 1fr;
-        gap: 36px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 32px 14px;
       }
 
       .zukan-price-panel {
@@ -1434,6 +1415,28 @@
 
       .zukan-price-copy {
         min-width: 0;
+      }
+    }
+
+    @media (max-width: 450px) {
+      .zukan-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 30px 12px;
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .zukan-filter-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .zukan-card-title {
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .zukan-card-price {
+        font-size: 19px;
       }
     }
   </style>
