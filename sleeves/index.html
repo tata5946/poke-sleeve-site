@@ -352,9 +352,11 @@
     }
 
     .dashboard-content {
-      padding: 24px 28px 40px;
+      width: min(100%, 1380px);
+      margin: 0 auto;
+      padding: 42px 34px 72px;
       display: grid;
-      gap: 20px;
+      gap: 34px;
       align-content: start;
     }
 
@@ -368,13 +370,13 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: end;
-      gap: 10px;
-      padding: 2px 0 4px;
+      gap: 28px;
+      padding: 18px 0 8px;
     }
 
     .zukan-hero-copy {
       display: grid;
-      gap: 6px;
+      gap: 12px;
       min-width: 0;
     }
 
@@ -382,48 +384,50 @@
     .zukan-filter-kicker,
     .zukan-results-kicker {
       margin: 0;
-      font-size: 10px;
+      font-size: 11px;
       line-height: 1.3;
-      letter-spacing: .14em;
-      color: #90a0b7;
-      font-weight: 700;
+      letter-spacing: .18em;
+      color: #8090a8;
+      font-weight: 800;
       text-transform: uppercase;
     }
 
     .zukan-title {
       margin: 0;
       font-family: "Inter", "Noto Sans JP", sans-serif;
-      font-size: clamp(26px, 2.6vw, 36px);
+      font-size: clamp(36px, 4vw, 58px);
       line-height: 1.08;
-      letter-spacing: -.03em;
-      color: #162238;
-      font-weight: 900;
+      letter-spacing: 0;
+      color: #101827;
+      font-weight: 950;
     }
 
     .zukan-hero-meta {
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: flex-end;
+      gap: 8px;
       flex-wrap: wrap;
+      max-width: 420px;
     }
 
     .zukan-meta-chip {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      min-height: 30px;
-      padding: 0 10px;
-      border: 1px solid #d7e0ee;
-      color: #506079;
+      min-height: 34px;
+      padding: 0 12px;
+      border: 1px solid rgba(203, 213, 225, 0.7);
+      color: #64748b;
       font-size: 12px;
       font-weight: 700;
       white-space: nowrap;
-      background: rgba(255,255,255,.85);
-      border-radius: 8px;
+      background: rgba(248,250,252,.86);
+      border-radius: 999px;
     }
 
     .zukan-meta-chip strong {
-      color: #1a2840;
+      color: #172033;
       font-size: 12px;
       font-weight: 800;
     }
@@ -434,10 +438,10 @@
     }
 
     .zukan-filter-card {
-      padding: 12px;
-      background: #f1f4f6;
-      border: 1px solid #d7e0ee;
-      border-radius: 8px;
+      padding: 18px 0 8px;
+      background: transparent;
+      border: 0;
+      border-top: 1px solid rgba(203, 213, 225, 0.72);
       box-shadow: none;
     }
 
@@ -448,17 +452,16 @@
       justify-content: space-between;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 8px;
+      margin-bottom: 0;
     }
 
     .zukan-section-title {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.2;
-      color: #1a2840;
-      font-weight: 800;
-      letter-spacing: -.02em;
-      font-family: "Inter", "Noto Sans JP", sans-serif;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
     }
 
     .zukan-filter-summary {
@@ -467,9 +470,9 @@
 
     .zukan-search-row {
       display: grid;
-      grid-template-columns: minmax(240px, 1fr) auto;
-      gap: 8px;
-      margin-bottom: 8px;
+      grid-template-columns: minmax(280px, 1fr) auto;
+      gap: 10px;
+      margin-bottom: 12px;
     }
 
     .zukan-search-field {
@@ -479,14 +482,15 @@
 
     .zukan-search-input {
       width: 100%;
-      height: 42px;
-      border: 1px solid #d7e0ee;
-      border-radius: 8px;
-      background: rgba(255,255,255,.95);
-      color: #1a2840;
-      font-size: 14px;
-      font-weight: 500;
-      padding: 0 14px 0 40px;
+      height: 52px;
+      border: 1px solid rgba(203, 213, 225, 0.82);
+      border-radius: 16px;
+      background: rgba(255,255,255,.96);
+      color: #172033;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 0 18px 0 46px;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.04);
     }
 
     .zukan-search-input::placeholder {
@@ -495,17 +499,17 @@
 
     .zukan-search-input:focus {
       outline: none;
-      border-color: #b8c7db;
-      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.08);
+      border-color: #94a3b8;
+      box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.14);
     }
 
     .zukan-search-icon {
       position: absolute;
-      left: 14px;
+      left: 17px;
       top: 50%;
       transform: translateY(-50%);
-      color: #7a8aa3;
-      font-size: 14px;
+      color: #475569;
+      font-size: 18px;
       pointer-events: none;
     }
 
@@ -518,14 +522,14 @@
 
     .zukan-filter-field {
       display: grid;
-      gap: 6px;
+      gap: 5px;
       min-width: 0;
     }
 
     .zukan-filter-label {
-      font-size: 11px;
-      color: #5d6b80;
-      font-weight: 700;
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 800;
       line-height: 1.3;
     }
 
@@ -533,12 +537,12 @@
     .zukan-filter-actions button {
       width: 100%;
       height: 42px;
-      border: 1px solid #d7e0ee;
-      border-radius: 8px;
+      border: 1px solid rgba(203, 213, 225, 0.82);
+      border-radius: 13px;
       background: rgba(255,255,255,.95);
-      color: #1a2840;
+      color: #172033;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 700;
       padding: 0 12px;
       transition: border-color .18s ease, background-color .18s ease;
     }
@@ -557,12 +561,12 @@
     }
 
     .zukan-filter-actions {
-      min-width: 76px;
+      min-width: 82px;
     }
 
     .zukan-filter-actions button {
       cursor: pointer;
-      color: #506079;
+      color: #64748b;
     }
 
     .zukan-filter-footer {
@@ -571,7 +575,7 @@
       justify-content: flex-start;
       gap: 12px;
       flex-wrap: wrap;
-      margin-top: 8px;
+      margin-top: 10px;
       overflow: hidden;
     }
 
@@ -595,12 +599,12 @@
       align-items: center;
       gap: 5px;
       padding: 4px 8px;
-      border: 1px solid #d7e0ee;
-      border-radius: 8px;
-      color: #506079;
+      border: 1px solid rgba(203, 213, 225, 0.72);
+      border-radius: 999px;
+      color: #64748b;
       font-size: 11px;
       font-weight: 600;
-      background: #fff;
+      background: #f8fafc;
       white-space: nowrap;
     }
 
@@ -613,7 +617,7 @@
       padding-top: 0;
       border-bottom: 0;
       padding-bottom: 0;
-      margin-bottom: 10px;
+      margin-bottom: 22px;
     }
 
     .zukan-results-meta {
@@ -630,71 +634,71 @@
 
     .zukan-grid {
       display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 42px 34px;
     }
 
     .zukan-card {
       display: grid;
-      gap: 7px;
+      gap: 18px;
       text-decoration: none;
-      color: #1a2840;
-      background: rgba(255,255,255,.92);
-      border: 1px solid #dbe5f2;
-      border-radius: 8px;
-      padding: 6px;
+      color: #172033;
+      background: #fff;
+      border: 0;
+      border-radius: 14px;
+      padding: 0;
       box-shadow: none;
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
 
     .zukan-card:hover {
-      transform: translateY(-2px);
-      border-color: #c7d5ee;
-      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.07);
+      transform: translateY(-4px);
+      box-shadow: 0 22px 40px rgba(15, 23, 42, 0.08);
       text-decoration: none;
     }
 
     .zukan-card-media {
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 4 / 3.6;
       overflow: hidden;
-      background: linear-gradient(180deg, #f8fbff 0%, #f2f6fc 100%);
-      border: 1px solid #dbe5f2;
+      background: #f7f9fc;
+      border: 1px solid rgba(226, 232, 240, 0.72);
       display: grid;
       place-items: center;
-      border-radius: 6px;
+      border-radius: 12px;
     }
 
     .zukan-card-media img {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      padding: 6px;
+      padding: 18px;
     }
 
     .zukan-card-body {
       display: grid;
-      gap: 6px;
+      gap: 14px;
       align-content: start;
       min-width: 0;
+      padding: 0 2px 4px;
     }
 
     .zukan-card-badges {
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      gap: 4px;
+      gap: 8px;
       min-height: 0;
     }
 
     .zukan-badge {
       display: inline-flex;
       align-items: center;
-      min-height: 20px;
-      padding: 0 6px;
-      border-radius: 6px;
-      background: #eef3f8;
-      color: #6f7f98;
-      font-size: 10px;
+      min-height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #64748b;
+      font-size: 11px;
       font-weight: 800;
       line-height: 1;
       white-space: nowrap;
@@ -718,60 +722,65 @@
 
     .zukan-card-title {
       margin: 0;
-      font-size: 12px;
-      line-height: 1.35;
-      font-weight: 800;
-      letter-spacing: -.01em;
+      font-size: 18px;
+      line-height: 1.45;
+      font-weight: 900;
+      letter-spacing: 0;
       font-family: "Inter", "Noto Sans JP", sans-serif;
-      color: #162238;
+      color: #101827;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      min-height: 2.7em;
+      min-height: 2.9em;
     }
 
     .zukan-card-price-wrap,
     .zukan-price-panel {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 72px;
-      align-items: end;
-      gap: 6px;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      gap: 10px;
       min-width: 0;
     }
 
     .zukan-price-copy {
       display: grid;
-      gap: 4px;
+      gap: 6px;
       min-width: 0;
     }
 
     .zukan-card-price-label {
-      display: none;
+      display: block;
+      margin: 0;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 800;
     }
 
     .zukan-card-price {
       margin: 0;
       font-family: "Inter", "Noto Sans JP", sans-serif;
-      font-size: 14px;
+      font-size: 28px;
       line-height: 1.2;
-      font-weight: 800;
-      color: #162238;
+      font-weight: 950;
+      color: #101827;
       white-space: nowrap;
     }
 
     .zukan-sparkline {
       --zukan-spark-line: #059669;
       --zukan-spark-area: rgba(5, 150, 105, .10);
-      width: 72px;
-      height: 34px;
+      width: 100%;
+      height: 58px;
       display: grid;
       place-items: center;
       align-self: end;
       overflow: hidden;
-      border-radius: 6px;
-      background: linear-gradient(180deg, #f8fffb 0%, #edf8f1 100%);
-      box-shadow: inset 0 0 0 1px rgba(5, 150, 105, .10);
+      border-radius: 10px;
+      background: linear-gradient(180deg, #fbfffd 0%, #f1f8f4 100%);
+      box-shadow: inset 0 0 0 1px rgba(5, 150, 105, .08);
       color: #94a3b8;
     }
 
@@ -821,33 +830,39 @@
     }
 
     .zukan-card-cta {
-      display: none;
+      display: inline-flex;
+      width: fit-content;
+      color: #1e3a8a;
+      font-size: 13px;
+      font-weight: 900;
+      text-decoration: none;
     }
 
     .zukan-card-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px;
+      gap: 8px;
+      align-items: center;
     }
 
     .zukan-card-spec {
       display: inline-flex;
       align-items: center;
-      min-height: 18px;
-      padding: 0 5px;
-      border-radius: 6px;
-      background: #f3f6fa;
-      color: #5d6b80;
-      font-size: 9px;
-      font-weight: 800;
+      min-height: 0;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 700;
       letter-spacing: 0;
     }
 
     .zukan-card-meta .flow-badge {
-      min-height: 18px;
-      padding: 0 5px;
-      border-radius: 6px;
-      font-size: 9px;
+      min-height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: 11px;
       line-height: 1;
       font-weight: 800;
       white-space: nowrap;
@@ -922,7 +937,7 @@
 
     @media (max-width: 1380px) {
       .zukan-grid {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
 
@@ -932,7 +947,7 @@
       }
 
       .zukan-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .zukan-filter-grid {
@@ -1023,13 +1038,13 @@
       }
 
       .dashboard-content {
-        padding: 12px 12px calc(92px + env(safe-area-inset-bottom, 0px));
-        gap: 12px;
+        padding: 24px 16px calc(92px + env(safe-area-inset-bottom, 0px));
+        gap: 24px;
       }
 
       .zukan-hero {
         grid-template-columns: 1fr;
-        gap: 8px;
+        gap: 16px;
       }
 
       .zukan-kicker {
@@ -1037,7 +1052,7 @@
       }
 
       .zukan-title {
-        font-size: 24px;
+        font-size: 32px;
       }
 
       .zukan-hero-meta {
@@ -1051,8 +1066,8 @@
       }
 
       .zukan-search-row {
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 6px;
+        grid-template-columns: 1fr;
+        gap: 8px;
       }
 
       .zukan-search-input {
@@ -1065,28 +1080,43 @@
       }
 
       .zukan-filter-card {
-        padding: 10px;
+        padding: 14px 0 0;
       }
 
       .zukan-results-head {
-        margin-bottom: 8px;
-      }
-
-      .zukan-card-price-wrap,
-      .zukan-price-panel {
-        grid-template-columns: minmax(0, 1fr) 58px;
-        gap: 5px;
+        margin-bottom: 14px;
       }
 
       .zukan-sparkline {
-        width: 58px;
-        height: 32px;
+        height: 44px;
+      }
+
+      .zukan-card {
+        gap: 12px;
+      }
+
+      .zukan-card-media img {
+        padding: 10px;
+      }
+
+      .zukan-card-title {
+        font-size: 14px;
+      }
+
+      .zukan-card-price {
+        font-size: 20px;
       }
     }
 
     @media (min-width: 560px) and (max-width: 700px) {
       .zukan-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 430px) {
+      .zukan-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -1618,11 +1648,9 @@
           const weeklyPair = getWeeklyPair(s);
           const delta = getDeltaDisplay(weeklyPair);
           const sparklineHtml = buildZukanSparkline(s);
-          const tags = getCardTags(s, 2);
-          const tagsHtml = tags.map(tag => `<span class="zukan-badge">${escapeHtml(tag)}</span>`).join("");
           const specHtml = [
-            s.releaseYear ? `<span class="zukan-card-spec">YEAR ${escapeHtml(s.releaseYear)}</span>` : "",
-            s.series ? `<span class="zukan-card-spec">${escapeHtml(s.series)}</span>` : ""
+            s.releaseYear ? `<span class="zukan-card-spec">${escapeHtml(s.releaseYear)}年発売</span>` : "",
+            window.common && typeof window.common.buildFlowBadgeHtml === "function" ? window.common.buildFlowBadgeHtml(s, { includeTrend: true }) : ""
           ].filter(Boolean).join("");
 
           const imgSrc = String(s.imageUrl || "").trim();
@@ -1647,6 +1675,7 @@
               <h2 class="zukan-card-title">${escapeHtml(s.name ?? "")}</h2>
               <div class="zukan-card-price-wrap zukan-price-panel">
                 <div class="zukan-price-copy">
+                  <p class="zukan-card-price-label">現在相場</p>
                   <p class="zukan-card-price">${escapeHtml(priceText)}</p>
                   <div class="zukan-card-badges">${deltaBadge}</div>
                 </div>
@@ -1654,9 +1683,8 @@
               </div>
               <div class="zukan-card-meta">
                 ${specHtml}
-                ${window.common && typeof window.common.buildFlowBadgeHtml === "function" ? window.common.buildFlowBadgeHtml(s, { includeTrend: true }) : ""}
-                ${tagsHtml}
               </div>
+              <span class="zukan-card-cta">詳細を見る →</span>
             </div>
           `;
           frag.appendChild(card);
