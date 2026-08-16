@@ -1297,42 +1297,107 @@
       cursor: pointer; box-shadow: 0 12px 24px rgba(24, 40, 62, 0.14);
     }
     .home-sleeve-search {
-      padding: 22px;
-      border-radius: 28px;
-      border: 1px solid rgba(203, 213, 225, 0.7);
+      position: relative;
+      overflow: hidden;
+      padding: 28px;
+      border-radius: 30px;
+      border: 1px solid rgba(191, 219, 254, 0.72);
       background:
-        linear-gradient(135deg, rgba(255,255,255,.98), rgba(248,250,252,.94)) padding-box,
-        linear-gradient(135deg, rgba(96,165,250,.48), rgba(45,212,191,.38), rgba(251,191,36,.24)) border-box;
-      box-shadow: 0 24px 54px rgba(15, 23, 42, 0.08);
+        radial-gradient(circle at 8% 0%, rgba(96, 165, 250, 0.2), transparent 28%),
+        radial-gradient(circle at 92% 10%, rgba(45, 212, 191, 0.16), transparent 26%),
+        linear-gradient(135deg, rgba(255,255,255,.98), rgba(248,250,252,.96));
+      box-shadow: 0 28px 60px rgba(15, 23, 42, 0.09);
       display: grid;
-      gap: 16px;
+      gap: 20px;
+    }
+    .home-sleeve-search::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border-top: 1px solid rgba(255,255,255,.9);
+      pointer-events: none;
+    }
+    .home-sleeve-search::after {
+      content: "";
+      position: absolute;
+      right: 24px;
+      top: 24px;
+      width: 86px;
+      height: 86px;
+      border-radius: 999px;
+      background:
+        linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(20, 184, 166, 0.1));
+      filter: blur(.2px);
+      pointer-events: none;
     }
     .home-sleeve-search-head {
+      position: relative;
+      z-index: 1;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
     }
+    .home-sleeve-search-copy {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
     .home-sleeve-search-kicker {
-      margin: 0 0 6px;
-      color: #2563eb;
-      font-size: 12px;
+      width: fit-content;
+      margin: 0;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(219, 234, 254, 0.8);
+      color: #1d4ed8;
+      font-size: 11px;
       font-weight: 900;
-      letter-spacing: .12em;
+      letter-spacing: .08em;
     }
     .home-sleeve-search-title {
       margin: 0;
       color: #0f172a;
-      font-size: clamp(22px, 2.4vw, 34px);
+      font-size: clamp(28px, 3vw, 44px);
       line-height: 1.2;
       font-weight: 950;
       letter-spacing: 0;
     }
+    .home-sleeve-search-count {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 7px;
+      min-height: 48px;
+      padding: 0 16px;
+      border-radius: 18px;
+      background: #0f172a;
+      color: #fff;
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.14);
+      white-space: nowrap;
+      font-weight: 950;
+    }
+    .home-sleeve-search-count-number {
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+    .home-sleeve-search-count-unit {
+      color: #cbd5e1;
+      font-size: 13px;
+    }
     .home-sleeve-search-form {
+      position: relative;
+      z-index: 1;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto;
-      gap: 12px;
-      align-items: start;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: stretch;
+      padding: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      border-radius: 24px;
+      background: rgba(255,255,255,.82);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 18px 32px rgba(15, 23, 42, 0.06);
     }
     .home-sleeve-search-field {
       position: relative;
@@ -1340,29 +1405,28 @@
     }
     .home-sleeve-search-input {
       width: 100%;
-      min-height: 58px;
-      padding: 0 18px 0 48px;
+      min-height: 60px;
+      padding: 0 18px 0 52px;
       border-radius: 18px;
-      border: 1px solid #d4ddea;
-      background: #fff;
+      border: 0;
+      background: transparent;
       color: #0f172a;
-      font-size: 16px;
-      font-weight: 800;
+      font-size: 18px;
+      font-weight: 900;
       outline: none;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.84);
       transition: border-color .18s ease, box-shadow .18s ease;
     }
+    .home-sleeve-search-input::placeholder { color: #94a3b8; }
     .home-sleeve-search-input:focus {
-      border-color: #8ca7cc;
-      box-shadow: 0 0 0 4px rgba(140, 167, 204, 0.18);
+      box-shadow: none;
     }
     .home-sleeve-search-icon {
       position: absolute;
-      left: 18px;
-      top: 29px;
+      left: 20px;
+      top: 30px;
       transform: translateY(-50%);
-      color: #64748b;
-      font-size: 20px;
+      color: #2563eb;
+      font-size: 23px;
       line-height: 1;
       pointer-events: none;
     }
@@ -1373,10 +1437,10 @@
     }
     .home-sleeve-search-submit,
     .home-sleeve-image-button {
-      min-height: 58px;
+      min-height: 60px;
       border-radius: 18px;
       border: 0;
-      padding: 0 20px;
+      padding: 0 22px;
       font-size: 15px;
       font-weight: 950;
       cursor: pointer;
@@ -1384,19 +1448,19 @@
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
     .home-sleeve-search-submit {
-      background: #111827;
+      background: linear-gradient(135deg, #111827, #1e3a8a);
       color: #fff;
-      box-shadow: 0 14px 28px rgba(17, 24, 39, 0.16);
+      box-shadow: 0 14px 28px rgba(30, 58, 138, 0.18);
     }
     .home-sleeve-image-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      background: #fff;
-      color: #172033;
-      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.07);
+      border: 1px solid rgba(37, 99, 235, 0.16);
+      background: rgba(239, 246, 255, 0.9);
+      color: #1d4ed8;
+      box-shadow: none;
     }
     .home-sleeve-search-submit:hover,
     .home-sleeve-image-button:hover {
@@ -1407,6 +1471,11 @@
       font-size: 18px;
       line-height: 1;
     }
+    .home-sleeve-search-actions {
+      display: inline-flex;
+      align-items: stretch;
+      gap: 8px;
+    }
     .home-sleeve-image-input {
       position: absolute;
       width: 1px;
@@ -1415,6 +1484,8 @@
       pointer-events: none;
     }
     .home-sleeve-search-preview {
+      position: relative;
+      z-index: 1;
       display: grid;
       grid-template-columns: 82px minmax(0, 1fr);
       gap: 14px;
@@ -1440,6 +1511,8 @@
       line-height: 1.7;
     }
     .home-sleeve-search-results {
+      position: relative;
+      z-index: 1;
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
@@ -4025,25 +4098,51 @@
         height: 100%;
       }
       body.home-page .home-sleeve-search {
-        padding: 14px;
+        padding: 16px;
         border-radius: 22px;
         gap: 12px;
       }
+      body.home-page .home-sleeve-search-head {
+        align-items: flex-start;
+      }
       body.home-page .home-sleeve-search-title {
-        font-size: 22px;
+        font-size: 26px;
+      }
+      body.home-page .home-sleeve-search-count {
+        min-height: 38px;
+        padding: 0 12px;
+        border-radius: 14px;
+      }
+      body.home-page .home-sleeve-search-count-number {
+        font-size: 18px;
+      }
+      body.home-page .home-sleeve-search-count-unit {
+        font-size: 11px;
       }
       body.home-page .home-sleeve-search-form {
         grid-template-columns: 1fr;
-        gap: 10px;
+        gap: 8px;
+        padding: 7px;
+        border-radius: 20px;
       }
       body.home-page .home-sleeve-search-input,
       body.home-page .home-sleeve-search-submit,
       body.home-page .home-sleeve-image-button {
-        min-height: 50px;
+        min-height: 48px;
         border-radius: 16px;
       }
+      body.home-page .home-sleeve-search-input {
+        padding-left: 44px;
+        font-size: 15px;
+      }
       body.home-page .home-sleeve-search-icon {
-        top: 25px;
+        top: 24px;
+        left: 17px;
+        font-size: 20px;
+      }
+      body.home-page .home-sleeve-search-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
       }
       body.home-page .home-sleeve-search-results {
         grid-template-columns: 1fr;
@@ -4491,21 +4590,27 @@
 
         <section class="home-sleeve-search reveal-on-scroll" style="--reveal-delay: 56ms;" aria-labelledby="homeSleeveSearchTitle">
           <div class="home-sleeve-search-head">
-            <div>
+            <div class="home-sleeve-search-copy">
               <p class="home-sleeve-search-kicker">SLEEVE SEARCH</p>
               <h1 id="homeSleeveSearchTitle" class="home-sleeve-search-title">デッキシールドを探す</h1>
+            </div>
+            <div class="home-sleeve-search-count" aria-label="登録スリーブ枚数">
+              <span id="homeSleeveSearchCount" class="home-sleeve-search-count-number">--</span>
+              <span class="home-sleeve-search-count-unit">枚</span>
             </div>
           </div>
           <form id="homeSleeveSearchForm" class="home-sleeve-search-form" action="./sleeves/" method="get">
             <div class="home-sleeve-search-field">
               <span class="home-sleeve-search-icon" aria-hidden="true">⌕</span>
-              <input id="homeSleeveSearchInput" class="home-sleeve-search-input" name="q" type="search" placeholder="スリーブ名・ポケモン名・カテゴリで検索" autocomplete="off" />
+              <input id="homeSleeveSearchInput" class="home-sleeve-search-input" name="q" type="search" placeholder="スリーブ名・ポケモン名で検索" autocomplete="off" />
             </div>
-            <button class="home-sleeve-search-submit" type="submit">検索</button>
-            <label class="home-sleeve-image-button" for="homeSleeveImageInput">
-              <span class="home-sleeve-image-button-icon" aria-hidden="true">▧</span>
-              <span>画像で探す</span>
-            </label>
+            <div class="home-sleeve-search-actions">
+              <label class="home-sleeve-image-button" for="homeSleeveImageInput" aria-label="画像で探す">
+                <span class="home-sleeve-image-button-icon" aria-hidden="true">▧</span>
+                <span>画像</span>
+              </label>
+              <button class="home-sleeve-search-submit" type="submit">検索</button>
+            </div>
             <input id="homeSleeveImageInput" class="home-sleeve-image-input" type="file" accept="image/*" capture="environment" />
           </form>
           <div id="homeSleeveSearchPreview" class="home-sleeve-search-preview" hidden>
@@ -5324,9 +5429,14 @@
       const form = document.getElementById("homeSleeveSearchForm");
       const input = document.getElementById("homeSleeveSearchInput");
       const imageInput = document.getElementById("homeSleeveImageInput");
+      const countEl = document.getElementById("homeSleeveSearchCount");
       const field = input ? input.closest(".home-sleeve-search-field") : null;
       if (!form || !input || input.dataset.homeSleeveSearchWired === "1") return;
       input.dataset.homeSleeveSearchWired = "1";
+      if (countEl) {
+        const count = (Array.isArray(sleeves) ? sleeves : []).filter((sleeve) => String(sleeve?.id || "").trim()).length;
+        countEl.textContent = count ? count.toLocaleString() : "--";
+      }
 
       if (window.common && typeof window.common.wireSleeveAutocomplete === "function") {
         window.common.wireSleeveAutocomplete(input, {
