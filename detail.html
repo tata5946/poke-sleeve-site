@@ -2818,8 +2818,15 @@
       const periodLow = Math.min(...periodPrices);
       const periodHigh = Math.max(...periodPrices);
       const rangePosition = periodHigh > periodLow ? (latestPrice - periodLow) / (periodHigh - periodLow) : 0.5;
-      const highPrice = rows.reduce((max, row) => Math.max(max, Number(row.avgPrice) || 0), 0);
+      const allPrices = rows
+        .map((row) => Number(row.avgPrice))
+        .filter((price) => Number.isFinite(price) && price > 0);
+      const lowPrice = Math.min(...allPrices);
+      const highPrice = Math.max(...allPrices);
       const nearAllTimeHigh = rows.length >= 2 && highPrice > 0 && latestPrice >= highPrice * 0.92;
+      const allRangePosition = highPrice > lowPrice ? (latestPrice - lowPrice) / (highPrice - lowPrice) : 0.5;
+      const dropFromHigh = highPrice > 0 ? (highPrice - latestPrice) / highPrice : 0;
+      const longTermBargain = rows.length >= 4 && dropFromHigh >= 0.25 && allRangePosition <= 0.25;
       const recentSpike = changePrev != null && changePrev >= 0.3;
       const veryThinData = periodRows.length <= 2 || rows.length <= 2;
       const aroundMedian = Math.abs(diffRate) <= 0.1;
@@ -2828,7 +2835,10 @@
       let label = "相場どおり";
       let tone = "neutral";
 
-      if (aroundMedian && !recentSpike) {
+      if (longTermBargain && !recentSpike) {
+        label = "買いどきかも";
+        tone = "watch";
+      } else if (aroundMedian && !recentSpike) {
         label = "相場どおり";
         tone = "neutral";
       } else if (diffRate <= -0.15 || (rangePosition <= 0.35 && diffRate <= -0.08)) {
@@ -2867,6 +2877,9 @@
       const previousText = changePrev != null && Math.abs(changePrev) >= 0.2
         ? `前回からは${changePrev > 0 ? "約" + formatDiagnosisPercent(changePrev) + "上がっています" : "約" + formatDiagnosisPercent(changePrev) + "下がっています"}。`
         : "";
+      const longTermText = longTermBargain
+        ? `全期間の高いところ${formatDiagnosisYen(highPrice)}から約${formatDiagnosisPercent(-dropFromHigh)}下がっていて、今は安い側にいます。`
+        : "";
       const dataNote = veryThinData
         ? "観測が少ないため、出品状態や送料込み価格もあわせて見てください。"
         : "";
@@ -2882,7 +2895,7 @@
       return {
         label,
         tone,
-        reason: `${periodNote}今回の目安は${formatDiagnosisYen(latestPrice)}で、${diagnosisPeriod.label}の中央値${formatDiagnosisYen(medianPrice)}より${diffText}水準です。${rangeText}${previousText}${dataNote}${advice}`,
+        reason: `${periodNote}今回の目安は${formatDiagnosisYen(latestPrice)}で、${diagnosisPeriod.label}の中央値${formatDiagnosisYen(medianPrice)}より${diffText}水準です。${rangeText}${previousText}${longTermText}${dataNote}${advice}`,
         factors: [
           `目安 ${formatDiagnosisYen(latestPrice)}`,
           `${diagnosisPeriod.label}中央値 ${formatDiagnosisYen(medianPrice)}`,
