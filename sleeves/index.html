@@ -729,13 +729,13 @@
       padding-right: clamp(20px, 3vw, 48px);
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 50px clamp(30px, 3vw, 52px);
+      gap: 52px clamp(30px, 3vw, 52px);
     }
 
     .zukan-card {
       display: grid;
       grid-template-rows: auto 1fr;
-      gap: 13px;
+      gap: 10px;
       text-decoration: none;
       color: #172033;
       background: transparent;
@@ -760,24 +760,25 @@
     .zukan-card-media {
       aspect-ratio: 4 / 3.75;
       overflow: hidden;
-      background: #fdfefe;
+      background: transparent;
       border: 0;
       display: grid;
       place-items: center;
-      border-radius: 6px;
+      border-radius: 0;
       transition: background-color .26s ease;
     }
 
     .zukan-card-media img {
+      box-sizing: border-box;
       width: 100%;
       height: 100%;
       object-fit: contain;
-      padding: 18px;
+      padding: 8px;
       transition: transform .26s ease;
     }
 
     .zukan-card:hover .zukan-card-media {
-      background: #fff;
+      background: transparent;
     }
 
     .zukan-card:hover .zukan-card-media img {
@@ -786,8 +787,8 @@
 
     .zukan-card-body {
       display: grid;
-      grid-template-rows: auto auto auto auto;
-      gap: 12px;
+      grid-template-rows: auto;
+      gap: 7px;
       align-content: start;
       min-width: 0;
       padding: 0 2px 2px;
@@ -799,6 +800,10 @@
       align-items: center;
       gap: 8px;
       min-height: 0;
+    }
+
+    .zukan-card-badges:empty {
+      display: none;
     }
 
     .zukan-badge {
@@ -843,7 +848,6 @@
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      min-height: 4.26em;
     }
 
     .zukan-card-price-wrap,
@@ -851,8 +855,9 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr);
       align-items: start;
-      gap: 8px;
+      gap: 6px;
       min-width: 0;
+      margin-top: 2px;
     }
 
     .zukan-price-copy {
@@ -873,7 +878,7 @@
     .zukan-card-price {
       margin: 0;
       font-family: "Inter", "Zen Kaku Gothic New", sans-serif;
-      font-size: 29px;
+      font-size: 30px;
       line-height: 1.2;
       font-weight: 800;
       color: #111827;
@@ -884,7 +889,7 @@
       --zukan-spark-line: #059669;
       --zukan-spark-area: rgba(5, 150, 105, .10);
       width: 100%;
-      height: 38px;
+      height: 34px;
       display: grid;
       place-items: center;
       align-self: end;
@@ -949,6 +954,7 @@
     .zukan-card-cta {
       display: inline-flex;
       width: fit-content;
+      margin-top: 2px;
       color: #1e3a8a;
       font-size: 13px;
       font-weight: 700;
@@ -966,8 +972,16 @@
     .zukan-card-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px 8px;
       align-items: center;
+    }
+
+    .zukan-card-meta--release {
+      margin-top: -2px;
+    }
+
+    .zukan-card-meta--status {
+      margin-top: 1px;
     }
 
     .zukan-card-spec {
@@ -1282,7 +1296,7 @@
       }
 
       .zukan-sparkline {
-        height: 44px;
+        height: 34px;
       }
 
       .zukan-sparkline--empty {
@@ -1316,6 +1330,7 @@
     @media (max-width: 450px) {
       .zukan-grid {
         grid-template-columns: 1fr;
+        gap: 36px;
       }
 
       .zukan-filter-grid {
@@ -1328,6 +1343,13 @@
 
       .zukan-card-price {
         font-size: 24px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .zukan-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
       }
     }
   </style>
@@ -1546,7 +1568,7 @@
 
     function getDeltaDisplay(pair) {
       if (!pair || !pair.latest || !pair.prev) {
-        return { className: "flat", text: "前週比 -", shortText: "比較なし" };
+        return null;
       }
 
       const diff = pair.latest.price - pair.prev.price;
@@ -1567,7 +1589,7 @@
         .filter((value) => Number.isFinite(value) && value > 0);
 
       if (prices.length < 2) {
-        return `<span class="zukan-sparkline zukan-sparkline--empty" aria-label="価格推移データなし"><span class="zukan-sparkline-empty">推移なし</span></span>`;
+        return "";
       }
 
       const first = prices[0];
@@ -1860,10 +1882,10 @@
           const weeklyPair = getWeeklyPair(s);
           const delta = getDeltaDisplay(weeklyPair);
           const sparklineHtml = buildZukanSparkline(s);
-          const specHtml = [
-            s.releaseYear ? `<span class="zukan-card-spec">${escapeHtml(s.releaseYear)}年発売</span>` : "",
-            window.common && typeof window.common.buildFlowBadgeHtml === "function" ? window.common.buildFlowBadgeHtml(s, { includeTrend: true }) : ""
-          ].filter(Boolean).join("");
+          const releaseHtml = s.releaseYear ? `<span class="zukan-card-spec">${escapeHtml(s.releaseYear)}年発売</span>` : "";
+          const statusHtml = window.common && typeof window.common.buildFlowBadgeHtml === "function"
+            ? window.common.buildFlowBadgeHtml(s, { includeTrend: true })
+            : "";
 
           const imgSrc = String(s.imageUrl || "").trim();
           const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
@@ -1875,7 +1897,7 @@
           card.href = detailHref;
           card.setAttribute("data-sleeve-link", "1");
           card.setAttribute("aria-label", `${String(s.name ?? "")}の詳細を見る`);
-          const deltaBadge = `<span class="zukan-badge zukan-badge--delta ${delta.className}">${escapeHtml(delta.shortText)}</span>`;
+          const deltaBadge = delta ? `<span class="zukan-badge zukan-badge--delta ${delta.className}">${escapeHtml(delta.shortText)}</span>` : "";
           card.innerHTML = `
             <div class="zukan-card-media">
               ${imgSrc
@@ -1885,6 +1907,7 @@
             </div>
             <div class="zukan-card-body">
               <h2 class="zukan-card-title">${escapeHtml(s.name ?? "")}</h2>
+              ${releaseHtml ? `<div class="zukan-card-meta zukan-card-meta--release">${releaseHtml}</div>` : ""}
               <div class="zukan-card-price-wrap zukan-price-panel">
                 <div class="zukan-price-copy">
                   <p class="zukan-card-price-label">現在相場</p>
@@ -1893,9 +1916,7 @@
                 </div>
                 ${sparklineHtml}
               </div>
-              <div class="zukan-card-meta">
-                ${specHtml}
-              </div>
+              ${statusHtml ? `<div class="zukan-card-meta zukan-card-meta--status">${statusHtml}</div>` : ""}
               <span class="zukan-card-cta">詳細を見る →</span>
             </div>
           `;
