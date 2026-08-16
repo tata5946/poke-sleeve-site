@@ -732,6 +732,62 @@
       gap: 52px clamp(30px, 3vw, 52px);
     }
 
+    .zukan-pagination {
+      width: min(100%, 1360px);
+      margin: 44px auto 0;
+      box-sizing: border-box;
+      padding-left: clamp(20px, 3vw, 48px);
+      padding-right: clamp(20px, 3vw, 48px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .zukan-pagination[hidden] {
+      display: none;
+    }
+
+    .zukan-page-button {
+      min-width: 92px;
+      min-height: 38px;
+      padding: 0 16px;
+      border: 1px solid #dbe3ee;
+      border-radius: 999px;
+      background: transparent;
+      color: #172033;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color .2s ease, background-color .2s ease, color .2s ease;
+    }
+
+    .zukan-page-button:hover:not(:disabled),
+    .zukan-page-button:focus-visible {
+      border-color: #9aa8bc;
+      background: #fff;
+      outline: none;
+    }
+
+    .zukan-page-button:disabled {
+      cursor: default;
+      color: #b0bac8;
+      border-color: #e6ebf2;
+    }
+
+    .zukan-page-info {
+      color: #667085;
+      font-size: 13px;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .zukan-page-info strong {
+      color: #172033;
+      font-weight: 700;
+    }
+
     .zukan-card {
       display: grid;
       grid-template-rows: auto 1fr;
@@ -1237,6 +1293,7 @@
       .zukan-filter-footer,
       .zukan-results-head,
       .zukan-grid,
+      .zukan-pagination,
       .zukan-empty,
       .ranking-error {
         width: 100%;
@@ -1486,9 +1543,14 @@
             <div>
               <h2 class="zukan-results-title">デッキシールド一覧</h2>
             </div>
-            <div class="zukan-results-meta"><strong id="resultCountBadge">集計中</strong> 件表示</div>
+            <div class="zukan-results-meta"><strong id="resultCountBadge">集計中</strong><span id="resultRangeText"> 件表示</span></div>
           </div>
           <div id="list" class="zukan-grid"></div>
+          <nav id="zukanPagination" class="zukan-pagination" aria-label="図鑑ページ送り" hidden>
+            <button id="zukanPrevPage" class="zukan-page-button" type="button">前へ</button>
+            <div id="zukanPageInfo" class="zukan-page-info" aria-live="polite"></div>
+            <button id="zukanNextPage" class="zukan-page-button" type="button">次へ</button>
+          </nav>
         </section>
 
         <div id="site-footer"></div>
@@ -1722,6 +1784,13 @@
       const activeSummary = document.getElementById("activeSummary");
       const updatedChip = document.getElementById("updatedChip");
       const countChip = document.getElementById("countChip");
+      const pagination = document.getElementById("zukanPagination");
+      const prevPageBtn = document.getElementById("zukanPrevPage");
+      const nextPageBtn = document.getElementById("zukanNextPage");
+      const pageInfo = document.getElementById("zukanPageInfo");
+      const resultRangeText = document.getElementById("resultRangeText");
+      const PAGE_SIZE = 50;
+      let currentPage = 1;
 
       const url = new URL(location.href);
       const qParam = (url.searchParams.get("q") || "").trim();
@@ -1739,6 +1808,7 @@
           if (!el) return;
           el.classList.add("is-loading", "skeleton-shimmer");
         });
+        if (pagination) pagination.hidden = true;
         if (activeSummary) activeSummary.innerHTML = "";
         list.innerHTML = Array.from({ length: 12 }, () => `
           <div class="zukan-card is-skeleton">
@@ -1850,6 +1920,25 @@
         activeSummary.innerHTML = chips.join("");
       }
 
+      function updatePagination(total) {
+        const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        currentPage = Math.min(Math.max(1, currentPage), totalPages);
+        const start = total ? ((currentPage - 1) * PAGE_SIZE) + 1 : 0;
+        const end = total ? Math.min(currentPage * PAGE_SIZE, total) : 0;
+
+        const badge = document.getElementById("resultCountBadge");
+        if (badge) {
+          badge.textContent = total ? `${total.toLocaleString()}件中 ${start.toLocaleString()}〜${end.toLocaleString()}件` : "0";
+        }
+        if (resultRangeText) resultRangeText.textContent = total ? "" : " 件表示";
+        if (pageInfo) {
+          pageInfo.innerHTML = `<strong>${currentPage.toLocaleString()}</strong> / ${totalPages.toLocaleString()}`;
+        }
+        if (pagination) pagination.hidden = totalPages <= 1;
+        if (prevPageBtn) prevPageBtn.disabled = currentPage <= 1;
+        if (nextPageBtn) nextPageBtn.disabled = currentPage >= totalPages;
+      }
+
       function render() {
         const rawKeyword = (pageSearchInput ? pageSearchInput.value : searchInput.value).trim();
         const kw = rawKeyword.toLowerCase();
@@ -1904,8 +1993,7 @@
         if (!filtered.length) {
           const c = document.getElementById("countInfo");
           if (c) c.textContent = "0件";
-          const badge = document.getElementById("resultCountBadge");
-          if (badge) badge.textContent = "0";
+          updatePagination(0);
           renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, sortOrder, total: 0, group: normalizedGroup, tag: normalizedTag, type: normalizedType });
           if (window.common && typeof window.common.updateItemListStructuredData === "function") {
             window.common.updateItemListStructuredData("sleevesItemListStructuredData", [], {
@@ -1918,19 +2006,20 @@
 
         const c = document.getElementById("countInfo");
         if (c) c.textContent = `${filtered.length.toLocaleString()}件`;
-        const badge = document.getElementById("resultCountBadge");
-        if (badge) badge.textContent = `${filtered.length.toLocaleString()}`;
+        updatePagination(filtered.length);
         renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, sortOrder, total: filtered.length, group: normalizedGroup, tag: normalizedTag, type: normalizedType });
         if (window.common && typeof window.common.updateItemListStructuredData === "function") {
-          window.common.updateItemListStructuredData("sleevesItemListStructuredData", filtered, {
+          const pageItemsForStructuredData = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+          window.common.updateItemListStructuredData("sleevesItemListStructuredData", pageItemsForStructuredData, {
             name: "ポケカスリーブ図鑑",
             description: "ポケカスリーブの図鑑一覧です。"
           });
         }
 
         const frag = document.createDocumentFragment();
+        const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
-        filtered.forEach((s) => {
+        pageItems.forEach((s) => {
           const p = getCardPrice(s);
           const priceText = (p == null) ? "-" : `${p.toLocaleString()}円`;
 
@@ -1982,7 +2071,12 @@
       }
 
       let t = null;
+      const renderFromFirstPage = () => {
+        currentPage = 1;
+        render();
+      };
       const queueRender = () => {
+        currentPage = 1;
         clearTimeout(t);
         t = setTimeout(render, 80);
       };
@@ -2004,10 +2098,27 @@
       attachSearchSync(headerSearchInput);
       attachSearchSync(dashboardSearchInput);
 
-      releaseYearSel.addEventListener("change", render);
-      seriesSel.addEventListener("change", render);
-      priceBandSel.addEventListener("change", render);
-      sortOrderSel.addEventListener("change", render);
+      releaseYearSel.addEventListener("change", renderFromFirstPage);
+      seriesSel.addEventListener("change", renderFromFirstPage);
+      priceBandSel.addEventListener("change", renderFromFirstPage);
+      sortOrderSel.addEventListener("change", renderFromFirstPage);
+
+      if (prevPageBtn) {
+        prevPageBtn.addEventListener("click", () => {
+          if (currentPage <= 1) return;
+          currentPage -= 1;
+          render();
+          document.querySelector(".zukan-results-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+
+      if (nextPageBtn) {
+        nextPageBtn.addEventListener("click", () => {
+          currentPage += 1;
+          render();
+          document.querySelector(".zukan-results-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
 
       clearBtn.addEventListener("click", () => {
         if (pageSearchInput) pageSearchInput.value = "";
@@ -2028,7 +2139,7 @@
         seriesSel.value = "";
         priceBandSel.value = "";
         sortOrderSel.value = "priceDesc";
-        render();
+        renderFromFirstPage();
       });
 
       render();
