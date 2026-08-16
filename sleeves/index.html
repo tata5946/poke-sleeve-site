@@ -366,7 +366,7 @@
     }
 
     .zukan-hero {
-      background: #fff;
+      background: transparent;
     }
 
     .zukan-hero {
@@ -681,12 +681,12 @@
     }
 
     .zukan-results-head {
-      width: min(100%, 1220px);
+      width: min(100%, 1360px);
       margin-left: auto;
       margin-right: auto;
       box-sizing: border-box;
-      padding-left: clamp(34px, 4.8vw, 68px);
-      padding-right: clamp(24px, 4vw, 56px);
+      padding-left: clamp(20px, 3vw, 48px);
+      padding-right: clamp(20px, 3vw, 48px);
       padding-top: 0;
       border-bottom: 0;
       padding-bottom: 0;
@@ -696,7 +696,7 @@
     .zukan-results-card {
       width: 100%;
       padding-top: 26px;
-      background: #f7f8fa;
+      background: #f8f9fa;
     }
 
     .zukan-results-title {
@@ -853,9 +853,10 @@
     .zukan-card-price-wrap,
     .zukan-price-panel {
       display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      align-items: start;
-      gap: 6px;
+      grid-template-columns: max-content minmax(96px, 1fr);
+      align-items: end;
+      column-gap: 16px;
+      row-gap: 6px;
       min-width: 0;
       margin-top: 2px;
     }
@@ -863,7 +864,7 @@
     .zukan-price-copy {
       display: grid;
       gap: 4px;
-      min-width: 0;
+      min-width: max-content;
     }
 
     .zukan-card-price-label {
@@ -889,7 +890,7 @@
       --zukan-spark-line: #059669;
       --zukan-spark-area: rgba(5, 150, 105, .10);
       width: 100%;
-      height: 34px;
+      height: 46px;
       display: grid;
       place-items: center;
       align-self: end;
@@ -930,6 +931,7 @@
     .zukan-sparkline-grid {
       stroke: rgba(71, 85, 105, .18);
       stroke-width: 1;
+      vector-effect: non-scaling-stroke;
     }
 
     .zukan-sparkline-area {
@@ -939,9 +941,10 @@
     .zukan-sparkline-line {
       fill: none;
       stroke: var(--zukan-spark-line);
-      stroke-width: 2.35;
+      stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
     }
 
     .zukan-sparkline-empty {
@@ -1351,6 +1354,14 @@
         grid-template-columns: 1fr;
         gap: 36px;
       }
+
+      .zukan-price-panel {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .zukan-price-copy {
+        min-width: 0;
+      }
     }
   </style>
 </head>
@@ -1595,10 +1606,10 @@
       const first = prices[0];
       const last = prices[prices.length - 1];
       const trendClass = last > first ? "up" : last < first ? "down" : "flat";
-      const width = 86;
-      const height = 36;
-      const padX = 5;
-      const padY = 5;
+      const width = 124;
+      const height = 44;
+      const padX = 6;
+      const padY = 6;
       const min = Math.min(...prices);
       const max = Math.max(...prices);
       const range = Math.max(max - min, 1);
