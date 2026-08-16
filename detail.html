@@ -2766,7 +2766,7 @@
 
     function formatDiagnosisPercent(value) {
       if (!Number.isFinite(value)) return "-";
-      const rounded = Math.round(Math.abs(value));
+      const rounded = Math.round(Math.abs(value) * 100);
       return `${rounded}%`;
     }
 
