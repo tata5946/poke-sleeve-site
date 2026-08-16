@@ -1457,10 +1457,16 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      min-width: 88px;
       border: 1px solid rgba(37, 99, 235, 0.16);
       background: rgba(239, 246, 255, 0.9);
       color: #1d4ed8;
       box-shadow: none;
+    }
+    .home-sleeve-image-button--library {
+      background: rgba(236, 253, 245, 0.9);
+      color: #047857;
+      border-color: rgba(16, 185, 129, 0.18);
     }
     .home-sleeve-search-submit:hover,
     .home-sleeve-image-button:hover {
@@ -4144,6 +4150,9 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
       }
+      body.home-page .home-sleeve-search-submit {
+        grid-column: 1 / -1;
+      }
       body.home-page .home-sleeve-search-results {
         grid-template-columns: 1fr;
       }
@@ -4605,13 +4614,18 @@
               <input id="homeSleeveSearchInput" class="home-sleeve-search-input" name="q" type="search" placeholder="スリーブ名・ポケモン名で検索" autocomplete="off" />
             </div>
             <div class="home-sleeve-search-actions">
-              <label class="home-sleeve-image-button" for="homeSleeveImageInput" aria-label="画像で探す">
+              <label class="home-sleeve-image-button" for="homeSleeveCameraInput" aria-label="写真を撮って探す">
                 <span class="home-sleeve-image-button-icon" aria-hidden="true">▧</span>
-                <span>画像</span>
+                <span>撮る</span>
+              </label>
+              <label class="home-sleeve-image-button home-sleeve-image-button--library" for="homeSleeveLibraryInput" aria-label="写真フォルダーから選んで探す">
+                <span class="home-sleeve-image-button-icon" aria-hidden="true">▤</span>
+                <span>選ぶ</span>
               </label>
               <button class="home-sleeve-search-submit" type="submit">検索</button>
             </div>
-            <input id="homeSleeveImageInput" class="home-sleeve-image-input" type="file" accept="image/*" capture="environment" />
+            <input id="homeSleeveCameraInput" class="home-sleeve-image-input" type="file" accept="image/*" capture="environment" />
+            <input id="homeSleeveLibraryInput" class="home-sleeve-image-input" type="file" accept="image/*" />
           </form>
           <div id="homeSleeveSearchPreview" class="home-sleeve-search-preview" hidden>
             <img id="homeSleeveSearchPreviewImage" alt="" />
@@ -5428,7 +5442,8 @@
     function wireHomeSleeveSearch(sleeves) {
       const form = document.getElementById("homeSleeveSearchForm");
       const input = document.getElementById("homeSleeveSearchInput");
-      const imageInput = document.getElementById("homeSleeveImageInput");
+      const cameraInput = document.getElementById("homeSleeveCameraInput");
+      const libraryInput = document.getElementById("homeSleeveLibraryInput");
       const countEl = document.getElementById("homeSleeveSearchCount");
       const field = input ? input.closest(".home-sleeve-search-field") : null;
       if (!form || !input || input.dataset.homeSleeveSearchWired === "1") return;
@@ -5466,7 +5481,8 @@
         }
       });
 
-      if (imageInput) {
+      const wireImageInput = (imageInput) => {
+        if (!imageInput) return;
         imageInput.addEventListener("change", () => {
           const file = imageInput.files && imageInput.files[0];
           if (!file) return;
@@ -5475,7 +5491,9 @@
             renderHomeSleeveSearchResults(fallback, "画像検索に失敗しました。名前に近い候補を表示しています。");
           });
         });
-      }
+      };
+      wireImageInput(cameraInput);
+      wireImageInput(libraryInput);
     }
 
     const RELEASE_FEATURE_BANNERS = [
