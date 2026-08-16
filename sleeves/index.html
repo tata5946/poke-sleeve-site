@@ -352,9 +352,9 @@
     }
 
     .dashboard-content {
-      width: min(100%, 1380px);
+      width: min(100%, 1760px);
       margin: 0 auto;
-      padding: 42px 34px 72px;
+      padding: 42px clamp(18px, 3vw, 56px) 72px;
       display: grid;
       gap: 34px;
       align-content: start;
@@ -635,7 +635,7 @@
     .zukan-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 42px 34px;
+      gap: 46px clamp(28px, 2.4vw, 46px);
     }
 
     .zukan-card {
