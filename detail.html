@@ -2822,22 +2822,27 @@
       const nearAllTimeHigh = rows.length >= 2 && highPrice > 0 && latestPrice >= highPrice * 0.92;
       const recentSpike = changePrev != null && changePrev >= 0.3;
       const veryThinData = periodRows.length <= 2 || rows.length <= 2;
+      const aroundMedian = Math.abs(diffRate) <= 0.1;
+      const nearPeriodTop = rangePosition >= 0.85;
 
       let label = "相場どおり";
       let tone = "neutral";
 
-      if (diffRate <= -0.15 || (rangePosition <= 0.35 && diffRate <= 0.05)) {
+      if (aroundMedian && !recentSpike) {
+        label = "相場どおり";
+        tone = "neutral";
+      } else if (diffRate <= -0.15 || (rangePosition <= 0.35 && diffRate <= -0.08)) {
         label = "買いどきかも";
         tone = "watch";
-      } else if (diffRate > 0.35 || (recentSpike && diffRate > 0.15) || (nearAllTimeHigh && diffRate > 0.15)) {
+      } else if (diffRate >= 0.35 || (diffRate >= 0.2 && (recentSpike || nearPeriodTop || nearAllTimeHigh))) {
         label = "今は待ちたい";
         tone = "wait";
-      } else if (diffRate > 0.15 || rangePosition >= 0.8 || nearAllTimeHigh || recentSpike) {
+      } else if (diffRate >= 0.15 || (diffRate >= 0.1 && (nearPeriodTop || nearAllTimeHigh)) || (recentSpike && diffRate >= 0.08)) {
         label = "ちょっと高め";
         tone = "caution";
       }
 
-      if (recentSpike && label !== "今は待ちたい") {
+      if (recentSpike && diffRate >= 0.08 && label !== "今は待ちたい") {
         label = getNextCautiousDiagnosisLabel(label);
       }
 
@@ -2903,7 +2908,7 @@
           <span class="ai-diagnosis-kicker">AI相場診断</span>
           <span class="ai-diagnosis-grade ai-diagnosis-grade--${escapeHtml(diagnosis.tone)}">${escapeHtml(diagnosis.label)}</span>
         </div>
-        <h3 class="ai-diagnosis-title">AI相場診断：${escapeHtml(diagnosis.label)}（買いどきかも / 相場どおり / ちょっと高め / 今は待ちたい）</h3>
+        <h3 class="ai-diagnosis-title">AI相場診断：${escapeHtml(diagnosis.label)}</h3>
         <p class="ai-diagnosis-reason">理由：${escapeHtml(diagnosis.reason)}</p>
         <div class="ai-diagnosis-factors" aria-label="評価ポイント">
           ${diagnosis.factors.map((factor) => `<span class="ai-diagnosis-factor">${escapeHtml(factor)}</span>`).join("")}
