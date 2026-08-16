@@ -1886,7 +1886,7 @@
       }
 
       const releaseYears = uniq(sleeves.map(s => s.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
-      const seriesList = uniq(sleeves.map(s => s.series)).sort();
+      const seriesList = uniq(sleeves.flatMap(getSeriesFilterValues)).sort((a, b) => a.localeCompare(b, "ja"));
       const pokemonList = uniq(sleeves.flatMap(getPokemonFilterValues)).sort((a, b) => a.localeCompare(b, "ja"));
       const trainerList = uniq(sleeves.flatMap(getTrainerFilterValues)).sort((a, b) => a.localeCompare(b, "ja"));
       const illustratorList = uniq(sleeves.flatMap(getIllustratorFilterValues)).sort((a, b) => a.localeCompare(b, "ja"));
@@ -1897,12 +1897,7 @@
         opt.textContent = String(y);
         releaseYearSel.appendChild(opt);
       }
-      for (const ser of seriesList) {
-        const opt = document.createElement("option");
-        opt.value = ser;
-        opt.textContent = ser;
-        seriesSel.appendChild(opt);
-      }
+      fillSelectOptions(seriesSel, seriesList);
       fillSelectOptions(pokemonFilterSel, pokemonList);
       fillSelectOptions(trainerFilterSel, trainerList);
       fillSelectOptions(illustratorFilterSel, illustratorList);
@@ -1929,6 +1924,15 @@
         if (Array.isArray(value)) return value.map(normalizeFilterValue).filter(Boolean);
         const normalized = normalizeFilterValue(value);
         return normalized ? [normalized] : [];
+      }
+
+      function getSeriesFilterValues(sleeve) {
+        const values = [
+          ...getArrayValues(sleeve?.categoryTags),
+          ...["category7", "category8", "category9"].map(key => normalizeFilterValue(sleeve?.[key])),
+          ...getArrayValues(sleeve?.series).filter(value => value !== "公式" && value !== "非公式")
+        ].filter(Boolean);
+        return uniq(values);
       }
 
       function getPokemonFilterValues(sleeve) {
@@ -2050,7 +2054,7 @@
           if (normalizedTag && (!window.common || typeof window.common.sleeveMatchesDetailTag !== "function" || !window.common.sleeveMatchesDetailTag(s, normalizedTag))) continue;
           if (normalizedType && (!window.common || typeof window.common.sleeveMatchesType !== "function" || !window.common.sleeveMatchesType(s, normalizedType))) continue;
           if (releaseYear && String(s.releaseYear ?? "") !== releaseYear) continue;
-          if (series && String(s.series || "") !== series) continue;
+          if (series && !getSeriesFilterValues(s).includes(series)) continue;
           if (pokemon && !getPokemonFilterValues(s).includes(pokemon)) continue;
           if (trainer && !getTrainerFilterValues(s).includes(trainer)) continue;
           if (illustrator && !getIllustratorFilterValues(s).includes(illustrator)) continue;
