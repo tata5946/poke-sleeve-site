@@ -2838,7 +2838,7 @@
       } else if (diffRate <= -0.15 || (rangePosition <= 0.35 && diffRate <= -0.08)) {
         label = "買いどきかも";
         tone = "watch";
-      } else if (diffRate >= 0.35 || (diffRate >= 0.2 && (recentSpike || nearPeriodTop || nearAllTimeHigh))) {
+      } else if (diffRate >= 0.35 || (diffRate >= 0.25 && (recentSpike || nearPeriodTop || nearAllTimeHigh))) {
         label = "今は待ちたい";
         tone = "wait";
       } else if (diffRate >= 0.15 || (diffRate >= 0.1 && (nearPeriodTop || nearAllTimeHigh)) || (recentSpike && diffRate >= 0.08)) {
@@ -2846,7 +2846,7 @@
         tone = "caution";
       }
 
-      if (recentSpike && diffRate >= 0.08 && label !== "今は待ちたい") {
+      if (recentSpike && diffRate >= 0.2 && label !== "今は待ちたい") {
         label = getNextCautiousDiagnosisLabel(label);
       }
 
