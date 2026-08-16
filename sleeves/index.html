@@ -578,7 +578,7 @@
 
     .zukan-filter-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(160px, .86fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
       align-items: end;
     }
@@ -594,10 +594,6 @@
       color: #667085;
       font-weight: 500;
       line-height: 1.3;
-    }
-
-    .zukan-filter-field:last-child {
-      margin-left: clamp(0px, 2vw, 24px);
     }
 
     .zukan-filter-field select,
@@ -1520,13 +1516,34 @@
             </label>
 
             <label class="zukan-filter-field">
+              <span class="zukan-filter-label">ポケモン</span>
+              <select id="pokemonFilter">
+                <option value="">全部</option>
+              </select>
+            </label>
+
+            <label class="zukan-filter-field">
+              <span class="zukan-filter-label">トレーナー</span>
+              <select id="trainerFilter">
+                <option value="">全部</option>
+              </select>
+            </label>
+
+            <label class="zukan-filter-field">
+              <span class="zukan-filter-label">イラストレーター</span>
+              <select id="illustratorFilter">
+                <option value="">全部</option>
+              </select>
+            </label>
+
+            <label class="zukan-filter-field">
               <span class="zukan-filter-label">並び替え</span>
               <select id="sortOrder">
+                <option value="releaseDesc">発売日が新しい順</option>
                 <option value="priceDesc">価格が高い順</option>
                 <option value="priceAsc">価格が安い順</option>
                 <option value="tradeCountDesc">取引件数が多い順</option>
                 <option value="nameAsc">名前順</option>
-                <option value="releaseDesc">発売年が新しい順</option>
               </select>
             </label>
           </div>
@@ -1777,6 +1794,9 @@
       const releaseYearSel = document.getElementById("releaseYear");
       const seriesSel = document.getElementById("series");
       const priceBandSel = document.getElementById("priceBand");
+      const pokemonFilterSel = document.getElementById("pokemonFilter");
+      const trainerFilterSel = document.getElementById("trainerFilter");
+      const illustratorFilterSel = document.getElementById("illustratorFilter");
       const sortOrderSel = document.getElementById("sortOrder");
       const clearBtn = document.getElementById("clear");
       const pageSearchInput = document.getElementById("zukanPageSearch");
@@ -1867,6 +1887,9 @@
 
       const releaseYears = uniq(sleeves.map(s => s.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
       const seriesList = uniq(sleeves.map(s => s.series)).sort();
+      const pokemonList = uniq(sleeves.flatMap(getPokemonFilterValues)).sort((a, b) => a.localeCompare(b, "ja"));
+      const trainerList = uniq(sleeves.flatMap(getTrainerFilterValues)).sort((a, b) => a.localeCompare(b, "ja"));
+      const illustratorList = uniq(sleeves.flatMap(getIllustratorFilterValues)).sort((a, b) => a.localeCompare(b, "ja"));
 
       for (const y of releaseYears) {
         const opt = document.createElement("option");
@@ -1880,9 +1903,64 @@
         opt.textContent = ser;
         seriesSel.appendChild(opt);
       }
+      fillSelectOptions(pokemonFilterSel, pokemonList);
+      fillSelectOptions(trainerFilterSel, trainerList);
+      fillSelectOptions(illustratorFilterSel, illustratorList);
 
       function getCardPrice(s) {
         return getLatestWeeklyPrice(s);
+      }
+
+      function getReleaseSortTime(sleeve) {
+        const iso = toISODate(sleeve?.releaseDate);
+        if (iso) {
+          const time = new Date(`${iso}T00:00:00`).getTime();
+          if (Number.isFinite(time)) return time;
+        }
+        const year = Number(sleeve?.releaseYear);
+        return Number.isFinite(year) ? new Date(`${year}-01-01T00:00:00`).getTime() : 0;
+      }
+
+      function normalizeFilterValue(value) {
+        return String(value ?? "").trim();
+      }
+
+      function getArrayValues(value) {
+        if (Array.isArray(value)) return value.map(normalizeFilterValue).filter(Boolean);
+        const normalized = normalizeFilterValue(value);
+        return normalized ? [normalized] : [];
+      }
+
+      function getPokemonFilterValues(sleeve) {
+        const explicit = getArrayValues(sleeve?.pokemonCategories);
+        if (explicit.length) return explicit;
+        if (window.common && typeof window.common.getSleeveCategoryValues === "function") {
+          return window.common.getSleeveCategoryValues(sleeve, ["category1", "category2", "category3"]);
+        }
+        return ["category1", "category2", "category3"].map(key => normalizeFilterValue(sleeve?.[key])).filter(Boolean);
+      }
+
+      function getTrainerFilterValues(sleeve) {
+        const explicit = getArrayValues(sleeve?.trainerCategories);
+        if (explicit.length) return explicit;
+        if (window.common && typeof window.common.getSleeveCategoryValues === "function") {
+          return window.common.getSleeveCategoryValues(sleeve, ["category4", "category5", "category6"]);
+        }
+        return ["category4", "category5", "category6"].map(key => normalizeFilterValue(sleeve?.[key])).filter(Boolean);
+      }
+
+      function getIllustratorFilterValues(sleeve) {
+        return getArrayValues(sleeve?.illustrator);
+      }
+
+      function fillSelectOptions(selectEl, values) {
+        if (!selectEl) return;
+        for (const value of values) {
+          const opt = document.createElement("option");
+          opt.value = value;
+          opt.textContent = value;
+          selectEl.appendChild(opt);
+        }
       }
 
       function getSleeveSearchText(sleeve) {
@@ -1899,11 +1977,12 @@
           sleeve?.category6,
           sleeve?.category7,
           sleeve?.category8,
-          sleeve?.category9
+          sleeve?.category9,
+          sleeve?.illustrator
         ].map((value) => String(value ?? "").toLowerCase()).join(" ");
       }
 
-      function renderActiveSummary({ kw, releaseYear, series, band, sortOrder, total, group, tag, type }) {
+      function renderActiveSummary({ kw, releaseYear, series, band, pokemon, trainer, illustrator, sortOrder, total, group, tag, type }) {
         if (!activeSummary) return;
         const chips = [];
         if (kw) chips.push(`<span class="zukan-active-chip">検索 <strong>${escapeHtml(kw)}</strong></span>`);
@@ -1913,6 +1992,9 @@
         if (releaseYear) chips.push(`<span class="zukan-active-chip">発売年 <strong>${escapeHtml(releaseYear)}</strong></span>`);
         if (series) chips.push(`<span class="zukan-active-chip">シリーズ <strong>${escapeHtml(series)}</strong></span>`);
         if (band) chips.push(`<span class="zukan-active-chip">価格帯 <strong>${escapeHtml(priceBandSel.options[priceBandSel.selectedIndex]?.textContent || "")}</strong></span>`);
+        if (pokemon) chips.push(`<span class="zukan-active-chip">ポケモン <strong>${escapeHtml(pokemon)}</strong></span>`);
+        if (trainer) chips.push(`<span class="zukan-active-chip">トレーナー <strong>${escapeHtml(trainer)}</strong></span>`);
+        if (illustrator) chips.push(`<span class="zukan-active-chip">イラストレーター <strong>${escapeHtml(illustrator)}</strong></span>`);
         if (sortOrder) chips.push(`<span class="zukan-active-chip">並び替え <strong>${escapeHtml(sortOrderSel.options[sortOrderSel.selectedIndex]?.textContent || "")}</strong></span>`);
         if (!chips.length) {
           chips.push(`<span class="zukan-active-chip">全件 <strong>${total.toLocaleString()}件</strong></span>`);
@@ -1945,6 +2027,9 @@
         const releaseYear = releaseYearSel.value;
         const series = seriesSel.value;
         const band = parseBand(priceBandSel.value);
+        const pokemon = pokemonFilterSel ? pokemonFilterSel.value : "";
+        const trainer = trainerFilterSel ? trainerFilterSel.value : "";
+        const illustrator = illustratorFilterSel ? illustratorFilterSel.value : "";
         const sortOrder = sortOrderSel.value;
         const normalizedGroup = window.common && typeof window.common.normalizeSleeveTextValue === "function"
           ? window.common.normalizeSleeveTextValue(currentGroupParam).toLowerCase()
@@ -1966,6 +2051,9 @@
           if (normalizedType && (!window.common || typeof window.common.sleeveMatchesType !== "function" || !window.common.sleeveMatchesType(s, normalizedType))) continue;
           if (releaseYear && String(s.releaseYear ?? "") !== releaseYear) continue;
           if (series && String(s.series || "") !== series) continue;
+          if (pokemon && !getPokemonFilterValues(s).includes(pokemon)) continue;
+          if (trainer && !getTrainerFilterValues(s).includes(trainer)) continue;
+          if (illustrator && !getIllustratorFilterValues(s).includes(illustrator)) continue;
 
           if (band) {
             const p = getCardPrice(s);
@@ -1985,7 +2073,7 @@
             case "priceAsc": return pa - pb;
             case "tradeCountDesc": return (tb - ta) || (pb - pa);
             case "nameAsc": return String(a.name ?? "").localeCompare(String(b.name ?? ""));
-            case "releaseDesc": return (Number(b.releaseYear) || 0) - (Number(a.releaseYear) || 0);
+            case "releaseDesc": return (getReleaseSortTime(b) - getReleaseSortTime(a)) || String(a.name ?? "").localeCompare(String(b.name ?? ""));
             default: return pb - pa;
           }
         });
@@ -1994,7 +2082,7 @@
           const c = document.getElementById("countInfo");
           if (c) c.textContent = "0件";
           updatePagination(0);
-          renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, sortOrder, total: 0, group: normalizedGroup, tag: normalizedTag, type: normalizedType });
+          renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, pokemon, trainer, illustrator, sortOrder, total: 0, group: normalizedGroup, tag: normalizedTag, type: normalizedType });
           if (window.common && typeof window.common.updateItemListStructuredData === "function") {
             window.common.updateItemListStructuredData("sleevesItemListStructuredData", [], {
               name: "ポケカスリーブ図鑑"
@@ -2007,7 +2095,7 @@
         const c = document.getElementById("countInfo");
         if (c) c.textContent = `${filtered.length.toLocaleString()}件`;
         updatePagination(filtered.length);
-        renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, sortOrder, total: filtered.length, group: normalizedGroup, tag: normalizedTag, type: normalizedType });
+        renderActiveSummary({ kw: rawKeyword, releaseYear, series, band, pokemon, trainer, illustrator, sortOrder, total: filtered.length, group: normalizedGroup, tag: normalizedTag, type: normalizedType });
         if (window.common && typeof window.common.updateItemListStructuredData === "function") {
           const pageItemsForStructuredData = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
           window.common.updateItemListStructuredData("sleevesItemListStructuredData", pageItemsForStructuredData, {
@@ -2101,6 +2189,9 @@
       releaseYearSel.addEventListener("change", renderFromFirstPage);
       seriesSel.addEventListener("change", renderFromFirstPage);
       priceBandSel.addEventListener("change", renderFromFirstPage);
+      pokemonFilterSel?.addEventListener("change", renderFromFirstPage);
+      trainerFilterSel?.addEventListener("change", renderFromFirstPage);
+      illustratorFilterSel?.addEventListener("change", renderFromFirstPage);
       sortOrderSel.addEventListener("change", renderFromFirstPage);
 
       if (prevPageBtn) {
@@ -2138,7 +2229,10 @@
         releaseYearSel.value = "";
         seriesSel.value = "";
         priceBandSel.value = "";
-        sortOrderSel.value = "priceDesc";
+        if (pokemonFilterSel) pokemonFilterSel.value = "";
+        if (trainerFilterSel) trainerFilterSel.value = "";
+        if (illustratorFilterSel) illustratorFilterSel.value = "";
+        sortOrderSel.value = "releaseDesc";
         renderFromFirstPage();
       });
 
