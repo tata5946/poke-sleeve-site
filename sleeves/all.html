@@ -13,22 +13,104 @@
   <link rel="canonical" href="https://pokesuri-navi.com/sleeves/all.html" />
   <link rel="stylesheet" href="./assets/site.css?v=20260816b" />
   <style>
-    body { background: #f7f9fd; color: #0f172a; }
-    .index-wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 48px; }
-    .breadcrumb { margin-bottom: 16px; }
-    .index-hero { display: grid; gap: 8px; margin-bottom: 22px; }
-    .index-hero h1 { margin: 0; font-size: clamp(28px, 4vw, 44px); letter-spacing: 0; }
-    .index-hero p { margin: 0; color: #64748b; line-height: 1.8; }
-    .sleeve-index-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; padding: 0; margin: 0; list-style: none; }
-    .sleeve-index-item a { min-height: 96px; display: grid; gap: 7px; padding: 14px; border: 1px solid #dbe4f0; border-radius: 8px; background: #fff; color: inherit; text-decoration: none; }
-    .sleeve-index-item a:hover { border-color: #94a3b8; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); }
-    .sleeve-index-name { font-weight: 800; line-height: 1.35; }
-    .sleeve-index-meta { color: #64748b; font-size: 13px; line-height: 1.5; }
+    body { background: #f8f9fa; color: #172033; }
+    .index-wrap {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 34px 0 72px;
+    }
+    .breadcrumb { margin-bottom: 28px; }
+    .index-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 28px;
+      margin-bottom: 34px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #e9ecf1;
+    }
+    .index-hero h1 {
+      margin: 0;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: clamp(30px, 4.2vw, 56px);
+      line-height: 1.08;
+      letter-spacing: 0;
+      font-weight: 900;
+      color: #111827;
+    }
+    .index-hero p {
+      max-width: 620px;
+      margin: 10px 0 0;
+      color: #667085;
+      font-size: 15px;
+      line-height: 1.85;
+    }
+    .sleeve-index-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px 16px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    .sleeve-index-item a {
+      min-height: 112px;
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+      padding: 18px 18px 16px;
+      border: 1px solid #e9ecf1;
+      border-radius: 14px;
+      background: #fff;
+      color: inherit;
+      text-decoration: none;
+      box-shadow: 0 16px 38px rgba(23, 32, 51, .045);
+      transition: transform .24s ease, border-color .24s ease, box-shadow .24s ease;
+    }
+    .sleeve-index-item a:hover,
+    .sleeve-index-item a:focus-visible {
+      transform: translateY(-2px);
+      border-color: #cfd8e6;
+      box-shadow: 0 22px 46px rgba(23, 32, 51, .075);
+      outline: none;
+    }
+    .sleeve-index-name {
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.45;
+      color: #111827;
+    }
+    .sleeve-index-meta {
+      color: #667085;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    @media (max-width: 980px) {
+      .index-hero { grid-template-columns: 1fr; }
+      .sleeve-index-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 620px) {
+      .index-wrap { width: min(100% - 28px, 520px); padding: 22px 0 56px; }
+      .breadcrumb { margin-bottom: 20px; }
+      .index-hero { gap: 14px; margin-bottom: 24px; padding-bottom: 18px; }
+      .sleeve-index-list { grid-template-columns: 1fr; gap: 12px; }
+      .sleeve-index-item a { min-height: 96px; padding: 16px; border-radius: 12px; }
+    }
   </style>
 </head>
-<body>
-  <div id="site-header"></div>
-  <main class="index-wrap">
+<body data-hide-global-header="1">
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー">
+      <div id="dashboardSidebarSlot" data-dashboard-sidebar-active="zukan"></div>
+    </aside>
+
+    <div class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot" data-dashboard-topbar-active="zukan"></div>
+      </header>
+
+      <main class="index-wrap">
     <nav class="breadcrumb" aria-label="breadcrumb">
       <a href="./">&#12507;&#12540;&#12512;</a>
       <span class="breadcrumb-sep" aria-hidden="true">&gt;</span>
@@ -1554,16 +1636,18 @@
         </a>
       </li>
     </ul>
-  </main>
-  <div id="site-footer"></div>
+      </main>
+    </div>
+  </div>
   <script src="./assets/common.js?v=20260806a"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      if (window.common && typeof window.common.injectHeader === "function") window.common.injectHeader();
-      if (window.common && typeof window.common.injectFooter === "function") window.common.injectFooter();
-      if (window.common && typeof window.common.setActiveNav === "function") window.common.setActiveNav("zukan");
+      if (window.common && typeof window.common.setupDashboardChrome === "function") {
+        window.common.setupDashboardChrome({ sidebarActive: "zukan", topbarActive: "zukan" });
+      } else if (window.common && typeof window.common.injectDashboardChrome === "function") {
+        window.common.injectDashboardChrome({ sidebarActive: "zukan", topbarActive: "zukan" });
+      }
     });
   </script>
 </body>
 </html>
-
