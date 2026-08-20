@@ -1662,7 +1662,35 @@
 
     function getLatestWeeklyPrice(s) {
       const pair = getWeeklyPair(s);
-      return pair ? pair.latest.price : null;
+      if (pair) return pair.latest.price;
+      return getLatestYearlyPrice(s);
+    }
+
+    function getLatestYearlyPrice(sleeve) {
+      const rows = Array.isArray(sleeve?.yearlyPrices) ? sleeve.yearlyPrices : [];
+      const valid = rows
+        .map((row) => {
+          const year = Number(row?.year);
+          const price = numOrNull(row?.price);
+          if (!Number.isFinite(year) || !Number.isFinite(price) || price <= 0) return null;
+          return { year, price };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.year - b.year);
+      if (valid.length) return valid[valid.length - 1].price;
+
+      const byYear = sleeve?.pricesByYear;
+      if (!byYear || typeof byYear !== "object") return null;
+      const fallback = Object.entries(byYear)
+        .map(([yearKey, value]) => {
+          const year = Number(yearKey);
+          const price = numOrNull(value);
+          if (!Number.isFinite(year) || !Number.isFinite(price) || price <= 0) return null;
+          return { year, price };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.year - b.year);
+      return fallback.length ? fallback[fallback.length - 1].price : null;
     }
 
     function getTotalTradeCount(sleeve) {
