@@ -1,4 +1,4 @@
-param(
+﻿param(
   [string]$DataPath = "data.json",
   [string]$OutputPath = "sleeves/all.html"
 )
@@ -120,7 +120,7 @@ foreach ($sleeve in $items) {
 [void]$html.AppendLine('    </ul>')
 [void]$html.AppendLine('  </main>')
 [void]$html.AppendLine('  <div id="site-footer"></div>')
-[void]$html.AppendLine('  <script src="./assets/common.js?v=20260806a"></script>')
+[void]$html.AppendLine('  <script src="./assets/common.js?v=20260820a"></script>')
 [void]$html.AppendLine('  <script>')
 [void]$html.AppendLine('    document.addEventListener("DOMContentLoaded", () => {')
 [void]$html.AppendLine('      if (window.common && typeof window.common.injectHeader === "function") window.common.injectHeader();')
@@ -131,6 +131,11 @@ foreach ($sleeve in $items) {
 [void]$html.AppendLine('</body>')
 [void]$html.AppendLine('</html>')
 
-Set-Content -LiteralPath $OutputPath -Value $html.ToString() -Encoding UTF8
+$resolvedOutputPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutputPath)
+[System.IO.File]::WriteAllText(
+  $resolvedOutputPath,
+  $html.ToString().TrimEnd("`r", "`n") + "`r`n",
+  [System.Text.UTF8Encoding]::new($false)
+)
 Write-Output "Generated $OutputPath"
 
