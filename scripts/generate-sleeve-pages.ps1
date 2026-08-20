@@ -26,7 +26,42 @@ function Get-LatestTrade([object]$Sleeve) {
   $rows = @($Sleeve.weeklyPrices) | Where-Object {
     $null -ne $_.price -and [double]$_.price -gt 0
   } | Sort-Object { [datetime]$_.week }
-  if ($rows.Count -gt 0) { return $rows[-1] }
+  if ($rows.Count -gt 0) {
+    $row = $rows[-1]
+    $dateText = ([string]$row.week).Substring(0, [Math]::Min(10, ([string]$row.week).Length))
+    return [pscustomobject]@{
+      price = $row.price
+      count = $row.count
+      observedText = "最終観測日: " + $dateText
+    }
+  }
+
+  $yearly = @($Sleeve.yearlyPrices) | Where-Object {
+    $null -ne $_.price -and [double]$_.price -gt 0
+  } | Sort-Object { [int]$_.year }
+  if ($yearly.Count -gt 0) {
+    $row = $yearly[-1]
+    return [pscustomobject]@{
+      price = $row.price
+      count = $row.count
+      observedText = "年次データ: " + ([string]$row.year)
+    }
+  }
+
+  if ($Sleeve.pricesByYear) {
+    $pricesByYear = @($Sleeve.pricesByYear.PSObject.Properties) |
+      Where-Object { $null -ne $_.Value -and [double]$_.Value -gt 0 } |
+      Sort-Object { [int]$_.Name }
+    if ($pricesByYear.Count -gt 0) {
+      $row = $pricesByYear[-1]
+      return [pscustomobject]@{
+        price = $row.Value
+        count = $null
+        observedText = "年次データ: " + ([string]$row.Name)
+      }
+    }
+  }
+
   return $null
 }
 
@@ -113,7 +148,7 @@ foreach ($sleeve in @($data.sleeves)) {
   $inlinePageDataScript = '  <script>window.__SLEEVE_PAGE_ID = ' + $jsId + ';window.__SLEEVE_PAGE_DATA = ' + $jsSleeve + ';</script>'
   $latestTrade = Get-LatestTrade $sleeve
   $latestPriceText = if ($latestTrade) { ([double]$latestTrade.price).ToString("N0") + "円" } else { "-" }
-  $latestDateText = if ($latestTrade) { "最終観測日: " + ([string]$latestTrade.week).Substring(0, [Math]::Min(10, ([string]$latestTrade.week).Length)) } else { "最終観測日: -" }
+  $latestDateText = if ($latestTrade) { [string]$latestTrade.observedText } else { "最終観測日: -" }
   $latestCountText = if ($latestTrade -and $null -ne $latestTrade.count -and [double]$latestTrade.count -gt 0) { $latestDateText + " / 取引件数: " + ([string]$latestTrade.count) + "件" } else { $latestDateText }
 
   $content = $template

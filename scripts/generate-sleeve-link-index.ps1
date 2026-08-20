@@ -29,6 +29,22 @@ function Get-LatestPriceText([object]$Sleeve) {
     return ("&#26368;&#26032; {0:N0}&#20870;" -f [double]$weekly[-1].price)
   }
 
+  $yearly = @($Sleeve.yearlyPrices) | Where-Object {
+    $null -ne $_.price -and [double]$_.price -gt 0
+  }
+  if ($yearly.Count -gt 0) {
+    return ("&#24180;&#27425; {0:N0}&#20870;" -f [double]$yearly[-1].price)
+  }
+
+  if ($Sleeve.pricesByYear) {
+    $pricesByYear = @($Sleeve.pricesByYear.PSObject.Properties) |
+      Where-Object { $null -ne $_.Value -and [double]$_.Value -gt 0 } |
+      Sort-Object { [int]$_.Name }
+    if ($pricesByYear.Count -gt 0) {
+      return ("&#24180;&#27425; {0:N0}&#20870;" -f [double]$pricesByYear[-1].Value)
+    }
+  }
+
   $monthly = @($Sleeve.monthlyPrices) | Where-Object {
     $null -ne $_.price -and [double]$_.price -gt 0
   }
@@ -120,7 +136,7 @@ foreach ($sleeve in $items) {
 [void]$html.AppendLine('    </ul>')
 [void]$html.AppendLine('  </main>')
 [void]$html.AppendLine('  <div id="site-footer"></div>')
-[void]$html.AppendLine('  <script src="./assets/common.js?v=20260820b"></script>')
+[void]$html.AppendLine('  <script src="./assets/common.js?v=20260820c"></script>')
 [void]$html.AppendLine('  <script>')
 [void]$html.AppendLine('    document.addEventListener("DOMContentLoaded", () => {')
 [void]$html.AppendLine('      if (window.common && typeof window.common.injectHeader === "function") window.common.injectHeader();')
