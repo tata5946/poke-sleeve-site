@@ -738,6 +738,7 @@
       align-items: center;
       justify-content: center;
       gap: 14px;
+      flex-wrap: wrap;
     }
 
     .zukan-pagination[hidden] {
@@ -770,6 +771,46 @@
       cursor: default;
       color: #b0bac8;
       border-color: #e6ebf2;
+    }
+
+    .zukan-page-numbers {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      max-width: min(100%, 680px);
+    }
+
+    .zukan-page-number {
+      width: 34px;
+      height: 34px;
+      border: 1px solid #dbe3ee;
+      border-radius: 999px;
+      background: #fff;
+      color: #526174;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      transition: border-color .2s ease, background-color .2s ease, color .2s ease, transform .16s ease;
+    }
+
+    .zukan-page-number:hover,
+    .zukan-page-number:focus-visible {
+      border-color: #9aa8bc;
+      color: #0f2b6f;
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .zukan-page-number.is-active {
+      border-color: #0f2b6f;
+      background: #0f2b6f;
+      color: #fff;
+      cursor: default;
+      transform: none;
     }
 
     .zukan-page-info {
@@ -1568,6 +1609,7 @@
           <div id="list" class="zukan-grid"></div>
           <nav id="zukanPagination" class="zukan-pagination" aria-label="図鑑ページ送り" hidden>
             <button id="zukanPrevPage" class="zukan-page-button" type="button">前へ</button>
+            <div id="zukanPageNumbers" class="zukan-page-numbers" aria-label="ページ番号"></div>
             <div id="zukanPageInfo" class="zukan-page-info" aria-live="polite"></div>
             <button id="zukanNextPage" class="zukan-page-button" type="button">次へ</button>
           </nav>
@@ -1839,6 +1881,7 @@
       const prevPageBtn = document.getElementById("zukanPrevPage");
       const nextPageBtn = document.getElementById("zukanNextPage");
       const pageInfo = document.getElementById("zukanPageInfo");
+      const pageNumbers = document.getElementById("zukanPageNumbers");
       const resultRangeText = document.getElementById("resultRangeText");
       const PAGE_SIZE = 50;
       let currentPage = 1;
@@ -2051,6 +2094,13 @@
         if (pageInfo) {
           pageInfo.innerHTML = `<strong>${currentPage.toLocaleString()}</strong> / ${totalPages.toLocaleString()}`;
         }
+        if (pageNumbers) {
+          pageNumbers.innerHTML = Array.from({ length: totalPages }, (_, index) => {
+            const page = index + 1;
+            const active = page === currentPage;
+            return `<button class="zukan-page-number${active ? " is-active" : ""}" type="button" data-page="${page}" ${active ? 'aria-current="page"' : ""} aria-label="${page}ページ目へ">${page}</button>`;
+          }).join("");
+        }
         if (pagination) pagination.hidden = totalPages <= 1;
         if (prevPageBtn) prevPageBtn.disabled = currentPage <= 1;
         if (nextPageBtn) nextPageBtn.disabled = currentPage >= totalPages;
@@ -2241,6 +2291,18 @@
       if (nextPageBtn) {
         nextPageBtn.addEventListener("click", () => {
           currentPage += 1;
+          render();
+          document.querySelector(".zukan-results-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
+
+      if (pageNumbers) {
+        pageNumbers.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-page]");
+          if (!button) return;
+          const page = Number(button.getAttribute("data-page"));
+          if (!Number.isFinite(page) || page === currentPage) return;
+          currentPage = page;
           render();
           document.querySelector(".zukan-results-card")?.scrollIntoView({ behavior: "smooth", block: "start" });
         });
