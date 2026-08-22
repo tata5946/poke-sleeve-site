@@ -468,6 +468,7 @@ function getSleeveCategoryValues(sleeve, keys) {
 function getSleeveCategoryBuckets(sleeve) {
   return {
     pokemon: getSleeveCategoryValues(sleeve, SLEEVE_CATEGORY_FIELD_GROUPS.pokemon),
+    series: getSleeveCategoryValues(sleeve, SLEEVE_CATEGORY_FIELD_GROUPS.series),
     trainer: getSleeveCategoryValues(sleeve, SLEEVE_CATEGORY_FIELD_GROUPS.trainer),
     category: getSleeveCategoryValues(sleeve, SLEEVE_CATEGORY_FIELD_GROUPS.category)
   };

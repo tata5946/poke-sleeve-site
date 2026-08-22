@@ -2108,7 +2108,7 @@
 
         <div class="related-sections" id="relatedSections" hidden>
           <section class="panel related-panel page-focus-panel">
-            <h3>同じキャラクターのスリーブ</h3>
+            <h3>同じポケモンのスリーブ</h3>
             <div id="relatedCharacter" class="related-list"></div>
           </section>
           <section class="panel related-panel page-focus-panel">
@@ -2131,7 +2131,7 @@
 
     <script>window.__SLEEVE_PAGE_ID = "362502";window.__SLEEVE_PAGE_DATA = {"id":"362502","name":"カントーの冒険 ピカチュウ＆カビゴン","imageUrl":"https://drive.google.com/thumbnail?id=1Z6GtkbUb8bx3_o1SwkME9CucQ1Pigc3p\u0026sz=w1200","releaseDate":"2024-11-22","releaseYear":2024,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンセンター","illustrator":"古澤あつし","note":"","category1":"ピカチュウ","category2":"カビゴン","category3":"","category4":"","category5":"","category6":"","category7":"冒険シリーズ","category8":"","category9":"","pokemonCategories":["ピカチュウ","カビゴン"],"trainerCategories":[],"categoryTags":["冒険シリーズ"],"categories":["ピカチュウ","カビゴン","冒険シリーズ"],"weeklyPrices":[{"week":"2025-01-01","price":null,"count":0},{"week":"2025-02-01","price":null,"count":0},{"week":"2025-03-01","price":null,"count":0},{"week":"2025-04-01","price":null,"count":0},{"week":"2025-05-01","price":null,"count":0},{"week":"2025-06-01","price":null,"count":0},{"week":"2025-07-01","price":null,"count":0},{"week":"2025-08-01","price":null,"count":0},{"week":"2025-09-01","price":null,"count":0},{"week":"2025-10-01","price":null,"count":0},{"week":"2025-11-01","price":null,"count":0},{"week":"2025-12-01","price":null,"count":0},{"week":"2026-01-01","price":null,"count":0},{"week":"2026-01-05","price":null,"count":0},{"week":"2026-01-12","price":null,"count":0},{"week":"2026-01-19","price":null,"count":0},{"week":"2026-01-26","price":null,"count":0},{"week":"2026-02-02","price":null,"count":0},{"week":"2026-02-09","price":null,"count":0},{"week":"2026-02-16","price":null,"count":0},{"week":"2026-02-23","price":null,"count":0},{"week":"2026-03-02","price":950,"count":0},{"week":"2026-03-09","price":999,"count":0},{"week":"2026-03-16","price":799,"count":0},{"week":"2026-03-23","price":1049.5,"count":0},{"week":"2026-03-30","price":null,"count":0},{"week":"2026-04-06","price":1049.5,"count":0},{"week":"2026-04-13","price":null,"count":0},{"week":"2026-04-20","price":1200,"count":0},{"week":"2026-04-27","price":null,"count":0},{"week":"2026-05-04","price":1199,"count":0},{"week":"2026-05-11","price":null,"count":0},{"week":"2026-05-18","price":null,"count":0},{"week":"2026-05-25","price":799,"count":0},{"week":"2026-06-01","price":null,"count":0},{"week":"2026-06-08","price":999,"count":0},{"week":"2026-06-15","price":943.5,"count":0},{"week":"2026-06-22","price":null,"count":0},{"week":"2026-06-29","price":1180,"count":0},{"week":"2026-07-06","price":1111,"count":0},{"week":"2026-07-13","price":null,"count":0},{"week":"2026-07-20","price":999,"count":0},{"week":"2026-07-27","price":1000,"count":0},{"week":"2026-08-03","price":null,"count":0}],"monthlyPrices":[{"month":"2025-01-01","price":1499,"count":null,"source":"","shop":"","note":""},{"month":"2025-11-01","price":1000,"count":null,"source":"","shop":"","note":""},{"month":"2026-01-01","price":888,"count":null,"source":"","shop":"","note":""},{"month":"2026-04-01","price":999,"count":null,"source":"","shop":"","note":""},{"month":"2026-05-01","price":1100,"count":null,"source":"","shop":"","note":""},{"month":"2026-06-01","price":999,"count":null,"source":"","shop":"","note":""},{"month":"2026-07-01","price":999,"count":null,"source":"","shop":"","note":""},{"month":"2026-08-01","price":1000,"count":null,"source":"","shop":"","note":""}],"yearlyPrices":[{"year":2025,"price":944,"count":null},{"year":2026,"price":999,"count":null}],"pricesByYear":{"2025":944,"2026":999}};</script>
 
-<script src="./assets/common.js?v=20260822b"></script>
+<script src="./assets/common.js?v=20260822c"></script>
 
   <script>
     function escapeHtml(str) {
@@ -2934,14 +2934,44 @@
       root.hidden = false;
     }
 
-    function getSleeveCharacter(sleeve) {
-      return String(
-        sleeve?.character ??
-        sleeve?.characters ??
-        sleeve?.chara ??
-        sleeve?.["character"] ??
-        ""
-      ).trim();
+    function getRelatedCategoryValues(sleeve, groupKey) {
+      if (window.common && typeof window.common.getSleeveCategoryBuckets === "function") {
+        const buckets = window.common.getSleeveCategoryBuckets(sleeve);
+        const values = Array.isArray(buckets?.[groupKey]) ? buckets[groupKey] : (groupKey === "series" && Array.isArray(buckets?.trainer) ? buckets.trainer : []);
+        return Array.from(new Set(values.map((value) => String(value || "").trim()).filter(Boolean)));
+      }
+
+      const fieldsByGroup = {
+        pokemon: ["category1", "category2", "category3", "pokemonCategories"],
+        series: ["category4", "category5", "category6", "trainerCategories"],
+        category: ["category7", "category8", "category9", "categoryTags"]
+      };
+      const values = [];
+      const push = (value) => {
+        if (Array.isArray(value)) {
+          value.forEach(push);
+          return;
+        }
+        const text = String(value || "").trim();
+        if (text) values.push(text);
+      };
+      for (const field of fieldsByGroup[groupKey] || []) {
+        push(sleeve?.[field]);
+      }
+      return Array.from(new Set(values));
+    }
+
+    function getSleevePokemonValues(sleeve) {
+      return getRelatedCategoryValues(sleeve, "pokemon");
+    }
+
+    function getSleeveSeriesValues(sleeve) {
+      return getRelatedCategoryValues(sleeve, "series");
+    }
+
+    function intersectsValues(a, b) {
+      const set = new Set((Array.isArray(a) ? a : []).map((value) => String(value || "").trim()).filter(Boolean));
+      return (Array.isArray(b) ? b : []).some((value) => set.has(String(value || "").trim()));
     }
 
     function getSleeveCurrentPrice(sleeve) {
@@ -3002,10 +3032,13 @@
     function renderRelatedList(containerId, items, emptyText, decorateItem) {
       const container = document.getElementById(containerId);
       if (!container) return false;
+      const panel = container.closest(".related-panel");
       if (!Array.isArray(items) || !items.length) {
         container.innerHTML = `<div class="related-empty">${escapeHtml(emptyText)}</div>`;
+        if (panel) panel.hidden = true;
         return false;
       }
+      if (panel) panel.hidden = false;
       container.innerHTML = items.map((item) => buildRelatedSleeveCardHtml(item, decorateItem ? decorateItem(item) : undefined)).join("");
       return true;
     }
@@ -3022,19 +3055,8 @@
       return out;
     }
 
-    function fillRelatedItems(primaryItems, fallbackGroups, limit) {
-      const filled = uniqueSleeves(primaryItems).slice(0, limit);
-      const seen = new Set(filled.map((item) => String(item?.id || "")));
-      for (const group of fallbackGroups) {
-        for (const item of uniqueSleeves(group)) {
-          const id = String(item?.id || "");
-          if (!id || seen.has(id)) continue;
-          filled.push(item);
-          seen.add(id);
-          if (filled.length >= limit) return filled;
-        }
-      }
-      return filled;
+    function limitRelatedItems(primaryItems, limit) {
+      return uniqueSleeves(primaryItems).slice(0, limit);
     }
 
     function renderRelatedSleeves(currentSleeve, sleeves) {
@@ -3042,29 +3064,22 @@
       if (!wrap || !currentSleeve || !Array.isArray(sleeves)) return;
 
       const currentId = String(currentSleeve.id || "");
-      const currentCharacter = getSleeveCharacter(currentSleeve);
-      const currentSeries = String(currentSleeve.series || "").trim();
+      const currentPokemonValues = getSleevePokemonValues(currentSleeve);
+      const currentSeriesValues = getSleeveSeriesValues(currentSleeve);
       const currentPrice = getSleeveCurrentPrice(currentSleeve);
       const candidates = sleeves.filter((item) => item && String(item.id || "") && String(item.id) !== currentId);
-      const sortedByPriceDistance = candidates
-        .map((item) => ({ item, price: getSleeveCurrentPrice(item) }))
-        .sort((a, b) => {
-          const ap = a.price;
-          const bp = b.price;
-          if (Number.isFinite(currentPrice) && Number.isFinite(ap) && Number.isFinite(bp)) {
-            const diff = Math.abs(ap - currentPrice) - Math.abs(bp - currentPrice);
-            if (diff !== 0) return diff;
-          }
-          if (Number.isFinite(bp) && Number.isFinite(ap) && bp !== ap) return bp - ap;
-          return String(a.item?.name || "").localeCompare(String(b.item?.name || ""), "ja");
-        })
-        .map((entry) => entry.item);
 
-      const sameCharacterPrimary = candidates
-        .filter((item) => currentCharacter && getSleeveCharacter(item) === currentCharacter);
+      const samePokemonPrimary = candidates
+        .filter((item) => currentPokemonValues.length && intersectsValues(currentPokemonValues, getSleevePokemonValues(item)))
+        .sort((a, b) => {
+          const ap = getSleeveCurrentPrice(a) ?? -1;
+          const bp = getSleeveCurrentPrice(b) ?? -1;
+          if (bp !== ap) return bp - ap;
+          return String(a.name || "").localeCompare(String(b.name || ""), "ja");
+        });
 
       const sameSeriesPrimary = candidates
-        .filter((item) => String(item.series || "").trim() && String(item.series || "").trim() === currentSeries)
+        .filter((item) => currentSeriesValues.length && intersectsValues(currentSeriesValues, getSleeveSeriesValues(item)))
         .sort((a, b) => {
           const ap = getSleeveCurrentPrice(a) ?? -1;
           const bp = getSleeveCurrentPrice(b) ?? -1;
@@ -3075,7 +3090,7 @@
       const closePricePrimary = Number.isFinite(currentPrice)
         ? candidates
           .map((item) => ({ item, price: getSleeveCurrentPrice(item) }))
-          .filter((entry) => Number.isFinite(entry.price) && entry.price >= currentPrice * 0.7 && entry.price <= currentPrice * 1.3)
+          .filter((entry) => Number.isFinite(entry.price) && entry.price !== currentPrice && entry.price >= currentPrice * 0.7 && entry.price <= currentPrice * 1.3)
           .sort((a, b) => {
             const diff = Math.abs(a.price - currentPrice) - Math.abs(b.price - currentPrice);
             if (diff !== 0) return diff;
@@ -3084,11 +3099,11 @@
           .map((entry) => entry.item)
         : [];
 
-      const sameCharacter = fillRelatedItems(sameCharacterPrimary, [sameSeriesPrimary, closePricePrimary, sortedByPriceDistance], 6);
-      const sameSeries = fillRelatedItems(sameSeriesPrimary, [sameCharacterPrimary, closePricePrimary, sortedByPriceDistance], 6);
-      const closePrice = fillRelatedItems(closePricePrimary, [sameCharacterPrimary, sameSeriesPrimary, sortedByPriceDistance], 6);
+      const samePokemon = limitRelatedItems(samePokemonPrimary, 6);
+      const sameSeries = limitRelatedItems(sameSeriesPrimary, 6);
+      const closePrice = limitRelatedItems(closePricePrimary, 6);
 
-      const hasCharacter = renderRelatedList("relatedCharacter", sameCharacter, "同じキャラクターのスリーブはまだありません。");
+      const hasCharacter = renderRelatedList("relatedCharacter", samePokemon, "同じポケモンのスリーブはまだありません。");
       const hasSeries = renderRelatedList("relatedSeries", sameSeries, "同シリーズのスリーブはまだありません。");
       const hasPrice = renderRelatedList(
         "relatedPriceBand",
