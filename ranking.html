@@ -985,7 +985,7 @@
     }
   </style>
 </head>
-<script src="./assets/common.js?v=20260822a"></script>
+<script src="./assets/common.js?v=20260822b"></script>
 <body class="page-market-list" data-hide-global-header="1">
   <div id="site-header"></div>
 
@@ -1160,7 +1160,7 @@
 
         const price = numOrNull(x.price);
         const count = numOrNull(x.count);
-        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        const hasTrade = price != null && price > 0;
         if (!hasTrade) continue;
 
         map.set(weekISO, { week: weekISO, price, count: count == null ? null : count });
@@ -1183,7 +1183,7 @@
 
         const price = numOrNull(x.price);
         const count = numOrNull(x.count);
-        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        const hasTrade = price != null && price > 0;
         if (!hasTrade || !(price > 0)) continue;
 
         map.set(weekISO, { week: weekISO, price });

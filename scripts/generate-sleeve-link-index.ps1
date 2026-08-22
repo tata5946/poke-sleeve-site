@@ -136,7 +136,7 @@ foreach ($sleeve in $items) {
 [void]$html.AppendLine('    </ul>')
 [void]$html.AppendLine('  </main>')
 [void]$html.AppendLine('  <div id="site-footer"></div>')
-[void]$html.AppendLine('  <script src="./assets/common.js?v=20260822a"></script>')
+[void]$html.AppendLine('  <script src="./assets/common.js?v=20260822b"></script>')
 [void]$html.AppendLine('  <script>')
 [void]$html.AppendLine('    document.addEventListener("DOMContentLoaded", () => {')
 [void]$html.AppendLine('      if (window.common && typeof window.common.injectHeader === "function") window.common.injectHeader();')

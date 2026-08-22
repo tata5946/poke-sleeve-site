@@ -2131,7 +2131,7 @@
 
     <script>window.__SLEEVE_PAGE_ID = "364629";window.__SLEEVE_PAGE_DATA = {"id":"364629","name":"ディアルガ（オリジンフォルム）","imageUrl":"https://drive.google.com/thumbnail?id=1lssFe-oFxEK4q_JTXOPSiHgWLAZTiVl2\u0026sz=w1200","releaseDate":"2022-04-08","releaseYear":2022,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンセンター","illustrator":"","note":"","category1":"ディアルガ","category2":"","category3":"","category4":"","category5":"","category6":"","category7":"オリジン","category8":"","category9":"","pokemonCategories":["ディアルガ"],"trainerCategories":[],"categoryTags":["オリジン"],"categories":["ディアルガ","オリジン"],"weeklyPrices":[{"week":"2025-01-01","price":null,"count":0},{"week":"2025-02-01","price":null,"count":0},{"week":"2025-03-01","price":null,"count":0},{"week":"2025-04-01","price":null,"count":0},{"week":"2025-05-01","price":null,"count":0},{"week":"2025-06-01","price":null,"count":0},{"week":"2025-07-01","price":null,"count":0},{"week":"2025-08-01","price":null,"count":0},{"week":"2025-09-01","price":null,"count":0},{"week":"2025-10-01","price":null,"count":0},{"week":"2025-11-01","price":null,"count":0},{"week":"2025-12-01","price":null,"count":0},{"week":"2026-01-01","price":585,"count":0},{"week":"2026-01-05","price":585,"count":0},{"week":"2026-01-12","price":null,"count":0},{"week":"2026-01-19","price":null,"count":0},{"week":"2026-01-26","price":null,"count":0},{"week":"2026-02-02","price":null,"count":0},{"week":"2026-02-09","price":null,"count":0},{"week":"2026-02-16","price":null,"count":0},{"week":"2026-02-23","price":null,"count":0},{"week":"2026-03-02","price":null,"count":0},{"week":"2026-03-09","price":null,"count":0},{"week":"2026-03-16","price":null,"count":0},{"week":"2026-03-23","price":null,"count":0},{"week":"2026-03-30","price":null,"count":0},{"week":"2026-04-06","price":null,"count":0},{"week":"2026-04-13","price":null,"count":0},{"week":"2026-04-20","price":null,"count":0},{"week":"2026-04-27","price":null,"count":0},{"week":"2026-05-04","price":null,"count":0},{"week":"2026-05-11","price":799,"count":0},{"week":"2026-05-18","price":null,"count":0},{"week":"2026-05-25","price":null,"count":0},{"week":"2026-06-01","price":null,"count":0},{"week":"2026-06-08","price":null,"count":0},{"week":"2026-06-15","price":null,"count":0},{"week":"2026-06-22","price":null,"count":0},{"week":"2026-06-29","price":null,"count":0},{"week":"2026-07-06","price":null,"count":0},{"week":"2026-07-13","price":null,"count":0},{"week":"2026-07-20","price":null,"count":0},{"week":"2026-07-27","price":null,"count":0},{"week":"2026-08-03","price":null,"count":0}],"monthlyPrices":[{"month":"2025-10-01","price":742,"count":null,"source":"","shop":"","note":""},{"month":"2026-01-01","price":950,"count":null,"source":"","shop":"","note":""},{"month":"2026-02-01","price":585,"count":null,"source":"","shop":"","note":""},{"month":"2026-06-01","price":799,"count":null,"source":"","shop":"","note":""}],"yearlyPrices":[{"year":2025,"price":846,"count":null},{"year":2026,"price":692,"count":null}],"pricesByYear":{"2025":846,"2026":692}};</script>
 
-<script src="./assets/common.js?v=20260822a"></script>
+<script src="./assets/common.js?v=20260822b"></script>
 
   <script>
     function escapeHtml(str) {
@@ -3145,7 +3145,7 @@
           const rawPrice = toNum(x.price);
           const price = (Number.isFinite(rawPrice) && rawPrice > 0) ? rawPrice : null;
           const count = toNum(x.count);
-          const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+          const hasTrade = (price != null && price > 0);
 
           return { week, price: hasTrade ? price : null, count: count == null ? null : count };
         })
@@ -3302,7 +3302,7 @@
         const countNum = parseNumberLike(x?.count);
         const price = Number.isFinite(priceNum) && priceNum > 0 ? priceNum : null;
         const count = Number.isFinite(countNum) ? Math.max(0, Math.round(countNum)) : null;
-        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        const hasTrade = (price != null && price > 0);
         const key = `${granularity}|${period.periodStart}`;
         if (!buckets.has(key)) {
           const ts = new Date(period.periodStart).getTime();

@@ -4820,7 +4820,7 @@
     </main>
   </div>
 
-  <script src="./assets/common.js?v=20260822a"></script>
+  <script src="./assets/common.js?v=20260822b"></script>
   <script>
     const ACCESS_RANKING_ENDPOINT = window.GAS_URL || "";
     const ACCESS_RANKING_CACHE_KEY = "home_access_ranking_cache_v2";
@@ -5034,7 +5034,7 @@
         if (weekISO && isLegacyMonthlyRow(weekISO)) continue;
         const price = numOrNull(row?.price);
         const count = numOrNull(row?.count);
-        const hasTrade = count == null ? (price != null) : (count > 0 && price != null);
+        const hasTrade = price != null && price > 0;
         if (!weekISO || !hasTrade) continue;
         map.set(weekISO, { week: weekISO, price, count });
       }
@@ -5184,7 +5184,6 @@
         return map;
       });
       const minPrice = 300;
-      const minCount = 2;
       const weightCap = 20;
       const hardLo = -Math.log(2.5);
       const hardHi = Math.log(2.5);
@@ -5200,10 +5199,11 @@
           const c = map.get(cur);
           if (!p || !c) continue;
           if (!(p.price > 0 && c.price > 0) || p.price < minPrice) continue;
-          if (!(p.count >= minCount && c.count >= minCount)) continue;
+          const prevCount = Number.isFinite(p.count) && p.count > 0 ? p.count : 1;
+          const curCount = Number.isFinite(c.count) && c.count > 0 ? c.count : 1;
           let logR = Math.log(c.price / p.price);
           logR = Math.max(hardLo, Math.min(hardHi, logR));
-          const w = Math.min(Math.sqrt(p.count * c.count), weightCap);
+          const w = Math.min(Math.sqrt(prevCount * curCount), weightCap);
           if (!(w > 0)) continue;
           sw += w;
           swr += w * logR;

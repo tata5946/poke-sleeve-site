@@ -2131,7 +2131,7 @@
 
     <script>window.__SLEEVE_PAGE_ID = "319100";window.__SLEEVE_PAGE_DATA = {"id":"319100","name":"Pokemon Yuruttoクッションでまったり","imageUrl":"https://drive.google.com/thumbnail?id=1WQwLKbj_htGbb1gfR8Gxkc2l5yArM2q0\u0026sz=w1200","releaseDate":"2021-01-22","releaseYear":2021,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンセンター","illustrator":"カナヘイ","note":"","category1":"メッソン","category2":"ヒバニー","category3":"サルノリ","category4":"","category5":"","category6":"","category7":"Pokémon Yuruttoシリーズ","category8":"","category9":"","pokemonCategories":["メッソン","ヒバニー","サルノリ"],"trainerCategories":[],"categoryTags":["Pokémon Yuruttoシリーズ"],"categories":["メッソン","ヒバニー","サルノリ","Pokémon Yuruttoシリーズ"],"weeklyPrices":[{"week":"2026-08-03","price":null,"count":0}],"monthlyPrices":[],"yearlyPrices":[{"year":2025,"price":1580,"count":null},{"year":2026,"price":1590,"count":null}],"pricesByYear":{"2025":1580,"2026":1590}};</script>
 
-<script src="./assets/common.js?v=20260822a"></script>
+<script src="./assets/common.js?v=20260822b"></script>
 
   <script>
     function escapeHtml(str) {
@@ -3145,7 +3145,7 @@
           const rawPrice = toNum(x.price);
           const price = (Number.isFinite(rawPrice) && rawPrice > 0) ? rawPrice : null;
           const count = toNum(x.count);
-          const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+          const hasTrade = (price != null && price > 0);
 
           return { week, price: hasTrade ? price : null, count: count == null ? null : count };
         })
@@ -3302,7 +3302,7 @@
         const countNum = parseNumberLike(x?.count);
         const price = Number.isFinite(priceNum) && priceNum > 0 ? priceNum : null;
         const count = Number.isFinite(countNum) ? Math.max(0, Math.round(countNum)) : null;
-        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        const hasTrade = (price != null && price > 0);
         const key = `${granularity}|${period.periodStart}`;
         if (!buckets.has(key)) {
           const ts = new Date(period.periodStart).getTime();

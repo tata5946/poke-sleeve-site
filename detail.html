@@ -2127,7 +2127,7 @@
     </main>
   </div>
 
-  <script src="./assets/common.js?v=20260822a"></script>
+  <script src="./assets/common.js?v=20260822b"></script>
 
   <script>
     function escapeHtml(str) {
@@ -3141,7 +3141,7 @@
           const rawPrice = toNum(x.price);
           const price = (Number.isFinite(rawPrice) && rawPrice > 0) ? rawPrice : null;
           const count = toNum(x.count);
-          const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+          const hasTrade = (price != null && price > 0);
 
           return { week, price: hasTrade ? price : null, count: count == null ? null : count };
         })
@@ -3298,7 +3298,7 @@
         const countNum = parseNumberLike(x?.count);
         const price = Number.isFinite(priceNum) && priceNum > 0 ? priceNum : null;
         const count = Number.isFinite(countNum) ? Math.max(0, Math.round(countNum)) : null;
-        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        const hasTrade = (price != null && price > 0);
         const key = `${granularity}|${period.periodStart}`;
         if (!buckets.has(key)) {
           const ts = new Date(period.periodStart).getTime();

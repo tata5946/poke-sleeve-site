@@ -2131,7 +2131,7 @@
 
     <script>window.__SLEEVE_PAGE_ID = "359601";window.__SLEEVE_PAGE_DATA = {"id":"359601","name":"ベル","imageUrl":"https://drive.google.com/thumbnail?id=1qMAolcRt5t4TgsqmAKQEwGxOMBdYjk60\u0026sz=w1200","releaseDate":"2024-01-26","releaseYear":2024,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンセンター","illustrator":"Nao","note":"","category1":"チラーミィ","category2":"ムンナ","category3":"","category4":"ベル","category5":"","category6":"","category7":"","category8":"","category9":"","pokemonCategories":["チラーミィ","ムンナ"],"trainerCategories":["ベル"],"categoryTags":[],"categories":["チラーミィ","ムンナ","ベル"],"weeklyPrices":[{"week":"2025-01-01","price":null,"count":0},{"week":"2025-02-01","price":null,"count":0},{"week":"2025-03-01","price":null,"count":0},{"week":"2025-04-01","price":null,"count":0},{"week":"2025-05-01","price":null,"count":0},{"week":"2025-06-01","price":null,"count":0},{"week":"2025-07-01","price":null,"count":0},{"week":"2025-08-01","price":null,"count":0},{"week":"2025-09-01","price":null,"count":0},{"week":"2025-10-01","price":799.5,"count":0},{"week":"2025-11-01","price":null,"count":0},{"week":"2025-12-01","price":700,"count":0},{"week":"2026-01-01","price":750,"count":0},{"week":"2026-01-05","price":null,"count":0},{"week":"2026-01-12","price":null,"count":0},{"week":"2026-01-19","price":null,"count":0},{"week":"2026-01-26","price":null,"count":0},{"week":"2026-02-02","price":699,"count":0},{"week":"2026-02-09","price":null,"count":0},{"week":"2026-02-16","price":700,"count":0},{"week":"2026-02-23","price":null,"count":0},{"week":"2026-03-02","price":666,"count":0},{"week":"2026-03-09","price":null,"count":0},{"week":"2026-03-16","price":null,"count":0},{"week":"2026-03-23","price":800,"count":0},{"week":"2026-03-30","price":null,"count":0},{"week":"2026-04-06","price":999,"count":0},{"week":"2026-04-13","price":773,"count":0},{"week":"2026-04-20","price":null,"count":0},{"week":"2026-04-27","price":777,"count":0},{"week":"2026-05-04","price":800,"count":0},{"week":"2026-05-11","price":null,"count":0},{"week":"2026-05-18","price":null,"count":0},{"week":"2026-05-25","price":477,"count":0},{"week":"2026-06-01","price":844,"count":0},{"week":"2026-06-08","price":777,"count":0},{"week":"2026-06-15","price":750,"count":0},{"week":"2026-06-22","price":null,"count":0},{"week":"2026-06-29","price":null,"count":0},{"week":"2026-07-06","price":null,"count":0},{"week":"2026-07-13","price":null,"count":0},{"week":"2026-07-20","price":500,"count":0},{"week":"2026-07-27","price":null,"count":0},{"week":"2026-08-03","price":null,"count":0}],"monthlyPrices":[{"month":"2025-01-01","price":1499,"count":null,"source":"","shop":"","note":""},{"month":"2025-11-01","price":799.5,"count":null,"source":"","shop":"","note":""},{"month":"2026-01-01","price":700,"count":null,"source":"","shop":"","note":""},{"month":"2026-02-01","price":750,"count":null,"source":"","shop":"","note":""},{"month":"2026-03-01","price":699.5,"count":null,"source":"","shop":"","note":""},{"month":"2026-04-01","price":733,"count":null,"source":"","shop":"","note":""},{"month":"2026-05-01","price":786.5,"count":null,"source":"","shop":"","note":""},{"month":"2026-06-01","price":488.5,"count":null,"source":"","shop":"","note":""},{"month":"2026-07-01","price":777,"count":null,"source":"","shop":"","note":""},{"month":"2026-08-01","price":500,"count":null,"source":"","shop":"","note":""}],"yearlyPrices":[{"year":2025,"price":700,"count":null},{"year":2026,"price":750,"count":null}],"pricesByYear":{"2025":700,"2026":750}};</script>
 
-<script src="./assets/common.js?v=20260822a"></script>
+<script src="./assets/common.js?v=20260822b"></script>
 
   <script>
     function escapeHtml(str) {
@@ -3145,7 +3145,7 @@
           const rawPrice = toNum(x.price);
           const price = (Number.isFinite(rawPrice) && rawPrice > 0) ? rawPrice : null;
           const count = toNum(x.count);
-          const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+          const hasTrade = (price != null && price > 0);
 
           return { week, price: hasTrade ? price : null, count: count == null ? null : count };
         })
@@ -3302,7 +3302,7 @@
         const countNum = parseNumberLike(x?.count);
         const price = Number.isFinite(priceNum) && priceNum > 0 ? priceNum : null;
         const count = Number.isFinite(countNum) ? Math.max(0, Math.round(countNum)) : null;
-        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        const hasTrade = (price != null && price > 0);
         const key = `${granularity}|${period.periodStart}`;
         if (!buckets.has(key)) {
           const ts = new Date(period.periodStart).getTime();

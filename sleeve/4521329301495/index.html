@@ -2131,7 +2131,7 @@
 
     <script>window.__SLEEVE_PAGE_ID = "301495";window.__SLEEVE_PAGE_DATA = {"id":"301495","name":"TAIKI-BANSEI","imageUrl":"https://drive.google.com/thumbnail?id=1QfBu-8F9pOMI4CTc_FP9zlGYXZfmWQwl\u0026sz=w1200","releaseDate":"2020-07-10","releaseYear":2020,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンセンター","illustrator":"","note":"","category1":"カイリュー","category2":"バンギラス","category3":"ボーマンダ","category4":"","category5":"","category6":"","category7":"","category8":"","category9":"","pokemonCategories":["カイリュー","バンギラス","ボーマンダ"],"trainerCategories":[],"categoryTags":[],"categories":["カイリュー","バンギラス","ボーマンダ"],"weeklyPrices":[{"week":"2026-08-03","price":3000,"count":0}],"monthlyPrices":[],"yearlyPrices":[{"year":2025,"price":2166.5,"count":null},{"year":2026,"price":2397,"count":null}],"pricesByYear":{"2025":2166.5,"2026":2397}};</script>
 
-<script src="./assets/common.js?v=20260822a"></script>
+<script src="./assets/common.js?v=20260822b"></script>
 
   <script>
     function escapeHtml(str) {
@@ -3145,7 +3145,7 @@
           const rawPrice = toNum(x.price);
           const price = (Number.isFinite(rawPrice) && rawPrice > 0) ? rawPrice : null;
           const count = toNum(x.count);
-          const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+          const hasTrade = (price != null && price > 0);
 
           return { week, price: hasTrade ? price : null, count: count == null ? null : count };
         })
@@ -3302,7 +3302,7 @@
         const countNum = parseNumberLike(x?.count);
         const price = Number.isFinite(priceNum) && priceNum > 0 ? priceNum : null;
         const count = Number.isFinite(countNum) ? Math.max(0, Math.round(countNum)) : null;
-        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        const hasTrade = (price != null && price > 0);
         const key = `${granularity}|${period.periodStart}`;
         if (!buckets.has(key)) {
           const ts = new Date(period.periodStart).getTime();

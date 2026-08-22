@@ -2131,7 +2131,7 @@
 
     <script>window.__SLEEVE_PAGE_ID = "463247";window.__SLEEVE_PAGE_DATA = {"id":"463247","name":"ニャオハ＆マスカーニャ おやすみ","imageUrl":"https://drive.google.com/thumbnail?id=1PTudISeJ_7A2wdS0XcZTxt-C00tI_T39\u0026sz=w1200","releaseDate":"2026-07-31","releaseYear":2026,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンセンター","illustrator":"","note":"","category1":"ニャオハ","category2":"マスカーニャ","category3":"","category4":"","category5":"","category6":"","category7":"おやすみシリーズ","category8":"","category9":"","pokemonCategories":["ニャオハ","マスカーニャ"],"trainerCategories":[],"categoryTags":["おやすみシリーズ"],"categories":["ニャオハ","マスカーニャ","おやすみシリーズ"],"weeklyPrices":[{"week":"2026-07-27","price":null,"count":0},{"week":"2026-08-03","price":null,"count":0}],"monthlyPrices":[],"yearlyPrices":[],"pricesByYear":{}};</script>
 
-<script src="./assets/common.js?v=20260822a"></script>
+<script src="./assets/common.js?v=20260822b"></script>
 
   <script>
     function escapeHtml(str) {
@@ -3145,7 +3145,7 @@
           const rawPrice = toNum(x.price);
           const price = (Number.isFinite(rawPrice) && rawPrice > 0) ? rawPrice : null;
           const count = toNum(x.count);
-          const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+          const hasTrade = (price != null && price > 0);
 
           return { week, price: hasTrade ? price : null, count: count == null ? null : count };
         })
@@ -3302,7 +3302,7 @@
         const countNum = parseNumberLike(x?.count);
         const price = Number.isFinite(priceNum) && priceNum > 0 ? priceNum : null;
         const count = Number.isFinite(countNum) ? Math.max(0, Math.round(countNum)) : null;
-        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        const hasTrade = (price != null && price > 0);
         const key = `${granularity}|${period.periodStart}`;
         if (!buckets.has(key)) {
           const ts = new Date(period.periodStart).getTime();

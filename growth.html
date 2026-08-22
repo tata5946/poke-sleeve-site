@@ -944,7 +944,7 @@
   </div>
 
   <!-- 共通JS（header/footer差し込み & nav active 等） -->
-  <script src="./assets/common.js?v=20260822a"></script>
+  <script src="./assets/common.js?v=20260822b"></script>
 
   <script>
 
@@ -1082,7 +1082,7 @@
         const price = numOrNull(x.price);
         const count = numOrNull(x.count);
 
-        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        const hasTrade = price != null && price > 0;
         if (!hasTrade) continue;
 
         map.set(weekISO, { week: weekISO, price, count: count == null ? null : count });

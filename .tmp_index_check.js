@@ -102,7 +102,7 @@ const GAS_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
         const price = numOrNull(x.price);
         const count = numOrNull(x.count);
 
-        const hasTrade = (count == null) ? (price != null) : (count > 0 && price != null);
+        const hasTrade = (price != null && price > 0);
         if (!hasTrade) continue;
 
         map.set(weekISO, { week: weekISO, price, count: count == null ? null : count });

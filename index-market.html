@@ -1390,7 +1390,7 @@
   </div>
 
   <!-- 共通JS（header/footer差し込み & nav active 等） -->
-  <script src="./assets/common.js?v=20260822a"></script>
+  <script src="./assets/common.js?v=20260822b"></script>
 
   <script>
     // 週次コメントは毎週ここに追記（キー: YYYY-MM-DD）
@@ -2640,7 +2640,6 @@
     function buildWeeklyMarketSeries(entries, weeks, opts) {
       const periodType = opts?.periodType || "week";
       const minPrice = opts?.minPrice ?? 300;
-      const minCount = opts?.minCount ?? 2;
       const weightCap = opts?.weightCap ?? 20;
       const maxRatio = opts?.maxRatio ?? 2.5;
       const hardLo = -Math.log(maxRatio);
@@ -2664,10 +2663,8 @@
           if (!hasValidPrice(p.price) || !hasValidPrice(c.price)) continue;
           if (p.price < minPrice) continue;
 
-          const c0 = Number(p.count);
-          const c1 = Number(c.count);
-          if (!Number.isFinite(c0) || !Number.isFinite(c1)) continue;
-          if (c0 < minCount || c1 < minCount) continue;
+          const c0 = Number.isFinite(Number(p.count)) && Number(p.count) > 0 ? Number(p.count) : 1;
+          const c1 = Number.isFinite(Number(c.count)) && Number(c.count) > 0 ? Number(c.count) : 1;
 
           let logR = Math.log(c.price / p.price);
           logR = clip(logR, hardLo, hardHi);
@@ -2752,7 +2749,6 @@
 
     function buildLatestContributors(entries, weeks, opts) {
       const minPrice = opts?.minPrice ?? 300;
-      const minCount = opts?.minCount ?? 2;
       const weightCap = opts?.weightCap ?? 20;
       const maxRatio = opts?.maxRatio ?? 2.5;
       const hardLo = -Math.log(maxRatio);
@@ -2780,10 +2776,8 @@
         if (!hasValidPrice(p.price) || !hasValidPrice(c.price)) continue;
         if (p.price < minPrice) continue;
 
-        const c0 = Number(p.count);
-        const c1 = Number(c.count);
-        if (!Number.isFinite(c0) || !Number.isFinite(c1)) continue;
-        if (c0 < minCount || c1 < minCount) continue;
+        const c0 = Number.isFinite(Number(p.count)) && Number(p.count) > 0 ? Number(p.count) : 1;
+        const c1 = Number.isFinite(Number(c.count)) && Number(c.count) > 0 ? Number(c.count) : 1;
 
         let logR = Math.log(c.price / p.price);
         logR = clip(logR, hardLo, hardHi);
