@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
   <!-- 共通CSS -->
-  <link rel="stylesheet" href="./assets/site.css?v=20260822c" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260822d" />
   <style>
     body {
       background: #f5f7fb;
@@ -1351,9 +1351,11 @@
       const firstX = padX.toFixed(1);
       const lastX = (padX + step * (prices.length - 1)).toFixed(1);
       const areaPoints = `${firstX},${height - padY} ${linePoints} ${lastX},${height - padY}`;
+      const lastPrice = prices[prices.length - 1];
+      const trendClass = lastPrice > prices[0] ? "up" : lastPrice < prices[0] ? "down" : "flat";
 
       return `
-        <div class="sleeve-sparkline" aria-label="直近${prices.length}週の価格推移">
+        <div class="sleeve-sparkline sleeve-sparkline--${trendClass}" aria-label="直近${prices.length}週の価格推移">
           <svg viewBox="0 0 ${width} ${height}" focusable="false" aria-hidden="true" preserveAspectRatio="none">
             <line class="sleeve-sparkline-grid" x1="5" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}"></line>
             <polygon class="sleeve-sparkline-area" points="${areaPoints}"></polygon>

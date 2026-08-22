@@ -3631,32 +3631,6 @@ footer.site-footer {
     font-weight: 900 !important;
 }
 
-:root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
-:root body.page-surge-ranking .podium-market-row .sleeve-sparkline {
-    grid-column: 2 !important;
-    grid-row: 1 / span 3 !important;
-    align-self: end !important;
-    width: 150px !important;
-    height: 86px !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-}
-
-:root body.page-surge-ranking .sleeve-sparkline-grid {
-    stroke: rgba(23, 32, 51, .22) !important;
-}
-
-:root body.page-surge-ranking .sleeve-sparkline-area {
-    fill: rgba(180, 35, 24, .08) !important;
-}
-
-:root body.page-surge-ranking .sleeve-sparkline-line {
-    stroke: #b42318 !important;
-    stroke-width: 2.5 !important;
-}
-
 :root body.page-surge-ranking .compact-grid,
 :root body.page-surge-ranking .ranking-list,
 :root body.page-surge-ranking #list.grid {
@@ -4354,6 +4328,8 @@ footer.site-footer {
 :root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
 :root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
 :root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+    --ranking-spark-line: #059669;
+    --ranking-spark-area: rgba(5, 150, 105, .10);
     width: 100% !important;
     min-width: 0 !important;
     height: 58px !important;
@@ -4366,6 +4342,23 @@ footer.site-footer {
     background: transparent !important;
     box-shadow: none !important;
     color: #94a3b8 !important;
+}
+
+:root body.page-market-list .sleeve-sparkline--down {
+    --ranking-spark-line: #dc2626;
+    --ranking-spark-area: rgba(220, 38, 38, .10);
+}
+
+:root body.page-market-list .sleeve-sparkline--flat,
+:root body.page-market-list .sleeve-sparkline--empty {
+    --ranking-spark-line: #64748b;
+    --ranking-spark-area: rgba(100, 116, 139, .10);
+}
+
+:root body.page-market-list .sleeve-sparkline svg {
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
 }
 
 :root body.page-surge-ranking .podium-market-row,
@@ -4393,33 +4386,21 @@ footer.site-footer {
 }
 
 :root body.page-market-list .sleeve-sparkline-area {
-    fill: rgba(5, 150, 105, .10) !important;
+    fill: var(--ranking-spark-area) !important;
     opacity: 1 !important;
 }
 
 :root body.page-market-list .sleeve-sparkline-line {
     fill: none !important;
-    stroke: #059669 !important;
+    stroke: var(--ranking-spark-line) !important;
     stroke-width: 2 !important;
     stroke-linecap: round !important;
     stroke-linejoin: round !important;
     vector-effect: non-scaling-stroke !important;
 }
 
-:root body.page-surge-ranking .sleeve-sparkline-area {
-    fill: rgba(180, 35, 24, .08) !important;
-}
-
-:root body.page-surge-ranking .sleeve-sparkline-line {
-    stroke: #b42318 !important;
-}
-
 :root body.page-market-list .sleeve-sparkline-dot {
-    fill: #059669 !important;
-}
-
-:root body.page-surge-ranking .sleeve-sparkline-dot {
-    fill: #b42318 !important;
+    fill: var(--ranking-spark-line) !important;
 }
 
 :root body.page-market-list .sleeve-sparkline-label {

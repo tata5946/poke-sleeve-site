@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/site.css?v=20260822c" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260822d" />
   <style>
     .breadcrumb {
       display: flex;
@@ -1770,9 +1770,10 @@
       const lastY = range === 0
         ? height / 2
         : height - padY - ((lastPrice - min) / range) * (height - padY * 2);
+      const trendClass = lastPrice > prices[0] ? "up" : lastPrice < prices[0] ? "down" : "flat";
 
       return `
-        <div class="sleeve-sparkline" aria-label="直近${prices.length}週の価格推移">
+        <div class="sleeve-sparkline sleeve-sparkline--${trendClass}" aria-label="直近${prices.length}週の価格推移">
           <svg viewBox="0 0 ${width} ${height}" focusable="false" aria-hidden="true">
             <line class="sleeve-sparkline-axis" x1="22" y1="7" x2="22" y2="${height - padY}"></line>
             <line class="sleeve-sparkline-grid" x1="5" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}"></line>
