@@ -7,7 +7,7 @@
  */
 
 /* ----- Config ----- */
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwgm1e16QmJJgTQyvbXHo5cgMgXc7ctlYKTCiJA1p0INcccMCRApdK1zBXsLRBcnXzj/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzvczWpFH_nsOA7HsUy4i702dRUzlNZaeJEanwV1BTze5YHkr709WQf5eoRHaer5Jnc/exec";
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
 const LOCAL_DATA_URL = "./data.json?v=20260820c";
@@ -1392,66 +1392,10 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000, cacheMode = "defau
     clearTimeout(t);
   }
 }
-
-function buildUrlWithQuery(url, params = {}) {
-  const resolvedUrl = new URL(url, document.baseURI || location.href);
-  for (const [key, value] of Object.entries(params)) {
-    if (value == null) continue;
-    resolvedUrl.searchParams.set(key, String(value));
-  }
-  return resolvedUrl.href;
-}
-
-function mergeSleevePayloads(...payloads) {
-  const sleeveMap = new Map();
-  let merged = {};
-
-  for (const payload of payloads) {
-    if (!payload || typeof payload !== "object") continue;
-    merged = { ...merged, ...payload };
-    const sleeves = Array.isArray(payload.sleeves) ? payload.sleeves : [];
-    for (const sleeve of sleeves) {
-      const id = String(sleeve?.id ?? "").trim();
-      if (!id) continue;
-      sleeveMap.set(id, sleeve);
-    }
-  }
-
-  delete merged.part;
-  merged.sleeves = Array.from(sleeveMap.values());
-  return merged;
-}
-
-async function fetchSplitSleeveData(url, { timeoutMs = 12000, cacheMode = "default" } = {}) {
-  const part1 = await fetchJsonWithTimeout(buildUrlWithQuery(url, { part: 1 }), {
-    timeoutMs,
-    cacheMode
-  });
-
-  if (!Array.isArray(part1?.sleeves)) {
-    throw new Error("GAS part=1 に sleeves がありません");
-  }
-
-  try {
-    const part2 = await fetchJsonWithTimeout(buildUrlWithQuery(url, { part: 2 }), {
-      timeoutMs,
-      cacheMode
-    });
-    if (!Array.isArray(part2?.sleeves)) {
-      console.error("GAS part=2 に sleeves がありません", part2);
-      return mergeSleevePayloads(part1);
-    }
-    return mergeSleevePayloads(part1, part2);
-  } catch (error) {
-    console.error("GAS part=2 の取得に失敗しました", error);
-    return mergeSleevePayloads(part1);
-  }
-}
-
 async function fetchPrimaryData() {
   const sources = [
-    { url: LOCAL_DATA_URL, timeoutMs: 2500, cacheMode: "reload", split: false },
-    { url: GAS_URL, timeoutMs: 120000, cacheMode: "no-store", split: true }
+    { url: LOCAL_DATA_URL, timeoutMs: 2500, cacheMode: "reload" },
+    { url: GAS_URL, timeoutMs: 120000, cacheMode: "no-store" }
   ];
 
   let lastError = null;
@@ -1460,15 +1404,10 @@ async function fetchPrimaryData() {
   for (const source of sources) {
     const resolvedUrl = new URL(source.url, document.baseURI || location.href).href;
     try {
-      const data = source.split
-        ? await fetchSplitSleeveData(resolvedUrl, {
-          timeoutMs: source.timeoutMs,
-          cacheMode: source.cacheMode
-        })
-        : await fetchJsonWithTimeout(resolvedUrl, {
-          timeoutMs: source.timeoutMs,
-          cacheMode: source.cacheMode
-        });
+      const data = await fetchJsonWithTimeout(resolvedUrl, {
+        timeoutMs: source.timeoutMs,
+        cacheMode: source.cacheMode
+      });
       const usableSleeveCount = countUsableSleeves(data);
       if (usableSleeveCount > bestCount) {
         bestData = data;
@@ -2040,9 +1979,6 @@ window.common = {
   sleeveMatchesType,
   buildSleeveTypeHref,
   fetchJsonWithTimeout,
-  buildUrlWithQuery,
-  mergeSleevePayloads,
-  fetchSplitSleeveData,
   loadData,
   buildSiteHref,
   buildSleeveDetailHref,
@@ -2106,6 +2042,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try { markSelectedSleeveLinks(); } catch (e) { console.error(e); }
   }, { once: true });
 });
+
 
 
 

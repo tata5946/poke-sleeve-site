@@ -4939,10 +4939,7 @@
       } catch (_) {}
       if (!ACCESS_RANKING_ENDPOINT) return [];
       try {
-        const rankingUrl = window.common && typeof window.common.buildUrlWithQuery === "function"
-          ? window.common.buildUrlWithQuery(ACCESS_RANKING_ENDPOINT, { mode: "ranking" })
-          : new URL(ACCESS_RANKING_ENDPOINT, location.href).href.replace(/([?&])$/, "") + (ACCESS_RANKING_ENDPOINT.includes("?") ? "&" : "?") + "mode=ranking";
-        const data = await fetchRankingJsonWithTimeout(rankingUrl, { timeoutMs: 10000, cacheMode: "no-store" });
+        const data = await fetchRankingJsonWithTimeout(`${ACCESS_RANKING_ENDPOINT}?mode=ranking`, { timeoutMs: 10000, cacheMode: "no-store" });
         const list = normalizeAccessRankingResponse(data);
         try { sessionStorage.setItem(ACCESS_RANKING_CACHE_KEY, JSON.stringify({ fetchedAt: Date.now(), data: list })); } catch (_) {}
         return list;
