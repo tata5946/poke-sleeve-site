@@ -736,7 +736,7 @@
   </div>
 
   <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxrVBR6CdOlh6OtkW3W2a6FtEqrzraUSTyC0fZXaKG4wxsIGy5CQZsLYowpBm-0NbF2/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwgm1e16QmJJgTQyvbXHo5cgMgXc7ctlYKTCiJA1p0INcccMCRApdK1zBXsLRBcnXzj/exec";
     const RANK_STYLES = [
       { bg: "linear-gradient(90deg, #fff8df 0%, #fff1b8 100%)", color: "#d9a400", crown: "♛" },
       { bg: "linear-gradient(90deg, #f0f2f4 0%, #d8dde2 100%)", color: "#848d98", crown: "♛" },
@@ -1119,17 +1119,67 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbxrVBR6CdOlh6OtkW3W2a6F
       `;
     }
 
+    function buildUrlWithQuery(url, params = {}) {
+      const resolvedUrl = new URL(url, location.href);
+      for (const [key, value] of Object.entries(params)) {
+        if (value == null) continue;
+        resolvedUrl.searchParams.set(key, String(value));
+      }
+      return resolvedUrl.href;
+    }
+
+    function mergeSleevePayloads(...payloads) {
+      const sleeveMap = new Map();
+      let merged = {};
+      for (const payload of payloads) {
+        if (!payload || typeof payload !== "object") continue;
+        merged = { ...merged, ...payload };
+        const sleeves = Array.isArray(payload.sleeves) ? payload.sleeves : [];
+        for (const sleeve of sleeves) {
+          const id = String(sleeve?.id ?? "").trim();
+          if (!id) continue;
+          sleeveMap.set(id, sleeve);
+        }
+      }
+      delete merged.part;
+      merged.sleeves = Array.from(sleeveMap.values());
+      return merged;
+    }
+
+    async function fetchSleeveDataSource(source) {
+      if (!source.split) {
+        const res = await fetch(source.url, { cache: source.cache });
+        if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
+        const data = await res.json();
+        if (Array.isArray(data.sleeves)) return data;
+        throw new Error("データに sleeves がありません");
+      }
+
+      const part1Res = await fetch(buildUrlWithQuery(source.url, { part: 1 }), { cache: source.cache });
+      if (!part1Res.ok) throw new Error(`GAS part=1 の取得に失敗しました（HTTP ${part1Res.status}）`);
+      const part1 = await part1Res.json();
+      if (!Array.isArray(part1 && part1.sleeves)) throw new Error("GAS part=1 に sleeves がありません");
+
+      try {
+        const part2Res = await fetch(buildUrlWithQuery(source.url, { part: 2 }), { cache: source.cache });
+        if (!part2Res.ok) throw new Error(`GAS part=2 の取得に失敗しました（HTTP ${part2Res.status}）`);
+        const part2 = await part2Res.json();
+        if (!Array.isArray(part2 && part2.sleeves)) throw new Error("GAS part=2 に sleeves がありません");
+        return mergeSleevePayloads(part1, part2);
+      } catch (error) {
+        console.error("GAS part=2 の取得に失敗しました", error);
+        return mergeSleevePayloads(part1);
+      }
+    }
+
     async function loadData() {
       const sources = [
-        { url: GAS_URL, cache: "no-store" },
-        { url: "./data.json?v=20260820b", cache: "reload" }
+        { url: GAS_URL, cache: "no-store", split: true },
+        { url: "./data.json?v=20260820b", cache: "reload", split: false }
       ];
       for (const source of sources) {
         try {
-          const res = await fetch(source.url, { cache: source.cache });
-          if (!res.ok) continue;
-          const data = await res.json();
-          if (Array.isArray(data.sleeves)) return data;
+          return await fetchSleeveDataSource(source);
         } catch (e) {
           console.warn(e);
         }

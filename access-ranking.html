@@ -744,7 +744,9 @@
         }
       } catch (_) { }
 
-      const url = baseUrl + "?mode=ranking";
+      const url = window.common && typeof window.common.buildUrlWithQuery === "function"
+        ? window.common.buildUrlWithQuery(baseUrl, { mode: "ranking" })
+        : new URL(baseUrl, location.href).href.replace(/([?&])$/, "") + (baseUrl.includes("?") ? "&" : "?") + "mode=ranking";
       const res = await fetch(url, {
         cache: "no-store",
         headers: { "Accept": "application/json" }
