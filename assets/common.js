@@ -10,7 +10,7 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzvczWpFH_nsOA7HsUy4i702dRUzlNZaeJEanwV1BTze5YHkr709WQf5eoRHaer5Jnc/exec";
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
-const LOCAL_DATA_URL = "./data.json?v=20260820c";
+const LOCAL_DATA_URL = "./data.json?v=20260822a";
 const ARTICLE_DB_NAME = "pokeSleeveArticleStore";
 const ARTICLE_DB_VERSION = 1;
 const ARTICLE_STORE_NAME = "kv";
@@ -871,7 +871,7 @@ async function loadCategoryNavSleeves() {
   try {
     const resolvedUrl = new URL(LOCAL_DATA_URL, document.baseURI || location.href).href;
     const localData = await fetchJsonWithTimeout(resolvedUrl, {
-      timeoutMs: 2500,
+      timeoutMs: 15000,
       cacheMode: "reload"
     });
     if (Array.isArray(localData?.sleeves)) {
@@ -1394,7 +1394,7 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000, cacheMode = "defau
 }
 async function fetchPrimaryData() {
   const sources = [
-    { url: LOCAL_DATA_URL, timeoutMs: 2500, cacheMode: "reload" },
+    { url: LOCAL_DATA_URL, timeoutMs: 15000, cacheMode: "reload" },
     { url: GAS_URL, timeoutMs: 120000, cacheMode: "no-store" }
   ];
 

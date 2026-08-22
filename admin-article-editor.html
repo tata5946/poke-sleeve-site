@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 
 <head>
@@ -1015,7 +1015,7 @@
     </section>
   </main>
 
-  <script src="./assets/common.js?v=20260820c"></script>
+  <script src="./assets/common.js?v=20260822a"></script>
   <script>
     const ARTICLE_LOCAL_KEY = "pokeSleeve:articles:local:v1";
     let currentId = "";
@@ -1344,7 +1344,7 @@
       try {
         const data = window.common && typeof window.common.loadData === "function"
           ? await window.common.loadData({ forceRefresh: false })
-          : await fetch("./data.json?v=20260820b", { cache: "reload" }).then((res) => res.json());
+          : await fetch("./data.json?v=20260822a", { cache: "reload" }).then((res) => res.json());
         sleeveData = Array.isArray(data?.sleeves) ? data.sleeves.filter((sleeve) => sleeve && sleeve.id && sleeve.name) : [];
       } catch (_) {
         sleeveData = [];
