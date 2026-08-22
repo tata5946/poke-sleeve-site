@@ -5317,7 +5317,7 @@
       });
     }
 
-    function drawImageForMatching(image, size) {
+    function drawImageForMatching(image, size, crop) {
       const canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
@@ -5327,10 +5327,15 @@
       ctx.fillRect(0, 0, size, size);
       const w = Number(image.naturalWidth || image.width || size);
       const h = Number(image.naturalHeight || image.height || size);
-      const scale = Math.min(size / w, size / h);
-      const drawW = w * scale;
-      const drawH = h * scale;
-      ctx.drawImage(image, (size - drawW) / 2, (size - drawH) / 2, drawW, drawH);
+      const source = crop || { x: 0, y: 0, width: 1, height: 1 };
+      const sx = Math.max(0, Math.min(w - 1, source.x * w));
+      const sy = Math.max(0, Math.min(h - 1, source.y * h));
+      const sw = Math.max(1, Math.min(w - sx, source.width * w));
+      const sh = Math.max(1, Math.min(h - sy, source.height * h));
+      const scale = Math.min(size / sw, size / sh);
+      const drawW = sw * scale;
+      const drawH = sh * scale;
+      ctx.drawImage(image, sx, sy, sw, sh, (size - drawW) / 2, (size - drawH) / 2, drawW, drawH);
       return ctx.getImageData(0, 0, size, size).data;
     }
 
@@ -5351,9 +5356,9 @@
       return Math.min(bins - 1, Math.floor((hue / 360) * bins));
     }
 
-    function buildImageColorProfile(image) {
+    function buildImageColorProfile(image, crop) {
       const colorSize = 24;
-      const colorData = drawImageForMatching(image, colorSize);
+      const colorData = drawImageForMatching(image, colorSize, crop);
       if (!colorData) return null;
       const vector = [];
       const hueBins = Array.from({ length: 12 }, () => 0);
@@ -5386,7 +5391,7 @@
         }
       }
 
-      const hashData = drawImageForMatching(image, 9);
+      const hashData = drawImageForMatching(image, 9, crop);
       if (!hashData) return null;
       const gray = [];
       for (let i = 0; i < hashData.length; i += 4) {
@@ -5414,6 +5419,19 @@
         dHash,
         aHash
       };
+    }
+
+    function buildImageProfileVariants(image) {
+      const crops = [
+        { x: 0, y: 0, width: 1, height: 1 },
+        { x: 0.08, y: 0.08, width: 0.84, height: 0.84 },
+        { x: 0.12, y: 0.18, width: 0.76, height: 0.76 },
+        { x: 0.14, y: 0.26, width: 0.72, height: 0.68 },
+        { x: 0.18, y: 0.34, width: 0.64, height: 0.56 }
+      ];
+      return crops
+        .map((crop) => buildImageColorProfile(image, crop))
+        .filter(Boolean);
     }
 
     function getVectorDistance(a, b) {
@@ -5453,11 +5471,23 @@
       return (color * 0.38) + (dHash * 0.30) + (aHash * 0.18) + (hue * 0.14);
     }
 
+    function getImageProfileSetDistance(aProfiles, bProfiles) {
+      const left = Array.isArray(aProfiles) ? aProfiles : [aProfiles];
+      const right = Array.isArray(bProfiles) ? bProfiles : [bProfiles];
+      let best = Infinity;
+      for (const a of left) {
+        for (const b of right) {
+          best = Math.min(best, getImageProfileDistance(a, b));
+        }
+      }
+      return best;
+    }
+
     async function getImageProfileFromFile(file) {
       const objectUrl = URL.createObjectURL(file);
       try {
         const img = await loadImageForProfile(objectUrl, 3000);
-        return buildImageColorProfile(img);
+        return buildImageProfileVariants(img);
       } finally {
         URL.revokeObjectURL(objectUrl);
       }
@@ -5470,7 +5500,7 @@
       if (homeImageProfileCache.has(key)) return homeImageProfileCache.get(key);
       try {
         const img = await loadImageForProfile(key, 3200);
-        const profile = buildImageColorProfile(img);
+        const profile = buildImageProfileVariants(img);
         homeImageProfileCache.set(key, profile);
         return profile;
       } catch (_) {
@@ -5492,15 +5522,15 @@
       statusEl.textContent = "画像から候補を探しています...";
       renderHomeSleeveSearchResults([]);
 
-      let targetProfile = null;
+      let targetProfiles = null;
       try {
-        targetProfile = await getImageProfileFromFile(file);
+        targetProfiles = await getImageProfileFromFile(file);
       } catch (_) {
-        targetProfile = null;
+        targetProfiles = null;
       }
 
       const filenameQuery = String(file.name || "").replace(/\.[^.]+$/, "");
-      if (!targetProfile) {
+      if (!Array.isArray(targetProfiles) || !targetProfiles.length) {
         const fallback = findHomeSleevesByText(sleeves, filenameQuery, 8);
         if (input && filenameQuery) input.value = filenameQuery;
         renderHomeSleeveSearchResults(fallback, "画像を読み取れませんでした。ファイル名に近い候補を表示しています。");
@@ -5516,9 +5546,9 @@
         while (cursor < catalog.length) {
           const sleeve = catalog[cursor];
           cursor += 1;
-          const profile = await getImageProfileFromUrl(String(sleeve.imageUrl || ""));
-          if (!profile) continue;
-          scores.push({ sleeve, distance: getImageProfileDistance(targetProfile, profile) });
+          const profiles = await getImageProfileFromUrl(String(sleeve.imageUrl || ""));
+          if (!Array.isArray(profiles) || !profiles.length) continue;
+          scores.push({ sleeve, distance: getImageProfileSetDistance(targetProfiles, profiles) });
         }
       };
       await Promise.all(Array.from({ length: workerCount }, worker));
