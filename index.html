@@ -5317,45 +5317,140 @@
       });
     }
 
-    function buildImageColorProfile(image) {
-      const size = 12;
+    function drawImageForMatching(image, size) {
       const canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
       const ctx = canvas.getContext("2d", { willReadFrequently: true });
       if (!ctx) return null;
-      ctx.drawImage(image, 0, 0, size, size);
-      const data = ctx.getImageData(0, 0, size, size).data;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, size, size);
+      const w = Number(image.naturalWidth || image.width || size);
+      const h = Number(image.naturalHeight || image.height || size);
+      const scale = Math.min(size / w, size / h);
+      const drawW = w * scale;
+      const drawH = h * scale;
+      ctx.drawImage(image, (size - drawW) / 2, (size - drawH) / 2, drawW, drawH);
+      return ctx.getImageData(0, 0, size, size).data;
+    }
+
+    function rgbToHueBin(r, g, b, bins) {
+      const rr = r / 255;
+      const gg = g / 255;
+      const bb = b / 255;
+      const max = Math.max(rr, gg, bb);
+      const min = Math.min(rr, gg, bb);
+      const delta = max - min;
+      if (delta < 0.08 || max > 0.96 || max < 0.08) return -1;
+      let hue = 0;
+      if (max === rr) hue = ((gg - bb) / delta) % 6;
+      else if (max === gg) hue = ((bb - rr) / delta) + 2;
+      else hue = ((rr - gg) / delta) + 4;
+      hue = Math.round(hue * 60);
+      if (hue < 0) hue += 360;
+      return Math.min(bins - 1, Math.floor((hue / 360) * bins));
+    }
+
+    function buildImageColorProfile(image) {
+      const colorSize = 24;
+      const colorData = drawImageForMatching(image, colorSize);
+      if (!colorData) return null;
       const vector = [];
-      for (let y = 0; y < size; y += 3) {
-        for (let x = 0; x < size; x += 3) {
+      const hueBins = Array.from({ length: 12 }, () => 0);
+      let hueTotal = 0;
+
+      for (let y = 0; y < colorSize; y += 4) {
+        for (let x = 0; x < colorSize; x += 4) {
           let r = 0;
           let g = 0;
           let b = 0;
           let count = 0;
-          for (let yy = y; yy < y + 3; yy += 1) {
-            for (let xx = x; xx < x + 3; xx += 1) {
-              const i = (yy * size + xx) * 4;
-              r += data[i];
-              g += data[i + 1];
-              b += data[i + 2];
+          for (let yy = y; yy < y + 4; yy += 1) {
+            for (let xx = x; xx < x + 4; xx += 1) {
+              const i = (yy * colorSize + xx) * 4;
+              r += colorData[i];
+              g += colorData[i + 1];
+              b += colorData[i + 2];
               count += 1;
             }
           }
-          vector.push(r / count / 255, g / count / 255, b / count / 255);
+          const avgR = r / count;
+          const avgG = g / count;
+          const avgB = b / count;
+          vector.push(avgR / 255, avgG / 255, avgB / 255);
+          const bin = rgbToHueBin(avgR, avgG, avgB, hueBins.length);
+          if (bin >= 0) {
+            hueBins[bin] += 1;
+            hueTotal += 1;
+          }
         }
       }
-      return vector;
+
+      const hashData = drawImageForMatching(image, 9);
+      if (!hashData) return null;
+      const gray = [];
+      for (let i = 0; i < hashData.length; i += 4) {
+        gray.push((hashData[i] * 0.299 + hashData[i + 1] * 0.587 + hashData[i + 2] * 0.114) / 255);
+      }
+      const dHash = [];
+      for (let y = 0; y < 8; y += 1) {
+        for (let x = 0; x < 8; x += 1) {
+          dHash.push(gray[(y * 9) + x] > gray[(y * 9) + x + 1] ? 1 : 0);
+        }
+      }
+
+      const avgGray = [];
+      for (let y = 0; y < 8; y += 1) {
+        for (let x = 0; x < 8; x += 1) {
+          avgGray.push(gray[(y * 9) + x]);
+        }
+      }
+      const mean = avgGray.reduce((sum, value) => sum + value, 0) / avgGray.length;
+      const aHash = avgGray.map((value) => value >= mean ? 1 : 0);
+
+      return {
+        vector,
+        hue: hueTotal ? hueBins.map((value) => value / hueTotal) : hueBins,
+        dHash,
+        aHash
+      };
     }
 
-    function getImageProfileDistance(a, b) {
-      if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return Infinity;
+    function getVectorDistance(a, b) {
+      if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return 1;
       let sum = 0;
       for (let i = 0; i < a.length; i += 1) {
         const d = a[i] - b[i];
         sum += d * d;
       }
       return Math.sqrt(sum / a.length);
+    }
+
+    function getHashDistance(a, b) {
+      if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return 1;
+      let diff = 0;
+      for (let i = 0; i < a.length; i += 1) {
+        if (a[i] !== b[i]) diff += 1;
+      }
+      return diff / a.length;
+    }
+
+    function getHistogramDistance(a, b) {
+      if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return 1;
+      let sum = 0;
+      for (let i = 0; i < a.length; i += 1) {
+        sum += Math.abs(a[i] - b[i]);
+      }
+      return sum / 2;
+    }
+
+    function getImageProfileDistance(a, b) {
+      if (!a || !b) return Infinity;
+      const color = getVectorDistance(a.vector, b.vector);
+      const hue = getHistogramDistance(a.hue, b.hue);
+      const dHash = getHashDistance(a.dHash, b.dHash);
+      const aHash = getHashDistance(a.aHash, b.aHash);
+      return (color * 0.38) + (dHash * 0.30) + (aHash * 0.18) + (hue * 0.14);
     }
 
     async function getImageProfileFromFile(file) {
