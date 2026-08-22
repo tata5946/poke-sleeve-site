@@ -715,9 +715,19 @@
             <div id="relatedCharacter" class="related-list"></div>
           </section>
           <section class="panel related-panel page-focus-panel">
+            <h3>同じトレーナーのスリーブ</h3>
+            <p class="related-note">同じトレーナーカテゴリのスリーブを表示します。</p>
+            <div id="relatedTrainer" class="related-list"></div>
+          </section>
+          <section class="panel related-panel page-focus-panel">
             <h3>同シリーズのスリーブ</h3>
             <p class="related-note">同じシリーズに含まれるスリーブを表示します。</p>
             <div id="relatedSeries" class="related-list"></div>
+          </section>
+          <section class="panel related-panel page-focus-panel">
+            <h3>同じイラストレーターのスリーブ</h3>
+            <p class="related-note">同じイラストレーターのスリーブを表示します。</p>
+            <div id="relatedIllustrator" class="related-list"></div>
           </section>
           <section class="panel related-panel page-focus-panel">
             <h3>価格が近いスリーブ</h3>
@@ -1136,6 +1146,7 @@
 
       const fieldsByGroup = {
         pokemon: ["category1", "category2", "category3", "pokemonCategories"],
+        trainer: ["category4", "category5", "category6", "trainerCategories"],
         series: ["category4", "category5", "category6", "trainerCategories"],
         category: ["category7", "category8", "category9", "categoryTags"]
       };
@@ -1160,6 +1171,27 @@
 
     function getSleeveSeriesValues(sleeve) {
       return getRelatedCategoryValues(sleeve, "series");
+    }
+
+    function getSleeveTrainerValues(sleeve) {
+      return getRelatedCategoryValues(sleeve, "trainer");
+    }
+
+    function getSleeveIllustratorValues(sleeve) {
+      const values = [];
+      const push = (value) => {
+        if (Array.isArray(value)) {
+          value.forEach(push);
+          return;
+        }
+        const text = String(value || "").trim();
+        if (text) values.push(text);
+      };
+      push(sleeve?.illustrator);
+      push(sleeve?.illustratorName);
+      push(sleeve?.artist);
+      push(sleeve?.["イラストレーター"]);
+      return Array.from(new Set(values));
     }
 
     function intersectsValues(a, b) {
@@ -1258,7 +1290,9 @@
 
       const currentId = String(currentSleeve.id || "");
       const currentPokemonValues = getSleevePokemonValues(currentSleeve);
+      const currentTrainerValues = getSleeveTrainerValues(currentSleeve);
       const currentSeriesValues = getSleeveSeriesValues(currentSleeve);
+      const currentIllustratorValues = getSleeveIllustratorValues(currentSleeve);
       const currentPrice = getSleeveCurrentPrice(currentSleeve);
       const candidates = sleeves.filter((item) => item && String(item.id || "") && String(item.id) !== currentId);
 
@@ -1271,8 +1305,26 @@
           return String(a.name || "").localeCompare(String(b.name || ""), "ja");
         });
 
+      const sameTrainerPrimary = candidates
+        .filter((item) => currentTrainerValues.length && intersectsValues(currentTrainerValues, getSleeveTrainerValues(item)))
+        .sort((a, b) => {
+          const ap = getSleeveCurrentPrice(a) ?? -1;
+          const bp = getSleeveCurrentPrice(b) ?? -1;
+          if (bp !== ap) return bp - ap;
+          return String(a.name || "").localeCompare(String(b.name || ""), "ja");
+        });
+
       const sameSeriesPrimary = candidates
         .filter((item) => currentSeriesValues.length && intersectsValues(currentSeriesValues, getSleeveSeriesValues(item)))
+        .sort((a, b) => {
+          const ap = getSleeveCurrentPrice(a) ?? -1;
+          const bp = getSleeveCurrentPrice(b) ?? -1;
+          if (bp !== ap) return bp - ap;
+          return String(a.name || "").localeCompare(String(b.name || ""), "ja");
+        });
+
+      const sameIllustratorPrimary = candidates
+        .filter((item) => currentIllustratorValues.length && intersectsValues(currentIllustratorValues, getSleeveIllustratorValues(item)))
         .sort((a, b) => {
           const ap = getSleeveCurrentPrice(a) ?? -1;
           const bp = getSleeveCurrentPrice(b) ?? -1;
@@ -1293,11 +1345,15 @@
         : [];
 
       const samePokemon = limitRelatedItems(samePokemonPrimary, 6);
+      const sameTrainer = limitRelatedItems(sameTrainerPrimary, 6);
       const sameSeries = limitRelatedItems(sameSeriesPrimary, 6);
+      const sameIllustrator = limitRelatedItems(sameIllustratorPrimary, 6);
       const closePrice = limitRelatedItems(closePricePrimary, 6);
 
       const hasCharacter = renderRelatedList("relatedCharacter", samePokemon, "同じポケモンのスリーブはまだありません。");
+      const hasTrainer = renderRelatedList("relatedTrainer", sameTrainer, "同じトレーナーのスリーブはまだありません。");
       const hasSeries = renderRelatedList("relatedSeries", sameSeries, "同シリーズのスリーブはまだありません。");
+      const hasIllustrator = renderRelatedList("relatedIllustrator", sameIllustrator, "同じイラストレーターのスリーブはまだありません。");
       const hasPrice = renderRelatedList(
         "relatedPriceBand",
         closePrice,
@@ -1311,7 +1367,7 @@
         }
       );
 
-      wrap.hidden = !(hasCharacter || hasSeries || hasPrice);
+      wrap.hidden = !(hasCharacter || hasTrainer || hasSeries || hasIllustrator || hasPrice);
     }
 
     function buildMercariSearchUrl(name) {
