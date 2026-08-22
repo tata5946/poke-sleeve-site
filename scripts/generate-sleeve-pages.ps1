@@ -1,4 +1,4 @@
-param(
+﻿param(
   [string]$DataPath = "data.json",
   [string]$TemplatePath = "detail.html",
   [string]$OutputRoot = "sleeve"
