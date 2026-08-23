@@ -10,13 +10,13 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzvczWpFH_nsOA7HsUy4i702dRUzlNZaeJEanwV1BTze5YHkr709WQf5eoRHaer5Jnc/exec";
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
-const LOCAL_DATA_URL = "./data.json?v=20260822b";
+const LOCAL_DATA_URL = "./data.json?v=20260823a";
 const ARTICLE_DB_NAME = "pokeSleeveArticleStore";
 const ARTICLE_DB_VERSION = 1;
 const ARTICLE_STORE_NAME = "kv";
 const ARTICLE_STORE_KEY = "articles";
-const DATA_CACHE_KEY = "pokeSleeve:dataCache:v21";
-const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v21";
+const DATA_CACHE_KEY = "pokeSleeve:dataCache:v22";
+const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v22";
 const DATA_CACHE_TTL_MS = 5 * 60 * 1000;
 const DATA_STALE_MAX_MS = 10 * 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
