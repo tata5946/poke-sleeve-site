@@ -33,70 +33,136 @@
     .home-section { gap: 24px; }
     .home-articles {
       display: grid;
-      gap: 14px;
-      padding: 18px;
-      border: 1px solid #d7e0ee;
-      border-radius: 22px;
-      background: #fff;
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.05);
+      gap: 30px;
+      width: min(100%, 1180px);
+      margin: 18px auto 0;
+      padding: 36px 0 18px;
+      background: transparent;
     }
     .home-articles-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
+      display: grid;
+      justify-items: center;
+      gap: 22px;
+      text-align: center;
     }
     .home-articles-title {
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+      min-width: min(520px, 92vw);
+      min-height: 126px;
       margin: 0;
-      color: #162238;
-      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
-      font-size: 22px;
-      line-height: 1.2;
+      padding: 20px 54px;
+      color: #050505;
+      font-family: "M PLUS Rounded 1c", "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: clamp(38px, 6vw, 62px);
+      line-height: 1;
       font-weight: 900;
+      letter-spacing: 0;
+      transform: rotate(-1deg);
+    }
+    .home-articles-title::before {
+      content: "";
+      position: absolute;
+      inset: 8px 10px;
+      border: 17px solid #ffdf00;
+      border-right-width: 20px;
+      border-radius: 44% 10% 22% 12% / 44% 12% 24% 14%;
+      transform: skew(-8deg) rotate(1deg);
+      z-index: -1;
     }
     .home-articles-more {
-      color: #1e5bd7;
-      font-size: 13px;
+      color: #0f172a;
+      font-size: 14px;
       font-weight: 900;
       text-decoration: none;
       white-space: nowrap;
     }
+    .home-article-tabs {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      width: 100%;
+      border-bottom: 4px solid #050505;
+      background: #e8e8e8;
+    }
+    .home-article-tab {
+      min-height: 54px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #5f5f5f;
+      font: 900 18px/1 "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      cursor: pointer;
+    }
+    .home-article-tab.is-active {
+      background: #050505;
+      color: #fff;
+    }
     .home-article-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 34px 28px;
     }
     .home-article-card {
       display: grid;
-      gap: 8px;
-      padding: 14px;
-      border: 1px solid #d7e0ee;
-      border-radius: 16px;
-      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-      color: #162238;
+      gap: 14px;
+      color: #050505;
       text-decoration: none;
     }
     .home-article-card:hover {
       text-decoration: none;
-      border-color: #bccbe1;
+      transform: translateY(-2px);
     }
-    .home-article-meta {
-      color: #667085;
-      font-size: 11px;
+    .home-article-image {
+      width: 100%;
+      aspect-ratio: 16 / 7.4;
+      overflow: hidden;
+      background: #050505;
+    }
+    .home-article-image img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .home-article-info {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 12px;
+    }
+    .home-article-category {
+      min-width: 120px;
+      padding: 11px 14px;
+      background: #d40012;
+      color: #fff;
+      font-size: 15px;
       font-weight: 900;
+      line-height: 1;
+      text-align: center;
+    }
+    .home-article-category[data-category*="FEATURE"],
+    .home-article-category[data-category*="特集"] {
+      background: #f05a00;
+    }
+    .home-article-category[data-category*="コラム"] {
+      background: #08a338;
+    }
+    .home-article-date {
+      color: #3f3f46;
+      font-size: 15px;
+      font-weight: 500;
+      text-align: right;
     }
     .home-article-title {
       margin: 0;
-      color: #162238;
-      font-size: 16px;
-      line-height: 1.42;
+      color: #050505;
+      font-size: 19px;
+      line-height: 1.45;
       font-weight: 900;
     }
     .home-article-excerpt {
-      margin: 0;
-      color: #667085;
-      font-size: 12px;
-      line-height: 1.7;
+      display: none;
     }
     .home-card {
       background: #fff;
@@ -4364,7 +4430,61 @@
         gap: 10px;
       }
       body.home-page .home-article-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px 12px;
+      }
+      body.home-page .home-articles {
+        gap: 20px;
+        padding-top: 24px;
+      }
+      body.home-page .home-articles-title {
+        min-width: min(320px, 92vw);
+        min-height: 86px;
+        padding: 14px 28px;
+        font-size: 34px;
+      }
+      body.home-page .home-articles-title::before {
+        inset: 8px;
+        border-width: 10px 12px 10px 10px;
+      }
+      body.home-page .home-article-tabs {
+        display: flex;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      body.home-page .home-article-tabs::-webkit-scrollbar {
+        display: none;
+      }
+      body.home-page .home-article-tab {
+        flex: 0 0 auto;
+        min-width: 104px;
+        min-height: 44px;
+        padding: 0 12px;
+        font-size: 14px;
+      }
+      body.home-page .home-article-card {
+        gap: 9px;
+      }
+      body.home-page .home-article-image {
+        aspect-ratio: 16 / 8.5;
+      }
+      body.home-page .home-article-info {
         grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      body.home-page .home-article-category {
+        min-width: 0;
+        width: fit-content;
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+      body.home-page .home-article-date {
+        text-align: left;
+        font-size: 12px;
+      }
+      body.home-page .home-article-title {
+        font-size: 13px;
+        line-height: 1.45;
       }
       body.home-page .mobile-category-discovery {
         display: grid;
@@ -4774,9 +4894,16 @@
             </div>
           </div>
         </section>
-        <section class="home-articles reveal-on-scroll" style="--reveal-delay: 176ms;" aria-label="最新記事">
+        <section class="home-articles reveal-on-scroll" style="--reveal-delay: 176ms;" aria-label="お知らせ">
           <div class="home-articles-head">
-            <h2 class="home-articles-title">最新記事</h2>
+            <h2 class="home-articles-title">お知らせ</h2>
+            <div class="home-article-tabs" role="tablist" aria-label="お知らせカテゴリ">
+              <button type="button" class="home-article-tab is-active" data-home-article-filter="all">すべて</button>
+              <button type="button" class="home-article-tab" data-home-article-filter="FEATURE">特集</button>
+              <button type="button" class="home-article-tab" data-home-article-filter="相場コラム">相場コラム</button>
+              <button type="button" class="home-article-tab" data-home-article-filter="商品情報">商品情報</button>
+              <button type="button" class="home-article-tab" data-home-article-filter="その他">その他</button>
+            </div>
             <a class="home-articles-more" href="./articles.html">すべて読む</a>
           </div>
           <div id="homeArticleGrid" class="home-article-grid">
@@ -4956,7 +5083,7 @@
     function formatHomeArticleDate(value) {
       const d = new Date(value);
       if (Number.isNaN(d.getTime())) return "";
-      return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
+      return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
     }
 
     function normalizeHomeArticle(article) {
@@ -4969,6 +5096,7 @@
         title,
         excerpt: String(article.excerpt || "").trim(),
         category: String(article.category || "記事").trim(),
+        coverImage: String(article.coverImage || article.imageUrl || "").trim(),
         linkUrl: String(article.linkUrl || "").trim(),
         publishedAt: String(article.publishedAt || article.updatedAt || "").trim()
       };
@@ -4998,23 +5126,60 @@
         const article = normalizeHomeArticle(item);
         if (article) map.set(article.slug, article);
       });
-      return Array.from(map.values()).sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt))).slice(0, 3);
+      return Array.from(map.values()).sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
+    }
+
+    let homeArticlesState = [];
+    let homeArticleFilterState = "all";
+
+    function getHomeArticleCategoryLabel(category) {
+      const raw = String(category || "").trim();
+      if (!raw) return "その他";
+      if (raw === "FEATURE") return "特集";
+      return raw;
+    }
+
+    function filterHomeArticles(articles, filter) {
+      if (!filter || filter === "all") return articles;
+      return articles.filter((article) => {
+        const raw = String(article.category || "");
+        return raw === filter || getHomeArticleCategoryLabel(raw) === filter;
+      });
     }
 
     function renderHomeArticles(articles) {
       const el = document.getElementById("homeArticleGrid");
       if (!el) return;
-      if (!articles.length) {
+      const filtered = filterHomeArticles(articles, homeArticleFilterState).slice(0, 8);
+      if (!filtered.length) {
         el.innerHTML = `<div class="home-empty">記事はまだありません。</div>`;
         return;
       }
-      el.innerHTML = articles.map((article) => `
+      el.innerHTML = filtered.map((article) => `
         <a class="home-article-card" href="${escapeHtml(article.linkUrl || "./article.html?id=" + encodeURIComponent(article.slug))}">
-          <div class="home-article-meta">${escapeHtml(article.category)} / ${escapeHtml(formatHomeArticleDate(article.publishedAt))}</div>
+          <div class="home-article-image">
+            ${article.coverImage ? `<img src="${escapeHtml(article.coverImage)}" alt="" loading="lazy" decoding="async">` : ""}
+          </div>
+          <div class="home-article-info">
+            <span class="home-article-category" data-category="${escapeHtml(article.category)}">${escapeHtml(getHomeArticleCategoryLabel(article.category))}</span>
+            <time class="home-article-date" datetime="${escapeHtml(article.publishedAt)}">${escapeHtml(formatHomeArticleDate(article.publishedAt))}</time>
+          </div>
           <h3 class="home-article-title">${escapeHtml(article.title)}</h3>
           <p class="home-article-excerpt">${escapeHtml(article.excerpt || "記事を読む")}</p>
         </a>
       `).join("");
+    }
+
+    function wireHomeArticleTabs() {
+      const tabs = Array.from(document.querySelectorAll("[data-home-article-filter]"));
+      if (!tabs.length) return;
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          homeArticleFilterState = String(tab.dataset.homeArticleFilter || "all");
+          tabs.forEach((item) => item.classList.toggle("is-active", item === tab));
+          renderHomeArticles(homeArticlesState);
+        });
+      });
     }
 
     const weeklyPairCache = new WeakMap();
@@ -6294,6 +6459,7 @@
         throw new Error("共通データローダーの初期化に失敗しました。");
       }
       wireDashboardSearch();
+      wireHomeArticleTabs();
       renderReleaseBanner([]);
       wireReleaseBannerCarousel();
       const data = await loadHomePrimaryData();
@@ -6322,8 +6488,10 @@
 
       runDeferred(async () => {
         try {
-          renderHomeArticles(await loadHomeArticles());
+          homeArticlesState = await loadHomeArticles();
+          renderHomeArticles(homeArticlesState);
         } catch (_) {
+          homeArticlesState = [];
           renderHomeArticles([]);
         }
       });
@@ -6354,10 +6522,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
