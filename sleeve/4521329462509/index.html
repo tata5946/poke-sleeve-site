@@ -2137,7 +2137,7 @@
     </main>
   </div>
 
-    <script>window.__SLEEVE_PAGE_ID = "462509";window.__SLEEVE_PAGE_DATA = {"id":"462509","name":"ムク＆メガシャンデラ","imageUrl":"https://drive.google.com/thumbnail?id=1GGukgigV73cMX_bAwIYevDXnL_DRh-DJ\u0026sz=w1200","releaseDate":"2026-05-22","releaseYear":2026,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンセンター","illustrator":"風間雷太","note":"","category1":"シャンデラ","category2":"","category3":"","category4":"ムク","category5":"","category6":"","category7":"メガシンカ","category8":"","category9":"","pokemonCategories":["シャンデラ"],"trainerCategories":["ムク"],"categoryTags":["メガシンカ"],"categories":["シャンデラ","ムク","メガシンカ"],"weeklyPrices":[{"week":"2026-05-18","price":1333,"count":0},{"week":"2026-05-25","price":1316,"count":0},{"week":"2026-06-01","price":1190,"count":0},{"week":"2026-06-08","price":1200,"count":0},{"week":"2026-06-15","price":1250,"count":0},{"week":"2026-06-22","price":1300,"count":0},{"week":"2026-06-29","price":1299,"count":0},{"week":"2026-07-06","price":1050,"count":0},{"week":"2026-07-13","price":null,"count":0},{"week":"2026-07-20","price":1199.5,"count":0},{"week":"2026-07-27","price":null,"count":0},{"week":"2026-08-03","price":1100,"count":0}],"monthlyPrices":[{"month":"2026-05-01","price":1270,"count":null,"source":"","shop":"","note":""},{"month":"2026-06-01","price":1200,"count":null,"source":"","shop":"","note":""},{"month":"2026-07-01","price":1100,"count":null,"source":"","shop":"","note":""},{"month":"2026-08-01","price":1100,"count":null,"source":"","shop":"","note":""},{"month":"2026-08-01","price":799,"count":null,"source":"","shop":"","note":""}],"yearlyPrices":[{"year":2026,"price":1270,"count":null}],"pricesByYear":{"2026":1270}};</script>
+    <script>window.__SLEEVE_PAGE_ID = "462509";window.__SLEEVE_PAGE_DATA = {"id":"462509","name":"ムク＆メガシャンデラ","imageUrl":"https://drive.google.com/thumbnail?id=1GGukgigV73cMX_bAwIYevDXnL_DRh-DJ\u0026sz=w1200","releaseDate":"2026-05-22","releaseYear":2026,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンセンター","illustrator":"風間雷太","note":"","category1":"シャンデラ","category2":"","category3":"","category4":"ムク","category5":"","category6":"","category7":"メガシンカ","category8":"","category9":"","pokemonCategories":["シャンデラ"],"trainerCategories":["ムク"],"categoryTags":["メガシンカ"],"categories":["シャンデラ","ムク","メガシンカ"],"weeklyPrices":[{"week":"2026-05-25","price":1316,"count":0},{"week":"2026-06-01","price":1190,"count":0},{"week":"2026-06-08","price":1200,"count":0},{"week":"2026-06-15","price":1250,"count":0},{"week":"2026-06-22","price":1300,"count":0},{"week":"2026-06-29","price":1299,"count":0},{"week":"2026-07-06","price":1050,"count":0},{"week":"2026-07-13","price":null,"count":0},{"week":"2026-07-20","price":1199.5,"count":0},{"week":"2026-07-27","price":null,"count":0},{"week":"2026-08-03","price":1100,"count":0}],"monthlyPrices":[{"month":"2026-05-01","price":1270,"count":null,"source":"","shop":"","note":""},{"month":"2026-06-01","price":1200,"count":null,"source":"","shop":"","note":""},{"month":"2026-07-01","price":1100,"count":null,"source":"","shop":"","note":""},{"month":"2026-08-01","price":1100,"count":null,"source":"","shop":"","note":""},{"month":"2026-08-01","price":799,"count":null,"source":"","shop":"","note":""}],"yearlyPrices":[{"year":2026,"price":1270,"count":null}],"pricesByYear":{"2026":1270}};</script>
 
 <script src="./assets/common.js?v=20260822c"></script>
 
@@ -4285,6 +4285,43 @@
         .sort((a, b) => a.timestamp - b.timestamp);
     }
 
+    function getReleaseDateCutoff(sleeve) {
+      const releaseDate = normalizeDateFromInput(
+        sleeve?.releaseDate || sleeve?.release_date || sleeve?.releaseDatetime || sleeve?.release_datetime,
+        "01"
+      );
+      if (releaseDate) {
+        const matched = releaseDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (matched) {
+          return {
+            day: releaseDate,
+            month: `${matched[1]}-${matched[2]}-01`,
+            year: Number(matched[1])
+          };
+        }
+      }
+      const releaseYear = Number(sleeve?.releaseYear ?? sleeve?.release_year ?? sleeve?.["発売年"]);
+      if (Number.isFinite(releaseYear) && releaseYear > 0) {
+        return {
+          day: `${releaseYear}-01-01`,
+          month: `${releaseYear}-01-01`,
+          year: releaseYear
+        };
+      }
+      return null;
+    }
+
+    function isBeforeReleaseDate(date, sleeve, granularity = "day") {
+      const cutoff = getReleaseDateCutoff(sleeve);
+      if (!cutoff || !date) return false;
+      if (granularity === "year") {
+        const matched = String(date).match(/^(\d{4})/);
+        return !!matched && Number(matched[1]) < cutoff.year;
+      }
+      const basis = granularity === "month" ? cutoff.month : cutoff.day;
+      return String(date).slice(0, 10) < basis;
+    }
+
     function buildYearlySeries(sleeve) {
       const out = [];
       const seen = new Set();
@@ -4295,6 +4332,7 @@
         const price = normalizeChartPrice(priceValue);
         if (!matched || !(Number.isFinite(price) && price > 0)) return;
         const yearNum = Number(matched[0]);
+        if (isBeforeReleaseDate(String(yearNum), sleeve, "year")) return;
         const monthPart = (Number.isFinite(releaseYear) && Number.isFinite(releaseMonth) && yearNum === releaseYear && releaseMonth >= 1 && releaseMonth <= 12)
           ? String(releaseMonth).padStart(2, "0")
           : "01";
@@ -4343,6 +4381,7 @@
       for (const item of (Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [])) {
         const date = normalizeDateFromInput(item?.month, "01");
         const monthKey = date ? date.slice(0, 7) : "";
+        if (isBeforeReleaseDate(date, sleeve, "month")) continue;
         if (monthKey && latestWeeklyTs != null && !isMonthlyBucketComplete(monthKey, latestWeeklyTs)) continue;
         if (monthKey && hasWeeklyMonth.has(monthKey) && !completedWeeklyMonths.has(monthKey)) continue;
         pushMonthPoint(item?.month, item?.price);
@@ -4350,6 +4389,7 @@
       for (const point of completedWeeklyMonths.values()) {
         const date = normalizeDateFromInput(point?.month, "01");
         if (!date) continue;
+        if (isBeforeReleaseDate(date, sleeve, "month")) continue;
         const key = `monthly|${date}`;
         seen.delete(key);
         for (let i = out.length - 1; i >= 0; i--) {
@@ -4419,6 +4459,7 @@
         const price = normalizeChartPrice(item?.price);
         const countValue = parseNumberLike(item?.count);
         if (!date || !(Number.isFinite(price) && price > 0)) continue;
+        if (isBeforeReleaseDate(date, sleeve, "day")) continue;
         const key = `weekly|${date}`;
         if (seen.has(key)) continue;
         seen.add(key);
@@ -4436,6 +4477,11 @@
       const allow = new Set(Array.isArray(granularities) ? granularities : ["year", "month", "week"]);
       return normalizeObservationRows(sleeve?.weeklyPrices)
         .filter((row) => allow.has(String(row?.granularity || "")) && Number.isFinite(row?.avgPrice) && row.avgPrice > 0)
+        .filter((row) => {
+          const granularity = String(row?.granularity || "");
+          const type = granularity === "year" ? "year" : granularity === "month" ? "month" : "day";
+          return !isBeforeReleaseDate(String(row?.periodStart || ""), sleeve, type);
+        })
         .map((row) => ({
           type: row.granularity === "year" ? "yearly" : row.granularity === "month" ? "monthly" : "weekly",
           date: String(row.periodStart || ""),

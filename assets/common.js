@@ -250,6 +250,79 @@ function numOrNull(v) {
   return Number.isFinite(n) ? n : null;
 }
 
+function getSleeveReleaseCutoff(sleeve) {
+  const releaseDate = toISODate(
+    sleeve?.releaseDate || sleeve?.release_date || sleeve?.releaseDatetime || sleeve?.release_datetime
+  );
+  if (releaseDate) {
+    return {
+      day: releaseDate,
+      month: `${releaseDate.slice(0, 7)}-01`,
+      year: Number(releaseDate.slice(0, 4))
+    };
+  }
+  const releaseYear = Number(sleeve?.releaseYear ?? sleeve?.release_year);
+  if (Number.isFinite(releaseYear) && releaseYear > 0) {
+    return {
+      day: `${releaseYear}-01-01`,
+      month: `${releaseYear}-01-01`,
+      year: releaseYear
+    };
+  }
+  return null;
+}
+
+function isPriceDateBeforeRelease(date, sleeve, granularity = "day") {
+  const cutoff = getSleeveReleaseCutoff(sleeve);
+  if (!cutoff || !date) return false;
+  if (granularity === "year") {
+    const matched = String(date).match(/^(\d{4})/);
+    return !!matched && Number(matched[1]) < cutoff.year;
+  }
+  const basis = granularity === "month" ? cutoff.month : cutoff.day;
+  return String(date).slice(0, 10) < basis;
+}
+
+function sanitizeSleevePriceHistory(sleeve) {
+  if (!sleeve || typeof sleeve !== "object") return sleeve;
+  const next = { ...sleeve };
+  if (Array.isArray(next.weeklyPrices)) {
+    next.weeklyPrices = next.weeklyPrices.filter((row) => {
+      const price = numOrNull(row?.price);
+      const date = toISODate(row?.week);
+      return !(Number.isFinite(price) && price > 0 && isPriceDateBeforeRelease(date, next, "day"));
+    });
+  }
+  if (Array.isArray(next.monthlyPrices)) {
+    next.monthlyPrices = next.monthlyPrices.filter((row) => {
+      const price = numOrNull(row?.price);
+      const date = toISODate(row?.month);
+      return !(Number.isFinite(price) && price > 0 && isPriceDateBeforeRelease(date, next, "month"));
+    });
+  }
+  if (Array.isArray(next.yearlyPrices)) {
+    next.yearlyPrices = next.yearlyPrices.filter((row) => {
+      const price = numOrNull(row?.price);
+      return !(Number.isFinite(price) && price > 0 && isPriceDateBeforeRelease(row?.year, next, "year"));
+    });
+  }
+  if (next.pricesByYear && typeof next.pricesByYear === "object") {
+    next.pricesByYear = Object.fromEntries(Object.entries(next.pricesByYear).filter(([year, price]) => {
+      const normalized = numOrNull(price);
+      return !(Number.isFinite(normalized) && normalized > 0 && isPriceDateBeforeRelease(year, next, "year"));
+    }));
+  }
+  return next;
+}
+
+function sanitizeDataPayload(data) {
+  if (!data || typeof data !== "object" || !Array.isArray(data.sleeves)) return data;
+  return {
+    ...data,
+    sleeves: data.sleeves.map(sanitizeSleevePriceHistory)
+  };
+}
+
 function openArticleDb() {
   return new Promise((resolve, reject) => {
     if (!("indexedDB" in window)) {
@@ -1409,13 +1482,14 @@ async function fetchPrimaryData() {
         timeoutMs: source.timeoutMs,
         cacheMode: source.cacheMode
       });
-      const usableSleeveCount = countUsableSleeves(data);
+      const sanitizedData = sanitizeDataPayload(data);
+      const usableSleeveCount = countUsableSleeves(sanitizedData);
       if (usableSleeveCount > bestCount) {
-        bestData = data;
+        bestData = sanitizedData;
         bestCount = usableSleeveCount;
       }
-      if (isUsableDataPayload(data)) {
-        return data;
+      if (isUsableDataPayload(sanitizedData)) {
+        return sanitizedData;
       }
     } catch (error) {
       lastError = error;
@@ -1459,7 +1533,7 @@ function readSessionCache() {
   if (!entry) return null;
   if ((Date.now() - entry.cachedAt) > DATA_CACHE_TTL_MS) return null;
   if (!isUsableDataPayload(entry.data)) return null;
-  return entry.data ?? null;
+  return sanitizeDataPayload(entry.data) ?? null;
 }
 
 function readPersistentCache() {
@@ -1467,7 +1541,7 @@ function readPersistentCache() {
   if (!entry) return null;
   if ((Date.now() - entry.cachedAt) > DATA_CACHE_TTL_MS) return null;
   if (!isUsableDataPayload(entry.data)) return null;
-  return entry.data ?? null;
+  return sanitizeDataPayload(entry.data) ?? null;
 }
 
 function writeSessionCache(data) {
@@ -1512,7 +1586,8 @@ async function loadData({ forceRefresh = false, ttlMs = DATA_CACHE_TTL_MS } = {}
 
     const staleEntry = readSessionCacheEntry() || readPersistentCacheEntry();
     if (staleEntry && (Date.now() - staleEntry.cachedAt) <= DATA_STALE_MAX_MS) {
-      __dataCacheMem = { cachedAt: staleEntry.cachedAt, data: staleEntry.data };
+      const sanitizedStaleData = sanitizeDataPayload(staleEntry.data);
+      __dataCacheMem = { cachedAt: staleEntry.cachedAt, data: sanitizedStaleData };
       if (!__dataCachePromise) {
         __dataCachePromise = (async () => {
           const fresh = await fetchPrimaryData();
@@ -1528,7 +1603,7 @@ async function loadData({ forceRefresh = false, ttlMs = DATA_CACHE_TTL_MS } = {}
           __dataCachePromise = null;
         });
       }
-      return staleEntry.data;
+      return sanitizedStaleData;
     }
   }
 
