@@ -1075,6 +1075,46 @@
       background: transparent !important;
       box-shadow: none !important;
     }
+
+    body.page-surge-ranking a.compact-card.ranking-card-frameless,
+    body.page-surge-ranking .compact-card.ranking-card-frameless {
+      border: 0 !important;
+      outline: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    body.page-surge-ranking .compact-card.ranking-card-frameless .compact-market-row {
+      display: block !important;
+      grid-template-columns: 1fr !important;
+      min-width: 0 !important;
+      margin-top: 4px !important;
+    }
+
+    body.page-surge-ranking .compact-card.ranking-card-frameless .compact-market-row .sleeve-sparkline {
+      position: relative !important;
+      display: block !important;
+      width: 100% !important;
+      height: 230px !important;
+      min-width: 0 !important;
+      padding: 0 !important;
+      border: 1px solid #d8dee8 !important;
+      border-radius: 7px !important;
+      background: #fff !important;
+      box-shadow: none !important;
+      overflow: hidden !important;
+    }
+
+    body.page-surge-ranking .compact-card.ranking-card-frameless .compact-market-row .sleeve-sparkline svg {
+      position: absolute !important;
+      left: 18px !important;
+      right: 18px !important;
+      top: 54px !important;
+      bottom: 82px !important;
+      width: calc(100% - 36px) !important;
+      height: calc(100% - 136px) !important;
+    }
   </style>
 </head>
 
@@ -1747,7 +1787,11 @@
           const row = normalRows[i];
           const rank = i + 4;
           const card = document.createElement("a");
-          card.className = "compact-card";
+          card.className = "compact-card ranking-card-frameless";
+          card.style.border = "0";
+          card.style.borderRadius = "0";
+          card.style.background = "transparent";
+          card.style.boxShadow = "none";
           card.href = row.detailHref;
           card.setAttribute("data-sleeve-link", "1");
           card.setAttribute("aria-label", `${String(row.s.name ?? "")}の詳細を見る`);
