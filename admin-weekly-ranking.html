@@ -777,7 +777,7 @@
       { bg: "linear-gradient(135deg,#e8f7ff,#b9e6ff)", rank: "#148cc3", chart: "#ff9700" }
     ];
 const WEEKLY_RANKING_GAS_URL = "https://script.google.com/macros/s/AKfycbzvczWpFH_nsOA7HsUy4i702dRUzlNZaeJEanwV1BTze5YHkr709WQf5eoRHaer5Jnc/exec";
-    const WEEKLY_RANKING_TARGET_WEEK = "2026-08-03";
+    const WEEKLY_RANKING_TARGET_WEEK = "2026-08-17";
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
@@ -1021,7 +1021,7 @@ const WEEKLY_RANKING_GAS_URL = "https://script.google.com/macros/s/AKfycbzvczWpF
     async function loadWeeklyRankingData() {
       const sources = [
         { url: WEEKLY_RANKING_GAS_URL, cache: "no-store", label: "GAS" },
-        { url: "./data.json?v=20260822b", cache: "reload", label: "data.json" }
+        { url: "./data.json?v=20260824a", cache: "reload", label: "data.json" }
       ];
       let lastError = null;
       for (const source of sources) {
