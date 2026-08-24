@@ -3442,7 +3442,8 @@
         const requestedStartTime = days ? latestDate.getTime() - (days * 24 * 60 * 60 * 1000) : chartMinTime;
         const startTime = Math.max(chartMinTime, requestedStartTime);
         const data = source.filter((row) => row.date.getTime() >= startTime);
-        const chartData = data.length >= 2 ? data : source.filter((row) => row.date.getTime() >= chartMinTime).slice(-2);
+        const rawChartData = data.length >= 2 ? data : source.filter((row) => row.date.getTime() >= chartMinTime).slice(-2);
+        const chartData = addMovingAverage(rawChartData);
         const W = 1200;
         const H = 520;
         const padL = 78;
