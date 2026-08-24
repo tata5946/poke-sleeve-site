@@ -845,15 +845,11 @@
         if (rounded >= 10000) return `${Math.round(rounded / 1000) / 10}\u4e07`;
         return rounded.toLocaleString();
       };
-      const minLabel = compactLabel(min);
-      const maxLabel = compactLabel(max);
       const firstPrice = prices[0];
       const lastPrice = prices[prices.length - 1];
       const lastY = range === 0
         ? height / 2
         : height - padY - ((lastPrice - min) / range) * (height - padY * 2);
-      const valueX = Math.max(46, Number(lastX) - 8).toFixed(1);
-      const valueY = Math.max(9, lastY - 4).toFixed(1);
       const trendClass = lastPrice > prices[0] ? "up" : lastPrice < prices[0] ? "down" : "flat";
 
       return `
@@ -861,11 +857,8 @@
           <svg viewBox="0 0 ${width} ${height}" focusable="false" aria-hidden="true">
             <line class="sleeve-sparkline-axis" x1="22" y1="7" x2="22" y2="${height - padY}"></line>
             <line class="sleeve-sparkline-grid" x1="5" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}"></line>
-            <text class="sleeve-sparkline-label" x="2" y="10">${maxLabel}</text>
-            <text class="sleeve-sparkline-label" x="2" y="${height - 6}">${minLabel}</text>
             <polygon class="sleeve-sparkline-area" points="${areaPoints}"></polygon>
             <polyline class="sleeve-sparkline-line" points="${linePoints}"></polyline>
-            <text class="sleeve-sparkline-value" x="${valueX}" y="${valueY}">${compactLabel(lastPrice)}</text>
             <circle class="sleeve-sparkline-dot" cx="${lastX}" cy="${lastY.toFixed(1)}" r="2"></circle>
           </svg>
           <div class="sleeve-sparkline-foot" aria-hidden="true">
@@ -908,7 +901,7 @@
               onerror="this.onerror=null; this.style.display='none';">
           </div>
           <div class="podium-content">
-            <div class="podium-kicker">TOP ${rank} SLEEVE</div>
+            <div class="podium-kicker">ACCESS RANKING</div>
             <h${rank === 1 ? "2" : "3"} class="podium-title">${escapeHtml(row.name)}</h${rank === 1 ? "2" : "3"}>
             <div class="podium-metrics">
               <div class="podium-metric">
