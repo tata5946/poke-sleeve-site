@@ -6723,7 +6723,7 @@ footer.site-footer {
 :root body.page-market-list .podium-card--rank1 .podium-media,
 :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media {
     display: block !important;
-    aspect-ratio: 16 / 9.1 !important;
+    aspect-ratio: 4 / 3.75 !important;
     width: 100% !important;
     min-width: 0 !important;
     padding: 10px !important;
