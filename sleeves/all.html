@@ -11,7 +11,10 @@
   <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
   <meta property="og:url" content="https://pokesuri-navi.com/sleeves/all.html" />
   <link rel="canonical" href="https://pokesuri-navi.com/sleeves/all.html" />
-  <link rel="stylesheet" href="./assets/site.css?v=20260501c" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/site.css?v=20260824b" />
   <style>
     body { background: #f7f9fd; color: #0f172a; }
     .index-wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 48px; }
@@ -26,9 +29,20 @@
     .sleeve-index-meta { color: #64748b; font-size: 13px; line-height: 1.5; }
   </style>
 </head>
-<body>
+<body class="page-market-list" data-hide-global-header="1">
   <div id="site-header"></div>
-  <main class="index-wrap">
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー">
+      <div id="dashboardSidebarSlot" data-dashboard-sidebar-active="zukan"></div>
+    </aside>
+
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot"></div>
+      </header>
+
+      <div class="dashboard-content">
+        <div class="index-wrap">
     <nav class="breadcrumb" aria-label="breadcrumb">
       <a href="./">&#12507;&#12540;&#12512;</a>
       <span class="breadcrumb-sep" aria-hidden="true">&gt;</span>
@@ -5076,12 +5090,19 @@
         </a>
       </li>
     </ul>
-  </main>
+        </div>
+      </div>
+    </main>
+  </div>
   <div id="site-footer"></div>
   <script src="./assets/common.js?v=20260822b"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (window.common && typeof window.common.injectHeader === "function") window.common.injectHeader();
+    document.addEventListener("DOMContentLoaded", async () => {
+      if (window.common && typeof window.common.setupDashboardChrome === "function") {
+        await window.common.setupDashboardChrome({ sidebarActive: "zukan" });
+      } else if (window.common && typeof window.common.injectHeader === "function") {
+        window.common.injectHeader();
+      }
       if (window.common && typeof window.common.injectFooter === "function") window.common.injectFooter();
       if (window.common && typeof window.common.setActiveNav === "function") window.common.setActiveNav("zukan");
     });
