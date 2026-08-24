@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 
 <head>
@@ -52,7 +52,7 @@
       margin: 0;
       padding: 0 18px;
       color: #050505;
-      font-family: "M PLUS Rounded 1c", "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
       font-size: clamp(38px, 6vw, 62px);
       line-height: 1;
       font-weight: 900;
@@ -4698,6 +4698,23 @@
           <button id="releaseBannerNext" class="release-banner-next" type="button" aria-label="次のバナーへ">›</button>
           <div id="releaseBannerDots" class="release-banner-dots" aria-hidden="true"></div>
         </section>
+        <section class="home-articles reveal-on-scroll" style="--reveal-delay: 56ms;" aria-label="お知らせ">
+          <div class="home-articles-head">
+            <h2 class="home-articles-title">お知らせ</h2>
+            <div class="home-article-tabs" role="tablist" aria-label="お知らせカテゴリ">
+              <button type="button" class="home-article-tab is-active" data-home-article-filter="all">すべて</button>
+              <button type="button" class="home-article-tab" data-home-article-filter="FEATURE">特集</button>
+              <button type="button" class="home-article-tab" data-home-article-filter="相場コラム">相場コラム</button>
+              <button type="button" class="home-article-tab" data-home-article-filter="商品情報">商品情報</button>
+              <button type="button" class="home-article-tab" data-home-article-filter="その他">その他</button>
+            </div>
+            <a class="home-articles-more" href="./articles.html">すべて読む</a>
+          </div>
+          <div id="homeArticleGrid" class="home-article-grid">
+            <div class="home-empty">記事を読み込み中です。</div>
+          </div>
+        </section>
+
 
         <section class="home-sleeve-search reveal-on-scroll" style="--reveal-delay: 56ms;" aria-labelledby="homeSleeveSearchTitle">
           <div class="home-sleeve-search-head">
@@ -4874,22 +4891,6 @@
                 <div class="hero-skeleton-pill skeleton-block" style="height:40px;width:90px;"></div>
               </div>
             </div>
-          </div>
-        </section>
-        <section class="home-articles reveal-on-scroll" style="--reveal-delay: 176ms;" aria-label="お知らせ">
-          <div class="home-articles-head">
-            <h2 class="home-articles-title">お知らせ</h2>
-            <div class="home-article-tabs" role="tablist" aria-label="お知らせカテゴリ">
-              <button type="button" class="home-article-tab is-active" data-home-article-filter="all">すべて</button>
-              <button type="button" class="home-article-tab" data-home-article-filter="FEATURE">特集</button>
-              <button type="button" class="home-article-tab" data-home-article-filter="相場コラム">相場コラム</button>
-              <button type="button" class="home-article-tab" data-home-article-filter="商品情報">商品情報</button>
-              <button type="button" class="home-article-tab" data-home-article-filter="その他">その他</button>
-            </div>
-            <a class="home-articles-more" href="./articles.html">すべて読む</a>
-          </div>
-          <div id="homeArticleGrid" class="home-article-grid">
-            <div class="home-empty">記事を読み込み中です。</div>
           </div>
         </section>
         <section id="mobileCategoryDiscovery" class="mobile-category-discovery reveal-on-scroll" style="--reveal-delay: 190ms;" aria-label="スリーブカテゴリ">
