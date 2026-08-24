@@ -7064,3 +7064,42 @@ footer.site-footer {
         height: 220px !important;
     }
 }
+
+/* Ranking compact cards: keep 4th+ sparklines visible */
+:root body.page-market-list .compact-market-row {
+    display: block !important;
+    min-width: 0 !important;
+    margin-top: 4px !important;
+}
+
+:root body.page-market-list .compact-market-row .sleeve-sparkline,
+:root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: 204px !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    border: 1px solid var(--ranking-card-border, #d8dee8) !important;
+    border-radius: 7px !important;
+    background: #fff !important;
+    overflow: hidden !important;
+}
+
+:root body.page-market-list .compact-market-row .sleeve-sparkline svg,
+:root body.page-surge-ranking .compact-market-row .sleeve-sparkline svg {
+    position: absolute !important;
+    left: 18px !important;
+    right: 18px !important;
+    top: 58px !important;
+    bottom: 66px !important;
+    width: calc(100% - 36px) !important;
+    height: calc(100% - 124px) !important;
+}
+
+@media (max-width: 760px) {
+    :root body.page-market-list .compact-market-row .sleeve-sparkline,
+    :root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+        height: 196px !important;
+    }
+}
