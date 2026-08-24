@@ -1712,7 +1712,7 @@
       return { latest, prev };
     }
 
-    function getSparklinePoints(sleeve, maxItems = 8) {
+    function getSparklinePoints(sleeve, maxItems = 12) {
       const arr = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
       const map = new Map();
 
@@ -1766,6 +1766,7 @@
       };
       const minLabel = compactLabel(min);
       const maxLabel = compactLabel(max);
+      const firstPrice = prices[0];
       const lastPrice = prices[prices.length - 1];
       const lastY = range === 0
         ? height / 2
@@ -1786,6 +1787,10 @@
             <text class="sleeve-sparkline-value" x="${valueX}" y="${valueY}">${compactLabel(lastPrice)}</text>
             <circle class="sleeve-sparkline-dot" cx="${lastX}" cy="${lastY.toFixed(1)}" r="2"></circle>
           </svg>
+          <div class="sleeve-sparkline-foot" aria-hidden="true">
+            <span><small>12週前</small><b>${compactLabel(firstPrice)}円</b></span>
+            <span><small>現在</small><b>${compactLabel(lastPrice)}円</b></span>
+          </div>
         </div>
       `;
     }
@@ -1940,7 +1945,7 @@
     }
 
     function getPodiumBadge(rank) {
-      return String(rank);
+      return String(rank).padStart(2, "0");
     }
 
     function buildPodiumCard(row, rank) {
@@ -1948,6 +1953,7 @@
       const deltaInfo = row.deltaInfo;
       const imgSrc = String(s.imageUrl || "").trim();
       const rateClass = getDeltaClass(deltaInfo && deltaInfo.rate);
+      const deltaDisplay = getCompactDeltaDisplay(deltaInfo);
       const sparklineHtml = buildSparklineSvg(s);
       const metaItems = [
         s.releaseYear ? `YEAR ${escapeHtml(s.releaseYear)}` : "",
@@ -1967,11 +1973,12 @@
             <h${rank === 1 ? "2" : "3"} class="podium-title">${escapeHtml(s.name ?? "")}</h${rank === 1 ? "2" : "3"}>
             <div class="podium-metrics">
               <div class="podium-metric">
-                <span class="podium-metric-label">最新価格</span>
+                <span class="podium-metric-label">現在価格</span>
                 <div class="podium-price">${row.price.toLocaleString()}円</div>
               </div>
               <div class="podium-metric">
                 <span class="podium-metric-label">前週比</span>
+                <div class="podium-diff ${deltaDisplay.className}">${escapeHtml(deltaDisplay.text)}</div>
                 <div class="podium-rate ${rateClass}">${formatRateText(deltaInfo && deltaInfo.rate)}</div>
               </div>
             </div>

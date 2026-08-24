@@ -1303,7 +1303,7 @@
       return { latest, prev };
     }
 
-    function getSparklinePoints(sleeve, maxItems = 8) {
+    function getSparklinePoints(sleeve, maxItems = 12) {
       const arr = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
       const map = new Map();
 
@@ -1362,6 +1362,7 @@
       };
       const minLabel = compactLabel(min);
       const maxLabel = compactLabel(max);
+      const firstPrice = prices[0];
       const valueX = Math.max(46, Number(lastX) - 8).toFixed(1);
       const valueY = Math.max(9, lastY - 4).toFixed(1);
       const trendClass = lastPrice > prices[0] ? "up" : lastPrice < prices[0] ? "down" : "flat";
@@ -1378,6 +1379,10 @@
             <text class="sleeve-sparkline-value" x="${valueX}" y="${valueY}">${compactLabel(lastPrice)}</text>
             <circle class="sleeve-sparkline-dot" cx="${lastX}" cy="${lastY.toFixed(1)}" r="2"></circle>
           </svg>
+          <div class="sleeve-sparkline-foot" aria-hidden="true">
+            <span><small>12週前</small><b>${compactLabel(firstPrice)}円</b></span>
+            <span><small>現在</small><b>${compactLabel(lastPrice)}円</b></span>
+          </div>
         </div>
       `;
     }
@@ -1427,7 +1432,7 @@
     }
 
     function getPodiumBadge(rank) {
-      return String(rank);
+      return String(rank).padStart(2, "0");
     }
 
     function buildPodiumCard(row, rank) {
