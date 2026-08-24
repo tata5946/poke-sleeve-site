@@ -2629,6 +2629,295 @@ footer.site-footer {
     }
 }
 
+/* Ranking card final visual alignment */
+:root body.page-market-list .ranking-top3 {
+    grid-template-columns: repeat(3, minmax(300px, 1fr)) !important;
+    gap: 36px !important;
+}
+
+:root body.page-market-list .compact-grid,
+:root body.page-market-list .ranking-list,
+:root body.page-market-list #list.grid {
+    gap: 28px !important;
+}
+
+:root body.page-market-list .podium-card,
+:root body.page-market-list .podium-card--rank1,
+:root body.page-market-list .podium-card--rank2,
+:root body.page-market-list .podium-card--rank3,
+:root body.page-market-list a.compact-card,
+:root body.page-market-list .compact-card {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto auto !important;
+    gap: 18px !important;
+    padding: 78px 24px 24px !important;
+    border: 1px solid #d9dee8 !important;
+    border-radius: 20px !important;
+    background: #fff !important;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, .10) !important;
+    overflow: hidden !important;
+}
+
+:root body.page-market-list .podium-media,
+:root body.page-market-list .podium-card--rank1 .podium-media,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media,
+:root body.page-market-list .compact-thumb-wrap {
+    aspect-ratio: 16 / 9.4 !important;
+    padding: 18px !important;
+    border-radius: 14px !important;
+    background: #f8fafc !important;
+    overflow: hidden !important;
+}
+
+:root body.page-market-list .podium-media img,
+:root body.page-market-list .podium-card--rank1 .podium-media img,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media img,
+:root body.page-market-list .compact-thumb {
+    width: auto !important;
+    height: auto !important;
+    max-width: 98% !important;
+    max-height: 98% !important;
+    object-fit: contain !important;
+}
+
+:root body.page-market-list .podium-market-row .sleeve-sparkline,
+:root body.page-market-list .compact-market-row .sleeve-sparkline,
+:root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
+:root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
+:root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    height: 170px !important;
+    padding: 46px 18px 18px !important;
+    border: 1px solid #d9dee8 !important;
+    border-radius: 10px !important;
+    background: #fff !important;
+}
+
+:root body.page-surge-ranking .podium-trend-row {
+    display: contents !important;
+}
+
+:root body.page-market-list .sleeve-sparkline::before {
+    content: "直近12週の価格推移" !important;
+}
+
+:root body.page-market-list .sleeve-sparkline::after {
+    content: "週次" !important;
+}
+
+/* Ranking card final visual alignment */
+:root body.page-market-list .ranking-top3 {
+    grid-template-columns: repeat(3, minmax(300px, 1fr)) !important;
+    gap: 36px !important;
+}
+
+:root body.page-market-list .compact-grid,
+:root body.page-market-list .ranking-list,
+:root body.page-market-list #list.grid {
+    gap: 28px !important;
+}
+
+:root body.page-market-list .podium-card,
+:root body.page-market-list .podium-card--rank1,
+:root body.page-market-list .podium-card--rank2,
+:root body.page-market-list .podium-card--rank3,
+:root body.page-market-list a.compact-card,
+:root body.page-market-list .compact-card {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto auto !important;
+    gap: 18px !important;
+    padding: 78px 24px 24px !important;
+    border: 1px solid #d9dee8 !important;
+    border-radius: 20px !important;
+    background: #fff !important;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, .10) !important;
+    overflow: hidden !important;
+}
+
+:root body.page-market-list .podium-badge,
+:root body.page-market-list .compact-rank-badge {
+    top: 22px !important;
+    left: 24px !important;
+    width: 56px !important;
+    height: 56px !important;
+    min-width: 56px !important;
+}
+
+:root body.page-market-list .podium-card::after,
+:root body.page-market-list a.compact-card::after,
+:root body.page-market-list .compact-card::after {
+    top: 38px !important;
+    left: 104px !important;
+    font-size: 16px !important;
+    content: "価格上昇" !important;
+}
+
+:root body.page-market-list .podium-media,
+:root body.page-market-list .podium-card--rank1 .podium-media,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media,
+:root body.page-market-list .compact-thumb-wrap {
+    display: grid !important;
+    place-items: center !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9.4 !important;
+    padding: 18px !important;
+    border-radius: 14px !important;
+    background: #f8fafc !important;
+    overflow: hidden !important;
+}
+
+:root body.page-market-list .podium-media img,
+:root body.page-market-list .podium-card--rank1 .podium-media img,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media img,
+:root body.page-market-list .compact-thumb {
+    width: auto !important;
+    height: auto !important;
+    max-width: 98% !important;
+    max-height: 98% !important;
+    padding: 0 !important;
+    object-fit: contain !important;
+}
+
+:root body.page-market-list .podium-content,
+:root body.page-market-list .podium-card--rank1 .podium-content,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-content {
+    display: grid !important;
+    gap: 16px !important;
+    padding: 0 !important;
+}
+
+:root body.page-market-list .podium-title,
+:root body.page-market-list .podium-card--rank1 .podium-title,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-title,
+:root body.page-market-list .compact-card-title {
+    margin: 0 !important;
+    font-size: clamp(20px, 1.55vw, 26px) !important;
+    line-height: 1.25 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-metrics,
+:root body.page-market-list .podium-card--rank1 .podium-metrics,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-metrics {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 12px 20px !important;
+    align-items: end !important;
+}
+
+:root body.page-market-list .podium-metric,
+:root body.page-market-list .compact-price-row {
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+}
+
+:root body.page-market-list .podium-metric-label,
+:root body.page-market-list .compact-delta {
+    color: #667085 !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+}
+
+:root body.page-market-list .podium-price,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-price,
+:root body.page-market-list .compact-price {
+    font-size: clamp(34px, 3vw, 44px) !important;
+    line-height: 1.05 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-surge-ranking .podium-market-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 14px 20px !important;
+    align-items: end !important;
+}
+
+:root body.page-surge-ranking .podium-trend-row {
+    display: contents !important;
+}
+
+:root body.page-surge-ranking .podium-diff,
+:root body.page-surge-ranking .compact-delta {
+    color: #c01f1a !important;
+    font-size: clamp(21px, 2.1vw, 29px) !important;
+    line-height: 1.05 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-rate,
+:root body.page-market-list .compact-rate {
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    border: 1px solid #ef4444 !important;
+    border-radius: 8px !important;
+    color: #c01f1a !important;
+    font-size: 18px !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-market-row .sleeve-sparkline,
+:root body.page-market-list .compact-market-row .sleeve-sparkline,
+:root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
+:root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
+:root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    height: 170px !important;
+    padding: 46px 18px 18px !important;
+    border: 1px solid #d9dee8 !important;
+    border-radius: 10px !important;
+    background: #fff !important;
+}
+
+:root body.page-market-list .compact-market-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+}
+
+:root body.page-market-list .sleeve-sparkline::before {
+    content: "直近12週の価格推移" !important;
+}
+
+:root body.page-market-list .sleeve-sparkline::after {
+    content: "週次" !important;
+}
+
+@media (max-width: 700px) {
+    :root body.page-market-list .ranking-top3,
+    :root body.page-market-list .compact-grid,
+    :root body.page-market-list .ranking-list,
+    :root body.page-market-list #list.grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 18px !important;
+    }
+
+    :root body.page-market-list .podium-card,
+    :root body.page-market-list .podium-card--rank1,
+    :root body.page-market-list .podium-card--rank2,
+    :root body.page-market-list .podium-card--rank3,
+    :root body.page-market-list a.compact-card,
+    :root body.page-market-list .compact-card {
+        padding: 62px 12px 14px !important;
+    }
+
+    :root body.page-market-list .podium-market-row .sleeve-sparkline,
+    :root body.page-market-list .compact-market-row .sleeve-sparkline,
+    :root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
+    :root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
+    :root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+        height: 112px !important;
+        padding: 34px 10px 12px !important;
+    }
+}
+
 /* Final ranking card overrides */
 :root body.page-market-list .ranking-top3,
 :root body.page-market-list .compact-grid,
@@ -5657,6 +5946,114 @@ footer.site-footer {
     :root body.page-market-list .sleeve-sparkline,
     :root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
     :root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
+    :root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+        height: 112px !important;
+        padding: 34px 10px 12px !important;
+    }
+}
+/* Ranking card final EOF override */
+:root body.page-market-list .ranking-top3 {
+    grid-template-columns: repeat(3, minmax(300px, 1fr)) !important;
+    gap: 36px !important;
+}
+
+:root body.page-market-list .podium-card,
+:root body.page-market-list .podium-card--rank1,
+:root body.page-market-list .podium-card--rank2,
+:root body.page-market-list .podium-card--rank3,
+:root body.page-market-list a.compact-card,
+:root body.page-market-list .compact-card {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto auto !important;
+    gap: 18px !important;
+    padding: 78px 24px 24px !important;
+    border: 1px solid #d9dee8 !important;
+    border-radius: 20px !important;
+    background: #fff !important;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, .10) !important;
+}
+
+:root body.page-market-list .podium-media,
+:root body.page-market-list .podium-card--rank1 .podium-media,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media,
+:root body.page-market-list .compact-thumb-wrap {
+    aspect-ratio: 16 / 9.4 !important;
+    padding: 18px !important;
+    border-radius: 14px !important;
+    background: #f8fafc !important;
+}
+
+:root body.page-market-list .podium-media img,
+:root body.page-market-list .podium-card--rank1 .podium-media img,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media img,
+:root body.page-market-list .compact-thumb {
+    width: auto !important;
+    height: auto !important;
+    max-width: 98% !important;
+    max-height: 98% !important;
+    object-fit: contain !important;
+}
+
+:root body.page-market-list .podium-market-row .sleeve-sparkline,
+:root body.page-market-list .compact-market-row .sleeve-sparkline,
+:root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
+:root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
+:root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    height: 170px !important;
+    padding: 46px 18px 18px !important;
+    border: 1px solid #d9dee8 !important;
+    border-radius: 10px !important;
+    background: #fff !important;
+}
+
+:root body.page-surge-ranking .podium-trend-row {
+    display: contents !important;
+}
+
+:root body.page-market-list .compact-market-row {
+    grid-template-columns: 1fr !important;
+}
+
+:root body.page-market-list .sleeve-sparkline::before {
+    content: "直近12週の価格推移" !important;
+}
+
+:root body.page-market-list .sleeve-sparkline::after {
+    content: "週次" !important;
+}
+
+@media (max-width: 700px) {
+    :root body.page-market-list .ranking-top3,
+    :root body.page-market-list .compact-grid,
+    :root body.page-market-list .ranking-list,
+    :root body.page-market-list #list.grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 18px !important;
+    }
+
+    :root body.page-market-list .podium-card,
+    :root body.page-market-list .podium-card--rank1,
+    :root body.page-market-list .podium-card--rank2,
+    :root body.page-market-list .podium-card--rank3,
+    :root body.page-market-list a.compact-card,
+    :root body.page-market-list .compact-card {
+        padding: 62px 12px 14px !important;
+    }
+
+    :root body.page-market-list .podium-media,
+    :root body.page-market-list .podium-card--rank1 .podium-media,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media,
+    :root body.page-market-list .compact-thumb-wrap {
+        aspect-ratio: 1 / 1 !important;
+        padding: 8px !important;
+    }
+
+    :root body.page-market-list .podium-market-row .sleeve-sparkline,
+    :root body.page-market-list .compact-market-row .sleeve-sparkline,
+    :root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
+    :root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
     :root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
         height: 112px !important;
         padding: 34px 10px 12px !important;
