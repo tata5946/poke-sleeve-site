@@ -2699,6 +2699,7 @@ footer.site-footer {
     background: transparent !important;
     color: #667085 !important;
     text-decoration: none !important;
+    font-family: "Inter", "Noto Sans JP", sans-serif !important;
     font-size: 15px !important;
     font-weight: 700 !important;
     line-height: 1.35 !important;
