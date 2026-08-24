@@ -4506,10 +4506,19 @@
       return Array.from(map.values()).sort((a, b) => a.timestamp - b.timestamp);
     }
 
+    const FULL_PERIOD_MONTHLY_CUTOFF_DATE = "2026-01-01";
+
+    function filterFullPeriodMonthlySeries(points) {
+      return (Array.isArray(points) ? points : []).filter((point) => {
+        const date = normalizeDateFromInput(point?.date || point?.month || point?.periodStart, "01");
+        return date && date < FULL_PERIOD_MONTHLY_CUTOFF_DATE;
+      });
+    }
+
     function buildFullPeriodSeries(sleeve) {
-      const explicitMonthly = buildMonthlySeries(sleeve);
+      const explicitMonthly = filterFullPeriodMonthlySeries(buildMonthlySeries(sleeve));
       const explicitWeekly = buildWeeklySeries(sleeve);
-      const legacyMonthly = buildLegacyObservationSeries(sleeve, ["month"]);
+      const legacyMonthly = filterFullPeriodMonthlySeries(buildLegacyObservationSeries(sleeve, ["month"]));
       const legacyWeekly = buildLegacyObservationSeries(sleeve, ["week"]);
       return dedupeSeriesByDate([
         ...(explicitMonthly.length ? explicitMonthly : legacyMonthly),
