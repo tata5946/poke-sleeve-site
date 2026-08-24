@@ -6726,10 +6726,10 @@ footer.site-footer {
     aspect-ratio: 4 / 3.75 !important;
     width: 100% !important;
     min-width: 0 !important;
-    padding: 10px !important;
-    border: 1px solid var(--ranking-card-border) !important;
-    border-radius: 7px !important;
-    background: #fff !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
     box-shadow: none !important;
     overflow: hidden !important;
 }
