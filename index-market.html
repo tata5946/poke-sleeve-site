@@ -3454,8 +3454,7 @@
         yMin = Math.max(0, Math.floor((yMin - ySpan * 0.12) / 100) * 100);
         yMax = Math.ceil((yMax + ySpan * 0.12) / 100) * 100;
         if (yMax <= yMin) yMax = yMin + 100;
-        const maxCount = Math.max(1, ...chartData.map((row) => Number(row.updateCount) || 0));
-        const countAxisMax = Math.max(4, Math.ceil(maxCount / 50) * 50);
+        const countAxisMax = 300;
         const firstTime = chartData[0].date.getTime();
         const lastTime = chartData[chartData.length - 1].date.getTime();
         const timeSpan = lastTime - firstTime || 1;
