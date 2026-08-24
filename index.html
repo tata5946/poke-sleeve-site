@@ -2986,9 +2986,15 @@
       height: 7px;
       border-radius: 999px;
       background: #cbd5e1;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      transition: width .2s ease, background-color .2s ease, transform .2s ease;
     }
     .release-banner-dot.is-active {
+      width: 18px;
       background: #0f172a;
+      transform: scale(1.02);
     }
     .release-banner-track--single {
       --release-card-width: clamp(720px, 68vw, 1040px);
@@ -4780,7 +4786,7 @@
             <div class="release-feature-card skeleton-block"></div>
           </div>
           <button id="releaseBannerNext" class="release-banner-next" type="button" aria-label="次のバナーへ">›</button>
-          <div id="releaseBannerDots" class="release-banner-dots" aria-hidden="true"></div>
+          <div id="releaseBannerDots" class="release-banner-dots" aria-label="バナー切り替え"></div>
         </section>
         <section class="home-articles reveal-on-scroll" style="--reveal-delay: 56ms;" aria-label="お知らせ">
           <div class="home-articles-head">
@@ -5947,7 +5953,7 @@
       track.dataset.loopSize = String(dotCount);
       const dots = document.getElementById("releaseBannerDots");
       if (dots) {
-        dots.innerHTML = Array.from({ length: dotCount }, (_, index) => `<span class="release-banner-dot${index === 1 ? " is-active" : ""}"></span>`).join("");
+        dots.innerHTML = Array.from({ length: dotCount }, (_, index) => `<button class="release-banner-dot${index === 1 ? " is-active" : ""}" type="button" data-banner-dot="${index}" aria-label="${index + 1}番目のバナーへ"></button>`).join("");
       }
       requestAnimationFrame(() => {
         const initialCard = track.querySelectorAll(".release-feature-card")[dotCount + 1];
@@ -6000,12 +6006,56 @@
       if (Math.abs(track.scrollLeft - before) < 1) cards[targetIndex].scrollIntoView({ inline: "center", block: "nearest" });
     }
 
+    function scrollReleaseBannerByStep(track, step = 1, behavior = "smooth") {
+      if (!track) return;
+      normalizeReleaseBannerLoop(track);
+      const cards = Array.from(track.querySelectorAll(".release-feature-card"));
+      if (!cards.length) return;
+      const currentIndex = getCenteredReleaseBannerIndex(track);
+      const targetIndex = Math.max(0, Math.min(cards.length - 1, currentIndex + step));
+      cards[targetIndex]?.scrollIntoView({ inline: "center", block: "nearest", behavior });
+    }
+
+    function scrollReleaseBannerToLogicalIndex(track, logicalIndex, behavior = "smooth") {
+      const loopSize = Number(track?.dataset?.loopSize || 0);
+      if (!track || !loopSize) return;
+      normalizeReleaseBannerLoop(track);
+      const cards = Array.from(track.querySelectorAll(".release-feature-card"));
+      const currentIndex = getCenteredReleaseBannerIndex(track);
+      const middleStart = loopSize;
+      const targetIndex = middleStart + (((Number(logicalIndex) || 0) % loopSize) + loopSize) % loopSize;
+      const alternateIndex = targetIndex + (targetIndex <= currentIndex ? loopSize : -loopSize);
+      const candidates = [targetIndex, alternateIndex].filter((index) => cards[index]);
+      const nearestIndex = candidates.sort((a, b) => Math.abs(a - currentIndex) - Math.abs(b - currentIndex))[0];
+      cards[nearestIndex]?.scrollIntoView({ inline: "center", block: "nearest", behavior });
+    }
+
     function wireReleaseBannerCarousel() {
       const track = document.getElementById("releaseBannerTrack");
       const next = document.getElementById("releaseBannerNext");
       if (!track || track.dataset.carouselWired === "1") return;
       track.dataset.carouselWired = "1";
       let scrollTimer = null;
+      let autoplayTimer = null;
+      let isPaused = false;
+      const autoplayMs = 4200;
+      const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+      const stopAutoplay = () => {
+        window.clearTimeout(autoplayTimer);
+        autoplayTimer = null;
+      };
+      const startAutoplay = () => {
+        stopAutoplay();
+        if (prefersReducedMotion || isPaused || document.hidden || Number(track.dataset.loopSize || 0) <= 1) return;
+        autoplayTimer = window.setTimeout(() => {
+          scrollReleaseBannerByStep(track, 1, "smooth");
+          startAutoplay();
+        }, autoplayMs);
+      };
+      const restartAutoplay = () => {
+        stopAutoplay();
+        startAutoplay();
+      };
       track.addEventListener("scroll", () => {
         updateReleaseBannerDots(track);
         window.clearTimeout(scrollTimer);
@@ -6014,16 +6064,45 @@
           updateReleaseBannerDots(track);
         }, 120);
       }, { passive: true });
+      track.addEventListener("pointerenter", () => {
+        isPaused = true;
+        stopAutoplay();
+      });
+      track.addEventListener("pointerleave", () => {
+        isPaused = false;
+        startAutoplay();
+      });
+      track.addEventListener("focusin", () => {
+        isPaused = true;
+        stopAutoplay();
+      });
+      track.addEventListener("focusout", () => {
+        isPaused = false;
+        startAutoplay();
+      });
+      track.addEventListener("pointerdown", restartAutoplay, { passive: true });
       if (next && next.dataset.wired !== "1") {
         next.dataset.wired = "1";
         next.addEventListener("click", () => {
-          const card = track.querySelector(".release-feature-card");
-          const style = window.getComputedStyle(track);
-          const gap = Number.parseFloat(style.columnGap || style.gap || "0") || 0;
-          const amount = card ? card.getBoundingClientRect().width + gap : track.clientWidth * 0.72;
-          track.scrollBy({ left: amount, behavior: "smooth" });
+          scrollReleaseBannerByStep(track, 1, "smooth");
+          restartAutoplay();
         });
       }
+      const dots = document.getElementById("releaseBannerDots");
+      if (dots && dots.dataset.wired !== "1") {
+        dots.dataset.wired = "1";
+        dots.addEventListener("click", (event) => {
+          const dot = event.target?.closest?.("[data-banner-dot]");
+          if (!dot) return;
+          scrollReleaseBannerToLogicalIndex(track, Number(dot.dataset.bannerDot || 0), "smooth");
+          restartAutoplay();
+        });
+      }
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) stopAutoplay();
+        else startAutoplay();
+      });
+      startAutoplay();
     }
 
     function formatPercent(rate, digits = 1) {
