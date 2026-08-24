@@ -1759,15 +1759,6 @@
     const MARKET_INDEX_BASE_MONTH = "2024-01";
     const MARKET_INDEX_BASE_LABEL = "2024年1月";
 
-    const MARKET_COMMENT_TEMPLATES = Object.freeze({
-      strong_up: "スリーブ相場は強い上昇傾向です。全体平均は前回比で大きく伸びており、値上がりしているスリーブも広く見られます。人気どころだけでなく、相場全体で価格の持ち上がりが確認できます。",
-      up: "スリーブ相場は堅調です。全体平均は前回比で上昇しており、価格が上向きやすい流れです。幅広い価格帯で底堅さが見られます。",
-      volume_up: "スリーブ相場では相場更新が活発です。全体平均の動きはまだ大きくないものの、価格更新の広がりが見られます。",
-      flat: "スリーブ相場は横ばい圏です。全体平均の変動は限られており、全体としては落ち着いた推移です。足元ではスリーブごとの差が出やすい状態です。",
-      soft_down: "スリーブ相場はやや軟調です。全体平均は弱含みで推移しており、価格の伸びはやや限定的です。人気スリーブとそれ以外で動きの差が広がりやすい局面です。",
-      down: "スリーブ相場は下落基調です。全体平均は前回比で大きく下がっており、全体として慎重な値動きになっています。短期的には様子見が増えやすいタイミングです。"
-    });
-
     function escapeHtml(str) {
       return String(str ?? "")
         .replaceAll("&", "&amp;")
@@ -2057,56 +2048,45 @@
     }
 
     function classifyMarketCommentState(stats) {
-      const hint = String(stats?.stateHint || "").trim();
       const rate = Number(stats?.latestRate);
-      const activeCount = Number(stats?.activeCount || 0);
-      const risingCount = Number(stats?.risingCount || 0);
-      const ratio = activeCount > 0 ? (risingCount / activeCount) : 0;
-
       let state = "flat";
-      if (Number.isFinite(rate) && rate >= 2.0 && ratio >= 0.55) state = "strong_up";
+      if (Number.isFinite(rate) && rate >= 2.0) state = "strong_up";
       else if (Number.isFinite(rate) && rate <= -2.0) state = "down";
-      else if (Number.isFinite(rate) && rate >= 0.8 && ratio >= 0.45) state = "up";
+      else if (Number.isFinite(rate) && rate >= 0.8) state = "up";
       else if (Number.isFinite(rate) && rate <= -0.8) state = "soft_down";
-      else if (Number.isFinite(rate) && rate > -0.8 && rate < 0.8 && ratio >= 0.45) state = "volume_up";
-
-      if (hint === "up" && (state === "flat" || state === "volume_up")) return "up";
-      if (hint === "down" && state === "flat") return "soft_down";
       return state;
-    }
-
-    function buildMarketCommentAddon(stats) {
-      const activeCount = Number(stats?.activeCount || 0);
-      const risingCount = Number(stats?.risingCount || 0);
-      const ratio = activeCount > 0 ? (risingCount / activeCount) : 0;
-      const volume = Number(stats?.volume || 0);
-      const tradeValue = Number(stats?.tradeValue || 0);
-      const avgPrice = Number(stats?.avgPrice || 0);
-
-      if (ratio >= 0.6) return "値上がりしているスリーブの裾野が広く、相場全体に動きが広がっています。";
-      if (ratio <= 0.3 && activeCount > 0) return "一部の人気スリーブを除くと、全体にはやや弱さが残っています。";
-      if (volume >= 45) return "相場更新数が多く、市場全体の価格見直しが進んでいます。";
-      if (tradeValue >= 180000) return "高額帯を含めた価格更新があり、集計額も大きめです。";
-      if (avgPrice >= 3500) return "高額帯スリーブの成約が平均価格を押し上げています。";
-      return "";
     }
 
     function buildMarketCommentStats(priceSeries) {
       const rows = Array.isArray(priceSeries) ? priceSeries : [];
+      const valid = rows.filter((row) => Number.isFinite(row?.avgPrice));
       const pair = latestTwoValid(rows, "avgPrice");
       const latest = pair?.latest || null;
       if (!latest?.week) return null;
       const prev = pair?.prev || null;
       const diff = prev && Number.isFinite(prev.avgPrice) ? latest.avgPrice - prev.avgPrice : null;
       const rate = Number.isFinite(diff) && prev.avgPrice > 0 ? (diff / prev.avgPrice) * 100 : null;
+      const latestIndex = valid.findIndex((row) => row === latest);
+      const monthBase = latestIndex >= 0 ? findNearestPriorPoint(valid, latestIndex, 28) : null;
+      const yearBase = latestIndex >= 0 ? findNearestPriorPoint(valid, latestIndex, 365) : null;
+      const buildChange = (base) => {
+        if (!base || !Number.isFinite(base.avgPrice) || base.avgPrice <= 0) return null;
+        const amount = latest.avgPrice - base.avgPrice;
+        return {
+          amount,
+          rate: (amount / base.avgPrice) * 100,
+          week: base.week
+        };
+      };
 
       return {
         latestWeek: latest.week,
         latestRate: rate,
+        prevChange: Number.isFinite(diff) ? { amount: diff, rate, week: prev?.week || null } : null,
+        monthChange: buildChange(monthBase),
+        yearChange: buildChange(yearBase),
         activeCount: Number(latest.targetCount || 0),
-        risingCount: null,
         volume: Number(latest.updateCount || 0),
-        tradeValue: 0,
         avgPrice: Number(latest.avgPrice || 0),
         stateHint: Number.isFinite(diff) ? getTrendClass(diff) : "flat"
       };
@@ -2115,9 +2095,23 @@
     function buildAiMarketComment(stats) {
       if (!stats) return "コメントを生成できるデータがまだありません。";
       const state = classifyMarketCommentState(stats);
-      const base = MARKET_COMMENT_TEMPLATES[state] || MARKET_COMMENT_TEMPLATES.flat;
-      const addon = buildMarketCommentAddon(stats);
-      return addon ? `${base} ${addon}` : base;
+      const trendText = {
+        strong_up: "強く上昇しています",
+        up: "上昇しています",
+        flat: "ほぼ横ばいです",
+        soft_down: "やや軟調です",
+        down: "下落しています"
+      }[state] || "ほぼ横ばいです";
+      const changeText = (change, label) => {
+        if (!change || !Number.isFinite(change.amount) || !Number.isFinite(change.rate)) return `${label}は比較データが不足しています`;
+        return `${label}は${formatMarketSignedYen(change.amount)}（${formatSignedPercent(change.rate, 1)}）`;
+      };
+      const updatedRate = stats.activeCount > 0 ? (stats.volume / stats.activeCount) * 100 : null;
+      const updatedText = Number.isFinite(updatedRate)
+        ? `今週は${Number(stats.volume || 0).toLocaleString()}種類が更新され、対象${Number(stats.activeCount || 0).toLocaleString()}種類のうち${updatedRate.toFixed(1)}%に新しい相場が入りました`
+        : `今週は${Number(stats.volume || 0).toLocaleString()}種類が更新されました`;
+
+      return `最新の全スリーブ平均相場は${formatMarketYen(stats.avgPrice)}で、前回比では${trendText}。${changeText(stats.prevChange, "前回比")}、${changeText(stats.monthChange, "月間")}、${changeText(stats.yearChange, "年間")}です。${updatedText}。`;
     }
 
     function renderAiComment(weekIso, stats) {
