@@ -7,9 +7,9 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022"
      crossorigin="anonymous"></script>
   <title>スリーブ指数｜ポケスリ相場ナビ</title>
-  <meta name="description" content="ポケカスリーブ市場の週次指数（全体上昇率）と推移を表示します。" />
+  <meta name="description" content="日本発売デッキシールド全体の平均相場価格と推移を表示します。" />
   <meta property="og:title" content="スリーブ指数｜ポケスリ相場ナビ" />
-  <meta property="og:description" content="ポケカスリーブ市場の週次指数（全体上昇率）と推移を表示します。" />
+  <meta property="og:description" content="日本発売デッキシールド全体の平均相場価格と推移を表示します。" />
   <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
   <meta property="og:url" content="https://pokesuri-navi.com/index-market.html" />
 
@@ -178,6 +178,172 @@
       background: #ffb020;
     }
 
+    .chart-panel {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .chart-panel .panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 14px;
+      gap: 16px;
+    }
+
+    .price-chart-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 18px 0 14px;
+    }
+
+    .price-chart-range {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .price-range-btn {
+      min-width: 104px;
+      min-height: 42px;
+      padding: 0 22px;
+      border: 1px solid #cfe0f5;
+      border-radius: 999px;
+      background: #f8fbff;
+      color: #253858;
+      font-size: 16px;
+      font-weight: 800;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
+    }
+
+    .price-range-btn.is-active {
+      background: #082968;
+      border-color: #082968;
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(8, 41, 104, .18);
+    }
+
+    .price-index-legend {
+      position: static;
+      justify-content: flex-end;
+      gap: 18px;
+      pointer-events: auto;
+    }
+
+    .price-index-legend span {
+      min-height: auto;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      color: #253858;
+      font-size: 15px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .price-index-legend i {
+      width: 28px;
+      height: 4px;
+      background: #1764e8;
+    }
+
+    .price-index-legend .legend-ma i {
+      background: #ff7a00;
+    }
+
+    .price-index-legend .legend-count i {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      background: #c8d8ef;
+    }
+
+    .price-index-chart-wrap {
+      border-color: #cfe0f5;
+      border-radius: 18px;
+      padding: 20px 18px 16px;
+      overflow: visible;
+    }
+
+    .price-chart-canvas {
+      position: relative;
+      width: 100%;
+    }
+
+    .price-index-chart {
+      min-height: 530px;
+    }
+
+    .price-chart-tooltip {
+      position: absolute;
+      z-index: 5;
+      min-width: 168px;
+      padding: 12px 14px;
+      border: 1px solid #cfd9e8;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 14px 34px rgba(15, 23, 42, .14);
+      color: #1f2a44;
+      font-size: 13px;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .price-chart-tooltip strong,
+    .price-chart-tooltip span {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 7px;
+      white-space: nowrap;
+    }
+
+    .price-chart-tooltip span:last-child {
+      margin-bottom: 0;
+    }
+
+    .price-chart-tooltip em {
+      color: #111827;
+      font-style: normal;
+      font-weight: 900;
+    }
+
+    .price-chart-tooltip .dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+
+    .price-chart-tooltip .blue {
+      background: #2563eb;
+    }
+
+    .price-chart-tooltip .orange {
+      background: #ff7a00;
+    }
+
+    .price-chart-tooltip .bar {
+      border-radius: 2px;
+      background: #c8d8ef;
+    }
+
+    .chart-note-inline {
+      margin: 6px 2px 0;
+      color: #506888;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+
     @media (max-width: 1100px) {
       .index-summary-grid.index-summary-grid--price {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -212,9 +378,26 @@
         min-height: 360px;
       }
 
+      .price-chart-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .price-chart-range {
+        gap: 8px;
+      }
+
+      .price-range-btn {
+        min-width: auto;
+        flex: 1 1 92px;
+        min-height: 38px;
+        padding: 0 12px;
+        font-size: 13px;
+      }
+
       .price-index-legend {
-        position: static;
-        padding: 10px 10px 0;
+        justify-content: flex-start;
+        gap: 10px;
       }
     }
 
@@ -1499,16 +1682,6 @@
         <section class="chart-panel" aria-label="指数推移チャート">
             <div class="panel-heading">
               <h2 class="section-title">指数推移</h2>
-              <div class="market-chart-switch" role="tablist" aria-label="指数表示切り替え">
-                <button type="button" class="market-chart-switch-btn" data-index-mode="all" role="tab" aria-selected="false">All</button>
-                <button type="button" class="market-chart-switch-btn" data-index-mode="month" role="tab" aria-selected="false">月</button>
-                <button type="button" class="market-chart-switch-btn is-active" data-index-mode="week" role="tab" aria-selected="true">週</button>
-              </div>
-              <div class="market-index-scope" role="tablist" aria-label="指数対象の切り替え">
-                <button type="button" class="market-index-scope-btn is-active" data-index-scope="all" role="tab" aria-selected="true">全体</button>
-                <button type="button" class="market-index-scope-btn" data-index-scope="memorial" role="tab" aria-selected="false">記念</button>
-                <button type="button" class="market-index-scope-btn" data-index-scope="limited" role="tab" aria-selected="false">限定</button>
-              </div>
               <div class="share-block">
                 <div class="share-row">
                   <button type="button" class="btn share-x" id="shareXBtn">
@@ -1587,12 +1760,12 @@
     const MARKET_INDEX_BASE_LABEL = "2024年1月";
 
     const MARKET_COMMENT_TEMPLATES = Object.freeze({
-      strong_up: "スリーブ相場は強い上昇傾向です。指数は前週比で大きく伸びており、値上がりしているスリーブも広く見られます。人気どころだけでなく、相場全体で価格の持ち上がりが確認できます。",
-      up: "スリーブ相場は堅調です。指数は前週比で上昇しており、全体として価格が上向きやすい流れです。幅広い価格帯で底堅さが見られます。",
-      volume_up: "スリーブ相場では売買が活発です。指数の動きはまだ大きくないものの、値上がりスリーブの広がりが見られます。価格上昇の前段階として取引の熱量が高まっている可能性があります。",
-      flat: "スリーブ相場は横ばい圏です。指数の変動は限られており、全体としては落ち着いた推移です。足元ではスリーブごとの差が出やすい状態です。",
-      soft_down: "スリーブ相場はやや軟調です。指数は弱含みで推移しており、価格の伸びはやや限定的です。人気スリーブとそれ以外で動きの差が広がりやすい局面です。",
-      down: "スリーブ相場は下落基調です。指数は前週比で大きく下がっており、全体として慎重な値動きになっています。短期的には様子見が増えやすいタイミングです。"
+      strong_up: "スリーブ相場は強い上昇傾向です。全体平均は前回比で大きく伸びており、値上がりしているスリーブも広く見られます。人気どころだけでなく、相場全体で価格の持ち上がりが確認できます。",
+      up: "スリーブ相場は堅調です。全体平均は前回比で上昇しており、価格が上向きやすい流れです。幅広い価格帯で底堅さが見られます。",
+      volume_up: "スリーブ相場では相場更新が活発です。全体平均の動きはまだ大きくないものの、価格更新の広がりが見られます。",
+      flat: "スリーブ相場は横ばい圏です。全体平均の変動は限られており、全体としては落ち着いた推移です。足元ではスリーブごとの差が出やすい状態です。",
+      soft_down: "スリーブ相場はやや軟調です。全体平均は弱含みで推移しており、価格の伸びはやや限定的です。人気スリーブとそれ以外で動きの差が広がりやすい局面です。",
+      down: "スリーブ相場は下落基調です。全体平均は前回比で大きく下がっており、全体として慎重な値動きになっています。短期的には様子見が増えやすいタイミングです。"
     });
 
     function escapeHtml(str) {
@@ -1912,49 +2085,30 @@
 
       if (ratio >= 0.6) return "値上がりしているスリーブの裾野が広く、相場全体に動きが広がっています。";
       if (ratio <= 0.3 && activeCount > 0) return "一部の人気スリーブを除くと、全体にはやや弱さが残っています。";
-      if (volume >= 45) return "取引件数が多く、売買の回転が活発です。";
-      if (tradeValue >= 180000) return "高額帯を含めた成約があり、取引総額も大きめです。";
+      if (volume >= 45) return "相場更新数が多く、市場全体の価格見直しが進んでいます。";
+      if (tradeValue >= 180000) return "高額帯を含めた価格更新があり、集計額も大きめです。";
       if (avgPrice >= 3500) return "高額帯スリーブの成約が平均価格を押し上げています。";
       return "";
     }
 
-    function buildMarketCommentStats(sleeves, series, mode) {
-      const list = Array.isArray(sleeves) ? sleeves : [];
-      const rows = Array.isArray(series) ? series : [];
-      const pair = latestTwoValid(rows, "avgRate");
+    function buildMarketCommentStats(priceSeries) {
+      const rows = Array.isArray(priceSeries) ? priceSeries : [];
+      const pair = latestTwoValid(rows, "avgPrice");
       const latest = pair?.latest || null;
       if (!latest?.week) return null;
-
-      let activeCount = 0;
-      let volume = 0;
-      let tradeValue = 0;
-      let priceSum = 0;
-      let priceCount = 0;
-
-      const sourceRows = (sleeve) => mode === "month"
-        ? normalizeMonthlyPrices(sleeve?.monthlyPrices)
-        : normalizeWeekly(sleeve?.weeklyPrices).filter((row) => periodKind(row.week) === "week");
-
-      for (const sleeve of list) {
-        const row = sourceRows(sleeve).find((item) => item.week === latest.week);
-        if (!row || !Number.isFinite(row.price) || row.price <= 0) continue;
-        activeCount++;
-        const count = Number.isFinite(row.count) ? row.count : 1;
-        volume += count;
-        tradeValue += row.price * count;
-        priceSum += row.price;
-        priceCount++;
-      }
+      const prev = pair?.prev || null;
+      const diff = prev && Number.isFinite(prev.avgPrice) ? latest.avgPrice - prev.avgPrice : null;
+      const rate = Number.isFinite(diff) && prev.avgPrice > 0 ? (diff / prev.avgPrice) * 100 : null;
 
       return {
         latestWeek: latest.week,
-        latestRate: Number.isFinite(latest.avgRate) ? latest.avgRate : null,
-        activeCount,
-        risingCount: Number(latest.up || 0),
-        volume,
-        tradeValue,
-        avgPrice: priceCount > 0 ? (priceSum / priceCount) : 0,
-        stateHint: String(latest.stateHint || "").trim()
+        latestRate: rate,
+        activeCount: Number(latest.targetCount || 0),
+        risingCount: null,
+        volume: Number(latest.updateCount || 0),
+        tradeValue: 0,
+        avgPrice: Number(latest.avgPrice || 0),
+        stateHint: Number.isFinite(diff) ? getTrendClass(diff) : "flat"
       };
     }
 
@@ -1985,20 +2139,18 @@
       if (!rows.length) return `<div class="meta">データがまだありません</div>`;
       const valid = rows.filter(r => r.week);
       const html = valid.slice().reverse().map(r => {
-        const rate = Number.isFinite(r.avgRate) ? `${r.avgRate.toFixed(2)}%` : "—";
-        const idx = Number.isFinite(r.index) ? `${r.index.toFixed(1)}` : "—";
         return `<tr>
           <td>${escapeHtml(formatPeriodLabel(r.week))}</td>
-          <td>${rate}</td>
-          <td>${idx}</td>
-          <td>${Number.isFinite(r.sample) ? `${r.sample}件` : "—"}</td>
+          <td>${Number.isFinite(r.avgPrice) ? escapeHtml(formatMarketYen(r.avgPrice)) : "—"}</td>
+          <td>${Number(r.targetCount || 0).toLocaleString()}種類</td>
+          <td>${Number(r.updateCount || 0).toLocaleString()}種類</td>
         </tr>`;
       }).join("");
 
       return `
         <div class="table-wrap">
           <table>
-            <thead><tr><th>週</th><th>平均上昇率</th><th>指数</th><th>サンプル</th></tr></thead>
+            <thead><tr><th>週</th><th>平均相場</th><th>対象</th><th>相場更新数</th></tr></thead>
             <tbody>${html}</tbody>
           </table>
         </div>
@@ -2007,19 +2159,15 @@
 
     function renderTableDist(latestRow) {
       if (!latestRow) return `<div class="meta">—</div>`;
-      const total = (latestRow.up + latestRow.down + latestRow.flat) || 0;
-      const upP = total ? (latestRow.up / total) * 100 : 0;
-      const downP = total ? (latestRow.down / total) * 100 : 0;
-      const flatP = total ? (latestRow.flat / total) * 100 : 0;
 
       return `
         <div class="table-wrap">
           <table>
-            <thead><tr><th>分類</th><th>件数</th><th>割合</th></tr></thead>
+            <thead><tr><th>項目</th><th>値</th></tr></thead>
             <tbody>
-              <tr><td>上昇</td><td>${latestRow.up}</td><td>${upP.toFixed(1)}%</td></tr>
-              <tr><td>下落</td><td>${latestRow.down}</td><td>${downP.toFixed(1)}%</td></tr>
-              <tr><td>横ばい</td><td>${latestRow.flat}</td><td>${flatP.toFixed(1)}%</td></tr>
+              <tr><td>平均相場</td><td>${escapeHtml(formatMarketYen(latestRow.avgPrice))}</td></tr>
+              <tr><td>計算対象</td><td>${Number(latestRow.targetCount || 0).toLocaleString()}種類</td></tr>
+              <tr><td>相場更新数</td><td>${Number(latestRow.updateCount || 0).toLocaleString()}種類</td></tr>
             </tbody>
           </table>
         </div>
@@ -3000,10 +3148,15 @@
 
       const weekText = latestRow?.week ? formatPeriodLabel(latestRow.week) : "最新週";
       const priceText = Number.isFinite(latestPrice) ? formatMarketYen(latestPrice) : "-";
-      const avgRateText = Number.isFinite(latestRow?.avgRate) ? `${latestRow.avgRate.toFixed(2)}%` : "-";
       const shareUrl = currentShareUrl();
       const shareLabel = String(shareXBtn.dataset.scopeLabel || "スリーブ指数");
-      const shareText = `【${shareLabel}】${weekText}時点の平均相場 ${priceText} / ${periodLabel}の市場上昇率 ${avgRateText} #ポケカ #ポケモンカード`;
+      const targetText = Number.isFinite(Number(latestRow?.targetCount))
+        ? ` / 対象 ${Number(latestRow.targetCount).toLocaleString()}種類`
+        : "";
+      const updateText = Number.isFinite(Number(latestRow?.updateCount))
+        ? ` / 相場更新 ${Number(latestRow.updateCount).toLocaleString()}種類`
+        : "";
+      const shareText = `【${shareLabel}】${weekText}時点の全スリーブ平均相場 ${priceText}${targetText}${updateText} #ポケカ #ポケモンカード`;
 
       shareXBtn.onclick = () => {
         const intent = new URL("https://twitter.com/intent/tweet");
@@ -3012,7 +3165,7 @@
         window.open(intent.toString(), "_blank", "noopener,noreferrer");
       };
 
-      statusEl.textContent = `${weekText} 時点の${periodLabel}相場を共有できます。`;
+      statusEl.textContent = `${weekText} 時点の平均相場を共有できます。`;
     }
 
     function formatSignedPercent(value, digits = 1) {
@@ -3056,39 +3209,15 @@
       const entries = useMonthly ? monthlyEntries : weeklyEntries;
       const periods = useMonthly ? months : weeks;
       const periodType = useMonthly ? "month" : "week";
-      let rateRows = buildWeeklyMarketSeries(entries, periods, {
-        minPrice: 300,
-        minCount: useMonthly ? 1 : 2,
-        weightCap: 20,
-        maxRatio: 2.5,
-        periodType
-      });
-      const targetBasePeriod = periods.find((period) => String(period || "").slice(0, 7) >= MARKET_INDEX_BASE_MONTH);
-      if (useMonthly && targetBasePeriod && !rateRows.some((row) => row.week === targetBasePeriod)) {
-        rateRows = [{
-          week: targetBasePeriod,
-          avgLogReturn: 0,
-          avgRate: 0,
-          sample: null,
-          up: 0,
-          down: 0,
-          flat: 0,
-          confidence: "base"
-        }, ...rateRows.filter((row) => String(row?.week || "") > targetBasePeriod)];
-      }
-      const series = buildCumulativeIndexFromRates(rateRows, 100, {
-        baseMonth: MARKET_INDEX_BASE_MONTH,
-        baseLabel: MARKET_INDEX_BASE_LABEL
-      });
 
       return {
         mode,
         entries,
         periods,
         periodType,
-        series,
+        series: [],
         periodLabel: useMonthly ? "月次" : "週次",
-        rateLabel: useMonthly ? "市場上昇率（月次）" : "市場上昇率（週次）",
+        rateLabel: useMonthly ? "平均相場（月次）" : "平均相場（週次）",
         deltaLabel: useMonthly ? "前月比" : "前週比"
       };
     }
@@ -3207,20 +3336,16 @@
         .sort((a, b) => a.date - b.date);
     }
 
-    function addBollingerBands(points, windowSize = 20) {
+    function addMovingAverage(points, windowSize = 20) {
       const list = (Array.isArray(points) ? points : []).map((point) => ({ ...point }));
       for (let i = 0; i < list.length; i++) {
         const window = list
           .slice(Math.max(0, i - windowSize + 1), i + 1)
           .map((point) => point.avgPrice)
           .filter((value) => Number.isFinite(value));
-        if (window.length < Math.min(5, windowSize)) continue;
+        if (!window.length) continue;
         const mean = window.reduce((sum, value) => sum + value, 0) / window.length;
-        const variance = window.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / window.length;
-        const sd = Math.sqrt(variance);
-        list[i].bandMid = mean;
-        list[i].bandUpper = mean + sd * 2;
-        list[i].bandLower = Math.max(0, mean - sd * 2);
+        list[i].ma20 = mean;
       }
       return list;
     }
@@ -3271,143 +3396,193 @@
     function renderMarketPriceChart(containerId, rows) {
       const el = document.getElementById(containerId);
       if (!el) return;
-      const source = addBollingerBands((Array.isArray(rows) ? rows : []).filter((row) => row?.date));
+      const source = addMovingAverage((Array.isArray(rows) ? rows : [])
+        .filter((row) => row?.date && Number.isFinite(row.avgPrice))
+        .sort((a, b) => a.date - b.date));
       const valid = source.filter((row) => Number.isFinite(row.avgPrice));
       if (valid.length < 2) {
         el.innerHTML = `<div class="chart-wrap"><div class="meta">指数データが不足しています</div></div>`;
         return;
       }
 
-      const W = 1200;
-      const H = 520;
-      const padL = 18;
-      const padR = 58;
-      const navTop = 12;
-      const navBottom = 62;
-      const mainTop = 82;
-      const mainBottom = 462;
-      const xLabelY = 494;
-      const chartW = W - padL - padR;
-      const prices = valid.flatMap((row) => [row.avgPrice, row.bandUpper, row.bandLower].filter(Number.isFinite));
-      let yMin = Math.min(...prices);
-      let yMax = Math.max(...prices);
-      const ySpan = yMax - yMin || 1;
-      yMin = Math.max(0, yMin - ySpan * 0.08);
-      yMax += ySpan * 0.1;
-      const maxCount = Math.max(1, ...source.map((row) => Number(row.updateCount) || 0));
-      const firstDate = source[0].date.getTime();
-      const lastDate = source[source.length - 1].date.getTime();
-      const dateSpan = lastDate - firstDate || 1;
-      const xToPx = (date) => padL + ((date.getTime() - firstDate) / dateSpan) * chartW;
-      const yToPx = (value) => mainTop + (1 - (value - yMin) / (yMax - yMin)) * (mainBottom - mainTop);
-      const countToHeight = (count) => ((Number(count) || 0) / maxCount) * (mainBottom - mainTop) * 0.76;
-      const linePath = (key) => {
-        let d = "";
-        let pen = false;
-        for (const row of source) {
-          const value = row[key];
-          if (!Number.isFinite(value)) {
-            pen = false;
-            continue;
-          }
-          d += `${pen ? " L" : " M"} ${xToPx(row.date)} ${yToPx(value)}`;
-          pen = true;
-        }
-        return d.trim();
-      };
-      const navMin = Math.min(...valid.map((row) => row.avgPrice));
-      const navMax = Math.max(...valid.map((row) => row.avgPrice));
-      const navSpan = navMax - navMin || 1;
-      const navYMin = navMin - navSpan * 0.08;
-      const navYMax = navMax + navSpan * 0.08;
-      const yToPxNav = (value) => navTop + (1 - (value - navYMin) / (navYMax - navYMin)) * (navBottom - navTop);
-      const navPath = (() => {
-        let d = "";
-        let pen = false;
-        for (const row of source) {
-          if (!Number.isFinite(row.avgPrice)) {
-            pen = false;
-            continue;
-          }
-          d += `${pen ? " L" : " M"} ${xToPx(row.date)} ${yToPxNav(row.avgPrice)}`;
-          pen = true;
-        }
-        return d.trim();
-      })();
-      const bandPointsTop = source
-        .filter((row) => Number.isFinite(row.bandUpper) && Number.isFinite(row.bandLower))
-        .map((row) => `${xToPx(row.date)} ${yToPx(row.bandUpper)}`);
-      const bandPointsBottom = source
-        .filter((row) => Number.isFinite(row.bandUpper) && Number.isFinite(row.bandLower))
-        .reverse()
-        .map((row) => `${xToPx(row.date)} ${yToPx(row.bandLower)}`);
-      const bandPath = bandPointsTop.length && bandPointsBottom.length
-        ? `M ${bandPointsTop.join(" L ")} L ${bandPointsBottom.join(" L ")} Z`
-        : "";
-      const years = [];
-      for (let y = source[0].date.getFullYear(); y <= source[source.length - 1].date.getFullYear(); y++) {
-        years.push(new Date(y, 0, 1));
-      }
-      const yTicks = Array.from({ length: 5 }, (_, i) => yMin + ((yMax - yMin) / 4) * i);
-      const latest = valid[valid.length - 1];
-
       el.innerHTML = `
-        <div class="price-chart-tools">
-          <button type="button" class="price-chart-tool">⌁ Indicators</button>
-          <button type="button" class="price-chart-tool">▣</button>
-          <span class="price-range-group" aria-label="表示期間">
-            ${["7D","1M","3M","6M","1Y","2Y","Max"].map((label) => `<button type="button" class="price-range-btn ${label === "1Y" ? "is-active" : ""}">${label}</button>`).join("")}
-          </span>
-          <button type="button" class="price-chart-tool">✎ Draw</button>
+        <div class="price-chart-head">
+          <div class="price-chart-range" role="tablist" aria-label="表示期間">
+            <button type="button" class="price-range-btn" data-range="1m">1か月</button>
+            <button type="button" class="price-range-btn" data-range="3m">3か月</button>
+            <button type="button" class="price-range-btn" data-range="6m">6か月</button>
+            <button type="button" class="price-range-btn is-active" data-range="1y">1年</button>
+            <button type="button" class="price-range-btn" data-range="all">全期間</button>
+          </div>
+          <div class="price-index-legend" aria-label="凡例">
+            <span><i></i>全スリーブ平均相場</span>
+            <span class="legend-ma"><i></i>20週移動平均</span>
+            <span class="legend-count"><i></i>相場更新数</span>
+          </div>
         </div>
         <div class="price-index-chart-wrap">
-          <div class="price-index-legend">
-            <span><i></i>平均価格</span>
-            <span class="legend-count"><i></i>相場更新数</span>
-            <span class="legend-band"><i></i>Bollinger (20,close,2,simple)</span>
-          </div>
-          <svg class="price-index-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="スリーブ市場指数">
-            <defs>
-              <linearGradient id="priceBandGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#ffa726" stop-opacity=".22"></stop>
-                <stop offset="100%" stop-color="#ffa726" stop-opacity=".06"></stop>
-              </linearGradient>
-              <linearGradient id="countBarGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#cbd5e1" stop-opacity=".78"></stop>
-                <stop offset="100%" stop-color="#e2e8f0" stop-opacity=".42"></stop>
-              </linearGradient>
-            </defs>
-            <rect x="${padL}" y="${navTop}" width="${chartW}" height="${navBottom - navTop}" fill="#f2f2f2"></rect>
-            <path d="${navPath}" fill="none" stroke="#c9c9c9" stroke-width="1.3" opacity=".75"></path>
-            ${years.map((date) => {
-              const x = xToPx(date);
-              if (x < padL || x > W - padR) return "";
-              return `<line x1="${x}" y1="${navTop}" x2="${x}" y2="${mainBottom}" stroke="#d8d8d8" stroke-width="1"></line><text x="${x + 4}" y="${navBottom - 6}" font-size="14" fill="#9b9b9b">${date.getFullYear()}</text>`;
-            }).join("")}
-            ${yTicks.map((value) => {
-              const y = yToPx(value);
-              return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#d5d5d5" stroke-width="1"></line><text x="${W - padR + 4}" y="${y + 4}" font-size="13" fill="#111">${escapeHtml(formatMarketCompactYen(value))}</text>`;
-            }).join("")}
-            ${source.map((row) => {
-              const x = xToPx(row.date);
-              const h = countToHeight(row.updateCount);
-              return `<rect x="${x - 1.8}" y="${mainBottom - h}" width="3.6" height="${h}" fill="url(#countBarGrad)"></rect>`;
-            }).join("")}
-            ${bandPath ? `<path d="${bandPath}" fill="url(#priceBandGrad)" stroke="none"></path>` : ""}
-            <path d="${linePath("bandUpper")}" fill="none" stroke="#ffb020" stroke-width="1.2"></path>
-            <path d="${linePath("bandMid")}" fill="none" stroke="#ffb020" stroke-width="1.2"></path>
-            <path d="${linePath("bandLower")}" fill="none" stroke="#ff8a3d" stroke-width="1.1"></path>
-            <path d="${linePath("avgPrice")}" fill="none" stroke="#ff4b4b" stroke-width="2.4"></path>
-            <circle cx="${xToPx(latest.date)}" cy="${yToPx(latest.avgPrice)}" r="4.5" fill="#ff4b4b"></circle>
-            <text x="${Math.min(W - padR - 70, xToPx(latest.date) + 8)}" y="${Math.max(mainTop + 20, yToPx(latest.avgPrice) - 10)}" font-size="13" font-weight="800" fill="#6b7280">${escapeHtml(formatMarketYen(latest.avgPrice))}</text>
-            ${years.map((date) => {
-              const x = xToPx(date);
-              if (x < padL || x > W - padR) return "";
-              return `<text x="${x + 4}" y="${xLabelY}" font-size="14" fill="#111">${date.getFullYear() === latest.date.getFullYear() ? `${date.getFullYear()}年` : date.getFullYear()}</text>`;
-            }).join("")}
-          </svg>
+          <div class="price-chart-canvas"></div>
+          <div class="price-chart-tooltip" hidden></div>
+          <div class="chart-note-inline">日本発売のデッキシールド全体を集計</div>
         </div>
       `;
+
+      let activeRange = "1y";
+      const rangeDays = { "1m": 31, "3m": 93, "6m": 186, "1y": 366, all: null };
+      const canvas = el.querySelector(".price-chart-canvas");
+      const tooltip = el.querySelector(".price-chart-tooltip");
+      const buttons = Array.from(el.querySelectorAll(".price-range-btn"));
+
+      const draw = () => {
+        if (!canvas) return;
+        const latestDate = valid[valid.length - 1].date;
+        const days = rangeDays[activeRange];
+        const startTime = days ? latestDate.getTime() - (days * 24 * 60 * 60 * 1000) : -Infinity;
+        const data = source.filter((row) => row.date.getTime() >= startTime);
+        const chartData = data.length >= 2 ? data : source.slice(-2);
+        const W = 1200;
+        const H = 520;
+        const padL = 78;
+        const padR = 72;
+        const padT = 42;
+        const padB = 64;
+        const chartBottom = H - padB;
+        const chartW = W - padL - padR;
+        const chartH = chartBottom - padT;
+        const priceValues = chartData.flatMap((row) => [row.avgPrice, row.ma20].filter(Number.isFinite));
+        let yMin = Math.min(...priceValues);
+        let yMax = Math.max(...priceValues);
+        const ySpan = yMax - yMin || 1;
+        yMin = Math.max(0, Math.floor((yMin - ySpan * 0.12) / 100) * 100);
+        yMax = Math.ceil((yMax + ySpan * 0.12) / 100) * 100;
+        if (yMax <= yMin) yMax = yMin + 100;
+        const maxCount = Math.max(1, ...chartData.map((row) => Number(row.updateCount) || 0));
+        const firstTime = chartData[0].date.getTime();
+        const lastTime = chartData[chartData.length - 1].date.getTime();
+        const timeSpan = lastTime - firstTime || 1;
+        const xToPx = (date) => padL + ((date.getTime() - firstTime) / timeSpan) * chartW;
+        const yToPx = (value) => padT + (1 - (value - yMin) / (yMax - yMin)) * chartH;
+        const countToY = (count) => chartBottom - ((Number(count) || 0) / maxCount) * chartH * 0.38;
+        const linePath = (key) => {
+          let d = "";
+          let pen = false;
+          for (const row of chartData) {
+            const value = row[key];
+            if (!Number.isFinite(value)) {
+              pen = false;
+              continue;
+            }
+            d += `${pen ? " L" : " M"} ${xToPx(row.date).toFixed(2)} ${yToPx(value).toFixed(2)}`;
+            pen = true;
+          }
+          return d.trim();
+        };
+        const areaPath = (() => {
+          const pts = chartData.filter((row) => Number.isFinite(row.avgPrice));
+          if (pts.length < 2) return "";
+          const top = pts.map((row) => `${xToPx(row.date).toFixed(2)} ${yToPx(row.avgPrice).toFixed(2)}`).join(" L ");
+          const last = pts[pts.length - 1];
+          const first = pts[0];
+          return `M ${top} L ${xToPx(last.date).toFixed(2)} ${chartBottom} L ${xToPx(first.date).toFixed(2)} ${chartBottom} Z`;
+        })();
+        const yTicks = Array.from({ length: 6 }, (_, i) => yMin + ((yMax - yMin) / 5) * i);
+        const countTicks = Array.from({ length: 5 }, (_, i) => (maxCount / 4) * i);
+        const monthTicks = [];
+        const firstMonth = new Date(chartData[0].date.getFullYear(), chartData[0].date.getMonth(), 1);
+        for (let date = firstMonth; date <= chartData[chartData.length - 1].date; date = new Date(date.getFullYear(), date.getMonth() + 1, 1)) {
+          if (date >= chartData[0].date) monthTicks.push(new Date(date));
+        }
+        if (monthTicks.length > 9) {
+          const step = Math.ceil(monthTicks.length / 9);
+          for (let i = monthTicks.length - 1; i >= 0; i--) {
+            if (i % step !== 0) monthTicks.splice(i, 1);
+          }
+        }
+        const lastPoint = chartData[chartData.length - 1];
+        const barWidth = Math.max(3, Math.min(9, chartW / Math.max(chartData.length, 1) * 0.45));
+
+        canvas.innerHTML = `
+          <svg class="price-index-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="全スリーブ平均相場">
+            <defs>
+              <linearGradient id="avgPriceFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2563eb" stop-opacity=".22"></stop>
+                <stop offset="100%" stop-color="#2563eb" stop-opacity=".04"></stop>
+              </linearGradient>
+            </defs>
+            <text x="${padL - 62}" y="${padT - 22}" font-size="15" font-weight="800" fill="#334155">平均相場（円）</text>
+            <text x="${W - padR - 6}" y="${padT - 22}" text-anchor="end" font-size="15" font-weight="800" fill="#334155">更新数（件）</text>
+            ${yTicks.map((value) => {
+              const y = yToPx(value);
+              return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#d8e1ec" stroke-width="1" stroke-dasharray="4 4"></line><text x="${padL - 12}" y="${y + 5}" text-anchor="end" font-size="16" fill="#334155">${escapeHtml(formatMarketYen(value))}</text>`;
+            }).join("")}
+            ${countTicks.map((value) => {
+              const y = chartBottom - (value / maxCount) * chartH;
+              return `<text x="${W - padR + 12}" y="${y + 5}" font-size="16" fill="#334155">${Math.round(value).toLocaleString()}件</text>`;
+            }).join("")}
+            ${monthTicks.map((date) => {
+              const x = xToPx(date);
+              const label = date.getMonth() === 0 ? `${date.getFullYear()}年1月` : `${date.getFullYear()}年${date.getMonth() + 1}月`;
+              return `<line x1="${x}" y1="${padT}" x2="${x}" y2="${chartBottom}" stroke="#e6edf5" stroke-width="1"></line><text x="${x}" y="${H - 22}" text-anchor="middle" font-size="15" font-weight="700" fill="#334155">${escapeHtml(label)}</text>`;
+            }).join("")}
+            ${chartData.map((row) => {
+              const x = xToPx(row.date);
+              const y = countToY(row.updateCount);
+              return `<rect x="${(x - barWidth / 2).toFixed(2)}" y="${y.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${(chartBottom - y).toFixed(2)}" rx="2" fill="#c9d9ee" opacity=".82"></rect>`;
+            }).join("")}
+            ${areaPath ? `<path d="${areaPath}" fill="url(#avgPriceFill)"></path>` : ""}
+            <path d="${linePath("avgPrice")}" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="${linePath("ma20")}" fill="none" stroke="#ff7a00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            <circle cx="${xToPx(lastPoint.date)}" cy="${yToPx(lastPoint.avgPrice)}" r="6" fill="#2563eb" stroke="#fff" stroke-width="3"></circle>
+            <rect class="price-chart-hit" x="${padL}" y="${padT}" width="${chartW}" height="${chartH}" fill="transparent"></rect>
+          </svg>
+        `;
+
+        const hit = canvas.querySelector(".price-chart-hit");
+        const svg = canvas.querySelector("svg");
+        if (hit && svg && tooltip) {
+          const nearestFromClientX = (clientX) => {
+            const rect = svg.getBoundingClientRect();
+            const x = ((clientX - rect.left) / rect.width) * W;
+            const ratio = Math.max(0, Math.min(1, (x - padL) / chartW));
+            const target = firstTime + ratio * timeSpan;
+            let best = chartData[0];
+            let bestDiff = Infinity;
+            chartData.forEach((row) => {
+              const diff = Math.abs(row.date.getTime() - target);
+              if (diff < bestDiff) {
+                best = row;
+                bestDiff = diff;
+              }
+            });
+            return best;
+          };
+          hit.addEventListener("mousemove", (ev) => {
+            const row = nearestFromClientX(ev.clientX);
+            tooltip.hidden = false;
+            tooltip.innerHTML = `
+              <strong>${escapeHtml(formatMetaDate(row.week))}</strong>
+              <span><b class="dot blue"></b>平均相場 <em>${escapeHtml(formatMarketYen(row.avgPrice))}</em></span>
+              <span><b class="dot orange"></b>20週平均 <em>${escapeHtml(formatMarketYen(row.ma20))}</em></span>
+              <span><b class="dot bar"></b>更新 <em>${Number(row.updateCount || 0).toLocaleString()}種類</em></span>
+            `;
+            const wrapRect = el.querySelector(".price-index-chart-wrap").getBoundingClientRect();
+            tooltip.style.left = `${Math.min(wrapRect.width - 180, Math.max(12, ev.clientX - wrapRect.left + 14))}px`;
+            tooltip.style.top = `${Math.max(14, ev.clientY - wrapRect.top - 26)}px`;
+          });
+          hit.addEventListener("mouseleave", () => {
+            tooltip.hidden = true;
+          });
+        }
+      };
+
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeRange = btn.dataset.range || "1y";
+          buttons.forEach((item) => item.classList.toggle("is-active", item === btn));
+          draw();
+        });
+      });
+      draw();
     }
 
     function renderMarketIndexView(view, sleeves, scopeMeta) {
@@ -3428,9 +3603,6 @@
       const validPriceSeries = priceSeries.filter((point) => Number.isFinite(point.avgPrice));
       const latestPricePoint = validPriceSeries[validPriceSeries.length - 1] || null;
 
-      const pairRate = latestTwoValid(series, "avgRate");
-      const last = pairRate?.latest || null;
-
       const updatedAt = document.getElementById("updatedAt");
       const countInfo = document.getElementById("countInfo");
       if (updatedAt) updatedAt.textContent = latestPricePoint?.week ? formatMetaDate(latestPricePoint.week) : "-";
@@ -3440,8 +3612,17 @@
           : `${sleeves.length.toLocaleString()}件`;
       }
 
-      const marketState = describeMarketState(series, last);
-      if (last) last.stateHint = marketState.cls;
+      const pairPrice = latestTwoValid(priceSeries, "avgPrice");
+      const lastPrice = pairPrice?.latest || null;
+      const prevPrice = pairPrice?.prev || null;
+      const priceDiff = lastPrice && prevPrice ? lastPrice.avgPrice - prevPrice.avgPrice : null;
+      const marketState = {
+        label: Number.isFinite(priceDiff) ? (priceDiff > 0 ? "上昇中" : priceDiff < 0 ? "下落" : "横ばい") : "判定できません",
+        note: Number.isFinite(priceDiff)
+          ? `全スリーブ平均相場は前回比で${formatMarketSignedYen(priceDiff)}です。`
+          : "平均相場データが不足しています。",
+        cls: Number.isFinite(priceDiff) ? getTrendClass(priceDiff) : "flat"
+      };
       const marketStateValue = document.getElementById("marketStateValue");
       const marketStateNote = document.getElementById("marketStateNote");
       const indexChartNote = document.getElementById("indexChartNote");
@@ -3454,7 +3635,7 @@
       }
       const shareXBtn = document.getElementById("shareXBtn");
       if (shareXBtn) shareXBtn.dataset.scopeLabel = scopeMeta?.shareLabel || "スリーブ指数";
-      setupMarketShare(pairRate?.latest || latestPricePoint || null, latestPricePoint?.avgPrice ?? null, periodLabel);
+      setupMarketShare(latestPricePoint || null, latestPricePoint?.avgPrice ?? null, periodLabel);
 
       const indexSeries = series.filter((row) => Number.isFinite(row?.index));
       const hasSourceBoundary = !!getMarketSourceBoundary(indexSeries, "week");
@@ -3479,12 +3660,12 @@
 
       const indexTable = document.getElementById("indexTable");
       const distTable = document.getElementById("distTable");
-      if (indexTable) indexTable.innerHTML = renderTableIndex(series);
-      if (distTable) distTable.innerHTML = renderTableDist(last);
+      if (indexTable) indexTable.innerHTML = renderTableIndex(priceSeries);
+      if (distTable) distTable.innerHTML = renderTableDist(latestPricePoint);
 
       runDeferred(() => {
-        const commentStats = buildMarketCommentStats(sleeves, series, mode);
-        renderAiComment(last?.week || null, commentStats);
+        const commentStats = buildMarketCommentStats(priceSeries);
+        renderAiComment(latestPricePoint?.week || null, commentStats);
       });
     }
 
