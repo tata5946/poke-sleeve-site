@@ -2629,6 +2629,803 @@ footer.site-footer {
     }
 }
 
+/* Final ranking card overrides */
+:root body.page-market-list .ranking-top3,
+:root body.page-market-list .compact-grid,
+:root body.page-market-list .ranking-list,
+:root body.page-market-list #list.grid {
+    gap: 28px !important;
+}
+
+:root body.page-market-list .ranking-top3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+:root body.page-market-list .podium-card,
+:root body.page-market-list .podium-card--rank1,
+:root body.page-market-list .podium-card--rank2,
+:root body.page-market-list .podium-card--rank3,
+:root body.page-market-list a.compact-card,
+:root body.page-market-list .compact-card {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto 1fr !important;
+    gap: 16px !important;
+    min-height: 100% !important;
+    padding: 76px 20px 20px !important;
+    border: 1px solid rgba(15, 23, 42, .12) !important;
+    border-radius: 20px !important;
+    background: #fff !important;
+    box-shadow: 0 18px 42px rgba(15, 23, 42, .10) !important;
+    color: #172033 !important;
+    overflow: hidden !important;
+}
+
+:root body.page-market-list .podium-card:hover,
+:root body.page-market-list .podium-card:focus-visible,
+:root body.page-market-list a.compact-card:hover,
+:root body.page-market-list a.compact-card:focus-visible {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 22px 48px rgba(15, 23, 42, .13) !important;
+}
+
+:root body.page-market-list .podium-badge,
+:root body.page-market-list .compact-rank-badge {
+    position: absolute !important;
+    top: 20px !important;
+    left: 20px !important;
+    z-index: 2 !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    width: 54px !important;
+    height: 54px !important;
+    min-width: 54px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: linear-gradient(135deg, #ffe484 0%, #d7a51f 48%, #9a6d0d 100%) !important;
+    box-shadow: 0 10px 22px rgba(174, 123, 20, .22) !important;
+    color: #fff !important;
+    font-family: "Inter", "Zen Kaku Gothic New", sans-serif !important;
+    font-size: 15px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-badge {
+    font-size: 0 !important;
+}
+
+:root body.page-market-list .compact-rank-badge::before {
+    content: none !important;
+}
+
+:root body.page-market-list .podium-card--rank1 .podium-badge::before { content: "1"; }
+:root body.page-market-list .podium-card--rank2 .podium-badge::before { content: "2"; }
+:root body.page-market-list .podium-card--rank3 .podium-badge::before { content: "3"; }
+
+:root body.page-market-list .podium-badge::before {
+    display: block !important;
+    color: #fff !important;
+    font-size: 28px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-card--rank2 .podium-badge {
+    background: linear-gradient(135deg, #f7f8fb 0%, #b7bdc7 52%, #747b86 100%) !important;
+}
+
+:root body.page-market-list .podium-card--rank3 .podium-badge {
+    background: linear-gradient(135deg, #ffd8ad 0%, #c37a32 52%, #854817 100%) !important;
+}
+
+:root body.page-market-list .podium-card::after,
+:root body.page-market-list a.compact-card::after,
+:root body.page-market-list .compact-card::after {
+    content: "ランキング" !important;
+    position: absolute !important;
+    top: 36px !important;
+    left: 92px !important;
+    color: #172033 !important;
+    font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-surge-ranking .podium-card::after,
+:root body.page-surge-ranking a.compact-card::after,
+:root body.page-surge-ranking .compact-card::after {
+    content: "価格上昇" !important;
+}
+
+:root body.page-market-list .podium-media,
+:root body.page-market-list .podium-card--rank1 .podium-media,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media,
+:root body.page-market-list .compact-thumb-wrap {
+    width: 100% !important;
+    aspect-ratio: 16 / 10 !important;
+    padding: 14px !important;
+    border-radius: 14px !important;
+    background: linear-gradient(180deg, #f9fbff 0%, #f3f6fb 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+
+:root body.page-market-list .podium-media img,
+:root body.page-market-list .podium-card--rank1 .podium-media img,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media img,
+:root body.page-market-list .compact-thumb {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    object-fit: contain !important;
+}
+
+:root body.page-market-list .podium-title,
+:root body.page-market-list .podium-card--rank1 .podium-title,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-title,
+:root body.page-market-list .compact-card-title {
+    color: #101828 !important;
+    font-size: clamp(20px, 1.65vw, 27px) !important;
+    line-height: 1.24 !important;
+    font-weight: 900 !important;
+    -webkit-line-clamp: 2 !important;
+}
+
+:root body.page-market-list .podium-metrics,
+:root body.page-market-list .podium-card--rank1 .podium-metrics,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-metrics,
+:root body.page-market-list .compact-market-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: end !important;
+    gap: 10px 18px !important;
+}
+
+:root body.page-market-list .podium-metric,
+:root body.page-market-list .compact-price-row {
+    display: grid !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+}
+
+:root body.page-market-list .podium-metric-label,
+:root body.page-market-list .compact-delta {
+    color: #667085 !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    font-weight: 700 !important;
+}
+
+:root body.page-market-list .podium-price,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-price,
+:root body.page-market-list .compact-price {
+    color: #111827 !important;
+    font-size: clamp(30px, 3.1vw, 44px) !important;
+    line-height: 1.05 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-surge-ranking .podium-diff,
+:root body.page-surge-ranking .compact-delta,
+:root body.page-market-list .compact-delta.up,
+:root body.page-market-list .compact-delta.is-up {
+    color: #c01f1a !important;
+    font-size: clamp(22px, 2.3vw, 32px) !important;
+    line-height: 1.05 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-rate,
+:root body.page-market-list .compact-rate {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: fit-content !important;
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    border: 1px solid currentColor !important;
+    border-radius: 8px !important;
+    background: rgba(255,255,255,.72) !important;
+    color: #c01f1a !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-chip,
+:root body.page-market-list .compact-meta-item,
+:root body.page-market-list .compact-tag {
+    color: #667085 !important;
+    font-size: 14px !important;
+    line-height: 1.35 !important;
+    font-weight: 700 !important;
+}
+
+:root body.page-market-list .podium-market-row,
+:root body.page-surge-ranking .podium-market-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+}
+
+:root body.page-surge-ranking .podium-trend-row {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 14px !important;
+}
+
+:root body.page-market-list .sleeve-sparkline,
+:root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
+:root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
+:root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 150px !important;
+    padding: 42px 14px 16px !important;
+    border: 1px solid rgba(15, 23, 42, .14) !important;
+    border-radius: 10px !important;
+    background: #fff !important;
+}
+
+:root body.page-market-list .sleeve-sparkline::before {
+    content: "直近12週の価格推移" !important;
+    position: absolute !important;
+    top: 14px !important;
+    left: 16px !important;
+    color: #344054 !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .sleeve-sparkline::after {
+    content: "週次" !important;
+    position: absolute !important;
+    top: 14px !important;
+    right: 16px !important;
+    color: #667085 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+}
+
+:root body.page-market-list .sleeve-sparkline svg {
+    height: 100% !important;
+}
+
+@media (max-width: 1100px) {
+    :root body.page-market-list .ranking-top3,
+    :root body.page-market-list .compact-grid,
+    :root body.page-market-list .ranking-list,
+    :root body.page-market-list #list.grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 700px) {
+    :root body.page-market-list .podium-card,
+    :root body.page-market-list .podium-card--rank1,
+    :root body.page-market-list .podium-card--rank2,
+    :root body.page-market-list .podium-card--rank3,
+    :root body.page-market-list a.compact-card,
+    :root body.page-market-list .compact-card {
+        padding: 62px 12px 14px !important;
+        border-radius: 16px !important;
+    }
+
+    :root body.page-market-list .podium-badge,
+    :root body.page-market-list .compact-rank-badge {
+        top: 14px !important;
+        left: 14px !important;
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px !important;
+        font-size: 12px !important;
+    }
+
+    :root body.page-market-list .podium-badge::before {
+        font-size: 22px !important;
+    }
+
+    :root body.page-market-list .podium-card::after,
+    :root body.page-market-list a.compact-card::after,
+    :root body.page-market-list .compact-card::after {
+        top: 26px !important;
+        left: 68px !important;
+        font-size: 13px !important;
+    }
+
+    :root body.page-market-list .podium-media,
+    :root body.page-market-list .podium-card--rank1 .podium-media,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media,
+    :root body.page-market-list .compact-thumb-wrap {
+        aspect-ratio: 1 / 1 !important;
+        padding: 8px !important;
+    }
+
+    :root body.page-market-list .podium-title,
+    :root body.page-market-list .podium-card--rank1 .podium-title,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-title,
+    :root body.page-market-list .compact-card-title {
+        font-size: 15px !important;
+        line-height: 1.35 !important;
+    }
+
+    :root body.page-market-list .podium-price,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-price,
+    :root body.page-market-list .compact-price {
+        font-size: 22px !important;
+    }
+
+    :root body.page-market-list .podium-metrics,
+    :root body.page-market-list .podium-card--rank1 .podium-metrics,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-metrics,
+    :root body.page-market-list .compact-market-row,
+    :root body.page-surge-ranking .podium-trend-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    :root body.page-market-list .sleeve-sparkline,
+    :root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
+    :root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
+    :root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+        height: 112px !important;
+        padding: 34px 10px 12px !important;
+    }
+}
+
+/* Ranking cards: medal card format */
+:root body.page-market-list .ranking-top3,
+:root body.page-market-list .compact-grid,
+:root body.page-market-list .ranking-list,
+:root body.page-market-list #list.grid {
+    gap: 28px !important;
+}
+
+:root body.page-market-list .ranking-top3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+}
+
+:root body.page-market-list .podium-card,
+:root body.page-market-list .podium-card--rank1,
+:root body.page-market-list .podium-card--rank2,
+:root body.page-market-list .podium-card--rank3,
+:root body.page-market-list a.compact-card,
+:root body.page-market-list .compact-card {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto 1fr !important;
+    gap: 16px !important;
+    min-height: 100% !important;
+    padding: 76px 20px 20px !important;
+    border: 1px solid rgba(15, 23, 42, .12) !important;
+    border-radius: 20px !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, .98) 0%, rgba(255, 255, 255, .94) 100%),
+        #fff !important;
+    box-shadow:
+        0 18px 42px rgba(15, 23, 42, .10),
+        inset 0 1px 0 rgba(255, 255, 255, .86) !important;
+    color: #172033 !important;
+    overflow: hidden !important;
+}
+
+:root body.page-market-list .podium-card:hover,
+:root body.page-market-list .podium-card:focus-visible,
+:root body.page-market-list a.compact-card:hover,
+:root body.page-market-list a.compact-card:focus-visible {
+    transform: translateY(-3px) !important;
+    box-shadow:
+        0 22px 48px rgba(15, 23, 42, .13),
+        inset 0 1px 0 rgba(255, 255, 255, .9) !important;
+}
+
+:root body.page-market-list .podium-badge,
+:root body.page-market-list .compact-rank-badge {
+    position: absolute !important;
+    top: 20px !important;
+    left: 20px !important;
+    z-index: 2 !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    width: 54px !important;
+    height: 54px !important;
+    min-width: 54px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background:
+        radial-gradient(circle at 34% 24%, rgba(255,255,255,.72) 0 18%, transparent 19%),
+        linear-gradient(135deg, #ffe484 0%, #d7a51f 48%, #9a6d0d 100%) !important;
+    box-shadow: 0 10px 22px rgba(174, 123, 20, .22) !important;
+    color: #fff !important;
+    font-family: "Inter", "Zen Kaku Gothic New", sans-serif !important;
+    font-size: 15px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+    text-align: center !important;
+}
+
+:root body.page-market-list .podium-badge {
+    font-size: 0 !important;
+}
+
+:root body.page-market-list .compact-rank-badge::before {
+    content: none !important;
+}
+
+:root body.page-market-list .podium-card--rank1 .podium-badge::before {
+    content: "1";
+}
+
+:root body.page-market-list .podium-card--rank2 .podium-badge::before {
+    content: "2";
+}
+
+:root body.page-market-list .podium-card--rank3 .podium-badge::before {
+    content: "3";
+}
+
+:root body.page-market-list .podium-badge::before {
+    display: block !important;
+    color: #fff !important;
+    font-size: 28px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,.15) !important;
+}
+
+:root body.page-market-list .podium-card--rank2 .podium-badge {
+    background:
+        radial-gradient(circle at 34% 24%, rgba(255,255,255,.72) 0 18%, transparent 19%),
+        linear-gradient(135deg, #f7f8fb 0%, #b7bdc7 52%, #747b86 100%) !important;
+    box-shadow: 0 10px 22px rgba(108, 117, 130, .2) !important;
+}
+
+:root body.page-market-list .podium-card--rank3 .podium-badge {
+    background:
+        radial-gradient(circle at 34% 24%, rgba(255,255,255,.64) 0 18%, transparent 19%),
+        linear-gradient(135deg, #ffd8ad 0%, #c37a32 52%, #854817 100%) !important;
+    box-shadow: 0 10px 22px rgba(143, 79, 24, .2) !important;
+}
+
+:root body.page-market-list .podium-card::after,
+:root body.page-market-list a.compact-card::after,
+:root body.page-market-list .compact-card::after {
+    content: "ランキング" !important;
+    position: absolute !important;
+    top: 36px !important;
+    left: 92px !important;
+    color: #172033 !important;
+    font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-surge-ranking .podium-card::after,
+:root body.page-surge-ranking a.compact-card::after,
+:root body.page-surge-ranking .compact-card::after {
+    content: "価格上昇" !important;
+}
+
+:root body.page-market-list .podium-media,
+:root body.page-market-list .podium-card--rank1 .podium-media,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media,
+:root body.page-market-list .compact-thumb-wrap {
+    width: 100% !important;
+    aspect-ratio: 16 / 10 !important;
+    padding: 14px !important;
+    border-radius: 14px !important;
+    background:
+        radial-gradient(circle at 50% 12%, rgba(255,255,255,.96) 0%, rgba(255,255,255,.4) 40%, transparent 72%),
+        linear-gradient(180deg, #f9fbff 0%, #f3f6fb 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+
+:root body.page-market-list .podium-media img,
+:root body.page-market-list .podium-card--rank1 .podium-media img,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media img,
+:root body.page-market-list .compact-thumb {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    object-fit: contain !important;
+}
+
+:root body.page-market-list .podium-content,
+:root body.page-market-list .podium-card--rank1 .podium-content,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-content {
+    gap: 14px !important;
+    padding: 0 !important;
+}
+
+:root body.page-market-list .podium-title,
+:root body.page-market-list .podium-card--rank1 .podium-title,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-title,
+:root body.page-market-list .compact-card-title {
+    color: #101828 !important;
+    font-size: clamp(20px, 1.65vw, 27px) !important;
+    line-height: 1.24 !important;
+    font-weight: 900 !important;
+    -webkit-line-clamp: 2 !important;
+}
+
+:root body.page-market-list .podium-metrics,
+:root body.page-market-list .podium-card--rank1 .podium-metrics,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-metrics,
+:root body.page-market-list .compact-market-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: end !important;
+    gap: 10px 18px !important;
+}
+
+:root body.page-market-list .podium-metric,
+:root body.page-market-list .compact-price-row {
+    display: grid !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+}
+
+:root body.page-market-list .podium-metric-label {
+    color: #667085 !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+}
+
+:root body.page-market-list .compact-delta {
+    color: #667085 !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    font-weight: 700 !important;
+}
+
+:root body.page-market-list .podium-price,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-price,
+:root body.page-market-list .compact-price {
+    color: #111827 !important;
+    font-size: clamp(30px, 3.1vw, 44px) !important;
+    line-height: 1.05 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-surge-ranking .podium-diff,
+:root body.page-surge-ranking .compact-delta,
+:root body.page-market-list .compact-delta.up,
+:root body.page-market-list .compact-delta.is-up {
+    color: #c01f1a !important;
+    font-size: clamp(22px, 2.3vw, 32px) !important;
+    line-height: 1.05 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-rate,
+:root body.page-market-list .compact-rate {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: fit-content !important;
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    border: 1px solid currentColor !important;
+    border-radius: 8px !important;
+    background: rgba(255,255,255,.72) !important;
+    color: #c01f1a !important;
+    font-family: "Inter", "Zen Kaku Gothic New", sans-serif !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .compact-meta,
+:root body.page-market-list .compact-tags,
+:root body.page-market-list .podium-meta {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+}
+
+:root body.page-market-list .podium-chip,
+:root body.page-market-list .compact-meta-item,
+:root body.page-market-list .compact-tag {
+    color: #667085 !important;
+    font-family: "Inter", "Zen Kaku Gothic New", sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.35 !important;
+    font-weight: 700 !important;
+}
+
+:root body.page-market-list .podium-market-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    margin-top: 0 !important;
+}
+
+:root body.page-surge-ranking .podium-market-row {
+    grid-template-columns: 1fr !important;
+}
+
+:root body.page-surge-ranking .podium-trend-row {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 14px !important;
+}
+
+:root body.page-market-list .sleeve-sparkline,
+:root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
+:root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
+:root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 150px !important;
+    padding: 42px 14px 16px !important;
+    border: 1px solid rgba(15, 23, 42, .14) !important;
+    border-radius: 10px !important;
+    background: #fff !important;
+    box-shadow: none !important;
+}
+
+:root body.page-market-list .sleeve-sparkline::before {
+    content: "直近12週の価格推移" !important;
+    position: absolute !important;
+    top: 14px !important;
+    left: 16px !important;
+    color: #344054 !important;
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .sleeve-sparkline::after {
+    content: "週次" !important;
+    position: absolute !important;
+    top: 14px !important;
+    right: 16px !important;
+    color: #667085 !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    font-weight: 800 !important;
+}
+
+:root body.page-market-list .sleeve-sparkline svg {
+    height: 100% !important;
+}
+
+:root body.page-market-list .sleeve-sparkline-grid,
+:root body.page-market-list .sleeve-sparkline-axis {
+    stroke: rgba(102, 112, 133, .26) !important;
+}
+
+:root body.page-market-list .sleeve-sparkline-area {
+    fill: rgba(5, 150, 105, .12) !important;
+}
+
+:root body.page-market-list .sleeve-sparkline-line {
+    stroke: #059669 !important;
+    stroke-width: 2.8 !important;
+}
+
+:root body.page-market-list .sleeve-sparkline-dot {
+    fill: #059669 !important;
+}
+
+@media (max-width: 1100px) {
+    :root body.page-market-list .ranking-top3,
+    :root body.page-market-list .compact-grid,
+    :root body.page-market-list .ranking-list,
+    :root body.page-market-list #list.grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 700px) {
+    :root body.page-market-list .ranking-top3,
+    :root body.page-market-list .compact-grid,
+    :root body.page-market-list .ranking-list,
+    :root body.page-market-list #list.grid {
+        gap: 18px !important;
+    }
+
+    :root body.page-market-list .podium-card,
+    :root body.page-market-list .podium-card--rank1,
+    :root body.page-market-list .podium-card--rank2,
+    :root body.page-market-list .podium-card--rank3,
+    :root body.page-market-list a.compact-card,
+    :root body.page-market-list .compact-card {
+        padding: 62px 12px 14px !important;
+        border-radius: 16px !important;
+    }
+
+    :root body.page-market-list .podium-badge,
+    :root body.page-market-list .compact-rank-badge {
+        top: 14px !important;
+        left: 14px !important;
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px !important;
+    }
+
+    :root body.page-market-list .podium-badge::before,
+    :root body.page-market-list .compact-rank-badge::before {
+        font-size: 22px !important;
+    }
+
+    :root body.page-market-list .podium-card::after,
+    :root body.page-market-list a.compact-card::after,
+    :root body.page-market-list .compact-card::after {
+        top: 26px !important;
+        left: 68px !important;
+        font-size: 13px !important;
+    }
+
+    :root body.page-market-list .podium-media,
+    :root body.page-market-list .podium-card--rank1 .podium-media,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media,
+    :root body.page-market-list .compact-thumb-wrap {
+        aspect-ratio: 1 / 1 !important;
+        padding: 8px !important;
+    }
+
+    :root body.page-market-list .podium-title,
+    :root body.page-market-list .podium-card--rank1 .podium-title,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-title,
+    :root body.page-market-list .compact-card-title {
+        font-size: 15px !important;
+        line-height: 1.35 !important;
+    }
+
+    :root body.page-market-list .podium-price,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-price,
+    :root body.page-market-list .compact-price {
+        font-size: 22px !important;
+    }
+
+    :root body.page-market-list .podium-metrics,
+    :root body.page-market-list .podium-card--rank1 .podium-metrics,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-metrics,
+    :root body.page-market-list .compact-market-row,
+    :root body.page-surge-ranking .podium-trend-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    :root body.page-market-list .podium-rate,
+    :root body.page-market-list .compact-rate {
+        min-height: 30px !important;
+        padding: 0 10px !important;
+        font-size: 13px !important;
+    }
+
+    :root body.page-market-list .sleeve-sparkline,
+    :root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
+    :root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
+    :root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+        height: 112px !important;
+        padding: 34px 10px 12px !important;
+    }
+
+    :root body.page-market-list .sleeve-sparkline::before {
+        top: 11px !important;
+        left: 12px !important;
+        font-size: 10px !important;
+    }
+
+    :root body.page-market-list .sleeve-sparkline::after {
+        top: 11px !important;
+        right: 12px !important;
+        font-size: 10px !important;
+    }
+}
+
 /* Dashboard chrome canonical styles */
 :root body .dashboard-shell {
     display: grid !important;
@@ -4515,5 +5312,353 @@ footer.site-footer {
     :root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
         width: 100% !important;
         height: 48px !important;
+    }
+}
+
+/* Final ranking card overrides */
+:root body.page-market-list .ranking-top3,
+:root body.page-market-list .compact-grid,
+:root body.page-market-list .ranking-list,
+:root body.page-market-list #list.grid {
+    gap: 28px !important;
+}
+
+:root body.page-market-list .ranking-top3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+:root body.page-market-list .podium-card,
+:root body.page-market-list .podium-card--rank1,
+:root body.page-market-list .podium-card--rank2,
+:root body.page-market-list .podium-card--rank3,
+:root body.page-market-list a.compact-card,
+:root body.page-market-list .compact-card {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto 1fr !important;
+    gap: 16px !important;
+    min-height: 100% !important;
+    padding: 76px 20px 20px !important;
+    border: 1px solid rgba(15, 23, 42, .12) !important;
+    border-radius: 20px !important;
+    background: #fff !important;
+    box-shadow: 0 18px 42px rgba(15, 23, 42, .10) !important;
+    color: #172033 !important;
+    overflow: hidden !important;
+}
+
+:root body.page-market-list .podium-card:hover,
+:root body.page-market-list .podium-card:focus-visible,
+:root body.page-market-list a.compact-card:hover,
+:root body.page-market-list a.compact-card:focus-visible {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 22px 48px rgba(15, 23, 42, .13) !important;
+}
+
+:root body.page-market-list .podium-badge,
+:root body.page-market-list .compact-rank-badge {
+    position: absolute !important;
+    top: 20px !important;
+    left: 20px !important;
+    z-index: 2 !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    width: 54px !important;
+    height: 54px !important;
+    min-width: 54px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: linear-gradient(135deg, #ffe484 0%, #d7a51f 48%, #9a6d0d 100%) !important;
+    box-shadow: 0 10px 22px rgba(174, 123, 20, .22) !important;
+    color: #fff !important;
+    font-family: "Inter", "Zen Kaku Gothic New", sans-serif !important;
+    font-size: 15px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-badge {
+    font-size: 0 !important;
+}
+
+:root body.page-market-list .compact-rank-badge::before {
+    content: none !important;
+}
+
+:root body.page-market-list .podium-card--rank1 .podium-badge::before { content: "1"; }
+:root body.page-market-list .podium-card--rank2 .podium-badge::before { content: "2"; }
+:root body.page-market-list .podium-card--rank3 .podium-badge::before { content: "3"; }
+
+:root body.page-market-list .podium-badge::before {
+    display: block !important;
+    color: #fff !important;
+    font-size: 28px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-card--rank2 .podium-badge {
+    background: linear-gradient(135deg, #f7f8fb 0%, #b7bdc7 52%, #747b86 100%) !important;
+}
+
+:root body.page-market-list .podium-card--rank3 .podium-badge {
+    background: linear-gradient(135deg, #ffd8ad 0%, #c37a32 52%, #854817 100%) !important;
+}
+
+:root body.page-market-list .podium-card::after,
+:root body.page-market-list a.compact-card::after,
+:root body.page-market-list .compact-card::after {
+    content: "ランキング" !important;
+    position: absolute !important;
+    top: 36px !important;
+    left: 92px !important;
+    color: #172033 !important;
+    font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-surge-ranking .podium-card::after,
+:root body.page-surge-ranking a.compact-card::after,
+:root body.page-surge-ranking .compact-card::after {
+    content: "価格上昇" !important;
+}
+
+:root body.page-market-list .podium-media,
+:root body.page-market-list .podium-card--rank1 .podium-media,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media,
+:root body.page-market-list .compact-thumb-wrap {
+    width: 100% !important;
+    aspect-ratio: 16 / 10 !important;
+    padding: 14px !important;
+    border-radius: 14px !important;
+    background: linear-gradient(180deg, #f9fbff 0%, #f3f6fb 100%) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+
+:root body.page-market-list .podium-media img,
+:root body.page-market-list .podium-card--rank1 .podium-media img,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media img,
+:root body.page-market-list .compact-thumb {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    object-fit: contain !important;
+}
+
+:root body.page-market-list .podium-title,
+:root body.page-market-list .podium-card--rank1 .podium-title,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-title,
+:root body.page-market-list .compact-card-title {
+    color: #101828 !important;
+    font-size: clamp(20px, 1.65vw, 27px) !important;
+    line-height: 1.24 !important;
+    font-weight: 900 !important;
+    -webkit-line-clamp: 2 !important;
+}
+
+:root body.page-market-list .podium-metrics,
+:root body.page-market-list .podium-card--rank1 .podium-metrics,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-metrics,
+:root body.page-market-list .compact-market-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: end !important;
+    gap: 10px 18px !important;
+}
+
+:root body.page-market-list .podium-metric,
+:root body.page-market-list .compact-price-row {
+    display: grid !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+}
+
+:root body.page-market-list .podium-metric-label,
+:root body.page-market-list .compact-delta {
+    color: #667085 !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    font-weight: 700 !important;
+}
+
+:root body.page-market-list .podium-price,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-price,
+:root body.page-market-list .compact-price {
+    color: #111827 !important;
+    font-size: clamp(30px, 3.1vw, 44px) !important;
+    line-height: 1.05 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-surge-ranking .podium-diff,
+:root body.page-surge-ranking .compact-delta,
+:root body.page-market-list .compact-delta.up,
+:root body.page-market-list .compact-delta.is-up {
+    color: #c01f1a !important;
+    font-size: clamp(22px, 2.3vw, 32px) !important;
+    line-height: 1.05 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-rate,
+:root body.page-market-list .compact-rate {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: fit-content !important;
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    border: 1px solid currentColor !important;
+    border-radius: 8px !important;
+    background: rgba(255,255,255,.72) !important;
+    color: #c01f1a !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-chip,
+:root body.page-market-list .compact-meta-item,
+:root body.page-market-list .compact-tag {
+    color: #667085 !important;
+    font-size: 14px !important;
+    line-height: 1.35 !important;
+    font-weight: 700 !important;
+}
+
+:root body.page-market-list .podium-market-row,
+:root body.page-surge-ranking .podium-market-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+}
+
+:root body.page-surge-ranking .podium-trend-row {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 14px !important;
+}
+
+:root body.page-market-list .sleeve-sparkline,
+:root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
+:root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
+:root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 150px !important;
+    padding: 42px 14px 16px !important;
+    border: 1px solid rgba(15, 23, 42, .14) !important;
+    border-radius: 10px !important;
+    background: #fff !important;
+}
+
+:root body.page-market-list .sleeve-sparkline::before {
+    content: "直近12週の価格推移" !important;
+    position: absolute !important;
+    top: 14px !important;
+    left: 16px !important;
+    color: #344054 !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .sleeve-sparkline::after {
+    content: "週次" !important;
+    position: absolute !important;
+    top: 14px !important;
+    right: 16px !important;
+    color: #667085 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+}
+
+:root body.page-market-list .sleeve-sparkline svg {
+    height: 100% !important;
+}
+
+@media (max-width: 1100px) {
+    :root body.page-market-list .ranking-top3,
+    :root body.page-market-list .compact-grid,
+    :root body.page-market-list .ranking-list,
+    :root body.page-market-list #list.grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 700px) {
+    :root body.page-market-list .podium-card,
+    :root body.page-market-list .podium-card--rank1,
+    :root body.page-market-list .podium-card--rank2,
+    :root body.page-market-list .podium-card--rank3,
+    :root body.page-market-list a.compact-card,
+    :root body.page-market-list .compact-card {
+        padding: 62px 12px 14px !important;
+        border-radius: 16px !important;
+    }
+
+    :root body.page-market-list .podium-badge,
+    :root body.page-market-list .compact-rank-badge {
+        top: 14px !important;
+        left: 14px !important;
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px !important;
+        font-size: 12px !important;
+    }
+
+    :root body.page-market-list .podium-badge::before {
+        font-size: 22px !important;
+    }
+
+    :root body.page-market-list .podium-card::after,
+    :root body.page-market-list a.compact-card::after,
+    :root body.page-market-list .compact-card::after {
+        top: 26px !important;
+        left: 68px !important;
+        font-size: 13px !important;
+    }
+
+    :root body.page-market-list .podium-media,
+    :root body.page-market-list .podium-card--rank1 .podium-media,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-media,
+    :root body.page-market-list .compact-thumb-wrap {
+        aspect-ratio: 1 / 1 !important;
+        padding: 8px !important;
+    }
+
+    :root body.page-market-list .podium-title,
+    :root body.page-market-list .podium-card--rank1 .podium-title,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-title,
+    :root body.page-market-list .compact-card-title {
+        font-size: 15px !important;
+        line-height: 1.35 !important;
+    }
+
+    :root body.page-market-list .podium-price,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-price,
+    :root body.page-market-list .compact-price {
+        font-size: 22px !important;
+    }
+
+    :root body.page-market-list .podium-metrics,
+    :root body.page-market-list .podium-card--rank1 .podium-metrics,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-metrics,
+    :root body.page-market-list .compact-market-row,
+    :root body.page-surge-ranking .podium-trend-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    :root body.page-market-list .sleeve-sparkline,
+    :root body.page-surge-ranking .podium-trend-row .sleeve-sparkline,
+    :root body.page-surge-ranking .podium-market-row .sleeve-sparkline,
+    :root body.page-surge-ranking .compact-market-row .sleeve-sparkline {
+        height: 112px !important;
+        padding: 34px 10px 12px !important;
     }
 }
