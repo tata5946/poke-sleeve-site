@@ -5957,7 +5957,7 @@
       }
       requestAnimationFrame(() => {
         const initialCard = track.querySelectorAll(".release-feature-card")[dotCount + 1];
-        if (initialCard) initialCard.scrollIntoView({ inline: "center", block: "nearest" });
+        scrollReleaseBannerCardIntoTrack(track, initialCard, "auto");
         updateReleaseBannerDots(track);
       });
     }
@@ -5981,6 +5981,12 @@
       return bestIndex;
     }
 
+    function scrollReleaseBannerCardIntoTrack(track, card, behavior = "smooth") {
+      if (!track || !card) return;
+      const left = card.offsetLeft - Math.max(0, (track.clientWidth - card.offsetWidth) / 2);
+      track.scrollTo({ left, behavior });
+    }
+
     function updateReleaseBannerDots(track) {
       const loopSize = Number(track?.dataset?.loopSize || 0);
       if (!track || !loopSize) return;
@@ -6001,9 +6007,9 @@
       if (centeredIndex >= loopSize * 2) targetIndex = centeredIndex - loopSize;
       if (targetIndex === centeredIndex) return;
       const before = track.scrollLeft;
-      cards[targetIndex].scrollIntoView({ inline: "center", block: "nearest" });
+      scrollReleaseBannerCardIntoTrack(track, cards[targetIndex], "auto");
       track.scrollLeft = track.scrollLeft;
-      if (Math.abs(track.scrollLeft - before) < 1) cards[targetIndex].scrollIntoView({ inline: "center", block: "nearest" });
+      if (Math.abs(track.scrollLeft - before) < 1) scrollReleaseBannerCardIntoTrack(track, cards[targetIndex], "auto");
     }
 
     function scrollReleaseBannerByStep(track, step = 1, behavior = "smooth") {
@@ -6013,7 +6019,7 @@
       if (!cards.length) return;
       const currentIndex = getCenteredReleaseBannerIndex(track);
       const targetIndex = Math.max(0, Math.min(cards.length - 1, currentIndex + step));
-      cards[targetIndex]?.scrollIntoView({ inline: "center", block: "nearest", behavior });
+      scrollReleaseBannerCardIntoTrack(track, cards[targetIndex], behavior);
     }
 
     function scrollReleaseBannerToLogicalIndex(track, logicalIndex, behavior = "smooth") {
@@ -6027,7 +6033,7 @@
       const alternateIndex = targetIndex + (targetIndex <= currentIndex ? loopSize : -loopSize);
       const candidates = [targetIndex, alternateIndex].filter((index) => cards[index]);
       const nearestIndex = candidates.sort((a, b) => Math.abs(a - currentIndex) - Math.abs(b - currentIndex))[0];
-      cards[nearestIndex]?.scrollIntoView({ inline: "center", block: "nearest", behavior });
+      scrollReleaseBannerCardIntoTrack(track, cards[nearestIndex], behavior);
     }
 
     function wireReleaseBannerCarousel() {
