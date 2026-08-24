@@ -6059,3 +6059,180 @@ footer.site-footer {
         padding: 34px 10px 12px !important;
     }
 }
+/* Ranking card final clean override */
+:root body.page-market-list .podium-card,
+:root body.page-market-list .compact-card,
+:root body.page-market-list .podium-title,
+:root body.page-market-list .compact-card-title,
+:root body.page-market-list .podium-metric-label,
+:root body.page-market-list .compact-delta,
+:root body.page-market-list .podium-chip,
+:root body.page-market-list .compact-meta-item,
+:root body.page-market-list .compact-tag {
+    font-family: "Noto Sans JP", "Inter", sans-serif !important;
+    letter-spacing: 0 !important;
+}
+
+:root body.page-market-list .podium-price,
+:root body.page-market-list .compact-price,
+:root body.page-market-list .podium-diff,
+:root body.page-market-list .compact-delta.up,
+:root body.page-market-list .compact-delta.is-up,
+:root body.page-market-list .podium-rate,
+:root body.page-market-list .compact-rate {
+    font-family: "Inter", "Noto Sans JP", sans-serif !important;
+}
+
+:root body.page-market-list .podium-card::after,
+:root body.page-market-list a.compact-card::after,
+:root body.page-market-list .compact-card::after {
+    content: none !important;
+    display: none !important;
+}
+
+:root body.page-market-list .podium-badge,
+:root body.page-market-list .compact-rank-badge {
+    position: absolute !important;
+    top: 22px !important;
+    left: 24px !important;
+    z-index: 3 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 56px !important;
+    height: 56px !important;
+    min-width: 56px !important;
+    min-height: 56px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    color: #fff !important;
+    font-family: "Inter", "Noto Sans JP", sans-serif !important;
+    font-size: 24px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+    text-shadow: none !important;
+    box-shadow: 0 12px 26px rgba(15, 23, 42, .14) !important;
+    overflow: hidden !important;
+}
+
+:root body.page-market-list .podium-badge::before,
+:root body.page-market-list .compact-rank-badge::before,
+:root body.page-market-list .podium-badge::after,
+:root body.page-market-list .compact-rank-badge::after {
+    content: none !important;
+    display: none !important;
+}
+
+:root body.page-market-list .podium-card--rank1 .podium-badge,
+:root body.page-market-list .ranking-top3 > *:nth-child(1) .compact-rank-badge {
+    background: linear-gradient(135deg, #f8d95a 0%, #c99814 100%) !important;
+}
+
+:root body.page-market-list .podium-card--rank2 .podium-badge,
+:root body.page-market-list .ranking-top3 > *:nth-child(2) .compact-rank-badge {
+    background: linear-gradient(135deg, #e7ebf1 0%, #9aa3af 100%) !important;
+}
+
+:root body.page-market-list .podium-card--rank3 .podium-badge,
+:root body.page-market-list .ranking-top3 > *:nth-child(3) .compact-rank-badge {
+    background: linear-gradient(135deg, #e8a566 0%, #a96222 100%) !important;
+}
+
+:root body.page-market-list .podium-title,
+:root body.page-market-list .compact-card-title {
+    color: #111827 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-card--rank1 .podium-title,
+:root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-title,
+:root body.page-market-list .compact-card-title {
+    font-size: 22px !important;
+    line-height: 1.34 !important;
+}
+
+:root body.page-market-list .podium-price,
+:root body.page-market-list .compact-price {
+    color: #111827 !important;
+    font-size: 36px !important;
+    line-height: 1.08 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .podium-diff,
+:root body.page-market-list .compact-delta.up,
+:root body.page-market-list .compact-delta.is-up {
+    color: #c01f1a !important;
+    font-size: 28px !important;
+    line-height: 1.1 !important;
+    font-weight: 900 !important;
+}
+
+:root body.page-market-list .sleeve-sparkline-label,
+:root body.page-market-list .sleeve-sparkline-label--axis,
+:root body.page-market-list .sleeve-sparkline-value {
+    fill: #667085 !important;
+    font-family: "Inter", "Noto Sans JP", sans-serif !important;
+    font-size: 8.5px !important;
+    font-weight: 700 !important;
+    paint-order: stroke !important;
+    stroke: rgba(255, 255, 255, .88) !important;
+    stroke-width: 2px !important;
+}
+
+:root body.page-market-list .sleeve-sparkline-value {
+    fill: #344054 !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+}
+
+:root body.page-market-list .sleeve-sparkline-axis {
+    stroke: rgba(102, 112, 133, .25) !important;
+}
+
+@media (max-width: 700px) {
+    :root body.page-market-list .podium-badge,
+    :root body.page-market-list .compact-rank-badge {
+        top: 14px !important;
+        left: 14px !important;
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px !important;
+        min-height: 42px !important;
+        font-size: 18px !important;
+    }
+
+    :root body.page-market-list .podium-card--rank1 .podium-title,
+    :root body.page-market-list .podium-card:not(.podium-card--rank1) .podium-title,
+    :root body.page-market-list .compact-card-title {
+        font-size: 16px !important;
+    }
+
+    :root body.page-market-list .podium-price,
+    :root body.page-market-list .compact-price {
+        font-size: 24px !important;
+    }
+
+    :root body.page-market-list .podium-diff,
+    :root body.page-market-list .compact-delta.up,
+    :root body.page-market-list .compact-delta.is-up {
+        font-size: 20px !important;
+    }
+}
+/* Ranking card type polish */
+:root body.page-market-list .podium-card,
+:root body.page-market-list .compact-card,
+:root body.page-market-list .podium-title,
+:root body.page-market-list .compact-card-title,
+:root body.page-market-list .podium-metric-label,
+:root body.page-market-list .compact-delta,
+:root body.page-market-list .podium-chip,
+:root body.page-market-list .compact-meta-item,
+:root body.page-market-list .compact-tag {
+    font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif !important;
+}
+
+:root body.page-market-list .podium-kicker {
+    display: none !important;
+}

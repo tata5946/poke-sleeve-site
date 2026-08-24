@@ -1770,6 +1770,8 @@
       const lastY = range === 0
         ? height / 2
         : height - padY - ((lastPrice - min) / range) * (height - padY * 2);
+      const valueX = Math.max(46, Number(lastX) - 8).toFixed(1);
+      const valueY = Math.max(9, lastY - 4).toFixed(1);
       const trendClass = lastPrice > prices[0] ? "up" : lastPrice < prices[0] ? "down" : "flat";
 
       return `
@@ -1781,6 +1783,7 @@
             <text class="sleeve-sparkline-label" x="2" y="${height - 6}">${minLabel}</text>
             <polygon class="sleeve-sparkline-area" points="${areaPoints}"></polygon>
             <polyline class="sleeve-sparkline-line" points="${linePoints}"></polyline>
+            <text class="sleeve-sparkline-value" x="${valueX}" y="${valueY}">${compactLabel(lastPrice)}</text>
             <circle class="sleeve-sparkline-dot" cx="${lastX}" cy="${lastY.toFixed(1)}" r="2"></circle>
           </svg>
         </div>
@@ -1937,9 +1940,7 @@
     }
 
     function getPodiumBadge(rank) {
-      if (rank === 1) return "1位";
-      if (rank === 2) return "2位";
-      return "3位";
+      return String(rank);
     }
 
     function buildPodiumCard(row, rank) {
