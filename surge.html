@@ -1116,6 +1116,30 @@
       transform: none !important;
     }
 
+    body.page-surge-ranking .ranking-card-frameless-thumb {
+      display: block !important;
+      width: 100% !important;
+      height: auto !important;
+      aspect-ratio: 4 / 3.75 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+    }
+
+    body.page-surge-ranking .ranking-card-frameless-img {
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none !important;
+      max-height: none !important;
+      object-fit: contain !important;
+      object-position: center !important;
+      transform: none !important;
+    }
+
     body.page-surge-ranking .compact-card.ranking-card-frameless .compact-market-row .sleeve-sparkline {
       position: relative !important;
       display: block !important;
@@ -1666,9 +1690,9 @@
         : "";
       return `
         <span class="compact-rank-badge">${rank}位</span>
-        <span class="compact-thumb-wrap">
+        <span class="compact-thumb-wrap ranking-card-frameless-thumb">
           ${s.imageUrl
-            ? `<img class="compact-thumb" src="${escapeHtml(s.imageUrl)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
+            ? `<img class="compact-thumb ranking-card-frameless-img" src="${escapeHtml(s.imageUrl)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
                 onerror="this.onerror=null; this.style.display='none';">`
             : ""}
         </span>
