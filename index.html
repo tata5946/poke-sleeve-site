@@ -1354,16 +1354,15 @@
     .home-sleeve-search {
       position: relative;
       overflow: hidden;
-      padding: 28px;
-      border-radius: 30px;
-      border: 1px solid rgba(191, 219, 254, 0.72);
-      background:
-        radial-gradient(circle at 8% 0%, rgba(96, 165, 250, 0.2), transparent 28%),
-        radial-gradient(circle at 92% 10%, rgba(45, 212, 191, 0.16), transparent 26%),
-        linear-gradient(135deg, rgba(255,255,255,.98), rgba(248,250,252,.96));
-      box-shadow: 0 28px 60px rgba(15, 23, 42, 0.09);
+      width: min(100%, 1180px);
+      margin: 0 auto;
+      padding: clamp(32px, 4.6vw, 56px);
+      border-radius: 24px;
+      border: 1px solid #d8dee8;
+      background: #fff;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.06);
       display: grid;
-      gap: 20px;
+      gap: 28px;
     }
     .home-sleeve-search::before {
       content: "";
@@ -1376,14 +1375,19 @@
     .home-sleeve-search::after {
       content: "";
       position: absolute;
-      right: 24px;
-      top: 24px;
-      width: 86px;
-      height: 86px;
-      border-radius: 999px;
-      background:
-        linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(20, 184, 166, 0.1));
-      filter: blur(.2px);
+      right: 54px;
+      top: 78px;
+      width: 148px;
+      height: 112px;
+      border: 3px solid #dbe6f5;
+      border-radius: 10px;
+      box-shadow:
+        16px 8px 0 -3px #fff,
+        16px 8px 0 0 #dbe6f5,
+        32px 16px 0 -3px #fff,
+        32px 16px 0 0 #dbe6f5;
+      opacity: .72;
+      transform: rotate(7deg);
       pointer-events: none;
     }
     .home-sleeve-search-head {
@@ -1392,67 +1396,95 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 28px;
     }
     .home-sleeve-search-copy {
       min-width: 0;
       display: grid;
-      gap: 8px;
+      gap: 18px;
     }
     .home-sleeve-search-kicker {
       width: fit-content;
       margin: 0;
-      padding: 7px 11px;
-      border-radius: 999px;
-      background: rgba(219, 234, 254, 0.8);
+      padding-bottom: 16px;
       color: #1d4ed8;
-      font-size: 11px;
+      font-size: 16px;
+      line-height: 1;
       font-weight: 900;
-      letter-spacing: .08em;
+      letter-spacing: .22em;
+    }
+    .home-sleeve-search-kicker::after {
+      content: "";
+      display: block;
+      width: 36px;
+      height: 2px;
+      margin-top: 16px;
+      background: #2563eb;
     }
     .home-sleeve-search-title {
       margin: 0;
       color: #0f172a;
-      font-size: clamp(28px, 3vw, 44px);
-      line-height: 1.2;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: clamp(42px, 5vw, 66px);
+      line-height: 1.08;
       font-weight: 950;
       letter-spacing: 0;
+    }
+    .home-sleeve-search-lead {
+      margin: -4px 0 0;
+      color: #536174;
+      font-size: clamp(18px, 2vw, 24px);
+      line-height: 1.55;
+      font-weight: 800;
     }
     .home-sleeve-search-count {
       position: relative;
       z-index: 1;
       display: inline-flex;
-      align-items: baseline;
-      gap: 7px;
-      min-height: 48px;
-      padding: 0 16px;
-      border-radius: 18px;
-      background: #0f172a;
-      color: #fff;
-      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.14);
+      align-items: center;
+      gap: 14px;
+      min-height: 60px;
+      padding: 0 24px;
+      border-radius: 16px;
+      border: 1px solid #dbe1ea;
+      background: rgba(255,255,255,.92);
+      color: #0f172a;
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.05);
       white-space: nowrap;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
       font-weight: 950;
     }
     .home-sleeve-search-count-number {
-      font-size: 24px;
+      font-size: 32px;
       letter-spacing: 0;
     }
+    .home-sleeve-search-count-number::after {
+      content: "";
+      display: inline-block;
+      width: 2px;
+      height: 30px;
+      margin-left: 14px;
+      background: #2563eb;
+      vertical-align: -6px;
+    }
     .home-sleeve-search-count-unit {
-      color: #cbd5e1;
+      color: #0f172a;
       font-size: 13px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
     }
     .home-sleeve-search-form {
       position: relative;
       z-index: 1;
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
-      gap: 10px;
+      gap: 12px;
       align-items: stretch;
-      padding: 8px;
-      border: 1px solid rgba(148, 163, 184, 0.28);
-      border-radius: 24px;
-      background: rgba(255,255,255,.82);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 18px 32px rgba(15, 23, 42, 0.06);
+      padding: 12px;
+      border: 1px solid #d8dee8;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
     }
     .home-sleeve-search-field {
       position: relative;
@@ -1460,13 +1492,13 @@
     }
     .home-sleeve-search-input {
       width: 100%;
-      min-height: 60px;
-      padding: 0 18px 0 52px;
-      border-radius: 18px;
+      min-height: 70px;
+      padding: 0 18px 0 72px;
+      border-radius: 14px;
       border: 0;
       background: transparent;
       color: #0f172a;
-      font-size: 18px;
+      font-size: 22px;
       font-weight: 900;
       outline: none;
       transition: border-color .18s ease, box-shadow .18s ease;
@@ -1477,11 +1509,11 @@
     }
     .home-sleeve-search-icon {
       position: absolute;
-      left: 20px;
-      top: 30px;
+      left: 26px;
+      top: 35px;
       transform: translateY(-50%);
-      color: #2563eb;
-      font-size: 23px;
+      color: #0f172a;
+      font-size: 34px;
       line-height: 1;
       pointer-events: none;
     }
@@ -1492,36 +1524,38 @@
     }
     .home-sleeve-search-submit,
     .home-sleeve-image-button {
-      min-height: 60px;
-      border-radius: 18px;
+      min-height: 70px;
+      border-radius: 14px;
       border: 0;
-      padding: 0 22px;
-      font-size: 15px;
+      padding: 0 34px;
+      font-size: 20px;
       font-weight: 950;
       cursor: pointer;
       white-space: nowrap;
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
     .home-sleeve-search-submit {
-      background: linear-gradient(135deg, #111827, #1e3a8a);
+      min-width: 142px;
+      background: #0b1730;
       color: #fff;
-      box-shadow: 0 14px 28px rgba(30, 58, 138, 0.18);
+      box-shadow: 0 18px 34px rgba(15, 23, 42, 0.14);
     }
     .home-sleeve-image-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      min-width: 88px;
-      border: 1px solid rgba(37, 99, 235, 0.16);
-      background: rgba(239, 246, 255, 0.9);
-      color: #1d4ed8;
+      gap: 18px;
+      min-width: 0;
+      border: 1px solid #d8dee8;
+      background: rgba(255,255,255,.74);
+      color: #0f172a;
+      text-decoration: none;
       box-shadow: none;
     }
     .home-sleeve-image-button--library {
-      background: rgba(236, 253, 245, 0.9);
-      color: #047857;
-      border-color: rgba(16, 185, 129, 0.18);
+      background: rgba(255,255,255,.74);
+      color: #0f172a;
+      border-color: #d8dee8;
     }
     .home-sleeve-search-submit:hover,
     .home-sleeve-image-button:hover {
@@ -1529,13 +1563,21 @@
       box-shadow: 0 16px 30px rgba(15, 23, 42, 0.12);
     }
     .home-sleeve-image-button-icon {
-      font-size: 18px;
+      font-size: 28px;
       line-height: 1;
     }
     .home-sleeve-search-actions {
-      display: inline-flex;
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       align-items: stretch;
-      gap: 8px;
+      gap: 20px;
+    }
+    .home-sleeve-tool-arrow {
+      margin-left: auto;
+      font-size: 24px;
+      line-height: 1;
     }
     .home-sleeve-image-input {
       position: absolute;
@@ -4182,26 +4224,42 @@
         font-size: 15px;
       }
       body.home-page .home-sleeve-search {
-        padding: 16px;
+        padding: 22px 16px;
         border-radius: 22px;
-        gap: 12px;
+        gap: 18px;
       }
       body.home-page .home-sleeve-search-head {
+        display: grid;
         align-items: flex-start;
       }
+      body.home-page .home-sleeve-search-kicker {
+        font-size: 12px;
+        padding-bottom: 10px;
+      }
+      body.home-page .home-sleeve-search-kicker::after {
+        margin-top: 10px;
+      }
       body.home-page .home-sleeve-search-title {
-        font-size: 26px;
+        font-size: 34px;
+      }
+      body.home-page .home-sleeve-search-lead {
+        font-size: 15px;
       }
       body.home-page .home-sleeve-search-count {
-        min-height: 38px;
-        padding: 0 12px;
+        width: fit-content;
+        min-height: 42px;
+        padding: 0 14px;
         border-radius: 14px;
       }
       body.home-page .home-sleeve-search-count-number {
-        font-size: 18px;
+        font-size: 20px;
+      }
+      body.home-page .home-sleeve-search-count-number::after {
+        height: 22px;
+        vertical-align: -5px;
       }
       body.home-page .home-sleeve-search-count-unit {
-        font-size: 11px;
+        font-size: 10px;
       }
       body.home-page .home-sleeve-search-form {
         grid-template-columns: 1fr;
@@ -4212,24 +4270,25 @@
       body.home-page .home-sleeve-search-input,
       body.home-page .home-sleeve-search-submit,
       body.home-page .home-sleeve-image-button {
-        min-height: 48px;
+        min-height: 52px;
         border-radius: 16px;
       }
       body.home-page .home-sleeve-search-input {
-        padding-left: 44px;
+        padding-left: 46px;
         font-size: 15px;
       }
       body.home-page .home-sleeve-search-icon {
-        top: 24px;
+        top: 26px;
         left: 17px;
-        font-size: 20px;
+        font-size: 21px;
       }
       body.home-page .home-sleeve-search-actions {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
+        gap: 10px;
       }
       body.home-page .home-sleeve-search-submit {
-        grid-column: 1 / -1;
+        grid-column: auto;
       }
       body.home-page .home-sleeve-search-results {
         grid-template-columns: 1fr;
@@ -4746,10 +4805,11 @@
             <div class="home-sleeve-search-copy">
               <p class="home-sleeve-search-kicker">SLEEVE SEARCH</p>
               <h1 id="homeSleeveSearchTitle" class="home-sleeve-search-title">デッキシールドを探す</h1>
+              <p class="home-sleeve-search-lead">全<span id="homeSleeveSearchLeadCount">839</span>種類から、気になるスリーブを検索</p>
             </div>
             <div class="home-sleeve-search-count" aria-label="登録スリーブ枚数">
               <span id="homeSleeveSearchCount" class="home-sleeve-search-count-number">--</span>
-              <span class="home-sleeve-search-count-unit">枚</span>
+              <span class="home-sleeve-search-count-unit">COLLECTIONS</span>
             </div>
           </div>
           <form id="homeSleeveSearchForm" class="home-sleeve-search-form" action="./sleeves/" method="get">
@@ -4757,20 +4817,27 @@
               <span class="home-sleeve-search-icon" aria-hidden="true">⌕</span>
               <input id="homeSleeveSearchInput" class="home-sleeve-search-input" name="q" type="search" placeholder="スリーブ名・ポケモン名で検索" autocomplete="off" />
             </div>
-            <div class="home-sleeve-search-actions">
-              <label class="home-sleeve-image-button" for="homeSleeveCameraInput" aria-label="写真を撮って探す">
-                <span class="home-sleeve-image-button-icon" aria-hidden="true">▧</span>
-                <span>撮る</span>
-              </label>
-              <label class="home-sleeve-image-button home-sleeve-image-button--library" for="homeSleeveLibraryInput" aria-label="写真フォルダーから選んで探す">
-                <span class="home-sleeve-image-button-icon" aria-hidden="true">▤</span>
-                <span>選ぶ</span>
-              </label>
-              <button class="home-sleeve-search-submit" type="submit">検索</button>
-            </div>
-            <input id="homeSleeveCameraInput" class="home-sleeve-image-input" type="file" accept="image/*" capture="environment" />
-            <input id="homeSleeveLibraryInput" class="home-sleeve-image-input" type="file" accept="image/*" />
+            <button class="home-sleeve-search-submit" type="submit">検索</button>
           </form>
+          <div class="home-sleeve-search-actions">
+            <label class="home-sleeve-image-button" for="homeSleeveLibraryInput" aria-label="画像から探す">
+              <span class="home-sleeve-image-button-icon" aria-hidden="true">▧</span>
+              <span>画像から探す</span>
+              <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
+            </label>
+            <a class="home-sleeve-image-button home-sleeve-image-button--library" href="./sleeves/all.html">
+              <span class="home-sleeve-image-button-icon" aria-hidden="true">☷</span>
+              <span>一覧から選ぶ</span>
+              <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
+            </a>
+            <a class="home-sleeve-image-button home-sleeve-image-button--library" href="./sleeves/">
+              <span class="home-sleeve-image-button-icon" aria-hidden="true">◇</span>
+              <span>カテゴリから探す</span>
+              <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
+            </a>
+          </div>
+          <input id="homeSleeveCameraInput" class="home-sleeve-image-input" type="file" accept="image/*" capture="environment" />
+          <input id="homeSleeveLibraryInput" class="home-sleeve-image-input" type="file" accept="image/*" />
           <div id="homeSleeveSearchPreview" class="home-sleeve-search-preview" hidden>
             <img id="homeSleeveSearchPreviewImage" alt="" />
             <p id="homeSleeveSearchStatus" class="home-sleeve-search-status"></p>
@@ -5749,6 +5816,8 @@
       if (countEl) {
         const count = (Array.isArray(sleeves) ? sleeves : []).filter((sleeve) => String(sleeve?.id || "").trim()).length;
         countEl.textContent = count ? count.toLocaleString() : "--";
+        const leadCountEl = document.getElementById("homeSleeveSearchLeadCount");
+        if (leadCountEl) leadCountEl.textContent = count ? count.toLocaleString() : "--";
       }
 
       if (window.common && typeof window.common.wireSleeveAutocomplete === "function") {
