@@ -3242,6 +3242,33 @@
       font-weight: 900;
       letter-spacing: .02em;
     }
+    .hero-index-chip.down {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .hero-index-chip.flat {
+      background: #e5e7eb;
+      color: #475569;
+    }
+    .hero-index-meta-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .hero-index-meta-line span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border: 1px solid #dbe5f2;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .78);
+      white-space: nowrap;
+    }
     .hero-main-link:hover .hero-index-chip {
       transform: translateY(-1px);
       box-shadow: 0 8px 18px rgba(16, 185, 129, 0.18);
@@ -5424,42 +5451,76 @@
     function buildHomeMarketIndexSeries(sleeves) {
       const weeks = collectIndexWeeks(sleeves);
       if (weeks.length < 2) return [];
-      const sleeveMaps = sleeves.map((s) => {
-        const map = new Map();
-        for (const row of collectWeeklyRows(s)) map.set(row.week, row);
-        return map;
-      });
-      const minPrice = 300;
-      const weightCap = 20;
-      const hardLo = -Math.log(2.5);
-      const hardHi = Math.log(2.5);
-      let index = null;
+      const timelines = (Array.isArray(sleeves) ? sleeves : [])
+        .map((sleeve) => collectWeeklyRows(sleeve).filter((row) => Number.isFinite(row.price) && row.price > 0))
+        .filter((rows) => rows.length);
+      const cursors = timelines.map(() => -1);
       const out = [];
-      for (let i = 1; i < weeks.length; i++) {
-        const prev = weeks[i - 1];
-        const cur = weeks[i];
-        let sw = 0;
-        let swr = 0;
-        for (const map of sleeveMaps) {
-          const p = map.get(prev);
-          const c = map.get(cur);
-          if (!p || !c) continue;
-          if (!(p.price > 0 && c.price > 0) || p.price < minPrice) continue;
-          const prevCount = Number.isFinite(p.count) && p.count > 0 ? p.count : 1;
-          const curCount = Number.isFinite(c.count) && c.count > 0 ? c.count : 1;
-          let logR = Math.log(c.price / p.price);
-          logR = Math.max(hardLo, Math.min(hardHi, logR));
-          const w = Math.min(Math.sqrt(prevCount * curCount), weightCap);
-          if (!(w > 0)) continue;
-          sw += w;
-          swr += w * logR;
-        }
-        if (sw <= 0) continue;
-        const avgLogR = swr / sw;
-        index = index == null ? 100 : index * Math.exp(avgLogR);
-        out.push({ week: cur, index, rate: (Math.exp(avgLogR) - 1) * 100 });
+      for (const week of weeks) {
+        const weekTime = new Date(week).getTime();
+        if (Number.isNaN(weekTime)) continue;
+        let totalPrice = 0;
+        let targetCount = 0;
+        let updateCount = 0;
+        timelines.forEach((timeline, index) => {
+          let updatedThisWeek = false;
+          while (cursors[index] + 1 < timeline.length && new Date(timeline[cursors[index] + 1].week).getTime() <= weekTime) {
+            cursors[index]++;
+            if (timeline[cursors[index]].week === week) updatedThisWeek = true;
+          }
+          const latest = timeline[cursors[index]];
+          if (latest && Number.isFinite(latest.price) && latest.price > 0) {
+            totalPrice += latest.price;
+            targetCount++;
+          }
+          if (updatedThisWeek) updateCount++;
+        });
+        if (!targetCount) continue;
+        const avgPrice = totalPrice / targetCount;
+        const prev = out[out.length - 1] || null;
+        const rate = prev && prev.avgPrice > 0 ? ((avgPrice / prev.avgPrice) - 1) * 100 : 0;
+        out.push({
+          week,
+          index: avgPrice,
+          avgPrice,
+          rate,
+          targetCount,
+          updateCount,
+          totalPrice
+        });
       }
       return out;
+    }
+
+    function formatYen(value) {
+      if (!Number.isFinite(value)) return "—";
+      return `${Math.round(value).toLocaleString()}円`;
+    }
+
+    function formatSignedYen(value) {
+      if (!Number.isFinite(value)) return "—";
+      const sign = value > 0 ? "+" : value < 0 ? "-" : "";
+      return `${sign}${Math.abs(Math.round(value)).toLocaleString()}円`;
+    }
+
+    function formatPeriodLabel(value) {
+      const m = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return String(value || "");
+      return `${Number(m[1])}/${Number(m[2])}/${Number(m[3])}`;
+    }
+
+    function findNearestPriorMarketPoint(points, latestIndex, minDaysAgo) {
+      const latest = points[latestIndex];
+      if (!latest?.week) return null;
+      const cutoff = new Date(latest.week).getTime() - minDaysAgo * 86400000;
+      for (let i = latestIndex - 1; i >= 0; i--) {
+        const point = points[i];
+        const time = new Date(point.week).getTime();
+        if (!Number.isNaN(time) && time <= cutoff && Number.isFinite(point.avgPrice)) {
+          return point;
+        }
+      }
+      return null;
     }
     function getDetailHref(sleeveId) {
       if (window.common && typeof window.common.buildSleeveDetailHref === "function") return window.common.buildSleeveDetailHref(sleeveId ?? "");
@@ -6134,29 +6195,40 @@
     }
 
     function buildMarketStats(sleeves, marketSeries) {
-      const latestWeek = getGlobalLatestTradeWeek(sleeves);
-      const activeRows = [];
-      for (const sleeve of sleeves) {
-        const pair = getWeeklyPair(sleeve);
-        if (!pair || !latestWeek || pair.latest.week !== latestWeek) continue;
-        const latestCount = numOrNull(pair.latest.count);
-        const rate = pair.prev?.price ? ((pair.latest.price - pair.prev.price) / pair.prev.price) * 100 : null;
-        activeRows.push({ sleeve, pair, latestCount, rate });
-      }
-      const activeCount = activeRows.length;
-      const risingCount = activeRows.filter((row) => Number.isFinite(row.rate) && row.rate > 0).length;
-      const volume = activeRows.reduce((sum, row) => sum + (Number.isFinite(row.latestCount) ? row.latestCount : 0), 0);
-      const tradeValue = activeRows.reduce((sum, row) => sum + ((Number.isFinite(row.latestCount) ? row.latestCount : 0) * Number(row.pair?.latest?.price || 0)), 0);
-      const avgPrice = activeRows.length
-        ? activeRows.reduce((sum, row) => sum + Number(row.pair?.latest?.price || 0), 0) / activeRows.length
-        : 0;
-      const topVolume = activeRows
-        .filter((row) => Number.isFinite(row.latestCount) && row.latestCount > 0)
-        .sort((a, b) => b.latestCount - a.latestCount)
-        .slice(0, 3);
-      const latestIndex = marketSeries.length ? marketSeries[marketSeries.length - 1] : null;
-      const sentimentScore = Math.max(12, Math.min(96, Math.round(50 + ((latestIndex?.rate || 0) * 6) + ((risingCount / Math.max(activeCount, 1)) * 28))));
-      return { latestWeek, activeCount, risingCount, volume, tradeValue, avgPrice, topVolume, latestIndex, sentimentScore };
+      const valid = (Array.isArray(marketSeries) ? marketSeries : []).filter((row) => Number.isFinite(row?.avgPrice));
+      const latestIndex = valid.length ? valid[valid.length - 1] : null;
+      const prevIndex = valid.length >= 2 ? valid[valid.length - 2] : null;
+      const monthBase = latestIndex ? findNearestPriorMarketPoint(valid, valid.length - 1, 28) : null;
+      const yearBase = latestIndex ? findNearestPriorMarketPoint(valid, valid.length - 1, 365) : null;
+      const latestWeek = latestIndex?.week || getGlobalLatestTradeWeek(sleeves);
+      const diff = latestIndex && prevIndex ? latestIndex.avgPrice - prevIndex.avgPrice : null;
+      const rate = Number.isFinite(diff) && prevIndex?.avgPrice > 0 ? (diff / prevIndex.avgPrice) * 100 : null;
+      const monthDiff = latestIndex && monthBase ? latestIndex.avgPrice - monthBase.avgPrice : null;
+      const monthRate = Number.isFinite(monthDiff) && monthBase?.avgPrice > 0 ? (monthDiff / monthBase.avgPrice) * 100 : null;
+      const yearDiff = latestIndex && yearBase ? latestIndex.avgPrice - yearBase.avgPrice : null;
+      const yearRate = Number.isFinite(yearDiff) && yearBase?.avgPrice > 0 ? (yearDiff / yearBase.avgPrice) * 100 : null;
+      const activeCount = Number(latestIndex?.targetCount || 0);
+      const volume = Number(latestIndex?.updateCount || 0);
+      const avgPrice = Number(latestIndex?.avgPrice || 0);
+      const sentimentScore = Math.max(12, Math.min(96, Math.round(50 + (Number(rate) || 0) * 7 + (Number(monthRate) || 0) * 1.2)));
+      return {
+        latestWeek,
+        activeCount,
+        risingCount: null,
+        volume,
+        tradeValue: Number(latestIndex?.totalPrice || 0),
+        avgPrice,
+        topVolume: [],
+        latestIndex,
+        prevIndex,
+        diff,
+        rate,
+        monthDiff,
+        monthRate,
+        yearDiff,
+        yearRate,
+        sentimentScore
+      };
     }
 
     function getSentimentProfile(stats) {
@@ -6168,87 +6240,60 @@
       return { label: "中立", state: "flat" };
     }
 
-    const MARKET_COMMENT_TEMPLATES = Object.freeze({
-      strong_up: "スリーブ相場は強い上昇傾向です。指数は前週比で大きく伸びており、値上がりしているスリーブも広く見られます。人気どころだけでなく、相場全体で価格の持ち上がりが確認できます。",
-      up: "スリーブ相場は堅調です。指数は前週比で上昇しており、全体として価格が上向きやすい流れです。幅広い価格帯で底堅さが見られます。",
-      volume_up: "スリーブ相場では売買が活発です。指数の動きはまだ大きくないものの、値上がりスリーブの広がりが見られます。価格上昇の前段階として取引の熱量が高まっている可能性があります。",
-      flat: "スリーブ相場は横ばい圏です。指数の変動は限られており、全体としては落ち着いた推移です。足元ではスリーブごとの差が出やすい状態です。",
-      soft_down: "スリーブ相場はやや軟調です。指数は弱含みで推移しており、価格の伸びはやや限定的です。人気スリーブとそれ以外で動きの差が広がりやすい局面です。",
-      down: "スリーブ相場は下落基調です。指数は前週比で大きく下がっており、全体として慎重な値動きになっています。短期的には様子見が増えやすいタイミングです。"
-    });
-
     function classifyMarketState(stats) {
-      const rate = Number(stats?.latestIndex?.rate);
-      const activeCount = Number(stats?.activeCount || 0);
-      const risingCount = Number(stats?.risingCount || 0);
-      const ratio = activeCount > 0 ? (risingCount / activeCount) : 0;
-
-      if (Number.isFinite(rate) && rate >= 2.0 && ratio >= 0.55) return "strong_up";
+      const rate = Number(stats?.rate);
+      if (Number.isFinite(rate) && rate >= 2.0) return "strong_up";
       if (Number.isFinite(rate) && rate <= -2.0) return "down";
-      if (Number.isFinite(rate) && rate >= 0.8 && ratio >= 0.45) return "up";
+      if (Number.isFinite(rate) && rate >= 0.8) return "up";
       if (Number.isFinite(rate) && rate <= -0.8) return "soft_down";
-      if (Number.isFinite(rate) && rate > -0.8 && rate < 0.8 && ratio >= 0.45) return "volume_up";
       return "flat";
     }
 
-    function buildMarketCommentAddon(stats) {
-      const activeCount = Number(stats?.activeCount || 0);
-      const risingCount = Number(stats?.risingCount || 0);
-      const ratio = activeCount > 0 ? (risingCount / activeCount) : 0;
-      const volume = Number(stats?.volume || 0);
-      const tradeValue = Number(stats?.tradeValue || 0);
-      const avgPrice = Number(stats?.avgPrice || 0);
-
-      if (ratio >= 0.6) {
-        return "値上がりしているスリーブの裾野が広く、相場全体に動きが広がっています。";
-      }
-      if (ratio <= 0.3 && activeCount > 0) {
-        return "一部の人気スリーブを除くと、全体にはやや弱さが残っています。";
-      }
-      if (volume >= 45) {
-        return "取引件数が多く、売買の回転が活発です。";
-      }
-      if (tradeValue >= 180000) {
-        return "高額帯を含めた成約があり、取引総額も大きめです。";
-      }
-      if (avgPrice >= 3500) {
-        return "高額帯スリーブの成約が平均価格を押し上げています。";
-      }
-      return "";
-    }
-
     function buildStrategistText(stats) {
-      const state = getSentimentProfile(stats).state || classifyMarketState(stats);
-      const base = MARKET_COMMENT_TEMPLATES[state] || MARKET_COMMENT_TEMPLATES.flat;
-      const addon = buildMarketCommentAddon(stats);
-      return addon ? `${base} ${addon}` : base;
+      if (!stats?.latestIndex) return "市場データを集計中です。";
+      const state = classifyMarketState(stats);
+      const trendText = {
+        strong_up: "強く上昇しています",
+        up: "上昇しています",
+        flat: "ほぼ横ばいです",
+        soft_down: "やや軟調です",
+        down: "下落しています"
+      }[state] || "ほぼ横ばいです";
+      const changeText = (amount, rate, label) => {
+        if (!Number.isFinite(amount) || !Number.isFinite(rate)) return `${label}は比較データが不足しています`;
+        return `${label}は${formatSignedYen(amount)}（${formatPercent(rate)}）`;
+      };
+      const updatedRate = stats.activeCount > 0 ? (stats.volume / stats.activeCount) * 100 : null;
+      const updateText = Number.isFinite(updatedRate)
+        ? `今週は${Number(stats.volume || 0).toLocaleString()}種類が更新され、対象${Number(stats.activeCount || 0).toLocaleString()}種類のうち${updatedRate.toFixed(1)}%に新しい相場が入りました`
+        : `今週は${Number(stats.volume || 0).toLocaleString()}種類が更新されました`;
+      return `平均相場は${formatYen(stats.avgPrice)}で、前週比では${trendText}。${changeText(stats.diff, stats.rate, "前週比")}、${changeText(stats.monthDiff, stats.monthRate, "月間")}です。${updateText}。`;
     }
 
     function renderMarketStats(stats) {
       const el = document.getElementById("marketStatsGrid");
       if (!el) return;
-      const listingDelta = stats.activeCount ? Math.round((stats.risingCount / stats.activeCount) * 100) : 0;
-      const avgDelta = Number.isFinite(stats.latestIndex?.rate) ? (stats.latestIndex.rate / 5) : 0;
+      const updateRate = stats.activeCount ? (stats.volume / stats.activeCount) * 100 : 0;
       el.innerHTML = `
         <div class="kpi-card">
-          <p class="kpi-label">集計週の取引総額</p>
+          <p class="kpi-label">全スリーブ平均相場</p>
           <div class="kpi-value-row">
-            <div class="kpi-value"${getCountupAttrs(stats.tradeValue / 1000000, "compact-yen-m")}>¥${escapeHtml((stats.tradeValue / 1000000).toFixed(2))}M</div>
-            <span class="kpi-change">+${escapeHtml((Math.max(0.4, listingDelta / 10)).toFixed(1))}%</span>
+            <div class="kpi-value"${getCountupAttrs(stats.avgPrice, "yen")}>${escapeHtml(formatYen(stats.avgPrice))}</div>
+            <span class="kpi-change ${getDeltaClass(stats.rate)}">${escapeHtml(formatPercent(stats.rate))}</span>
           </div>
         </div>
         <div class="kpi-card">
-          <p class="kpi-label">取引件数</p>
+          <p class="kpi-label">計算対象</p>
           <div class="kpi-value-row">
             <div class="kpi-value"${getCountupAttrs(stats.activeCount, "count")}>${escapeHtml(stats.activeCount.toLocaleString())}</div>
-            <span class="kpi-change">+${escapeHtml(String(listingDelta))}%</span>
+            <span class="kpi-change flat">種類</span>
           </div>
         </div>
         <div class="kpi-card">
-          <p class="kpi-label">集計週の平均成約価格</p>
+          <p class="kpi-label">今週の相場更新</p>
           <div class="kpi-value-row">
-            <div class="kpi-value"${getCountupAttrs(stats.avgPrice, "yen")}>¥${escapeHtml(Math.round(stats.avgPrice).toLocaleString())}</div>
-            <span class="kpi-change ${avgDelta < 0 ? "down" : ""}">${escapeHtml(formatPercent(avgDelta))}</span>
+            <div class="kpi-value"${getCountupAttrs(stats.volume, "count")}>${escapeHtml(Number(stats.volume || 0).toLocaleString())}</div>
+            <span class="kpi-change">${escapeHtml(updateRate.toFixed(1))}%</span>
           </div>
         </div>
       `;
@@ -6470,7 +6515,7 @@
       const latest = marketSeries[marketSeries.length - 1];
       const stats = buildMarketStats(Array.isArray(sleeves) ? sleeves : [], marketSeries);
       const recent = marketSeries.slice(-7);
-      const values = recent.map((row) => row.index);
+      const values = recent.map((row) => row.avgPrice);
       const linePoints = buildSparklinePoints(values, 760, 220);
       const areaPoints = `${linePoints} 760,220 0,220`;
       const minValue = values.length ? Math.min(...values) : 0;
@@ -6488,18 +6533,23 @@
           <a class="hero-main-link" href="./index-market.html" aria-label="指数ページを見る">
             <div class="hero-main-head">
               <div>
-                <p class="hero-index-kicker">スリーブ市場 総合指数（SMTI）</p>
+                <p class="hero-index-kicker">全スリーブ平均相場</p>
                 <div class="hero-index-value-row">
-                  <h1 class="hero-index-value"${getCountupAttrs(latest.index, "index")}>${escapeHtml(latest.index.toFixed(2))}</h1>
-                  <span class="hero-index-chip">${escapeHtml(formatPercent(latest.rate))}（前週比）</span>
+                  <h1 class="hero-index-value"${getCountupAttrs(latest.avgPrice, "yen")}>${escapeHtml(formatYen(latest.avgPrice))}</h1>
+                  <span class="hero-index-chip ${escapeHtml(getDeltaClass(stats.rate))}">${escapeHtml(formatSignedYen(stats.diff))} / ${escapeHtml(formatPercent(stats.rate))}（前週比）</span>
+                </div>
+                <div class="hero-index-meta-line">
+                  <span>${escapeHtml(formatPeriodLabel(latest.week))}</span>
+                  <span>対象 ${escapeHtml(Number(latest.targetCount || 0).toLocaleString())}種類</span>
+                  <span>今週更新 ${escapeHtml(Number(latest.updateCount || 0).toLocaleString())}種類</span>
                 </div>
               </div>
             </div>
             <div class="hero-chart-card">
               <div class="hero-chart-yaxis" aria-hidden="true">
-                <span>${escapeHtml(maxValue.toFixed(1))}</span>
-                <span>${escapeHtml(midValue.toFixed(1))}</span>
-                <span>${escapeHtml(minValue.toFixed(1))}</span>
+                <span>${escapeHtml(formatYen(maxValue))}</span>
+                <span>${escapeHtml(formatYen(midValue))}</span>
+                <span>${escapeHtml(formatYen(minValue))}</span>
               </div>
               <svg class="hero-chart-svg" viewBox="0 0 760 220" preserveAspectRatio="none" aria-hidden="true">
                 <defs>
@@ -6523,7 +6573,7 @@
           </a>
         `;
         const chipEl = mainEl.querySelector(".hero-index-chip");
-        if (chipEl) chipEl.textContent = `${formatPercent(latest.rate)}\uFF08\u524D\u9031\u6BD4\uFF09`;
+        if (chipEl) chipEl.textContent = `${formatSignedYen(stats.diff)} / ${formatPercent(stats.rate)}\uFF08\u524D\u9031\u6BD4\uFF09`;
       }
       if (sideEl) {
         sideEl.innerHTML = `
