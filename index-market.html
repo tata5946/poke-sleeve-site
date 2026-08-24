@@ -1847,60 +1847,6 @@
     // 週次上昇率（%）を計算、外れ値はクリップ
     function clip(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
-    function buildWeeklyMarketSeries(sleeves, weeks, opts) {
-      const clipLo = opts?.clipLo ?? -60;
-      const clipHi = opts?.clipHi ?? 100;
-      const hasValidPrice = (v) => Number.isFinite(v) && v > 0;
-
-      // スリーブごとに week->price map（週データのみ）
-      const maps = sleeves.map(s => {
-        const m = new Map();
-        for (const r of normalizeWeekly(s.weeklyPrices)) {
-          if (periodKind(r.week) !== "week") continue; // ★月次/まとめを除外
-          m.set(r.week, r.price);
-        }
-        return m;
-      });
-
-      const rows = [];
-      for (let i = 1; i < weeks.length; i++) {
-        const cur = weeks[i];
-        const prev = weeks[i - 1];
-
-        // 念のため
-        if (periodKind(cur) !== "week" || periodKind(prev) !== "week") continue;
-
-        const rates = [];
-        let up = 0, down = 0, flat = 0;
-
-        for (const mp of maps) {
-          const p0 = mp.get(prev);
-          const p1 = mp.get(cur);
-          if (!hasValidPrice(p0) || !hasValidPrice(p1)) continue;
-
-          let r = ((p1 - p0) / p0) * 100;
-          r = clip(r, clipLo, clipHi);
-          rates.push(r);
-
-          if (r > 0) up++;
-          else if (r < 0) down++;
-          else flat++;
-        }
-
-        const n = rates.length;
-        const avg = n ? (rates.reduce((a, b) => a + b, 0) / n) : null;
-
-        rows.push({
-          week: cur,
-          avgRate: avg,
-          sample: n,
-          up, down, flat
-        });
-      }
-
-      return rows;
-    }
-
     // 毎週「12週間前=100」のローリング基準で指数化
     function buildRollingIndexFromRates(rateRows, lookbackWeeks = 12, baseIndex = 100) {
       const factors = rateRows.map(r => {
@@ -3197,49 +3143,67 @@
 
     function buildAveragePriceSeries(entries, periods, periodType) {
       const hasValidPrice = (v) => Number.isFinite(v) && v > 0;
-      const fallbackRawPoint = (sleeve, period) => {
-        const source = periodType === "month" ? sleeve?.monthlyPrices : sleeve?.weeklyPrices;
-        const found = (Array.isArray(source) ? source : []).find((row) => {
-          const key = periodType === "month" ? (row.month ?? row.week) : row.week;
-          return toISODate(key) === period;
-        });
-        if (!found) return null;
-        const price = Number(String(found.price ?? "").replace(/,/g, ""));
-        const count = Number(String(found.count ?? "").replace(/,/g, ""));
-        return {
-          price: Number.isFinite(price) && price > 0 ? price : null,
-          count: Number.isFinite(count) && count > 0 ? count : 1
-        };
+      const parsePrice = (value) => {
+        const price = Number(String(value ?? "").replace(/,/g, ""));
+        return hasValidPrice(price) ? price : null;
       };
+      const buildTimeline = (sleeve) => {
+        const source = periodType === "month" ? sleeve?.monthlyPrices : sleeve?.weeklyPrices;
+        return (Array.isArray(source) ? source : [])
+          .map((row) => {
+            const period = toISODate(periodType === "month" ? (row.month ?? row.week) : row.week);
+            const price = parsePrice(row.price);
+            if (!period || periodKind(period) !== periodType || !hasValidPrice(price)) return null;
+            return {
+              period,
+              time: new Date(period).getTime(),
+              price
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => a.time - b.time);
+      };
+      const timelines = (Array.isArray(entries) ? entries : [])
+        .map((entry) => buildTimeline(entry.sleeve))
+        .filter((timeline) => timeline.length);
+      const cursors = timelines.map(() => -1);
+
       return (Array.isArray(periods) ? periods : [])
         .filter((period) => periodKind(period) === periodType)
+        .sort((a, b) => String(a).localeCompare(String(b)))
         .map((period) => {
-          let weightedSum = 0;
-          let weightSum = 0;
-          let tradeCount = 0;
-          let sample = 0;
-          for (const entry of (Array.isArray(entries) ? entries : [])) {
-            const mapped = entry.weekMap.get(period);
-            const row = hasValidPrice(mapped?.price) ? mapped : fallbackRawPoint(entry.sleeve, period);
-            if (!row || !hasValidPrice(row.price) || row.price < 300) continue;
-            const count = Number.isFinite(Number(row.count)) && Number(row.count) > 0 ? Number(row.count) : 1;
-            const weight = Math.min(Math.sqrt(count), 8);
-            weightedSum += row.price * weight;
-            weightSum += weight;
-            tradeCount += count;
-            sample++;
-          }
-          const avgPrice = weightSum > 0 ? weightedSum / weightSum : null;
+          const periodDate = new Date(period);
+          const periodTime = periodDate.getTime();
+          let totalPrice = 0;
+          let targetCount = 0;
+          let updateCount = 0;
+
+          timelines.forEach((timeline, index) => {
+            let updatedThisPeriod = false;
+            while (cursors[index] + 1 < timeline.length && timeline[cursors[index] + 1].time <= periodTime) {
+              cursors[index]++;
+              if (timeline[cursors[index]].period === period) updatedThisPeriod = true;
+            }
+            const latest = timeline[cursors[index]];
+            if (latest && hasValidPrice(latest.price)) {
+              totalPrice += latest.price;
+              targetCount++;
+            }
+            if (updatedThisPeriod) updateCount++;
+          });
+
+          const avgPrice = targetCount > 0 ? totalPrice / targetCount : null;
           return {
             week: period,
             x: period,
-            date: new Date(period),
+            date: periodDate,
             avgPrice,
-            tradeCount,
-            sample
+            totalPrice,
+            targetCount,
+            updateCount
           };
         })
-        .filter((row) => row.date)
+        .filter((row) => row.date && !Number.isNaN(row.date.getTime()))
         .sort((a, b) => a.date - b.date);
     }
 
@@ -3271,6 +3235,10 @@
         const el = document.getElementById(id);
         if (el) el.textContent = text;
       };
+      const setHtml = (id, html) => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+      };
       const setChange = (valueId, pctId, latestPoint, basePoint) => {
         const valueEl = document.getElementById(valueId);
         const pctEl = document.getElementById(pctId);
@@ -3292,7 +3260,9 @@
       };
 
       setText("kpiLatestPrice", latest ? formatMarketYen(latest.avgPrice) : "--");
-      setText("kpiLatestMeta", latest ? `${formatMetaDate(latest.week)} / ${latest.sample.toLocaleString()}件` : "集計中");
+      setHtml("kpiLatestMeta", latest
+        ? `${escapeHtml(formatMetaDate(latest.week))}<br>対象：${Number(latest.targetCount || 0).toLocaleString()}種類<br>今週更新：${Number(latest.updateCount || 0).toLocaleString()}種類`
+        : "集計中");
       setChange("kpiPrevChange", "kpiPrevPct", latest, prev);
       setChange("kpiMonthChange", "kpiMonthPct", latest, monthBase);
       setChange("kpiYearChange", "kpiYearPct", latest, yearBase);
@@ -3324,7 +3294,7 @@
       const ySpan = yMax - yMin || 1;
       yMin = Math.max(0, yMin - ySpan * 0.08);
       yMax += ySpan * 0.1;
-      const maxCount = Math.max(1, ...source.map((row) => Number(row.tradeCount) || 0));
+      const maxCount = Math.max(1, ...source.map((row) => Number(row.updateCount) || 0));
       const firstDate = source[0].date.getTime();
       const lastDate = source[source.length - 1].date.getTime();
       const dateSpan = lastDate - firstDate || 1;
@@ -3393,7 +3363,7 @@
         <div class="price-index-chart-wrap">
           <div class="price-index-legend">
             <span><i></i>平均価格</span>
-            <span class="legend-count"><i></i>取引件数</span>
+            <span class="legend-count"><i></i>相場更新数</span>
             <span class="legend-band"><i></i>Bollinger (20,close,2,simple)</span>
           </div>
           <svg class="price-index-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="スリーブ市場指数">
@@ -3420,7 +3390,7 @@
             }).join("")}
             ${source.map((row) => {
               const x = xToPx(row.date);
-              const h = countToHeight(row.tradeCount);
+              const h = countToHeight(row.updateCount);
               return `<rect x="${x - 1.8}" y="${mainBottom - h}" width="3.6" height="${h}" fill="url(#countBarGrad)"></rect>`;
             }).join("")}
             ${bandPath ? `<path d="${bandPath}" fill="url(#priceBandGrad)" stroke="none"></path>` : ""}
@@ -3450,7 +3420,7 @@
       const subtitle = document.getElementById("subtitle");
       if (subtitle) {
         const scopeText = scopeMeta?.label && scopeMeta.label !== "全体" ? ` / 条件：${scopeMeta.label}` : "";
-        subtitle.textContent = `対象：${sleeves.length}件${scopeText} / ${periodLabel}期間：${formatPeriodLabel(periods[0])}〜${formatPeriodLabel(periods[periods.length - 1])}`;
+        subtitle.textContent = `登録：${sleeves.length}件${scopeText} / ${periodLabel}期間：${formatPeriodLabel(periods[0])}〜${formatPeriodLabel(periods[periods.length - 1])}`;
       }
 
       const priceSeries = buildAveragePriceSeries(entries, periods, periodType);
@@ -3464,7 +3434,11 @@
       const updatedAt = document.getElementById("updatedAt");
       const countInfo = document.getElementById("countInfo");
       if (updatedAt) updatedAt.textContent = latestPricePoint?.week ? formatMetaDate(latestPricePoint.week) : "-";
-      if (countInfo) countInfo.textContent = latestPricePoint?.sample ? `${latestPricePoint.sample.toLocaleString()}件` : `${sleeves.length.toLocaleString()}件`;
+      if (countInfo) {
+        countInfo.textContent = latestPricePoint
+          ? `対象 ${Number(latestPricePoint.targetCount || 0).toLocaleString()}種類 / 更新 ${Number(latestPricePoint.updateCount || 0).toLocaleString()}種類`
+          : `${sleeves.length.toLocaleString()}件`;
+      }
 
       const marketState = describeMarketState(series, last);
       if (last) last.stateHint = marketState.cls;
