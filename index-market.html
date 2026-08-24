@@ -3428,6 +3428,8 @@
       `;
 
       let activeRange = "1y";
+      const chartMinDate = new Date(2026, 0, 1);
+      const chartMinTime = chartMinDate.getTime();
       const rangeDays = { "1m": 31, "3m": 93, "6m": 186, "1y": 366, all: null };
       const canvas = el.querySelector(".price-chart-canvas");
       const tooltip = el.querySelector(".price-chart-tooltip");
@@ -3437,9 +3439,10 @@
         if (!canvas) return;
         const latestDate = valid[valid.length - 1].date;
         const days = rangeDays[activeRange];
-        const startTime = days ? latestDate.getTime() - (days * 24 * 60 * 60 * 1000) : -Infinity;
+        const requestedStartTime = days ? latestDate.getTime() - (days * 24 * 60 * 60 * 1000) : chartMinTime;
+        const startTime = Math.max(chartMinTime, requestedStartTime);
         const data = source.filter((row) => row.date.getTime() >= startTime);
-        const chartData = data.length >= 2 ? data : source.slice(-2);
+        const chartData = data.length >= 2 ? data : source.filter((row) => row.date.getTime() >= chartMinTime).slice(-2);
         const W = 1200;
         const H = 520;
         const padL = 78;
