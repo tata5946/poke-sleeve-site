@@ -1711,37 +1711,6 @@
           </div>
         </section>
 
-        <section class="market-panel contrib-panel" aria-label="寄与度分析">
-          <div class="panel-heading">
-            <h2 class="section-title">寄与度分析</h2>
-          </div>
-          <p class="panel-note">最新週の指数に影響したスリーブです。</p>
-          <div class="contrib-grid">
-            <div>
-              <h3 class="section-title">上昇寄与</h3>
-              <div id="contribUpList" class="contrib-list"></div>
-            </div>
-            <div>
-              <h3 class="section-title">下落寄与</h3>
-              <div id="contribDownList" class="contrib-list"></div>
-            </div>
-          </div>
-        </section>
-
-        <section class="market-grid market-table-grid" aria-label="指数テーブル">
-          <div class="market-panel">
-            <div class="panel-heading">
-              <h2 class="section-title">指数テーブル</h2>
-            </div>
-            <div id="indexTable"></div>
-          </div>
-          <div class="market-panel">
-            <div class="panel-heading">
-              <h2 class="section-title">市場内訳</h2>
-            </div>
-            <div id="distTable"></div>
-          </div>
-        </section>
                 </div>
  
           <!-- 共通フッター差し込み -->
@@ -3644,22 +3613,6 @@
           : "";
       }
       renderMarketPriceChart("indexChart", priceSeries);
-
-      const contributors = buildLatestContributors(entries, periods, {
-        minPrice: 300,
-        minCount: periodType === "month" ? 1 : 2,
-        weightCap: 20,
-        maxRatio: 2.5
-      });
-      const contribUpList = document.getElementById("contribUpList");
-      const contribDownList = document.getElementById("contribDownList");
-      if (contribUpList) contribUpList.innerHTML = renderContribList(contributors.up, "up");
-      if (contribDownList) contribDownList.innerHTML = renderContribList(contributors.down, "down");
-
-      const indexTable = document.getElementById("indexTable");
-      const distTable = document.getElementById("distTable");
-      if (indexTable) indexTable.innerHTML = renderTableIndex(priceSeries);
-      if (distTable) distTable.innerHTML = renderTableDist(latestPricePoint);
 
       runDeferred(() => {
         const commentStats = buildMarketCommentStats(priceSeries);
