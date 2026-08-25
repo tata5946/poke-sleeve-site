@@ -1525,7 +1525,7 @@
   </style>
 </head>
 <script src="./assets/common.js?v=20260822b"></script>
-<body class="page-market-list" data-hide-global-header="1">
+<body class="page-market-list ranking-page ranking-page--price" data-hide-global-header="1">
   <div id="site-header"></div>
 
   <div class="dashboard-shell">
@@ -1955,7 +1955,7 @@
       const metaHtml = metaItems.map((item) => `<span class="podium-chip">${item}</span>`).join("");
 
       return `
-        <a class="podium-card podium-card--rank${rank}" data-sleeve-link="1" href="${row.detailHref}" aria-label="${escapeHtml(String(s.name ?? ""))}の詳細を見る">
+        <a class="podium-card ranking-card ranking-card--featured podium-card--rank${rank}" data-sleeve-link="1" href="${row.detailHref}" aria-label="${escapeHtml(String(s.name ?? ""))}の詳細を見る">
           <div class="podium-badge">${getPodiumBadge(rank)}</div>
           <div class="podium-media">
             <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="${rank === 1 ? "eager" : "lazy"}" referrerpolicy="no-referrer"
@@ -2170,7 +2170,7 @@
         for (let i = 0; i < normalRows.length; i++) {
           const row = normalRows[i];
           const card = document.createElement("a");
-          card.className = "compact-card";
+          card.className = "compact-card ranking-card ranking-card--compact";
           card.href = row.detailHref;
           card.setAttribute("data-sleeve-link", "1");
           card.setAttribute("aria-label", `${String(row.s.name ?? "")}の詳細を見る`);
