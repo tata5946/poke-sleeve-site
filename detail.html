@@ -2557,17 +2557,20 @@
       return next;
     }
 
-    async function logAccess(pageUrl, sleeveId) {
+    async function logAccess(pageUrl, sleeveId, sleeveName) {
       const endpoint = (window.common && window.common.GAS_URL) || window.GAS_URL || "";
       if (!endpoint) return;
 
       const normalizedSleeveId = normalizeSleeveDataId(sleeveId || getSleeveId());
+      const normalizedSleeveName = String(sleeveName || "").trim();
       const canonicalUrl = getCanonicalSleeveUrl(normalizedSleeveId);
       const body = {
         action: "access",
         type: "sleeve",
         sleeveId: normalizedSleeveId,
         id: normalizedSleeveId,
+        sleeveName: normalizedSleeveName,
+        name: normalizedSleeveName,
         page: String(canonicalUrl || pageUrl || location.href),
         path: location.pathname || "",
         referrer: document.referrer || "",
@@ -5531,7 +5534,7 @@
 
       updateSleeveHeadMeta(s);
       setCanonicalSleeveUrl(s.id || id);
-      logAccess(getCanonicalSleeveUrl(s.id || id), s.id || id);
+      logAccess(getCanonicalSleeveUrl(s.id || id), s.id || id, s.name || "");
 
       const img = document.getElementById("img");
       img.referrerPolicy = "no-referrer";
