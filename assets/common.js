@@ -7,7 +7,7 @@
  */
 
 /* ----- Config ----- */
-const GAS_URL = "https://script.google.com/macros/s/AKfycbzvczWpFH_nsOA7HsUy4i702dRUzlNZaeJEanwV1BTze5YHkr709WQf5eoRHaer5Jnc/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx5QJd6H_DD_IYvJS9lGwr-AQZs3iJ5WFX-CnSZgVAzw5CMbr_YU20NCGbYSagliHmZ/exec";
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
 const LOCAL_DATA_URL = "./data.json?v=20260825a";
