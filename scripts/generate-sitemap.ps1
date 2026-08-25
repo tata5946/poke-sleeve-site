@@ -52,21 +52,6 @@ $sleeveIds = @($data.sleeves) |
   Select-Object -Unique |
   Sort-Object
 
-$extraSleeveIds = @(
-  "290478",
-  "431079",
-  "330549",
-  "427188",
-  "301495",
-  "283708",
-  "306254"
-)
-
-$sleeveIds = @($sleeveIds + $extraSleeveIds) |
-  Where-Object { $_ } |
-  Select-Object -Unique |
-  Sort-Object
-
 $urls = New-Object System.Collections.Generic.List[string]
 foreach ($page in $staticPages) {
   if ([string]::IsNullOrWhiteSpace($page)) {
