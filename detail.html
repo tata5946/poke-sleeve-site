@@ -1256,7 +1256,6 @@
       grid-template-columns: minmax(0, 1fr) minmax(292px, 360px);
       grid-template-areas:
         "title price"
-        "lead price"
         "info price"
         "tags actions"
         "tags share";
@@ -1278,14 +1277,27 @@
       line-height: 1.16;
     }
 
-    .detail-seo-lead {
-      grid-area: lead;
-      margin: -2px 0 0;
-      max-width: 760px;
+    .detail-seo-note {
+      margin: 18px 2px 24px;
+      color: #64748b;
+    }
+
+    .detail-seo-note h2 {
+      margin: 0 0 7px;
       color: #475569;
       font-size: 14px;
-      line-height: 1.8;
-      font-weight: 700;
+      line-height: 1.5;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .detail-seo-note-text {
+      margin: 0;
+      max-width: 840px;
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.85;
+      font-weight: 500;
     }
 
     .detail-info-card {
@@ -1549,7 +1561,6 @@
         grid-template-columns: 1fr;
         grid-template-areas:
           "title"
-          "lead"
           "info"
           "tags"
           "price"
@@ -1631,7 +1642,6 @@
       grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
       grid-template-areas:
         "title price"
-        "lead price"
         "badges price"
         "info price"
         "tags price"
@@ -1895,7 +1905,6 @@
         grid-template-columns: 1fr;
         grid-template-areas:
           "title"
-          "lead"
           "badges"
           "info"
           "tags"
@@ -2039,11 +2048,10 @@
         </nav>
         <div class="panel page-focus-panel page-focus-panel--detail">
           <div class="detail-hero">
-            <img id="img" class="thumb" alt="" />
+              <img id="img" class="thumb" alt="" />
 
             <div class="detail-hero-main">
               <h1 id="name" class="name">読み込み中...</h1>
-              <p id="sleeveSeoLead" class="detail-seo-lead">ポケモンカードのスリーブ・デッキシールドの現在相場と価格推移を確認できます。</p>
               <div id="badges" class="badges"></div>
               <div id="detailInfo" class="detail-info-card" hidden></div>
               <div id="detailTags" class="detail-tag-list" hidden></div>
@@ -2141,6 +2149,11 @@
             <div id="relatedPriceBand" class="related-list"></div>
           </section>
         </div>
+
+        <section class="detail-seo-note" aria-labelledby="sleeveSeoNoteTitle">
+          <h2 id="sleeveSeoNoteTitle"><span id="sleeveSeoNoteName">このデッキシールド</span>について</h2>
+          <p id="sleeveSeoLead" class="detail-seo-note-text">ポケモンカードのスリーブ・デッキシールドの現在相場と価格推移を確認できます。</p>
+        </section>
       </div>
     </div>
 
@@ -2239,16 +2252,20 @@
       return /デッキシールド/i.test(String(name || ""));
     }
 
+    function getSleeveDisplayName(sleeve) {
+      return String(sleeve?.name || "").trim();
+    }
+
     function getSleeveSeoProductName(sleeve) {
-      const name = String(sleeve?.name || "").trim();
+      const name = getSleeveDisplayName(sleeve);
       if (!name) return "ポケモンカード スリーブ";
       return sleeveNameHasDeckShield(name) ? name : `${name} デッキシールド`;
     }
 
     function getSleeveSeoTitle(sleeve) {
-      const productName = getSleeveSeoProductName(sleeve);
-      const middle = productName.length > 38 ? "相場・価格" : "相場・価格推移";
-      return `${productName}｜${middle}｜ポケスリ相場ナビ`;
+      const name = getSleeveDisplayName(sleeve);
+      if (!name) return "ポケモンカード スリーブ｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ";
+      return `${name}｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ`;
     }
 
     function getSleeveDescriptionSubject(sleeve) {
@@ -2272,10 +2289,14 @@
     }
 
     function getSleeveIntroText(sleeve) {
-      const prefix = getSleeveReleasePrefix(sleeve);
-      const subject = getSleeveDescriptionSubject(sleeve);
-      const lead = prefix ? `${prefix}${subject}` : subject;
-      return `${lead}の現在相場・価格推移を掲載しています。過去の相場推移や商品情報を確認でき、購入・売却時の価格目安として利用できます。`;
+      const name = getSleeveDisplayName(sleeve);
+      if (!name) return "ポケモンカード公式デッキシールドの現在相場や過去の価格推移、商品情報を掲載しています。ポケカのスリーブの購入・売却時の価格目安として利用できます。";
+      const releaseYear = getReleaseYearText(sleeve);
+      const yearText = releaseYear ? `${releaseYear}に発売された` : "";
+      const productText = sleeveNameHasDeckShield(name)
+        ? `ポケモンカード公式「${name}」`
+        : `ポケモンカード公式デッキシールド「${name}」`;
+      return `${productText}は${yearText}ポケカのスリーブです。現在の相場や過去の価格推移、商品情報を掲載しています。`;
     }
 
     function updateSleeveHeadMeta(sleeve) {
@@ -5395,10 +5416,12 @@
 
     function renderSleevePage(s, relatedSleeves) {
       const releaseDateText = getReleaseDateText(s);
-      const productHeading = getSleeveSeoProductName(s);
+      const productHeading = getSleeveDisplayName(s) || getSleeveSeoProductName(s);
       const breadcrumbCurrent = document.getElementById("breadcrumbCurrent");
       if (breadcrumbCurrent) breadcrumbCurrent.textContent = s.name || "";
       document.getElementById("name").textContent = productHeading;
+      const seoNoteName = document.getElementById("sleeveSeoNoteName");
+      if (seoNoteName) seoNoteName.textContent = productHeading || "このデッキシールド";
       const seoLead = document.getElementById("sleeveSeoLead");
       if (seoLead) seoLead.textContent = getSleeveIntroText(s);
       document.getElementById("badges").innerHTML = buildHeaderBadges(s);

@@ -72,17 +72,23 @@ function Test-SleeveNameHasDeckShield([string]$Name) {
   return ([string]$Name) -match 'デッキシールド'
 }
 
+function Get-SleeveDisplayName([object]$Sleeve) {
+  return ([string]$Sleeve.name).Trim()
+}
+
 function Get-SleeveSeoProductName([object]$Sleeve) {
-  $name = ([string]$Sleeve.name).Trim()
+  $name = Get-SleeveDisplayName $Sleeve
   if ([string]::IsNullOrWhiteSpace($name)) { return "ポケモンカード スリーブ" }
   if (Test-SleeveNameHasDeckShield $name) { return $name }
   return "$name デッキシールド"
 }
 
 function Get-SleeveSeoTitle([object]$Sleeve) {
-  $productName = Get-SleeveSeoProductName $Sleeve
-  $middle = if ($productName.Length -gt 38) { "相場・価格" } else { "相場・価格推移" }
-  return "${productName}｜${middle}｜ポケスリ相場ナビ"
+  $name = Get-SleeveDisplayName $Sleeve
+  if ([string]::IsNullOrWhiteSpace($name)) {
+    return "ポケモンカード スリーブ｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ"
+  }
+  return "${name}｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ"
 }
 
 function Get-SleeveReleaseYearText([object]$Sleeve) {
@@ -116,10 +122,18 @@ function Get-SleeveMetaDescription([object]$Sleeve) {
 }
 
 function Get-SleeveIntroText([object]$Sleeve) {
-  $prefix = Get-SleeveReleasePrefix $Sleeve
-  $subject = Get-SleeveDescriptionSubject $Sleeve
-  $lead = if ($prefix) { "${prefix}${subject}" } else { $subject }
-  return "${lead}の現在相場・価格推移を掲載しています。過去の相場推移や商品情報を確認でき、購入・売却時の価格目安として利用できます。"
+  $name = Get-SleeveDisplayName $Sleeve
+  if ([string]::IsNullOrWhiteSpace($name)) {
+    return "ポケモンカード公式デッキシールドの現在相場や過去の価格推移、商品情報を掲載しています。ポケカのスリーブの購入・売却時の価格目安として利用できます。"
+  }
+  $releaseYear = Get-SleeveReleaseYearText $Sleeve
+  $yearText = if ([string]::IsNullOrWhiteSpace($releaseYear)) { "" } else { "${releaseYear}に発売された" }
+  $productText = if (Test-SleeveNameHasDeckShield $name) {
+    "ポケモンカード公式「${name}」"
+  } else {
+    "ポケモンカード公式デッキシールド「${name}」"
+  }
+  return "${productText}は${yearText}ポケカのスリーブです。現在の相場や過去の価格推移、商品情報を掲載しています。"
 }
 
 function ConvertTo-JsonLdScript([string]$Id, [object]$Data) {
@@ -309,7 +323,7 @@ foreach ($sleeve in @($data.sleeves)) {
   $encodedId = [System.Uri]::EscapeDataString($routeId)
   $jsId = ConvertTo-Json $id -Compress
   $jsSleeve = ConvertTo-Json $sleeve -Compress -Depth 100
-  $name = ([string]$sleeve.name).Trim()
+  $name = Get-SleeveDisplayName $sleeve
   $series = ([string]$sleeve.series).Trim()
   $condition = ([string]$sleeve.condition).Trim()
   $releaseYear = ([string]$sleeve.releaseYear).Trim()
@@ -325,6 +339,7 @@ foreach ($sleeve in @($data.sleeves)) {
   $latestPriceText = if ($latestTrade) { ([double]$latestTrade.price).ToString("N0") + "円" } else { "-" }
   $latestDateText = if ($latestTrade) { [string]$latestTrade.observedText } else { "最終観測日: -" }
   $latestCountText = if ($latestTrade -and $null -ne $latestTrade.count -and [double]$latestTrade.count -gt 0) { $latestDateText + " / 取引件数: " + ([string]$latestTrade.count) + "件" } else { $latestDateText }
+  $seoNoteHeadingName = if ($name) { $name } else { "このデッキシールド" }
 
   $content = $template
   $content = $content -replace '<head>', ("<head>`r`n" + $baseTag)
@@ -364,8 +379,9 @@ foreach ($sleeve in @($data.sleeves)) {
   )
   $content = $content.Replace('<span id="breadcrumbCurrent" class="breadcrumb-current" aria-current="page">読み込み中...</span>', '<span id="breadcrumbCurrent" class="breadcrumb-current" aria-current="page">' + (ConvertTo-HtmlText $name) + '</span>')
   $content = $content.Replace('<img id="img" class="thumb" alt="" />', '<img id="img" class="thumb" src="' + (ConvertTo-HtmlText $ogImage) + '" alt="' + (ConvertTo-HtmlText $name) + '" referrerpolicy="no-referrer" />')
-  $content = $content.Replace('<h1 id="name" class="name">読み込み中...</h1>', '<h1 id="name" class="name">' + (ConvertTo-HtmlText (Get-SleeveSeoProductName $sleeve)) + '</h1>')
-  $content = $content.Replace('<p id="sleeveSeoLead" class="detail-seo-lead">ポケモンカードのスリーブ・デッキシールドの現在相場と価格推移を確認できます。</p>', '<p id="sleeveSeoLead" class="detail-seo-lead">' + (ConvertTo-HtmlText (Get-SleeveIntroText $sleeve)) + '</p>')
+  $content = $content.Replace('<h1 id="name" class="name">読み込み中...</h1>', '<h1 id="name" class="name">' + (ConvertTo-HtmlText $name) + '</h1>')
+  $content = $content.Replace('<span id="sleeveSeoNoteName">このデッキシールド</span>', '<span id="sleeveSeoNoteName">' + (ConvertTo-HtmlText $seoNoteHeadingName) + '</span>')
+  $content = $content.Replace('<p id="sleeveSeoLead" class="detail-seo-note-text">ポケモンカードのスリーブ・デッキシールドの現在相場と価格推移を確認できます。</p>', '<p id="sleeveSeoLead" class="detail-seo-note-text">' + (ConvertTo-HtmlText (Get-SleeveIntroText $sleeve)) + '</p>')
   $content = $content.Replace('<a class="btn primary" id="backLink" href="./sleeves/" aria-label="ポケモンカードのスリーブ・デッキシールド一覧へ戻る">← スリーブ・デッキシールド一覧へ</a>', '<a class="btn primary" id="backLink" href="./sleeves/" aria-label="ポケモンカードのスリーブ・デッキシールド一覧へ戻る">← スリーブ・デッキシールド一覧へ</a>')
   $content = $content.Replace('<div id="badges" class="badges"></div>', (Get-StaticSleeveBadges $sleeve))
   $content = $content.Replace('<div id="detailInfo" class="detail-info-card" hidden></div>', (Get-StaticSleeveInfo $sleeve))
