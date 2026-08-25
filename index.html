@@ -5083,6 +5083,12 @@
       return String(weekISO || "").slice(-2) === "01" && String(weekISO || "") < "2026-01-01";
     }
 
+    function periodKind(iso) {
+      const m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return "unknown";
+      return m[3] === "01" ? "month" : "week";
+    }
+
     function numOrNull(v) {
       const n = Number(v);
       return Number.isFinite(n) ? n : null;
@@ -5431,19 +5437,21 @@
       return (Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [])
         .map((x) => {
           const week = toISODate(x?.week);
-          const price = numOrNull(x?.price);
-          const count = numOrNull(x?.count);
-          if (!week || !(price > 0) || !Number.isFinite(count) || isLegacyMonthlyRow(week)) return null;
-          return { week, price, count };
+          const price = Number(String(x?.price ?? "").replace(/,/g, ""));
+          if (!week || periodKind(week) !== "week" || !(Number.isFinite(price) && price > 0)) return null;
+          return { week, time: new Date(week).getTime(), price };
         })
         .filter(Boolean)
-        .sort((a, b) => String(a.week).localeCompare(String(b.week)));
+        .sort((a, b) => a.time - b.time);
     }
 
     function collectIndexWeeks(sleeves) {
       const set = new Set();
       for (const s of (Array.isArray(sleeves) ? sleeves : [])) {
-        for (const row of collectWeeklyRows(s)) set.add(row.week);
+        for (const row of (Array.isArray(s?.weeklyPrices) ? s.weeklyPrices : [])) {
+          const week = toISODate(row?.week);
+          if (week && periodKind(week) === "week") set.add(week);
+        }
       }
       return Array.from(set).sort((a, b) => String(a).localeCompare(String(b)));
     }
@@ -5464,7 +5472,7 @@
         let updateCount = 0;
         timelines.forEach((timeline, index) => {
           let updatedThisWeek = false;
-          while (cursors[index] + 1 < timeline.length && new Date(timeline[cursors[index] + 1].week).getTime() <= weekTime) {
+          while (cursors[index] + 1 < timeline.length && timeline[cursors[index] + 1].time <= weekTime) {
             cursors[index]++;
             if (timeline[cursors[index]].week === week) updatedThisWeek = true;
           }
