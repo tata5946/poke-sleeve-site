@@ -1760,6 +1760,211 @@
       }
     }
 
+    @media (max-width: 768px) {
+      :root body.page-surge-ranking .compact-grid,
+      :root body.page-surge-ranking .ranking-list,
+      :root body.page-surge-ranking #list.grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+        align-items: stretch !important;
+      }
+
+      :root body.page-surge-ranking a.compact-card,
+      :root body.page-surge-ranking .compact-card,
+      :root body.page-surge-ranking a.compact-card.ranking-card-frameless,
+      :root body.page-surge-ranking .compact-card.ranking-card-frameless {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto auto auto 1fr !important;
+        align-content: start !important;
+        gap: 8px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        height: 100% !important;
+        padding: 10px !important;
+        border: 1px solid #d9dee8 !important;
+        border-radius: 14px !important;
+        background: #fff !important;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, .06) !important;
+        overflow: hidden !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .compact-rank-badge {
+        position: static !important;
+        display: block !important;
+        justify-self: start !important;
+        width: auto !important;
+        min-width: 0 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        color: #667085 !important;
+        font-family: "Inter", "Noto Sans JP", sans-serif !important;
+        font-size: 12px !important;
+        line-height: 1 !important;
+        font-weight: 900 !important;
+        letter-spacing: .04em !important;
+        text-shadow: none !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .compact-rank-badge::before,
+      :root body.page-surge-ranking .compact-card .compact-rank-badge::after {
+        content: none !important;
+        display: none !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .compact-thumb-wrap,
+      :root body.page-surge-ranking .compact-card.ranking-card-frameless .compact-thumb-wrap,
+      :root body.page-surge-ranking .compact-card .ranking-card-frameless-thumb {
+        display: grid !important;
+        place-items: center !important;
+        justify-self: stretch !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+        min-height: 0 !important;
+        aspect-ratio: 4 / 3 !important;
+        padding: 8px !important;
+        border: 1px solid #e3e8f0 !important;
+        border-radius: 10px !important;
+        background: #f8fafc !important;
+        overflow: hidden !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .compact-thumb,
+      :root body.page-surge-ranking .compact-card.ranking-card-frameless .compact-thumb,
+      :root body.page-surge-ranking .compact-card .ranking-card-frameless-img {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        padding: 0 !important;
+        object-fit: contain !important;
+        object-position: center !important;
+        background: transparent !important;
+        transform: none !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .compact-card-title {
+        display: -webkit-box !important;
+        min-width: 0 !important;
+        min-height: 36px !important;
+        margin: 0 !important;
+        color: #101828 !important;
+        font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif !important;
+        font-size: 13px !important;
+        line-height: 1.35 !important;
+        font-weight: 900 !important;
+        letter-spacing: 0 !important;
+        overflow: hidden !important;
+        overflow-wrap: anywhere !important;
+        word-break: normal !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .compact-market-row,
+      :root body.page-surge-ranking .compact-card.ranking-card-frameless .compact-market-row {
+        display: block !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .compact-price-row {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        grid-auto-flow: row !important;
+        gap: 6px !important;
+        min-width: 0 !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .compact-delta {
+        order: 1 !important;
+        grid-column: 1 / -1 !important;
+        grid-row: auto !important;
+        color: #c01f1a !important;
+        font-family: "Inter", "Noto Sans JP", sans-serif !important;
+        font-size: clamp(19px, 5vw, 24px) !important;
+        line-height: 1.08 !important;
+        font-weight: 900 !important;
+        white-space: nowrap !important;
+        overflow-wrap: normal !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .compact-rate {
+        order: 2 !important;
+        grid-column: 1 / -1 !important;
+        grid-row: auto !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        justify-self: start !important;
+        width: fit-content !important;
+        max-width: 100% !important;
+        min-height: 26px !important;
+        margin: 0 !important;
+        padding: 0 8px !important;
+        border: 1px solid currentColor !important;
+        border-radius: 7px !important;
+        background: #fff5f5 !important;
+        color: #c01f1a !important;
+        font-family: "Inter", "Noto Sans JP", sans-serif !important;
+        font-size: 13px !important;
+        line-height: 1 !important;
+        font-weight: 900 !important;
+        white-space: nowrap !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .compact-price {
+        order: 3 !important;
+        grid-column: 1 / -1 !important;
+        grid-row: auto !important;
+        margin-top: 2px !important;
+        color: #111827 !important;
+        font-family: "Inter", "Noto Sans JP", sans-serif !important;
+        font-size: clamp(18px, 4.8vw, 22px) !important;
+        line-height: 1.08 !important;
+        font-weight: 900 !important;
+        white-space: nowrap !important;
+        overflow-wrap: normal !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .compact-price::before {
+        content: "現在" !important;
+        display: block !important;
+        margin-bottom: 4px !important;
+        color: #667085 !important;
+        font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif !important;
+        font-size: 12px !important;
+        line-height: 1 !important;
+        font-weight: 900 !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .sleeve-sparkline,
+      :root body.page-surge-ranking .compact-card.ranking-card-frameless .compact-market-row .sleeve-sparkline {
+        display: none !important;
+      }
+
+      :root body.page-surge-ranking .compact-card .compact-meta {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 340px) {
+      :root body.page-surge-ranking .compact-grid,
+      :root body.page-surge-ranking .ranking-list,
+      :root body.page-surge-ranking #list.grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
     @media (max-width: 360px) {
       :root body.page-surge-ranking .ranking-filter-grid {
         grid-template-columns: 1fr !important;
