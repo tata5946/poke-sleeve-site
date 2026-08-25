@@ -400,7 +400,10 @@
       }
 
       .price-index-chart {
-        min-height: 360px;
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        aspect-ratio: auto;
       }
 
       .price-chart-head {
@@ -1841,6 +1844,9 @@
       }
 
       .price-index-chart-wrap {
+        height: auto;
+        min-height: 0;
+        max-height: none;
         padding: 20px 14px 14px;
         border-color: #c9dcf4;
         border-radius: 16px;
@@ -1851,18 +1857,24 @@
       .price-index-chart-wrap::before {
         content: "平均相場の推移";
         display: block;
-        margin-bottom: 14px;
+        margin-bottom: 18px;
         color: #08275c;
         font-size: clamp(18px, 5vw, 24px);
         font-weight: 900;
         line-height: 1.15;
       }
 
+      .price-chart-canvas {
+        height: auto;
+        min-height: 0;
+        max-height: none;
+      }
+
       .price-index-legend {
         width: 100%;
         justify-content: flex-start;
         gap: 12px;
-        margin-bottom: 12px;
+        margin-bottom: 22px;
       }
 
       .price-index-legend span {
@@ -1871,11 +1883,14 @@
       }
 
       .price-index-chart {
-        min-height: 360px;
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        aspect-ratio: auto;
       }
 
       .chart-note-inline {
-        margin-top: 14px;
+        margin-top: 22px;
         text-align: center;
         color: #506888;
         font-size: clamp(12px, 3.4vw, 15px);
@@ -3681,12 +3696,16 @@
         const data = source.filter((row) => row.date.getTime() >= startTime);
         const rawChartData = data.length >= 2 ? data : source.filter((row) => row.date.getTime() >= chartMinTime).slice(-2);
         const chartData = addMovingAverage(rawChartData);
-        const W = 1200;
-        const H = 520;
-        const padL = 78;
-        const padR = 72;
-        const padT = 42;
-        const padB = 64;
+        const isCompactChart = typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
+        const W = isCompactChart ? 390 : 1200;
+        const H = isCompactChart ? 300 : 520;
+        const padL = isCompactChart ? 54 : 78;
+        const padR = isCompactChart ? 42 : 72;
+        const padT = isCompactChart ? 36 : 42;
+        const padB = isCompactChart ? 42 : 64;
+        const axisTitleFont = isCompactChart ? 10 : 15;
+        const tickFont = isCompactChart ? 10 : 16;
+        const monthFont = isCompactChart ? 9 : 15;
         const chartBottom = H - padB;
         const chartW = W - padL - padR;
         const chartH = chartBottom - padT;
@@ -3733,8 +3752,9 @@
         for (let date = firstMonth; date <= chartData[chartData.length - 1].date; date = new Date(date.getFullYear(), date.getMonth() + 1, 1)) {
           if (date >= chartData[0].date) monthTicks.push(new Date(date));
         }
-        if (monthTicks.length > 9) {
-          const step = Math.ceil(monthTicks.length / 9);
+        const maxMonthTicks = isCompactChart ? 5 : 9;
+        if (monthTicks.length > maxMonthTicks) {
+          const step = Math.ceil(monthTicks.length / maxMonthTicks);
           for (let i = monthTicks.length - 1; i >= 0; i--) {
             if (i % step !== 0) monthTicks.splice(i, 1);
           }
@@ -3750,20 +3770,20 @@
                 <stop offset="100%" stop-color="#2563eb" stop-opacity=".04"></stop>
               </linearGradient>
             </defs>
-            <text x="${padL - 62}" y="${padT - 22}" font-size="15" font-weight="800" fill="#334155">平均相場（円）</text>
-            <text x="${W - padR - 6}" y="${padT - 22}" text-anchor="end" font-size="15" font-weight="800" fill="#334155">更新数（件）</text>
+            <text x="${isCompactChart ? padL - 42 : padL - 62}" y="${padT - 22}" font-size="${axisTitleFont}" font-weight="800" fill="#334155">平均相場（円）</text>
+            <text x="${W - padR - 6}" y="${padT - 22}" text-anchor="end" font-size="${axisTitleFont}" font-weight="800" fill="#334155">更新数（件）</text>
             ${yTicks.map((value) => {
               const y = yToPx(value);
-              return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#d8e1ec" stroke-width="1" stroke-dasharray="4 4"></line><text x="${padL - 12}" y="${y + 5}" text-anchor="end" font-size="16" fill="#334155">${escapeHtml(formatMarketYen(value))}</text>`;
+              return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#d8e1ec" stroke-width="1" stroke-dasharray="4 4"></line><text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="${tickFont}" fill="#334155">${escapeHtml(formatMarketYen(value))}</text>`;
             }).join("")}
             ${countTicks.map((value) => {
               const y = chartBottom - (value / countAxisMax) * chartH;
-              return `<text x="${W - padR + 12}" y="${y + 5}" font-size="16" fill="#334155">${Math.round(value).toLocaleString()}件</text>`;
+              return `<text x="${W - padR + 8}" y="${y + 4}" font-size="${tickFont}" fill="#334155">${Math.round(value).toLocaleString()}件</text>`;
             }).join("")}
             ${monthTicks.map((date) => {
               const x = xToPx(date);
               const label = date.getMonth() === 0 ? `${date.getFullYear()}年1月` : `${date.getFullYear()}年${date.getMonth() + 1}月`;
-              return `<line x1="${x}" y1="${padT}" x2="${x}" y2="${chartBottom}" stroke="#e6edf5" stroke-width="1"></line><text x="${x}" y="${H - 22}" text-anchor="middle" font-size="15" font-weight="700" fill="#334155">${escapeHtml(label)}</text>`;
+              return `<line x1="${x}" y1="${padT}" x2="${x}" y2="${chartBottom}" stroke="#e6edf5" stroke-width="1"></line><text x="${x}" y="${H - 18}" text-anchor="middle" font-size="${monthFont}" font-weight="700" fill="#334155">${escapeHtml(label)}</text>`;
             }).join("")}
             ${chartData.map((row) => {
               const x = xToPx(row.date);
