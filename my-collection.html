@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/site.css?v=20260826f" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260826h" />
 </head>
 
 <body class="page-market-list my-collection-page" data-hide-global-header="1">
@@ -99,7 +99,7 @@
 
   <div id="site-footer"></div>
 
-  <script src="./assets/common.js?v=20260826f"></script>
+  <script src="./assets/common.js?v=20260826h"></script>
   <script>
     let currentAssetPeriod = "3m";
     let currentAssetTimeline = [];
@@ -213,7 +213,9 @@
     function resolvePurchaseTimestamp(item, weeklyPoints, releaseTimestamp) {
       const explicitPurchaseWeek = getExplicitPurchaseWeekDate(item);
       const explicitTimestamp = Date.parse(explicitPurchaseWeek);
-      if (Number.isFinite(explicitTimestamp)) return explicitTimestamp;
+      if (Number.isFinite(explicitTimestamp)) {
+        return Number.isFinite(releaseTimestamp) ? Math.max(explicitTimestamp, releaseTimestamp) : explicitTimestamp;
+      }
       if (Number.isFinite(releaseTimestamp)) return releaseTimestamp;
       const firstPoint = Array.isArray(weeklyPoints) ? weeklyPoints[0] : null;
       if (Number.isFinite(firstPoint?.timestamp)) return firstPoint.timestamp;
@@ -227,6 +229,27 @@
       return Number.isFinite(resolvedTimestamp)
         ? new Date(resolvedTimestamp).toISOString().slice(0, 10)
         : window.common.normalizeMyCollectionPurchaseWeek(new Date());
+    }
+
+    function timestampToDateValue(timestamp) {
+      return Number.isFinite(timestamp) ? new Date(timestamp).toISOString().slice(0, 10) : "";
+    }
+
+    function formatPurchaseWeekLabel(date) {
+      const normalized = normalizeDate(date);
+      const parsed = new Date(normalized);
+      if (!Number.isFinite(parsed.getTime())) return "日付を選択";
+      return `${parsed.getFullYear()}/${parsed.getMonth() + 1}/${parsed.getDate()}週`;
+    }
+
+    function clampPurchaseDate(value, min, max) {
+      let date = normalizeDate(value);
+      const minDate = normalizeDate(min);
+      const maxDate = normalizeDate(max);
+      if (!date) date = maxDate || minDate || window.common.normalizeMyCollectionPurchaseWeek(new Date());
+      if (minDate && date < minDate) date = minDate;
+      if (maxDate && date > maxDate) date = maxDate;
+      return date;
     }
 
     function getPriceAtOrBefore(points, timestamp) {
@@ -253,6 +276,7 @@
           quantity: getCollectionQuantity(item),
           purchaseWeek: getPurchaseWeekForInput(item, weeklyPoints, releaseTimestamp),
           purchaseWeekSet: isExplicitPurchaseWeek(item),
+          minPurchaseDate: timestampToDateValue(releaseTimestamp),
           price: sleeve ? getLatestPrice(sleeve) : null,
           releaseTimestamp,
           weeklyPoints,
@@ -571,8 +595,9 @@
     }
 
     function buildCard(row) {
-      const purchaseWeekValue = window.common.startDateToWeekInput(row.purchaseWeek);
-      const maxPurchaseWeekValue = window.common.startDateToWeekInput(new Date());
+      const maxPurchaseDateValue = new Date().toISOString().slice(0, 10);
+      const purchaseDateValue = clampPurchaseDate(row.purchaseWeek, row.minPurchaseDate, maxPurchaseDateValue);
+      const purchaseWeekLabel = formatPurchaseWeekLabel(purchaseDateValue);
       return `
         <article class="my-collection-card">
           <a class="my-collection-card-link" href="${escapeHtml(row.href)}" data-sleeve-link="1" aria-label="${escapeHtml(row.name)}の詳細を見る">
@@ -593,10 +618,16 @@
               <button type="button" data-quantity-action="increase" data-sleeve-id="${escapeHtml(row.sleeveId)}" aria-label="保有数を1増やす">＋</button>
             </div>
           </div>
-          <label class="my-collection-purchase-week">
+          <div class="my-collection-purchase-week">
             <span>購入週</span>
-            <input type="week" value="${escapeHtml(purchaseWeekValue)}" max="${escapeHtml(maxPurchaseWeekValue)}" data-purchase-week="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の購入週">
-          </label>
+            <span class="my-collection-date-picker">
+              <button class="my-collection-date-button" type="button" data-purchase-week-open="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の購入週を選ぶ">
+                <span data-purchase-week-label="${escapeHtml(row.sleeveId)}">${escapeHtml(purchaseWeekLabel)}</span>
+                <span class="my-collection-calendar-mark" aria-hidden="true"></span>
+              </button>
+              <input class="my-collection-date-input" type="date" value="${escapeHtml(purchaseDateValue)}" min="${escapeHtml(row.minPurchaseDate || "")}" max="${escapeHtml(maxPurchaseDateValue)}" data-purchase-week="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の購入週">
+            </span>
+          </div>
           <button class="my-collection-remove" type="button" data-remove-collection="${escapeHtml(row.sleeveId)}">コレクションから削除</button>
         </article>
       `;
@@ -680,11 +711,27 @@
           window.common.updateMyCollectionQuantity(sleeveId, Math.max(1, row.quantity + delta));
         });
       });
+      root.querySelectorAll("[data-purchase-week-open]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const sleeveId = button.getAttribute("data-purchase-week-open");
+          const input = Array.from(root.querySelectorAll("[data-purchase-week]")).find((item) => item.getAttribute("data-purchase-week") === sleeveId);
+          if (!input) return;
+          if (typeof input.showPicker === "function") {
+            input.showPicker();
+          } else {
+            input.click();
+          }
+        });
+      });
       root.querySelectorAll("[data-purchase-week]").forEach((input) => {
         input.addEventListener("change", () => {
           const sleeveId = input.getAttribute("data-purchase-week");
           if (!sleeveId || !window.common.updateMyCollectionPurchaseWeek) return;
-          window.common.updateMyCollectionPurchaseWeek(sleeveId, input.value);
+          const selectedDate = clampPurchaseDate(input.value, input.min, input.max);
+          input.value = selectedDate;
+          const label = Array.from(root.querySelectorAll("[data-purchase-week-label]")).find((item) => item.getAttribute("data-purchase-week-label") === sleeveId);
+          if (label) label.textContent = formatPurchaseWeekLabel(selectedDate);
+          window.common.updateMyCollectionPurchaseWeek(sleeveId, selectedDate);
         });
       });
     }

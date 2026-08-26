@@ -710,7 +710,7 @@ function normalizeMyCollectionPurchaseWeek(value) {
   const text = String(value ?? "").trim();
   const weekStart = /^\d{4}-W\d{2}$/.test(text)
     ? weekInputToStartDate(text)
-    : getWeekStartDate(text || new Date());
+    : (/^\d{4}-\d{2}-\d{2}$/.test(text) ? text : getWeekStartDate(text || new Date()));
   const currentWeek = getWeekStartDate(new Date());
   return weekStart && weekStart <= currentWeek ? weekStart : currentWeek;
 }
