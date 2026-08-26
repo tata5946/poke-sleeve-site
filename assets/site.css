@@ -1277,6 +1277,46 @@ body.page-market-list .page-toolbar-copy {
     line-height: 1.8;
 }
 
+.policy-h1 {
+    margin: 30px 0 14px;
+    color: #111827;
+    font-size: 24px;
+    line-height: 1.35;
+    letter-spacing: 0;
+    font-weight: 900;
+}
+
+.policy-h2 {
+    margin: 26px 0 12px;
+    color: #1f2937;
+    font-size: 19px;
+    line-height: 1.45;
+    letter-spacing: 0;
+    font-weight: 900;
+}
+
+.policy-h3 {
+    margin: 22px 0 8px;
+    color: #344054;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0;
+    font-weight: 900;
+}
+
+.policy-hr {
+    margin: 32px 0;
+    border: 0;
+    border-top: 1px solid #dde6f2;
+}
+
+.policy-footer {
+    margin-top: 28px;
+    color: #667085;
+    font-size: 13px;
+    font-weight: 800;
+}
+
 body.page-market-list .container {
     max-width: 1520px;
 }
