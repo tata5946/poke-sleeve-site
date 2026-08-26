@@ -671,6 +671,50 @@ function normalizeMyCollectionSleeveId(id) {
   return sleeveId;
 }
 
+function getWeekStartDate(value = new Date()) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (!Number.isFinite(date.getTime())) return getWeekStartDate(new Date());
+  const utc = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+  const day = (new Date(utc).getUTCDay() + 6) % 7;
+  return new Date(utc - day * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+}
+
+function weekInputToStartDate(value) {
+  const matched = String(value ?? "").trim().match(/^(\d{4})-W(\d{2})$/);
+  if (!matched) return "";
+  const year = Number(matched[1]);
+  const week = Number(matched[2]);
+  if (!Number.isFinite(year) || !Number.isFinite(week) || week < 1 || week > 53) return "";
+  const jan4 = new Date(Date.UTC(year, 0, 4));
+  const jan4Day = (jan4.getUTCDay() + 6) % 7;
+  const week1Monday = jan4.getTime() - jan4Day * 24 * 60 * 60 * 1000;
+  return new Date(week1Monday + (week - 1) * 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+}
+
+function startDateToWeekInput(value) {
+  const dateText = getWeekStartDate(value);
+  const matched = dateText.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!matched) return "";
+  const date = new Date(Date.UTC(Number(matched[1]), Number(matched[2]) - 1, Number(matched[3])));
+  const day = (date.getUTCDay() + 6) % 7;
+  const thursday = new Date(date.getTime() + (3 - day) * 24 * 60 * 60 * 1000);
+  const weekYear = thursday.getUTCFullYear();
+  const week1 = new Date(Date.UTC(weekYear, 0, 4));
+  const week1Day = (week1.getUTCDay() + 6) % 7;
+  const week1Monday = week1.getTime() - week1Day * 24 * 60 * 60 * 1000;
+  const week = Math.floor((date.getTime() - week1Monday) / (7 * 24 * 60 * 60 * 1000)) + 1;
+  return `${weekYear}-W${String(week).padStart(2, "0")}`;
+}
+
+function normalizeMyCollectionPurchaseWeek(value) {
+  const text = String(value ?? "").trim();
+  const weekStart = /^\d{4}-W\d{2}$/.test(text)
+    ? weekInputToStartDate(text)
+    : getWeekStartDate(text || new Date());
+  const currentWeek = getWeekStartDate(new Date());
+  return weekStart && weekStart <= currentWeek ? weekStart : currentWeek;
+}
+
 function normalizeMyCollectionItem(item) {
   const sleeveId = normalizeMyCollectionSleeveId(item?.sleeveId ?? item?.id ?? item?.itemId);
   if (!sleeveId) return null;
@@ -681,6 +725,7 @@ function normalizeMyCollectionItem(item) {
     name: String(item?.name || "").trim(),
     image: String(item?.image || item?.imageUrl || "").trim(),
     quantity: Number.isFinite(quantity) && quantity >= 1 ? Math.floor(quantity) : 1,
+    purchaseWeek: normalizeMyCollectionPurchaseWeek(item?.purchaseWeek ?? item?.purchase_week ?? item?.purchaseDate ?? item?.purchase_date),
     addedAt: String(item?.addedAt || new Date().toISOString())
   };
 }
@@ -831,16 +876,15 @@ function addToMyCollection(sleeve) {
   const sleeveId = normalizeMyCollectionSleeveId(sleeve?.sleeveId ?? sleeve?.id);
   if (!sleeveId) return readMyCollection();
   const list = readMyCollection();
-  seedMyCollectionHistoryIfNeeded(list);
   if (list.some((item) => item.sleeveId === sleeveId)) return writeMyCollection(list);
   const now = new Date().toISOString();
-  appendMyCollectionHistory({ date: now, sleeveId, change: 1, action: "add", quantityAfter: 1 });
   return writeMyCollection([
     {
       sleeveId,
       name: String(sleeve?.name || "").trim(),
       image: String(sleeve?.image || sleeve?.imageUrl || "").trim(),
       quantity: 1,
+      purchaseWeek: normalizeMyCollectionPurchaseWeek(sleeve?.purchaseWeek),
       addedAt: now
     },
     ...list
@@ -852,29 +896,28 @@ function updateMyCollectionQuantity(id, quantity) {
   const nextQuantity = Math.max(1, Math.floor(Number(quantity) || 1));
   if (!sleeveId) return readMyCollection();
   const list = readMyCollection();
-  seedMyCollectionHistoryIfNeeded(list);
   const current = list.find((item) => item.sleeveId === sleeveId);
   if (!current) return list;
   const currentQuantity = Math.max(1, Math.floor(Number(current.quantity) || 1));
-  const delta = nextQuantity - currentQuantity;
-  if (delta === 0) return list;
-  appendMyCollectionHistory({ date: new Date().toISOString(), sleeveId, change: delta, action: "quantity", quantityAfter: nextQuantity });
+  if (nextQuantity === currentQuantity) return list;
   return writeMyCollection(list.map((item) => (
     item.sleeveId === sleeveId ? { ...item, quantity: nextQuantity } : item
+  )));
+}
+
+function updateMyCollectionPurchaseWeek(id, purchaseWeek) {
+  const sleeveId = normalizeMyCollectionSleeveId(id);
+  if (!sleeveId) return readMyCollection();
+  const nextPurchaseWeek = normalizeMyCollectionPurchaseWeek(purchaseWeek);
+  return writeMyCollection(readMyCollection().map((item) => (
+    item.sleeveId === sleeveId ? { ...item, purchaseWeek: nextPurchaseWeek } : item
   )));
 }
 
 function removeFromMyCollection(id) {
   const sleeveId = normalizeMyCollectionSleeveId(id);
   if (!sleeveId) return readMyCollection();
-  const list = readMyCollection();
-  seedMyCollectionHistoryIfNeeded(list);
-  const current = list.find((item) => item.sleeveId === sleeveId);
-  if (current) {
-    const currentQuantity = Math.max(1, Math.floor(Number(current.quantity) || 1));
-    appendMyCollectionHistory({ date: new Date().toISOString(), sleeveId, change: -currentQuantity, action: "remove", quantityAfter: 0 });
-  }
-  return writeMyCollection(list.filter((item) => item.sleeveId !== sleeveId));
+  return writeMyCollection(readMyCollection().filter((item) => item.sleeveId !== sleeveId));
 }
 
 function toggleMyCollectionSleeve(sleeve) {
@@ -2332,6 +2375,9 @@ window.common = {
   buildSiteHref,
   buildSleeveDetailHref,
   normalizeMyCollectionSleeveId,
+  normalizeMyCollectionPurchaseWeek,
+  startDateToWeekInput,
+  weekInputToStartDate,
   readMyCollection,
   writeMyCollection,
   readMyCollectionHistory,
@@ -2340,6 +2386,7 @@ window.common = {
   isInMyCollection,
   addToMyCollection,
   updateMyCollectionQuantity,
+  updateMyCollectionPurchaseWeek,
   removeFromMyCollection,
   toggleMyCollectionSleeve,
   updateMyCollectionCountBadges,

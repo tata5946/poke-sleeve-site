@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/site.css?v=20260826d" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260826e" />
 </head>
 
 <body class="page-market-list my-collection-page" data-hide-global-header="1">
@@ -99,7 +99,7 @@
 
   <div id="site-footer"></div>
 
-  <script src="./assets/common.js?v=20260826d"></script>
+  <script src="./assets/common.js?v=20260826e"></script>
   <script>
     let currentAssetPeriod = "3m";
     let currentAssetTimeline = [];
@@ -219,6 +219,7 @@
           name,
           image,
           quantity: getCollectionQuantity(item),
+          purchaseWeek: window.common.normalizeMyCollectionPurchaseWeek(item?.purchaseWeek),
           price: sleeve ? getLatestPrice(sleeve) : null,
           releaseTimestamp,
           weeklyPoints: sleeve ? buildWeeklyPricePoints(sleeve, releaseTimestamp) : [],
@@ -227,31 +228,22 @@
       }).filter((row) => row.sleeveId);
     }
 
-    function buildTrackedRows(stored, history, sleeveMap) {
-      const ids = new Set();
-      const storedById = new Map();
-      for (const item of Array.isArray(stored) ? stored : []) {
+    function buildTrackedRows(stored, sleeveMap) {
+      return (Array.isArray(stored) ? stored : []).map((item) => {
         const sleeveId = window.common.normalizeMyCollectionSleeveId(item?.sleeveId);
-        if (sleeveId) {
-          ids.add(sleeveId);
-          storedById.set(sleeveId, item);
-        }
-      }
-      for (const event of Array.isArray(history) ? history : []) {
-        const sleeveId = window.common.normalizeMyCollectionSleeveId(event?.sleeveId);
-        if (sleeveId) ids.add(sleeveId);
-      }
-      return Array.from(ids).map((sleeveId) => {
+        if (!sleeveId) return null;
         const sleeve = sleeveMap.get(sleeveId);
-        const storedItem = storedById.get(sleeveId);
         const releaseTimestamp = sleeve ? getReleaseTimestamp(sleeve) : null;
+        const purchaseWeek = window.common.normalizeMyCollectionPurchaseWeek(item?.purchaseWeek);
         return {
           sleeveId,
-          currentQuantity: getCollectionQuantity(storedItem),
+          currentQuantity: getCollectionQuantity(item),
+          purchaseWeek,
+          purchaseTimestamp: Date.parse(purchaseWeek),
           releaseTimestamp,
           weeklyPoints: sleeve ? buildWeeklyPricePoints(sleeve, releaseTimestamp) : []
         };
-      });
+      }).filter(Boolean);
     }
 
     function calculateCurrentAssetTotal(rows) {
@@ -280,26 +272,14 @@
       return pricedCount > 0 ? { total, pricedCount } : null;
     }
 
-    function normalizeHistoryEvents(history) {
-      return (Array.isArray(history) ? history : [])
-        .map((event) => {
-          const sleeveId = window.common.normalizeMyCollectionSleeveId(event?.sleeveId);
-          const change = Math.trunc(Number(event?.change));
-          const timestamp = Date.parse(event?.date);
-          if (!sleeveId || !Number.isFinite(change) || change === 0 || !Number.isFinite(timestamp)) return null;
-          return { sleeveId, change, timestamp, date: new Date(timestamp).toISOString().slice(0, 10), action: String(event?.action || "") };
-        })
-        .filter(Boolean)
-        .sort((a, b) => a.timestamp - b.timestamp);
-    }
-
-    function evaluateTrackedRowsAt(rows, quantities, timestamp) {
+    function evaluateTrackedRowsAt(rows, timestamp) {
       let total = 0;
       let pricedCount = 0;
       let totalQuantity = 0;
       for (const row of rows) {
-        const quantity = Math.max(0, Math.trunc(Number(quantities.get(row.sleeveId)) || 0));
+        const quantity = Math.max(0, Math.trunc(Number(row.currentQuantity) || 0));
         if (quantity <= 0) continue;
+        if (Number.isFinite(row.purchaseTimestamp) && timestamp < row.purchaseTimestamp) continue;
         if (Number.isFinite(row.releaseTimestamp) && timestamp < row.releaseTimestamp) continue;
         totalQuantity += quantity;
         const price = getPriceAtOrBefore(row.weeklyPoints, timestamp);
@@ -307,19 +287,18 @@
         total += price * quantity;
         pricedCount += 1;
       }
-      if (totalQuantity <= 0) return { total: 0, pricedCount: 0, totalQuantity: 0 };
+      if (totalQuantity <= 0) return null;
       return pricedCount > 0 ? { total, pricedCount, totalQuantity } : null;
     }
 
-    function buildAssetTimeline(rows, history) {
-      const events = normalizeHistoryEvents(history);
+    function buildAssetTimeline(rows) {
       const dates = new Map();
       const now = Date.now();
       dates.set(new Date(now).toISOString(), now);
-      for (const event of events) {
-        dates.set(new Date(event.timestamp).toISOString(), event.timestamp);
-      }
       for (const row of rows) {
+        if (Number.isFinite(row.purchaseTimestamp)) {
+          dates.set(new Date(row.purchaseTimestamp).toISOString(), row.purchaseTimestamp);
+        }
         if (Number.isFinite(row.releaseTimestamp)) {
           dates.set(new Date(row.releaseTimestamp).toISOString(), row.releaseTimestamp);
         }
@@ -327,31 +306,9 @@
           dates.set(point.date, point.timestamp);
         }
       }
-      const quantities = new Map();
-      let eventIndex = 0;
       const timeline = [];
       for (const [date, timestamp] of Array.from(dates.entries()).sort((a, b) => a[1] - b[1])) {
-        const effectiveQuantities = new Map(quantities);
-        if (events.length && eventIndex === 0 && timestamp < events[0].timestamp) {
-          for (const event of events) {
-            if (event.action !== "initial") continue;
-            effectiveQuantities.set(event.sleeveId, Math.max(0, (effectiveQuantities.get(event.sleeveId) || 0) + event.change));
-          }
-        }
-        if (!events.length) {
-          for (const row of rows) {
-            const quantity = Math.max(0, Math.trunc(Number(row.currentQuantity) || 0));
-            if (quantity > 0) effectiveQuantities.set(row.sleeveId, quantity);
-          }
-        }
-        while (eventIndex < events.length && events[eventIndex].timestamp <= timestamp) {
-          const event = events[eventIndex];
-          const nextQuantity = Math.max(0, (quantities.get(event.sleeveId) || 0) + event.change);
-          if (nextQuantity > 0) quantities.set(event.sleeveId, nextQuantity);
-          else quantities.delete(event.sleeveId);
-          eventIndex += 1;
-        }
-        const evaluated = evaluateTrackedRowsAt(rows, eventIndex === 0 ? effectiveQuantities : quantities, timestamp);
+        const evaluated = evaluateTrackedRowsAt(rows, timestamp);
         if (!evaluated) continue;
         timeline.push({
           date: String(date).slice(0, 10),
@@ -581,6 +538,8 @@
     }
 
     function buildCard(row) {
+      const purchaseWeekValue = window.common.startDateToWeekInput(row.purchaseWeek);
+      const maxPurchaseWeekValue = window.common.startDateToWeekInput(new Date());
       return `
         <article class="my-collection-card">
           <a class="my-collection-card-link" href="${escapeHtml(row.href)}" data-sleeve-link="1" aria-label="${escapeHtml(row.name)}の詳細を見る">
@@ -601,6 +560,10 @@
               <button type="button" data-quantity-action="increase" data-sleeve-id="${escapeHtml(row.sleeveId)}" aria-label="保有数を1増やす">＋</button>
             </div>
           </div>
+          <label class="my-collection-purchase-week">
+            <span>購入週</span>
+            <input type="week" value="${escapeHtml(purchaseWeekValue)}" max="${escapeHtml(maxPurchaseWeekValue)}" data-purchase-week="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の購入週">
+          </label>
           <button class="my-collection-remove" type="button" data-remove-collection="${escapeHtml(row.sleeveId)}">コレクションから削除</button>
         </article>
       `;
@@ -622,9 +585,6 @@
       if (!root || !countEl || !window.common) return;
 
       const stored = window.common.readMyCollection();
-      const history = typeof window.common.readMyCollectionHistory === "function"
-        ? window.common.readMyCollectionHistory()
-        : [];
       countEl.textContent = `${stored.length}種類`;
       window.common.updateMyCollectionCountBadges(stored.length);
 
@@ -667,8 +627,8 @@
       }
 
       const rows = buildCollectionRows(stored, sleeveMap);
-      const trackedRows = buildTrackedRows(stored, history, sleeveMap);
-      currentAssetTimeline = buildAssetTimeline(trackedRows, history);
+      const trackedRows = buildTrackedRows(stored, sleeveMap);
+      currentAssetTimeline = buildAssetTimeline(trackedRows);
       updateAssetSummary(rows, currentAssetTimeline);
       renderAssetChart(currentAssetTimeline);
 
@@ -685,6 +645,13 @@
           if (!row || !window.common.updateMyCollectionQuantity) return;
           const delta = button.getAttribute("data-quantity-action") === "increase" ? 1 : -1;
           window.common.updateMyCollectionQuantity(sleeveId, Math.max(1, row.quantity + delta));
+        });
+      });
+      root.querySelectorAll("[data-purchase-week]").forEach((input) => {
+        input.addEventListener("change", () => {
+          const sleeveId = input.getAttribute("data-purchase-week");
+          if (!sleeveId || !window.common.updateMyCollectionPurchaseWeek) return;
+          window.common.updateMyCollectionPurchaseWeek(sleeveId, input.value);
         });
       });
     }
