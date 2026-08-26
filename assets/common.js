@@ -672,11 +672,13 @@ function normalizeMyCollectionSleeveId(id) {
 function normalizeMyCollectionItem(item) {
   const sleeveId = normalizeMyCollectionSleeveId(item?.sleeveId ?? item?.id ?? item?.itemId);
   if (!sleeveId) return null;
+  const quantity = Number(item?.quantity);
   return {
     ...item,
     sleeveId,
     name: String(item?.name || "").trim(),
     image: String(item?.image || item?.imageUrl || "").trim(),
+    quantity: Number.isFinite(quantity) && quantity >= 1 ? Math.floor(quantity) : 1,
     addedAt: String(item?.addedAt || new Date().toISOString())
   };
 }
@@ -733,10 +735,20 @@ function addToMyCollection(sleeve) {
       sleeveId,
       name: String(sleeve?.name || "").trim(),
       image: String(sleeve?.image || sleeve?.imageUrl || "").trim(),
+      quantity: 1,
       addedAt: new Date().toISOString()
     },
     ...list
   ]);
+}
+
+function updateMyCollectionQuantity(id, quantity) {
+  const sleeveId = normalizeMyCollectionSleeveId(id);
+  const nextQuantity = Math.max(1, Math.floor(Number(quantity) || 1));
+  if (!sleeveId) return readMyCollection();
+  return writeMyCollection(readMyCollection().map((item) => (
+    item.sleeveId === sleeveId ? { ...item, quantity: nextQuantity } : item
+  )));
 }
 
 function removeFromMyCollection(id) {
@@ -2205,6 +2217,7 @@ window.common = {
   getMyCollectionCount,
   isInMyCollection,
   addToMyCollection,
+  updateMyCollectionQuantity,
   removeFromMyCollection,
   toggleMyCollectionSleeve,
   updateMyCollectionCountBadges,

@@ -8059,6 +8059,13 @@ footer.site-footer {
 .my-collection-page .page-hero-card {
     display: grid;
     gap: 10px;
+    width: min(100%, 1160px);
+    margin-inline: auto;
+}
+
+.my-collection-page .dashboard-content {
+    max-width: 1220px;
+    margin-inline: auto;
 }
 
 .my-collection-lead {
@@ -8082,13 +8089,20 @@ footer.site-footer {
 .my-asset-chart-panel {
     display: grid;
     gap: 14px;
+    width: min(100%, 1160px);
     min-width: 0;
+    margin-inline: auto;
     margin-bottom: 14px;
     padding: 16px;
     border: 1px solid #dbe5f2;
     border-radius: 8px;
     background: rgba(255, 255, 255, .96);
     box-shadow: 0 10px 28px rgba(15, 23, 42, .05);
+}
+
+.my-asset-panel {
+    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+    align-items: end;
 }
 
 .my-asset-total {
@@ -8104,7 +8118,7 @@ footer.site-footer {
 
 .my-asset-total-value {
     color: #00113a;
-    font-size: clamp(38px, 5vw, 58px);
+    font-size: clamp(42px, 4vw, 58px);
     line-height: 1.05;
     font-weight: 900;
     letter-spacing: 0;
@@ -8112,7 +8126,7 @@ footer.site-footer {
 
 .my-asset-stats {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
 }
 
@@ -8120,8 +8134,8 @@ footer.site-footer {
     display: grid;
     gap: 3px;
     min-width: 0;
-    min-height: 76px;
-    padding: 12px;
+    min-height: 66px;
+    padding: 10px;
     border: 1px solid #e4eaf4;
     border-radius: 8px;
     background: #f8fbff;
@@ -8135,7 +8149,7 @@ footer.site-footer {
 
 .my-asset-stat strong {
     color: #111827;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 1.2;
     font-weight: 900;
     overflow-wrap: anywhere;
@@ -8200,6 +8214,8 @@ footer.site-footer {
 
 .my-asset-chart {
     min-width: 0;
+    width: min(100%, 920px);
+    margin-inline: auto;
 }
 
 .my-asset-chart-wrap {
@@ -8215,7 +8231,6 @@ footer.site-footer {
     display: block;
     width: 100%;
     height: auto;
-    max-height: 360px;
     font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif;
     touch-action: manipulation;
 }
@@ -8269,12 +8284,14 @@ footer.site-footer {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+    width: min(100%, 1160px);
     min-width: 0;
+    margin-inline: auto;
 }
 
 .my-collection-card {
     display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto;
     gap: 8px;
     min-width: 0;
     padding: 10px;
@@ -8358,6 +8375,57 @@ footer.site-footer {
     color: #b42318;
 }
 
+.my-collection-quantity {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+}
+
+.my-collection-quantity-label {
+    color: #667085;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.my-collection-stepper {
+    display: inline-grid;
+    grid-template-columns: 32px minmax(30px, auto) 32px;
+    align-items: center;
+    overflow: hidden;
+    border: 1px solid #dbe5f2;
+    border-radius: 999px;
+    background: #fff;
+}
+
+.my-collection-stepper button {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    background: #f8fbff;
+    color: #00113a;
+    font: inherit;
+    font-size: 16px;
+    line-height: 1;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.my-collection-stepper button:hover {
+    background: #eaf1ff;
+}
+
+.my-collection-stepper span {
+    min-width: 30px;
+    padding: 0 6px;
+    color: #111827;
+    font-size: 13px;
+    line-height: 32px;
+    text-align: center;
+    font-weight: 900;
+}
+
 .my-collection-empty {
     display: grid;
     grid-column: 1 / -1;
@@ -8385,7 +8453,8 @@ footer.site-footer {
 }
 
 .my-collection-note {
-    margin: 0;
+    width: min(100%, 1160px);
+    margin: 0 auto;
     color: #667085;
     font-size: 11px;
     line-height: 1.8;
@@ -8406,6 +8475,17 @@ footer.site-footer {
 @media (min-width: 1360px) {
     .my-collection-grid {
         grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1100px) {
+    .my-asset-panel {
+        grid-template-columns: 1fr;
+        align-items: start;
+    }
+
+    .my-asset-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -8456,10 +8536,6 @@ footer.site-footer {
         margin-inline: -4px;
     }
 
-    .my-asset-chart-svg {
-        max-height: none;
-    }
-
     .my-collection-grid {
         gap: 8px;
     }
@@ -8474,5 +8550,24 @@ footer.site-footer {
 
     .my-collection-price {
         font-size: 14px;
+    }
+
+    .my-collection-quantity {
+        display: grid;
+        gap: 5px;
+    }
+
+    .my-collection-stepper {
+        grid-template-columns: 34px minmax(28px, 1fr) 34px;
+        width: 100%;
+    }
+
+    .my-collection-stepper button {
+        width: 34px;
+        height: 34px;
+    }
+
+    .my-collection-stepper span {
+        line-height: 34px;
     }
 }

@@ -49,8 +49,12 @@
           </div>
           <div class="my-asset-stats">
             <div class="my-asset-stat">
-              <span>登録数</span>
+              <span>登録種類</span>
               <strong id="collectionCount" class="my-collection-summary">0種類</strong>
+            </div>
+            <div class="my-asset-stat">
+              <span>総保有数</span>
+              <strong id="collectionQuantityTotal">0個</strong>
             </div>
             <div class="my-asset-stat">
               <span>前週比</span>
@@ -95,7 +99,7 @@
 
   <div id="site-footer"></div>
 
-  <script src="./assets/common.js?v=20260826a"></script>
+  <script src="./assets/common.js?v=20260826b"></script>
   <script>
     let currentAssetPeriod = "3m";
     let currentAssetTimeline = [];
@@ -244,13 +248,14 @@
       const rate = ((currentTotal / pastTotal) - 1) * 100;
       return {
         amount: `${sign}${formatCurrency(Math.abs(diff))}`,
-        rate: Number.isFinite(rate) ? `${rate > 0 ? "+" : ""}${rate.toFixed(1)}%` : ""
+        rate: Number.isFinite(rate) ? `（${rate > 0 ? "+" : ""}${rate.toFixed(1)}%）` : ""
       };
     }
 
     function updateAssetSummary(rows, timeline) {
       const totalEl = document.getElementById("collectionAssetTotal");
       const countEl = document.getElementById("collectionCount");
+      const quantityEl = document.getElementById("collectionQuantityTotal");
       const weekDeltaEl = document.getElementById("collectionWeekDelta");
       const weekRateEl = document.getElementById("collectionWeekRate");
       const monthDeltaEl = document.getElementById("collectionMonthDelta");
@@ -262,9 +267,11 @@
       const monthPast = latestPoint ? evaluateRowsAt(rows, latestPoint.timestamp - (30 * 24 * 60 * 60 * 1000)) : null;
       const weekDelta = formatDeltaAmount(currentTotal, weekPast?.total);
       const monthDelta = formatDeltaAmount(currentTotal, monthPast?.total);
+      const totalQuantity = rows.reduce((sum, row) => sum + getCollectionQuantity(row), 0);
 
       if (totalEl) totalEl.textContent = currentTotal != null ? formatCurrency(currentTotal) : "―";
       if (countEl) countEl.textContent = `${rows.length}種類`;
+      if (quantityEl) quantityEl.textContent = `${totalQuantity}個`;
       if (weekDeltaEl) weekDeltaEl.textContent = weekDelta.amount;
       if (weekRateEl) weekRateEl.textContent = weekDelta.rate;
       if (monthDeltaEl) monthDeltaEl.textContent = monthDelta.amount;
@@ -314,8 +321,9 @@
         return;
       }
 
+      const isMobileChart = window.matchMedia("(max-width: 700px)").matches;
       const W = 760;
-      const H = 320;
+      const H = isMobileChart ? 540 : 320;
       const padL = 74;
       const padR = 26;
       const padT = 24;
@@ -410,6 +418,14 @@
               ${escapeHtml(formatPrice(row.price))}
             </div>
           </a>
+          <div class="my-collection-quantity" aria-label="${escapeHtml(row.name)}の保有数">
+            <span class="my-collection-quantity-label">保有数</span>
+            <div class="my-collection-stepper">
+              <button type="button" data-quantity-action="decrease" data-sleeve-id="${escapeHtml(row.sleeveId)}" aria-label="保有数を1減らす">−</button>
+              <span>${escapeHtml(row.quantity)}</span>
+              <button type="button" data-quantity-action="increase" data-sleeve-id="${escapeHtml(row.sleeveId)}" aria-label="保有数を1増やす">＋</button>
+            </div>
+          </div>
           <button class="my-collection-remove" type="button" data-remove-collection="${escapeHtml(row.sleeveId)}">コレクションから削除</button>
         </article>
       `;
@@ -454,11 +470,13 @@
         const weekRateEl = document.getElementById("collectionWeekRate");
         const monthDeltaEl = document.getElementById("collectionMonthDelta");
         const monthRateEl = document.getElementById("collectionMonthRate");
+        const quantityEl = document.getElementById("collectionQuantityTotal");
         if (totalEl) totalEl.textContent = "―";
         if (weekDeltaEl) weekDeltaEl.textContent = "―";
         if (weekRateEl) weekRateEl.textContent = "";
         if (monthDeltaEl) monthDeltaEl.textContent = "―";
         if (monthRateEl) monthRateEl.textContent = "";
+        if (quantityEl) quantityEl.textContent = "0個";
         renderAssetChart([]);
         root.innerHTML = `<div class="my-collection-empty"><p>${escapeHtml(e.message || "データの読み込みに失敗しました。")}</p></div>`;
         return;
@@ -481,6 +499,15 @@
           window.common.removeFromMyCollection(button.getAttribute("data-remove-collection"));
         });
       });
+      root.querySelectorAll("[data-quantity-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const sleeveId = button.getAttribute("data-sleeve-id");
+          const row = rows.find((item) => item.sleeveId === sleeveId);
+          if (!row || !window.common.updateMyCollectionQuantity) return;
+          const delta = button.getAttribute("data-quantity-action") === "increase" ? 1 : -1;
+          window.common.updateMyCollectionQuantity(sleeveId, Math.max(1, row.quantity + delta));
+        });
+      });
     }
 
     async function main() {
@@ -488,6 +515,11 @@
       setupAssetPeriodButtons();
       await renderCollection();
       document.addEventListener("pokesuri:my-collection-change", () => renderCollection());
+      let resizeTimer = 0;
+      window.addEventListener("resize", () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => renderAssetChart(currentAssetTimeline), 120);
+      });
     }
 
     document.addEventListener("DOMContentLoaded", () => main());
