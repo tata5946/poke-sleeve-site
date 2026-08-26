@@ -502,6 +502,12 @@
       gap: 10px;
     }
 
+    .detail-action-buttons {
+      display: grid;
+      grid-template-columns: minmax(0, 180px) minmax(0, 1fr);
+      gap: 8px;
+    }
+
     .marketplace-row {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1144,7 +1150,7 @@
         font-size: 13px;
       }
 
-      .btn-row,
+      .detail-action-buttons,
       .share-row {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1411,10 +1417,14 @@
 
     .btn-row {
       grid-area: actions;
-      grid-template-columns: minmax(0, 160px) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr);
       justify-content: start;
       gap: 8px;
       margin-top: 0;
+    }
+
+    .detail-action-buttons {
+      grid-template-columns: minmax(0, 160px) minmax(0, 1fr);
     }
 
     .marketplace-row {
@@ -1592,7 +1602,7 @@
         font-size: 28px;
       }
 
-      .btn-row,
+      .detail-action-buttons,
       .share-row {
         grid-template-columns: 1fr;
       }
@@ -1801,10 +1811,16 @@
     .btn-row {
       grid-area: actions;
       display: grid;
-      grid-template-columns: minmax(0, 140px) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr);
       gap: 8px;
       margin-top: 0;
       align-self: start;
+    }
+
+    .detail-action-buttons {
+      display: grid;
+      grid-template-columns: minmax(0, 140px) minmax(0, 1fr);
+      gap: 8px;
     }
 
     .btn-row .btn.primary {
@@ -2014,6 +2030,10 @@
         min-height: 42px;
       }
 
+      .detail-action-buttons {
+        grid-template-columns: 1fr;
+      }
+
       .price-panel {
         margin-top: 10px;
         padding: 12px;
@@ -2067,8 +2087,10 @@
               </div>
 
               <div class="btn-row">
-                <a class="btn primary" id="backLink" href="./sleeves/" aria-label="ポケモンカードのスリーブ・デッキシールド一覧へ戻る">← スリーブ・デッキシールド一覧へ</a>
-                <button class="btn my-collection-toggle" id="myCollectionToggle" type="button" data-my-collection-toggle hidden>＋ マイコレクションに追加</button>
+                <div class="detail-action-buttons">
+                  <a class="btn primary" id="backLink" href="./sleeves/" aria-label="ポケモンカードのスリーブ・デッキシールド一覧へ戻る">← スリーブ・デッキシールド一覧へ</a>
+                  <button class="btn my-collection-toggle" id="myCollectionToggle" type="button" data-my-collection-toggle hidden>＋ マイコレクションに追加</button>
+                </div>
                 <div class="marketplace-row" aria-label="外部サイトで探す">
                   <a class="marketplace-link marketplace-link--mercari" id="mercariLink" href="https://jp.mercari.com/search" target="_blank" rel="noopener noreferrer nofollow" aria-label="メルカリで探す">
                     <span class="marketplace-logo marketplace-logo--mercari" aria-hidden="true">m</span>
