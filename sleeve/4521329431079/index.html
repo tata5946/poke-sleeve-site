@@ -2104,7 +2104,7 @@
                     <span class="marketplace-logo marketplace-logo--yahoo" aria-hidden="true">ヤフオク!</span>
                     <span>で探す</span>
                   </a>
-                  <a class="marketplace-link marketplace-link--suruga" id="surugayaLink" href="https://www.suruga-ya.jp/search" target="_blank" rel="noopener noreferrer nofollow" aria-label="駿河屋で探す">
+                  <a class="marketplace-link marketplace-link--suruga" id="surugayaLink" href="https://affiliate.suruga-ya.jp/modules/af/af_jump.php?user_id=5394&amp;goods_url=https%3A%2F%2Fwww.suruga-ya.jp%2Fsearch" target="_blank" rel="noopener noreferrer nofollow" aria-label="駿河屋で探す">
                     <span class="marketplace-logo marketplace-logo--suruga" aria-hidden="true">駿</span>
                     <span>駿河屋で探す</span>
                   </a>
@@ -2192,7 +2192,7 @@
 
     <script>window.__SLEEVE_PAGE_ID = "431079";window.__SLEEVE_PAGE_DATA = {"id":"431079","name":"どんどん どんかん やぁん？","imageUrl":"https://drive.google.com/thumbnail?id=1rWCy6Gotgo3dzJvEJHdLtLeCJ9b7h46r\u0026sz=w1200","releaseDate":"2025-02-21","releaseYear":2025,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンセンター","illustrator":"","note":"","category1":"ヤドン","category2":"","category3":"","category4":"","category5":"","category6":"","category7":"","category8":"","category9":"","pokemonCategories":["ヤドン"],"trainerCategories":[],"categoryTags":[],"categories":["ヤドン"],"weeklyPrices":[{"week":"2026-08-03","price":1250,"count":0},{"week":"2026-08-10","price":null,"count":0},{"week":"2026-08-17","price":1555,"count":0}],"monthlyPrices":[{"month":"2026-08-01","price":1990,"count":null,"source":"","shop":"","note":""}],"yearlyPrices":[{"year":2025,"price":1299,"count":null},{"year":2026,"price":1500,"count":null}],"pricesByYear":{"2025":1299,"2026":1500}};</script>
 
-<script src="./assets/common.js?v=20260826h"></script>
+<script src="./assets/common.js?v=20260826i"></script>
 
   <script>
     function escapeHtml(str) {
@@ -3379,11 +3379,12 @@
       return `https://auctions.yahoo.co.jp/search/search?p=${encodeURIComponent(keyword)}`;
     }
 
-    function buildSurugayaSearchUrl(name) {
+    function buildSurugayaAffiliateUrl(name) {
       const baseName = String(name || "").trim();
-      const keyword = baseName ? `${baseName} デッキシールド` : "";
-      if (!keyword) return "https://www.suruga-ya.jp/search";
-      return `https://www.suruga-ya.jp/search?search_word=${encodeURIComponent(keyword)}`;
+      const surugayaUrl = baseName
+        ? `https://www.suruga-ya.jp/search?search_word=${encodeURIComponent(`${baseName} デッキシールド`)}`
+        : "https://www.suruga-ya.jp/search";
+      return `https://affiliate.suruga-ya.jp/modules/af/af_jump.php?user_id=5394&goods_url=${encodeURIComponent(surugayaUrl)}`;
     }
 
     function normalizeWeekly(arr) {
@@ -5466,7 +5467,7 @@
       const yahooAuctionLink = document.getElementById("yahooAuctionLink");
       if (yahooAuctionLink) yahooAuctionLink.href = buildYahooAuctionSearchUrl(s.name);
       const surugayaLink = document.getElementById("surugayaLink");
-      if (surugayaLink) surugayaLink.href = buildSurugayaSearchUrl(s.name);
+      if (surugayaLink) surugayaLink.href = buildSurugayaAffiliateUrl(s.name);
       if (window.common && typeof window.common.setupMyCollectionButton === "function") {
         window.common.setupMyCollectionButton(s, document.getElementById("myCollectionToggle"));
       }
@@ -5584,12 +5585,4 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
 

@@ -2100,7 +2100,7 @@
                     <span class="marketplace-logo marketplace-logo--yahoo" aria-hidden="true">ヤフオク!</span>
                     <span>で探す</span>
                   </a>
-                  <a class="marketplace-link marketplace-link--suruga" id="surugayaLink" href="https://www.suruga-ya.jp/search" target="_blank" rel="noopener noreferrer nofollow" aria-label="駿河屋で探す">
+                  <a class="marketplace-link marketplace-link--suruga" id="surugayaLink" href="https://affiliate.suruga-ya.jp/modules/af/af_jump.php?user_id=5394&amp;goods_url=https%3A%2F%2Fwww.suruga-ya.jp%2Fsearch" target="_blank" rel="noopener noreferrer nofollow" aria-label="駿河屋で探す">
                     <span class="marketplace-logo marketplace-logo--suruga" aria-hidden="true">駿</span>
                     <span>駿河屋で探す</span>
                   </a>
@@ -3373,11 +3373,12 @@
       return `https://auctions.yahoo.co.jp/search/search?p=${encodeURIComponent(keyword)}`;
     }
 
-    function buildSurugayaSearchUrl(name) {
+    function buildSurugayaAffiliateUrl(name) {
       const baseName = String(name || "").trim();
-      const keyword = baseName ? `${baseName} デッキシールド` : "";
-      if (!keyword) return "https://www.suruga-ya.jp/search";
-      return `https://www.suruga-ya.jp/search?search_word=${encodeURIComponent(keyword)}`;
+      const surugayaUrl = baseName
+        ? `https://www.suruga-ya.jp/search?search_word=${encodeURIComponent(`${baseName} デッキシールド`)}`
+        : "https://www.suruga-ya.jp/search";
+      return `https://affiliate.suruga-ya.jp/modules/af/af_jump.php?user_id=5394&goods_url=${encodeURIComponent(surugayaUrl)}`;
     }
 
     function normalizeWeekly(arr) {
@@ -5460,7 +5461,7 @@
       const yahooAuctionLink = document.getElementById("yahooAuctionLink");
       if (yahooAuctionLink) yahooAuctionLink.href = buildYahooAuctionSearchUrl(s.name);
       const surugayaLink = document.getElementById("surugayaLink");
-      if (surugayaLink) surugayaLink.href = buildSurugayaSearchUrl(s.name);
+      if (surugayaLink) surugayaLink.href = buildSurugayaAffiliateUrl(s.name);
       if (window.common && typeof window.common.setupMyCollectionButton === "function") {
         window.common.setupMyCollectionButton(s, document.getElementById("myCollectionToggle"));
       }
