@@ -73,7 +73,7 @@
           <div class="my-asset-chart-head">
             <div>
               <h2>資産額の推移</h2>
-              <p>現在登録しているコレクションを、各時点の相場で評価した参考推移です。</p>
+              <p>コレクションの追加・削除・保有数変更の履歴と、各時点の相場で評価した参考推移です。</p>
             </div>
             <div class="my-asset-periods" aria-label="表示期間">
               <button type="button" class="my-asset-period-btn" data-asset-period="1m">1か月</button>
@@ -99,7 +99,7 @@
 
   <div id="site-footer"></div>
 
-  <script src="./assets/common.js?v=20260826b"></script>
+  <script src="./assets/common.js?v=20260826c"></script>
   <script>
     let currentAssetPeriod = "3m";
     let currentAssetTimeline = [];
@@ -201,6 +201,25 @@
       }).filter((row) => row.sleeveId);
     }
 
+    function buildTrackedRows(stored, history, sleeveMap) {
+      const ids = new Set();
+      for (const item of Array.isArray(stored) ? stored : []) {
+        const sleeveId = window.common.normalizeMyCollectionSleeveId(item?.sleeveId);
+        if (sleeveId) ids.add(sleeveId);
+      }
+      for (const event of Array.isArray(history) ? history : []) {
+        const sleeveId = window.common.normalizeMyCollectionSleeveId(event?.sleeveId);
+        if (sleeveId) ids.add(sleeveId);
+      }
+      return Array.from(ids).map((sleeveId) => {
+        const sleeve = sleeveMap.get(sleeveId);
+        return {
+          sleeveId,
+          weeklyPoints: sleeve ? buildWeeklyPricePoints(sleeve) : []
+        };
+      });
+    }
+
     function calculateCurrentAssetTotal(rows) {
       let total = 0;
       let pricedCount = 0;
@@ -225,31 +244,91 @@
       return pricedCount > 0 ? { total, pricedCount } : null;
     }
 
-    function buildAssetTimeline(rows) {
+    function normalizeHistoryEvents(history) {
+      return (Array.isArray(history) ? history : [])
+        .map((event) => {
+          const sleeveId = window.common.normalizeMyCollectionSleeveId(event?.sleeveId);
+          const change = Math.trunc(Number(event?.change));
+          const timestamp = Date.parse(event?.date);
+          if (!sleeveId || !Number.isFinite(change) || change === 0 || !Number.isFinite(timestamp)) return null;
+          return { sleeveId, change, timestamp, date: new Date(timestamp).toISOString().slice(0, 10) };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function evaluateTrackedRowsAt(rows, quantities, timestamp) {
+      let total = 0;
+      let pricedCount = 0;
+      let totalQuantity = 0;
+      for (const row of rows) {
+        const quantity = Math.max(0, Math.trunc(Number(quantities.get(row.sleeveId)) || 0));
+        if (quantity <= 0) continue;
+        totalQuantity += quantity;
+        const price = getPriceAtOrBefore(row.weeklyPoints, timestamp);
+        if (!(price > 0)) continue;
+        total += price * quantity;
+        pricedCount += 1;
+      }
+      if (totalQuantity <= 0) return { total: 0, pricedCount: 0, totalQuantity: 0 };
+      return pricedCount > 0 ? { total, pricedCount, totalQuantity } : null;
+    }
+
+    function buildAssetTimeline(rows, history) {
+      const events = normalizeHistoryEvents(history);
       const dates = new Map();
+      const now = Date.now();
+      dates.set(new Date(now).toISOString(), now);
+      for (const event of events) {
+        dates.set(new Date(event.timestamp).toISOString(), event.timestamp);
+      }
       for (const row of rows) {
         for (const point of row.weeklyPoints) {
           dates.set(point.date, point.timestamp);
         }
       }
-      return Array.from(dates.entries())
-        .sort((a, b) => a[1] - b[1])
-        .map(([date, timestamp]) => {
-          const evaluated = evaluateRowsAt(rows, timestamp);
-          return evaluated ? { date, timestamp, value: Math.round(evaluated.total), pricedCount: evaluated.pricedCount } : null;
-        })
-        .filter(Boolean);
+      const quantities = new Map();
+      let eventIndex = 0;
+      const timeline = [];
+      for (const [date, timestamp] of Array.from(dates.entries()).sort((a, b) => a[1] - b[1])) {
+        while (eventIndex < events.length && events[eventIndex].timestamp <= timestamp) {
+          const event = events[eventIndex];
+          const nextQuantity = Math.max(0, (quantities.get(event.sleeveId) || 0) + event.change);
+          if (nextQuantity > 0) quantities.set(event.sleeveId, nextQuantity);
+          else quantities.delete(event.sleeveId);
+          eventIndex += 1;
+        }
+        const evaluated = evaluateTrackedRowsAt(rows, quantities, timestamp);
+        if (!evaluated) continue;
+        timeline.push({
+          date: String(date).slice(0, 10),
+          timestamp,
+          value: Math.round(evaluated.total),
+          pricedCount: evaluated.pricedCount,
+          totalQuantity: evaluated.totalQuantity
+        });
+      }
+      return timeline;
     }
 
     function formatDeltaAmount(currentTotal, pastTotal) {
-      if (!(Number.isFinite(currentTotal) && Number.isFinite(pastTotal) && pastTotal > 0)) return { amount: "―", rate: "" };
+      if (!(Number.isFinite(currentTotal) && Number.isFinite(pastTotal) && pastTotal >= 0)) return { amount: "―", rate: "" };
       const diff = Math.round(currentTotal - pastTotal);
       const sign = diff > 0 ? "+" : diff < 0 ? "-" : "";
-      const rate = ((currentTotal / pastTotal) - 1) * 100;
+      const rate = pastTotal > 0 ? ((currentTotal / pastTotal) - 1) * 100 : null;
       return {
         amount: `${sign}${formatCurrency(Math.abs(diff))}`,
         rate: Number.isFinite(rate) ? `（${rate > 0 ? "+" : ""}${rate.toFixed(1)}%）` : ""
       };
+    }
+
+    function getTimelinePointAtOrBefore(timeline, timestamp) {
+      let latest = null;
+      for (const point of Array.isArray(timeline) ? timeline : []) {
+        if (point.timestamp > timestamp) break;
+        latest = point;
+      }
+      return latest;
     }
 
     function updateAssetSummary(rows, timeline) {
@@ -263,10 +342,10 @@
       const current = calculateCurrentAssetTotal(rows);
       const currentTotal = current.total;
       const latestPoint = timeline.length ? timeline[timeline.length - 1] : null;
-      const weekPast = latestPoint ? evaluateRowsAt(rows, latestPoint.timestamp - (7 * 24 * 60 * 60 * 1000)) : null;
-      const monthPast = latestPoint ? evaluateRowsAt(rows, latestPoint.timestamp - (30 * 24 * 60 * 60 * 1000)) : null;
-      const weekDelta = formatDeltaAmount(currentTotal, weekPast?.total);
-      const monthDelta = formatDeltaAmount(currentTotal, monthPast?.total);
+      const weekPast = latestPoint ? getTimelinePointAtOrBefore(timeline, latestPoint.timestamp - (7 * 24 * 60 * 60 * 1000)) : null;
+      const monthPast = latestPoint ? getTimelinePointAtOrBefore(timeline, latestPoint.timestamp - (30 * 24 * 60 * 60 * 1000)) : null;
+      const weekDelta = formatDeltaAmount(currentTotal, weekPast?.value);
+      const monthDelta = formatDeltaAmount(currentTotal, monthPast?.value);
       const totalQuantity = rows.reduce((sum, row) => sum + getCollectionQuantity(row), 0);
 
       if (totalEl) totalEl.textContent = currentTotal != null ? formatCurrency(currentTotal) : "―";
@@ -305,11 +384,29 @@
       const pow = Math.pow(10, Math.floor(Math.log10(rawStep)));
       const normalized = rawStep / pow;
       const step = (normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10) * pow;
-      const min = Math.max(0, Math.floor(minValue / step) * step);
+      const min = 0;
       const max = Math.ceil(maxValue / step) * step;
       const ticks = [];
       for (let value = min; value <= max + step * 0.001; value += step) ticks.push(Math.round(value));
       return { min, max, ticks };
+    }
+
+    function buildQuantityAxis(maxValue) {
+      const max = Math.max(1, Math.ceil(Number(maxValue) || 1));
+      const rawStep = max / 3;
+      const pow = Math.pow(10, Math.floor(Math.log10(rawStep)));
+      const normalized = rawStep / pow;
+      const step = Math.max(1, (normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10) * pow);
+      const axisMax = Math.ceil(max / step) * step;
+      const ticks = [];
+      for (let value = 0; value <= axisMax + step * 0.001; value += step) ticks.push(Math.round(value));
+      return { min: 0, max: axisMax, ticks };
+    }
+
+    function formatFullChartDate(date) {
+      const parsed = new Date(date);
+      if (!Number.isFinite(parsed.getTime())) return date;
+      return parsed.toLocaleDateString("ja-JP", { year: "numeric", month: "numeric", day: "numeric" });
     }
 
     function renderAssetChart(timeline) {
@@ -324,25 +421,33 @@
       const isMobileChart = window.matchMedia("(max-width: 700px)").matches;
       const W = 760;
       const H = isMobileChart ? 540 : 320;
-      const padL = 74;
-      const padR = 26;
-      const padT = 24;
+      const padL = 82;
+      const padR = 64;
+      const padT = 32;
       const padB = 54;
       const values = scoped.map((point) => point.value);
+      const quantities = scoped.map((point) => point.totalQuantity || 0);
       const xMin = scoped[0].timestamp;
       const xMax = scoped[scoped.length - 1].timestamp;
       const spanX = Math.max(24 * 60 * 60 * 1000, xMax - xMin);
       const axis = buildAssetAxis(Math.min(...values), Math.max(...values));
+      const quantityAxis = buildQuantityAxis(Math.max(...quantities));
       const chartW = W - padL - padR;
       const chartH = H - padT - padB;
       const xToPx = (timestamp) => padL + ((timestamp - xMin) / spanX) * chartW;
       const yToPx = (value) => padT + (1 - ((value - axis.min) / Math.max(1, axis.max - axis.min))) * chartH;
+      const quantityToPx = (value) => padT + (1 - ((value - quantityAxis.min) / Math.max(1, quantityAxis.max - quantityAxis.min))) * chartH;
       const lineD = scoped.map((point, index) => `${index === 0 ? "M" : "L"} ${xToPx(point.timestamp).toFixed(2)} ${yToPx(point.value).toFixed(2)}`).join(" ");
       const areaD = `${lineD} L ${xToPx(scoped[scoped.length - 1].timestamp).toFixed(2)} ${H - padB} L ${xToPx(scoped[0].timestamp).toFixed(2)} ${H - padB} Z`;
       const labelIndexes = Array.from(new Set([0, Math.floor((scoped.length - 1) / 2), scoped.length - 1]));
+      const barW = Math.max(3, Math.min(18, (chartW / Math.max(1, scoped.length)) * 0.56));
 
       root.innerHTML = `
         <div class="my-asset-chart-wrap">
+          <div class="my-asset-chart-legend" aria-hidden="true">
+            <span><i class="my-asset-legend-line"></i>総資産額</span>
+            <span><i class="my-asset-legend-bar"></i>保有個数</span>
+          </div>
           <div class="my-asset-chart-tooltip" hidden></div>
           <svg class="my-asset-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="資産額の推移グラフ">
             <defs>
@@ -353,10 +458,17 @@
             </defs>
             ${axis.ticks.map((tick) => `<line x1="${padL}" y1="${yToPx(tick).toFixed(2)}" x2="${W - padR}" y2="${yToPx(tick).toFixed(2)}" stroke="#dce4f0"></line>`).join("")}
             <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
+            <line x1="${W - padR}" y1="${padT}" x2="${W - padR}" y2="${H - padB}" stroke="#c4cedd"></line>
             <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
+            ${scoped.map((point) => {
+              const x = xToPx(point.timestamp) - (barW / 2);
+              const y = quantityToPx(point.totalQuantity || 0);
+              return `<rect class="my-asset-quantity-bar" x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${barW.toFixed(2)}" height="${Math.max(0, H - padB - y).toFixed(2)}" rx="2"></rect>`;
+            }).join("")}
             <path d="${areaD}" fill="url(#myAssetAreaGradient)"></path>
             <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
-            ${axis.ticks.map((tick) => `<text x="${padL - 10}" y="${yToPx(tick) + 4}" text-anchor="end" font-size="13" font-weight="800" fill="#475467">${escapeHtml(Math.round(tick).toLocaleString())}</text>`).join("")}
+            ${axis.ticks.map((tick) => `<text x="${padL - 10}" y="${yToPx(tick) + 4}" text-anchor="end" font-size="12" font-weight="800" fill="#475467">${escapeHtml(formatCurrency(tick))}</text>`).join("")}
+            ${quantityAxis.ticks.map((tick) => `<text x="${W - padR + 10}" y="${quantityToPx(tick) + 4}" text-anchor="start" font-size="12" font-weight="800" fill="#667085">${escapeHtml(`${tick}個`)}</text>`).join("")}
             ${labelIndexes.map((index) => {
               const point = scoped[index];
               const anchor = index === 0 ? "start" : index === scoped.length - 1 ? "end" : "middle";
@@ -372,7 +484,7 @@
       const showTip = (event, index) => {
         const point = scoped[index];
         if (!wrap || !tooltip || !point) return;
-        tooltip.innerHTML = `<strong>${escapeHtml(formatChartDate(point.date))}</strong><span>${escapeHtml(formatCurrency(point.value))}</span>`;
+        tooltip.innerHTML = `<strong>${escapeHtml(formatFullChartDate(point.date))}</strong><span>総資産額　${escapeHtml(formatCurrency(point.value))}</span><span>総保有数　${escapeHtml(`${point.totalQuantity || 0}個`)}</span>`;
         tooltip.hidden = false;
         const rect = wrap.getBoundingClientRect();
         const clientX = event.touches?.[0]?.clientX ?? event.clientX ?? rect.left + rect.width / 2;
@@ -447,6 +559,9 @@
       if (!root || !countEl || !window.common) return;
 
       const stored = window.common.readMyCollection();
+      const history = typeof window.common.readMyCollectionHistory === "function"
+        ? window.common.readMyCollectionHistory()
+        : [];
       countEl.textContent = `${stored.length}種類`;
       window.common.updateMyCollectionCountBadges(stored.length);
 
@@ -489,7 +604,8 @@
       }
 
       const rows = buildCollectionRows(stored, sleeveMap);
-      currentAssetTimeline = buildAssetTimeline(rows);
+      const trackedRows = buildTrackedRows(stored, history, sleeveMap);
+      currentAssetTimeline = buildAssetTimeline(trackedRows, history);
       updateAssetSummary(rows, currentAssetTimeline);
       renderAssetChart(currentAssetTimeline);
 

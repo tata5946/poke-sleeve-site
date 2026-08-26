@@ -23,6 +23,8 @@ const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
 const SEARCH_HISTORY_KEY = "pokeSleeve:searchHistory:v1";
 const SEARCH_HISTORY_MAX = 8;
 const MY_COLLECTION_STORAGE_KEY = "pokesuri_my_collection";
+const MY_COLLECTION_HISTORY_STORAGE_KEY = "pokesuri_my_collection_history";
+const MY_COLLECTION_HISTORY_SEEDED_KEY = "pokesuri_my_collection_history_seeded";
 const AUTOCOMPLETE_MIN_CHARS = 1;
 const AUTOCOMPLETE_MAX_ITEMS = 8;
 let __dataCacheMem = null;
@@ -683,6 +685,19 @@ function normalizeMyCollectionItem(item) {
   };
 }
 
+function normalizeMyCollectionHistoryItem(item) {
+  const sleeveId = normalizeMyCollectionSleeveId(item?.sleeveId ?? item?.id ?? item?.itemId);
+  const change = Math.trunc(Number(item?.change));
+  const parsedDate = new Date(item?.date || item?.createdAt || item?.addedAt || "");
+  if (!sleeveId || !Number.isFinite(change) || change === 0 || !Number.isFinite(parsedDate.getTime())) return null;
+  return {
+    ...item,
+    date: parsedDate.toISOString(),
+    sleeveId,
+    change
+  };
+}
+
 function readMyCollection() {
   try {
     const raw = localStorage.getItem(MY_COLLECTION_STORAGE_KEY);
@@ -698,6 +713,67 @@ function readMyCollection() {
   } catch (_) {
     return [];
   }
+}
+
+function readRawMyCollectionHistory() {
+  try {
+    const raw = localStorage.getItem(MY_COLLECTION_HISTORY_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return (Array.isArray(parsed) ? parsed : [])
+      .map(normalizeMyCollectionHistoryItem)
+      .filter(Boolean)
+      .sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+  } catch (_) {
+    return [];
+  }
+}
+
+function writeMyCollectionHistory(items) {
+  const list = (Array.isArray(items) ? items : [])
+    .map(normalizeMyCollectionHistoryItem)
+    .filter(Boolean)
+    .sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+  try {
+    localStorage.setItem(MY_COLLECTION_HISTORY_STORAGE_KEY, JSON.stringify(list));
+  } catch (_) {}
+  return list;
+}
+
+function seedMyCollectionHistoryIfNeeded(items = readMyCollection()) {
+  try {
+    if (localStorage.getItem(MY_COLLECTION_HISTORY_SEEDED_KEY) === "1") return readRawMyCollectionHistory();
+    const existing = readRawMyCollectionHistory();
+    if (existing.length) {
+      localStorage.setItem(MY_COLLECTION_HISTORY_SEEDED_KEY, "1");
+      return existing;
+    }
+    const now = new Date().toISOString();
+    const seed = (Array.isArray(items) ? items : [])
+      .map((item) => {
+        const sleeveId = normalizeMyCollectionSleeveId(item?.sleeveId);
+        const quantity = Math.max(1, Math.floor(Number(item?.quantity) || 1));
+        return sleeveId ? { date: now, sleeveId, change: quantity, action: "initial", quantityAfter: quantity } : null;
+      })
+      .filter(Boolean);
+    const history = writeMyCollectionHistory(seed);
+    localStorage.setItem(MY_COLLECTION_HISTORY_SEEDED_KEY, "1");
+    return history;
+  } catch (_) {
+    return readRawMyCollectionHistory();
+  }
+}
+
+function readMyCollectionHistory() {
+  return seedMyCollectionHistoryIfNeeded();
+}
+
+function appendMyCollectionHistory(entries) {
+  seedMyCollectionHistoryIfNeeded();
+  const additions = (Array.isArray(entries) ? entries : [entries])
+    .map(normalizeMyCollectionHistoryItem)
+    .filter(Boolean);
+  if (!additions.length) return readRawMyCollectionHistory();
+  return writeMyCollectionHistory([...readRawMyCollectionHistory(), ...additions]);
 }
 
 function writeMyCollection(items) {
@@ -729,14 +805,17 @@ function addToMyCollection(sleeve) {
   const sleeveId = normalizeMyCollectionSleeveId(sleeve?.sleeveId ?? sleeve?.id);
   if (!sleeveId) return readMyCollection();
   const list = readMyCollection();
+  seedMyCollectionHistoryIfNeeded(list);
   if (list.some((item) => item.sleeveId === sleeveId)) return writeMyCollection(list);
+  const now = new Date().toISOString();
+  appendMyCollectionHistory({ date: now, sleeveId, change: 1, action: "add", quantityAfter: 1 });
   return writeMyCollection([
     {
       sleeveId,
       name: String(sleeve?.name || "").trim(),
       image: String(sleeve?.image || sleeve?.imageUrl || "").trim(),
       quantity: 1,
-      addedAt: new Date().toISOString()
+      addedAt: now
     },
     ...list
   ]);
@@ -746,7 +825,15 @@ function updateMyCollectionQuantity(id, quantity) {
   const sleeveId = normalizeMyCollectionSleeveId(id);
   const nextQuantity = Math.max(1, Math.floor(Number(quantity) || 1));
   if (!sleeveId) return readMyCollection();
-  return writeMyCollection(readMyCollection().map((item) => (
+  const list = readMyCollection();
+  seedMyCollectionHistoryIfNeeded(list);
+  const current = list.find((item) => item.sleeveId === sleeveId);
+  if (!current) return list;
+  const currentQuantity = Math.max(1, Math.floor(Number(current.quantity) || 1));
+  const delta = nextQuantity - currentQuantity;
+  if (delta === 0) return list;
+  appendMyCollectionHistory({ date: new Date().toISOString(), sleeveId, change: delta, action: "quantity", quantityAfter: nextQuantity });
+  return writeMyCollection(list.map((item) => (
     item.sleeveId === sleeveId ? { ...item, quantity: nextQuantity } : item
   )));
 }
@@ -754,7 +841,14 @@ function updateMyCollectionQuantity(id, quantity) {
 function removeFromMyCollection(id) {
   const sleeveId = normalizeMyCollectionSleeveId(id);
   if (!sleeveId) return readMyCollection();
-  return writeMyCollection(readMyCollection().filter((item) => item.sleeveId !== sleeveId));
+  const list = readMyCollection();
+  seedMyCollectionHistoryIfNeeded(list);
+  const current = list.find((item) => item.sleeveId === sleeveId);
+  if (current) {
+    const currentQuantity = Math.max(1, Math.floor(Number(current.quantity) || 1));
+    appendMyCollectionHistory({ date: new Date().toISOString(), sleeveId, change: -currentQuantity, action: "remove", quantityAfter: 0 });
+  }
+  return writeMyCollection(list.filter((item) => item.sleeveId !== sleeveId));
 }
 
 function toggleMyCollectionSleeve(sleeve) {
@@ -2214,6 +2308,8 @@ window.common = {
   normalizeMyCollectionSleeveId,
   readMyCollection,
   writeMyCollection,
+  readMyCollectionHistory,
+  appendMyCollectionHistory,
   getMyCollectionCount,
   isInMyCollection,
   addToMyCollection,
@@ -2241,6 +2337,7 @@ window.common = {
   getLatestPositivePrice,
   waitForInjected,
   MY_COLLECTION_STORAGE_KEY,
+  MY_COLLECTION_HISTORY_STORAGE_KEY,
   GAS_URL
 };
 
