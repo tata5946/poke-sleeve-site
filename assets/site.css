@@ -7951,6 +7951,31 @@ footer.site-footer {
     :root body.page-market-list .compact-card .ranking-meta {
         display: none !important;
     }
+
+    :root body.ranking-page--views .compact-card .compact-market-row {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 72px !important;
+        gap: 8px !important;
+        align-items: center !important;
+    }
+
+    :root body.ranking-page--views .compact-card .sleeve-sparkline {
+        display: grid !important;
+        width: 72px !important;
+        height: 34px !important;
+        min-width: 0 !important;
+        border-radius: 6px !important;
+    }
+
+    :root body.ranking-page--views .compact-card .sleeve-sparkline svg {
+        position: static !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    :root body.ranking-page--views .compact-card .sleeve-sparkline-foot {
+        display: none !important;
+    }
 }
 
 @media (max-width: 360px) {

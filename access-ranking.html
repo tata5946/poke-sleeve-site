@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/site.css?v=20260822d" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260826a" />
   <style>
     body {
       background: #f5f7fb;
@@ -926,10 +926,8 @@
       for (const x of arr) {
         const week = toISODate(x.week);
         const price = numOrNull(x.price);
-        const count = numOrNull(x.count);
         if (!week || !(price > 0)) continue;
-        if (count != null && count <= 0) continue;
-        map.set(week, { week, price, count });
+        map.set(week, { week, price });
       }
       if (!map.size) return null;
       const sorted = Array.from(map.values()).sort((a,b) => a.week.localeCompare(b.week));
@@ -942,9 +940,7 @@
       for (const x of arr) {
         const week = toISODate(x.week);
         const price = numOrNull(x.price);
-        const count = numOrNull(x.count);
         if (!week || !(price > 0)) continue;
-        if (count != null && count <= 0) continue;
         map.set(week, { week, price });
       }
       return Array.from(map.values())
