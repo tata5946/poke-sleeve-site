@@ -715,11 +715,32 @@ function normalizeMyCollectionPurchaseWeek(value) {
   return weekStart && weekStart <= currentWeek ? weekStart : currentWeek;
 }
 
+function getMyCollectionDefaultPurchaseWeek(sleeve) {
+  const releaseDate = toISODate(
+    sleeve?.releaseDate
+    ?? sleeve?.release_date
+    ?? sleeve?.releaseAt
+    ?? sleeve?.releasedAt
+    ?? sleeve?.releasedDate
+    ?? sleeve?.released_date
+    ?? sleeve?.releaseDatetime
+    ?? sleeve?.release_datetime
+    ?? sleeve?.["発売日"]
+    ?? sleeve?.["発売年月日"]
+  );
+  return normalizeMyCollectionPurchaseWeek(releaseDate || new Date());
+}
+
 function hasExplicitMyCollectionPurchaseWeek(item) {
-  return item?.purchaseWeekSet === true
-    || item?.purchaseWeekExplicit === true
+  if (item?.purchaseWeekExplicit === true
     || item?.purchaseWeekSource === "user"
-    || item?.purchase_week_source === "user";
+    || item?.purchase_week_source === "user") {
+    return true;
+  }
+  if (item?.purchaseWeekSet !== true) return false;
+  const purchaseWeek = normalizeMyCollectionPurchaseWeek(item?.purchaseWeek);
+  const addedWeek = normalizeMyCollectionPurchaseWeek(item?.addedAt);
+  return !!purchaseWeek && !!addedWeek && purchaseWeek !== addedWeek;
 }
 
 function normalizeMyCollectionItem(item) {
@@ -897,8 +918,9 @@ function addToMyCollection(sleeve) {
       name: String(sleeve?.name || "").trim(),
       image: String(sleeve?.image || sleeve?.imageUrl || "").trim(),
       quantity: 1,
-      purchaseWeek: normalizeMyCollectionPurchaseWeek(sleeve?.purchaseWeek),
-      purchaseWeekSet: true,
+      purchaseWeek: getMyCollectionDefaultPurchaseWeek(sleeve),
+      purchaseWeekSet: false,
+      purchaseWeekSource: "default",
       addedAt: now
     },
     ...list
@@ -924,7 +946,7 @@ function updateMyCollectionPurchaseWeek(id, purchaseWeek) {
   if (!sleeveId) return readMyCollection();
   const nextPurchaseWeek = normalizeMyCollectionPurchaseWeek(purchaseWeek);
   return writeMyCollection(readMyCollection().map((item) => (
-    item.sleeveId === sleeveId ? { ...item, purchaseWeek: nextPurchaseWeek, purchaseWeekSet: true } : item
+    item.sleeveId === sleeveId ? { ...item, purchaseWeek: nextPurchaseWeek, purchaseWeekSet: true, purchaseWeekSource: "user" } : item
   )));
 }
 
