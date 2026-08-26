@@ -158,7 +158,30 @@
       return latest ? latest.price : null;
     }
 
-    function buildWeeklyPricePoints(sleeve) {
+    function getReleaseTimestamp(sleeve) {
+      const releaseDate = normalizeDate(
+        sleeve?.releaseDate
+        ?? sleeve?.release_date
+        ?? sleeve?.releaseAt
+        ?? sleeve?.releasedAt
+        ?? sleeve?.releasedDate
+        ?? sleeve?.released_date
+        ?? sleeve?.releaseDatetime
+        ?? sleeve?.release_datetime
+        ?? sleeve?.["発売日"]
+        ?? sleeve?.["発売年月日"]
+      );
+      let timestamp = Date.parse(releaseDate);
+      if (Number.isFinite(timestamp)) return timestamp;
+      const releaseYear = Number(sleeve?.releaseYear ?? sleeve?.release_year ?? sleeve?.["発売年"]);
+      if (Number.isFinite(releaseYear) && releaseYear > 0) {
+        timestamp = Date.parse(`${releaseYear}-01-01`);
+        if (Number.isFinite(timestamp)) return timestamp;
+      }
+      return null;
+    }
+
+    function buildWeeklyPricePoints(sleeve, releaseTimestamp = getReleaseTimestamp(sleeve)) {
       const seen = new Set();
       return (Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [])
         .map((row) => {
@@ -166,6 +189,7 @@
           const price = parsePositiveNumber(row?.price);
           const timestamp = Date.parse(date);
           if (!date || !(price > 0) || !Number.isFinite(timestamp)) return null;
+          if (Number.isFinite(releaseTimestamp) && timestamp < releaseTimestamp) return null;
           if (seen.has(date)) return null;
           seen.add(date);
           return { date, timestamp, price };
@@ -189,13 +213,15 @@
         const sleeve = sleeveMap.get(sleeveId);
         const name = String(sleeve?.name || item?.name || `ID: ${sleeveId}`).trim();
         const image = String(sleeve?.imageUrl || item?.image || "").trim();
+        const releaseTimestamp = sleeve ? getReleaseTimestamp(sleeve) : null;
         return {
           sleeveId,
           name,
           image,
           quantity: getCollectionQuantity(item),
           price: sleeve ? getLatestPrice(sleeve) : null,
-          weeklyPoints: sleeve ? buildWeeklyPricePoints(sleeve) : [],
+          releaseTimestamp,
+          weeklyPoints: sleeve ? buildWeeklyPricePoints(sleeve, releaseTimestamp) : [],
           href: window.common.buildSleeveDetailHref(sleeveId)
         };
       }).filter((row) => row.sleeveId);
@@ -218,10 +244,12 @@
       return Array.from(ids).map((sleeveId) => {
         const sleeve = sleeveMap.get(sleeveId);
         const storedItem = storedById.get(sleeveId);
+        const releaseTimestamp = sleeve ? getReleaseTimestamp(sleeve) : null;
         return {
           sleeveId,
           currentQuantity: getCollectionQuantity(storedItem),
-          weeklyPoints: sleeve ? buildWeeklyPricePoints(sleeve) : []
+          releaseTimestamp,
+          weeklyPoints: sleeve ? buildWeeklyPricePoints(sleeve, releaseTimestamp) : []
         };
       });
     }
@@ -230,6 +258,7 @@
       let total = 0;
       let pricedCount = 0;
       for (const row of rows) {
+        if (Number.isFinite(row.releaseTimestamp) && Date.now() < row.releaseTimestamp) continue;
         const price = parsePositiveNumber(row.price);
         if (!(price > 0)) continue;
         total += price * row.quantity;
@@ -242,6 +271,7 @@
       let total = 0;
       let pricedCount = 0;
       for (const row of rows) {
+        if (Number.isFinite(row.releaseTimestamp) && timestamp < row.releaseTimestamp) continue;
         const price = getPriceAtOrBefore(row.weeklyPoints, timestamp);
         if (!(price > 0)) continue;
         total += price * row.quantity;
@@ -270,6 +300,7 @@
       for (const row of rows) {
         const quantity = Math.max(0, Math.trunc(Number(quantities.get(row.sleeveId)) || 0));
         if (quantity <= 0) continue;
+        if (Number.isFinite(row.releaseTimestamp) && timestamp < row.releaseTimestamp) continue;
         totalQuantity += quantity;
         const price = getPriceAtOrBefore(row.weeklyPoints, timestamp);
         if (!(price > 0)) continue;
@@ -289,6 +320,9 @@
         dates.set(new Date(event.timestamp).toISOString(), event.timestamp);
       }
       for (const row of rows) {
+        if (Number.isFinite(row.releaseTimestamp)) {
+          dates.set(new Date(row.releaseTimestamp).toISOString(), row.releaseTimestamp);
+        }
         for (const point of row.weeklyPoints) {
           dates.set(point.date, point.timestamp);
         }
