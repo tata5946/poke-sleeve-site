@@ -198,6 +198,23 @@
         .sort((a, b) => a.timestamp - b.timestamp);
     }
 
+    function isSleeveIndexWeek(date) {
+      const normalized = normalizeDate(date);
+      return /^\d{4}-\d{2}-\d{2}$/.test(normalized) && normalized.slice(-2) !== "01";
+    }
+
+    function getLatestSleeveIndexWeek(sleeves) {
+      let latest = "";
+      for (const sleeve of Array.isArray(sleeves) ? sleeves : []) {
+        for (const row of Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : []) {
+          const week = normalizeDate(row?.week);
+          if (!isSleeveIndexWeek(week)) continue;
+          if (!latest || week > latest) latest = week;
+        }
+      }
+      return latest;
+    }
+
     function isExplicitPurchaseWeek(item) {
       if (window.common && typeof window.common.hasExplicitMyCollectionPurchaseWeek === "function") {
         return window.common.hasExplicitMyCollectionPurchaseWeek(item);
@@ -210,22 +227,32 @@
       return window.common.normalizeMyCollectionPurchaseWeek(item?.purchaseWeek);
     }
 
-    function resolvePurchaseTimestamp(item, weeklyPoints, releaseTimestamp) {
+    function clampTimestampToLatestIndex(timestamp, latestIndexTimestamp) {
+      if (!Number.isFinite(timestamp)) return timestamp;
+      return Number.isFinite(latestIndexTimestamp) ? Math.min(timestamp, latestIndexTimestamp) : timestamp;
+    }
+
+    function resolvePurchaseTimestamp(item, weeklyPoints, releaseTimestamp, latestIndexTimestamp) {
       const explicitPurchaseWeek = getExplicitPurchaseWeekDate(item);
       const explicitTimestamp = Date.parse(explicitPurchaseWeek);
       if (Number.isFinite(explicitTimestamp)) {
-        return Number.isFinite(releaseTimestamp) ? Math.max(explicitTimestamp, releaseTimestamp) : explicitTimestamp;
+        const timestamp = Number.isFinite(releaseTimestamp) ? Math.max(explicitTimestamp, releaseTimestamp) : explicitTimestamp;
+        return clampTimestampToLatestIndex(timestamp, latestIndexTimestamp);
       }
-      if (Number.isFinite(releaseTimestamp)) return releaseTimestamp;
+      if (Number.isFinite(releaseTimestamp)) return clampTimestampToLatestIndex(releaseTimestamp, latestIndexTimestamp);
       const firstPoint = Array.isArray(weeklyPoints) ? weeklyPoints[0] : null;
-      if (Number.isFinite(firstPoint?.timestamp)) return firstPoint.timestamp;
-      return Date.parse(window.common.normalizeMyCollectionPurchaseWeek(new Date()));
+      if (Number.isFinite(firstPoint?.timestamp)) return clampTimestampToLatestIndex(firstPoint.timestamp, latestIndexTimestamp);
+      return clampTimestampToLatestIndex(Date.parse(window.common.normalizeMyCollectionPurchaseWeek(new Date())), latestIndexTimestamp);
     }
 
-    function getPurchaseWeekForInput(item, weeklyPoints, releaseTimestamp) {
+    function getPurchaseWeekForInput(item, weeklyPoints, releaseTimestamp, latestIndexTimestamp) {
       const explicitPurchaseWeek = getExplicitPurchaseWeekDate(item);
-      if (explicitPurchaseWeek) return explicitPurchaseWeek;
-      const resolvedTimestamp = resolvePurchaseTimestamp(item, weeklyPoints, releaseTimestamp);
+      if (explicitPurchaseWeek) {
+        const explicitTimestamp = Date.parse(explicitPurchaseWeek);
+        const clampedTimestamp = clampTimestampToLatestIndex(explicitTimestamp, latestIndexTimestamp);
+        return Number.isFinite(clampedTimestamp) ? new Date(clampedTimestamp).toISOString().slice(0, 10) : explicitPurchaseWeek;
+      }
+      const resolvedTimestamp = resolvePurchaseTimestamp(item, weeklyPoints, releaseTimestamp, latestIndexTimestamp);
       return Number.isFinite(resolvedTimestamp)
         ? new Date(resolvedTimestamp).toISOString().slice(0, 10)
         : window.common.normalizeMyCollectionPurchaseWeek(new Date());
@@ -261,7 +288,8 @@
       return latest;
     }
 
-    function buildCollectionRows(stored, sleeveMap) {
+    function buildCollectionRows(stored, sleeveMap, latestIndexWeek) {
+      const latestIndexTimestamp = Date.parse(latestIndexWeek);
       return stored.map((item) => {
         const sleeveId = window.common.normalizeMyCollectionSleeveId(item?.sleeveId);
         const sleeve = sleeveMap.get(sleeveId);
@@ -274,9 +302,10 @@
           name,
           image,
           quantity: getCollectionQuantity(item),
-          purchaseWeek: getPurchaseWeekForInput(item, weeklyPoints, releaseTimestamp),
+          purchaseWeek: getPurchaseWeekForInput(item, weeklyPoints, releaseTimestamp, latestIndexTimestamp),
           purchaseWeekSet: isExplicitPurchaseWeek(item),
           minPurchaseDate: timestampToDateValue(releaseTimestamp),
+          maxPurchaseDate: latestIndexWeek,
           price: sleeve ? getLatestPrice(sleeve) : null,
           releaseTimestamp,
           weeklyPoints,
@@ -285,14 +314,15 @@
       }).filter((row) => row.sleeveId);
     }
 
-    function buildTrackedRows(stored, sleeveMap) {
+    function buildTrackedRows(stored, sleeveMap, latestIndexWeek) {
+      const latestIndexTimestamp = Date.parse(latestIndexWeek);
       return (Array.isArray(stored) ? stored : []).map((item) => {
         const sleeveId = window.common.normalizeMyCollectionSleeveId(item?.sleeveId);
         if (!sleeveId) return null;
         const sleeve = sleeveMap.get(sleeveId);
         const releaseTimestamp = sleeve ? getReleaseTimestamp(sleeve) : null;
         const weeklyPoints = sleeve ? buildWeeklyPricePoints(sleeve, releaseTimestamp) : [];
-        const purchaseTimestamp = resolvePurchaseTimestamp(item, weeklyPoints, releaseTimestamp);
+        const purchaseTimestamp = resolvePurchaseTimestamp(item, weeklyPoints, releaseTimestamp, latestIndexTimestamp);
         return {
           sleeveId,
           currentQuantity: getCollectionQuantity(item),
@@ -348,10 +378,11 @@
       return pricedCount > 0 ? { total, pricedCount, totalQuantity } : null;
     }
 
-    function buildAssetTimeline(rows) {
+    function buildAssetTimeline(rows, latestIndexWeek) {
       const dates = new Map();
-      const now = Date.now();
-      dates.set(new Date(now).toISOString(), now);
+      const latestIndexTimestamp = Date.parse(latestIndexWeek);
+      const currentTimestamp = Number.isFinite(latestIndexTimestamp) ? latestIndexTimestamp : Date.now();
+      dates.set(new Date(currentTimestamp).toISOString(), currentTimestamp);
       for (const row of rows) {
         if (Number.isFinite(row.purchaseTimestamp)) {
           dates.set(new Date(row.purchaseTimestamp).toISOString(), row.purchaseTimestamp);
@@ -360,6 +391,7 @@
           dates.set(new Date(row.releaseTimestamp).toISOString(), row.releaseTimestamp);
         }
         for (const point of row.weeklyPoints) {
+          if (Number.isFinite(latestIndexTimestamp) && point.timestamp > latestIndexTimestamp) continue;
           dates.set(point.date, point.timestamp);
         }
       }
@@ -595,8 +627,9 @@
     }
 
     function buildCard(row) {
-      const maxPurchaseDateValue = new Date().toISOString().slice(0, 10);
-      const purchaseDateValue = clampPurchaseDate(row.purchaseWeek, row.minPurchaseDate, maxPurchaseDateValue);
+      const maxPurchaseDateValue = normalizeDate(row.maxPurchaseDate) || window.common.normalizeMyCollectionPurchaseWeek(new Date());
+      const minPurchaseDateValue = row.minPurchaseDate && row.minPurchaseDate <= maxPurchaseDateValue ? row.minPurchaseDate : "";
+      const purchaseDateValue = clampPurchaseDate(row.purchaseWeek, minPurchaseDateValue, maxPurchaseDateValue);
       const purchaseWeekLabel = formatPurchaseWeekLabel(purchaseDateValue);
       return `
         <article class="my-collection-card">
@@ -625,7 +658,7 @@
                 <span data-purchase-week-label="${escapeHtml(row.sleeveId)}">${escapeHtml(purchaseWeekLabel)}</span>
                 <span class="my-collection-calendar-mark" aria-hidden="true"></span>
               </button>
-              <input class="my-collection-date-input" type="date" value="${escapeHtml(purchaseDateValue)}" min="${escapeHtml(row.minPurchaseDate || "")}" max="${escapeHtml(maxPurchaseDateValue)}" data-purchase-week="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の購入週">
+              <input class="my-collection-date-input" type="date" value="${escapeHtml(purchaseDateValue)}" min="${escapeHtml(minPurchaseDateValue)}" max="${escapeHtml(maxPurchaseDateValue)}" data-purchase-week="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の購入週">
             </span>
           </div>
           <button class="my-collection-remove" type="button" data-remove-collection="${escapeHtml(row.sleeveId)}">コレクションから削除</button>
@@ -690,9 +723,10 @@
         if (id) sleeveMap.set(id, sleeve);
       }
 
-      const rows = buildCollectionRows(stored, sleeveMap);
-      const trackedRows = buildTrackedRows(stored, sleeveMap);
-      currentAssetTimeline = buildAssetTimeline(trackedRows);
+      const latestIndexWeek = getLatestSleeveIndexWeek(data?.sleeves);
+      const rows = buildCollectionRows(stored, sleeveMap, latestIndexWeek);
+      const trackedRows = buildTrackedRows(stored, sleeveMap, latestIndexWeek);
+      currentAssetTimeline = buildAssetTimeline(trackedRows, latestIndexWeek);
       updateAssetSummary(rows, currentAssetTimeline);
       renderAssetChart(currentAssetTimeline);
 
