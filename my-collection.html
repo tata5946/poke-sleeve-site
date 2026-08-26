@@ -310,7 +310,18 @@
           totalQuantity: evaluated.totalQuantity
         });
       }
-      return timeline;
+      return compactTimelineByDate(timeline);
+    }
+
+    function compactTimelineByDate(timeline) {
+      const byDate = new Map();
+      for (const point of Array.isArray(timeline) ? timeline : []) {
+        const date = String(point?.date || "").slice(0, 10);
+        if (!date) continue;
+        const previous = byDate.get(date);
+        if (!previous || point.timestamp >= previous.timestamp) byDate.set(date, point);
+      }
+      return Array.from(byDate.values()).sort((a, b) => a.timestamp - b.timestamp);
     }
 
     function formatDeltaAmount(currentTotal, pastTotal) {
@@ -415,7 +426,7 @@
       const root = document.getElementById("collectionAssetChart");
       if (!root) return;
       const scoped = filterTimelineByPeriod(timeline, currentAssetPeriod);
-      if (scoped.length < 2) {
+      if (scoped.length < 1) {
         root.innerHTML = '<div class="my-asset-chart-empty">資産推移を表示できる価格データがまだありません。</div>';
         return;
       }
@@ -429,18 +440,15 @@
       const padB = 54;
       const values = scoped.map((point) => point.value);
       const quantities = scoped.map((point) => point.totalQuantity || 0);
-      const xMin = scoped[0].timestamp;
-      const xMax = scoped[scoped.length - 1].timestamp;
-      const spanX = Math.max(24 * 60 * 60 * 1000, xMax - xMin);
       const axis = buildAssetAxis(Math.min(...values), Math.max(...values));
       const quantityAxis = buildQuantityAxis(Math.max(...quantities));
       const chartW = W - padL - padR;
       const chartH = H - padT - padB;
-      const xToPx = (timestamp) => padL + ((timestamp - xMin) / spanX) * chartW;
+      const xToPx = (index) => scoped.length === 1 ? padL + (chartW / 2) : padL + (index / (scoped.length - 1)) * chartW;
       const yToPx = (value) => padT + (1 - ((value - axis.min) / Math.max(1, axis.max - axis.min))) * chartH;
       const quantityToPx = (value) => padT + (1 - ((value - quantityAxis.min) / Math.max(1, quantityAxis.max - quantityAxis.min))) * chartH;
-      const lineD = scoped.map((point, index) => `${index === 0 ? "M" : "L"} ${xToPx(point.timestamp).toFixed(2)} ${yToPx(point.value).toFixed(2)}`).join(" ");
-      const areaD = `${lineD} L ${xToPx(scoped[scoped.length - 1].timestamp).toFixed(2)} ${H - padB} L ${xToPx(scoped[0].timestamp).toFixed(2)} ${H - padB} Z`;
+      const lineD = scoped.map((point, index) => `${index === 0 ? "M" : "L"} ${xToPx(index).toFixed(2)} ${yToPx(point.value).toFixed(2)}`).join(" ");
+      const areaD = `${lineD} L ${xToPx(scoped.length - 1).toFixed(2)} ${H - padB} L ${xToPx(0).toFixed(2)} ${H - padB} Z`;
       const labelIndexes = Array.from(new Set([0, Math.floor((scoped.length - 1) / 2), scoped.length - 1]));
       const barW = Math.max(3, Math.min(18, (chartW / Math.max(1, scoped.length)) * 0.56));
 
@@ -458,8 +466,8 @@
             <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
             <line x1="${W - padR}" y1="${padT}" x2="${W - padR}" y2="${H - padB}" stroke="#c4cedd"></line>
             <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
-            ${scoped.map((point) => {
-              const x = xToPx(point.timestamp) - (barW / 2);
+            ${scoped.map((point, index) => {
+              const x = xToPx(index) - (barW / 2);
               const y = quantityToPx(point.totalQuantity || 0);
               return `<rect class="my-asset-quantity-bar" x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${barW.toFixed(2)}" height="${Math.max(0, H - padB - y).toFixed(2)}" rx="2" fill="#9fb3d1" opacity="0.34"></rect>`;
             }).join("")}
@@ -469,8 +477,8 @@
             ${quantityAxis.ticks.map((tick) => `<text x="${W - padR + 10}" y="${quantityToPx(tick) + 4}" text-anchor="start" font-size="12" font-weight="800" fill="#667085">${escapeHtml(`${tick}個`)}</text>`).join("")}
             ${labelIndexes.map((index) => {
               const point = scoped[index];
-              const anchor = index === 0 ? "start" : index === scoped.length - 1 ? "end" : "middle";
-              return `<text x="${xToPx(point.timestamp).toFixed(2)}" y="${H - 18}" text-anchor="${anchor}" font-size="13" font-weight="800" fill="#475467">${escapeHtml(formatChartDate(point.date))}</text>`;
+              const anchor = scoped.length === 1 ? "middle" : index === 0 ? "start" : index === scoped.length - 1 ? "end" : "middle";
+              return `<text x="${xToPx(index).toFixed(2)}" y="${H - 18}" text-anchor="${anchor}" font-size="13" font-weight="800" fill="#475467">${escapeHtml(formatChartDate(point.date))}</text>`;
             }).join("")}
             <g aria-hidden="true">
               <circle cx="${W - padR - 154}" cy="18" r="4" fill="#1e5bd7"></circle>
@@ -478,7 +486,7 @@
               <rect x="${W - padR - 80}" y="14" width="8" height="8" rx="2" fill="#9fb3d1" opacity="0.5"></rect>
               <text x="${W - padR - 68}" y="22" font-size="11" font-weight="800" fill="#475467">保有個数</text>
             </g>
-            ${scoped.map((point, index) => `<circle class="my-asset-chart-dot" cx="${xToPx(point.timestamp).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="${index === scoped.length - 1 ? 5.5 : 4}" fill="#1e5bd7"></circle><circle class="my-asset-hit-point" data-index="${index}" cx="${xToPx(point.timestamp).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="18" fill="transparent"></circle>`).join("")}
+            ${scoped.map((point, index) => `<circle class="my-asset-chart-dot" cx="${xToPx(index).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="${index === scoped.length - 1 ? 5.5 : 4}" fill="#1e5bd7"></circle><circle class="my-asset-hit-point" data-index="${index}" cx="${xToPx(index).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="18" fill="transparent"></circle>`).join("")}
           </svg>
         </div>
       `;
