@@ -8073,14 +8073,196 @@ footer.site-footer {
     display: inline-flex;
     align-items: center;
     width: fit-content;
-    min-height: 34px;
-    padding: 0 12px;
+    color: #111827;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.my-asset-panel,
+.my-asset-chart-panel {
+    display: grid;
+    gap: 14px;
+    min-width: 0;
+    margin-bottom: 14px;
+    padding: 16px;
+    border: 1px solid #dbe5f2;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, .05);
+}
+
+.my-asset-total {
+    display: grid;
+    gap: 4px;
+}
+
+.my-asset-label {
+    color: #475467;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.my-asset-total-value {
+    color: #00113a;
+    font-size: clamp(38px, 5vw, 58px);
+    line-height: 1.05;
+    font-weight: 900;
+    letter-spacing: 0;
+}
+
+.my-asset-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.my-asset-stat {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+    min-height: 76px;
+    padding: 12px;
+    border: 1px solid #e4eaf4;
+    border-radius: 8px;
+    background: #f8fbff;
+}
+
+.my-asset-stat span {
+    color: #667085;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.my-asset-stat strong {
+    color: #111827;
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+}
+
+.my-asset-stat small {
+    min-height: 16px;
+    color: #475467;
+    font-size: 12px;
+    line-height: 1.2;
+    font-weight: 900;
+}
+
+.my-asset-chart-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.my-asset-chart-head h2 {
+    margin: 0;
+    color: #101828;
+    font-size: 20px;
+    line-height: 1.25;
+    font-weight: 900;
+}
+
+.my-asset-chart-head p {
+    margin: 4px 0 0;
+    color: #667085;
+    font-size: 12px;
+    line-height: 1.7;
+    font-weight: 700;
+}
+
+.my-asset-periods {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.my-asset-period-btn {
+    min-height: 32px;
+    padding: 0 10px;
     border: 1px solid #dbe5f2;
     border-radius: 999px;
     background: #fff;
-    color: #111827;
-    font-size: 13px;
+    color: #475467;
+    font: inherit;
+    font-size: 12px;
     font-weight: 900;
+    cursor: pointer;
+}
+
+.my-asset-period-btn.is-active {
+    border-color: #002366;
+    background: #002366;
+    color: #fff;
+}
+
+.my-asset-chart {
+    min-width: 0;
+}
+
+.my-asset-chart-wrap {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #e4eaf4;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.my-asset-chart-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 360px;
+    font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif;
+    touch-action: manipulation;
+}
+
+.my-asset-hit-point {
+    cursor: pointer;
+}
+
+.my-asset-chart-tooltip {
+    position: absolute;
+    top: 10px;
+    z-index: 2;
+    transform: translateX(-50%);
+    display: grid;
+    gap: 2px;
+    min-width: 116px;
+    padding: 8px 10px;
+    border: 1px solid #dbe5f2;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .98);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, .14);
+    color: #111827;
+    text-align: center;
+    pointer-events: none;
+}
+
+.my-asset-chart-tooltip[hidden] {
+    display: none;
+}
+
+.my-asset-chart-tooltip strong,
+.my-asset-chart-tooltip span {
+    font-size: 12px;
+    line-height: 1.25;
+    font-weight: 900;
+}
+
+.my-asset-chart-empty {
+    padding: 28px 12px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    background: #fff;
+    color: #667085;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.7;
+    font-weight: 800;
 }
 
 .my-collection-grid {
@@ -8228,6 +8410,56 @@ footer.site-footer {
 }
 
 @media (max-width: 700px) {
+    .my-asset-panel,
+    .my-asset-chart-panel {
+        gap: 12px;
+        margin-bottom: 12px;
+        padding: 12px;
+    }
+
+    .my-asset-total-value {
+        font-size: 38px;
+    }
+
+    .my-asset-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .my-asset-stat {
+        min-height: 70px;
+        padding: 10px;
+    }
+
+    .my-asset-stat strong,
+    .my-collection-summary {
+        font-size: 17px;
+    }
+
+    .my-asset-chart-head {
+        display: grid;
+        gap: 10px;
+    }
+
+    .my-asset-periods {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 5px;
+    }
+
+    .my-asset-period-btn {
+        min-height: 34px;
+        padding: 0 5px;
+        font-size: 11px;
+    }
+
+    .my-asset-chart-wrap {
+        margin-inline: -4px;
+    }
+
+    .my-asset-chart-svg {
+        max-height: none;
+    }
+
     .my-collection-grid {
         gap: 8px;
     }
