@@ -207,19 +207,14 @@
         status: "new"
       };
 
-      const res = await fetch(endpoint, {
+      await fetch(endpoint, {
         method: "POST",
-        mode: "cors",
+        mode: "no-cors",
         headers: {
-          "Content-Type": "text/plain;charset=utf-8",
-          "Accept": "application/json"
+          "Content-Type": "text/plain"
         },
         body: JSON.stringify(body)
       });
-
-      if (!res.ok) throw new Error(`送信に失敗しました（HTTP ${res.status}）`);
-      const data = await res.json().catch(() => ({}));
-      if (data && data.ok === false) throw new Error(data.message || "送信に失敗しました。");
     }
 
     document.addEventListener("DOMContentLoaded", () => {
