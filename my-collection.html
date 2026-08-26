@@ -203,9 +203,13 @@
 
     function buildTrackedRows(stored, history, sleeveMap) {
       const ids = new Set();
+      const storedById = new Map();
       for (const item of Array.isArray(stored) ? stored : []) {
         const sleeveId = window.common.normalizeMyCollectionSleeveId(item?.sleeveId);
-        if (sleeveId) ids.add(sleeveId);
+        if (sleeveId) {
+          ids.add(sleeveId);
+          storedById.set(sleeveId, item);
+        }
       }
       for (const event of Array.isArray(history) ? history : []) {
         const sleeveId = window.common.normalizeMyCollectionSleeveId(event?.sleeveId);
@@ -213,8 +217,10 @@
       }
       return Array.from(ids).map((sleeveId) => {
         const sleeve = sleeveMap.get(sleeveId);
+        const storedItem = storedById.get(sleeveId);
         return {
           sleeveId,
+          currentQuantity: getCollectionQuantity(storedItem),
           weeklyPoints: sleeve ? buildWeeklyPricePoints(sleeve) : []
         };
       });
@@ -251,7 +257,7 @@
           const change = Math.trunc(Number(event?.change));
           const timestamp = Date.parse(event?.date);
           if (!sleeveId || !Number.isFinite(change) || change === 0 || !Number.isFinite(timestamp)) return null;
-          return { sleeveId, change, timestamp, date: new Date(timestamp).toISOString().slice(0, 10) };
+          return { sleeveId, change, timestamp, date: new Date(timestamp).toISOString().slice(0, 10), action: String(event?.action || "") };
         })
         .filter(Boolean)
         .sort((a, b) => a.timestamp - b.timestamp);
@@ -278,7 +284,6 @@
       const events = normalizeHistoryEvents(history);
       const dates = new Map();
       const now = Date.now();
-      const firstHistoryTs = events.length ? events[0].timestamp : null;
       dates.set(new Date(now).toISOString(), now);
       for (const event of events) {
         dates.set(new Date(event.timestamp).toISOString(), event.timestamp);
@@ -292,7 +297,19 @@
       let eventIndex = 0;
       const timeline = [];
       for (const [date, timestamp] of Array.from(dates.entries()).sort((a, b) => a[1] - b[1])) {
-        if (firstHistoryTs != null && timestamp < firstHistoryTs) continue;
+        const effectiveQuantities = new Map(quantities);
+        if (events.length && eventIndex === 0 && timestamp < events[0].timestamp) {
+          for (const event of events) {
+            if (event.action !== "initial") continue;
+            effectiveQuantities.set(event.sleeveId, Math.max(0, (effectiveQuantities.get(event.sleeveId) || 0) + event.change));
+          }
+        }
+        if (!events.length) {
+          for (const row of rows) {
+            const quantity = Math.max(0, Math.trunc(Number(row.currentQuantity) || 0));
+            if (quantity > 0) effectiveQuantities.set(row.sleeveId, quantity);
+          }
+        }
         while (eventIndex < events.length && events[eventIndex].timestamp <= timestamp) {
           const event = events[eventIndex];
           const nextQuantity = Math.max(0, (quantities.get(event.sleeveId) || 0) + event.change);
@@ -300,7 +317,7 @@
           else quantities.delete(event.sleeveId);
           eventIndex += 1;
         }
-        const evaluated = evaluateTrackedRowsAt(rows, quantities, timestamp);
+        const evaluated = evaluateTrackedRowsAt(rows, eventIndex === 0 ? effectiveQuantities : quantities, timestamp);
         if (!evaluated) continue;
         timeline.push({
           date: String(date).slice(0, 10),
