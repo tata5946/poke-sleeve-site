@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./assets/site.css?v=20260816f" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260826b" />
 
   <style>
     .detail-wrap {
@@ -2072,6 +2072,7 @@
 
               <div class="btn-row">
                 <a class="btn primary" id="backLink" href="./sleeves/" aria-label="ポケモンカードのスリーブ・デッキシールド一覧へ戻る">← スリーブ・デッキシールド一覧へ</a>
+                <button class="btn my-collection-toggle" id="myCollectionToggle" type="button" data-my-collection-toggle hidden>＋ マイコレクションに追加</button>
                 <div class="marketplace-row" aria-label="外部サイトで探す">
                   <a class="marketplace-link marketplace-link--mercari" id="mercariLink" href="https://jp.mercari.com/search" target="_blank" rel="noopener noreferrer nofollow" aria-label="メルカリで探す">
                     <span class="marketplace-logo marketplace-logo--mercari" aria-hidden="true">m</span>
@@ -2169,7 +2170,7 @@
 
     <script>window.__SLEEVE_PAGE_ID = "462462";window.__SLEEVE_PAGE_DATA = {"id":"462462","name":"モルペコ","imageUrl":"https://drive.google.com/thumbnail?id=1e5nlUMJ1JqNhd7GS7o3Ynn5fq5W4yMwc\u0026sz=w1200","releaseDate":"2026-05-22","releaseYear":2026,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンセンター","illustrator":"","note":"","category1":"モルペコ","category2":"","category3":"","category4":"","category5":"","category6":"","category7":"","category8":"","category9":"","pokemonCategories":["モルペコ"],"trainerCategories":[],"categoryTags":[],"categories":["モルペコ"],"weeklyPrices":[{"week":"2026-05-18","price":1333,"count":0},{"week":"2026-05-25","price":1333,"count":0},{"week":"2026-06-01","price":1199,"count":0},{"week":"2026-06-08","price":null,"count":0},{"week":"2026-06-15","price":1150,"count":0},{"week":"2026-06-22","price":null,"count":0},{"week":"2026-06-29","price":1150,"count":0},{"week":"2026-07-06","price":1050,"count":0},{"week":"2026-07-13","price":null,"count":0},{"week":"2026-07-20","price":999,"count":0},{"week":"2026-07-27","price":null,"count":0},{"week":"2026-08-03","price":null,"count":0},{"week":"2026-08-10","price":null,"count":0},{"week":"2026-08-17","price":null,"count":0}],"monthlyPrices":[{"month":"2026-05-01","price":1150,"count":null,"source":"","shop":"","note":""},{"month":"2026-06-01","price":1024.5,"count":null,"source":"","shop":"","note":""},{"month":"2026-08-01","price":1339.5,"count":null,"source":"","shop":"","note":""}],"yearlyPrices":[{"year":2026,"price":1150,"count":null}],"pricesByYear":{"2026":1150}};</script>
 
-<script src="./assets/common.js?v=20260822c"></script>
+<script src="./assets/common.js?v=20260826a"></script>
 
   <script>
     function escapeHtml(str) {
@@ -5444,6 +5445,9 @@
       if (yahooAuctionLink) yahooAuctionLink.href = buildYahooAuctionSearchUrl(s.name);
       const surugayaLink = document.getElementById("surugayaLink");
       if (surugayaLink) surugayaLink.href = buildSurugayaSearchUrl(s.name);
+      if (window.common && typeof window.common.setupMyCollectionButton === "function") {
+        window.common.setupMyCollectionButton(s, document.getElementById("myCollectionToggle"));
+      }
 
       const fullPeriodSeries = buildFullPeriodSeries(s);
       const latestObservation = fullPeriodSeries.length ? fullPeriodSeries[fullPeriodSeries.length - 1] : null;

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,follow" />
+  <title>マイコレクション - ポケスリ相場ナビ</title>
+  <meta name="description" content="持っているデッキシールドを登録して、自分だけのコレクションを管理できます。" />
+  <meta property="og:title" content="マイコレクション - ポケスリ相場ナビ" />
+  <meta property="og:description" content="持っているデッキシールドを登録して、自分だけのコレクションを管理できます。" />
+  <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
+  <meta property="og:url" content="https://pokesuri-navi.com/my-collection.html" />
+  <link rel="canonical" href="https://pokesuri-navi.com/my-collection.html" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/site.css?v=20260826b" />
+</head>
+
+<body class="page-market-list my-collection-page" data-hide-global-header="1">
+  <div id="site-header"></div>
+
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー">
+      <div id="dashboardSidebarSlot" data-dashboard-sidebar-active="collection"></div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot" data-dashboard-topbar-active="collection"></div>
+      </header>
+      <div class="dashboard-content">
+        <nav class="breadcrumb" aria-label="パンくず">
+          <a href="./">ホーム</a>
+          <span class="breadcrumb-sep" aria-hidden="true">></span>
+          <span class="breadcrumb-current" aria-current="page">マイコレクション</span>
+        </nav>
+
+        <section class="page-hero-card" aria-label="ページ見出し">
+          <h1 class="page-hero-title">マイコレクション</h1>
+          <p class="my-collection-lead">持っているデッキシールドを登録して、自分だけのコレクションを管理できます。</p>
+          <div id="collectionCount" class="my-collection-summary">コレクション：0点</div>
+        </section>
+
+        <section aria-label="登録済みデッキシールド">
+          <div id="collectionList" class="my-collection-grid" aria-live="polite"></div>
+        </section>
+
+        <p class="my-collection-note">
+          マイコレクションのデータは、このブラウザ内に保存されます。ブラウザのサイトデータ・Cookie等を削除した場合や、シークレットモード、別ブラウザ、別端末ではデータが引き継がれない場合があります。
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <div id="site-footer"></div>
+
+  <script src="./assets/common.js?v=20260826a"></script>
+  <script>
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatPrice(price) {
+      const n = Number(price);
+      return Number.isFinite(n) && n > 0 ? `${Math.round(n).toLocaleString()}円` : "価格データなし";
+    }
+
+    function getLatestPrice(sleeve) {
+      if (window.common && typeof window.common.getLatestPositivePrice === "function") {
+        return window.common.getLatestPositivePrice(sleeve);
+      }
+      const rows = Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [];
+      let latest = null;
+      for (const row of rows) {
+        const week = String(row?.week || "").slice(0, 10);
+        const price = Number(row?.price);
+        if (!week || !(Number.isFinite(price) && price > 0)) continue;
+        if (!latest || week > latest.week) latest = { week, price };
+      }
+      return latest ? latest.price : null;
+    }
+
+    function buildCard(row) {
+      return `
+        <article class="my-collection-card">
+          <a class="my-collection-card-link" href="${escapeHtml(row.href)}" data-sleeve-link="1" aria-label="${escapeHtml(row.name)}の詳細を見る">
+            <span class="my-collection-thumb">
+              ${row.image ? `<img src="${escapeHtml(row.image)}" alt="${escapeHtml(row.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}
+            </span>
+            <h2 class="my-collection-title">${escapeHtml(row.name)}</h2>
+            <div class="my-collection-price">
+              <span class="my-collection-price-label">現在相場</span>
+              ${escapeHtml(formatPrice(row.price))}
+            </div>
+          </a>
+          <button class="my-collection-remove" type="button" data-remove-collection="${escapeHtml(row.sleeveId)}">コレクションから削除</button>
+        </article>
+      `;
+    }
+
+    function renderEmpty(root) {
+      root.innerHTML = `
+        <div class="my-collection-empty">
+          <h2 class="my-collection-empty-title">まだデッキシールドが登録されていません。</h2>
+          <p>気になるデッキシールドのページから『マイコレクションに追加』を押して登録できます。</p>
+          <a class="btn primary" href="./sleeves/">デッキシールドを探す</a>
+        </div>
+      `;
+    }
+
+    async function renderCollection() {
+      const root = document.getElementById("collectionList");
+      const countEl = document.getElementById("collectionCount");
+      if (!root || !countEl || !window.common) return;
+
+      const stored = window.common.readMyCollection();
+      countEl.textContent = `コレクション：${stored.length}点`;
+      window.common.updateMyCollectionCountBadges(stored.length);
+
+      if (!stored.length) {
+        renderEmpty(root);
+        return;
+      }
+
+      root.innerHTML = '<div class="my-collection-empty"><p>読み込み中...</p></div>';
+
+      let data;
+      try {
+        data = await window.common.loadData();
+      } catch (e) {
+        root.innerHTML = `<div class="my-collection-empty"><p>${escapeHtml(e.message || "データの読み込みに失敗しました。")}</p></div>`;
+        return;
+      }
+
+      const sleeveMap = new Map();
+      for (const sleeve of Array.isArray(data?.sleeves) ? data.sleeves : []) {
+        const id = window.common.normalizeMyCollectionSleeveId(sleeve?.id);
+        if (id) sleeveMap.set(id, sleeve);
+      }
+
+      const rows = stored.map((item) => {
+        const sleeveId = window.common.normalizeMyCollectionSleeveId(item?.sleeveId);
+        const sleeve = sleeveMap.get(sleeveId);
+        const name = String(sleeve?.name || item?.name || `ID: ${sleeveId}`).trim();
+        const image = String(sleeve?.imageUrl || item?.image || "").trim();
+        return {
+          sleeveId,
+          name,
+          image,
+          price: sleeve ? getLatestPrice(sleeve) : null,
+          href: window.common.buildSleeveDetailHref(sleeveId)
+        };
+      }).filter((row) => row.sleeveId);
+
+      root.innerHTML = rows.map(buildCard).join("");
+      root.querySelectorAll("[data-remove-collection]").forEach((button) => {
+        button.addEventListener("click", () => {
+          window.common.removeFromMyCollection(button.getAttribute("data-remove-collection"));
+        });
+      });
+    }
+
+    async function main() {
+      await window.common.setupDashboardChrome({ sidebarActive: "collection", topbarActive: "collection" });
+      await renderCollection();
+      document.addEventListener("pokesuri:my-collection-change", () => renderCollection());
+    }
+
+    document.addEventListener("DOMContentLoaded", () => main());
+  </script>
+</body>
+
+</html>

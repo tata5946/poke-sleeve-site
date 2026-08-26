@@ -22,6 +22,7 @@ const DATA_STALE_MAX_MS = 10 * 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
 const SEARCH_HISTORY_KEY = "pokeSleeve:searchHistory:v1";
 const SEARCH_HISTORY_MAX = 8;
+const MY_COLLECTION_STORAGE_KEY = "pokesuri_my_collection";
 const AUTOCOMPLETE_MIN_CHARS = 1;
 const AUTOCOMPLETE_MAX_ITEMS = 8;
 let __dataCacheMem = null;
@@ -99,6 +100,7 @@ const HEADER_HTML = `
       <nav class="nav" aria-label="メインメニュー">
         <a href="./" data-nav="index"><span class="nav-icon" aria-hidden="true">🏠</span>ホーム</a>
         <a href="./sleeves/" data-nav="zukan"><span class="nav-icon" aria-hidden="true">🗂️</span>図鑑</a>
+        <a href="./my-collection.html" data-nav="collection"><span class="nav-icon" aria-hidden="true">＋</span>マイコレクション <span class="my-collection-count-badge" data-my-collection-count hidden>0</span></a>
         <a href="./ranking.html" data-nav="ranking"><span class="nav-icon" aria-hidden="true">👑</span>価格ランキング</a>
         <a href="./access-ranking.html" data-nav="access-ranking"><span class="nav-icon" aria-hidden="true">👀</span>アクセスランキング</a>
         <a href="./growth.html" data-nav="growth"><span class="nav-icon" aria-hidden="true">💹</span>高騰率</a>
@@ -138,6 +140,7 @@ function buildDashboardSidebarHtml(activeSidebar = "") {
   <nav class="sidebar-nav" aria-label="主要ナビゲーション">
     <a class="${itemClass("index")}" href="${escapeHtml(buildSiteHref("index.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⌂</span><span>ホーム</span></a>
     <a class="${itemClass("zukan")}" href="${escapeHtml(buildSiteHref("sleeves/"))}"><span class="sidebar-link-icon" aria-hidden="true">▤</span><span>スリーブ図鑑</span></a>
+    <a class="${itemClass("collection")}" href="${escapeHtml(buildSiteHref("my-collection.html"))}"><span class="sidebar-link-icon" aria-hidden="true">＋</span><span>マイコレクション</span><span class="my-collection-count-badge" data-my-collection-count hidden>0</span></a>
     <div id="sidebarCategoryShell" class="sidebar-category-shell" hidden>
       <button type="button" class="sidebar-link sidebar-category-toggle" id="sidebarCategoryToggle" aria-expanded="false" aria-controls="categoryNav">
         <span class="sidebar-category-toggle-label">
@@ -164,6 +167,7 @@ function buildDashboardSidebarHtml(activeSidebar = "") {
 
 function getCurrentTopbarKey() {
   const path = String(location.pathname || "").toLowerCase();
+  if (path.includes("my-collection")) return "collection";
   if (path.includes("article")) return "articles";
   if (path.includes("policy")) return "policy";
   if (path.includes("contact")) return "contact";
@@ -183,6 +187,7 @@ function buildDashboardTopbarHtml(activeTopbar = getCurrentTopbarKey()) {
   </div>
   <nav class="topbar-tabs" aria-label="上部メニュー">
     <a class="${itemClass("dashboard")}" href="${escapeHtml(buildSiteHref("index.html"))}">ホーム</a>
+    <a class="${itemClass("collection")}" href="${escapeHtml(buildSiteHref("my-collection.html"))}">マイコレクション <span class="my-collection-count-badge" data-my-collection-count hidden>0</span></a>
     <a class="${itemClass("market")}" href="${escapeHtml(buildSiteHref("index-market.html"))}">市場状況</a>
     <a class="${itemClass("articles")}" href="${escapeHtml(buildSiteHref("articles.html"))}">記事</a>
     <a class="${itemClass("policy")}" href="${escapeHtml(buildSiteHref("policy.html"))}">プライバシーポリシー</a>
@@ -199,7 +204,8 @@ function buildDashboardTopbarHtml(activeTopbar = getCurrentTopbarKey()) {
 function getCurrentNavKey() {
   const path = String(location.pathname || "").toLowerCase();
   let key = "index";
-  if (path.includes("access-ranking")) key = "access-ranking";
+  if (path.includes("my-collection")) key = "collection";
+  else if (path.includes("access-ranking")) key = "access-ranking";
   else if (path.includes("ranking")) key = "ranking";
   else if (path.includes("zukan") || path.includes("sleeves")) key = "zukan";
   else if (path.includes("growth")) key = "growth";
@@ -218,6 +224,7 @@ function buildMobileBottomNavHtml(activeKey = getCurrentNavKey()) {
   <nav class="mobile-bottom-nav" aria-label="モバイルナビゲーション" data-common-mobile-bottom-nav="1">
     <a class="${itemClass("index")}" href="${escapeHtml(buildSiteHref("index.html"))}"><span aria-hidden="true">⌂</span><span>ホーム</span></a>
     <a class="${itemClass("zukan")}" href="${escapeHtml(buildSiteHref("sleeves/"))}" aria-label="スリーブ図鑑"><span aria-hidden="true">▤</span><span>図鑑</span></a>
+    <a class="${itemClass("collection")}" href="${escapeHtml(buildSiteHref("my-collection.html"))}" aria-label="マイコレクション"><span aria-hidden="true">＋</span><span>コレ</span><span class="my-collection-count-badge my-collection-count-badge--mobile" data-my-collection-count hidden>0</span></a>
     <a class="${itemClass("access-ranking")}" href="${escapeHtml(buildSiteHref("access-ranking.html"))}" aria-label="アクセスランキング"><span aria-hidden="true">◉</span><span>閲覧</span></a>
     <a class="${itemClass("surge")}" href="${escapeHtml(buildSiteHref("surge.html"))}"><span aria-hidden="true">↗</span><span>急上昇</span></a>
     <a class="${itemClass("growth")}" href="${escapeHtml(buildSiteHref("growth.html"))}"><span aria-hidden="true">△</span><span>高騰率</span></a>
@@ -654,6 +661,136 @@ function buildSleeveDetailHref(id) {
   const routeId = buildSleeveRouteId(id);
   if (!routeId) return buildSiteHref("sleeves/");
   return buildSiteHref(`sleeve/${encodeURIComponent(routeId)}/`);
+}
+
+function normalizeMyCollectionSleeveId(id) {
+  const sleeveId = String(id ?? "").trim();
+  if (/^4521329\d{6,7}$/.test(sleeveId)) return sleeveId.slice(7);
+  return sleeveId;
+}
+
+function normalizeMyCollectionItem(item) {
+  const sleeveId = normalizeMyCollectionSleeveId(item?.sleeveId ?? item?.id ?? item?.itemId);
+  if (!sleeveId) return null;
+  return {
+    ...item,
+    sleeveId,
+    name: String(item?.name || "").trim(),
+    image: String(item?.image || item?.imageUrl || "").trim(),
+    addedAt: String(item?.addedAt || new Date().toISOString())
+  };
+}
+
+function readMyCollection() {
+  try {
+    const raw = localStorage.getItem(MY_COLLECTION_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    const source = Array.isArray(parsed) ? parsed : [];
+    const byId = new Map();
+    for (const item of source) {
+      const normalized = normalizeMyCollectionItem(item);
+      if (!normalized) continue;
+      if (!byId.has(normalized.sleeveId)) byId.set(normalized.sleeveId, normalized);
+    }
+    return Array.from(byId.values());
+  } catch (_) {
+    return [];
+  }
+}
+
+function writeMyCollection(items) {
+  const byId = new Map();
+  for (const item of Array.isArray(items) ? items : []) {
+    const normalized = normalizeMyCollectionItem(item);
+    if (!normalized) continue;
+    byId.set(normalized.sleeveId, normalized);
+  }
+  const list = Array.from(byId.values());
+  try {
+    localStorage.setItem(MY_COLLECTION_STORAGE_KEY, JSON.stringify(list));
+  } catch (_) {}
+  updateMyCollectionCountBadges(list.length);
+  document.dispatchEvent(new CustomEvent("pokesuri:my-collection-change", { detail: { items: list } }));
+  return list;
+}
+
+function getMyCollectionCount() {
+  return readMyCollection().length;
+}
+
+function isInMyCollection(id) {
+  const sleeveId = normalizeMyCollectionSleeveId(id);
+  return !!sleeveId && readMyCollection().some((item) => item.sleeveId === sleeveId);
+}
+
+function addToMyCollection(sleeve) {
+  const sleeveId = normalizeMyCollectionSleeveId(sleeve?.sleeveId ?? sleeve?.id);
+  if (!sleeveId) return readMyCollection();
+  const list = readMyCollection();
+  if (list.some((item) => item.sleeveId === sleeveId)) return writeMyCollection(list);
+  return writeMyCollection([
+    {
+      sleeveId,
+      name: String(sleeve?.name || "").trim(),
+      image: String(sleeve?.image || sleeve?.imageUrl || "").trim(),
+      addedAt: new Date().toISOString()
+    },
+    ...list
+  ]);
+}
+
+function removeFromMyCollection(id) {
+  const sleeveId = normalizeMyCollectionSleeveId(id);
+  if (!sleeveId) return readMyCollection();
+  return writeMyCollection(readMyCollection().filter((item) => item.sleeveId !== sleeveId));
+}
+
+function toggleMyCollectionSleeve(sleeve) {
+  const sleeveId = normalizeMyCollectionSleeveId(sleeve?.sleeveId ?? sleeve?.id);
+  if (!sleeveId) return { inCollection: false, items: readMyCollection() };
+  if (isInMyCollection(sleeveId)) {
+    const items = removeFromMyCollection(sleeveId);
+    return { inCollection: false, items };
+  }
+  const items = addToMyCollection({ ...sleeve, sleeveId });
+  return { inCollection: true, items };
+}
+
+function updateMyCollectionCountBadges(count = getMyCollectionCount()) {
+  const value = Number.isFinite(Number(count)) ? Math.max(0, Number(count)) : 0;
+  for (const el of document.querySelectorAll("[data-my-collection-count]")) {
+    el.textContent = String(value);
+    el.hidden = value <= 0;
+  }
+}
+
+function setupMyCollectionButton(sleeve, buttonOrSelector = "[data-my-collection-toggle]") {
+  const button = typeof buttonOrSelector === "string"
+    ? document.querySelector(buttonOrSelector)
+    : buttonOrSelector;
+  if (!button) return;
+  const sleeveId = normalizeMyCollectionSleeveId(sleeve?.id ?? sleeve?.sleeveId);
+  if (!sleeveId) {
+    button.hidden = true;
+    return;
+  }
+  const current = { ...sleeve, sleeveId };
+  const render = () => {
+    const saved = isInMyCollection(sleeveId);
+    button.hidden = false;
+    button.classList.toggle("is-saved", saved);
+    button.textContent = saved ? "✓ コレクション登録済み" : "＋ マイコレクションに追加";
+    button.setAttribute("aria-pressed", saved ? "true" : "false");
+    button.setAttribute("aria-label", saved ? "マイコレクションから削除" : "マイコレクションに追加");
+  };
+  if (button.dataset.myCollectionWired !== "1") {
+    button.dataset.myCollectionWired = "1";
+    button.addEventListener("click", () => {
+      toggleMyCollectionSleeve(current);
+      render();
+    });
+  }
+  render();
 }
 
 function setStructuredData(id, data) {
@@ -1667,10 +1804,12 @@ function injectDashboardChrome({ sidebarActive = "", topbarActive = "", sidebarS
   }
 
   injectMobileBottomNav();
+  updateMyCollectionCountBadges();
 }
 
 function getMobileBottomNavKeyFromHref(href) {
   const value = String(href || "");
+  if (value.includes("my-collection")) return "collection";
   if (value.includes("sleeves")) return "zukan";
   if (value.includes("access-ranking")) return "access-ranking";
   if (value.includes("surge")) return "surge";
@@ -1695,11 +1834,13 @@ function injectMobileBottomNav({ activeKey = getCurrentNavKey() } = {}) {
     existing.setAttribute("data-common-mobile-bottom-nav", "1");
     syncMobileBottomNavActive(activeKey);
     document.body.classList.add("has-mobile-bottom-nav");
+    updateMyCollectionCountBadges();
     return;
   }
 
   document.body.insertAdjacentHTML("beforeend", buildMobileBottomNavHtml(activeKey));
   document.body.classList.add("has-mobile-bottom-nav");
+  updateMyCollectionCountBadges();
 }
 
 function wireDashboardSearch() {
@@ -2058,6 +2199,16 @@ window.common = {
   loadData,
   buildSiteHref,
   buildSleeveDetailHref,
+  normalizeMyCollectionSleeveId,
+  readMyCollection,
+  writeMyCollection,
+  getMyCollectionCount,
+  isInMyCollection,
+  addToMyCollection,
+  removeFromMyCollection,
+  toggleMyCollectionSleeve,
+  updateMyCollectionCountBadges,
+  setupMyCollectionButton,
   setStructuredData,
   updateItemListStructuredData,
   updateArticleStructuredData,
@@ -2074,7 +2225,9 @@ window.common = {
   wireSleeveAutocomplete,
   recordSearchHistory,
   wireSleeveSelectionFeedback,
+  getLatestPositivePrice,
   waitForInjected,
+  MY_COLLECTION_STORAGE_KEY,
   GAS_URL
 };
 
@@ -2084,10 +2237,12 @@ window.GAS_URL = GAS_URL;
 document.addEventListener("DOMContentLoaded", () => {
   try { ensureFavicon(); } catch (e) { console.error(e); }
   injectHeaderFooter();
+  try { updateMyCollectionCountBadges(); } catch (e) { console.error(e); }
   try {
     if (document.getElementById("dashboardSidebarSlot") || document.getElementById("dashboardTopbarSlot")) {
       injectDashboardChrome();
       wireDashboardSearch();
+      updateMyCollectionCountBadges();
       wireDashboardSidebarCategoryToggle();
       ensureCategoryNavsRendered()
         .then(() => wireDashboardSidebarCategoryToggle())
@@ -2115,8 +2270,15 @@ document.addEventListener("DOMContentLoaded", () => {
     try { setActiveNav(); } catch (e) { console.error(e); }
     try { wireHeaderMenu(); } catch (e) { console.error(e); }
     try { wireHeaderSearch(); } catch (e) { console.error(e); }
+    try { updateMyCollectionCountBadges(); } catch (e) { console.error(e); }
     try { markSelectedSleeveLinks(); } catch (e) { console.error(e); }
   }, { once: true });
+});
+
+window.addEventListener("storage", (event) => {
+  if (event.key === MY_COLLECTION_STORAGE_KEY) {
+    try { updateMyCollectionCountBadges(); } catch (e) { console.error(e); }
+  }
 });
 
 

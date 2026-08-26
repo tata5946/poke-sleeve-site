@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./assets/site.css?v=20260816f" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260826b" />
 
   <style>
     .detail-wrap {
@@ -2072,6 +2072,7 @@
 
               <div class="btn-row">
                 <a class="btn primary" id="backLink" href="./sleeves/" aria-label="ポケモンカードのスリーブ・デッキシールド一覧へ戻る">← スリーブ・デッキシールド一覧へ</a>
+                <button class="btn my-collection-toggle" id="myCollectionToggle" type="button" data-my-collection-toggle hidden>＋ マイコレクションに追加</button>
                 <div class="marketplace-row" aria-label="外部サイトで探す">
                   <a class="marketplace-link marketplace-link--mercari" id="mercariLink" href="https://jp.mercari.com/search" target="_blank" rel="noopener noreferrer nofollow" aria-label="メルカリで探す">
                     <span class="marketplace-logo marketplace-logo--mercari" aria-hidden="true">m</span>
@@ -2169,7 +2170,7 @@
 
     <script>window.__SLEEVE_PAGE_ID = "323145";window.__SLEEVE_PAGE_DATA = {"id":"323145","name":"アセロラ","imageUrl":"https://drive.google.com/thumbnail?id=1IhUxju5cWHSvuqEBn394qiTvHHrsJVWF\u0026sz=w1200","releaseDate":"2021-12-03","releaseYear":2021,"series":"公式","condition":"未開封","type":"デッキシールド","feature":"デッキシールド","acquisitionType":"ポケモンセンター","illustrator":"","note":"","category1":"","category2":"","category3":"","category4":"アセロラ","category5":"","category6":"","category7":"","category8":"","category9":"","pokemonCategories":[],"trainerCategories":["アセロラ"],"categoryTags":[],"categories":["アセロラ"],"weeklyPrices":[{"week":"2025-01-01","price":999,"count":0},{"week":"2025-02-01","price":999,"count":0},{"week":"2025-03-01","price":999,"count":0},{"week":"2025-04-01","price":1044.5,"count":0},{"week":"2025-05-01","price":949.5,"count":0},{"week":"2025-06-01","price":1030,"count":0},{"week":"2025-07-01","price":999,"count":0},{"week":"2025-08-01","price":1000,"count":0},{"week":"2025-09-01","price":900,"count":0},{"week":"2025-10-01","price":900,"count":0},{"week":"2025-11-01","price":888,"count":0},{"week":"2025-12-01","price":889.5,"count":0},{"week":"2026-01-05","price":999,"count":0},{"week":"2026-01-12","price":870,"count":0},{"week":"2026-01-19","price":800,"count":0},{"week":"2026-01-26","price":800,"count":0},{"week":"2026-02-02","price":844,"count":0},{"week":"2026-02-09","price":675,"count":0},{"week":"2026-02-16","price":800,"count":0},{"week":"2026-02-23","price":800,"count":0},{"week":"2026-03-02","price":852.5,"count":0},{"week":"2026-03-09","price":null,"count":0},{"week":"2026-03-16","price":650,"count":0},{"week":"2026-03-23","price":850,"count":0},{"week":"2026-03-30","price":866,"count":0},{"week":"2026-04-06","price":null,"count":0},{"week":"2026-04-13","price":null,"count":0},{"week":"2026-04-20","price":699,"count":0},{"week":"2026-04-27","price":750,"count":0},{"week":"2026-05-04","price":849.5,"count":0},{"week":"2026-05-11","price":777,"count":0},{"week":"2026-05-18","price":666,"count":0},{"week":"2026-05-25","price":740,"count":0},{"week":"2026-06-01","price":690,"count":0},{"week":"2026-06-08","price":675,"count":0},{"week":"2026-06-15","price":550,"count":0},{"week":"2026-06-22","price":600,"count":0},{"week":"2026-06-29","price":600,"count":0},{"week":"2026-07-06","price":811,"count":0},{"week":"2026-07-13","price":700,"count":0},{"week":"2026-07-20","price":700,"count":0},{"week":"2026-07-27","price":795,"count":0},{"week":"2026-08-03","price":null,"count":0},{"week":"2026-08-10","price":null,"count":0},{"week":"2026-08-17","price":null,"count":0}],"monthlyPrices":[{"month":"2024-01-01","price":750,"count":null,"source":"","shop":"","note":""},{"month":"2025-02-01","price":999,"count":null,"source":"","shop":"","note":""},{"month":"2025-03-01","price":999,"count":null,"source":"","shop":"","note":""},{"month":"2025-04-01","price":999,"count":null,"source":"","shop":"","note":""},{"month":"2025-05-01","price":1044.5,"count":null,"source":"","shop":"","note":""},{"month":"2025-06-01","price":949.5,"count":null,"source":"","shop":"","note":""},{"month":"2025-07-01","price":1030,"count":null,"source":"","shop":"","note":""},{"month":"2025-08-01","price":999,"count":null,"source":"","shop":"","note":""},{"month":"2025-09-01","price":1000,"count":null,"source":"","shop":"","note":""},{"month":"2025-10-01","price":900,"count":null,"source":"","shop":"","note":""},{"month":"2025-11-01","price":900,"count":null,"source":"","shop":"","note":""},{"month":"2025-12-01","price":888,"count":null,"source":"","shop":"","note":""},{"month":"2026-01-01","price":889.5,"count":null,"source":"","shop":"","note":""},{"month":"2026-02-01","price":825,"count":null,"source":"","shop":"","note":""},{"month":"2026-03-01","price":800,"count":null,"source":"","shop":"","note":""},{"month":"2026-04-01","price":700,"count":null,"source":"","shop":"","note":""},{"month":"2026-05-01","price":680,"count":null,"source":"","shop":"","note":""},{"month":"2026-06-01","price":700,"count":null,"source":"","shop":"","note":""},{"month":"2026-08-01","price":666,"count":null,"source":"","shop":"","note":""}],"yearlyPrices":[{"year":2025,"price":990,"count":null},{"year":2026,"price":795,"count":null}],"pricesByYear":{"2025":990,"2026":795}};</script>
 
-<script src="./assets/common.js?v=20260822c"></script>
+<script src="./assets/common.js?v=20260826a"></script>
 
   <script>
     function escapeHtml(str) {
@@ -5444,6 +5445,9 @@
       if (yahooAuctionLink) yahooAuctionLink.href = buildYahooAuctionSearchUrl(s.name);
       const surugayaLink = document.getElementById("surugayaLink");
       if (surugayaLink) surugayaLink.href = buildSurugayaSearchUrl(s.name);
+      if (window.common && typeof window.common.setupMyCollectionButton === "function") {
+        window.common.setupMyCollectionButton(s, document.getElementById("myCollectionToggle"));
+      }
 
       const fullPeriodSeries = buildFullPeriodSeries(s);
       const latestObservation = fullPeriodSeries.length ? fullPeriodSeries[fullPeriodSeries.length - 1] : null;
