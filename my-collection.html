@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/site.css?v=20260826e" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260826f" />
 </head>
 
 <body class="page-market-list my-collection-page" data-hide-global-header="1">
@@ -99,7 +99,7 @@
 
   <div id="site-footer"></div>
 
-  <script src="./assets/common.js?v=20260826e"></script>
+  <script src="./assets/common.js?v=20260826f"></script>
   <script>
     let currentAssetPeriod = "3m";
     let currentAssetTimeline = [];
@@ -198,6 +198,37 @@
         .sort((a, b) => a.timestamp - b.timestamp);
     }
 
+    function isExplicitPurchaseWeek(item) {
+      if (window.common && typeof window.common.hasExplicitMyCollectionPurchaseWeek === "function") {
+        return window.common.hasExplicitMyCollectionPurchaseWeek(item);
+      }
+      return item?.purchaseWeekSet === true;
+    }
+
+    function getExplicitPurchaseWeekDate(item) {
+      if (!isExplicitPurchaseWeek(item)) return "";
+      return window.common.normalizeMyCollectionPurchaseWeek(item?.purchaseWeek);
+    }
+
+    function resolvePurchaseTimestamp(item, weeklyPoints, releaseTimestamp) {
+      const explicitPurchaseWeek = getExplicitPurchaseWeekDate(item);
+      const explicitTimestamp = Date.parse(explicitPurchaseWeek);
+      if (Number.isFinite(explicitTimestamp)) return explicitTimestamp;
+      if (Number.isFinite(releaseTimestamp)) return releaseTimestamp;
+      const firstPoint = Array.isArray(weeklyPoints) ? weeklyPoints[0] : null;
+      if (Number.isFinite(firstPoint?.timestamp)) return firstPoint.timestamp;
+      return Date.parse(window.common.normalizeMyCollectionPurchaseWeek(new Date()));
+    }
+
+    function getPurchaseWeekForInput(item, weeklyPoints, releaseTimestamp) {
+      const explicitPurchaseWeek = getExplicitPurchaseWeekDate(item);
+      if (explicitPurchaseWeek) return explicitPurchaseWeek;
+      const resolvedTimestamp = resolvePurchaseTimestamp(item, weeklyPoints, releaseTimestamp);
+      return Number.isFinite(resolvedTimestamp)
+        ? new Date(resolvedTimestamp).toISOString().slice(0, 10)
+        : window.common.normalizeMyCollectionPurchaseWeek(new Date());
+    }
+
     function getPriceAtOrBefore(points, timestamp) {
       let latest = null;
       for (const point of Array.isArray(points) ? points : []) {
@@ -214,15 +245,17 @@
         const name = String(sleeve?.name || item?.name || `ID: ${sleeveId}`).trim();
         const image = String(sleeve?.imageUrl || item?.image || "").trim();
         const releaseTimestamp = sleeve ? getReleaseTimestamp(sleeve) : null;
+        const weeklyPoints = sleeve ? buildWeeklyPricePoints(sleeve, releaseTimestamp) : [];
         return {
           sleeveId,
           name,
           image,
           quantity: getCollectionQuantity(item),
-          purchaseWeek: window.common.normalizeMyCollectionPurchaseWeek(item?.purchaseWeek),
+          purchaseWeek: getPurchaseWeekForInput(item, weeklyPoints, releaseTimestamp),
+          purchaseWeekSet: isExplicitPurchaseWeek(item),
           price: sleeve ? getLatestPrice(sleeve) : null,
           releaseTimestamp,
-          weeklyPoints: sleeve ? buildWeeklyPricePoints(sleeve, releaseTimestamp) : [],
+          weeklyPoints,
           href: window.common.buildSleeveDetailHref(sleeveId)
         };
       }).filter((row) => row.sleeveId);
@@ -234,14 +267,14 @@
         if (!sleeveId) return null;
         const sleeve = sleeveMap.get(sleeveId);
         const releaseTimestamp = sleeve ? getReleaseTimestamp(sleeve) : null;
-        const purchaseWeek = window.common.normalizeMyCollectionPurchaseWeek(item?.purchaseWeek);
+        const weeklyPoints = sleeve ? buildWeeklyPricePoints(sleeve, releaseTimestamp) : [];
+        const purchaseTimestamp = resolvePurchaseTimestamp(item, weeklyPoints, releaseTimestamp);
         return {
           sleeveId,
           currentQuantity: getCollectionQuantity(item),
-          purchaseWeek,
-          purchaseTimestamp: Date.parse(purchaseWeek),
+          purchaseTimestamp,
           releaseTimestamp,
-          weeklyPoints: sleeve ? buildWeeklyPricePoints(sleeve, releaseTimestamp) : []
+          weeklyPoints
         };
       }).filter(Boolean);
     }

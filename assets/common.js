@@ -715,19 +715,32 @@ function normalizeMyCollectionPurchaseWeek(value) {
   return weekStart && weekStart <= currentWeek ? weekStart : currentWeek;
 }
 
+function hasExplicitMyCollectionPurchaseWeek(item) {
+  return item?.purchaseWeekSet === true
+    || item?.purchaseWeekExplicit === true
+    || item?.purchaseWeekSource === "user"
+    || item?.purchase_week_source === "user";
+}
+
 function normalizeMyCollectionItem(item) {
   const sleeveId = normalizeMyCollectionSleeveId(item?.sleeveId ?? item?.id ?? item?.itemId);
   if (!sleeveId) return null;
   const quantity = Number(item?.quantity);
-  return {
+  const rawPurchaseWeek = item?.purchaseWeek ?? item?.purchase_week ?? item?.purchaseDate ?? item?.purchase_date;
+  const hasPurchaseWeek = String(rawPurchaseWeek ?? "").trim() !== "";
+  const normalized = {
     ...item,
     sleeveId,
     name: String(item?.name || "").trim(),
     image: String(item?.image || item?.imageUrl || "").trim(),
     quantity: Number.isFinite(quantity) && quantity >= 1 ? Math.floor(quantity) : 1,
-    purchaseWeek: normalizeMyCollectionPurchaseWeek(item?.purchaseWeek ?? item?.purchase_week ?? item?.purchaseDate ?? item?.purchase_date),
     addedAt: String(item?.addedAt || new Date().toISOString())
   };
+  if (hasPurchaseWeek) {
+    normalized.purchaseWeek = normalizeMyCollectionPurchaseWeek(rawPurchaseWeek);
+  }
+  normalized.purchaseWeekSet = hasExplicitMyCollectionPurchaseWeek(item);
+  return normalized;
 }
 
 function normalizeMyCollectionHistoryItem(item) {
@@ -885,6 +898,7 @@ function addToMyCollection(sleeve) {
       image: String(sleeve?.image || sleeve?.imageUrl || "").trim(),
       quantity: 1,
       purchaseWeek: normalizeMyCollectionPurchaseWeek(sleeve?.purchaseWeek),
+      purchaseWeekSet: true,
       addedAt: now
     },
     ...list
@@ -910,7 +924,7 @@ function updateMyCollectionPurchaseWeek(id, purchaseWeek) {
   if (!sleeveId) return readMyCollection();
   const nextPurchaseWeek = normalizeMyCollectionPurchaseWeek(purchaseWeek);
   return writeMyCollection(readMyCollection().map((item) => (
-    item.sleeveId === sleeveId ? { ...item, purchaseWeek: nextPurchaseWeek } : item
+    item.sleeveId === sleeveId ? { ...item, purchaseWeek: nextPurchaseWeek, purchaseWeekSet: true } : item
   )));
 }
 
@@ -2309,6 +2323,10 @@ function markSelectedSleeveLinks() {
 
   const links = document.querySelectorAll('a[data-sleeve-link="1"]');
   for (const a of links) {
+    if (a.closest(".my-collection-card")) {
+      a.classList.remove("is-selected-sleeve");
+      continue;
+    }
     const id = getDetailIdFromHref(a.href);
     a.classList.toggle("is-selected-sleeve", !!selectedId && id === selectedId);
   }
@@ -2376,6 +2394,7 @@ window.common = {
   buildSleeveDetailHref,
   normalizeMyCollectionSleeveId,
   normalizeMyCollectionPurchaseWeek,
+  hasExplicitMyCollectionPurchaseWeek,
   startDateToWeekInput,
   weekInputToStartDate,
   readMyCollection,
