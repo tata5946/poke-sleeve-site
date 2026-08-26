@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/site.css?v=20260826c" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260826d" />
 </head>
 
 <body class="page-market-list my-collection-page" data-hide-global-header="1">
@@ -99,7 +99,7 @@
 
   <div id="site-footer"></div>
 
-  <script src="./assets/common.js?v=20260826c"></script>
+  <script src="./assets/common.js?v=20260826d"></script>
   <script>
     let currentAssetPeriod = "3m";
     let currentAssetTimeline = [];
@@ -278,6 +278,7 @@
       const events = normalizeHistoryEvents(history);
       const dates = new Map();
       const now = Date.now();
+      const firstHistoryTs = events.length ? events[0].timestamp : null;
       dates.set(new Date(now).toISOString(), now);
       for (const event of events) {
         dates.set(new Date(event.timestamp).toISOString(), event.timestamp);
@@ -291,6 +292,7 @@
       let eventIndex = 0;
       const timeline = [];
       for (const [date, timestamp] of Array.from(dates.entries()).sort((a, b) => a[1] - b[1])) {
+        if (firstHistoryTs != null && timestamp < firstHistoryTs) continue;
         while (eventIndex < events.length && events[eventIndex].timestamp <= timestamp) {
           const event = events[eventIndex];
           const nextQuantity = Math.max(0, (quantities.get(event.sleeveId) || 0) + event.change);
@@ -444,10 +446,6 @@
 
       root.innerHTML = `
         <div class="my-asset-chart-wrap">
-          <div class="my-asset-chart-legend" aria-hidden="true">
-            <span><i class="my-asset-legend-line"></i>総資産額</span>
-            <span><i class="my-asset-legend-bar"></i>保有個数</span>
-          </div>
           <div class="my-asset-chart-tooltip" hidden></div>
           <svg class="my-asset-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="資産額の推移グラフ">
             <defs>
@@ -463,7 +461,7 @@
             ${scoped.map((point) => {
               const x = xToPx(point.timestamp) - (barW / 2);
               const y = quantityToPx(point.totalQuantity || 0);
-              return `<rect class="my-asset-quantity-bar" x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${barW.toFixed(2)}" height="${Math.max(0, H - padB - y).toFixed(2)}" rx="2"></rect>`;
+              return `<rect class="my-asset-quantity-bar" x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${barW.toFixed(2)}" height="${Math.max(0, H - padB - y).toFixed(2)}" rx="2" fill="#9fb3d1" opacity="0.34"></rect>`;
             }).join("")}
             <path d="${areaD}" fill="url(#myAssetAreaGradient)"></path>
             <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -474,6 +472,12 @@
               const anchor = index === 0 ? "start" : index === scoped.length - 1 ? "end" : "middle";
               return `<text x="${xToPx(point.timestamp).toFixed(2)}" y="${H - 18}" text-anchor="${anchor}" font-size="13" font-weight="800" fill="#475467">${escapeHtml(formatChartDate(point.date))}</text>`;
             }).join("")}
+            <g aria-hidden="true">
+              <circle cx="${W - padR - 154}" cy="18" r="4" fill="#1e5bd7"></circle>
+              <text x="${W - padR - 144}" y="22" font-size="11" font-weight="800" fill="#475467">総資産額</text>
+              <rect x="${W - padR - 80}" y="14" width="8" height="8" rx="2" fill="#9fb3d1" opacity="0.5"></rect>
+              <text x="${W - padR - 68}" y="22" font-size="11" font-weight="800" fill="#475467">保有個数</text>
+            </g>
             ${scoped.map((point, index) => `<circle class="my-asset-chart-dot" cx="${xToPx(point.timestamp).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="${index === scoped.length - 1 ? 5.5 : 4}" fill="#1e5bd7"></circle><circle class="my-asset-hit-point" data-index="${index}" cx="${xToPx(point.timestamp).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="18" fill="transparent"></circle>`).join("")}
           </svg>
         </div>

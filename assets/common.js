@@ -739,20 +739,46 @@ function writeMyCollectionHistory(items) {
   return list;
 }
 
+function getMyCollectionInitialHistoryDate(item, fallbackIso) {
+  const parsed = new Date(item?.addedAt || "");
+  return Number.isFinite(parsed.getTime()) ? parsed.toISOString() : fallbackIso;
+}
+
+function repairMyCollectionInitialHistoryDates(items, history) {
+  const byId = new Map();
+  for (const item of Array.isArray(items) ? items : []) {
+    const sleeveId = normalizeMyCollectionSleeveId(item?.sleeveId);
+    if (sleeveId) byId.set(sleeveId, item);
+  }
+  let changed = false;
+  const repaired = (Array.isArray(history) ? history : []).map((event) => {
+    if (event?.action !== "initial") return event;
+    const item = byId.get(event.sleeveId);
+    if (!item) return event;
+    const date = getMyCollectionInitialHistoryDate(item, event.date);
+    if (Date.parse(date) >= Date.parse(event.date)) return event;
+    changed = true;
+    return { ...event, date };
+  });
+  return changed ? writeMyCollectionHistory(repaired) : history;
+}
+
 function seedMyCollectionHistoryIfNeeded(items = readMyCollection()) {
   try {
-    if (localStorage.getItem(MY_COLLECTION_HISTORY_SEEDED_KEY) === "1") return readRawMyCollectionHistory();
+    if (localStorage.getItem(MY_COLLECTION_HISTORY_SEEDED_KEY) === "1") {
+      return repairMyCollectionInitialHistoryDates(items, readRawMyCollectionHistory());
+    }
     const existing = readRawMyCollectionHistory();
     if (existing.length) {
       localStorage.setItem(MY_COLLECTION_HISTORY_SEEDED_KEY, "1");
-      return existing;
+      return repairMyCollectionInitialHistoryDates(items, existing);
     }
     const now = new Date().toISOString();
     const seed = (Array.isArray(items) ? items : [])
       .map((item) => {
         const sleeveId = normalizeMyCollectionSleeveId(item?.sleeveId);
         const quantity = Math.max(1, Math.floor(Number(item?.quantity) || 1));
-        return sleeveId ? { date: now, sleeveId, change: quantity, action: "initial", quantityAfter: quantity } : null;
+        return sleeveId ? { date: getMyCollectionInitialHistoryDate(item, now), sleeveId, change: quantity, action: "initial", quantityAfter: quantity } : null;
       })
       .filter(Boolean);
     const history = writeMyCollectionHistory(seed);
