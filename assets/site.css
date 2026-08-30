@@ -8275,6 +8275,18 @@ footer.site-footer {
     touch-action: manipulation;
 }
 
+.my-asset-chart-wrap.is-mobile-density {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(71, 84, 103, .34) transparent;
+}
+
+.my-asset-chart-wrap.is-mobile-density .my-asset-chart-svg {
+    max-width: none;
+}
+
 .my-asset-quantity-bar {
     fill: #9fb3d1;
     opacity: .34;
@@ -8674,6 +8686,17 @@ footer.site-footer {
 
     .my-asset-chart-wrap {
         margin-inline: -4px;
+    }
+
+    .my-asset-chart-wrap.is-mobile-density {
+        margin-inline: -8px;
+        border-inline: 0;
+        border-radius: 0;
+        background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+    }
+
+    .my-asset-chart-wrap.is-mobile-density .my-asset-chart-svg {
+        height: 420px;
     }
 
     .my-asset-chart-legend {
