@@ -8276,15 +8276,12 @@ footer.site-footer {
 }
 
 .my-asset-chart-wrap.is-mobile-density {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(71, 84, 103, .34) transparent;
+    overflow: hidden;
 }
 
 .my-asset-chart-wrap.is-mobile-density .my-asset-chart-svg {
-    max-width: none;
+    width: 100%;
+    max-width: 100%;
 }
 
 .my-asset-quantity-bar {
@@ -8689,14 +8686,10 @@ footer.site-footer {
     }
 
     .my-asset-chart-wrap.is-mobile-density {
-        margin-inline: -8px;
-        border-inline: 0;
-        border-radius: 0;
+        margin-inline: -4px;
+        border-inline: 1px solid #e4eaf4;
+        border-radius: 8px;
         background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
-    }
-
-    .my-asset-chart-wrap.is-mobile-density .my-asset-chart-svg {
-        height: 420px;
     }
 
     .my-asset-chart-legend {

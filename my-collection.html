@@ -556,12 +556,12 @@
       }
 
       const isMobileChart = window.matchMedia("(max-width: 700px)").matches;
-      const W = isMobileChart ? Math.max(840, 96 + Math.max(1, scoped.length - 1) * 28) : 760;
-      const H = isMobileChart ? 520 : 320;
-      const padL = isMobileChart ? 58 : 82;
-      const padR = isMobileChart ? 36 : 64;
-      const padT = isMobileChart ? 26 : 32;
-      const padB = isMobileChart ? 46 : 54;
+      const W = isMobileChart ? 360 : 760;
+      const H = isMobileChart ? 340 : 320;
+      const padL = isMobileChart ? 46 : 82;
+      const padR = isMobileChart ? 28 : 64;
+      const padT = isMobileChart ? 24 : 32;
+      const padB = isMobileChart ? 42 : 54;
       const values = scoped.map((point) => point.value);
       const quantities = scoped.map((point) => point.totalQuantity || 0);
       const axis = buildAssetAxis(Math.min(...values), Math.max(...values), isMobileChart ? 4 : 5);
@@ -577,21 +577,22 @@
         ? getMobileAssetLabelIndexes(scoped.length)
         : Array.from(new Set([0, Math.floor((scoped.length - 1) / 2), scoped.length - 1]));
       const barW = isMobileChart
-        ? Math.max(2, Math.min(10, (chartW / Math.max(1, scoped.length)) * 0.32))
+        ? Math.max(1, Math.min(7, (chartW / Math.max(1, scoped.length)) * 0.22))
         : Math.max(3, Math.min(18, (chartW / Math.max(1, scoped.length)) * 0.56));
       const axisFontSize = isMobileChart ? 10 : 12;
       const dateFontSize = isMobileChart ? 11 : 13;
-      const lineWidth = isMobileChart ? 4.6 : 4;
-      const dotRadius = isMobileChart ? 3.2 : 4;
-      const latestDotRadius = isMobileChart ? 4.8 : 5.5;
-      const hitRadius = isMobileChart ? 14 : 18;
-      const quantityBarOpacity = isMobileChart ? 0.22 : 0.34;
+      const lineWidth = isMobileChart ? 3.2 : 4;
+      const mobileDotRadius = scoped.length > 80 ? 1.3 : scoped.length > 40 ? 1.7 : scoped.length > 20 ? 2.1 : 2.6;
+      const dotRadius = isMobileChart ? mobileDotRadius : 4;
+      const latestDotRadius = isMobileChart ? Math.max(2.8, mobileDotRadius + 1.1) : 5.5;
+      const hitRadius = isMobileChart ? Math.max(5, Math.min(11, chartW / Math.max(1, scoped.length) * 0.5)) : 18;
+      const quantityBarOpacity = isMobileChart ? 0.2 : 0.34;
       const assetTickLabel = isMobileChart ? formatCompactChartCurrency : formatCurrency;
 
       root.innerHTML = `
         <div class="my-asset-chart-wrap${isMobileChart ? " is-mobile-density" : ""}">
           <div class="my-asset-chart-tooltip" hidden></div>
-          <svg class="my-asset-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="資産額の推移グラフ"${isMobileChart ? ` style="width:${W}px"` : ""}>
+          <svg class="my-asset-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="資産額の推移グラフ">
             <defs>
               <linearGradient id="myAssetAreaGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="#1e5bd7" stop-opacity="${isMobileChart ? "0.18" : "0.24"}"></stop>
@@ -617,10 +618,10 @@
               return `<text x="${xToPx(index).toFixed(2)}" y="${H - 17}" text-anchor="${anchor}" font-size="${dateFontSize}" font-weight="800" fill="#475467">${escapeHtml(formatChartDate(point.date))}</text>`;
             }).join("")}
             <g aria-hidden="true">
-              <circle cx="${W - padR - (isMobileChart ? 104 : 154)}" cy="${isMobileChart ? 15 : 18}" r="${isMobileChart ? 3.5 : 4}" fill="#1e5bd7"></circle>
-              <text x="${W - padR - (isMobileChart ? 96 : 144)}" y="${isMobileChart ? 19 : 22}" font-size="${isMobileChart ? 10 : 11}" font-weight="800" fill="#475467">総資産額</text>
-              <rect x="${W - padR - (isMobileChart ? 48 : 80)}" y="${isMobileChart ? 12 : 14}" width="${isMobileChart ? 6 : 8}" height="${isMobileChart ? 6 : 8}" rx="2" fill="#9fb3d1" opacity="${isMobileChart ? 0.36 : 0.5}"></rect>
-              <text x="${W - padR - (isMobileChart ? 38 : 68)}" y="${isMobileChart ? 19 : 22}" font-size="${isMobileChart ? 10 : 11}" font-weight="800" fill="#667085">保有数</text>
+              <circle cx="${W - padR - (isMobileChart ? 102 : 154)}" cy="${isMobileChart ? 15 : 18}" r="${isMobileChart ? 3 : 4}" fill="#1e5bd7"></circle>
+              <text x="${W - padR - (isMobileChart ? 95 : 144)}" y="${isMobileChart ? 18.5 : 22}" font-size="${isMobileChart ? 9.5 : 11}" font-weight="800" fill="#475467">総資産額</text>
+              <rect x="${W - padR - (isMobileChart ? 46 : 80)}" y="${isMobileChart ? 12 : 14}" width="${isMobileChart ? 5.5 : 8}" height="${isMobileChart ? 5.5 : 8}" rx="2" fill="#9fb3d1" opacity="${isMobileChart ? 0.34 : 0.5}"></rect>
+              <text x="${W - padR - (isMobileChart ? 37 : 68)}" y="${isMobileChart ? 18.5 : 22}" font-size="${isMobileChart ? 9.5 : 11}" font-weight="800" fill="#667085">保有数</text>
             </g>
             ${scoped.map((point, index) => `<circle class="my-asset-chart-dot" cx="${xToPx(index).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="${index === scoped.length - 1 ? latestDotRadius : dotRadius}" fill="#1e5bd7"></circle><circle class="my-asset-hit-point" data-index="${index}" cx="${xToPx(index).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="${hitRadius}" fill="transparent"></circle>`).join("")}
           </svg>
