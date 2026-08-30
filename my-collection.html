@@ -512,6 +512,22 @@
       return multiplier * pow;
     }
 
+    function getNiceAxisCeil(value) {
+      const safeValue = Math.max(1, Number(value) || 1);
+      const pow = Math.pow(10, Math.floor(Math.log10(safeValue)));
+      const normalized = safeValue / pow;
+      const multiplier = normalized <= 1 ? 1 : normalized <= 1.5 ? 1.5 : normalized <= 2 ? 2 : normalized <= 2.5 ? 2.5 : normalized <= 4 ? 4 : normalized <= 5 ? 5 : 10;
+      return multiplier * pow;
+    }
+
+    function getNiceAssetTickStep(rawStep) {
+      const safeStep = Math.max(1, Number(rawStep) || 1);
+      const pow = Math.pow(10, Math.floor(Math.log10(safeStep)));
+      const normalized = safeStep / pow;
+      const multiplier = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
+      return multiplier * pow;
+    }
+
     function buildAssetAxis(minValue, maxValue, targetIntervals = 4) {
       if (!(Number.isFinite(minValue) && Number.isFinite(maxValue))) return { min: 0, max: 1, ticks: [0, 1] };
       if (minValue === maxValue) {
@@ -520,9 +536,10 @@
         maxValue = maxValue + pad;
       }
       const min = 0;
-      const rawStep = Math.max(1, maxValue - min) / Math.max(1, targetIntervals);
-      const step = getNiceAxisStep(rawStep);
-      const max = Math.ceil(maxValue / step) * step;
+      const targetMax = getNiceAxisCeil(Math.max(1, maxValue) / 0.8);
+      const rawStep = Math.max(1, targetMax - min) / Math.max(1, targetIntervals);
+      const step = getNiceAssetTickStep(rawStep);
+      const max = Math.ceil(targetMax / step) * step;
       const ticks = [];
       for (let value = min; value <= max + step * 0.001; value += step) ticks.push(Math.round(value));
       return { min, max, ticks };
