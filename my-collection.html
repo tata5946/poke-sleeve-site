@@ -482,19 +482,24 @@
       return parsed.toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" });
     }
 
-    function buildAssetAxis(minValue, maxValue) {
+    function getNiceAxisStep(rawStep) {
+      const safeStep = Math.max(1, Number(rawStep) || 1);
+      const pow = Math.pow(10, Math.floor(Math.log10(safeStep)));
+      const normalized = safeStep / pow;
+      const multiplier = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 2.5 ? 2.5 : normalized <= 5 ? 5 : 10;
+      return multiplier * pow;
+    }
+
+    function buildAssetAxis(minValue, maxValue, targetIntervals = 4) {
       if (!(Number.isFinite(minValue) && Number.isFinite(maxValue))) return { min: 0, max: 1, ticks: [0, 1] };
       if (minValue === maxValue) {
         const pad = Math.max(1000, Math.round(maxValue * 0.12));
         minValue = Math.max(0, minValue - pad);
         maxValue = maxValue + pad;
       }
-      const span = Math.max(1, maxValue - minValue);
-      const rawStep = span / 3;
-      const pow = Math.pow(10, Math.floor(Math.log10(rawStep)));
-      const normalized = rawStep / pow;
-      const step = (normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10) * pow;
       const min = 0;
+      const rawStep = Math.max(1, maxValue - min) / Math.max(1, targetIntervals);
+      const step = getNiceAxisStep(rawStep);
       const max = Math.ceil(maxValue / step) * step;
       const ticks = [];
       for (let value = min; value <= max + step * 0.001; value += step) ticks.push(Math.round(value));
@@ -537,7 +542,7 @@
       const padB = 54;
       const values = scoped.map((point) => point.value);
       const quantities = scoped.map((point) => point.totalQuantity || 0);
-      const axis = buildAssetAxis(Math.min(...values), Math.max(...values));
+      const axis = buildAssetAxis(Math.min(...values), Math.max(...values), isMobileChart ? 4 : 5);
       const quantityAxis = buildQuantityAxis(Math.max(...quantities));
       const chartW = W - padL - padR;
       const chartH = H - padT - padB;
