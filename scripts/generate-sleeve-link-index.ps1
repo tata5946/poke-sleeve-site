@@ -148,7 +148,7 @@ foreach ($sleeve in $items) {
 [void]$html.AppendLine('      </div>')
 [void]$html.AppendLine('    </main>')
 [void]$html.AppendLine('  </div>')
-[void]$html.AppendLine('  <script src="./assets/common.js?v=20260822c"></script>')
+[void]$html.AppendLine('  <script src="./assets/common.js?v=20260831a"></script>')
 [void]$html.AppendLine('  <script>')
 [void]$html.AppendLine('    document.addEventListener("DOMContentLoaded", async () => {')
 [void]$html.AppendLine('      if (window.common && typeof window.common.setupDashboardChrome === "function") {')
