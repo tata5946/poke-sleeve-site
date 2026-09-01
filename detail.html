@@ -1958,11 +1958,21 @@
       }
 
       .marketplace-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .marketplace-link--mercari {
         grid-column: auto;
+        order: 1;
+      }
+
+      .marketplace-link--suruga {
+        order: 2;
+      }
+
+      .marketplace-link--yahoo {
+        grid-column: 1 / -1;
+        order: 3;
       }
 
       .share-row {
