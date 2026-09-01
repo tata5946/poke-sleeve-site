@@ -2440,6 +2440,7 @@
       const price = Number.isFinite(latestObservation?.price) ? latestObservation.price : null;
       const canonicalUrl = getCanonicalSleeveUrl(sleeve.id || getSleeveId());
       const routeId = getSleeveRouteIdForDisplay(sleeve.id || getSleeveId());
+      const firstPrice = getFirstPriceValue(sleeve);
       const observationCount = Number.isFinite(latestObservation?.count) && latestObservation.count > 0
         ? Math.round(latestObservation.count)
         : null;
@@ -2473,6 +2474,15 @@
           "@type": "PropertyValue",
           name: "発売日",
           value: releaseDateText
+        });
+      }
+      if (firstPrice != null) {
+        additionalProperty.push({
+          "@type": "PropertyValue",
+          name: "発売時価格",
+          value: Math.round(firstPrice),
+          unitText: "JPY",
+          description: "発売当時のポケモンセンター販売価格（税込）"
         });
       }
       if (sleeve.series) {
@@ -2776,10 +2786,23 @@
       return year ? `${year}年` : "";
     }
 
+    function getFirstPriceValue(sleeve) {
+      const rawValue = sleeve?.firstPrice;
+      if (rawValue == null || rawValue === "") return null;
+      const price = Number(rawValue);
+      return Number.isFinite(price) && price > 0 ? price : null;
+    }
+
+    function getFirstPriceText(sleeve) {
+      const price = getFirstPriceValue(sleeve);
+      return price == null ? "" : `${Math.round(price).toLocaleString()}円`;
+    }
+
     function getDetailFieldRows(sleeve) {
       return [
         { label: "JANコード", value: getSleeveRouteIdForDisplay(sleeve?.id || getSleeveId()) },
         { label: "発売日", value: getReleaseDateText(sleeve) },
+        { label: "発売時価格", value: getFirstPriceText(sleeve) },
         { label: "公式/非公式", value: getTextValue(sleeve?.series) },
         { label: "種類", value: getTextValue(sleeve?.type) },
         { label: "イラストレーター", value: getIllustratorText(sleeve) },
@@ -5378,6 +5401,7 @@
       if (!freshSleeve) return false;
       return getLatestTradeStamp(freshSleeve) !== getLatestTradeStamp(currentSleeve)
         || getSleevePriceDataSignature(freshSleeve) !== getSleevePriceDataSignature(currentSleeve)
+        || getFirstPriceText(freshSleeve) !== getFirstPriceText(currentSleeve)
         || String(freshSleeve.imageUrl || "") !== String(currentSleeve?.imageUrl || "");
     }
 

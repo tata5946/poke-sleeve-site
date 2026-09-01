@@ -7,7 +7,7 @@
  */
 
 /* ----- Config ----- */
-const GAS_URL = "https://script.google.com/macros/s/AKfycbw493hz-WmVaPd4DsDJ-cFtcmzEO7D7el0lPdlTDz3KxunpxfuADijXLW4O04DEpu_O/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzvJUrzMLNDRj0qMG_AvyD258t-HorOkMZaG2kx-oOm_vWQ-acmG6THcNOwzGoCf1lD/exec";
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
 const LOCAL_DATA_URL = "./data.json?v=20260831a";
@@ -15,8 +15,8 @@ const ARTICLE_DB_NAME = "pokeSleeveArticleStore";
 const ARTICLE_DB_VERSION = 1;
 const ARTICLE_STORE_NAME = "kv";
 const ARTICLE_STORE_KEY = "articles";
-const DATA_CACHE_KEY = "pokeSleeve:dataCache:v22";
-const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v22";
+const DATA_CACHE_KEY = "pokeSleeve:dataCache:v23";
+const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v23";
 const DATA_CACHE_TTL_MS = 5 * 60 * 1000;
 const DATA_STALE_MAX_MS = 10 * 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
@@ -45,6 +45,11 @@ function countUsableSleeves(data) {
 
 function isUsableDataPayload(data) {
   return countUsableSleeves(data) > 1;
+}
+
+function hasFirstPriceData(data) {
+  if (!Array.isArray(data?.sleeves)) return false;
+  return data.sleeves.some((sleeve) => sleeve?.firstPrice != null && sleeve.firstPrice !== "");
 }
 
 function initGoogleAnalytics() {
@@ -1816,8 +1821,8 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000, cacheMode = "defau
 }
 async function fetchPrimaryData() {
   const sources = [
-    { url: LOCAL_DATA_URL, timeoutMs: 15000, cacheMode: "reload" },
-    { url: GAS_URL, timeoutMs: 120000, cacheMode: "no-store" }
+    { url: LOCAL_DATA_URL, timeoutMs: 15000, cacheMode: "reload", requireFirstPrice: true },
+    { url: GAS_URL, timeoutMs: 120000, cacheMode: "no-store", requireFirstPrice: false }
   ];
 
   let lastError = null;
@@ -1836,7 +1841,7 @@ async function fetchPrimaryData() {
         bestData = sanitizedData;
         bestCount = usableSleeveCount;
       }
-      if (isUsableDataPayload(sanitizedData)) {
+      if (isUsableDataPayload(sanitizedData) && (!source.requireFirstPrice || hasFirstPriceData(sanitizedData))) {
         return sanitizedData;
       }
     } catch (error) {

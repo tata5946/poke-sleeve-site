@@ -22,6 +22,15 @@ function ConvertTo-HtmlText([object]$Value) {
   return [System.Net.WebUtility]::HtmlEncode([string]$Value)
 }
 
+function Get-FirstPriceText([object]$Sleeve) {
+  if (-not $Sleeve.PSObject.Properties.Name.Contains("firstPrice")) { return "" }
+  if ($null -eq $Sleeve.firstPrice -or [string]::IsNullOrWhiteSpace([string]$Sleeve.firstPrice)) { return "" }
+  $price = 0.0
+  if (-not [double]::TryParse([string]$Sleeve.firstPrice, [ref]$price)) { return "" }
+  if ($price -le 0) { return "" }
+  return ([Math]::Round($price)).ToString("N0") + "円"
+}
+
 function Get-LatestTrade([object]$Sleeve) {
   $rows = @($Sleeve.weeklyPrices) | Where-Object {
     $null -ne $_.price -and [double]$_.price -gt 0
@@ -166,6 +175,17 @@ function Get-StaticSleeveStructuredDataHtml([object]$Sleeve, [string]$RouteId, [
       value = [string]$Sleeve.releaseYear
     })
   }
+  $firstPriceText = Get-FirstPriceText $Sleeve
+  if (-not [string]::IsNullOrWhiteSpace($firstPriceText)) {
+    $firstPriceValue = [double]$Sleeve.firstPrice
+    $additionalProperty.Add([ordered]@{
+      "@type" = "PropertyValue"
+      name = "発売時価格"
+      value = [Math]::Round($firstPriceValue)
+      unitText = "JPY"
+      description = "発売当時のポケモンセンター販売価格（税込）"
+    })
+  }
   if (-not [string]::IsNullOrWhiteSpace([string]$Sleeve.series)) {
     $additionalProperty.Add([ordered]@{
       "@type" = "PropertyValue"
@@ -271,6 +291,7 @@ function Get-StaticSleeveInfo([object]$Sleeve) {
   $pairs = @(
     @('JAN&#12467;&#12540;&#12489;', $routeId),
     @('&#30330;&#22770;&#26085;', $Sleeve.releaseDate),
+    @('&#30330;&#22770;&#26178;&#20385;&#26684;', (Get-FirstPriceText $Sleeve)),
     @('&#30330;&#22770;&#24180;', $Sleeve.releaseYear),
     @('&#12471;&#12522;&#12540;&#12474;', $Sleeve.series),
     @('&#29366;&#24907;', $Sleeve.condition),
