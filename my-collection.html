@@ -362,8 +362,10 @@
     }
 
     function getFirstPriceValue(sleeve) {
-      const price = parsePositiveNumber(sleeve?.firstPrice);
-      return price > 0 ? price : null;
+      const rawValue = sleeve?.firstPrice;
+      if (rawValue == null || rawValue === "") return null;
+      const price = Number(rawValue);
+      return Number.isFinite(price) && price >= 0 ? price : null;
     }
 
     function resolvePurchasePriceInfo(item, sleeve, pricePoints, purchaseDate, releaseTimestamp) {

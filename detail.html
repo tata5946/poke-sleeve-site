@@ -2784,7 +2784,7 @@
       const rawValue = sleeve?.firstPrice;
       if (rawValue == null || rawValue === "") return null;
       const price = Number(rawValue);
-      return Number.isFinite(price) && price > 0 ? price : null;
+      return Number.isFinite(price) && price >= 0 ? price : null;
     }
 
     function getFirstPriceText(sleeve) {

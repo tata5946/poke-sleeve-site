@@ -22,12 +22,22 @@ function ConvertTo-HtmlText([object]$Value) {
   return [System.Net.WebUtility]::HtmlEncode([string]$Value)
 }
 
+function Write-TextIfChanged([string]$Path, [string]$Text) {
+  $resolvedPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path)
+  $content = $Text.TrimEnd("`r", "`n") + "`r`n"
+  if ((Test-Path -LiteralPath $resolvedPath) -and ([System.IO.File]::ReadAllText($resolvedPath) -eq $content)) {
+    return
+  }
+  $utf8NoBom = New-Object System.Text.UTF8Encoding -ArgumentList $false
+  [System.IO.File]::WriteAllText($resolvedPath, $content, $utf8NoBom)
+}
+
 function Get-FirstPriceText([object]$Sleeve) {
   if (-not $Sleeve.PSObject.Properties.Name.Contains("firstPrice")) { return "" }
   if ($null -eq $Sleeve.firstPrice -or [string]::IsNullOrWhiteSpace([string]$Sleeve.firstPrice)) { return "" }
   $price = 0.0
   if (-not [double]::TryParse([string]$Sleeve.firstPrice, [ref]$price)) { return "" }
-  if ($price -le 0) { return "" }
+  if ($price -lt 0) { return "" }
   return ([Math]::Round($price)).ToString("N0") + "円"
 }
 
@@ -417,7 +427,7 @@ foreach ($sleeve in @($data.sleeves)) {
   }
 
   $targetPath = Join-Path $targetDir "index.html"
-  Set-Content -LiteralPath $targetPath -Value $content -Encoding UTF8
+  Write-TextIfChanged $targetPath $content
 }
 
 Write-Output "Generated sleeve pages in $OutputRoot"

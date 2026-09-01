@@ -73,9 +73,9 @@ function Get-DateText([object]$Value) {
   return ConvertTo-HtmlText $date
 }
 
-function Get-YenText([object]$Value, [string]$Fallback = "&#26410;&#21462;&#24471;") {
+function Get-YenText([object]$Value, [string]$Fallback = "&#26410;&#21462;&#24471;", [bool]$AllowZero = $false) {
   $price = Get-NumberOrNull $Value
-  if ($null -ne $price -and $price -gt 0) {
+  if ($null -ne $price -and ($price -gt 0 -or ($AllowZero -and $price -eq 0))) {
     return ("{0:N0}&#20870;" -f $price)
   }
   return $Fallback
@@ -247,7 +247,7 @@ function Append-ItemList([System.Text.StringBuilder]$Html, [array]$Items) {
     $name = ConvertTo-HtmlText $sleeve.name
     $imageUrl = ConvertTo-HtmlText $sleeve.imageUrl
     $releaseDate = Get-DateText $sleeve.releaseDate
-    $firstPrice = Get-YenText $sleeve.firstPrice
+    $firstPrice = Get-YenText $sleeve.firstPrice "&#26410;&#21462;&#24471;" $true
     $latestPrice = Get-LatestPriceValue $sleeve
     $currentPrice = Get-YenText $latestPrice "&#20385;&#26684;&#12487;&#12540;&#12479;&#12394;&#12375;"
     [void]$Html.AppendLine('            <li class="sleeve-index-item">')
