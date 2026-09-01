@@ -715,6 +715,13 @@ function normalizeMyCollectionPurchaseWeek(value) {
   return weekStart && weekStart <= currentWeek ? weekStart : currentWeek;
 }
 
+function normalizeMyCollectionPurchaseDate(value) {
+  const text = String(value ?? "").trim();
+  const date = /^\d{4}-W\d{2}$/.test(text) ? weekInputToStartDate(text) : toISODate(value);
+  const currentDate = toISODate(new Date());
+  return date && date <= currentDate ? date : currentDate;
+}
+
 function getMyCollectionDefaultPurchaseWeek(sleeve) {
   const releaseDate = toISODate(
     sleeve?.releaseDate
@@ -729,6 +736,33 @@ function getMyCollectionDefaultPurchaseWeek(sleeve) {
     ?? sleeve?.["発売年月日"]
   );
   return normalizeMyCollectionPurchaseWeek(releaseDate || new Date());
+}
+
+function getMyCollectionDefaultPurchaseDate(sleeve) {
+  const releaseDate = toISODate(
+    sleeve?.releaseDate
+    ?? sleeve?.release_date
+    ?? sleeve?.releaseAt
+    ?? sleeve?.releasedAt
+    ?? sleeve?.releasedDate
+    ?? sleeve?.released_date
+    ?? sleeve?.releaseDatetime
+    ?? sleeve?.release_datetime
+    ?? sleeve?.["発売日"]
+    ?? sleeve?.["発売年月日"]
+  );
+  return normalizeMyCollectionPurchaseDate(releaseDate || new Date());
+}
+
+function hasExplicitMyCollectionPurchaseDate(item) {
+  if (item?.purchasedOnRelease === true || item?.purchased_on_release === true) return true;
+  if (item?.purchaseDateExplicit === true
+    || item?.purchaseDateSet === true
+    || item?.purchaseDateSource === "user"
+    || item?.purchase_date_source === "user") {
+    return true;
+  }
+  return hasExplicitMyCollectionPurchaseWeek(item);
 }
 
 function hasExplicitMyCollectionPurchaseWeek(item) {
@@ -747,20 +781,25 @@ function normalizeMyCollectionItem(item) {
   const sleeveId = normalizeMyCollectionSleeveId(item?.sleeveId ?? item?.id ?? item?.itemId);
   if (!sleeveId) return null;
   const quantity = Number(item?.quantity);
-  const rawPurchaseWeek = item?.purchaseWeek ?? item?.purchase_week ?? item?.purchaseDate ?? item?.purchase_date;
-  const hasPurchaseWeek = String(rawPurchaseWeek ?? "").trim() !== "";
+  const rawPurchaseDate = item?.purchaseDate ?? item?.purchase_date ?? item?.purchaseWeek ?? item?.purchase_week;
+  const hasPurchaseDate = String(rawPurchaseDate ?? "").trim() !== "";
+  const purchasedOnRelease = item?.purchasedOnRelease === true || item?.purchased_on_release === true;
   const normalized = {
     ...item,
     sleeveId,
     name: String(item?.name || "").trim(),
     image: String(item?.image || item?.imageUrl || "").trim(),
     quantity: Number.isFinite(quantity) && quantity >= 1 ? Math.floor(quantity) : 1,
+    purchasedOnRelease,
+    purchasePrice: null,
     addedAt: String(item?.addedAt || new Date().toISOString())
   };
-  if (hasPurchaseWeek) {
-    normalized.purchaseWeek = normalizeMyCollectionPurchaseWeek(rawPurchaseWeek);
+  if (hasPurchaseDate) {
+    normalized.purchaseDate = normalizeMyCollectionPurchaseDate(rawPurchaseDate);
+    normalized.purchaseWeek = normalized.purchaseDate;
   }
-  normalized.purchaseWeekSet = hasExplicitMyCollectionPurchaseWeek(item);
+  normalized.purchaseDateSet = hasExplicitMyCollectionPurchaseDate(item);
+  normalized.purchaseWeekSet = hasExplicitMyCollectionPurchaseWeek(item) || normalized.purchaseDateSet;
   return normalized;
 }
 
@@ -912,13 +951,19 @@ function addToMyCollection(sleeve) {
   const list = readMyCollection();
   if (list.some((item) => item.sleeveId === sleeveId)) return writeMyCollection(list);
   const now = new Date().toISOString();
+  const defaultPurchaseDate = getMyCollectionDefaultPurchaseDate(sleeve);
   return writeMyCollection([
     {
       sleeveId,
       name: String(sleeve?.name || "").trim(),
       image: String(sleeve?.image || sleeve?.imageUrl || "").trim(),
       quantity: 1,
-      purchaseWeek: getMyCollectionDefaultPurchaseWeek(sleeve),
+      purchasedOnRelease: false,
+      purchaseDate: defaultPurchaseDate,
+      purchaseDateSet: false,
+      purchaseDateSource: "default",
+      purchasePrice: null,
+      purchaseWeek: defaultPurchaseDate,
       purchaseWeekSet: false,
       purchaseWeekSource: "default",
       addedAt: now
@@ -942,11 +987,42 @@ function updateMyCollectionQuantity(id, quantity) {
 }
 
 function updateMyCollectionPurchaseWeek(id, purchaseWeek) {
+  return updateMyCollectionPurchaseDate(id, purchaseWeek);
+}
+
+function updateMyCollectionPurchaseDate(id, purchaseDate) {
   const sleeveId = normalizeMyCollectionSleeveId(id);
   if (!sleeveId) return readMyCollection();
-  const nextPurchaseWeek = normalizeMyCollectionPurchaseWeek(purchaseWeek);
+  const nextPurchaseDate = normalizeMyCollectionPurchaseDate(purchaseDate);
   return writeMyCollection(readMyCollection().map((item) => (
-    item.sleeveId === sleeveId ? { ...item, purchaseWeek: nextPurchaseWeek, purchaseWeekSet: true, purchaseWeekSource: "user" } : item
+    item.sleeveId === sleeveId ? {
+      ...item,
+      purchasedOnRelease: false,
+      purchaseDate: nextPurchaseDate,
+      purchaseDateSet: true,
+      purchaseDateSource: "user",
+      purchasePrice: null,
+      purchaseWeek: nextPurchaseDate,
+      purchaseWeekSet: true,
+      purchaseWeekSource: "user"
+    } : item
+  )));
+}
+
+function updateMyCollectionPurchasedOnRelease(id, purchasedOnRelease) {
+  const sleeveId = normalizeMyCollectionSleeveId(id);
+  if (!sleeveId) return readMyCollection();
+  const enabled = purchasedOnRelease === true;
+  return writeMyCollection(readMyCollection().map((item) => (
+    item.sleeveId === sleeveId ? {
+      ...item,
+      purchasedOnRelease: enabled,
+      purchaseDateSet: enabled ? true : item.purchaseDateSet === true,
+      purchaseDateSource: enabled ? "release" : (item.purchaseDateSource === "release" ? "user" : item.purchaseDateSource),
+      purchasePrice: null,
+      purchaseWeekSet: enabled ? true : item.purchaseWeekSet === true,
+      purchaseWeekSource: enabled ? "release" : (item.purchaseWeekSource === "release" ? "user" : item.purchaseWeekSource)
+    } : item
   )));
 }
 
@@ -2416,7 +2492,9 @@ window.common = {
   buildSleeveDetailHref,
   normalizeMyCollectionSleeveId,
   normalizeMyCollectionPurchaseWeek,
+  normalizeMyCollectionPurchaseDate,
   hasExplicitMyCollectionPurchaseWeek,
+  hasExplicitMyCollectionPurchaseDate,
   startDateToWeekInput,
   weekInputToStartDate,
   readMyCollection,
@@ -2428,6 +2506,8 @@ window.common = {
   addToMyCollection,
   updateMyCollectionQuantity,
   updateMyCollectionPurchaseWeek,
+  updateMyCollectionPurchaseDate,
+  updateMyCollectionPurchasedOnRelease,
   removeFromMyCollection,
   toggleMyCollectionSleeve,
   updateMyCollectionCountBadges,
