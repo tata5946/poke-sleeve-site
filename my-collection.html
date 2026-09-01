@@ -363,6 +363,14 @@
       const basisTimestamp = Date.parse(basisDate);
       const marketPoint = Number.isFinite(basisTimestamp) ? getMarketPointAtOrBefore(pricePoints, basisTimestamp) : null;
       const price = marketPoint ? marketPoint.price : null;
+      if (price == null) {
+        return {
+          price: null,
+          basisDate,
+          note: "購入日時点の相場データなし",
+          source: "market"
+        };
+      }
       const noteDate = formatPurchasePriceNoteDate(marketPoint?.date || basisDate);
       return {
         price,
@@ -417,15 +425,11 @@
         const sleeve = sleeveMap.get(sleeveId);
         const releaseTimestamp = sleeve ? getReleaseTimestamp(sleeve) : null;
         const pricePoints = sleeve ? buildMarketPricePoints(sleeve, releaseTimestamp) : [];
-        const purchaseDate = getPurchaseDateForInput(item, pricePoints, releaseTimestamp, latestIndexTimestamp);
         const purchaseTimestamp = resolvePurchaseTimestamp(item, pricePoints, releaseTimestamp, latestIndexTimestamp);
-        const purchasePriceInfo = resolvePurchasePriceInfo(item, sleeve, pricePoints, purchaseDate, releaseTimestamp);
         return {
           sleeveId,
           currentQuantity: getCollectionQuantity(item),
           purchaseTimestamp,
-          purchasePrice: purchasePriceInfo.price,
-          purchasePriceSource: purchasePriceInfo.source,
           releaseTimestamp,
           pricePoints,
           weeklyPoints: pricePoints
@@ -451,9 +455,7 @@
       let pricedCount = 0;
       for (const row of rows) {
         if (Number.isFinite(row.releaseTimestamp) && timestamp < row.releaseTimestamp) continue;
-        const price = Number.isFinite(row.purchaseTimestamp) && timestamp <= row.purchaseTimestamp
-          ? row.purchasePrice
-          : getPriceAtOrBefore(row.weeklyPoints, timestamp);
+        const price = getPriceAtOrBefore(row.weeklyPoints, timestamp);
         if (!(price > 0)) continue;
         total += price * row.quantity;
         pricedCount += 1;
@@ -471,9 +473,7 @@
         if (Number.isFinite(row.purchaseTimestamp) && timestamp < row.purchaseTimestamp) continue;
         if (Number.isFinite(row.releaseTimestamp) && timestamp < row.releaseTimestamp) continue;
         totalQuantity += quantity;
-        const price = Number.isFinite(row.purchaseTimestamp) && timestamp <= row.purchaseTimestamp
-          ? row.purchasePrice
-          : getPriceAtOrBefore(row.weeklyPoints, timestamp);
+        const price = getPriceAtOrBefore(row.weeklyPoints, timestamp);
         if (!(price > 0)) continue;
         total += price * quantity;
         pricedCount += 1;
