@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/site.css?v=20260826i" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260901b" />
 </head>
 
 <body class="page-market-list my-collection-page" data-hide-global-header="1">
@@ -45,9 +45,28 @@
 
         <section class="my-asset-panel" aria-label="コレクション資産サマリー">
           <div class="my-asset-total">
-            <span class="my-asset-label">コレクション総資産額</span>
+            <span class="my-asset-label">現在評価額</span>
             <strong id="collectionAssetTotal" class="my-asset-total-value">―</strong>
           </div>
+          <div class="my-asset-finance-stats" aria-label="取得額と評価損益">
+            <div class="my-asset-finance-stat">
+              <span>取得総額</span>
+              <strong id="collectionAcquisitionTotal">―</strong>
+            </div>
+            <div class="my-asset-finance-stat">
+              <span>現在評価額</span>
+              <strong id="collectionCurrentValuation">―</strong>
+            </div>
+            <div class="my-asset-finance-stat">
+              <span>評価損益</span>
+              <strong id="collectionValuationPnl">―</strong>
+            </div>
+            <div class="my-asset-finance-stat">
+              <span>損益率</span>
+              <strong id="collectionValuationRate">―</strong>
+            </div>
+          </div>
+          <p id="collectionValuationNote" class="my-asset-valuation-note" hidden>※取得総額・評価損益は購入価格取得済みアイテムのみで計算</p>
           <div class="my-asset-stats">
             <div class="my-asset-stat">
               <span>登録種類</span>
@@ -385,6 +404,96 @@
       return Number.isFinite(n) && n > 0 ? `${Math.round(n).toLocaleString()}円` : "未取得";
     }
 
+    function formatValuationMoney(price) {
+      const n = Number(price);
+      return Number.isFinite(n) && n >= 0 ? `${Math.round(n).toLocaleString()}円` : "―";
+    }
+
+    function formatSignedValuationMoney(price) {
+      const n = Number(price);
+      if (!Number.isFinite(n)) return "―";
+      const rounded = Math.round(n);
+      const sign = rounded > 0 ? "+" : rounded < 0 ? "-" : "";
+      return `${sign}${Math.abs(rounded).toLocaleString()}円`;
+    }
+
+    function formatSignedRate(rate) {
+      const n = Number(rate);
+      if (!Number.isFinite(n)) return "―";
+      const sign = n > 0 ? "+" : n < 0 ? "-" : "";
+      return `${sign}${Math.abs(n).toFixed(1)}%`;
+    }
+
+    function getValuationToneClass(value) {
+      const n = Number(value);
+      if (n > 0) return "is-positive";
+      if (n < 0) return "is-negative";
+      return "";
+    }
+
+    function buildCollectionValuation(row) {
+      const quantity = getCollectionQuantity(row);
+      const purchasePrice = parsePositiveNumber(row?.purchasePriceInfo?.price);
+      const currentPrice = parsePositiveNumber(row?.price);
+      const acquisitionValue = purchasePrice > 0 ? purchasePrice * quantity : null;
+      const currentValue = currentPrice > 0 ? currentPrice * quantity : null;
+      const pnlValue = purchasePrice > 0 && currentPrice > 0 ? (currentPrice - purchasePrice) * quantity : null;
+      return {
+        quantity,
+        purchasePrice,
+        currentPrice,
+        acquisitionValue,
+        currentValue,
+        pnlValue,
+        pnlCostBasis: pnlValue != null ? acquisitionValue : null,
+        hasPurchasePrice: purchasePrice > 0,
+        hasCurrentPrice: currentPrice > 0,
+        hasPnl: pnlValue != null
+      };
+    }
+
+    function summarizeCollectionValuations(rows) {
+      let acquisitionTotal = 0;
+      let acquisitionCount = 0;
+      let currentTotal = 0;
+      let currentCount = 0;
+      let pnlTotal = 0;
+      let pnlCostBasis = 0;
+      let pnlCount = 0;
+      let missingPurchaseCount = 0;
+
+      for (const row of Array.isArray(rows) ? rows : []) {
+        const valuation = row?.valuation || buildCollectionValuation(row);
+        if (valuation.hasPurchasePrice) {
+          acquisitionTotal += valuation.acquisitionValue;
+          acquisitionCount += 1;
+        } else {
+          missingPurchaseCount += 1;
+        }
+        if (valuation.hasCurrentPrice) {
+          currentTotal += valuation.currentValue;
+          currentCount += 1;
+        }
+        if (valuation.hasPnl) {
+          pnlTotal += valuation.pnlValue;
+          pnlCostBasis += valuation.pnlCostBasis;
+          pnlCount += 1;
+        }
+      }
+
+      return {
+        acquisitionTotal: acquisitionCount > 0 ? acquisitionTotal : null,
+        acquisitionCount,
+        currentTotal: currentCount > 0 ? currentTotal : null,
+        currentCount,
+        pnlTotal: pnlCount > 0 ? pnlTotal : null,
+        pnlCostBasis,
+        pnlRate: pnlCount > 0 && pnlCostBasis > 0 ? (pnlTotal / pnlCostBasis) * 100 : null,
+        pnlCount,
+        missingPurchaseCount
+      };
+    }
+
     function buildCollectionRows(stored, sleeveMap, latestIndexWeek) {
       const latestIndexTimestamp = Date.parse(latestIndexWeek);
       return stored.map((item) => {
@@ -396,7 +505,7 @@
         const pricePoints = sleeve ? buildMarketPricePoints(sleeve, releaseTimestamp) : [];
         const purchaseDate = getPurchaseDateForInput(item, pricePoints, releaseTimestamp, latestIndexTimestamp);
         const purchasePriceInfo = resolvePurchasePriceInfo(item, sleeve, pricePoints, purchaseDate, releaseTimestamp);
-        return {
+        const row = {
           sleeveId,
           name,
           image,
@@ -414,6 +523,8 @@
           weeklyPoints: pricePoints,
           href: window.common.buildSleeveDetailHref(sleeveId)
         };
+        row.valuation = buildCollectionValuation(row);
+        return row;
       }).filter((row) => row.sleeveId);
     }
 
@@ -438,16 +549,8 @@
     }
 
     function calculateCurrentAssetTotal(rows) {
-      let total = 0;
-      let pricedCount = 0;
-      for (const row of rows) {
-        if (Number.isFinite(row.releaseTimestamp) && Date.now() < row.releaseTimestamp) continue;
-        const price = parsePositiveNumber(row.price);
-        if (!(price > 0)) continue;
-        total += price * row.quantity;
-        pricedCount += 1;
-      }
-      return { total: pricedCount > 0 ? total : null, pricedCount };
+      const summary = summarizeCollectionValuations(rows);
+      return { total: summary.currentTotal, pricedCount: summary.currentCount };
     }
 
     function evaluateRowsAt(rows, timestamp) {
@@ -547,14 +650,19 @@
 
     function updateAssetSummary(rows, timeline) {
       const totalEl = document.getElementById("collectionAssetTotal");
+      const acquisitionEl = document.getElementById("collectionAcquisitionTotal");
+      const currentValuationEl = document.getElementById("collectionCurrentValuation");
+      const pnlEl = document.getElementById("collectionValuationPnl");
+      const pnlRateEl = document.getElementById("collectionValuationRate");
+      const valuationNoteEl = document.getElementById("collectionValuationNote");
       const countEl = document.getElementById("collectionCount");
       const quantityEl = document.getElementById("collectionQuantityTotal");
       const weekDeltaEl = document.getElementById("collectionWeekDelta");
       const weekRateEl = document.getElementById("collectionWeekRate");
       const monthDeltaEl = document.getElementById("collectionMonthDelta");
       const monthRateEl = document.getElementById("collectionMonthRate");
-      const current = calculateCurrentAssetTotal(rows);
-      const currentTotal = current.total;
+      const summary = summarizeCollectionValuations(rows);
+      const currentTotal = summary.currentTotal;
       const latestPoint = timeline.length ? timeline[timeline.length - 1] : null;
       const weekPast = latestPoint ? getTimelinePointAtOrBefore(timeline, latestPoint.timestamp - (7 * 24 * 60 * 60 * 1000)) : null;
       const monthPast = latestPoint ? getTimelinePointAtOrBefore(timeline, latestPoint.timestamp - (30 * 24 * 60 * 60 * 1000)) : null;
@@ -562,7 +670,22 @@
       const monthDelta = formatDeltaAmount(currentTotal, monthPast?.value);
       const totalQuantity = rows.reduce((sum, row) => sum + getCollectionQuantity(row), 0);
 
-      if (totalEl) totalEl.textContent = currentTotal != null ? formatCurrency(currentTotal) : "―";
+      if (totalEl) totalEl.textContent = currentTotal != null ? formatValuationMoney(currentTotal) : "―";
+      if (acquisitionEl) acquisitionEl.textContent = summary.acquisitionTotal != null ? formatValuationMoney(summary.acquisitionTotal) : "―";
+      if (currentValuationEl) currentValuationEl.textContent = currentTotal != null ? formatValuationMoney(currentTotal) : "―";
+      if (pnlEl) {
+        pnlEl.textContent = summary.pnlTotal != null ? formatSignedValuationMoney(summary.pnlTotal) : "―";
+        pnlEl.classList.remove("is-positive", "is-negative");
+        const tone = getValuationToneClass(summary.pnlTotal);
+        if (tone) pnlEl.classList.add(tone);
+      }
+      if (pnlRateEl) {
+        pnlRateEl.textContent = summary.pnlRate != null ? formatSignedRate(summary.pnlRate) : "―";
+        pnlRateEl.classList.remove("is-positive", "is-negative");
+        const tone = getValuationToneClass(summary.pnlRate);
+        if (tone) pnlRateEl.classList.add(tone);
+      }
+      if (valuationNoteEl) valuationNoteEl.hidden = summary.missingPurchaseCount <= 0;
       if (countEl) countEl.textContent = `${rows.length}種類`;
       if (quantityEl) quantityEl.textContent = `${totalQuantity}個`;
       if (weekDeltaEl) weekDeltaEl.textContent = weekDelta.amount;
@@ -807,6 +930,8 @@
       const purchaseDateValue = clampPurchaseDate(row.purchaseDate || row.purchaseWeek, minPurchaseDateValue, maxPurchaseDateValue);
       const purchaseDateLabel = formatPurchaseDateLabel(purchaseDateValue);
       const purchasePriceNote = row.purchasePriceInfo?.note ? `（${row.purchasePriceInfo.note}）` : "";
+      const valuation = row.valuation || buildCollectionValuation(row);
+      const cardPnlClass = getValuationToneClass(valuation.pnlValue);
       return `
         <article class="my-collection-card">
           <a class="my-collection-card-link" href="${escapeHtml(row.href)}" data-sleeve-link="1" aria-label="${escapeHtml(row.name)}の詳細を見る">
@@ -836,6 +961,12 @@
               <span class="my-collection-purchase-price-label">購入価格</span>
               <strong>${escapeHtml(formatPurchasePrice(row.purchasePriceInfo?.price))}</strong>
               ${purchasePriceNote ? `<small>${escapeHtml(purchasePriceNote)}</small>` : ""}
+              ${valuation.hasPnl ? `
+                <div class="my-collection-card-pnl">
+                  <span>評価損益</span>
+                  <strong class="${escapeHtml(cardPnlClass)}">${escapeHtml(formatSignedValuationMoney(valuation.pnlValue))}</strong>
+                </div>
+              ` : ""}
             </div>
             <span class="my-collection-purchase-date-field" ${row.purchasedOnRelease ? "hidden" : ""}>
               <span>購入日</span>
@@ -887,18 +1018,7 @@
         data = await window.common.loadData();
       } catch (e) {
         currentAssetTimeline = [];
-        const totalEl = document.getElementById("collectionAssetTotal");
-        const weekDeltaEl = document.getElementById("collectionWeekDelta");
-        const weekRateEl = document.getElementById("collectionWeekRate");
-        const monthDeltaEl = document.getElementById("collectionMonthDelta");
-        const monthRateEl = document.getElementById("collectionMonthRate");
-        const quantityEl = document.getElementById("collectionQuantityTotal");
-        if (totalEl) totalEl.textContent = "―";
-        if (weekDeltaEl) weekDeltaEl.textContent = "―";
-        if (weekRateEl) weekRateEl.textContent = "";
-        if (monthDeltaEl) monthDeltaEl.textContent = "―";
-        if (monthRateEl) monthRateEl.textContent = "";
-        if (quantityEl) quantityEl.textContent = "0個";
+        updateAssetSummary([], []);
         renderAssetChart([]);
         root.innerHTML = `<div class="my-collection-empty"><p>${escapeHtml(e.message || "データの読み込みに失敗しました。")}</p></div>`;
         return;

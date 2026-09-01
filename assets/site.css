@@ -8128,6 +8128,14 @@ footer.site-footer {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
+    grid-column: 1 / -1;
+}
+
+.my-asset-finance-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    min-width: 0;
 }
 
 .my-asset-stat {
@@ -8141,9 +8149,27 @@ footer.site-footer {
     background: #f8fbff;
 }
 
+.my-asset-finance-stat {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    min-height: 74px;
+    padding: 10px;
+    border: 1px solid #e4eaf4;
+    border-radius: 8px;
+    background: #f8fbff;
+}
+
 .my-asset-stat span {
     color: #667085;
     font-size: 12px;
+    font-weight: 900;
+}
+
+.my-asset-finance-stat span {
+    color: #667085;
+    font-size: 12px;
+    line-height: 1.25;
     font-weight: 900;
 }
 
@@ -8155,12 +8181,43 @@ footer.site-footer {
     overflow-wrap: anywhere;
 }
 
+.my-asset-finance-stat strong {
+    color: #111827;
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+}
+
+.my-asset-finance-stat strong.is-positive,
+.my-collection-card-pnl strong.is-positive {
+    color: #027a48;
+}
+
+.my-asset-finance-stat strong.is-negative,
+.my-collection-card-pnl strong.is-negative {
+    color: #b42318;
+}
+
 .my-asset-stat small {
     min-height: 16px;
     color: #475467;
     font-size: 12px;
     line-height: 1.2;
     font-weight: 900;
+}
+
+.my-asset-valuation-note {
+    grid-column: 1 / -1;
+    margin: -4px 0 0;
+    color: #667085;
+    font-size: 11px;
+    line-height: 1.5;
+    font-weight: 800;
+}
+
+.my-asset-valuation-note[hidden] {
+    display: none !important;
 }
 
 .my-asset-chart-head {
@@ -8541,6 +8598,34 @@ footer.site-footer {
     font-weight: 800;
 }
 
+.my-collection-card-pnl {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+    margin-top: 3px;
+    padding-top: 6px;
+    border-top: 1px solid #e4eaf4;
+}
+
+.my-collection-card-pnl span {
+    color: #667085;
+    font-size: 11px;
+    line-height: 1.2;
+    font-weight: 900;
+}
+
+.my-collection-card-pnl strong {
+    min-width: 0;
+    color: #111827;
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 900;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
 .my-collection-purchase-date-field {
     display: grid;
     gap: 5px;
@@ -8694,6 +8779,10 @@ footer.site-footer {
     .my-asset-stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .my-asset-finance-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 700px) {
@@ -8712,12 +8801,22 @@ footer.site-footer {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .my-asset-finance-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .my-asset-stat {
         min-height: 70px;
         padding: 10px;
     }
 
+    .my-asset-finance-stat {
+        min-height: 68px;
+        padding: 9px;
+    }
+
     .my-asset-stat strong,
+    .my-asset-finance-stat strong,
     .my-collection-summary {
         font-size: 17px;
     }
