@@ -1,7 +1,9 @@
 param(
   [string]$SiteOrigin = "https://pokesuri-navi.com",
   [string]$DataPath = "data.json",
-  [string]$OutputPath = "sitemap.xml"
+  [string]$OutputPath = "sitemap.xml",
+  [string]$PageOutputRoot = "sleeves/page",
+  [int]$PageSize = 50
 )
 
 $ErrorActionPreference = "Stop"
@@ -22,11 +24,55 @@ function Get-SleeveRouteId([string]$Id) {
   return $sleeveId
 }
 
+function Get-ExistingLastmodMap([string]$Path) {
+  $map = @{}
+  if (-not (Test-Path -LiteralPath $Path)) { return $map }
+  try {
+    [xml]$existing = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
+    foreach ($url in @($existing.urlset.url)) {
+      $loc = [string]$url.loc
+      $lastmod = [string]$url.lastmod
+      if ($loc -and $lastmod) { $map[$loc] = $lastmod }
+    }
+  } catch {}
+  return $map
+}
+
+function Get-PageFileLastmod([int]$PageNumber) {
+  $path = Join-Path -Path $PageOutputRoot -ChildPath (Join-Path -Path ([string]$PageNumber) -ChildPath "index.html")
+  if (Test-Path -LiteralPath $path) {
+    return (Get-Item -LiteralPath $path).LastWriteTime.ToString("yyyy-MM-dd")
+  }
+  return $null
+}
+
+function Get-StaticFileLastmod([string]$Path) {
+  if (Test-Path -LiteralPath $Path) {
+    return (Get-Item -LiteralPath $Path).LastWriteTime.ToString("yyyy-MM-dd")
+  }
+  return $null
+}
+
+function Add-Url([System.Collections.Generic.List[object]]$List, [string]$Url, [hashtable]$ExistingLastmods, [string]$Lastmod = $null) {
+  $effectiveLastmod = $Lastmod
+  if (-not $effectiveLastmod -and $ExistingLastmods.ContainsKey($Url)) {
+    $effectiveLastmod = $ExistingLastmods[$Url]
+  }
+  if (-not $effectiveLastmod) {
+    $effectiveLastmod = Get-Date -Format "yyyy-MM-dd"
+  }
+  $List.Add([pscustomobject]@{
+    Loc = $Url
+    Lastmod = $effectiveLastmod
+  })
+}
+
 Assert-Exists -Path $DataPath -Label "Data file"
+if ($PageSize -lt 1) { throw "PageSize must be 1 or greater." }
 
 $origin = Normalize-Origin $SiteOrigin
-$today = Get-Date -Format "yyyy-MM-dd"
 $data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$existingLastmods = Get-ExistingLastmodMap $OutputPath
 
 $staticPages = @(
   "",
@@ -52,17 +98,29 @@ $sleeveIds = @($data.sleeves) |
   Select-Object -Unique |
   Sort-Object
 
-$urls = New-Object System.Collections.Generic.List[string]
+$urls = New-Object 'System.Collections.Generic.List[object]'
 foreach ($page in $staticPages) {
+  $url = ""
+  $lastmod = $null
   if ([string]::IsNullOrWhiteSpace($page)) {
-    $urls.Add($origin + "/")
+    $url = $origin + "/"
   } else {
-    $urls.Add($origin + "/" + $page)
+    $url = $origin + "/" + $page
+    if ($page -eq "sleeves/all.html") {
+      $lastmod = Get-StaticFileLastmod $page
+    }
   }
+  Add-Url $urls $url $existingLastmods $lastmod
+}
+
+$totalPages = [int][math]::Ceiling($sleeveIds.Count / $PageSize)
+for ($page = 1; $page -le $totalPages; $page++) {
+  $url = $origin + "/sleeves/page/$page/"
+  Add-Url $urls $url $existingLastmods (Get-PageFileLastmod $page)
 }
 foreach ($id in $sleeveIds) {
   $routeId = Get-SleeveRouteId $id
-  $urls.Add($origin + "/sleeve/" + [System.Uri]::EscapeDataString($routeId) + "/")
+  Add-Url $urls ($origin + "/sleeve/" + [System.Uri]::EscapeDataString($routeId) + "/") $existingLastmods
 }
 
 $xml = New-Object System.Text.StringBuilder
@@ -70,11 +128,15 @@ $xml = New-Object System.Text.StringBuilder
 [void]$xml.AppendLine('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
 foreach ($url in $urls) {
   [void]$xml.AppendLine('  <url>')
-  [void]$xml.AppendLine("    <loc>$url</loc>")
-  [void]$xml.AppendLine("    <lastmod>$today</lastmod>")
+  [void]$xml.AppendLine(("    <loc>{0}</loc>" -f $url.Loc))
+  [void]$xml.AppendLine(("    <lastmod>{0}</lastmod>" -f $url.Lastmod))
   [void]$xml.AppendLine('  </url>')
 }
 [void]$xml.AppendLine('</urlset>')
 
-Set-Content -LiteralPath $OutputPath -Value $xml.ToString() -Encoding UTF8
+[System.IO.File]::WriteAllText(
+  $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutputPath),
+  $xml.ToString().TrimEnd("`r", "`n") + "`r`n",
+  [System.Text.UTF8Encoding]::new($false)
+)
 Write-Output "Generated $OutputPath"
