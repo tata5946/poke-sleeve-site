@@ -47,11 +47,6 @@ function isUsableDataPayload(data) {
   return countUsableSleeves(data) > 1;
 }
 
-function hasFirstPriceData(data) {
-  if (!Array.isArray(data?.sleeves)) return false;
-  return data.sleeves.some((sleeve) => sleeve?.firstPrice != null && sleeve.firstPrice !== "");
-}
-
 function initGoogleAnalytics() {
   if (!GA_MEASUREMENT_ID || typeof document === "undefined") return;
   if (document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"]`)) return;
@@ -1821,8 +1816,8 @@ async function fetchJsonWithTimeout(url, { timeoutMs = 12000, cacheMode = "defau
 }
 async function fetchPrimaryData() {
   const sources = [
-    { url: LOCAL_DATA_URL, timeoutMs: 15000, cacheMode: "reload", requireFirstPrice: true },
-    { url: GAS_URL, timeoutMs: 120000, cacheMode: "no-store", requireFirstPrice: false }
+    { url: LOCAL_DATA_URL, timeoutMs: 15000, cacheMode: "reload" },
+    { url: GAS_URL, timeoutMs: 120000, cacheMode: "no-store" }
   ];
 
   let lastError = null;
@@ -1841,7 +1836,7 @@ async function fetchPrimaryData() {
         bestData = sanitizedData;
         bestCount = usableSleeveCount;
       }
-      if (isUsableDataPayload(sanitizedData) && (!source.requireFirstPrice || hasFirstPriceData(sanitizedData))) {
+      if (isUsableDataPayload(sanitizedData)) {
         return sanitizedData;
       }
     } catch (error) {
