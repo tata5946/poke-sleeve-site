@@ -524,22 +524,37 @@
       const safeStep = Math.max(1, Number(rawStep) || 1);
       const pow = Math.pow(10, Math.floor(Math.log10(safeStep)));
       const normalized = safeStep / pow;
-      const multiplier = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
+      const multiplier = normalized <= 1 ? 1 : normalized <= 2.5 ? 2 : normalized <= 5 ? 5 : 10;
       return multiplier * pow;
+    }
+
+    function getMinimumAssetTickStep(maxAbsValue) {
+      const value = Math.max(0, Number(maxAbsValue) || 0);
+      if (value >= 1000000) return 100000;
+      if (value >= 300000) return 50000;
+      if (value >= 50000) return 10000;
+      if (value >= 10000) return 5000;
+      if (value >= 5000) return 1000;
+      return 500;
     }
 
     function buildAssetAxis(minValue, maxValue, targetIntervals = 4) {
       if (!(Number.isFinite(minValue) && Number.isFinite(maxValue))) return { min: 0, max: 1, ticks: [0, 1] };
-      if (minValue === maxValue) {
-        const pad = Math.max(1000, Math.round(maxValue * 0.12));
-        minValue = Math.max(0, minValue - pad);
-        maxValue = maxValue + pad;
-      }
-      const min = 0;
-      const targetMax = getNiceAxisCeil(Math.max(1, maxValue) / 0.8);
-      const rawStep = Math.max(1, targetMax - min) / Math.max(1, targetIntervals);
-      const step = getNiceAssetTickStep(rawStep);
-      const max = Math.ceil(targetMax / step) * step;
+      const lowValue = Math.min(minValue, maxValue);
+      const highValue = Math.max(minValue, maxValue);
+      const dataRange = highValue - lowValue;
+      const maxAbsValue = Math.max(Math.abs(lowValue), Math.abs(highValue), 1);
+      const minTickStep = getMinimumAssetTickStep(maxAbsValue);
+      const padding = dataRange > 0
+        ? Math.max(dataRange * 0.25, minTickStep * 0.75)
+        : Math.max(minTickStep, maxAbsValue * 0.08);
+      const paddedMin = lowValue - padding;
+      const paddedMax = highValue + padding;
+      const rawStep = Math.max(1, paddedMax - paddedMin) / Math.max(1, targetIntervals);
+      const step = Math.max(minTickStep, getNiceAssetTickStep(rawStep));
+      const shouldStartAtZero = paddedMin <= 0 || maxAbsValue < 5000 || lowValue < step * 2;
+      const min = shouldStartAtZero ? 0 : Math.floor(paddedMin / step) * step;
+      const max = Math.max(min + step, Math.ceil(paddedMax / step) * step);
       const ticks = [];
       for (let value = min; value <= max + step * 0.001; value += step) ticks.push(Math.round(value));
       return { min, max, ticks };
