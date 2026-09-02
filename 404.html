@@ -838,15 +838,6 @@
       return await window.common.loadData();
     }
 
-    function getStructuredDataScript() {
-      let el = document.getElementById("productStructuredData");
-      if (el) return el;
-      el = document.createElement("script");
-      el.type = "application/ld+json";
-      el.id = "productStructuredData";
-      document.head.appendChild(el);
-      return el;
-    }
 
     function getFaqStructuredDataScript() {
       let el = document.getElementById("faqStructuredData");
@@ -858,71 +849,6 @@
       return el;
     }
 
-    function updateProductStructuredData(sleeve, latestObservation, releaseDateText) {
-      if (!sleeve || typeof sleeve !== "object") return;
-      const name = String(sleeve.name || "").trim();
-      if (!name) return;
-
-      const imageUrl = String(sleeve.imageUrl || "").trim();
-      const price = Number.isFinite(latestObservation?.avgPrice) ? latestObservation.avgPrice : null;
-      const observationCount = Number.isFinite(latestObservation?.tradeCount) && latestObservation.tradeCount > 0
-        ? Math.round(latestObservation.tradeCount)
-        : null;
-      const observationWeek = String(latestObservation?.week || "").trim();
-      const descriptionParts = [
-        name,
-        releaseDateText ? `発売日 ${releaseDateText}` : "",
-        sleeve.series ? `シリーズ ${String(sleeve.series).trim()}` : "",
-        sleeve.condition ? `状態 ${String(sleeve.condition).trim()}` : ""
-      ].filter(Boolean);
-
-      const product = {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        name,
-        description: descriptionParts.join(" / "),
-        image: imageUrl || undefined,
-        url: location.href
-      };
-
-      const additionalProperty = [];
-      if (price != null) {
-        additionalProperty.push(
-          {
-            "@type": "PropertyValue",
-            name: "相場価格",
-            value: price,
-            unitText: "JPY",
-            description: "メルカリの週次売買成立価格平均"
-          },
-          {
-            "@type": "PropertyValue",
-            name: "相場価格の算出方法",
-            value: "メルカリの週次売買成立価格平均"
-          }
-        );
-      }
-      if (observationWeek) {
-        additionalProperty.push({
-          "@type": "PropertyValue",
-          name: "直近観測週",
-          value: observationWeek
-        });
-      }
-      if (observationCount != null) {
-        additionalProperty.push({
-          "@type": "PropertyValue",
-          name: "直近観測件数",
-          value: observationCount
-        });
-      }
-      if (additionalProperty.length) {
-        product.additionalProperty = additionalProperty;
-      }
-
-      const script = getStructuredDataScript();
-      script.textContent = JSON.stringify(product);
-    }
 
     function updateFaqStructuredData(sleeve, latestPrice, releaseDateText) {
       if (!sleeve || typeof sleeve !== "object") return;
@@ -2519,7 +2445,6 @@
 
       const observationRows = normalizeObservationRows(s.weeklyPrices);
       const latestObservation = observationRows.filter((row) => row.hasTrade && Number.isFinite(row.avgPrice)).slice(-1)[0] || null;
-      updateProductStructuredData(s, latestObservation, releaseDateText);
       updateFaqStructuredData(s, latestObservation ? latestObservation.avgPrice : null, releaseDateText);
       const chartTitleEl = document.getElementById("priceSectionTitle");
       const modeNoteEl = document.getElementById("chartModeNote");

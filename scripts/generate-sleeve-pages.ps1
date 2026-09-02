@@ -160,102 +160,8 @@ function ConvertTo-JsonLdScript([string]$Id, [object]$Data) {
   return '<script id="' + (ConvertTo-HtmlText $Id) + '" type="application/ld+json">' + $json + '</script>'
 }
 
-function Get-StaticSleeveStructuredDataHtml([object]$Sleeve, [string]$RouteId, [string]$CanonicalUrl, [string]$ImageUrl, [object]$LatestTrade) {
+function Get-StaticSleeveStructuredDataHtml([object]$Sleeve, [string]$CanonicalUrl) {
   $productName = Get-SleeveSeoProductName $Sleeve
-  $description = Get-SleeveMetaDescription $Sleeve
-  $additionalProperty = New-Object System.Collections.Generic.List[object]
-
-  if (-not [string]::IsNullOrWhiteSpace($RouteId)) {
-    $additionalProperty.Add([ordered]@{
-      "@type" = "PropertyValue"
-      name = "JANコード"
-      value = $RouteId
-    })
-  }
-  if (-not [string]::IsNullOrWhiteSpace([string]$Sleeve.releaseDate)) {
-    $additionalProperty.Add([ordered]@{
-      "@type" = "PropertyValue"
-      name = "発売日"
-      value = [string]$Sleeve.releaseDate
-    })
-  } elseif (-not [string]::IsNullOrWhiteSpace([string]$Sleeve.releaseYear)) {
-    $additionalProperty.Add([ordered]@{
-      "@type" = "PropertyValue"
-      name = "発売年"
-      value = [string]$Sleeve.releaseYear
-    })
-  }
-  $firstPriceText = Get-FirstPriceText $Sleeve
-  if (-not [string]::IsNullOrWhiteSpace($firstPriceText)) {
-    $firstPriceValue = [double]$Sleeve.firstPrice
-    $additionalProperty.Add([ordered]@{
-      "@type" = "PropertyValue"
-      name = "発売時価格"
-      value = [Math]::Round($firstPriceValue)
-      unitText = "JPY"
-      description = "発売当時のポケモンセンター販売価格（税込）"
-    })
-  }
-  if (-not [string]::IsNullOrWhiteSpace([string]$Sleeve.series)) {
-    $additionalProperty.Add([ordered]@{
-      "@type" = "PropertyValue"
-      name = "公式/非公式"
-      value = [string]$Sleeve.series
-    })
-  }
-  if (-not [string]::IsNullOrWhiteSpace([string]$Sleeve.type)) {
-    $additionalProperty.Add([ordered]@{
-      "@type" = "PropertyValue"
-      name = "種類"
-      value = [string]$Sleeve.type
-    })
-  }
-  if (-not [string]::IsNullOrWhiteSpace([string]$Sleeve.illustrator)) {
-    $additionalProperty.Add([ordered]@{
-      "@type" = "PropertyValue"
-      name = "イラストレーター"
-      value = [string]$Sleeve.illustrator
-    })
-  }
-  if ($LatestTrade) {
-    $additionalProperty.Add([ordered]@{
-      "@type" = "PropertyValue"
-      name = "相場価格"
-      value = [double]$LatestTrade.price
-      unitText = "JPY"
-      description = "メルカリの売買成立価格平均"
-    })
-    if (-not [string]::IsNullOrWhiteSpace([string]$LatestTrade.period)) {
-      $additionalProperty.Add([ordered]@{
-        "@type" = "PropertyValue"
-        name = "直近観測期間"
-        value = [string]$LatestTrade.period
-      })
-    }
-    if ($null -ne $LatestTrade.count -and [double]$LatestTrade.count -gt 0) {
-      $additionalProperty.Add([ordered]@{
-        "@type" = "PropertyValue"
-        name = "直近観測件数"
-        value = [int]$LatestTrade.count
-      })
-    }
-  }
-
-  $product = [ordered]@{
-    "@context" = "https://schema.org"
-    "@type" = "Product"
-    name = $productName
-    description = $description
-    url = $CanonicalUrl
-    category = "ポケモンカード デッキシールド"
-  }
-  if (-not [string]::IsNullOrWhiteSpace($ImageUrl)) { $product.Add("image", $ImageUrl) }
-  if (-not [string]::IsNullOrWhiteSpace($RouteId)) {
-    $product.Add("sku", $RouteId)
-    if ($RouteId -match '^\d{13}$') { $product.Add("gtin13", $RouteId) }
-    if ($RouteId -match '^\d{14}$') { $product.Add("gtin14", $RouteId) }
-  }
-  if ($additionalProperty.Count -gt 0) { $product.Add("additionalProperty", [object]@($additionalProperty.ToArray())) }
 
   $breadcrumb = [ordered]@{
     "@context" = "https://schema.org"
@@ -282,7 +188,7 @@ function Get-StaticSleeveStructuredDataHtml([object]$Sleeve, [string]$RouteId, [
     )
   }
 
-  return "  " + (ConvertTo-JsonLdScript "productStructuredData" $product) + "`r`n  " + (ConvertTo-JsonLdScript "breadcrumbStructuredData" $breadcrumb)
+  return "  " + (ConvertTo-JsonLdScript "breadcrumbStructuredData" $breadcrumb)
 }
 
 function Get-StaticSleeveBadges([object]$Sleeve) {
@@ -365,7 +271,7 @@ foreach ($sleeve in @($data.sleeves)) {
   $ogUrl = "https://pokesuri-navi.com/sleeve/$encodedId/"
   $canonicalTag = '  <link rel="canonical" href="https://pokesuri-navi.com/sleeve/' + $encodedId + '/" />'
   $latestTrade = Get-LatestTrade $sleeve
-  $structuredDataHtml = Get-StaticSleeveStructuredDataHtml -Sleeve $sleeve -RouteId $routeId -CanonicalUrl $ogUrl -ImageUrl $ogImage -LatestTrade $latestTrade
+  $structuredDataHtml = Get-StaticSleeveStructuredDataHtml -Sleeve $sleeve -CanonicalUrl $ogUrl
   $inlinePageDataScript = '  <script>window.__SLEEVE_PAGE_ID = ' + $jsId + ';window.__SLEEVE_PAGE_DATA = ' + $jsSleeve + ';</script>'
   $latestPriceText = if ($latestTrade) { ([double]$latestTrade.price).ToString("N0") + "円" } else { "-" }
   $latestDateText = if ($latestTrade) { [string]$latestTrade.observedText } else { "最終観測日: -" }

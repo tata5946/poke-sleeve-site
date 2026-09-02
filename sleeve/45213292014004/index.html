@@ -15,7 +15,6 @@
     <meta property="og:image" content="https://drive.google.com/thumbnail?id=1Tt_V8WSpCFuo97s0cru66x-nZ8pZsEeQ&sz=w1200" />
     <meta property="og:url" content="https://pokesuri-navi.com/sleeve/45213292014004/" />
   <link rel="canonical" href="https://pokesuri-navi.com/sleeve/45213292014004/" />
-  <script id="productStructuredData" type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"ゲノセクト デッキシールド","description":"2013年に発売されたポケモンカード公式デッキシールド「ゲノセクト」の相場・価格情報。現在相場、過去の価格推移、商品情報を掲載しています。ポケカスリーブの購入・売却時の価格確認にご利用ください。","url":"https://pokesuri-navi.com/sleeve/45213292014004/","category":"ポケモンカード デッキシールド","image":"https://drive.google.com/thumbnail?id=1Tt_V8WSpCFuo97s0cru66x-nZ8pZsEeQ\u0026sz=w1200","sku":"45213292014004","gtin14":"45213292014004","additionalProperty":[{"@type":"PropertyValue","name":"JANコード","value":"45213292014004"},{"@type":"PropertyValue","name":"発売日","value":"2013-07-13"},{"@type":"PropertyValue","name":"発売時価格","value":0,"unitText":"JPY","description":"発売当時のポケモンセンター販売価格（税込）"},{"@type":"PropertyValue","name":"公式/非公式","value":"公式"},{"@type":"PropertyValue","name":"種類","value":"デッキシールド"},{"@type":"PropertyValue","name":"相場価格","value":1555,"unitText":"JPY","description":"メルカリの売買成立価格平均"},{"@type":"PropertyValue","name":"直近観測期間","value":"2026-07-13"},{"@type":"PropertyValue","name":"直近観測件数","value":1}]}</script>
   <script id="breadcrumbStructuredData" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://pokesuri-navi.com/"},{"@type":"ListItem","position":2,"name":"ポケモンカードのスリーブ・デッキシールド一覧","item":"https://pokesuri-navi.com/sleeves/"},{"@type":"ListItem","position":3,"name":"ゲノセクト デッキシールド","item":"https://pokesuri-navi.com/sleeve/45213292014004/"}]}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2368,15 +2367,6 @@
       return await window.common.loadData();
     }
 
-    function getStructuredDataScript() {
-      let el = document.getElementById("productStructuredData");
-      if (el) return el;
-      el = document.createElement("script");
-      el.type = "application/ld+json";
-      el.id = "productStructuredData";
-      document.head.appendChild(el);
-      return el;
-    }
 
     function getFaqStructuredDataScript() {
       let el = document.getElementById("faqStructuredData");
@@ -2430,118 +2420,6 @@
       getBreadcrumbStructuredDataScript().textContent = JSON.stringify(data);
     }
 
-    function updateProductStructuredData(sleeve, latestObservation, releaseDateText) {
-      if (!sleeve || typeof sleeve !== "object") return;
-      const name = String(sleeve.name || "").trim();
-      if (!name) return;
-
-      const imageUrl = String(sleeve.imageUrl || "").trim();
-      const illustratorText = getIllustratorText(sleeve);
-      const price = Number.isFinite(latestObservation?.price) ? latestObservation.price : null;
-      const canonicalUrl = getCanonicalSleeveUrl(sleeve.id || getSleeveId());
-      const routeId = getSleeveRouteIdForDisplay(sleeve.id || getSleeveId());
-      const firstPrice = getFirstPriceValue(sleeve);
-      const observationCount = Number.isFinite(latestObservation?.count) && latestObservation.count > 0
-        ? Math.round(latestObservation.count)
-        : null;
-      const observationWeek = String(latestObservation?.week || "").trim();
-
-      const product = {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        name: getSleeveSeoProductName(sleeve),
-        description: getSleeveMetaDescription(sleeve),
-        image: imageUrl || undefined,
-        url: canonicalUrl || location.href,
-        category: "ポケモンカード デッキシールド"
-      };
-      if (routeId) {
-        product.sku = routeId;
-        if (/^\d{13}$/.test(routeId)) product.gtin13 = routeId;
-        if (/^\d{14}$/.test(routeId)) product.gtin14 = routeId;
-      }
-
-      const additionalProperty = [];
-      if (routeId) {
-        additionalProperty.push({
-          "@type": "PropertyValue",
-          name: "JANコード",
-          value: routeId
-        });
-      }
-      if (releaseDateText && releaseDateText !== "不明") {
-        additionalProperty.push({
-          "@type": "PropertyValue",
-          name: "発売日",
-          value: releaseDateText
-        });
-      }
-      if (firstPrice != null) {
-        additionalProperty.push({
-          "@type": "PropertyValue",
-          name: "発売時価格",
-          value: Math.round(firstPrice),
-          unitText: "JPY",
-          description: "発売当時のポケモンセンター販売価格（税込）"
-        });
-      }
-      if (sleeve.series) {
-        additionalProperty.push({
-          "@type": "PropertyValue",
-          name: "公式/非公式",
-          value: String(sleeve.series).trim()
-        });
-      }
-      if (sleeve.condition) {
-        additionalProperty.push({
-          "@type": "PropertyValue",
-          name: "状態",
-          value: String(sleeve.condition).trim()
-        });
-      }
-      if (price != null) {
-        additionalProperty.push(
-          {
-            "@type": "PropertyValue",
-            name: "相場価格",
-            value: price,
-            unitText: "JPY",
-            description: "メルカリの週次売買成立価格平均"
-          },
-          {
-            "@type": "PropertyValue",
-            name: "相場価格の算出方法",
-            value: "メルカリの週次売買成立価格平均"
-          }
-        );
-      }
-      if (observationWeek) {
-        additionalProperty.push({
-          "@type": "PropertyValue",
-          name: "直近観測週",
-          value: observationWeek
-        });
-      }
-      if (illustratorText) {
-        additionalProperty.push({
-          "@type": "PropertyValue",
-          name: "イラストレーター",
-          value: illustratorText
-        });
-      }
-      if (observationCount != null) {
-        additionalProperty.push({
-          "@type": "PropertyValue",
-          name: "直近観測件数",
-          value: observationCount
-        });
-      }
-      if (additionalProperty.length) {
-        product.additionalProperty = additionalProperty;
-      }
-      const script = getStructuredDataScript();
-      script.textContent = JSON.stringify(product);
-    }
 
     function updateFaqStructuredData(sleeve, latestPrice, releaseDateText) {
       if (!sleeve || typeof sleeve !== "object") return;
@@ -5510,7 +5388,6 @@
       const fullPeriodSeries = buildFullPeriodSeries(s);
       const latestObservation = fullPeriodSeries.length ? fullPeriodSeries[fullPeriodSeries.length - 1] : null;
       updateSleeveHeadMeta(s);
-      updateProductStructuredData(s, latestObservation, releaseDateText);
       updateBreadcrumbStructuredData(s);
       updateFaqStructuredData(s, latestObservation ? latestObservation.price : null, releaseDateText);
       const chartTitleEl = document.getElementById("priceSectionTitle");
