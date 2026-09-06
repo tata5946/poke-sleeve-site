@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-06T10:43:04.419Z",
+  "generatedAt": "2026-09-06T11:06:47.182Z",
   "items": {
     "13374": {
       "sleeveId": "13374",
@@ -2854,7 +2854,7 @@
       "sleeveId": "104324",
       "routeId": "4521329104324",
       "sleeveName": "N",
-      "searchedAt": "2026-09-06T09:43:09.087Z",
+      "searchedAt": "2026-09-06T11:04:40.811Z",
       "queries": [
         {
           "type": "jan",
@@ -2887,7 +2887,7 @@
       "itemPrice": null,
       "shopName": "",
       "affiliateUrl": "",
-      "checkedAt": "2026-09-06T09:43:09.087Z",
+      "checkedAt": "2026-09-06T11:04:40.814Z",
       "matchScore": 0,
       "reviewReason": "楽天APIエラーのため確認できません",
       "error": {
@@ -5661,7 +5661,7 @@
       "sleeveId": "123769",
       "routeId": "4521329123769",
       "sleeveName": "N",
-      "searchedAt": "2026-09-06T09:46:23.956Z",
+      "searchedAt": "2026-09-06T11:04:43.394Z",
       "queries": [
         {
           "type": "jan",
@@ -5694,7 +5694,7 @@
       "itemPrice": null,
       "shopName": "",
       "affiliateUrl": "",
-      "checkedAt": "2026-09-06T09:46:23.956Z",
+      "checkedAt": "2026-09-06T11:04:43.394Z",
       "matchScore": 0,
       "reviewReason": "楽天APIエラーのため確認できません",
       "error": {
@@ -18611,7 +18611,7 @@
       "sleeveId": "236438",
       "routeId": "4521329236438",
       "sleeveName": "SECRET TEAMS R",
-      "searchedAt": "2026-09-06T10:01:06.319Z",
+      "searchedAt": "2026-09-06T11:04:46.031Z",
       "queries": [
         {
           "type": "jan",
@@ -18644,7 +18644,7 @@
       "itemPrice": null,
       "shopName": "",
       "affiliateUrl": "",
-      "checkedAt": "2026-09-06T10:01:06.319Z",
+      "checkedAt": "2026-09-06T11:04:46.031Z",
       "matchScore": 0,
       "reviewReason": "楽天APIエラーのため確認できません",
       "error": {
@@ -18661,7 +18661,7 @@
       "sleeveId": "236445",
       "routeId": "4521329236445",
       "sleeveName": "SECRET TEAMS M",
-      "searchedAt": "2026-09-06T10:01:08.919Z",
+      "searchedAt": "2026-09-06T11:04:48.623Z",
       "queries": [
         {
           "type": "jan",
@@ -18694,7 +18694,7 @@
       "itemPrice": null,
       "shopName": "",
       "affiliateUrl": "",
-      "checkedAt": "2026-09-06T10:01:08.919Z",
+      "checkedAt": "2026-09-06T11:04:48.623Z",
       "matchScore": 0,
       "reviewReason": "楽天APIエラーのため確認できません",
       "error": {
@@ -18711,7 +18711,7 @@
       "sleeveId": "236452",
       "routeId": "4521329236452",
       "sleeveName": "SECRET TEAMS A",
-      "searchedAt": "2026-09-06T10:01:11.540Z",
+      "searchedAt": "2026-09-06T11:04:51.234Z",
       "queries": [
         {
           "type": "jan",
@@ -18744,7 +18744,7 @@
       "itemPrice": null,
       "shopName": "",
       "affiliateUrl": "",
-      "checkedAt": "2026-09-06T10:01:11.540Z",
+      "checkedAt": "2026-09-06T11:04:51.234Z",
       "matchScore": 0,
       "reviewReason": "楽天APIエラーのため確認できません",
       "error": {
@@ -18761,7 +18761,7 @@
       "sleeveId": "236469",
       "routeId": "4521329236469",
       "sleeveName": "SECRET TEAMS G",
-      "searchedAt": "2026-09-06T10:01:14.122Z",
+      "searchedAt": "2026-09-06T11:04:53.834Z",
       "queries": [
         {
           "type": "jan",
@@ -18794,7 +18794,7 @@
       "itemPrice": null,
       "shopName": "",
       "affiliateUrl": "",
-      "checkedAt": "2026-09-06T10:01:14.122Z",
+      "checkedAt": "2026-09-06T11:04:53.834Z",
       "matchScore": 0,
       "reviewReason": "楽天APIエラーのため確認できません",
       "error": {
@@ -18811,7 +18811,7 @@
       "sleeveId": "236476",
       "routeId": "4521329236476",
       "sleeveName": "SECRET TEAMS P",
-      "searchedAt": "2026-09-06T10:01:16.698Z",
+      "searchedAt": "2026-09-06T11:04:56.402Z",
       "queries": [
         {
           "type": "jan",
@@ -18844,7 +18844,7 @@
       "itemPrice": null,
       "shopName": "",
       "affiliateUrl": "",
-      "checkedAt": "2026-09-06T10:01:16.698Z",
+      "checkedAt": "2026-09-06T11:04:56.402Z",
       "matchScore": 0,
       "reviewReason": "楽天APIエラーのため確認できません",
       "error": {
@@ -18861,7 +18861,7 @@
       "sleeveId": "236483",
       "routeId": "4521329236483",
       "sleeveName": "SECRET TEAMS F",
-      "searchedAt": "2026-09-06T10:01:19.296Z",
+      "searchedAt": "2026-09-06T11:04:59.043Z",
       "queries": [
         {
           "type": "jan",
@@ -18894,7 +18894,7 @@
       "itemPrice": null,
       "shopName": "",
       "affiliateUrl": "",
-      "checkedAt": "2026-09-06T10:01:19.296Z",
+      "checkedAt": "2026-09-06T11:04:59.043Z",
       "matchScore": 0,
       "reviewReason": "楽天APIエラーのため確認できません",
       "error": {
@@ -18911,7 +18911,7 @@
       "sleeveId": "236490",
       "routeId": "4521329236490",
       "sleeveName": "SECRET TEAMS S",
-      "searchedAt": "2026-09-06T10:01:21.916Z",
+      "searchedAt": "2026-09-06T11:05:01.710Z",
       "queries": [
         {
           "type": "jan",
@@ -18944,7 +18944,7 @@
       "itemPrice": null,
       "shopName": "",
       "affiliateUrl": "",
-      "checkedAt": "2026-09-06T10:01:21.916Z",
+      "checkedAt": "2026-09-06T11:05:01.710Z",
       "matchScore": 0,
       "reviewReason": "楽天APIエラーのため確認できません",
       "error": {
@@ -23432,15 +23432,15 @@
     },
     "4521329266480": {
       "sleeveId": "266480",
-      "status": "accepted",
+      "status": "needs_review",
       "searchKeyword": "4521329266480",
       "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) N 孤高の王様 ポケモンカードジム限定",
       "itemPrice": 2750,
       "shopName": "ネットショップ駿河屋 楽天市場店",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qk9ao.78vh0adb.g00qk9ao.78vh1527/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsurugaya-a-too%2F79853773-1%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsurugaya-a-too%2Fi%2F358578882%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
-      "checkedAt": "2026-09-06T10:05:39.850Z",
+      "checkedAt": "2026-09-06T11:06:47.182Z",
       "matchScore": 1.1,
-      "reviewReason": "必須条件をすべて満たす候補が1件だけで、主要語がすべて一致しました",
+      "reviewReason": "公開前再検査で要確認: 主要語が不足しています: ｎ",
       "routeId": "4521329266480",
       "sleeveName": "Ｎ　孤高の王様",
       "queryReports": [
@@ -23989,15 +23989,15 @@
     },
     "4521329266701": {
       "sleeveId": "266701",
-      "status": "accepted",
+      "status": "needs_review",
       "searchKeyword": "4521329266701",
       "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) ダッシュ!イーブイズ ポケモンセンター限定",
       "itemPrice": 1630,
       "shopName": "ネットショップ駿河屋 楽天市場店",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qk9ao.78vh0adb.g00qk9ao.78vh1527/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsurugaya-a-too%2F81811865-1%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsurugaya-a-too%2Fi%2F358569719%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
-      "checkedAt": "2026-09-06T10:06:15.589Z",
+      "checkedAt": "2026-09-06T11:06:47.182Z",
       "matchScore": 1.1,
-      "reviewReason": "必須条件をすべて満たす候補が1件だけで、主要語がすべて一致しました",
+      "reviewReason": "公開前再検査で要確認: 主要語が不足しています: ダッシュ！イーブイズ",
       "routeId": "4521329266701",
       "sleeveName": "ダッシュ！イーブイズ",
       "queryReports": [
@@ -32927,7 +32927,7 @@
       "sleeveId": "310039",
       "routeId": "4521329310039",
       "sleeveName": "「・・・じゃない」ポケモンたち",
-      "searchedAt": "2026-09-06T10:16:12.439Z",
+      "searchedAt": "2026-09-06T11:05:04.479Z",
       "queries": [
         {
           "type": "jan",
@@ -32960,7 +32960,7 @@
       "itemPrice": null,
       "shopName": "",
       "affiliateUrl": "",
-      "checkedAt": "2026-09-06T10:16:12.439Z",
+      "checkedAt": "2026-09-06T11:05:04.479Z",
       "matchScore": 0,
       "reviewReason": "楽天APIエラーのため確認できません",
       "error": {
@@ -47244,15 +47244,15 @@
     },
     "4521329367880": {
       "sleeveId": "367880",
-      "status": "accepted",
+      "status": "needs_review",
       "searchKeyword": "4521329367880",
       "itemName": "ポケモンセンターオリジナル ポケモンカードゲーム デッキシールド バトルスタート!",
       "itemPrice": 2480,
       "shopName": "P-G-shop",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tyedo.78vh0a34.g00tyedo.78vh10ea/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fp-g-shop%2F79200%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fp-g-shop%2Fi%2F10001137%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
-      "checkedAt": "2026-09-06T10:24:57.604Z",
+      "checkedAt": "2026-09-06T11:06:47.182Z",
       "matchScore": 1.1,
-      "reviewReason": "必須条件をすべて満たす候補が1件だけで、主要語がすべて一致しました",
+      "reviewReason": "公開前再検査で要確認: 主要語が不足しています: バトルスタート！",
       "routeId": "4521329367880",
       "sleeveName": "バトルスタート！",
       "queryReports": [
@@ -48771,15 +48771,15 @@
     },
     "4521329373089": {
       "sleeveId": "373089",
-      "status": "accepted",
+      "status": "needs_review",
       "searchKeyword": "4521329373089",
       "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) フォルムチェンジ!?ロトム ポケモンセンター限定",
       "itemPrice": 1380,
       "shopName": "ネットショップ駿河屋 楽天市場店",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qk9ao.78vh0adb.g00qk9ao.78vh1527/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsurugaya-a-too%2F116023841-1%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsurugaya-a-too%2Fi%2F358496474%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
-      "checkedAt": "2026-09-06T10:25:21.598Z",
+      "checkedAt": "2026-09-06T11:06:47.182Z",
       "matchScore": 1.1,
-      "reviewReason": "必須条件をすべて満たす候補が1件だけで、主要語がすべて一致しました",
+      "reviewReason": "公開前再検査で要確認: 主要語が不足しています: フォルムチェンジ！？ロトム",
       "routeId": "4521329373089",
       "sleeveName": "フォルムチェンジ！？ロトム",
       "queryReports": [
@@ -55285,15 +55285,15 @@
     },
     "4521329394039": {
       "sleeveId": "394039",
-      "status": "accepted",
+      "status": "needs_review",
       "searchKeyword": "4521329394039",
       "itemName": "ポケモンセンターオリジナル ポケモンカードゲーム デッキシールド スリーブ プレミアム グロス Midnight Agent the cinema インテレオン 代引不可商品",
       "itemPrice": 1780,
       "shopName": "WFS(World Free Store)",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tmv0o.78vh04b8.g00tmv0o.78vh1071/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fworld-free-store%2F4521329394039%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fworld-free-store%2Fi%2F10011834%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
-      "checkedAt": "2026-09-06T10:28:19.833Z",
+      "checkedAt": "2026-09-06T11:06:47.182Z",
       "matchScore": 1.1,
-      "reviewReason": "必須条件をすべて満たす候補が1件だけで、主要語がすべて一致しました",
+      "reviewReason": "公開前再検査で要確認: 主要語が不足しています: -the cinema-",
       "routeId": "4521329394039",
       "sleeveName": "Midnight Agent -the cinema- インテレオン",
       "queryReports": [
@@ -58293,7 +58293,7 @@
       "sleeveId": "427744",
       "routeId": "4521329427744",
       "sleeveName": "Ｎ＆チョロネコ",
-      "searchedAt": "2026-09-06T10:29:40.992Z",
+      "searchedAt": "2026-09-06T11:05:07.154Z",
       "queries": [
         {
           "type": "jan",
@@ -58326,7 +58326,7 @@
       "itemPrice": null,
       "shopName": "",
       "affiliateUrl": "",
-      "checkedAt": "2026-09-06T10:29:40.992Z",
+      "checkedAt": "2026-09-06T11:05:07.154Z",
       "matchScore": 0,
       "reviewReason": "楽天APIエラーのため確認できません",
       "error": {
@@ -60369,15 +60369,15 @@
     },
     "4521329431789": {
       "sleeveId": "431789",
-      "status": "accepted",
+      "status": "needs_review",
       "searchKeyword": "4521329431789",
       "itemName": "ポケモンセンターオリジナル ポケモンカードゲーム デッキシールド スリーブ つながるせかい ひみつのかいだん 代引不可商品",
       "itemPrice": 1680,
       "shopName": "WFS(World Free Store)",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tmv0o.78vh04b8.g00tmv0o.78vh1071/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fworld-free-store%2F4521329431789%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fworld-free-store%2Fi%2F10023329%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
-      "checkedAt": "2026-09-06T10:30:47.413Z",
+      "checkedAt": "2026-09-06T11:06:47.182Z",
       "matchScore": 1.1,
-      "reviewReason": "必須条件をすべて満たす候補が1件だけで、主要語がすべて一致しました",
+      "reviewReason": "公開前再検査で要確認: 主要語が不足しています: -ひみつのかいだん-",
       "routeId": "4521329431789",
       "sleeveName": "つながるせかい -ひみつのかいだん-",
       "queryReports": [
@@ -60688,15 +60688,15 @@
     },
     "4521329431970": {
       "sleeveId": "431970",
-      "status": "accepted",
+      "status": "needs_review",
       "searchKeyword": "4521329431970",
       "itemName": "ポケモンセンターオリジナル ポケモンカードゲーム スリーブ デッキシールド プレミアム グロス POKEMON TRAINERS STARDUST★BESTIES 代引不可商品",
       "itemPrice": 1780,
       "shopName": "WFS(World Free Store)",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00tmv0o.78vh04b8.g00tmv0o.78vh1071/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fworld-free-store%2F4521329431970%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fworld-free-store%2Fi%2F10023876%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
-      "checkedAt": "2026-09-06T10:30:54.041Z",
+      "checkedAt": "2026-09-06T11:06:47.182Z",
       "matchScore": 1.1,
-      "reviewReason": "必須条件をすべて満たす候補が1件だけで、主要語がすべて一致しました",
+      "reviewReason": "公開前再検査で要確認: 主要語が不足しています: -stardust besties-",
       "routeId": "4521329431970",
       "sleeveName": "POKEMON TRAINERS -STARDUST★BESTIES-",
       "queryReports": [
@@ -65111,7 +65111,7 @@
       "sleeveId": "463827",
       "routeId": "4521329463827",
       "sleeveName": "N＆レシラム＆ゼクロム",
-      "searchedAt": "2026-09-06T10:34:51.965Z",
+      "searchedAt": "2026-09-06T11:05:09.785Z",
       "queries": [
         {
           "type": "jan",
@@ -65144,7 +65144,7 @@
       "itemPrice": null,
       "shopName": "",
       "affiliateUrl": "",
-      "checkedAt": "2026-09-06T10:34:51.965Z",
+      "checkedAt": "2026-09-06T11:05:09.785Z",
       "matchScore": 0,
       "reviewReason": "楽天APIエラーのため確認できません",
       "error": {
@@ -66503,15 +66503,15 @@
     },
     "45213292014002": {
       "sleeveId": "2014002",
-      "status": "accepted",
+      "status": "needs_review",
       "searchKeyword": "ポケモンカードゲーム デッキシールド ジラーチはどこ?",
       "itemName": "【中古】サプライ ポケモンカードゲーム ジムデッキシールド(スリーブ/60枚) 『ジラーチはどこ?』 ポケモンカードジム参加賞",
       "itemPrice": 3750,
       "shopName": "ネットショップ駿河屋 楽天市場店",
       "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qk9ao.78vh0adb.g00qk9ao.78vh1527/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsurugaya-a-too%2F43324535-1%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsurugaya-a-too%2Fi%2F358059512%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
-      "checkedAt": "2026-09-06T10:36:10.657Z",
+      "checkedAt": "2026-09-06T11:06:47.182Z",
       "matchScore": 0.9,
-      "reviewReason": "必須条件をすべて満たす候補が1件だけで、主要語がすべて一致しました",
+      "reviewReason": "公開前再検査で要確認: 主要語が不足しています: ジラーチはどこ？",
       "routeId": "45213292014002",
       "sleeveName": "ジラーチはどこ？",
       "queryReports": [
