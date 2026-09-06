@@ -2328,7 +2328,7 @@
       if (!routeId) return;
       const cache = await loadRakutenLinkCache();
       const entry = cache && cache.items ? cache.items[routeId] : null;
-      const affiliateUrl = String(entry && entry.status === "accepted" && entry.rakuten && entry.rakuten.affiliateUrl || "").trim();
+      const affiliateUrl = String(entry && entry.status === "accepted" && entry.affiliateUrl || "").trim();
       if (!affiliateUrl) return;
 
       link.href = affiliateUrl;

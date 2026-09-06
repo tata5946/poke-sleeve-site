@@ -7,6 +7,7 @@ const path = require("path");
 const API_ENDPOINT = "https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701";
 const DATA_PATH = path.resolve(__dirname, "..", "data.json");
 const CACHE_PATH = path.resolve(__dirname, "..", "data", "rakuten-links.json");
+const NEEDS_REVIEW_CSV_PATH = path.resolve(__dirname, "..", "data", "rakuten-needs-review.csv");
 const USER_AGENT = "poke-sleeve-site-rakuten-link-fetcher/1.0";
 const REQUEST_DELAY_MS = 1200;
 const RETRY_DELAYS_MS = [5000, 15000, 30000];
@@ -31,6 +32,11 @@ function writeJson(filePath, value) {
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 }
 
+function writeText(filePath, value) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, value, "utf8");
+}
+
 function getEnv(name) {
   const value = process.env[name];
   if (!value || !String(value).trim()) {
@@ -43,6 +49,34 @@ function getSleeveRouteId(id) {
   const sleeveId = String(id || "").trim();
   if (/^\d{6,7}$/.test(sleeveId)) return `4521329${sleeveId}`;
   return sleeveId;
+}
+
+function isManualReviewedEntry(entry) {
+  if (!entry || typeof entry !== "object") return false;
+  const manualKeys = [
+    "manual",
+    "manualReview",
+    "manualStatus",
+    "reviewResult",
+    "confirmed",
+    "confirmedAt",
+    "confirmedBy",
+    "確認結果"
+  ];
+  return manualKeys.some((key) => {
+    const value = entry[key];
+    if (typeof value === "boolean") return value;
+    return value != null && String(value).trim() !== "";
+  });
+}
+
+function isReusableCacheEntry(entry) {
+  if (!entry || typeof entry !== "object") return false;
+  if (entry.status === "api_error") return false;
+  if (!["accepted", "needs_review", "not_found"].includes(entry.status)) return false;
+  if (!entry.checkedAt && !entry.searchedAt) return false;
+  if (entry.status === "accepted" && !entry.affiliateUrl) return false;
+  return true;
 }
 
 function normalizeText(value) {
@@ -70,6 +104,10 @@ function tokenize(value) {
     .split(" ")
     .map((token) => token.trim())
     .filter((token) => token && !["ポケモンカード", "ポケモン", "カード", "公式", "デッキシールド", "スリーブ"].includes(token));
+}
+
+function getMajorTerms(value) {
+  return tokenize(normalizeSearchProductName(value));
 }
 
 function buildQueryPlan(sleeve) {
@@ -103,29 +141,53 @@ function getRakutenTotalHits(body) {
 
 function calculateMatch(sleeve, item, queryType) {
   const itemName = String(item.itemName || "");
-  const itemText = normalizeText(`${itemName} ${item.catchcopy || ""}`);
-  const tokens = tokenize(sleeve.name);
-  const matchedTokens = tokens.filter((token) => itemText.includes(normalizeText(token)));
+  const itemText = normalizeText(itemName);
+  const majorTerms = getMajorTerms(sleeve.name);
+  const matchedTerms = majorTerms.filter((term) => itemText.includes(normalizeText(term)));
+  const missingTerms = majorTerms.filter((term) => !itemText.includes(normalizeText(term)));
   const hasPokemon = /ポケモン|pokemon|ポケカ/.test(itemText);
   const hasSleeve = /デッキシールド|スリーブ|deck shield|sleeve/.test(itemText);
-  const tokenRatio = tokens.length ? matchedTokens.length / tokens.length : 0;
+  const hasAffiliateUrl = Boolean(item.affiliateUrl);
+  const isAvailable = Number(item.availability ?? 1) === 1;
+  const isExcludedProduct = /pcケース|パソコンケース|スマホケース|iphone|ipad|macbook|カードケース|デッキケース|プレイマット|マット|カードファイル|カード 本体|シングルカード|中古カード|拡張パック|box|ボックス|ぬいぐるみ|キーホルダー|フィギュア/.test(itemText);
+  const tokenRatio = majorTerms.length ? matchedTerms.length / majorTerms.length : 0;
+  const requiredPassed = hasSleeve && hasPokemon && hasAffiliateUrl && isAvailable && !isExcludedProduct && majorTerms.length > 0 && missingTerms.length === 0;
+  const partialRequiredPassed = hasSleeve && hasPokemon && hasAffiliateUrl && isAvailable && !isExcludedProduct && matchedTerms.length > 0;
   let confidence = 0;
 
-  if (queryType === "jan") confidence += 0.45;
-  if (hasPokemon) confidence += 0.15;
-  if (hasSleeve) confidence += 0.2;
-  confidence += Math.min(0.2, tokenRatio * 0.2);
+  if (queryType === "jan") confidence += 0.2;
+  if (hasPokemon) confidence += 0.18;
+  if (hasSleeve) confidence += 0.22;
+  if (hasAffiliateUrl) confidence += 0.12;
+  if (isAvailable) confidence += 0.08;
+  if (!isExcludedProduct) confidence += 0.08;
+  confidence += Math.min(0.12, tokenRatio * 0.12);
+  if (missingTerms.length === 0 && majorTerms.length > 0) confidence += 0.1;
 
-  const accepted = confidence >= 0.78 && hasSleeve && (tokens.length === 0 || tokenRatio >= 0.75);
+  let reviewReason = "";
+  if (!hasSleeve) reviewReason = "楽天の商品名にデッキシールド/スリーブが含まれません";
+  else if (!hasPokemon) reviewReason = "楽天の商品名にポケモン/ポケモンカードが含まれません";
+  else if (!hasAffiliateUrl) reviewReason = "affiliateUrlが取得できません";
+  else if (!isAvailable) reviewReason = "購入可能な商品ではありません";
+  else if (isExcludedProduct) reviewReason = "明らかな別商品カテゴリの可能性があります";
+  else if (missingTerms.length > 0) reviewReason = "ポケスリ側の商品名の主要語が一部しか一致しません";
+  else reviewReason = "主要語、ポケモン表記、スリーブ表記、affiliateUrl、購入可能性を満たしています";
+
   return {
-    status: accepted ? "accepted" : "needs_review",
     confidence: Number(confidence.toFixed(2)),
+    requiredPassed,
+    partialRequiredPassed,
+    reviewReason,
     reasons: {
       queryType,
       hasPokemon,
       hasSleeve,
-      matchedTokens,
-      tokenCount: tokens.length
+      hasAffiliateUrl,
+      isAvailable,
+      isExcludedProduct,
+      matchedTerms,
+      missingTerms,
+      majorTermCount: majorTerms.length
     }
   };
 }
@@ -180,38 +242,109 @@ async function requestRakuten(params, credentials) {
   throw new Error("Rakuten API retry limit exceeded");
 }
 
-function buildCacheEntry(sleeve, searched, accepted, candidates, queryReports = []) {
+function isOfficialRakutenAffiliateUrl(affiliateUrl) {
+  try {
+    const url = new URL(affiliateUrl);
+    return url.protocol === "https:" && url.hostname === "hb.afl.rakuten.co.jp";
+  } catch (_) {
+    return false;
+  }
+}
+
+function getSafeAffiliateUrl(item, credentials) {
+  const affiliateUrl = String(item && item.affiliateUrl || "").trim();
+  if (!affiliateUrl) return "";
+  if (!isOfficialRakutenAffiliateUrl(affiliateUrl)) return "";
+  const accessKey = String(credentials && credentials.accessKey || "").trim();
+  if (accessKey && affiliateUrl.includes(accessKey)) return "";
+  return affiliateUrl;
+}
+
+function summarizeCandidate(candidate, credentials) {
+  if (!candidate) {
+    return {
+      itemName: "",
+      itemPrice: null,
+      shopName: "",
+      affiliateUrl: "",
+      matchScore: 0,
+      reviewReason: ""
+    };
+  }
+  return {
+    itemName: candidate.item.itemName || "",
+    itemPrice: candidate.item.itemPrice ?? null,
+    shopName: candidate.item.shopName || "",
+    affiliateUrl: getSafeAffiliateUrl(candidate.item, credentials),
+    matchScore: candidate.match.confidence,
+    reviewReason: candidate.match.reviewReason
+  };
+}
+
+function decideQueryMatch(queryCandidates) {
+  const required = queryCandidates.filter((candidate) => candidate.match.requiredPassed);
+  const partial = queryCandidates.filter((candidate) => candidate.match.partialRequiredPassed);
+  if (required.length === 1) {
+    return {
+      status: "accepted",
+      candidate: required[0],
+      reviewReason: "必須条件をすべて満たす候補が1件だけで、主要語がすべて一致しました"
+    };
+  }
+  if (required.length > 1) {
+    return {
+      status: "needs_review",
+      candidate: required[0],
+      reviewReason: "必須条件を満たす候補が複数あるため要確認です"
+    };
+  }
+  if (partial.length > 0) {
+    return {
+      status: "needs_review",
+      candidate: partial[0],
+      reviewReason: partial[0].match.reviewReason || "主要語が一部一致のため要確認です"
+    };
+  }
+  return {
+    status: "not_found",
+    candidate: null,
+    reviewReason: "必須条件を満たす候補がありません"
+  };
+}
+
+function buildCacheEntry(sleeve, searched, decision, candidates, queryReports = [], credentials = null) {
   const routeId = getSleeveRouteId(sleeve.id);
-  const best = accepted || candidates[0] || null;
-  const status = accepted ? "accepted" : (best ? "needs_review" : "not_found");
+  const best = decision && decision.candidate ? decision.candidate : null;
+  const summary = summarizeCandidate(best, credentials);
+  let status = decision ? decision.status : (best ? "needs_review" : "not_found");
+  let reviewReason = decision && decision.reviewReason ? decision.reviewReason : summary.reviewReason;
+  if (status === "accepted" && !summary.affiliateUrl) {
+    status = "needs_review";
+    reviewReason = "affiliateUrlがHTTPSの楽天公式アフィリエイトURLではない、またはAccess Keyを含むため保存できません";
+  }
 
   return {
     sleeveId: String(sleeve.id),
+    status,
+    searchKeyword: best ? best.query.value : (searched.length ? searched[searched.length - 1].value : ""),
+    itemName: summary.itemName,
+    itemPrice: summary.itemPrice,
+    shopName: summary.shopName,
+    affiliateUrl: summary.affiliateUrl,
+    checkedAt: new Date().toISOString(),
+    matchScore: summary.matchScore,
+    reviewReason,
     routeId,
     sleeveName: String(sleeve.name || ""),
-    searchedAt: new Date().toISOString(),
-    queries: searched,
     queryReports,
-    status,
-    confidence: best ? best.match.confidence : 0,
-    match: best ? best.match.reasons : null,
-    rakuten: best ? {
-      itemName: best.item.itemName || "",
-      itemPrice: best.item.itemPrice ?? null,
-      itemUrl: best.item.itemUrl || "",
-      affiliateUrl: status === "accepted" ? (best.item.affiliateUrl || "") : "",
-      shopName: best.item.shopName || "",
-      shopCode: best.item.shopCode || ""
-    } : null,
     candidates: candidates.slice(0, 5).map((candidate) => ({
       queryType: candidate.query.type,
       itemName: candidate.item.itemName || "",
       itemPrice: candidate.item.itemPrice ?? null,
-      itemUrl: candidate.item.itemUrl || "",
       hasAffiliateUrl: Boolean(candidate.item.affiliateUrl),
       shopName: candidate.item.shopName || "",
       confidence: candidate.match.confidence,
-      status: candidate.match.status,
+      requiredPassed: candidate.match.requiredPassed,
       match: candidate.match.reasons
     }))
   };
@@ -227,7 +360,14 @@ function buildErrorEntry(sleeve, err) {
     searchedAt: new Date().toISOString(),
     queries: buildQueryPlan(sleeve),
     status: "api_error",
-    confidence: 0,
+    searchKeyword: "",
+    itemName: "",
+    itemPrice: null,
+    shopName: "",
+    affiliateUrl: "",
+    checkedAt: new Date().toISOString(),
+    matchScore: 0,
+    reviewReason: "楽天APIエラーのため確認できません",
     error: {
       status: err && err.status ? err.status : null,
       message: err && err.message ? err.message : "Rakuten API request failed",
@@ -248,6 +388,7 @@ async function searchSleeve(sleeve, credentials, options = {}) {
 
   for (const query of plan) {
     await sleep(REQUEST_DELAY_MS);
+    if (options.stats) options.stats.apiRequests += 1;
     const response = await requestRakuten({ keyword: query.value }, credentials);
     const body = response.body;
     const items = getRakutenItems(body);
@@ -260,6 +401,7 @@ async function searchSleeve(sleeve, credentials, options = {}) {
       candidates.push(candidate);
       queryCandidates.push(candidate);
     }
+    const decision = decideQueryMatch(queryCandidates);
     queryReports.push({
       query: query.value,
       httpStatus: response.httpStatus,
@@ -270,23 +412,24 @@ async function searchSleeve(sleeve, credentials, options = {}) {
         itemPrice: candidate.item.itemPrice ?? null,
         shopName: candidate.item.shopName || "",
         hasAffiliateUrl: Boolean(candidate.item.affiliateUrl),
-        isMatchCandidate: candidate.match.status === "accepted" || candidate.match.confidence >= 0.55,
+        isMatchCandidate: candidate.match.requiredPassed || candidate.match.partialRequiredPassed,
         confidence: candidate.match.confidence
       }))
     });
-    if (options.reviewOnly) continue;
-    const accepted = candidates.find((candidate) => candidate.match.status === "accepted" && candidate.item.affiliateUrl);
-    if (accepted) return buildCacheEntry(sleeve, searched, accepted, candidates, queryReports);
+    if (decision.status !== "not_found") {
+      return buildCacheEntry(sleeve, searched, decision, candidates, queryReports, credentials);
+    }
   }
 
-  return buildCacheEntry(sleeve, searched, null, candidates, queryReports);
+  return buildCacheEntry(sleeve, searched, { status: "not_found", candidate: null, reviewReason: "必須条件を満たす候補がありません" }, candidates, queryReports, credentials);
 }
 
 function parseArgs(argv) {
-  const args = { test: false, force: false, reviewOnly: false, ids: [] };
+  const args = { all: false, test: false, force: false, reviewOnly: false, ids: [] };
   for (let i = 2; i < argv.length; i += 1) {
     const arg = argv[i];
-    if (arg === "--test") args.test = true;
+    if (arg === "--all") args.all = true;
+    else if (arg === "--test") args.test = true;
     else if (arg === "--force") args.force = true;
     else if (arg === "--review-only") args.reviewOnly = true;
     else if (arg === "--ids") args.ids.push(...String(argv[++i] || "").split(",").map((id) => id.trim()).filter(Boolean));
@@ -294,6 +437,47 @@ function parseArgs(argv) {
     else throw new Error(`Unknown argument: ${arg}`);
   }
   return args;
+}
+
+function csvCell(value) {
+  const text = String(value ?? "");
+  return `"${text.replaceAll('"', '""')}"`;
+}
+
+function writeNeedsReviewCsv(cache) {
+  const header = [
+    "sleeveId",
+    "ポケスリ商品名",
+    "楽天商品名",
+    "価格",
+    "ショップ",
+    "matchScore",
+    "reviewReason",
+    "確認結果"
+  ];
+  const rows = Object.values(cache.items || {})
+    .filter((entry) => entry && entry.status === "needs_review")
+    .sort((a, b) => String(a.sleeveId || "").localeCompare(String(b.sleeveId || "")))
+    .map((entry) => [
+      entry.sleeveId || "",
+      entry.sleeveName || "",
+      entry.itemName || "",
+      entry.itemPrice ?? "",
+      entry.shopName || "",
+      entry.matchScore ?? "",
+      entry.reviewReason || "",
+      ""
+    ]);
+  const csv = [header, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n") + "\r\n";
+  writeText(NEEDS_REVIEW_CSV_PATH, csv);
+}
+
+function getStatusCounts(cache) {
+  const counts = { accepted: 0, needs_review: 0, not_found: 0, api_error: 0 };
+  for (const entry of Object.values(cache.items || {})) {
+    if (entry && Object.prototype.hasOwnProperty.call(counts, entry.status)) counts[entry.status] += 1;
+  }
+  return counts;
 }
 
 async function main() {
@@ -308,24 +492,39 @@ async function main() {
     affiliateId: getEnv("RAKUTEN_AFFILIATE_ID")
   };
 
-  const wantedIds = args.test ? TEST_SLEEVE_IDS : args.ids;
+  const wantedIds = args.all ? data.sleeves.map((sleeve) => String(sleeve.id)).filter(Boolean) : (args.test ? TEST_SLEEVE_IDS : args.ids);
   if (!wantedIds.length) {
-    throw new Error("Pass --test for the 3-item smoke test or --ids id1,id2 for explicit items.");
+    throw new Error("Pass --all, --test, or --ids id1,id2 for explicit items.");
   }
 
   const byId = new Map(data.sleeves.map((sleeve) => [String(sleeve.id), sleeve]));
   const results = [];
+  const stats = {
+    startedAt: Date.now(),
+    totalTargets: wantedIds.length,
+    apiRequests: 0,
+    cacheReused: 0,
+    manualPreserved: 0,
+    processed: 0
+  };
   for (const id of wantedIds) {
     const sleeve = byId.get(String(id));
     if (!sleeve) throw new Error(`Sleeve not found in data.json: ${id}`);
     const routeId = getSleeveRouteId(sleeve.id);
-    if (!args.force && cache.items[routeId] && cache.items[routeId].status !== "api_error") {
+    if (isManualReviewedEntry(cache.items[routeId])) {
+      stats.cacheReused += 1;
+      stats.manualPreserved += 1;
+      results.push(cache.items[routeId]);
+      continue;
+    }
+    if (!args.force && isReusableCacheEntry(cache.items[routeId])) {
+      stats.cacheReused += 1;
       results.push(cache.items[routeId]);
       continue;
     }
     let entry;
     try {
-      entry = await searchSleeve(sleeve, credentials, { reviewOnly: args.reviewOnly });
+      entry = await searchSleeve(sleeve, credentials, { reviewOnly: args.reviewOnly, stats });
     } catch (err) {
       entry = buildErrorEntry(sleeve, err);
     }
@@ -333,21 +532,42 @@ async function main() {
     cache.generatedAt = new Date().toISOString();
     writeJson(CACHE_PATH, cache);
     results.push(entry);
+    stats.processed += 1;
+    if (args.all && (stats.processed % 25 === 0 || stats.processed + stats.cacheReused === stats.totalTargets)) {
+      const counts = getStatusCounts(cache);
+      console.error(`progress ${stats.processed + stats.cacheReused}/${stats.totalTargets} apiRequests=${stats.apiRequests} reused=${stats.cacheReused} accepted=${counts.accepted} needs_review=${counts.needs_review} not_found=${counts.not_found} api_error=${counts.api_error}`);
+    }
   }
+  writeNeedsReviewCsv(cache);
+  const counts = getStatusCounts(cache);
+  const elapsedSeconds = Number(((Date.now() - stats.startedAt) / 1000).toFixed(1));
 
   console.log(JSON.stringify({
     generatedAt: cache.generatedAt,
+    needsReviewCsv: path.relative(path.resolve(__dirname, ".."), NEEDS_REVIEW_CSV_PATH),
+    summary: {
+      totalTargets: stats.totalTargets,
+      apiRequests: stats.apiRequests,
+      cacheReused: stats.cacheReused,
+      manualPreserved: stats.manualPreserved,
+      accepted: counts.accepted,
+      needs_review: counts.needs_review,
+      not_found: counts.not_found,
+      api_error: counts.api_error,
+      elapsedSeconds
+    },
     results: results.map((entry) => ({
       sleeveId: entry.sleeveId,
       routeId: entry.routeId,
       sleeveName: entry.sleeveName,
-      search: entry.queries.map((query) => query.value).join(" / "),
-      rakutenItemName: entry.rakuten ? entry.rakuten.itemName : "",
-      rakutenItemPrice: entry.rakuten ? entry.rakuten.itemPrice : null,
-      itemUrl: entry.rakuten ? entry.rakuten.itemUrl : "",
-      hasAffiliateUrl: Boolean(entry.rakuten && entry.rakuten.affiliateUrl),
+      search: entry.searchKeyword || "",
+      rakutenItemName: entry.itemName || "",
+      rakutenItemPrice: entry.itemPrice ?? null,
+      shopName: entry.shopName || "",
+      hasAffiliateUrl: Boolean(entry.affiliateUrl),
       status: entry.status,
-      confidence: entry.confidence,
+      matchScore: entry.matchScore,
+      reviewReason: entry.reviewReason || "",
       httpStatus: entry.error ? entry.error.status : 200,
       errorCode: entry.error ? entry.error.errorCode : "",
       errorMessage: entry.error ? entry.error.errorMessage : "",
