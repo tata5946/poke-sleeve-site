@@ -2304,13 +2304,25 @@
     async function loadRakutenLinkCache() {
       if (window.__RAKUTEN_LINK_CACHE) return window.__RAKUTEN_LINK_CACHE;
       try {
-        const res = await fetch("./data/rakuten-links.json?v=20260906a", { cache: "no-store" });
+        const cachePath = /\/sleeve\/[^/]+\/(?:index\.html)?$/.test(window.location.pathname)
+          ? "../../data/rakuten-links.json?v=20260906a"
+          : "./data/rakuten-links.json?v=20260906a";
+        const res = await fetch(cachePath, { cache: "no-store" });
         if (!res.ok) throw new Error("rakuten cache unavailable");
         window.__RAKUTEN_LINK_CACHE = await res.json();
       } catch (_) {
         window.__RAKUTEN_LINK_CACHE = { items: {} };
       }
       return window.__RAKUTEN_LINK_CACHE;
+    }
+
+    function isSafeRakutenAffiliateUrl(url) {
+      try {
+        const parsed = new URL(String(url || ""));
+        return parsed.protocol === "https:" && parsed.hostname === "hb.afl.rakuten.co.jp";
+      } catch (_) {
+        return false;
+      }
     }
 
     async function renderRakutenLink(sleeve) {
@@ -2324,7 +2336,7 @@
       const cache = await loadRakutenLinkCache();
       const entry = cache && cache.items ? cache.items[routeId] : null;
       const affiliateUrl = String(entry && entry.status === "accepted" && entry.affiliateUrl || "").trim();
-      if (!affiliateUrl) return;
+      if (!affiliateUrl || !isSafeRakutenAffiliateUrl(affiliateUrl)) return;
 
       link.href = affiliateUrl;
       link.hidden = false;

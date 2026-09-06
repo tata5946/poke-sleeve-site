@@ -514,7 +514,7 @@
 
     .marketplace-row {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
     }
 
@@ -542,6 +542,10 @@
     .marketplace-link:hover {
       transform: translateY(-1px);
       box-shadow: 0 10px 20px rgba(16, 24, 40, .10);
+    }
+
+    .marketplace-link[hidden] {
+      display: none;
     }
 
     .marketplace-logo {
@@ -583,6 +587,17 @@
 
     .marketplace-link--mercari {
       border-color: #e5e7eb;
+    }
+
+    .marketplace-link--rakuten {
+      border-color: #bf0000;
+      background: #bf0000;
+      color: #fff;
+    }
+
+    .marketplace-link--rakuten .marketplace-logo--rakuten {
+      color: #bf0000;
+      background: #fff;
     }
 
     .marketplace-link--yahoo {
@@ -1163,7 +1178,7 @@
 
       .marketplace-row {
         grid-column: 1 / -1;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 6px;
       }
 
@@ -1432,7 +1447,7 @@
     }
 
     .marketplace-row {
-      grid-template-columns: repeat(3, minmax(0, 150px));
+      grid-template-columns: repeat(4, minmax(0, 150px));
       justify-content: start;
       gap: 8px;
     }
@@ -1834,7 +1849,7 @@
 
     .marketplace-row {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
     }
 
@@ -2110,6 +2125,10 @@
                     <span class="marketplace-logo marketplace-logo--mercari" aria-hidden="true">m</span>
                     <span>メルカリで探す</span>
                   </a>
+                  <a class="marketplace-link marketplace-link--rakuten" id="rakutenLink" href="https://www.rakuten.co.jp/" target="_blank" rel="nofollow sponsored noopener" aria-label="楽天市場で商品を見る" hidden>
+                    <span class="marketplace-logo marketplace-logo--rakuten" aria-hidden="true">R</span>
+                    <span>楽天市場で商品を見る</span>
+                  </a>
                   <a class="marketplace-link marketplace-link--yahoo" id="yahooAuctionLink" href="https://auctions.yahoo.co.jp/search/search" target="_blank" rel="noopener noreferrer nofollow" aria-label="ヤフオクで探す">
                     <span class="marketplace-logo marketplace-logo--yahoo" aria-hidden="true">ヤフオク!</span>
                     <span>で探す</span>
@@ -2285,6 +2304,47 @@
       }
       if (/^\d{6,7}$/.test(sleeveId)) return `4521329${sleeveId}`;
       return sleeveId;
+    }
+
+    async function loadRakutenLinkCache() {
+      if (window.__RAKUTEN_LINK_CACHE) return window.__RAKUTEN_LINK_CACHE;
+      try {
+        const cachePath = /\/sleeve\/[^/]+\/(?:index\.html)?$/.test(window.location.pathname)
+          ? "../../data/rakuten-links.json?v=20260906a"
+          : "./data/rakuten-links.json?v=20260906a";
+        const res = await fetch(cachePath, { cache: "no-store" });
+        if (!res.ok) throw new Error("rakuten cache unavailable");
+        window.__RAKUTEN_LINK_CACHE = await res.json();
+      } catch (_) {
+        window.__RAKUTEN_LINK_CACHE = { items: {} };
+      }
+      return window.__RAKUTEN_LINK_CACHE;
+    }
+
+    function isSafeRakutenAffiliateUrl(url) {
+      try {
+        const parsed = new URL(String(url || ""));
+        return parsed.protocol === "https:" && parsed.hostname === "hb.afl.rakuten.co.jp";
+      } catch (_) {
+        return false;
+      }
+    }
+
+    async function renderRakutenLink(sleeve) {
+      const link = document.getElementById("rakutenLink");
+      if (!link) return;
+      link.hidden = true;
+      link.removeAttribute("href");
+
+      const routeId = getSleeveRouteIdForDisplay(sleeve && sleeve.id);
+      if (!routeId) return;
+      const cache = await loadRakutenLinkCache();
+      const entry = cache && cache.items ? cache.items[routeId] : null;
+      const affiliateUrl = String(entry && entry.status === "accepted" && entry.affiliateUrl || "").trim();
+      if (!affiliateUrl || !isSafeRakutenAffiliateUrl(affiliateUrl)) return;
+
+      link.href = affiliateUrl;
+      link.hidden = false;
     }
 
     function sleeveNameHasDeckShield(name) {
@@ -5381,6 +5441,7 @@
       if (yahooAuctionLink) yahooAuctionLink.href = buildYahooAuctionSearchUrl(s.name);
       const surugayaLink = document.getElementById("surugayaLink");
       if (surugayaLink) surugayaLink.href = buildSurugayaAffiliateUrl(s.name);
+      renderRakutenLink(s);
       if (window.common && typeof window.common.setupMyCollectionButton === "function") {
         window.common.setupMyCollectionButton(s, document.getElementById("myCollectionToggle"));
       }
