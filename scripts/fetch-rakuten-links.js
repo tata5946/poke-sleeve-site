@@ -55,6 +55,14 @@ function normalizeText(value) {
     .trim();
 }
 
+function normalizeSearchProductName(value) {
+  return String(value || "")
+    .normalize("NFKC")
+    .replace(/[＆&・／/]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function tokenize(value) {
   const normalized = normalizeText(value);
   if (!normalized) return [];
@@ -65,16 +73,32 @@ function tokenize(value) {
 }
 
 function buildQueryPlan(sleeve) {
-  const name = String(sleeve.name || "").trim();
+  const name = normalizeSearchProductName(sleeve.name);
   const jan = getSleeveRouteId(sleeve.id);
   const plan = [];
   if (/^\d{13}$/.test(jan)) {
     plan.push({ type: "jan", value: jan });
   }
   if (name) {
-    plan.push({ type: "keyword", value: `ポケモンカード デッキシールド ${name}` });
+    plan.push({ type: "keyword", value: `ポケモンカードゲーム デッキシールド ${name}` });
+    plan.push({ type: "keyword", value: `デッキシールド ${name}` });
+    plan.push({ type: "keyword", value: `ポケモン ${name} スリーブ` });
+    plan.push({ type: "keyword", value: `${name} デッキシールド` });
+    plan.push({ type: "keyword", value: `${name} スリーブ` });
   }
   return plan;
+}
+
+function getRakutenItems(body) {
+  if (Array.isArray(body && body.Items)) return body.Items;
+  if (Array.isArray(body && body.items)) return body.items;
+  return [];
+}
+
+function getRakutenTotalHits(body) {
+  const value = body && (body.hits ?? body.count ?? body.totalHits);
+  const total = Number(value);
+  return Number.isFinite(total) ? total : null;
 }
 
 function calculateMatch(sleeve, item, queryType) {
@@ -114,15 +138,6 @@ async function requestRakuten(params, credentials) {
   url.searchParams.set("affiliateId", credentials.affiliateId);
   url.searchParams.set("hits", "5");
   url.searchParams.set("availability", "1");
-  url.searchParams.set("elements", [
-    "itemName",
-    "itemPrice",
-    "itemUrl",
-    "affiliateUrl",
-    "shopName",
-    "shopCode",
-    "catchcopy"
-  ].join(","));
   for (const [key, value] of Object.entries(params)) {
     url.searchParams.set(key, value);
   }
@@ -131,6 +146,8 @@ async function requestRakuten(params, credentials) {
     const res = await fetch(url, {
       headers: {
         "User-Agent": USER_AGENT,
+        "Origin": "https://pokesuri-navi.com",
+        "Referer": "https://pokesuri-navi.com/",
         "accessKey": credentials.accessKey
       }
     });
@@ -149,19 +166,21 @@ async function requestRakuten(params, credentials) {
     }
 
     if (!res.ok) {
-      const err = new Error(`Rakuten API error: HTTP ${res.status} ${body.error || ""}`.trim());
+      const errorCode = body.errorCode || body.error || "";
+      const errorMessage = body.errorMessage || body.error_description || "";
+      const err = new Error(`Rakuten API error: HTTP ${res.status} ${errorCode}`.trim());
       err.status = res.status;
-      err.body = body;
+      err.body = { errorCode, errorMessage };
       throw err;
     }
 
-    return body;
+    return { httpStatus: res.status, body };
   }
 
   throw new Error("Rakuten API retry limit exceeded");
 }
 
-function buildCacheEntry(sleeve, searched, accepted, candidates) {
+function buildCacheEntry(sleeve, searched, accepted, candidates, queryReports = []) {
   const routeId = getSleeveRouteId(sleeve.id);
   const best = accepted || candidates[0] || null;
   const status = accepted ? "accepted" : (best ? "needs_review" : "not_found");
@@ -172,6 +191,7 @@ function buildCacheEntry(sleeve, searched, accepted, candidates) {
     sleeveName: String(sleeve.name || ""),
     searchedAt: new Date().toISOString(),
     queries: searched,
+    queryReports,
     status,
     confidence: best ? best.match.confidence : 0,
     match: best ? best.match.reasons : null,
@@ -198,6 +218,8 @@ function buildCacheEntry(sleeve, searched, accepted, candidates) {
 }
 
 function buildErrorEntry(sleeve, err) {
+  const errorCode = err && err.body && err.body.errorCode ? err.body.errorCode : "";
+  const errorMessage = err && err.body && err.body.errorMessage ? err.body.errorMessage : "";
   return {
     sleeveId: String(sleeve.id),
     routeId: getSleeveRouteId(sleeve.id),
@@ -209,8 +231,8 @@ function buildErrorEntry(sleeve, err) {
     error: {
       status: err && err.status ? err.status : null,
       message: err && err.message ? err.message : "Rakuten API request failed",
-      code: err && err.body && err.body.error ? err.body.error : "",
-      description: err && err.body && err.body.error_description ? err.body.error_description : ""
+      errorCode,
+      errorMessage
     },
     match: null,
     rakuten: null,
@@ -218,33 +240,55 @@ function buildErrorEntry(sleeve, err) {
   };
 }
 
-async function searchSleeve(sleeve, credentials) {
+async function searchSleeve(sleeve, credentials, options = {}) {
   const plan = buildQueryPlan(sleeve);
   const searched = [];
   const candidates = [];
+  const queryReports = [];
 
   for (const query of plan) {
     await sleep(REQUEST_DELAY_MS);
-    const body = await requestRakuten({ keyword: query.value }, credentials);
-    const items = Array.isArray(body.Items) ? body.Items : [];
+    const response = await requestRakuten({ keyword: query.value }, credentials);
+    const body = response.body;
+    const items = getRakutenItems(body);
+    const totalHits = getRakutenTotalHits(body);
     searched.push(query);
+    const queryCandidates = [];
     for (const item of items) {
       const match = calculateMatch(sleeve, item, query.type);
-      candidates.push({ query, item, match });
+      const candidate = { query, item, match };
+      candidates.push(candidate);
+      queryCandidates.push(candidate);
     }
+    queryReports.push({
+      query: query.value,
+      httpStatus: response.httpStatus,
+      totalHits,
+      itemCount: items.length,
+      candidates: queryCandidates.slice(0, 5).map((candidate) => ({
+        itemName: candidate.item.itemName || "",
+        itemPrice: candidate.item.itemPrice ?? null,
+        shopName: candidate.item.shopName || "",
+        hasAffiliateUrl: Boolean(candidate.item.affiliateUrl),
+        isMatchCandidate: candidate.match.status === "accepted" || candidate.match.confidence >= 0.55,
+        confidence: candidate.match.confidence
+      }))
+    });
+    if (options.reviewOnly) continue;
     const accepted = candidates.find((candidate) => candidate.match.status === "accepted" && candidate.item.affiliateUrl);
-    if (accepted) return buildCacheEntry(sleeve, searched, accepted, candidates);
+    if (accepted) return buildCacheEntry(sleeve, searched, accepted, candidates, queryReports);
   }
 
-  return buildCacheEntry(sleeve, searched, null, candidates);
+  return buildCacheEntry(sleeve, searched, null, candidates, queryReports);
 }
 
 function parseArgs(argv) {
-  const args = { test: false, force: false, ids: [] };
+  const args = { test: false, force: false, reviewOnly: false, ids: [] };
   for (let i = 2; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === "--test") args.test = true;
     else if (arg === "--force") args.force = true;
+    else if (arg === "--review-only") args.reviewOnly = true;
     else if (arg === "--ids") args.ids.push(...String(argv[++i] || "").split(",").map((id) => id.trim()).filter(Boolean));
     else if (arg.startsWith("--ids=")) args.ids.push(...arg.slice(6).split(",").map((id) => id.trim()).filter(Boolean));
     else throw new Error(`Unknown argument: ${arg}`);
@@ -275,13 +319,13 @@ async function main() {
     const sleeve = byId.get(String(id));
     if (!sleeve) throw new Error(`Sleeve not found in data.json: ${id}`);
     const routeId = getSleeveRouteId(sleeve.id);
-    if (!args.force && cache.items[routeId]) {
+    if (!args.force && cache.items[routeId] && cache.items[routeId].status !== "api_error") {
       results.push(cache.items[routeId]);
       continue;
     }
     let entry;
     try {
-      entry = await searchSleeve(sleeve, credentials);
+      entry = await searchSleeve(sleeve, credentials, { reviewOnly: args.reviewOnly });
     } catch (err) {
       entry = buildErrorEntry(sleeve, err);
     }
@@ -303,7 +347,11 @@ async function main() {
       itemUrl: entry.rakuten ? entry.rakuten.itemUrl : "",
       hasAffiliateUrl: Boolean(entry.rakuten && entry.rakuten.affiliateUrl),
       status: entry.status,
-      confidence: entry.confidence
+      confidence: entry.confidence,
+      httpStatus: entry.error ? entry.error.status : 200,
+      errorCode: entry.error ? entry.error.errorCode : "",
+      errorMessage: entry.error ? entry.error.errorMessage : "",
+      queryReports: entry.queryReports || []
     }))
   }, null, 2));
 }

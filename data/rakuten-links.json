@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-06T04:45:01.611Z",
+  "generatedAt": "2026-09-06T05:05:39.414Z",
   "items": {
     "4521329323121": {
       "sleeveId": "323121",
       "routeId": "4521329323121",
       "sleeveName": "レッド&グリーン",
-      "searchedAt": "2026-09-06T04:44:59.089Z",
+      "searchedAt": "2026-09-06T05:05:39.412Z",
       "queries": [
         {
           "type": "jan",
@@ -13,20 +13,268 @@
         },
         {
           "type": "keyword",
-          "value": "ポケモンカード デッキシールド レッド&グリーン"
+          "value": "ポケモンカードゲーム デッキシールド レッド グリーン"
+        },
+        {
+          "type": "keyword",
+          "value": "デッキシールド レッド グリーン"
+        },
+        {
+          "type": "keyword",
+          "value": "ポケモン レッド グリーン スリーブ"
+        },
+        {
+          "type": "keyword",
+          "value": "レッド グリーン デッキシールド"
+        },
+        {
+          "type": "keyword",
+          "value": "レッド グリーン スリーブ"
         }
       ],
-      "status": "api_error",
-      "confidence": 0,
-      "error": {
-        "status": 403,
-        "message": "Rakuten API error: HTTP 403",
-        "code": "",
-        "description": ""
+      "queryReports": [
+        {
+          "query": "4521329323121",
+          "httpStatus": 200,
+          "totalHits": 0,
+          "itemCount": 0,
+          "candidates": []
+        },
+        {
+          "query": "ポケモンカードゲーム デッキシールド レッド グリーン",
+          "httpStatus": 200,
+          "totalHits": 1,
+          "itemCount": 1,
+          "candidates": [
+            {
+              "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) レッド・グリーン アニメイト・ポケモンセンター限定",
+              "itemPrice": 4130,
+              "shopName": "ネットショップ駿河屋 楽天市場店",
+              "hasAffiliateUrl": true,
+              "isMatchCandidate": true,
+              "confidence": 0.55
+            }
+          ]
+        },
+        {
+          "query": "デッキシールド レッド グリーン",
+          "httpStatus": 200,
+          "totalHits": 1,
+          "itemCount": 1,
+          "candidates": [
+            {
+              "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) レッド・グリーン アニメイト・ポケモンセンター限定",
+              "itemPrice": 4130,
+              "shopName": "ネットショップ駿河屋 楽天市場店",
+              "hasAffiliateUrl": true,
+              "isMatchCandidate": true,
+              "confidence": 0.55
+            }
+          ]
+        },
+        {
+          "query": "ポケモン レッド グリーン スリーブ",
+          "httpStatus": 200,
+          "totalHits": 1,
+          "itemCount": 1,
+          "candidates": [
+            {
+              "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) レッド・グリーン アニメイト・ポケモンセンター限定",
+              "itemPrice": 4130,
+              "shopName": "ネットショップ駿河屋 楽天市場店",
+              "hasAffiliateUrl": true,
+              "isMatchCandidate": true,
+              "confidence": 0.55
+            }
+          ]
+        },
+        {
+          "query": "レッド グリーン デッキシールド",
+          "httpStatus": 200,
+          "totalHits": 1,
+          "itemCount": 1,
+          "candidates": [
+            {
+              "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) レッド・グリーン アニメイト・ポケモンセンター限定",
+              "itemPrice": 4130,
+              "shopName": "ネットショップ駿河屋 楽天市場店",
+              "hasAffiliateUrl": true,
+              "isMatchCandidate": true,
+              "confidence": 0.55
+            }
+          ]
+        },
+        {
+          "query": "レッド グリーン スリーブ",
+          "httpStatus": 200,
+          "totalHits": 5,
+          "itemCount": 5,
+          "candidates": [
+            {
+              "itemName": "パソコンケース かわいい PCケース ノートパソコン インナー バッグ 保護ケース おしゃれ 11/13インチ ブリーフケース パソコンケース カバン PCバッグ ノベルティ メンズ レディース 韓国 プレゼント ピンク/ワインレッド/イエロー/ペパーミントグリーン/ディープブルー",
+              "itemPrice": 2600,
+              "shopName": "Flame Fashion楽天市場店",
+              "hasAffiliateUrl": true,
+              "isMatchCandidate": false,
+              "confidence": 0.2
+            },
+            {
+              "itemName": "もこもこ ドット パソコンケース ノートパソコンカバー タブレットケース クッション入り かわいい レディース ふわふわ 冬 秋 カラフル 柄 おしゃれ 大サイズ 中サイズ 小サイズ アイボリー レッド グリーン ブラウン 韓国風 通勤 通学 ギフト",
+              "itemPrice": 2580,
+              "shopName": "Flame Fashion楽天市場店",
+              "hasAffiliateUrl": true,
+              "isMatchCandidate": false,
+              "confidence": 0.2
+            },
+            {
+              "itemName": "ノートブックPC/MacBook 16.1インチ/15.4/Air/Pro 13インチ/Retina 12インチ/11インチ対応 3サイズ選択 PUレザー ポーチ スリープ ケース スタンド機能 ケーブル留め 電源アダプ、マウスポーチ付（ブラック、ネイビー、ブラウン、グレー、グリーン、ピンク、レッド）7色選択",
+              "itemPrice": 2838,
+              "shopName": "mahsalink",
+              "hasAffiliateUrl": true,
+              "isMatchCandidate": false,
+              "confidence": 0.4
+            },
+            {
+              "itemName": "【マーサリンク】MacBook 15インチ/Air/Pro 13インチ/Retina 12インチ/11インチ対応 ノートブック、タブレット用 3サイズ選択 PUレザー ポーチ スリープ ケース ケーブル留め、マウス入れ、充電アダプタ入れ付（ブラック、レッド、グレー、ブラウン、グリーン）5カラー選択",
+              "itemPrice": 1738,
+              "shopName": "mahsalink",
+              "hasAffiliateUrl": true,
+              "isMatchCandidate": false,
+              "confidence": 0.4
+            },
+            {
+              "itemName": "ノートブックPC MacBook Air/Pro 13インチ/Retina 12インチ/11インチ対応 2サイズ選択 PUレザー ポーチ スリープ ケース スタンド機能 ケーブル留め 電源アダプタ、マウスポーチ付（ブラック、ネイビー、ブラウン、グレー、グリーン、ピンク、レッド）7色選択",
+              "itemPrice": 2838,
+              "shopName": "mahsalink",
+              "hasAffiliateUrl": true,
+              "isMatchCandidate": false,
+              "confidence": 0.4
+            }
+          ]
+        }
+      ],
+      "status": "needs_review",
+      "confidence": 0.55,
+      "match": {
+        "queryType": "keyword",
+        "hasPokemon": true,
+        "hasSleeve": true,
+        "matchedTokens": [
+          "レッド",
+          "グリーン"
+        ],
+        "tokenCount": 2
       },
-      "match": null,
-      "rakuten": null,
-      "candidates": []
+      "rakuten": {
+        "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) レッド・グリーン アニメイト・ポケモンセンター限定",
+        "itemPrice": 4130,
+        "itemUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qk9ao.78vh0adb.g00qk9ao.78vh1527/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsurugaya-a-too%2F11935949-1%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsurugaya-a-too%2Fi%2F358580346%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
+        "affiliateUrl": "",
+        "shopName": "ネットショップ駿河屋 楽天市場店",
+        "shopCode": "surugaya-a-too"
+      },
+      "candidates": [
+        {
+          "queryType": "keyword",
+          "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) レッド・グリーン アニメイト・ポケモンセンター限定",
+          "itemPrice": 4130,
+          "itemUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qk9ao.78vh0adb.g00qk9ao.78vh1527/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsurugaya-a-too%2F11935949-1%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsurugaya-a-too%2Fi%2F358580346%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
+          "hasAffiliateUrl": true,
+          "shopName": "ネットショップ駿河屋 楽天市場店",
+          "confidence": 0.55,
+          "status": "needs_review",
+          "match": {
+            "queryType": "keyword",
+            "hasPokemon": true,
+            "hasSleeve": true,
+            "matchedTokens": [
+              "レッド",
+              "グリーン"
+            ],
+            "tokenCount": 2
+          }
+        },
+        {
+          "queryType": "keyword",
+          "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) レッド・グリーン アニメイト・ポケモンセンター限定",
+          "itemPrice": 4130,
+          "itemUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qk9ao.78vh0adb.g00qk9ao.78vh1527/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsurugaya-a-too%2F11935949-1%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsurugaya-a-too%2Fi%2F358580346%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
+          "hasAffiliateUrl": true,
+          "shopName": "ネットショップ駿河屋 楽天市場店",
+          "confidence": 0.55,
+          "status": "needs_review",
+          "match": {
+            "queryType": "keyword",
+            "hasPokemon": true,
+            "hasSleeve": true,
+            "matchedTokens": [
+              "レッド",
+              "グリーン"
+            ],
+            "tokenCount": 2
+          }
+        },
+        {
+          "queryType": "keyword",
+          "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) レッド・グリーン アニメイト・ポケモンセンター限定",
+          "itemPrice": 4130,
+          "itemUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qk9ao.78vh0adb.g00qk9ao.78vh1527/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsurugaya-a-too%2F11935949-1%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsurugaya-a-too%2Fi%2F358580346%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
+          "hasAffiliateUrl": true,
+          "shopName": "ネットショップ駿河屋 楽天市場店",
+          "confidence": 0.55,
+          "status": "needs_review",
+          "match": {
+            "queryType": "keyword",
+            "hasPokemon": true,
+            "hasSleeve": true,
+            "matchedTokens": [
+              "レッド",
+              "グリーン"
+            ],
+            "tokenCount": 2
+          }
+        },
+        {
+          "queryType": "keyword",
+          "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) レッド・グリーン アニメイト・ポケモンセンター限定",
+          "itemPrice": 4130,
+          "itemUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qk9ao.78vh0adb.g00qk9ao.78vh1527/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsurugaya-a-too%2F11935949-1%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsurugaya-a-too%2Fi%2F358580346%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
+          "hasAffiliateUrl": true,
+          "shopName": "ネットショップ駿河屋 楽天市場店",
+          "confidence": 0.55,
+          "status": "needs_review",
+          "match": {
+            "queryType": "keyword",
+            "hasPokemon": true,
+            "hasSleeve": true,
+            "matchedTokens": [
+              "レッド",
+              "グリーン"
+            ],
+            "tokenCount": 2
+          }
+        },
+        {
+          "queryType": "keyword",
+          "itemName": "パソコンケース かわいい PCケース ノートパソコン インナー バッグ 保護ケース おしゃれ 11/13インチ ブリーフケース パソコンケース カバン PCバッグ ノベルティ メンズ レディース 韓国 プレゼント ピンク/ワインレッド/イエロー/ペパーミントグリーン/ディープブルー",
+          "itemPrice": 2600,
+          "itemUrl": "https://hb.afl.rakuten.co.jp/hgc/g00u1ivo.78vh09a4.g00u1ivo.78vh1382/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fhigashi-1918%2Fzluah-my01-71%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fhigashi-1918%2Fi%2F10001510%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
+          "hasAffiliateUrl": true,
+          "shopName": "Flame Fashion楽天市場店",
+          "confidence": 0.2,
+          "status": "needs_review",
+          "match": {
+            "queryType": "keyword",
+            "hasPokemon": false,
+            "hasSleeve": false,
+            "matchedTokens": [
+              "レッド",
+              "グリーン"
+            ],
+            "tokenCount": 2
+          }
+        }
+      ]
     },
     "4521329463230": {
       "sleeveId": "463230",
