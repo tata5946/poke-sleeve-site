@@ -1,0 +1,86 @@
+{
+  "generatedAt": "2026-09-06T04:45:01.611Z",
+  "items": {
+    "4521329323121": {
+      "sleeveId": "323121",
+      "routeId": "4521329323121",
+      "sleeveName": "レッド&グリーン",
+      "searchedAt": "2026-09-06T04:44:59.089Z",
+      "queries": [
+        {
+          "type": "jan",
+          "value": "4521329323121"
+        },
+        {
+          "type": "keyword",
+          "value": "ポケモンカード デッキシールド レッド&グリーン"
+        }
+      ],
+      "status": "api_error",
+      "confidence": 0,
+      "error": {
+        "status": 403,
+        "message": "Rakuten API error: HTTP 403",
+        "code": "",
+        "description": ""
+      },
+      "match": null,
+      "rakuten": null,
+      "candidates": []
+    },
+    "4521329463230": {
+      "sleeveId": "463230",
+      "routeId": "4521329463230",
+      "sleeveName": "ヤヤコマ＆ファイアロー",
+      "searchedAt": "2026-09-06T04:45:00.357Z",
+      "queries": [
+        {
+          "type": "jan",
+          "value": "4521329463230"
+        },
+        {
+          "type": "keyword",
+          "value": "ポケモンカード デッキシールド ヤヤコマ＆ファイアロー"
+        }
+      ],
+      "status": "api_error",
+      "confidence": 0,
+      "error": {
+        "status": 403,
+        "message": "Rakuten API error: HTTP 403",
+        "code": "",
+        "description": ""
+      },
+      "match": null,
+      "rakuten": null,
+      "candidates": []
+    },
+    "4521329100548": {
+      "sleeveId": "100548",
+      "routeId": "4521329100548",
+      "sleeveName": "レシラム",
+      "searchedAt": "2026-09-06T04:45:01.611Z",
+      "queries": [
+        {
+          "type": "jan",
+          "value": "4521329100548"
+        },
+        {
+          "type": "keyword",
+          "value": "ポケモンカード デッキシールド レシラム"
+        }
+      ],
+      "status": "api_error",
+      "confidence": 0,
+      "error": {
+        "status": 403,
+        "message": "Rakuten API error: HTTP 403",
+        "code": "",
+        "description": ""
+      },
+      "match": null,
+      "rakuten": null,
+      "candidates": []
+    }
+  }
+}

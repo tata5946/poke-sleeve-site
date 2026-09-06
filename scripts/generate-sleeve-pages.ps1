@@ -1,7 +1,8 @@
 ﻿param(
   [string]$DataPath = "data.json",
   [string]$TemplatePath = "detail.html",
-  [string]$OutputRoot = "sleeve"
+  [string]$OutputRoot = "sleeve",
+  [string[]]$Ids = @()
 )
 
 $ErrorActionPreference = "Stop"
@@ -244,6 +245,11 @@ Assert-Exists -Path $TemplatePath -Label "Template"
 
 $data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $template = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
+$idFilter = @{}
+foreach ($filterId in @($Ids)) {
+  $key = ([string]$filterId).Trim()
+  if ($key) { $idFilter[$key] = $true }
+}
 
 if (-not (Test-Path -LiteralPath $OutputRoot)) {
   New-Item -ItemType Directory -Path $OutputRoot | Out-Null
@@ -255,6 +261,7 @@ $fallbackOgImage = 'https://pokesuri-navi.com/assets/favicon.svg'
 foreach ($sleeve in @($data.sleeves)) {
   $id = [string]$sleeve.id
   if ([string]::IsNullOrWhiteSpace($id)) { continue }
+  if ($idFilter.Count -gt 0 -and -not $idFilter.ContainsKey($id)) { continue }
 
   $routeId = Get-SleeveRouteId $id
   $encodedId = [System.Uri]::EscapeDataString($routeId)

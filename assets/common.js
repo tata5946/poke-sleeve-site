@@ -127,8 +127,11 @@ const HEADER_HTML = `
 
 const FOOTER_HTML = `
 <footer class="site-footer">
-  &copy; 2026 ポケスリ相場ナビ |
-  <a href="./policy.html">プライバシーポリシー・免責事項</a>
+  <div>&copy; 2026 ポケスリ相場ナビ | <a href="./policy.html">プライバシーポリシー・免責事項</a></div>
+  <div class="footer-disclosure">当サイトはアフィリエイト広告を利用しています</div>
+  <!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+  <a href="https://developers.rakuten.com/" target="_blank">Supported by Rakuten Developers</a>
+  <!-- Rakuten Web Services Attribution Snippet TO HERE -->
 </footer>
 `;
 
