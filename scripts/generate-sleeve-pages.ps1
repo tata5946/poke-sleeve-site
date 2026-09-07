@@ -2,6 +2,7 @@
   [string]$DataPath = "data.json",
   [string]$TemplatePath = "detail.html",
   [string]$OutputRoot = "sleeve",
+  [string]$RakutenLinksPath = "data/rakuten-links.json",
   [string[]]$Ids = @()
 )
 
@@ -21,6 +22,17 @@ function Get-SleeveRouteId([string]$Id) {
 
 function ConvertTo-HtmlText([object]$Value) {
   return [System.Net.WebUtility]::HtmlEncode([string]$Value)
+}
+
+function Test-RakutenAffiliateUrl([object]$Value) {
+  $url = ([string]$Value).Trim()
+  if (-not $url) { return $false }
+  try {
+    $uri = [System.Uri]$url
+    return $uri.Scheme -eq "https" -and $uri.Host -eq "hb.afl.rakuten.co.jp"
+  } catch {
+    return $false
+  }
 }
 
 function Write-TextIfChanged([string]$Path, [string]$Text) {
@@ -245,6 +257,16 @@ Assert-Exists -Path $TemplatePath -Label "Template"
 
 $data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $template = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
+$rakutenLinksByRouteId = @{}
+if (Test-Path -LiteralPath $RakutenLinksPath) {
+  $rakutenCache = Get-Content -LiteralPath $RakutenLinksPath -Raw -Encoding UTF8 | ConvertFrom-Json
+  foreach ($prop in @($rakutenCache.items.PSObject.Properties)) {
+    $entry = $prop.Value
+    if ($entry.status -eq "accepted" -and (Test-RakutenAffiliateUrl $entry.affiliateUrl)) {
+      $rakutenLinksByRouteId[$prop.Name] = ([string]$entry.affiliateUrl).Trim()
+    }
+  }
+}
 $idFilter = @{}
 foreach ($filterId in @($Ids)) {
   $key = ([string]$filterId).Trim()
@@ -333,6 +355,15 @@ foreach ($sleeve in @($data.sleeves)) {
   $content = $content.Replace('<div id="latestWeekly" class="value">-</div>', '<div id="latestWeekly" class="value">' + (ConvertTo-HtmlText $latestPriceText) + '</div>')
   $content = $content.Replace('<div id="weeklyDelta" class="delta" style="margin-top:6px;"></div>', '<div id="weeklyDelta" class="delta flat" style="margin-top:6px;">価格推移データを掲載</div>')
   $content = $content.Replace('<div id="weeklyCount" class="meta" style="margin-top:6px;">最終観測日: -</div>', '<div id="weeklyCount" class="meta" style="margin-top:6px;">' + (ConvertTo-HtmlText $latestCountText) + '</div>')
+  if ($rakutenLinksByRouteId.ContainsKey($routeId)) {
+    $rakutenHref = ConvertTo-HtmlText $rakutenLinksByRouteId[$routeId]
+    $content = [regex]::Replace(
+      $content,
+      '(<a class="marketplace-link marketplace-link--rakuten" id="rakutenLink" href=")[^"]*(" target="_blank" rel="nofollow sponsored noopener" aria-label="[^"]*") hidden>',
+      ('$1' + $rakutenHref + '$2>'),
+      1
+    )
+  }
 
   $targetDir = Join-Path $OutputRoot $routeId
   if (-not (Test-Path -LiteralPath $targetDir)) {

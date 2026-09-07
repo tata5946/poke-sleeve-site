@@ -2125,7 +2125,7 @@
                     <span class="marketplace-logo marketplace-logo--mercari" aria-hidden="true">m</span>
                     <span>メルカリで探す</span>
                   </a>
-                  <a class="marketplace-link marketplace-link--rakuten" id="rakutenLink" href="https://www.rakuten.co.jp/" target="_blank" rel="nofollow sponsored noopener" aria-label="楽天市場で商品を見る" hidden>
+                  <a class="marketplace-link marketplace-link--rakuten" id="rakutenLink" href="https://hb.afl.rakuten.co.jp/hgc/g00qk9ao.78vh0adb.g00qk9ao.78vh1527/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsurugaya-a-too%2F108409912-1%2F&amp;m=http%3A%2F%2Fm.rakuten.co.jp%2Fsurugaya-a-too%2Fi%2F356011506%2F&amp;rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c" target="_blank" rel="nofollow sponsored noopener" aria-label="楽天市場で商品を見る">
                     <span class="marketplace-logo marketplace-logo--rakuten" aria-hidden="true">R</span>
                     <span>楽天市場で商品を見る</span>
                   </a>
@@ -2310,8 +2310,8 @@
       if (window.__RAKUTEN_LINK_CACHE) return window.__RAKUTEN_LINK_CACHE;
       try {
         const cachePath = /\/sleeve\/[^/]+\/(?:index\.html)?$/.test(window.location.pathname)
-          ? "../../data/rakuten-links.json?v=20260906a"
-          : "./data/rakuten-links.json?v=20260906a";
+          ? "../../data/rakuten-links.json?v=20260907a"
+          : "./data/rakuten-links.json?v=20260907a";
         const res = await fetch(cachePath, { cache: "no-store" });
         if (!res.ok) throw new Error("rakuten cache unavailable");
         window.__RAKUTEN_LINK_CACHE = await res.json();

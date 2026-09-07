@@ -2305,8 +2305,8 @@
       if (window.__RAKUTEN_LINK_CACHE) return window.__RAKUTEN_LINK_CACHE;
       try {
         const cachePath = /\/sleeve\/[^/]+\/(?:index\.html)?$/.test(window.location.pathname)
-          ? "../../data/rakuten-links.json?v=20260906a"
-          : "./data/rakuten-links.json?v=20260906a";
+          ? "../../data/rakuten-links.json?v=20260907a"
+          : "./data/rakuten-links.json?v=20260907a";
         const res = await fetch(cachePath, { cache: "no-store" });
         if (!res.ok) throw new Error("rakuten cache unavailable");
         window.__RAKUTEN_LINK_CACHE = await res.json();
