@@ -841,18 +841,6 @@
       "matchScore": 1.1,
       "reviewReason": "必須条件をすべて満たす候補が1件だけで、主要語がすべて一致しました"
     },
-    "4521329131597": {
-      "sleeveId": "131597",
-      "status": "needs_review",
-      "searchKeyword": "4521329131597",
-      "itemName": "【中古】サプライ ポケモンカードゲーム デッキシールド(スリーブ) レッド・グリーン アニメイト・ポケモンセンター限定",
-      "itemPrice": 4130,
-      "shopName": "ネットショップ駿河屋 楽天市場店",
-      "affiliateUrl": "https://hb.afl.rakuten.co.jp/hgc/g00qk9ao.78vh0adb.g00qk9ao.78vh1527/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsurugaya-a-too%2F11935949-1%2F&m=http%3A%2F%2Fm.rakuten.co.jp%2Fsurugaya-a-too%2Fi%2F358580346%2F&rafcid=wsc_i_is_5d94a3d0-f170-46ef-8996-938860fe097c",
-      "checkedAt": "2026-09-06T09:48:01.794Z",
-      "matchScore": 0.94,
-      "reviewReason": "ポケスリ側の商品名の主要語が一部しか一致しません"
-    },
     "4521329134130": {
       "sleeveId": "134130",
       "status": "accepted",
