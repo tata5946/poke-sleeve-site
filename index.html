@@ -154,6 +154,82 @@
     .home-article-excerpt {
       display: none;
     }
+    .home-site-intro {
+      width: min(100%, 1180px);
+      margin: 0 auto;
+      padding: clamp(28px, 4vw, 48px);
+      border: 1px solid rgba(191, 211, 237, 0.72);
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(246, 250, 255, 0.94) 100%);
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.06);
+      overflow: hidden;
+    }
+    .home-site-intro-inner {
+      display: grid;
+      gap: clamp(22px, 3vw, 32px);
+      justify-items: center;
+      text-align: center;
+    }
+    .home-site-intro-copy {
+      display: grid;
+      gap: 16px;
+      max-width: 920px;
+    }
+    .home-site-intro-title {
+      margin: 0;
+      color: #0f172a;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: clamp(40px, 4.2vw, 58px);
+      line-height: 1.12;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+    .home-site-intro-title span {
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .home-site-intro-lead {
+      margin: 0;
+      color: #475569;
+      font-size: clamp(16px, 1.7vw, 21px);
+      line-height: 1.75;
+      font-weight: 800;
+    }
+    .home-site-intro-features {
+      width: min(100%, 720px);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .home-site-intro-feature {
+      min-width: 0;
+      padding: 18px 14px;
+      border: 1px solid #dbe7f6;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 10px 24px rgba(15, 23, 42, 0.04);
+      display: grid;
+      gap: 8px;
+      align-content: center;
+    }
+    .home-site-intro-feature-value {
+      color: #1d4ed8;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      font-size: clamp(25px, 3vw, 34px);
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .home-site-intro-feature-label {
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 900;
+      word-break: keep-all;
+      overflow-wrap: normal;
+    }
     .home-card {
       background: #fff;
       border-radius: 22px;
@@ -4256,6 +4332,39 @@
         padding: 8px 12px;
         font-size: 15px;
       }
+      body.home-page .home-site-intro {
+        padding: 24px 14px;
+        border-radius: 22px;
+      }
+      body.home-page .home-site-intro-inner {
+        gap: 20px;
+      }
+      body.home-page .home-site-intro-copy {
+        gap: 12px;
+      }
+      body.home-page .home-site-intro-title {
+        font-size: clamp(22px, 5.9vw, 46px);
+        line-height: 1.16;
+      }
+      body.home-page .home-site-intro-lead {
+        font-size: 14px;
+        line-height: 1.65;
+      }
+      body.home-page .home-site-intro-features {
+        gap: 7px;
+      }
+      body.home-page .home-site-intro-feature {
+        padding: 12px 6px;
+        border-radius: 14px;
+        gap: 6px;
+      }
+      body.home-page .home-site-intro-feature-value {
+        font-size: clamp(20px, 6vw, 25px);
+      }
+      body.home-page .home-site-intro-feature-label {
+        font-size: 10px;
+        line-height: 1.35;
+      }
       body.home-page .home-sleeve-search {
         padding: 22px 16px;
         border-radius: 22px;
@@ -4763,6 +4872,22 @@
         padding-left: 10px;
         padding-right: 10px;
       }
+      body.home-page .home-site-intro {
+        padding: 22px 10px;
+      }
+      body.home-page .home-site-intro-features {
+        gap: 5px;
+      }
+      body.home-page .home-site-intro-feature {
+        padding-left: 4px;
+        padding-right: 4px;
+      }
+      body.home-page .home-site-intro-feature-value {
+        font-size: clamp(17px, 5.2vw, 22px);
+      }
+      body.home-page .home-site-intro-feature-label {
+        font-size: 9px;
+      }
       body.home-page .dashboard-kpis {
         gap: 6px;
       }
@@ -4811,6 +4936,28 @@
           </div>
           <button id="releaseBannerNext" class="release-banner-next" type="button" aria-label="次のバナーへ">›</button>
           <div id="releaseBannerDots" class="release-banner-dots" aria-label="バナー切り替え"></div>
+        </section>
+        <section class="home-site-intro reveal-on-scroll" style="--reveal-delay: 52ms;" aria-labelledby="homeSiteIntroTitle">
+          <div class="home-site-intro-inner">
+            <div class="home-site-intro-copy">
+              <h2 id="homeSiteIntroTitle" class="home-site-intro-title"><span>デッキシールドの相場も、</span><br><span>コレクションも。</span></h2>
+              <p class="home-site-intro-lead">歴代デッキシールドの価格推移をチェック。<br>お気に入りを探して、自分だけのコレクションを楽しもう。</p>
+            </div>
+            <div class="home-site-intro-features" aria-label="ポケスリ相場ナビの特徴">
+              <div class="home-site-intro-feature">
+                <strong class="home-site-intro-feature-value"><span id="homeSiteIntroSleeveCount">842</span>種類</strong>
+                <span class="home-site-intro-feature-label">デッキシールドを<wbr>掲載</span>
+              </div>
+              <div class="home-site-intro-feature">
+                <strong class="home-site-intro-feature-value">週1回</strong>
+                <span class="home-site-intro-feature-label">相場データを更新</span>
+              </div>
+              <div class="home-site-intro-feature">
+                <strong class="home-site-intro-feature-value">無料</strong>
+                <span class="home-site-intro-feature-label">コレクション管理</span>
+              </div>
+            </div>
+          </div>
         </section>
         <section class="home-articles reveal-on-scroll" style="--reveal-delay: 56ms;" aria-label="お知らせ">
           <div class="home-articles-head">
@@ -5886,12 +6033,14 @@
       const field = input ? input.closest(".home-sleeve-search-field") : null;
       if (!form || !input || input.dataset.homeSleeveSearchWired === "1") return;
       input.dataset.homeSleeveSearchWired = "1";
+      const count = (Array.isArray(sleeves) ? sleeves : []).filter((sleeve) => String(sleeve?.id || "").trim()).length;
       if (countEl) {
-        const count = (Array.isArray(sleeves) ? sleeves : []).filter((sleeve) => String(sleeve?.id || "").trim()).length;
         countEl.textContent = count ? count.toLocaleString() : "--";
         const leadCountEl = document.getElementById("homeSleeveSearchLeadCount");
         if (leadCountEl) leadCountEl.textContent = count ? count.toLocaleString() : "--";
       }
+      const introCountEl = document.getElementById("homeSiteIntroSleeveCount");
+      if (introCountEl) introCountEl.textContent = count ? count.toLocaleString() : "842";
 
       if (window.common && typeof window.common.wireSleeveAutocomplete === "function") {
         window.common.wireSleeveAutocomplete(input, {
