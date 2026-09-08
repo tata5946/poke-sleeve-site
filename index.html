@@ -22,6 +22,9 @@
   <link rel="stylesheet" href="./assets/site.css?v=20260826b" />
   <style>
     body.home-page {
+      --home-content-max: 1440px;
+      --home-hero-max: 900px;
+      --home-search-max: 1080px;
       background:
         radial-gradient(circle at top, rgba(255, 198, 72, 0.2), transparent 30%),
         radial-gradient(circle at 82% 8%, rgba(96, 165, 250, 0.16), transparent 26%),
@@ -35,7 +38,7 @@
     .home-articles {
       display: grid;
       gap: 26px;
-      width: min(100%, 1180px);
+      width: 100%;
       margin: 0 auto;
       padding: 18px 0 18px;
       background: transparent;
@@ -166,7 +169,8 @@
       display: none;
     }
     .home-site-intro {
-      width: min(100%, 1180px);
+      width: 100%;
+      max-width: var(--home-hero-max);
       margin: 0 auto;
       padding: clamp(28px, 4vw, 48px);
       border: 0;
@@ -1440,7 +1444,8 @@
     .home-sleeve-search {
       position: relative;
       overflow: hidden;
-      width: min(100%, 1180px);
+      width: 100%;
+      max-width: var(--home-search-max);
       margin: 0 auto;
       padding: clamp(32px, 4.6vw, 56px);
       border-radius: 24px;
@@ -2908,6 +2913,8 @@
       display: none;
     }
     .dashboard-content {
+      width: min(100%, var(--home-content-max));
+      margin: 0 auto;
       padding: 28px;
       display: grid;
       gap: 28px;
