@@ -496,7 +496,7 @@
         slug,
         title,
         excerpt: String(article.excerpt || "").trim(),
-        category: String(article.category || "相場コラム").trim(),
+        category: String(article.category || "その他").trim(),
         coverImage: String(article.coverImage || "").trim(),
         publishedAt: String(article.publishedAt || article.updatedAt || "").trim(),
         status: String(article.status || "published").trim(),
@@ -563,12 +563,13 @@
       }
       const hasCoverImage = Boolean(article.coverImage);
       const coverImage = hasCoverImage ? article.coverImage : DEFAULT_ARTICLE_COVER_IMAGE;
+      const categoryLabel = article.category === "FEATURE" ? "特集" : (article.category || "その他");
       mount.innerHTML = `
         <article class="article-detail">
           <img class="article-cover${hasCoverImage ? "" : " article-cover--default"}" src="${escapeHtml(coverImage)}" alt="">
           <header class="article-head">
             <div class="article-meta">
-              <span>${escapeHtml(article.category || "記事")}</span>
+              <span>${escapeHtml(categoryLabel)}</span>
               <span>${escapeHtml(formatDate(article.publishedAt))}</span>
             </div>
             <h1 class="article-detail-title">${escapeHtml(article.title)}</h1>

@@ -64,6 +64,28 @@
       gap: 14px;
     }
 
+    .article-tabs {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      border-bottom: 4px solid #050505;
+      background: #e8e8e8;
+    }
+
+    .article-tab {
+      min-height: 50px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #5f5f5f;
+      font: 900 15px/1 "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      cursor: pointer;
+    }
+
+    .article-tab.is-active {
+      background: #050505;
+      color: #fff;
+    }
+
     .article-card {
       display: grid;
       overflow: hidden;
@@ -204,6 +226,25 @@
         border-top: 1px solid #edf0f3;
       }
 
+      .article-tabs {
+        display: flex;
+        overflow-x: auto;
+        scrollbar-width: none;
+        margin-bottom: 12px;
+      }
+
+      .article-tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .article-tab {
+        flex: 0 0 auto;
+        min-width: 96px;
+        min-height: 44px;
+        padding: 0 12px;
+        font-size: 14px;
+      }
+
       .article-card {
         grid-template-columns: 92px minmax(0, 1fr);
         gap: 14px;
@@ -296,6 +337,15 @@
               <p class="article-desc">ポケカスリーブ相場の変化、ランキングの見方、注目スリーブの読み物をまとめます。</p>
             </section>
 
+            <div class="article-tabs" role="tablist" aria-label="記事カテゴリ">
+              <button type="button" class="article-tab is-active" data-article-filter="all">すべて</button>
+              <button type="button" class="article-tab" data-article-filter="FEATURE">特集</button>
+              <button type="button" class="article-tab" data-article-filter="相場コラム">相場コラム</button>
+              <button type="button" class="article-tab" data-article-filter="商品情報">商品情報</button>
+              <button type="button" class="article-tab" data-article-filter="サイト情報">サイト情報</button>
+              <button type="button" class="article-tab" data-article-filter="その他">その他</button>
+            </div>
+
             <section id="articleGrid" class="article-grid" aria-label="記事一覧">
               <div class="article-empty">記事を読み込み中です。</div>
             </section>
@@ -340,13 +390,30 @@
         slug,
         title,
         excerpt: String(article.excerpt || "").trim(),
-        category: String(article.category || "相場コラム").trim(),
+        category: String(article.category || "その他").trim(),
         coverImage: String(article.coverImage || "").trim(),
         publishedAt: String(article.publishedAt || article.updatedAt || "").trim(),
         status: String(article.status || "published").trim(),
         linkUrl: String(article.linkUrl || "").trim(),
         html: String(article.html || "")
       };
+    }
+
+    let articleFilterState = "all";
+
+    function getArticleCategoryLabel(category) {
+      const raw = String(category || "").trim();
+      if (!raw) return "その他";
+      if (raw === "FEATURE") return "特集";
+      return raw;
+    }
+
+    function filterArticles(articles, filter) {
+      if (!filter || filter === "all") return articles;
+      return articles.filter((article) => {
+        const raw = String(article.category || "");
+        return raw === filter || getArticleCategoryLabel(raw) === filter;
+      });
     }
 
     async function loadArticles() {
@@ -381,16 +448,17 @@
     function renderArticles(articles) {
       const grid = document.getElementById("articleGrid");
       if (!grid) return;
-      if (!articles.length) {
+      const filtered = filterArticles(articles, articleFilterState);
+      if (!filtered.length) {
         if (window.common && typeof window.common.updateItemListStructuredData === "function") {
           window.common.updateItemListStructuredData("articlesItemListStructuredData", [], {
             name: "ポケスリ相場ナビ 記事一覧"
           });
         }
-        grid.innerHTML = `<div class="article-empty">公開中の記事はまだありません。</div>`;
+        grid.innerHTML = `<div class="article-empty">該当する記事はまだありません。</div>`;
         return;
       }
-      grid.innerHTML = articles.map((article) => {
+      grid.innerHTML = filtered.map((article) => {
         const href = article.linkUrl || `./article.html?id=${encodeURIComponent(article.slug)}`;
         const hasCoverImage = Boolean(article.coverImage);
         const coverImage = hasCoverImage ? article.coverImage : DEFAULT_ARTICLE_COVER_IMAGE;
@@ -400,7 +468,7 @@
             ${image}
             <div class="article-card-body">
               <div class="article-meta">
-                <span>${escapeHtml(article.category || "記事")}</span>
+                <span>${escapeHtml(getArticleCategoryLabel(article.category))}</span>
                 <span>${escapeHtml(formatDate(article.publishedAt))}</span>
               </div>
               <h2 class="article-card-title">${escapeHtml(article.title)}</h2>
@@ -410,7 +478,7 @@
         `;
       }).join("");
       if (window.common && typeof window.common.updateItemListStructuredData === "function") {
-        window.common.updateItemListStructuredData("articlesItemListStructuredData", articles.map((article) => ({
+        window.common.updateItemListStructuredData("articlesItemListStructuredData", filtered.map((article) => ({
           ...article,
           href: article.linkUrl || `./article.html?id=${encodeURIComponent(article.slug)}`
         })), {
@@ -420,7 +488,26 @@
       }
     }
 
-    loadArticles().then(renderArticles).catch(() => {
+    function wireArticleTabs(articles) {
+      const tabs = Array.from(document.querySelectorAll("[data-article-filter]"));
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          articleFilterState = String(tab.dataset.articleFilter || "all");
+          tabs.forEach((item) => {
+            const active = String(item.dataset.articleFilter || "all") === articleFilterState;
+            item.classList.toggle("is-active", active);
+            item.setAttribute("aria-selected", active ? "true" : "false");
+          });
+          renderArticles(articles);
+        });
+        tab.setAttribute("aria-selected", tab.classList.contains("is-active") ? "true" : "false");
+      });
+    }
+
+    loadArticles().then((articles) => {
+      wireArticleTabs(articles);
+      renderArticles(articles);
+    }).catch(() => {
       renderArticles([]);
     });
   </script>

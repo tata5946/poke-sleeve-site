@@ -70,7 +70,7 @@
     }
     .home-article-tabs {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       width: 100%;
       border-bottom: 4px solid #050505;
       background: #e8e8e8;
@@ -4672,7 +4672,7 @@
       }
       body.home-page .home-article-tab {
         flex: 0 0 auto;
-        min-width: 104px;
+        min-width: 96px;
         min-height: 44px;
         padding: 0 12px;
         font-size: 14px;
@@ -4977,6 +4977,7 @@
               <button type="button" class="home-article-tab" data-home-article-filter="FEATURE">特集</button>
               <button type="button" class="home-article-tab" data-home-article-filter="相場コラム">相場コラム</button>
               <button type="button" class="home-article-tab" data-home-article-filter="商品情報">商品情報</button>
+              <button type="button" class="home-article-tab" data-home-article-filter="サイト情報">サイト情報</button>
               <button type="button" class="home-article-tab" data-home-article-filter="その他">その他</button>
             </div>
           </div>
@@ -5365,7 +5366,7 @@
         slug,
         title,
         excerpt: String(article.excerpt || "").trim(),
-        category: String(article.category || "記事").trim(),
+        category: String(article.category || "その他").trim(),
         coverImage: String(article.coverImage || article.imageUrl || "").trim(),
         linkUrl: String(article.linkUrl || "").trim(),
         publishedAt: String(article.publishedAt || article.updatedAt || "").trim()

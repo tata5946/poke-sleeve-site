@@ -931,7 +931,14 @@
           </div>
           <div class="field">
             <label for="categoryInput">カテゴリ</label>
-            <input id="categoryInput" type="text" maxlength="40" value="相場コラム" />
+            <input id="categoryInput" type="text" maxlength="40" value="サイト情報" list="categoryOptions" />
+            <datalist id="categoryOptions">
+              <option value="FEATURE">
+              <option value="相場コラム">
+              <option value="商品情報">
+              <option value="サイト情報">
+              <option value="その他">
+            </datalist>
           </div>
           <div class="field">
             <label for="coverInput">カバー画像URL</label>
@@ -1716,7 +1723,7 @@
         slug,
         title,
         excerpt: qs("excerptInput").value.trim(),
-        category: qs("categoryInput").value.trim() || "相場コラム",
+        category: qs("categoryInput").value.trim() || "サイト情報",
         coverImage: qs("coverInput").value.trim(),
         publishedAt: qs("dateInput").value || todayISO(),
         updatedAt: now,
@@ -1730,7 +1737,7 @@
       qs("titleInput").value = article?.title || "";
       qs("slugInput").value = article?.slug || "";
       qs("excerptInput").value = article?.excerpt || "";
-      qs("categoryInput").value = article?.category || "相場コラム";
+      qs("categoryInput").value = article?.category || "サイト情報";
       qs("coverInput").value = article?.coverImage || "";
       qs("dateInput").value = article?.publishedAt || todayISO();
       qs("editor").innerHTML = article?.html || "<p>ここに本文を書いてください。</p>";
