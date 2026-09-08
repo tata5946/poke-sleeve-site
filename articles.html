@@ -93,6 +93,12 @@
       min-height: 0;
     }
 
+    .article-thumb--default {
+      box-sizing: border-box;
+      object-fit: contain;
+      padding: 16px;
+    }
+
     .article-card-body {
       display: grid;
       gap: 8px;
@@ -307,6 +313,7 @@
   </script>
   <script>
     const ARTICLE_LOCAL_KEY = "pokeSleeve:articles:local:v1";
+    const DEFAULT_ARTICLE_COVER_IMAGE = "./assets/生成画像1.png";
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -385,9 +392,9 @@
       }
       grid.innerHTML = articles.map((article) => {
         const href = article.linkUrl || `./article.html?id=${encodeURIComponent(article.slug)}`;
-        const image = article.coverImage
-          ? `<img class="article-thumb" src="${escapeHtml(article.coverImage)}" alt="">`
-          : `<div class="article-thumb" aria-hidden="true"></div>`;
+        const hasCoverImage = Boolean(article.coverImage);
+        const coverImage = hasCoverImage ? article.coverImage : DEFAULT_ARTICLE_COVER_IMAGE;
+        const image = `<img class="article-thumb${hasCoverImage ? "" : " article-thumb--default"}" src="${escapeHtml(coverImage)}" alt="" loading="lazy" decoding="async">`;
         return `
           <a class="article-card" href="${href}">
             ${image}

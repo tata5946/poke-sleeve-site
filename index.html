@@ -115,6 +115,17 @@
       display: block;
       object-fit: cover;
     }
+    .home-article-image--default {
+      background:
+        radial-gradient(circle at 20% 18%, rgba(255, 204, 0, .18), transparent 30%),
+        radial-gradient(circle at 82% 16%, rgba(30, 91, 215, .18), transparent 28%),
+        linear-gradient(135deg, #f8fbff, #edf4ff);
+    }
+    .home-article-image img.home-article-default-cover {
+      box-sizing: border-box;
+      object-fit: contain;
+      padding: 12px;
+    }
     .home-article-info {
       display: grid;
       grid-template-columns: auto 1fr;
@@ -5337,6 +5348,7 @@
     }
 
     const HOME_ARTICLE_LOCAL_KEY = "pokeSleeve:articles:local:v1";
+    const DEFAULT_ARTICLE_COVER_IMAGE = "./assets/生成画像1.png";
 
     function formatHomeArticleDate(value) {
       const d = new Date(value);
@@ -5413,10 +5425,13 @@
         el.innerHTML = `<div class="home-empty">記事はまだありません。</div>`;
         return;
       }
-      el.innerHTML = filtered.map((article) => `
+      el.innerHTML = filtered.map((article) => {
+        const hasCoverImage = Boolean(article.coverImage);
+        const coverImage = hasCoverImage ? article.coverImage : DEFAULT_ARTICLE_COVER_IMAGE;
+        return `
         <a class="home-article-card" href="${escapeHtml(article.linkUrl || "./article.html?id=" + encodeURIComponent(article.slug))}">
-          <div class="home-article-image">
-            ${article.coverImage ? `<img src="${escapeHtml(article.coverImage)}" alt="" loading="lazy" decoding="async">` : ""}
+          <div class="home-article-image${hasCoverImage ? "" : " home-article-image--default"}">
+            <img class="${hasCoverImage ? "" : "home-article-default-cover"}" src="${escapeHtml(coverImage)}" alt="" loading="lazy" decoding="async">
           </div>
           <div class="home-article-info">
             <span class="home-article-category" data-category="${escapeHtml(article.category)}">${escapeHtml(getHomeArticleCategoryLabel(article.category))}</span>
@@ -5425,7 +5440,8 @@
           <h3 class="home-article-title">${escapeHtml(article.title)}</h3>
           <p class="home-article-excerpt">${escapeHtml(article.excerpt || "記事を読む")}</p>
         </a>
-      `).join("");
+      `;
+      }).join("");
     }
 
     function wireHomeArticleTabs() {

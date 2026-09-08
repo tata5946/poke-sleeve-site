@@ -42,6 +42,12 @@
         linear-gradient(135deg, #f8fbff, #edf4ff);
     }
 
+    .article-cover--default {
+      box-sizing: border-box;
+      object-fit: contain;
+      padding: clamp(18px, 4vw, 34px);
+    }
+
     .article-head {
       display: grid;
       gap: 10px;
@@ -463,6 +469,7 @@
   </script>
   <script>
     const ARTICLE_LOCAL_KEY = "pokeSleeve:articles:local:v1";
+    const DEFAULT_ARTICLE_COVER_IMAGE = "./assets/生成画像1.png";
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -554,9 +561,11 @@
           url: location.href
         });
       }
+      const hasCoverImage = Boolean(article.coverImage);
+      const coverImage = hasCoverImage ? article.coverImage : DEFAULT_ARTICLE_COVER_IMAGE;
       mount.innerHTML = `
         <article class="article-detail">
-          ${article.coverImage ? `<img class="article-cover" src="${escapeHtml(article.coverImage)}" alt="">` : `<div class="article-cover" aria-hidden="true"></div>`}
+          <img class="article-cover${hasCoverImage ? "" : " article-cover--default"}" src="${escapeHtml(coverImage)}" alt="">
           <header class="article-head">
             <div class="article-meta">
               <span>${escapeHtml(article.category || "記事")}</span>
