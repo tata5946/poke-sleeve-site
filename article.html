@@ -33,7 +33,9 @@
     }
 
     .article-cover {
+      display: block;
       width: 100%;
+      height: auto;
       aspect-ratio: 16 / 7;
       object-fit: cover;
       background:
@@ -470,6 +472,60 @@
   <script>
     const ARTICLE_LOCAL_KEY = "pokeSleeve:articles:local:v1";
     const DEFAULT_ARTICLE_COVER_IMAGE = "./assets/生成画像1.png";
+    const INITIAL_ARTICLE_SUMMARIES = [
+      {
+        slug: "article-2026-08-26",
+        title: "ポケカのデッキシールドをコレクション管理｜「マイコレクション」機能を追加しました",
+        excerpt: "",
+        category: "サイト情報",
+        coverImage: "",
+        publishedAt: "2026-08-26"
+      },
+      {
+        slug: "storm-emerald",
+        title: "ストームエメラルダ発売関連デッキシールド",
+        excerpt: "新規発売と再販の関連スリーブをまとめました。各カードから個別ページで相場推移を確認できます。",
+        category: "FEATURE",
+        coverImage: "./assets/storm-emerald-banner-display.jpg",
+        publishedAt: "2026-08-06",
+        linkUrl: "./storm-emerald.html"
+      },
+      {
+        slug: "june-19-restock",
+        title: "6/19再販デッキシールド特集",
+        excerpt: "6/19再販の関連スリーブをまとめます。各カードから個別ページで相場推移を確認できます。",
+        category: "FEATURE",
+        coverImage: "./assets/0d2fd7fd97504a6e299e649d8a0f145ed3927535626e303c7ae99fa983687d58.jpg",
+        publishedAt: "2026-06-18",
+        linkUrl: "./june-19-restock.html"
+      },
+      {
+        slug: "chaos-rising",
+        title: "ニンジャスピナー発売関連デッキシールド",
+        excerpt: "新規発売と再販の関連スリーブをまとめました。各カードから個別ページで相場推移を確認できます。",
+        category: "FEATURE",
+        coverImage: "./assets/ninzyasupina---banner-display.jpg",
+        publishedAt: "2026-06-18",
+        linkUrl: "./chaos-rising.html"
+      },
+      {
+        slug: "abyss-eye",
+        title: "アビスアイ発売関連デッキシールド",
+        excerpt: "新規発売と再販の関連スリーブをまとめました。各カードから個別ページで相場推移を確認できます。",
+        category: "FEATURE",
+        coverImage: "./assets/abyss-eye-banner-home.jpg",
+        publishedAt: "2026-06-18",
+        linkUrl: "./abyss-eye.html"
+      },
+      {
+        slug: "article-2026-06-09",
+        title: "本サイトについて",
+        excerpt: "",
+        category: "サイト情報",
+        coverImage: "",
+        publishedAt: "2026-06-09"
+      }
+    ];
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -534,7 +590,7 @@
       return Array.from(map.values()).sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
     }
 
-    function renderArticle(article) {
+    function renderArticle(article, { bodyFallback = "<p>本文がありません。</p>" } = {}) {
       const mount = document.getElementById("articleMount");
       const crumb = document.getElementById("breadcrumbTitle");
       if (!mount) return;
@@ -566,7 +622,7 @@
       const categoryLabel = article.category === "FEATURE" ? "特集" : (article.category || "その他");
       mount.innerHTML = `
         <article class="article-detail">
-          <img class="article-cover${hasCoverImage ? "" : " article-cover--default"}" src="${escapeHtml(coverImage)}" alt="">
+          <img class="article-cover${hasCoverImage ? "" : " article-cover--default"}" src="${escapeHtml(coverImage)}" alt="" width="1600" height="700" decoding="async" fetchpriority="high">
           <header class="article-head">
             <div class="article-meta">
               <span>${escapeHtml(categoryLabel)}</span>
@@ -575,12 +631,14 @@
             <h1 class="article-detail-title">${escapeHtml(article.title)}</h1>
             ${article.excerpt ? `<p class="article-detail-excerpt">${escapeHtml(article.excerpt)}</p>` : ""}
           </header>
-          <div class="article-body">${article.html || "<p>本文がありません。</p>"}</div>
+          <div class="article-body">${article.html || bodyFallback}</div>
         </article>
       `;
     }
 
     const id = new URLSearchParams(location.search).get("id") || "";
+    const initialArticle = INITIAL_ARTICLE_SUMMARIES.map(normalizeArticle).find((item) => item.slug === id) || null;
+    if (initialArticle && !initialArticle.linkUrl) renderArticle(initialArticle, { bodyFallback: "" });
     loadArticles().then((articles) => {
       const article = articles.find((item) => item.slug === id) || null;
       if (article?.linkUrl) {
