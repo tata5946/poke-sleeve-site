@@ -2062,8 +2062,16 @@ function injectHeaderFooter() {
       headSlot.innerHTML = suppressGlobalHeader ? "" : HEADER_HTML;
     }
 
-    const footSlot = document.getElementById("site-footer");
-    if (footSlot) footSlot.innerHTML = FOOTER_HTML;
+    let footSlot = document.getElementById("site-footer");
+    if (!footSlot) {
+      const footerHost = document.querySelector(".dashboard-content") || document.querySelector("main") || document.body;
+      footSlot = document.createElement("div");
+      footSlot.id = "site-footer";
+      footerHost.appendChild(footSlot);
+    }
+    footSlot.innerHTML = FOOTER_HTML;
+    const policyLink = footSlot.querySelector('.site-footer a[href="./policy.html"]');
+    if (policyLink) policyLink.href = buildSiteHref("policy.html");
     injectMobileBottomNav();
 
     wireHeaderOffsetSync();
