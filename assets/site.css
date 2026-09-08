@@ -3761,7 +3761,7 @@ footer.site-footer {
 /* Dashboard chrome canonical styles */
 :root body .dashboard-shell {
     display: grid !important;
-    grid-template-columns: 256px minmax(0, 1fr) !important;
+    grid-template-columns: 272px minmax(0, 1fr) !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
@@ -3781,7 +3781,7 @@ footer.site-footer {
     display: grid !important;
     grid-template-rows: auto 1fr !important;
     gap: 24px !important;
-    width: 256px !important;
+    width: 272px !important;
     height: 100vh !important;
     min-height: 100vh !important;
     padding: 24px 16px 22px !important;
@@ -3966,11 +3966,11 @@ footer.site-footer {
 
 @media (max-width: 1100px) {
     :root body .dashboard-shell {
-        grid-template-columns: 232px minmax(0, 1fr) !important;
+        grid-template-columns: 264px minmax(0, 1fr) !important;
     }
 
     :root body .dashboard-sidebar {
-        width: 232px !important;
+        width: 264px !important;
         padding-left: 16px !important;
         padding-right: 16px !important;
     }
