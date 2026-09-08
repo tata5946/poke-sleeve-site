@@ -6845,6 +6845,15 @@
       wireHomeArticleTabs();
       renderReleaseBanner([]);
       wireReleaseBannerCarousel();
+      loadHomeArticles()
+        .then((articles) => {
+          homeArticlesState = articles;
+          renderHomeArticles(homeArticlesState);
+        })
+        .catch(() => {
+          homeArticlesState = [];
+          renderHomeArticles([]);
+        });
       const data = await loadHomePrimaryData();
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
       wireHomeSleeveSearch(sleeves);
@@ -6868,16 +6877,6 @@
       renderTrendLists({ surgeRank, growthRank, priceRank });
       renderMobileCategoryDiscovery(sleeves);
       initScrollReveal();
-
-      runDeferred(async () => {
-        try {
-          homeArticlesState = await loadHomeArticles();
-          renderHomeArticles(homeArticlesState);
-        } catch (_) {
-          homeArticlesState = [];
-          renderHomeArticles([]);
-        }
-      });
 
       runDeferred(() => {
         const marketSeries = buildHomeMarketIndexSeries(sleeves);
