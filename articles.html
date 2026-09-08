@@ -442,12 +442,15 @@
       const slug = String(article.slug || article.id || "").trim();
       const title = String(article.title || "").trim();
       if (!slug || !title) return null;
+      const category = slug === "article-2026-06-09"
+        ? "サイト情報"
+        : String(article.category || "その他").trim();
       return {
         id: String(article.id || slug),
         slug,
         title,
         excerpt: String(article.excerpt || "").trim(),
-        category: String(article.category || "その他").trim(),
+        category,
         coverImage: String(article.coverImage || "").trim(),
         publishedAt: String(article.publishedAt || article.updatedAt || "").trim(),
         status: String(article.status || "published").trim(),
