@@ -3836,6 +3836,14 @@ footer.site-footer {
     transition: background-color .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease !important;
 }
 
+:root body .dashboard-sidebar .sidebar-link > span:not(.sidebar-link-icon):not(.my-collection-count-badge) {
+    white-space: nowrap !important;
+}
+
+:root body .dashboard-sidebar .sidebar-link .my-collection-count-badge {
+    flex: 0 0 auto !important;
+}
+
 :root body .dashboard-sidebar .sidebar-link:hover,
 :root body .dashboard-sidebar .sidebar-link:focus-visible {
     background: #f4f7fb !important;
