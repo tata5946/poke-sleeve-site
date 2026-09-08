@@ -8111,122 +8111,103 @@ footer.site-footer {
 }
 
 .my-asset-panel {
-    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
-    align-items: end;
+    grid-template-columns: minmax(260px, 1.35fr) repeat(4, minmax(150px, 1fr));
+    align-items: stretch;
+    gap: 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
 }
 
-.my-asset-total {
+.my-asset-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-width: 0;
+    min-height: 78px;
+    padding: 14px 16px;
+    border: 1px solid #dbe5f2;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, .98);
+    box-shadow: 0 8px 22px rgba(15, 23, 42, .06);
+}
+
+.my-asset-card--primary {
+    border-color: #2f73ff;
+    box-shadow: 0 0 0 1px rgba(47, 115, 255, .22), 0 10px 24px rgba(47, 115, 255, .09);
+}
+
+.my-asset-card-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    color: #1e66ff;
+    background: #eef5ff;
+}
+
+.my-asset-card--gain .my-asset-card-icon {
+    color: #079455;
+    background: #e8fbf2;
+}
+
+.my-asset-card-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.my-asset-card-body {
     display: grid;
     gap: 4px;
+    min-width: 0;
 }
 
 .my-asset-label {
-    color: #475467;
-    font-size: 13px;
+    color: #344054;
+    font-size: 12px;
+    line-height: 1.15;
     font-weight: 900;
+}
+
+.my-asset-card-value {
+    color: #071c4d;
+    font-size: 24px;
+    line-height: 1.08;
+    font-weight: 900;
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
 }
 
 .my-asset-total-value {
-    color: #00113a;
-    font-size: clamp(42px, 4vw, 58px);
-    line-height: 1.05;
-    font-weight: 900;
-    letter-spacing: 0;
+    font-size: 30px;
 }
 
-.my-asset-stats {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 8px;
-    grid-column: 1 / -1;
-}
-
-.my-asset-finance-stats {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 8px;
-    min-width: 0;
-}
-
-.my-asset-stat {
-    display: grid;
-    gap: 3px;
-    min-width: 0;
-    min-height: 66px;
-    padding: 10px;
-    border: 1px solid #e4eaf4;
-    border-radius: 8px;
-    background: #f8fbff;
-}
-
-.my-asset-finance-stat {
-    display: grid;
-    gap: 4px;
-    min-width: 0;
-    min-height: 74px;
-    padding: 10px;
-    border: 1px solid #e4eaf4;
-    border-radius: 8px;
-    background: #f8fbff;
-}
-
-.my-asset-stat span {
-    color: #667085;
-    font-size: 12px;
-    font-weight: 900;
-}
-
-.my-asset-finance-stat span {
-    color: #667085;
-    font-size: 12px;
-    line-height: 1.25;
-    font-weight: 900;
-}
-
-.my-asset-stat strong {
-    color: #111827;
-    font-size: 18px;
-    line-height: 1.2;
-    font-weight: 900;
-    overflow-wrap: anywhere;
-}
-
-.my-asset-finance-stat strong {
-    color: #111827;
-    font-size: 20px;
-    line-height: 1.2;
-    font-weight: 900;
-    overflow-wrap: anywhere;
-}
-
-.my-asset-finance-stat strong.is-positive,
+.my-asset-card-value.is-positive,
 .my-collection-card-pnl strong.is-positive {
-    color: #027a48;
+    color: #079455;
 }
 
-.my-asset-finance-stat strong.is-negative,
+.my-asset-card-value.is-negative,
 .my-collection-card-pnl strong.is-negative {
-    color: #b42318;
+    color: #d92d20;
 }
 
-.my-asset-stat small {
-    min-height: 16px;
-    color: #475467;
-    font-size: 12px;
-    line-height: 1.2;
-    font-weight: 900;
-}
-
-.my-asset-valuation-note {
-    grid-column: 1 / -1;
-    margin: -4px 0 0;
+.my-asset-card-note {
     color: #667085;
-    font-size: 11px;
-    line-height: 1.5;
+    font-size: 9px;
+    line-height: 1.35;
     font-weight: 800;
 }
 
-.my-asset-valuation-note[hidden] {
+.my-asset-card-note[hidden] {
     display: none !important;
 }
 
@@ -8782,53 +8763,51 @@ footer.site-footer {
 
 @media (max-width: 1100px) {
     .my-asset-panel {
-        grid-template-columns: 1fr;
-        align-items: start;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
     }
 
-    .my-asset-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .my-asset-finance-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .my-asset-card--primary {
+        grid-column: 1 / -1;
     }
 }
 
 @media (max-width: 700px) {
-    .my-asset-panel,
     .my-asset-chart-panel {
         gap: 12px;
         margin-bottom: 12px;
         padding: 12px;
     }
 
-    .my-asset-total-value {
-        font-size: 38px;
+    .my-asset-panel {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 12px;
+        padding: 0;
     }
 
-    .my-asset-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .my-asset-card--primary {
+        grid-column: auto;
     }
 
-    .my-asset-finance-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .my-asset-card {
+        min-height: 72px;
+        padding: 12px;
     }
 
-    .my-asset-stat {
-        min-height: 70px;
-        padding: 10px;
+    .my-asset-card-icon {
+        flex-basis: 40px;
+        width: 40px;
+        height: 40px;
     }
 
-    .my-asset-finance-stat {
-        min-height: 68px;
-        padding: 9px;
-    }
-
-    .my-asset-stat strong,
-    .my-asset-finance-stat strong,
+    .my-asset-card-value,
     .my-collection-summary {
-        font-size: 17px;
+        font-size: 22px;
+    }
+
+    .my-asset-total-value {
+        font-size: 28px;
     }
 
     .my-asset-chart-head {
