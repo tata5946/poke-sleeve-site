@@ -53,6 +53,10 @@
     .article-head {
       display: grid;
       gap: 10px;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 920px;
+      margin: 0 auto;
       padding: clamp(20px, 4vw, 34px);
       border-bottom: 1px solid #eef2f7;
     }
@@ -84,7 +88,10 @@
     }
 
     .article-body {
+      box-sizing: border-box;
+      width: 100%;
       max-width: 840px;
+      margin: 0 auto;
       padding: clamp(22px, 4vw, 38px);
       color: #243044;
       font-size: 16px;
