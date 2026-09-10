@@ -112,10 +112,14 @@
     .article-body img { max-width: 100%; border-radius: 14px; }
     .article-body .note-image-block {
       margin: 1.8em 0;
+      text-align: center;
     }
     .article-body .note-image-block img {
       display: block;
-      width: 100%;
+      width: auto;
+      max-width: min(100%, 720px);
+      height: auto;
+      margin: 0 auto;
       max-height: 680px;
       object-fit: contain;
       border: 1px solid #e4e7ec;
@@ -608,6 +612,16 @@
       return Array.from(map.values()).sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
     }
 
+    function hydrateArticleBodyImages(root) {
+      root.querySelectorAll(".article-body img").forEach((img) => {
+        if (!img.hasAttribute("loading")) img.loading = "lazy";
+        if (!img.hasAttribute("decoding")) img.decoding = "async";
+        if (/^https?:\/\//i.test(img.getAttribute("src") || "")) {
+          img.referrerPolicy = "no-referrer";
+        }
+      });
+    }
+
     function renderArticle(article, { bodyFallback = "<p>本文がありません。</p>" } = {}) {
       const mount = document.getElementById("articleMount");
       const crumb = document.getElementById("breadcrumbTitle");
@@ -637,9 +651,26 @@
       }
       const hasCoverImage = Boolean(article.coverImage);
       const coverImage = hasCoverImage ? article.coverImage : DEFAULT_ARTICLE_COVER_IMAGE;
+      const bodyHtml = article.html || bodyFallback;
       const categoryLabel = article.category === "FEATURE" ? "特集" : (article.category || "その他");
+      const existingArticle = mount.querySelector(".article-detail");
+      if (existingArticle?.dataset.articleSlug === article.slug) {
+        const cover = existingArticle.querySelector(".article-cover");
+        const currentCoverImage = existingArticle.dataset.coverImage || "";
+        if (cover && currentCoverImage !== coverImage) {
+          cover.src = coverImage;
+          cover.className = `article-cover${hasCoverImage ? "" : " article-cover--default"}`;
+          existingArticle.dataset.coverImage = coverImage;
+        }
+        const body = existingArticle.querySelector(".article-body");
+        if (body) {
+          body.innerHTML = bodyHtml;
+          hydrateArticleBodyImages(existingArticle);
+          return;
+        }
+      }
       mount.innerHTML = `
-        <article class="article-detail">
+        <article class="article-detail" data-article-slug="${escapeHtml(article.slug)}" data-cover-image="${escapeHtml(coverImage)}">
           <img class="article-cover${hasCoverImage ? "" : " article-cover--default"}" src="${escapeHtml(coverImage)}" alt="" width="1600" height="700" decoding="async" fetchpriority="high">
           <header class="article-head">
             <div class="article-meta">
@@ -649,9 +680,10 @@
             <h1 class="article-detail-title">${escapeHtml(article.title)}</h1>
             ${article.excerpt ? `<p class="article-detail-excerpt">${escapeHtml(article.excerpt)}</p>` : ""}
           </header>
-          <div class="article-body">${article.html || bodyFallback}</div>
+          <div class="article-body">${bodyHtml}</div>
         </article>
       `;
+      hydrateArticleBodyImages(mount);
     }
 
     const id = new URLSearchParams(location.search).get("id") || "";
