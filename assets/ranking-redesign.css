@@ -902,3 +902,699 @@
     font-size: 29px !important;
   }
 }
+
+/*
+  Ranking presentation rebuild.
+  Keep page data logic intact; make the generated cards lay out predictably.
+*/
+:root body.ranking-page .ranking-main {
+  gap: 28px !important;
+}
+
+:root body.ranking-page .ranking-top3 {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  align-items: stretch !important;
+  gap: clamp(14px, 1.8vw, 22px) !important;
+  width: 100% !important;
+}
+
+:root body.ranking-page .ranking-top3 > div {
+  display: flex !important;
+  min-width: 0 !important;
+}
+
+:root body.ranking-page .podium-card,
+:root body.ranking-page .podium-card.ranking-card,
+:root body.ranking-page .podium-card--rank1,
+:root body.ranking-page .podium-card--rank2,
+:root body.ranking-page .podium-card--rank3 {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: auto minmax(210px, auto) 1fr !important;
+  gap: 14px !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: clamp(16px, 1.7vw, 22px) !important;
+  border: 1px solid #e1e7f0 !important;
+  border-radius: 18px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  color: #101828 !important;
+  box-shadow: 0 14px 34px rgba(16, 24, 40, .08) !important;
+  overflow: hidden !important;
+  text-decoration: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+:root body.ranking-page .podium-card::before,
+:root body.ranking-page .podium-card::after {
+  display: none !important;
+}
+
+:root body.ranking-page .podium-card:hover,
+:root body.ranking-page .podium-card:focus-visible {
+  border-color: #cfd8e6 !important;
+  box-shadow: 0 18px 40px rgba(16, 24, 40, .11) !important;
+  transform: translateY(-2px) !important;
+}
+
+:root body.ranking-page .podium-badge {
+  position: absolute !important;
+  top: 14px !important;
+  left: 14px !important;
+  z-index: 2 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  padding: 0 !important;
+  border: 1px solid rgba(255, 255, 255, .74) !important;
+  border-radius: 999px !important;
+  background: #111827 !important;
+  color: #fff !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, .18) !important;
+}
+
+:root body.ranking-page .podium-badge::before,
+:root body.ranking-page .podium-badge::after {
+  display: none !important;
+}
+
+:root body.ranking-page .podium-card--rank1 .podium-badge {
+  background: linear-gradient(135deg, #f8c84a 0%, #bf7a16 100%) !important;
+}
+
+:root body.ranking-page .podium-card--rank2 .podium-badge {
+  background: linear-gradient(135deg, #cbd5e1 0%, #64748b 100%) !important;
+}
+
+:root body.ranking-page .podium-card--rank3 .podium-badge {
+  background: linear-gradient(135deg, #e7a15d 0%, #a85f25 100%) !important;
+}
+
+:root body.ranking-page .podium-media,
+:root body.ranking-page .podium-card--rank1 .podium-media,
+:root body.ranking-page .podium-card:not(.podium-card--rank1) .podium-media {
+  position: static !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 100% !important;
+  height: clamp(210px, 21vw, 280px) !important;
+  min-height: 210px !important;
+  max-height: 280px !important;
+  margin: 0 !important;
+  padding: 16px 18px 8px !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  background: linear-gradient(180deg, #f7f9fd 0%, #eef3f8 100%) !important;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .05) !important;
+  overflow: hidden !important;
+}
+
+:root body.ranking-page .podium-media img,
+:root body.ranking-page .podium-card--rank1 .podium-media img,
+:root body.ranking-page .podium-card:not(.podium-card--rank1) .podium-media img {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 76% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  background: transparent !important;
+  filter: drop-shadow(0 12px 14px rgba(16, 24, 40, .14)) !important;
+  transform: none !important;
+}
+
+:root body.ranking-page .podium-content,
+:root body.ranking-page .podium-card--rank1 .podium-content,
+:root body.ranking-page .podium-card:not(.podium-card--rank1) .podium-content {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: auto auto auto auto !important;
+  gap: 10px !important;
+  align-content: start !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+
+:root body.ranking-page .podium-kicker,
+:root body.ranking-page .podium-actions {
+  display: none !important;
+}
+
+:root body.ranking-page .podium-title,
+:root body.ranking-page .podium-card--rank1 .podium-title,
+:root body.ranking-page .podium-card:not(.podium-card--rank1) .podium-title {
+  order: 1 !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  color: #101828 !important;
+  font-size: clamp(16px, 1.35vw, 19px) !important;
+  font-weight: 900 !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+:root body.ranking-page .podium-meta {
+  order: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: 18px !important;
+  height: auto !important;
+  margin: -4px 0 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+:root body.ranking-page .podium-chip-group {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+}
+
+:root body.ranking-page .podium-chip,
+:root body.ranking-page .compact-meta-item,
+:root body.ranking-page .compact-tag {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #667085 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  white-space: nowrap !important;
+}
+
+:root body.ranking-page .podium-metrics {
+  order: 3 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 10px !important;
+  align-items: end !important;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  overflow: visible !important;
+}
+
+:root body.ranking-page .podium-metric {
+  display: grid !important;
+  gap: 3px !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+:root body.ranking-page .podium-metric-label {
+  display: block !important;
+  margin: 0 !important;
+  color: #667085 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+
+:root body.ranking-page .podium-price {
+  color: #0f172a !important;
+  font-size: clamp(28px, 2.7vw, 36px) !important;
+  font-weight: 900 !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0 !important;
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+:root body.ranking-page .podium-diff,
+:root body.ranking-page .podium-rate,
+:root body.ranking-page .compact-delta,
+:root body.ranking-page .compact-rate {
+  color: #667085 !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1.25 !important;
+  letter-spacing: 0 !important;
+  white-space: nowrap !important;
+}
+
+:root body.ranking-page .podium-diff.up,
+:root body.ranking-page .podium-rate.up,
+:root body.ranking-page .compact-delta.up,
+:root body.ranking-page .compact-rate.up {
+  color: #d92d20 !important;
+}
+
+:root body.ranking-page .podium-diff.down,
+:root body.ranking-page .podium-rate.down,
+:root body.ranking-page .compact-delta.down,
+:root body.ranking-page .compact-rate.down {
+  color: #067647 !important;
+}
+
+:root body.ranking-page .podium-market-row {
+  order: 4 !important;
+  display: block !important;
+  width: 100% !important;
+  min-height: 88px !important;
+  height: auto !important;
+  max-height: none !important;
+  margin: 2px 0 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+:root body.ranking-page .sleeve-sparkline {
+  position: relative !important;
+  display: grid !important;
+  place-items: stretch !important;
+  min-width: 0 !important;
+  border-radius: 12px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e3e8f0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+:root body.ranking-page .podium-market-row .sleeve-sparkline,
+:root body.ranking-page .podium-trend-row .sleeve-sparkline {
+  width: 100% !important;
+  height: 92px !important;
+  min-height: 92px !important;
+  max-height: none !important;
+}
+
+:root body.ranking-page .compact-market-row .sleeve-sparkline,
+:root body.ranking-page .compact-card .sleeve-sparkline,
+:root body.ranking-page .compact-card.ranking-card-frameless .compact-market-row .sleeve-sparkline {
+  width: 100% !important;
+  height: 58px !important;
+  min-height: 58px !important;
+}
+
+:root body.ranking-page .sleeve-sparkline svg {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 1px !important;
+  min-height: 1px !important;
+}
+
+:root body.ranking-page .sleeve-sparkline::before,
+:root body.ranking-page .sleeve-sparkline::after {
+  display: none !important;
+  content: none !important;
+}
+
+:root body.ranking-page .sleeve-sparkline-grid,
+:root body.ranking-page .sleeve-sparkline-axis {
+  stroke: rgba(148, 163, 184, .44) !important;
+  stroke-width: 1 !important;
+}
+
+:root body.ranking-page .sleeve-sparkline-area {
+  fill: rgba(217, 45, 32, .09) !important;
+}
+
+:root body.ranking-page .sleeve-sparkline-line {
+  fill: none !important;
+  stroke: #d92d20 !important;
+  stroke-width: 2.7 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+:root body.ranking-page .sleeve-sparkline-dot {
+  fill: #d92d20 !important;
+  stroke: #fff !important;
+  stroke-width: 1.6 !important;
+}
+
+:root body.ranking-page .sleeve-sparkline--down .sleeve-sparkline-area {
+  fill: rgba(6, 118, 71, .09) !important;
+}
+
+:root body.ranking-page .sleeve-sparkline--down .sleeve-sparkline-line {
+  stroke: #067647 !important;
+}
+
+:root body.ranking-page .sleeve-sparkline--down .sleeve-sparkline-dot {
+  fill: #067647 !important;
+}
+
+:root body.ranking-page .sleeve-sparkline--flat .sleeve-sparkline-area {
+  fill: rgba(71, 85, 105, .08) !important;
+}
+
+:root body.ranking-page .sleeve-sparkline--flat .sleeve-sparkline-line {
+  stroke: #475467 !important;
+}
+
+:root body.ranking-page .sleeve-sparkline--flat .sleeve-sparkline-dot {
+  fill: #475467 !important;
+}
+
+:root body.ranking-page .sleeve-sparkline-foot,
+:root body.ranking-page .sleeve-sparkline text,
+:root body.ranking-page .sleeve-sparkline-label,
+:root body.ranking-page .sleeve-sparkline-value {
+  display: none !important;
+}
+
+:root body.ranking-page .sleeve-sparkline--empty {
+  display: grid !important;
+  place-items: center !important;
+  min-height: 58px !important;
+  border: 1px dashed #cfd8e6 !important;
+  background: #f8fafc !important;
+}
+
+:root body.ranking-page .podium-market-row .sleeve-sparkline--empty {
+  min-height: 92px !important;
+}
+
+:root body.ranking-page .sleeve-sparkline--empty .sleeve-sparkline-empty {
+  display: inline-block !important;
+  color: #98a2b3 !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.3 !important;
+}
+
+:root body.ranking-page .sleeve-sparkline--empty .sleeve-sparkline-empty::before {
+  content: none !important;
+}
+
+:root body.ranking-page .ranking-rest-section {
+  display: grid !important;
+  gap: 12px !important;
+}
+
+:root body.ranking-page .compact-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+:root body.ranking-page #list.grid,
+:root body.ranking-page #list.compact-grid,
+:root body.ranking-page .ranking-list,
+:root body.ranking-page .ranking-list--compact {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+:root body.ranking-page .compact-card,
+:root body.ranking-page .compact-card.ranking-card,
+:root body.ranking-page .compact-card.ranking-card-frameless {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 58px 72px minmax(0, 1fr) minmax(300px, 430px) !important;
+  grid-template-rows: auto auto !important;
+  grid-template-areas:
+    "rank thumb title market"
+    "rank thumb meta market" !important;
+  align-items: center !important;
+  gap: 4px 14px !important;
+  min-height: 96px !important;
+  height: auto !important;
+  padding: 12px 14px !important;
+  border: 1px solid #e3e8f0 !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, .96) !important;
+  color: #101828 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .055) !important;
+  overflow: hidden !important;
+  text-decoration: none !important;
+}
+
+:root body.ranking-page .compact-card:hover,
+:root body.ranking-page .compact-card:focus-visible {
+  border-color: #cfd8e6 !important;
+  box-shadow: 0 12px 28px rgba(16, 24, 40, .09) !important;
+  transform: translateY(-1px) !important;
+}
+
+:root body.ranking-page .compact-rank-badge {
+  grid-area: rank !important;
+  justify-self: start !important;
+  align-self: center !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  min-width: 46px !important;
+  height: 30px !important;
+  padding: 0 8px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #eef2f7 !important;
+  color: #475467 !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+}
+
+:root body.ranking-page .compact-rank-badge::before,
+:root body.ranking-page .compact-rank-badge::after {
+  display: none !important;
+}
+
+:root body.ranking-page .compact-thumb-wrap,
+:root body.ranking-page .compact-card.ranking-card-frameless .compact-thumb-wrap,
+:root body.ranking-page .ranking-card-frameless-thumb {
+  grid-area: thumb !important;
+  position: static !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 72px !important;
+  height: 72px !important;
+  min-height: 72px !important;
+  max-height: 72px !important;
+  margin: 0 !important;
+  padding: 6px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: #f7f9fd !important;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .05) !important;
+  overflow: hidden !important;
+}
+
+:root body.ranking-page .compact-thumb,
+:root body.ranking-page .compact-card.ranking-card-frameless .compact-thumb,
+:root body.ranking-page .ranking-card-frameless-img {
+  position: static !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  filter: drop-shadow(0 6px 8px rgba(16, 24, 40, .12)) !important;
+  transform: none !important;
+}
+
+:root body.ranking-page .compact-card-title {
+  grid-area: title !important;
+  align-self: end !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  color: #101828 !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+:root body.ranking-page .compact-meta,
+:root body.ranking-page .compact-tags {
+  grid-area: meta !important;
+  align-self: start !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+:root body.ranking-page .compact-market-row,
+:root body.ranking-page .compact-card.ranking-card-frameless .compact-market-row {
+  grid-area: market !important;
+  display: grid !important;
+  grid-template-columns: minmax(116px, 150px) minmax(160px, 1fr) !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+:root body.ranking-page .compact-price-row {
+  display: grid !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+}
+
+:root body.ranking-page .compact-price {
+  color: #0f172a !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  line-height: 1.1 !important;
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+:root body.ranking-page .compact-price::before {
+  content: none !important;
+}
+
+@media (max-width: 980px) {
+  :root body.ranking-page .ranking-top3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  :root body.ranking-page .podium-media,
+  :root body.ranking-page .podium-card--rank1 .podium-media,
+  :root body.ranking-page .podium-card:not(.podium-card--rank1) .podium-media {
+    height: 230px !important;
+    min-height: 230px !important;
+    max-height: 230px !important;
+  }
+
+  :root body.ranking-page .compact-card,
+  :root body.ranking-page .compact-card.ranking-card,
+  :root body.ranking-page .compact-card.ranking-card-frameless {
+    grid-template-columns: 52px 68px minmax(0, 1fr) !important;
+    grid-template-areas:
+      "rank thumb title"
+      "rank thumb meta"
+      "market market market" !important;
+    gap: 8px 12px !important;
+  }
+
+  :root body.ranking-page .compact-market-row,
+  :root body.ranking-page .compact-card.ranking-card-frameless .compact-market-row {
+    grid-template-columns: minmax(116px, 150px) minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 560px) {
+  :root body.ranking-page .ranking-top3 {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-inline: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    scroll-snap-type: none !important;
+  }
+
+  :root body.ranking-page .ranking-top3 > div {
+    flex: initial !important;
+  }
+
+  :root body.ranking-page .podium-card,
+  :root body.ranking-page .podium-card.ranking-card,
+  :root body.ranking-page .podium-card--rank1,
+  :root body.ranking-page .podium-card--rank2,
+  :root body.ranking-page .podium-card--rank3 {
+    padding: 14px !important;
+    gap: 12px !important;
+  }
+
+  :root body.ranking-page .podium-media,
+  :root body.ranking-page .podium-card--rank1 .podium-media,
+  :root body.ranking-page .podium-card:not(.podium-card--rank1) .podium-media {
+    height: 210px !important;
+    min-height: 210px !important;
+    max-height: 210px !important;
+  }
+
+  :root body.ranking-page .podium-media img,
+  :root body.ranking-page .podium-card--rank1 .podium-media img,
+  :root body.ranking-page .podium-card:not(.podium-card--rank1) .podium-media img {
+    max-width: 82% !important;
+  }
+
+  :root body.ranking-page .podium-metrics {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  :root body.ranking-page .podium-price {
+    font-size: 29px !important;
+  }
+
+  :root body.ranking-page .compact-card,
+  :root body.ranking-page .compact-card.ranking-card,
+  :root body.ranking-page .compact-card.ranking-card-frameless {
+    grid-template-columns: 52px minmax(0, 1fr) !important;
+    grid-template-areas:
+      "rank title"
+      "thumb title"
+      "thumb meta"
+      "market market" !important;
+    padding: 12px !important;
+  }
+
+  :root body.ranking-page .compact-thumb-wrap,
+  :root body.ranking-page .compact-card.ranking-card-frameless .compact-thumb-wrap,
+  :root body.ranking-page .ranking-card-frameless-thumb {
+    width: 52px !important;
+    height: 60px !important;
+    min-height: 60px !important;
+  }
+
+  :root body.ranking-page .compact-market-row,
+  :root body.ranking-page .compact-card.ranking-card-frameless .compact-market-row {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  :root body.ranking-page .compact-market-row .sleeve-sparkline,
+  :root body.ranking-page .compact-card .sleeve-sparkline {
+    height: 64px !important;
+    min-height: 64px !important;
+  }
+}

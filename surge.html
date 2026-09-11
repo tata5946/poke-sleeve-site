@@ -1437,7 +1437,7 @@
     function buildSparklineSvg(sleeve) {
       const prices = getSparklinePoints(sleeve);
       if (prices.length < 2) {
-        return `<div class="sleeve-sparkline sleeve-sparkline--empty" aria-label="価格推移データなし"><span class="sleeve-sparkline-empty">推移なし</span></div>`;
+        return `<div class="sleeve-sparkline sleeve-sparkline--empty" aria-label="価格推移データ不足"><span class="sleeve-sparkline-empty">価格推移データ不足</span></div>`;
       }
 
       const width = 86;
@@ -1470,15 +1470,16 @@
       };
       const firstPrice = prices[0];
       const trendClass = lastPrice > prices[0] ? "up" : lastPrice < prices[0] ? "down" : "flat";
+      const trendColor = trendClass === "up" ? "#d92d20" : trendClass === "down" ? "#067647" : "#475467";
 
       return `
         <div class="sleeve-sparkline sleeve-sparkline--${trendClass}" aria-label="直近${prices.length}週の価格推移">
-          <svg viewBox="0 0 ${width} ${height}" focusable="false" aria-hidden="true">
+          <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" focusable="false" aria-hidden="true">
             <line class="sleeve-sparkline-axis" x1="22" y1="7" x2="22" y2="${height - padY}"></line>
             <line class="sleeve-sparkline-grid" x1="5" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}"></line>
-            <polygon class="sleeve-sparkline-area" points="${areaPoints}"></polygon>
-            <polyline class="sleeve-sparkline-line" points="${linePoints}"></polyline>
-            <circle class="sleeve-sparkline-dot" cx="${lastX}" cy="${lastY.toFixed(1)}" r="2"></circle>
+            <polygon class="sleeve-sparkline-area" points="${areaPoints}" fill="${trendColor}" opacity="0.10"></polygon>
+            <polyline class="sleeve-sparkline-line" points="${linePoints}" fill="none" stroke="${trendColor}" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <circle class="sleeve-sparkline-dot" cx="${lastX}" cy="${lastY.toFixed(1)}" r="2.4" fill="${trendColor}" stroke="#fff" stroke-width="1.4"></circle>
           </svg>
           <div class="sleeve-sparkline-foot" aria-hidden="true">
             <span><small>12週前</small><b>${compactLabel(firstPrice)}円</b></span>
