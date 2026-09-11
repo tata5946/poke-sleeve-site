@@ -782,6 +782,24 @@
       background: #fff;
     }
 
+    .editor .article-sleeve-image-only,
+    .preview .article-sleeve-image-only {
+      text-align: center;
+    }
+
+    .editor .article-sleeve-image-only img,
+    .preview .article-sleeve-image-only img {
+      display: block;
+      box-sizing: border-box;
+      width: min(320px, 76vw);
+      height: 420px;
+      max-width: 100%;
+      max-height: none;
+      margin: 0 auto;
+      padding: 10px;
+      object-fit: contain;
+    }
+
     .editor .note-image-caption {
       min-height: 1.8em;
       margin-top: 8px;
