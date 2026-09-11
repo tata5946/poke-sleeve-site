@@ -424,79 +424,40 @@
       }
 
       .article-body .article-table-wrap {
-        margin: 1.7em 0;
-        overflow: visible;
+        margin: 1.5em -12px;
+        padding: 0 12px 8px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       .article-body table {
-        min-width: 0;
-        border: 0;
-        background: transparent;
-        font-size: 13px;
-      }
-
-      .article-body table thead {
-        display: none;
-      }
-
-      .article-body table,
-      .article-body table tbody,
-      .article-body table tr,
-      .article-body table th,
-      .article-body table td {
-        display: block;
-        width: 100% !important;
-        height: auto !important;
-      }
-
-      .article-body table tr {
-        margin: 0 0 12px;
+        width: max-content;
+        min-width: 640px;
+        max-width: none;
+        border-collapse: separate;
+        border-spacing: 0;
         border: 1px solid #d5deeb;
-        border-radius: 12px;
         background: #fff;
-        box-shadow: 0 8px 18px rgba(15, 23, 42, .05);
-        overflow: hidden;
+        font-size: 12px;
+        line-height: 1.55;
+        table-layout: auto;
       }
 
-      .article-body table tr:last-child {
-        margin-bottom: 0;
+      .article-body th,
+      .article-body td {
+        min-width: 104px;
+        padding: 9px 10px;
+        border-color: #e1e7f0;
+        white-space: normal;
+        word-break: keep-all;
+        overflow-wrap: anywhere;
       }
 
-      .article-body table td,
-      .article-body table tbody th {
-        display: grid;
-        grid-template-columns: minmax(92px, 34%) minmax(0, 1fr);
-        gap: 10px;
-        align-items: start;
-        min-height: 44px;
-        padding: 11px 12px;
-        border: 0;
-        border-bottom: 1px solid #edf1f7;
-      }
-
-      .article-body table td:last-child,
-      .article-body table tbody th:last-child {
-        border-bottom: 0;
-      }
-
-      .article-body table td::before,
-      .article-body table tbody th::before {
-        content: attr(data-label);
-        color: #667085;
+      .article-body th {
+        background: #eef4ff;
+        color: #172033;
         font-size: 11px;
-        font-weight: 900;
-        line-height: 1.5;
-      }
-
-      .article-body table td:not([data-label])::before,
-      .article-body table tbody th:not([data-label])::before {
-        content: "";
-        display: none;
-      }
-
-      .article-body table td:not([data-label]),
-      .article-body table tbody th:not([data-label]) {
-        display: block;
+        white-space: nowrap;
       }
 
       .article-body pre {
@@ -517,8 +478,7 @@
 
       .article-body iframe,
       .article-body video,
-      .article-body canvas,
-      .article-body table {
+      .article-body canvas {
         width: 100%;
         max-width: 100%;
       }
