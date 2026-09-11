@@ -1,14 +1,25 @@
 /*
-  Shared ranking page refresh.
-  Loaded after the page-local styles so the four ranking pages keep one visual language.
+  Ranking page redesign.
+  The ranking pages use only the body.ranking-redesign-page scope so older
+  page-market-list / ranking-page rules in site.css cannot affect this UI.
 */
 
 :root body.ranking-redesign-page {
+  --ranking-ink: #071635;
+  --ranking-muted: #637695;
+  --ranking-line: #d8e5f1;
+  --ranking-panel: #ffffff;
+  --ranking-soft: #f3f9fd;
+  --ranking-teal: #079ca2;
+  --ranking-teal-dark: #047982;
+  --ranking-teal-soft: #d9f7f7;
+  --ranking-gold: #f4b325;
+  --ranking-silver: #8fa0b5;
+  --ranking-bronze: #c9783d;
   background:
-    radial-gradient(circle at 14% 0%, rgba(245, 158, 11, .10), transparent 24rem),
-    radial-gradient(circle at 86% 8%, rgba(20, 184, 166, .09), transparent 26rem),
-    #f7f9fc !important;
-  color: #101828 !important;
+    radial-gradient(circle at 88% 0%, rgba(163, 205, 238, .28), transparent 28rem),
+    linear-gradient(180deg, #f7fbff 0%, #f4f8fb 46%, #f6f8fb 100%) !important;
+  color: var(--ranking-ink) !important;
 }
 
 :root body.ranking-redesign-page .dashboard-content {
@@ -16,10 +27,10 @@
 }
 
 :root body.ranking-redesign-page .page-shell--market {
-  width: min(100%, 1240px) !important;
-  max-width: 1240px !important;
+  width: min(100%, 1500px) !important;
+  max-width: 1500px !important;
   margin-inline: auto !important;
-  padding: 18px clamp(14px, 2.8vw, 32px) 48px !important;
+  padding: 18px clamp(18px, 3vw, 46px) 56px !important;
 }
 
 :root body.ranking-redesign-page .breadcrumb {
@@ -27,33 +38,64 @@
 }
 
 :root body.ranking-redesign-page .ranking-page-top {
+  position: relative !important;
   display: grid !important;
-  gap: 16px !important;
-  margin: 0 0 20px !important;
+  gap: 18px !important;
+  margin: 0 0 22px !important;
+  padding: 8px 0 0 !important;
 }
 
 :root body.ranking-redesign-page .ranking-hero,
 :root body.ranking-redesign-page .ranking-hero.page-hero-card {
+  position: relative !important;
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
   align-items: start !important;
-  gap: 14px 24px !important;
-  min-height: 0 !important;
+  gap: 18px !important;
+  min-height: 124px !important;
   margin: 0 !important;
-  padding: 0 2px 2px !important;
+  padding: 10px 210px 4px 0 !important;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  overflow: visible !important;
+  overflow: hidden !important;
 }
 
-:root body.ranking-redesign-page .ranking-hero::before,
+:root body.ranking-redesign-page .ranking-hero::before {
+  content: "好きなカードで、\Aもっと楽しい毎日を。";
+  position: absolute;
+  top: 16px;
+  right: 142px;
+  z-index: 1;
+  color: #7d96bb;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.55;
+  letter-spacing: .08em;
+  white-space: pre;
+  transform: rotate(-7deg);
+  opacity: .82;
+}
+
 :root body.ranking-redesign-page .ranking-hero::after {
-  display: none !important;
+  content: "";
+  position: absolute;
+  top: -68px;
+  right: -34px;
+  width: 190px;
+  height: 190px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 20px, rgba(255,255,255,.72) 21px 34px, transparent 35px),
+    linear-gradient(0deg, transparent 47%, rgba(255,255,255,.72) 48% 52%, transparent 53%),
+    rgba(191, 214, 235, .48);
+  opacity: .78;
 }
 
 :root body.ranking-redesign-page .ranking-hero-copy {
+  position: relative !important;
+  z-index: 2 !important;
   display: grid !important;
   gap: 4px !important;
   min-width: 0 !important;
@@ -61,33 +103,21 @@
 
 :root body.ranking-redesign-page .ranking-hero-label,
 :root body.ranking-redesign-page .page-hero-kicker {
-  display: inline-flex !important;
-  align-items: center !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  color: #98a2b3 !important;
-  font-size: 11px !important;
-  font-weight: 900 !important;
-  letter-spacing: .18em !important;
-  line-height: 1.2 !important;
-  text-transform: uppercase !important;
-}
-
-:root body.ranking-redesign-page .ranking-hero-label::before,
-:root body.ranking-redesign-page .page-hero-kicker::before {
   display: none !important;
 }
 
 :root body.ranking-redesign-page .ranking-page-title,
 :root body.ranking-redesign-page .page-hero-title {
   display: flex !important;
+  flex-wrap: wrap !important;
   align-items: center !important;
-  gap: 11px !important;
+  gap: 18px !important;
+  position: relative !important;
   margin: 0 !important;
-  color: #101828 !important;
-  font-size: clamp(30px, 4vw, 42px) !important;
+  color: var(--ranking-ink) !important;
+  font-size: clamp(32px, 3.35vw, 48px) !important;
   font-weight: 900 !important;
-  line-height: 1.08 !important;
+  line-height: 1.02 !important;
   letter-spacing: 0 !important;
 }
 
@@ -96,15 +126,29 @@
   flex: 0 0 auto;
   display: inline-grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 13px;
-  background: linear-gradient(135deg, #fff5c2 0%, #f7bd36 54%, #d98a16 100%);
+  width: 70px;
+  height: 70px;
   color: #fff;
-  font-size: 27px;
+  font-size: 48px;
   line-height: 1;
-  text-shadow: 0 2px 4px rgba(105, 56, 0, .24);
-  box-shadow: 0 12px 24px rgba(217, 138, 22, .25);
+  text-shadow: 0 3px 6px rgba(113, 63, 18, .22);
+  background: linear-gradient(135deg, #f9d24b 0%, #efad1a 52%, #d78a08 100%);
+  clip-path: polygon(50% 0, 61% 28%, 91% 20%, 75% 48%, 86% 100%, 14% 100%, 25% 48%, 9% 20%, 39% 28%);
+  filter: drop-shadow(0 9px 12px rgba(199, 126, 12, .22));
+}
+
+:root body.ranking-redesign-page .ranking-page-title::after,
+:root body.ranking-redesign-page .page-hero-title::after {
+  content: "今、注目のポケモンカードサプライをチェック！ コレクションの参考にどうぞ。";
+  position: static;
+  flex: 0 0 100%;
+  display: block;
+  margin: -8px 0 0 88px;
+  max-width: min(720px, 62vw);
+  color: #7486a4;
+  font-size: clamp(14px, 1.4vw, 18px);
+  font-weight: 800;
+  line-height: 1.45;
 }
 
 :root body.ranking-redesign-page .page-hero-desc {
@@ -112,10 +156,12 @@
 }
 
 :root body.ranking-redesign-page .page-hero-meta {
+  position: relative !important;
+  z-index: 2 !important;
   display: grid !important;
   justify-items: end !important;
-  gap: 5px !important;
-  margin: 4px 0 0 !important;
+  gap: 4px !important;
+  margin: 0 !important;
   min-width: max-content !important;
 }
 
@@ -124,24 +170,25 @@
   border: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  color: #475467 !important;
-  font-size: 12px !important;
+  color: #42526d !important;
+  font-size: 13px !important;
   font-weight: 800 !important;
-  letter-spacing: 0 !important;
   line-height: 1.45 !important;
 }
 
 :root body.ranking-redesign-page .page-hero-badge strong {
-  color: #101828 !important;
+  color: var(--ranking-ink) !important;
   font-weight: 900 !important;
 }
 
 :root body.ranking-redesign-page .ranking-filter-card,
 :root body.ranking-redesign-page .ranking-filter-card.page-toolbar-card {
+  position: relative !important;
+  z-index: 2 !important;
   display: grid !important;
   grid-template-columns: auto minmax(0, 1fr) !important;
   align-items: center !important;
-  gap: 10px !important;
+  gap: 16px !important;
   margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
@@ -151,90 +198,72 @@
 }
 
 :root body.ranking-redesign-page .ranking-filter-card::before,
-:root body.ranking-redesign-page .ranking-filter-card::after {
-  display: none !important;
-}
-
-:root body.ranking-redesign-page .ranking-filter-head {
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
-  margin: 0 !important;
-  grid-column: 1 !important;
-}
-
-:root body.ranking-redesign-page .ranking-filter-title {
-  margin: 0 !important;
-  color: #344054 !important;
-  font-size: 13px !important;
-  font-weight: 900 !important;
-  letter-spacing: 0 !important;
-  white-space: nowrap !important;
-}
-
+:root body.ranking-redesign-page .ranking-filter-card::after,
 :root body.ranking-redesign-page .page-toolbar-copy {
   display: none !important;
 }
 
-:root body.ranking-redesign-page .ranking-filter-grid {
-  display: flex !important;
-  align-items: center !important;
-  flex-wrap: nowrap !important;
-  gap: 12px !important;
-  max-width: 100% !important;
-  padding: 0 2px 8px !important;
-  overflow-x: auto !important;
-  scrollbar-width: thin !important;
-  grid-column: 2 !important;
+:root body.ranking-redesign-page .ranking-filter-head {
+  grid-column: 1 !important;
+  margin: 0 !important;
 }
 
-:root body.ranking-redesign-page .ranking-error,
-:root body.ranking-redesign-page .ranking-filter-card > .error,
-:root body.ranking-redesign-page .ranking-active-filters {
-  grid-column: 1 / -1 !important;
+:root body.ranking-redesign-page .ranking-filter-title {
+  margin: 0 !important;
+  color: var(--ranking-ink) !important;
+  font-size: 17px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+:root body.ranking-redesign-page .ranking-filter-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  align-items: center !important;
+  min-width: 0 !important;
 }
 
 :root body.ranking-redesign-page .ranking-filter-field,
 :root body.ranking-redesign-page .ranking-filter-actions {
-  flex: 0 0 auto !important;
-  min-width: 150px !important;
+  min-width: 0 !important;
 }
 
 :root body.ranking-redesign-page .ranking-filter-field select,
 :root body.ranking-redesign-page .ranking-filter-actions button {
-  width: 100% !important;
-  min-height: 42px !important;
-  border: 1px solid #d7e0ec !important;
+  height: 52px !important;
+  min-width: 178px !important;
+  padding: 0 28px !important;
+  border: 1px solid #c7ddeb !important;
   border-radius: 999px !important;
-  background-color: rgba(255, 255, 255, .88) !important;
-  color: #344054 !important;
-  font-size: 13px !important;
-  font-weight: 800 !important;
-  box-shadow: 0 8px 20px rgba(16, 24, 40, .05) !important;
+  background: rgba(255,255,255,.86) !important;
+  color: var(--ranking-ink) !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  box-shadow: 0 8px 18px rgba(21, 52, 86, .06) !important;
 }
 
 :root body.ranking-redesign-page .ranking-filter-actions button {
-  color: #98a2b3 !important;
+  color: #73829a !important;
 }
 
-:root body.ranking-redesign-page .ranking-active-filters.is-visible {
-  margin-top: -2px !important;
+:root body.ranking-redesign-page .ranking-error,
+:root body.ranking-redesign-page .ranking-active-filters {
+  grid-column: 1 / -1 !important;
 }
 
 :root body.ranking-redesign-page .ranking-main {
   display: grid !important;
-  gap: 24px !important;
+  gap: 30px !important;
   width: 100% !important;
-  max-width: none !important;
 }
 
 :root body.ranking-redesign-page .ranking-top3 {
-  position: relative !important;
   display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 18px !important;
+  gap: 20px !important;
   width: 100% !important;
-  max-width: none !important;
   margin: 0 !important;
   padding: 0 !important;
   overflow: visible !important;
@@ -249,789 +278,161 @@
 }
 
 :root body.ranking-redesign-page .podium-card,
-:root body.ranking-redesign-page .podium-card.ranking-card {
-  --rank-card-image-h: 210px;
-  --rank-card-title-h: 64px;
-  --rank-card-meta-h: 24px;
-  --rank-card-price-h: 64px;
-  --rank-card-chart-h: 130px;
-  position: relative !important;
-  display: grid !important;
-  grid-template-rows:
-    var(--rank-card-image-h)
-    var(--rank-card-title-h)
-    var(--rank-card-meta-h)
-    var(--rank-card-price-h)
-    1fr
-    var(--rank-card-chart-h) !important;
-  align-content: start !important;
-  gap: 0 !important;
-  height: 620px !important;
-  min-height: 620px !important;
-  max-height: 620px !important;
-  padding: 18px 18px 16px !important;
-  border: 1px solid #e3eaf4 !important;
-  border-radius: 16px !important;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, .72), transparent 36%),
-    radial-gradient(circle at 88% 8%, rgba(52, 211, 153, .12), transparent 36%),
-    rgba(255, 255, 255, .96) !important;
-  color: #101828 !important;
-  box-shadow: 0 10px 26px rgba(16, 24, 40, .08) !important;
-  overflow: hidden !important;
-  text-decoration: none !important;
-  transform: none !important;
-}
-
-:root body.ranking-redesign-page .podium-card::before {
-  display: none !important;
-}
-
-:root body.ranking-redesign-page .podium-card::after {
-  display: none !important;
-}
-
-:root body.ranking-redesign-page .podium-card:hover {
-  border-color: #cbd5e1 !important;
-  box-shadow: 0 16px 34px rgba(16, 24, 40, .12) !important;
-  transform: translateY(-2px) !important;
-}
-
-:root body.ranking-redesign-page .podium-badge {
-  position: absolute !important;
-  top: 16px !important;
-  left: 16px !important;
-  z-index: 4 !important;
-  display: grid !important;
-  place-items: center !important;
-  width: 52px !important;
-  height: 52px !important;
-  border: 0 !important;
-  border-radius: 50% !important;
-  background: linear-gradient(135deg, #f3c452 0%, #c78618 100%) !important;
-  color: #fff !important;
-  font-size: 25px !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  letter-spacing: 0 !important;
-  box-shadow: 0 10px 18px rgba(199, 134, 24, .32) !important;
-}
-
-:root body.ranking-redesign-page .podium-badge::before {
-  content: "\265B";
-  position: absolute;
-  top: -19px;
-  left: 50%;
-  color: #f6bd2f;
-  font-size: 22px;
-  line-height: 1;
-  text-shadow: 0 2px 5px rgba(120, 53, 15, .20);
-  transform: translateX(-50%);
-}
-
-:root body.ranking-redesign-page .podium-card--rank2 .podium-badge {
-  background: linear-gradient(135deg, #cbd5e1 0%, #718096 100%) !important;
-  box-shadow: 0 10px 18px rgba(113, 128, 150, .28) !important;
-}
-
-:root body.ranking-redesign-page .podium-card--rank2 .podium-badge::before {
-  color: #cbd5e1;
-}
-
-:root body.ranking-redesign-page .podium-card--rank3 .podium-badge {
-  background: linear-gradient(135deg, #e9a15c 0%, #bd6d2a 100%) !important;
-  box-shadow: 0 10px 18px rgba(189, 109, 42, .30) !important;
-}
-
-:root body.ranking-redesign-page .podium-card--rank3 .podium-badge::before {
-  color: #e9a15c;
-}
-
-:root body.ranking-redesign-page .podium-media {
-  position: static !important;
-  grid-row: 1 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  height: var(--rank-card-image-h) !important;
-  min-height: var(--rank-card-image-h) !important;
-  max-height: var(--rank-card-image-h) !important;
-  margin: 0 !important;
-  padding: 8px 10px 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  overflow: hidden !important;
-}
-
-:root body.ranking-redesign-page .podium-media img {
-  position: static !important;
-  inset: auto !important;
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  max-width: 260px !important;
-  max-height: 190px !important;
-  object-fit: contain !important;
-  filter: drop-shadow(0 10px 12px rgba(16, 24, 40, .13)) !important;
-  transform: none !important;
-}
-
-:root body.ranking-redesign-page .podium-content {
-  display: contents !important;
-}
-
-:root body.ranking-redesign-page .podium-kicker {
-  display: none !important;
-}
-
-:root body.ranking-redesign-page .podium-actions,
-:root body.ranking-redesign-page--views .podium-metric:nth-child(n+2) {
-  display: none !important;
-}
-
-:root body.ranking-redesign-page .podium-title {
-  order: 1 !important;
-  position: static !important;
-  grid-row: 2 !important;
-  align-self: start !important;
-  min-height: var(--rank-card-title-h) !important;
-  height: var(--rank-card-title-h) !important;
-  margin: 0 !important;
-  color: #101828 !important;
-  font-size: 18px !important;
-  font-weight: 900 !important;
-  line-height: 1.32 !important;
-  letter-spacing: 0 !important;
-  overflow: hidden !important;
-  display: -webkit-box !important;
-  -webkit-box-orient: vertical !important;
-  -webkit-line-clamp: 2 !important;
-}
-
-:root body.ranking-redesign-page .podium-meta {
-  order: 2 !important;
-  position: static !important;
-  grid-row: 3 !important;
-  display: flex !important;
-  align-items: start !important;
-  justify-content: flex-start !important;
-  gap: 8px !important;
-  min-height: var(--rank-card-meta-h) !important;
-  height: var(--rank-card-meta-h) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  overflow: hidden !important;
-}
-
-:root body.ranking-redesign-page .podium-chip-group {
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  min-width: 0 !important;
-  flex-wrap: nowrap !important;
-}
-
-:root body.ranking-redesign-page .podium-chip,
-:root body.ranking-redesign-page .compact-meta-item,
-:root body.ranking-redesign-page .compact-tag {
-  display: inline-flex !important;
-  align-items: center !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  color: #667085 !important;
-  font-size: 12px !important;
-  font-weight: 800 !important;
-  letter-spacing: 0 !important;
-  line-height: 1.25 !important;
-  white-space: nowrap !important;
-}
-
-:root body.ranking-redesign-page .podium-metrics {
-  order: 3 !important;
-  position: static !important;
-  grid-row: 4 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 12px !important;
-  min-height: var(--rank-card-price-h) !important;
-  height: var(--rank-card-price-h) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-  overflow: hidden !important;
-}
-
-:root body.ranking-redesign-page .podium-metric {
-  display: flex !important;
-  align-items: center !important;
-  gap: 7px !important;
-  min-width: 0 !important;
-  overflow: hidden !important;
-}
-
-:root body.ranking-redesign-page .podium-metric:first-child {
-  flex: 1 1 auto !important;
-  justify-content: flex-start !important;
-}
-
-:root body.ranking-redesign-page .podium-metric:nth-child(2) {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  flex: 0 1 auto !important;
-  gap: 7px !important;
-  min-height: 24px !important;
-}
-
-:root body.ranking-redesign-page .podium-metric-label {
-  display: none !important;
-}
-
-:root body.ranking-redesign-page .podium-price {
-  color: #e60012 !important;
-  font-size: 32px !important;
-  font-weight: 900 !important;
-  line-height: 1.04 !important;
-  letter-spacing: 0 !important;
-  white-space: nowrap !important;
-  font-variant-numeric: tabular-nums !important;
-}
-
-:root body.ranking-redesign-page .podium-diff,
-:root body.ranking-redesign-page .podium-rate,
-:root body.ranking-redesign-page .compact-delta,
-:root body.ranking-redesign-page .compact-rate {
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  line-height: 1.25 !important;
-  letter-spacing: 0 !important;
-}
-
-:root body.ranking-redesign-page .podium-diff.up,
-:root body.ranking-redesign-page .podium-rate.up,
-:root body.ranking-redesign-page .compact-delta.up,
-:root body.ranking-redesign-page .compact-rate.up {
-  color: #ff2d55 !important;
-}
-
-:root body.ranking-redesign-page .podium-diff.down,
-:root body.ranking-redesign-page .podium-rate.down,
-:root body.ranking-redesign-page .compact-delta.down,
-:root body.ranking-redesign-page .compact-rate.down {
-  color: #059669 !important;
-}
-
-:root body.ranking-redesign-page .podium-diff.flat,
-:root body.ranking-redesign-page .podium-rate.flat,
-:root body.ranking-redesign-page .compact-delta.flat,
-:root body.ranking-redesign-page .compact-rate.flat {
-  color: #667085 !important;
-}
-
-:root body.ranking-redesign-page .podium-market-row,
-:root body.ranking-redesign-page .compact-market-row {
-  display: grid !important;
-  align-items: end !important;
-  gap: 8px !important;
-  min-width: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-:root body.ranking-redesign-page .podium-market-row {
-  order: 4 !important;
-  position: static !important;
-  grid-row: 6 !important;
-  align-self: end !important;
-  grid-template-columns: minmax(0, 1fr) !important;
-  min-height: var(--rank-card-chart-h) !important;
-  height: var(--rank-card-chart-h) !important;
-  max-height: var(--rank-card-chart-h) !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-}
-
-:root body.ranking-redesign-page .podium-market-row .sleeve-sparkline,
-:root body.ranking-redesign-page .podium-trend-row .sleeve-sparkline,
-:root body.ranking-redesign-page .compact-market-row .sleeve-sparkline,
-:root body.ranking-redesign-page .compact-market-row > .sleeve-sparkline,
-:root body.ranking-redesign-page .sleeve-sparkline--empty {
-  display: block !important;
-}
-
-:root body.ranking-redesign-page .podium-market-row .sleeve-sparkline {
-  width: 100% !important;
-  height: var(--rank-card-chart-h) !important;
-  min-height: var(--rank-card-chart-h) !important;
-  max-height: var(--rank-card-chart-h) !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline {
-  position: relative !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  overflow: hidden !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline svg {
-  display: block !important;
-  position: static !important;
-  inset: auto !important;
-  left: auto !important;
-  right: auto !important;
-  top: auto !important;
-  bottom: auto !important;
-  width: 100% !important;
-  height: 100% !important;
-  transform: none !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline-grid,
-:root body.ranking-redesign-page .sleeve-sparkline-axis {
-  stroke: rgba(152, 162, 179, .38) !important;
-  stroke-width: 1 !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline-area {
-  fill: rgba(255, 45, 85, .08) !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline-line {
-  fill: none !important;
-  stroke: #ff2d55 !important;
-  stroke-width: 2.8 !important;
-  stroke-linecap: round !important;
-  stroke-linejoin: round !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline-dot {
-  fill: #ff2d55 !important;
-  stroke: #fff !important;
-  stroke-width: 1.5 !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline--down .sleeve-sparkline-area {
-  fill: rgba(5, 150, 105, .09) !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline--down .sleeve-sparkline-line {
-  stroke: #059669 !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline--down .sleeve-sparkline-dot {
-  fill: #059669 !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline-foot,
-:root body.ranking-redesign-page .sleeve-sparkline text,
-:root body.ranking-redesign-page .sleeve-sparkline-label,
-:root body.ranking-redesign-page .sleeve-sparkline-value {
-  display: none !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline--empty {
-  display: grid !important;
-  place-items: center !important;
-  min-height: 100% !important;
-  border: 1px dashed #d7e0ec !important;
-  border-radius: 10px !important;
-  background: rgba(248, 250, 252, .75) !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline--empty .sleeve-sparkline-empty {
-  display: inline-block !important;
-  color: transparent !important;
-  font-size: 0 !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline--empty .sleeve-sparkline-empty::before {
-  content: "データなし";
-  color: #98a2b3;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0;
-}
-
-:root body.ranking-redesign-page .ranking-section-head {
-  margin: 2px 0 0 !important;
-  padding: 0 !important;
-}
-
-:root body.ranking-redesign-page .ranking-section-title {
-  color: #101828 !important;
-  font-size: 18px !important;
-  font-weight: 900 !important;
-  letter-spacing: 0 !important;
-}
-
-:root body.ranking-redesign-page .compact-grid {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)) !important;
-  gap: 14px !important;
-  margin: 0 !important;
-}
-
-:root body.ranking-redesign-page .compact-card,
-:root body.ranking-redesign-page .compact-card.ranking-card,
-:root body.ranking-redesign-page .compact-card.ranking-card-frameless {
-  --rank-compact-thumb-w: 82px;
-  --rank-compact-thumb-h: 96px;
-  position: relative !important;
-  display: grid !important;
-  grid-template-columns: var(--rank-compact-thumb-w) minmax(0, 1fr) !important;
-  grid-template-rows: 26px 40px 58px 18px !important;
-  grid-template-areas:
-    "rank rank"
-    "thumb title"
-    "thumb market"
-    "meta meta" !important;
-  gap: 6px 12px !important;
-  min-height: 150px !important;
-  padding: 14px !important;
-  border: 1px solid #e3eaf4 !important;
-  border-radius: 14px !important;
-  background: rgba(255, 255, 255, .96) !important;
-  color: #101828 !important;
-  box-shadow: 0 8px 20px rgba(16, 24, 40, .06) !important;
-  overflow: hidden !important;
-  text-decoration: none !important;
-}
-
-:root body.ranking-redesign-page .compact-rank-badge {
-  grid-area: rank !important;
-  justify-self: start !important;
-  min-width: 42px !important;
-  height: 26px !important;
-  padding: 0 10px !important;
-  border: 0 !important;
-  border-radius: 999px !important;
-  background: #eef2f7 !important;
-  color: #475467 !important;
-  font-size: 13px !important;
-  font-weight: 900 !important;
-  line-height: 26px !important;
-  text-align: center !important;
-  box-shadow: none !important;
-}
-
-:root body.ranking-redesign-page .compact-thumb-wrap,
-:root body.ranking-redesign-page .ranking-card-frameless-thumb {
-  grid-area: thumb !important;
-  position: relative !important;
-  display: grid !important;
-  place-items: center !important;
-  width: var(--rank-compact-thumb-w) !important;
-  height: var(--rank-compact-thumb-h) !important;
-  min-height: var(--rank-compact-thumb-h) !important;
-  max-height: var(--rank-compact-thumb-h) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  overflow: hidden !important;
-}
-
-:root body.ranking-redesign-page .compact-thumb,
-:root body.ranking-redesign-page .ranking-card-frameless-img {
-  position: static !important;
-  inset: auto !important;
-  width: 100% !important;
-  height: 100% !important;
-  max-width: var(--rank-compact-thumb-w) !important;
-  max-height: var(--rank-compact-thumb-h) !important;
-  object-fit: contain !important;
-  filter: drop-shadow(0 6px 8px rgba(16, 24, 40, .12)) !important;
-  transform: none !important;
-}
-
-:root body.ranking-redesign-page .compact-card-title {
-  grid-area: title !important;
-  align-self: start !important;
-  min-width: 0 !important;
-  min-height: 40px !important;
-  height: 40px !important;
-  margin: 0 !important;
-  color: #101828 !important;
-  font-size: 15px !important;
-  font-weight: 900 !important;
-  line-height: 1.28 !important;
-  letter-spacing: 0 !important;
-  overflow: hidden !important;
-  display: -webkit-box !important;
-  -webkit-box-orient: vertical !important;
-  -webkit-line-clamp: 2 !important;
-}
-
-:root body.ranking-redesign-page .compact-market-row {
-  grid-area: market !important;
-  grid-template-columns: minmax(0, 1fr) 78px !important;
-  align-items: center !important;
-  min-height: 58px !important;
-  height: 58px !important;
-  overflow: hidden !important;
-}
-
-:root body.ranking-redesign-page .compact-price-row {
-  min-width: 0 !important;
-}
-
-:root body.ranking-redesign-page .compact-price {
-  color: #e60012 !important;
-  font-size: 21px !important;
-  font-weight: 900 !important;
-  line-height: 1.08 !important;
-  white-space: nowrap !important;
-  font-variant-numeric: tabular-nums !important;
-}
-
-:root body.ranking-redesign-page .compact-market-row .sleeve-sparkline {
-  width: 78px !important;
-  height: 42px !important;
-}
-
-:root body.ranking-redesign-page .compact-meta,
-:root body.ranking-redesign-page .compact-tags {
-  grid-area: meta !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  min-width: 0 !important;
-  min-height: 18px !important;
-  height: 18px !important;
-  margin: 2px 0 0 !important;
-  overflow: hidden !important;
-}
-
-@media (max-width: 860px) {
-  :root body.ranking-redesign-page .ranking-hero,
-  :root body.ranking-redesign-page .ranking-hero.page-hero-card {
-    grid-template-columns: 1fr !important;
-  }
-
-  :root body.ranking-redesign-page .ranking-filter-card,
-  :root body.ranking-redesign-page .ranking-filter-card.page-toolbar-card {
-    grid-template-columns: 1fr !important;
-  }
-
-  :root body.ranking-redesign-page .ranking-filter-head,
-  :root body.ranking-redesign-page .ranking-filter-grid {
-    grid-column: 1 !important;
-  }
-
-  :root body.ranking-redesign-page .page-hero-meta {
-    justify-items: start !important;
-    grid-auto-flow: column !important;
-    grid-auto-columns: max-content !important;
-    overflow-x: auto !important;
-    max-width: 100% !important;
-  }
-
-  :root body.ranking-redesign-page .ranking-top3 {
-    display: flex !important;
-    gap: 14px !important;
-    margin-inline: calc(clamp(14px, 2.8vw, 32px) * -1) !important;
-    padding: 4px clamp(14px, 2.8vw, 32px) 12px !important;
-    overflow-x: auto !important;
-    scroll-snap-type: x mandatory !important;
-    scrollbar-width: thin !important;
-  }
-
-  :root body.ranking-redesign-page .ranking-top3 > div {
-    flex: 0 0 min(82vw, 340px) !important;
-    scroll-snap-align: start !important;
-  }
-
-  :root body.ranking-redesign-page .podium-card,
-  :root body.ranking-redesign-page .podium-card.ranking-card {
-    --rank-card-image-h: 190px;
-    --rank-card-title-h: 64px;
-    --rank-card-meta-h: 24px;
-    --rank-card-price-h: 64px;
-    --rank-card-chart-h: 120px;
-    height: 580px !important;
-    min-height: 580px !important;
-    max-height: 580px !important;
-  }
-
-  :root body.ranking-redesign-page .podium-media {
-    height: var(--rank-card-image-h) !important;
-    min-height: var(--rank-card-image-h) !important;
-    max-height: var(--rank-card-image-h) !important;
-  }
-
-  :root body.ranking-redesign-page .podium-media img {
-    max-height: 172px !important;
-  }
-}
-
-@media (max-width: 560px) {
-  :root body.ranking-redesign-page .page-shell--market {
-    padding-inline: 12px !important;
-  }
-
-  :root body.ranking-redesign-page .ranking-page-title,
-  :root body.ranking-redesign-page .page-hero-title {
-    font-size: 27px !important;
-  }
-
-  :root body.ranking-redesign-page .ranking-page-title::before {
-    width: 36px;
-    height: 36px;
-    border-radius: 11px;
-    font-size: 23px;
-  }
-
-  :root body.ranking-redesign-page .ranking-filter-field,
-  :root body.ranking-redesign-page .ranking-filter-actions {
-    min-width: 138px !important;
-  }
-
-  :root body.ranking-redesign-page .compact-grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  :root body.ranking-redesign-page .podium-price {
-    font-size: 29px !important;
-  }
-}
-
-/*
-  Ranking presentation rebuild.
-  Keep page data logic intact; make the generated cards lay out predictably.
-*/
-:root body.ranking-redesign-page .ranking-main {
-  gap: 28px !important;
-}
-
-:root body.ranking-redesign-page .ranking-top3 {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  align-items: stretch !important;
-  gap: clamp(14px, 1.8vw, 22px) !important;
-  width: 100% !important;
-}
-
-:root body.ranking-redesign-page .ranking-top3 > div {
-  display: flex !important;
-  min-width: 0 !important;
-}
-
-:root body.ranking-redesign-page .podium-card,
 :root body.ranking-redesign-page .podium-card.ranking-card,
 :root body.ranking-redesign-page .podium-card--rank1,
 :root body.ranking-redesign-page .podium-card--rank2,
 :root body.ranking-redesign-page .podium-card--rank3 {
   position: relative !important;
   display: grid !important;
-  grid-template-columns: 1fr !important;
-  grid-template-rows: auto minmax(210px, auto) 1fr !important;
-  gap: 14px !important;
-  width: 100% !important;
-  height: auto !important;
+  grid-template-rows: auto auto !important;
+  align-content: start !important;
+  gap: 0 !important;
+  min-width: 0 !important;
   min-height: 0 !important;
-  max-height: none !important;
-  padding: clamp(16px, 1.7vw, 22px) !important;
-  border: 1px solid #e1e7f0 !important;
-  border-radius: 18px !important;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
-  color: #101828 !important;
-  box-shadow: 0 14px 34px rgba(16, 24, 40, .08) !important;
+  height: auto !important;
+  padding: 18px !important;
+  border: 1px solid #dce9f3 !important;
+  border-radius: 16px !important;
+  background:
+    radial-gradient(circle at 92% 9%, rgba(255,255,255,.92) 0 30px, transparent 31px),
+    linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(255,255,255,.94) 100%) !important;
+  color: var(--ranking-ink) !important;
+  box-shadow: 0 18px 42px rgba(31, 52, 83, .08) !important;
   overflow: hidden !important;
   text-decoration: none !important;
   transform: none !important;
-  animation: none !important;
 }
 
-:root body.ranking-redesign-page .podium-card::before,
+:root body.ranking-redesign-page .podium-card--rank1 {
+  background:
+    radial-gradient(circle at 91% 9%, rgba(255,255,255,.72) 0 31px, transparent 32px),
+    linear-gradient(135deg, rgba(255, 248, 221, .72) 0%, rgba(255,255,255,.96) 48%, rgba(255,255,255,.94) 100%) !important;
+}
+
+:root body.ranking-redesign-page .podium-card--rank2 {
+  background:
+    radial-gradient(circle at 91% 9%, rgba(255,255,255,.72) 0 31px, transparent 32px),
+    linear-gradient(135deg, rgba(237, 246, 255, .86) 0%, rgba(255,255,255,.96) 50%, rgba(255,255,255,.94) 100%) !important;
+}
+
+:root body.ranking-redesign-page .podium-card--rank3 {
+  background:
+    radial-gradient(circle at 91% 9%, rgba(255,255,255,.72) 0 31px, transparent 32px),
+    linear-gradient(135deg, rgba(255, 241, 231, .86) 0%, rgba(255,255,255,.96) 50%, rgba(255,255,255,.94) 100%) !important;
+}
+
+:root body.ranking-redesign-page .podium-card::before {
+  content: "";
+  position: absolute;
+  top: 26px;
+  right: 24px;
+  width: 88px;
+  height: 88px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at center, transparent 0 13px, rgba(255,255,255,.62) 14px 24px, transparent 25px),
+    linear-gradient(0deg, transparent 47%, rgba(255,255,255,.62) 48% 52%, transparent 53%),
+    rgba(199, 221, 237, .34);
+  pointer-events: none;
+}
+
 :root body.ranking-redesign-page .podium-card::after {
   display: none !important;
 }
 
 :root body.ranking-redesign-page .podium-card:hover,
 :root body.ranking-redesign-page .podium-card:focus-visible {
-  border-color: #cfd8e6 !important;
-  box-shadow: 0 18px 40px rgba(16, 24, 40, .11) !important;
+  border-color: #c7ddeb !important;
+  box-shadow: 0 22px 48px rgba(31, 52, 83, .11) !important;
   transform: translateY(-2px) !important;
 }
 
 :root body.ranking-redesign-page .podium-badge {
   position: absolute !important;
   top: 14px !important;
-  left: 14px !important;
-  z-index: 2 !important;
-  display: inline-grid !important;
+  left: 18px !important;
+  z-index: 5 !important;
+  display: grid !important;
   place-items: center !important;
-  width: 44px !important;
-  height: 44px !important;
-  min-width: 44px !important;
-  padding: 0 !important;
-  border: 1px solid rgba(255, 255, 255, .74) !important;
-  border-radius: 999px !important;
-  background: #111827 !important;
+  width: 70px !important;
+  height: 92px !important;
+  padding: 20px 0 16px !important;
+  border: 0 !important;
+  border-radius: 999px 999px 10px 10px !important;
+  background: linear-gradient(180deg, #ffc22f 0%, #f2a51b 62%, #e38d12 100%) !important;
   color: #fff !important;
-  font-size: 18px !important;
+  font-size: 33px !important;
   font-weight: 900 !important;
   line-height: 1 !important;
   letter-spacing: 0 !important;
-  box-shadow: 0 10px 22px rgba(15, 23, 42, .18) !important;
+  box-shadow: 0 12px 20px rgba(207, 139, 18, .27) !important;
 }
 
-:root body.ranking-redesign-page .podium-badge::before,
+:root body.ranking-redesign-page .podium-badge::before {
+  content: "\265B";
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  color: #fff;
+  font-size: 17px;
+  line-height: 1;
+  transform: translateX(-50%);
+}
+
 :root body.ranking-redesign-page .podium-badge::after {
-  display: none !important;
-}
-
-:root body.ranking-redesign-page .podium-card--rank1 .podium-badge {
-  background: linear-gradient(135deg, #f8c84a 0%, #bf7a16 100%) !important;
+  content: "";
+  position: absolute;
+  right: -28px;
+  top: 18px;
+  width: 26px;
+  height: 30px;
+  border-top: 5px solid #ffc72d;
+  border-right: 5px solid #ffc72d;
+  transform: rotate(26deg);
+  opacity: .9;
 }
 
 :root body.ranking-redesign-page .podium-card--rank2 .podium-badge {
-  background: linear-gradient(135deg, #cbd5e1 0%, #64748b 100%) !important;
+  background: linear-gradient(180deg, #b8c5d7 0%, #8798ad 62%, #718398 100%) !important;
+  box-shadow: 0 12px 20px rgba(112, 132, 152, .24) !important;
+}
+
+:root body.ranking-redesign-page .podium-card--rank2 .podium-badge::after {
+  border-color: #a9b8ca;
 }
 
 :root body.ranking-redesign-page .podium-card--rank3 .podium-badge {
-  background: linear-gradient(135deg, #e7a15d 0%, #a85f25 100%) !important;
+  background: linear-gradient(180deg, #df9655 0%, #c7783d 62%, #a85f28 100%) !important;
+  box-shadow: 0 12px 20px rgba(169, 95, 40, .24) !important;
+}
+
+:root body.ranking-redesign-page .podium-card--rank3 .podium-badge::after {
+  border-color: #d98949;
 }
 
 :root body.ranking-redesign-page .podium-media,
 :root body.ranking-redesign-page .podium-card--rank1 .podium-media,
 :root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-media {
-  position: static !important;
+  position: relative !important;
+  z-index: 1 !important;
   display: grid !important;
   place-items: center !important;
   width: 100% !important;
-  height: clamp(210px, 21vw, 280px) !important;
-  min-height: 210px !important;
-  max-height: 280px !important;
+  height: clamp(230px, 22vw, 270px) !important;
+  min-height: 230px !important;
+  max-height: 270px !important;
   margin: 0 !important;
-  padding: 16px 18px 8px !important;
+  padding: 22px 24px 12px !important;
   border: 0 !important;
-  border-radius: 14px !important;
-  background: linear-gradient(180deg, #f7f9fd 0%, #eef3f8 100%) !important;
-  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .05) !important;
+  border-radius: 15px !important;
+  background: linear-gradient(135deg, rgba(255,255,255,.82) 0%, rgba(241,247,252,.82) 100%) !important;
+  box-shadow: inset 0 0 0 1px rgba(105, 130, 157, .06) !important;
   overflow: hidden !important;
 }
 
 :root body.ranking-redesign-page .podium-media img,
 :root body.ranking-redesign-page .podium-card--rank1 .podium-media img,
 :root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-media img {
-  position: static !important;
   display: block !important;
   width: 100% !important;
   height: 100% !important;
@@ -1040,7 +441,7 @@
   object-fit: contain !important;
   object-position: center !important;
   background: transparent !important;
-  filter: drop-shadow(0 12px 14px rgba(16, 24, 40, .14)) !important;
+  filter: drop-shadow(0 14px 14px rgba(16, 24, 40, .16)) !important;
   transform: none !important;
 }
 
@@ -1048,10 +449,8 @@
 :root body.ranking-redesign-page .podium-card--rank1 .podium-content,
 :root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-content {
   display: grid !important;
-  grid-template-columns: 1fr !important;
-  grid-template-rows: auto auto auto auto !important;
-  gap: 10px !important;
-  align-content: start !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0 !important;
   min-width: 0 !important;
   margin: 0 !important;
 }
@@ -1065,13 +464,13 @@
 :root body.ranking-redesign-page .podium-card--rank1 .podium-title,
 :root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-title {
   order: 1 !important;
-  margin: 0 !important;
-  min-height: 0 !important;
-  height: auto !important;
-  color: #101828 !important;
-  font-size: clamp(16px, 1.35vw, 19px) !important;
+  min-height: 58px !important;
+  margin: 12px 0 0 !important;
+  color: var(--ranking-ink) !important;
+  font-size: clamp(18px, 1.65vw, 25px) !important;
   font-weight: 900 !important;
-  line-height: 1.35 !important;
+  line-height: 1.28 !important;
+  text-align: center !important;
   letter-spacing: 0 !important;
   overflow: hidden !important;
   display: -webkit-box !important;
@@ -1083,17 +482,21 @@
   order: 2 !important;
   display: flex !important;
   align-items: center !important;
-  min-height: 18px !important;
-  height: auto !important;
-  margin: -4px 0 0 !important;
-  padding: 0 !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  min-height: 26px !important;
+  margin: 0 0 12px !important;
+  padding: 0 0 12px !important;
+  border-bottom: 1px solid var(--ranking-line) !important;
   overflow: hidden !important;
 }
 
 :root body.ranking-redesign-page .podium-chip-group {
   display: flex !important;
-  flex-wrap: nowrap !important;
-  gap: 8px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
   min-width: 0 !important;
 }
 
@@ -1107,9 +510,9 @@
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
-  color: #667085 !important;
-  font-size: 12px !important;
-  font-weight: 800 !important;
+  color: #617491 !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
   line-height: 1.25 !important;
   white-space: nowrap !important;
 }
@@ -1118,159 +521,218 @@
   order: 3 !important;
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
-  gap: 10px !important;
+  grid-template-areas:
+    "label label"
+    "primary rate"
+    "secondary rate" !important;
+  gap: 4px 16px !important;
   align-items: end !important;
-  min-height: 0 !important;
-  height: auto !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  background: transparent !important;
-  border: 0 !important;
-  overflow: visible !important;
+  min-width: 0 !important;
+  margin: 0 0 12px !important;
 }
 
 :root body.ranking-redesign-page .podium-metric {
-  display: grid !important;
-  gap: 3px !important;
-  min-width: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-  overflow: visible !important;
+  display: contents !important;
 }
 
-:root body.ranking-redesign-page .podium-metric-label {
+:root body.ranking-redesign-page .podium-metric:first-child .podium-metric-label {
+  grid-area: label !important;
   display: block !important;
   margin: 0 !important;
-  color: #667085 !important;
-  font-size: 11px !important;
-  font-weight: 800 !important;
+  color: #45617f !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
   line-height: 1.2 !important;
 }
 
 :root body.ranking-redesign-page .podium-price {
-  color: #0f172a !important;
-  font-size: clamp(28px, 2.7vw, 36px) !important;
+  grid-area: primary !important;
+  color: var(--ranking-teal) !important;
+  font-size: clamp(40px, 4.6vw, 60px) !important;
   font-weight: 900 !important;
-  line-height: 1.05 !important;
+  line-height: 1 !important;
   letter-spacing: 0 !important;
   white-space: nowrap !important;
   font-variant-numeric: tabular-nums !important;
 }
 
-:root body.ranking-redesign-page .podium-diff,
-:root body.ranking-redesign-page .podium-rate,
-:root body.ranking-redesign-page .compact-delta,
-:root body.ranking-redesign-page .compact-rate {
-  color: #667085 !important;
-  font-size: 13px !important;
+:root body.ranking-redesign-page .podium-metric:nth-child(n+2) .podium-metric-label {
+  display: none !important;
+}
+
+:root body.ranking-redesign-page .podium-diff {
+  grid-area: secondary !important;
+  color: #45617f !important;
+  font-size: 15px !important;
   font-weight: 900 !important;
   line-height: 1.25 !important;
-  letter-spacing: 0 !important;
   white-space: nowrap !important;
 }
 
-:root body.ranking-redesign-page .podium-diff.up,
-:root body.ranking-redesign-page .podium-rate.up,
-:root body.ranking-redesign-page .compact-delta.up,
-:root body.ranking-redesign-page .compact-rate.up {
-  color: #d92d20 !important;
+:root body.ranking-redesign-page .podium-rate {
+  grid-area: rate !important;
+  justify-self: end !important;
+  align-self: end !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 132px !important;
+  min-height: 44px !important;
+  padding: 0 20px !important;
+  border-radius: 999px !important;
+  background: var(--ranking-teal-soft) !important;
+  color: var(--ranking-teal-dark) !important;
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
 }
 
-:root body.ranking-redesign-page .podium-diff.down,
-:root body.ranking-redesign-page .podium-rate.down,
-:root body.ranking-redesign-page .compact-delta.down,
-:root body.ranking-redesign-page .compact-rate.down {
-  color: #067647 !important;
+:root body.ranking-redesign-page--price .podium-metric:first-child .podium-metric-label,
+:root body.ranking-redesign-page--views .podium-metric:first-child .podium-metric-label {
+  content: "現在価格";
+}
+
+:root body.ranking-redesign-page--price-up .podium-metrics,
+:root body.ranking-redesign-page--rate-up .podium-metrics {
+  grid-template-areas:
+    "label label"
+    "primary rate"
+    "secondary rate" !important;
+}
+
+:root body.ranking-redesign-page--price-up .podium-metric:first-child .podium-metric-label,
+:root body.ranking-redesign-page--rate-up .podium-metric:first-child .podium-metric-label {
+  display: none !important;
+}
+
+:root body.ranking-redesign-page--price-up .podium-metric:nth-child(2) .podium-metric-label,
+:root body.ranking-redesign-page--rate-up .podium-metric:nth-child(2) .podium-metric-label {
+  grid-area: label !important;
+  display: block !important;
+  color: #45617f !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+}
+
+:root body.ranking-redesign-page--price-up .podium-diff,
+:root body.ranking-redesign-page--rate-up .podium-rate {
+  grid-area: primary !important;
+  color: var(--ranking-teal) !important;
+  font-size: clamp(42px, 4.8vw, 62px) !important;
+  line-height: 1 !important;
+}
+
+:root body.ranking-redesign-page--price-up .podium-price,
+:root body.ranking-redesign-page--rate-up .podium-price {
+  grid-area: secondary !important;
+  color: var(--ranking-ink) !important;
+  font-size: 20px !important;
+}
+
+:root body.ranking-redesign-page--price-up .podium-price::before,
+:root body.ranking-redesign-page--rate-up .podium-price::before {
+  content: "現在価格";
+  margin-right: 16px;
+  color: #45617f;
+  font-size: 15px;
+  font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+  font-weight: 900;
+}
+
+:root body.ranking-redesign-page--rate-up .podium-diff {
+  display: none !important;
+}
+
+:root body.ranking-redesign-page--views .podium-metric:nth-child(n+2) {
+  display: none !important;
 }
 
 :root body.ranking-redesign-page .podium-market-row {
   order: 4 !important;
   display: block !important;
   width: 100% !important;
-  min-height: 88px !important;
-  height: auto !important;
-  max-height: none !important;
-  margin: 2px 0 0 !important;
-  padding: 0 !important;
-  overflow: visible !important;
+  min-width: 0 !important;
+  margin: 0 !important;
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline {
   position: relative !important;
   display: grid !important;
-  place-items: stretch !important;
   min-width: 0 !important;
-  border-radius: 12px !important;
-  background: #f8fafc !important;
-  border: 1px solid #e3e8f0 !important;
-  box-shadow: none !important;
+  border-radius: 13px !important;
+  background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(245, 250, 253, .96)) !important;
+  border: 1px solid var(--ranking-line) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.92) !important;
   overflow: hidden !important;
 }
 
 :root body.ranking-redesign-page .podium-market-row .sleeve-sparkline,
 :root body.ranking-redesign-page .podium-trend-row .sleeve-sparkline {
   width: 100% !important;
-  height: 92px !important;
-  min-height: 92px !important;
-  max-height: none !important;
+  height: 158px !important;
+  padding: 28px 14px 26px !important;
 }
 
-:root body.ranking-redesign-page .compact-market-row .sleeve-sparkline,
-:root body.ranking-redesign-page .compact-card .sleeve-sparkline,
-:root body.ranking-redesign-page .compact-card.ranking-card-frameless .compact-market-row .sleeve-sparkline {
-  width: 100% !important;
-  height: 58px !important;
-  min-height: 58px !important;
+:root body.ranking-redesign-page .sleeve-sparkline-title {
+  position: absolute;
+  top: 8px;
+  left: 14px;
+  z-index: 2;
+  color: #45617f;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1;
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline svg {
   display: block !important;
   position: static !important;
   inset: auto !important;
-  left: auto !important;
-  right: auto !important;
-  top: auto !important;
-  bottom: auto !important;
   width: 100% !important;
   height: 100% !important;
   transform: none !important;
   min-width: 1px !important;
   min-height: 1px !important;
+  overflow: visible !important;
 }
 
-:root body.ranking-redesign-page .sleeve-sparkline::before,
-:root body.ranking-redesign-page .sleeve-sparkline::after {
-  display: none !important;
-  content: none !important;
-}
-
-:root body.ranking-redesign-page .sleeve-sparkline-grid,
-:root body.ranking-redesign-page .sleeve-sparkline-axis {
-  stroke: rgba(148, 163, 184, .44) !important;
+:root body.ranking-redesign-page .sleeve-sparkline-grid {
+  stroke: rgba(151, 171, 194, .48) !important;
   stroke-width: 1 !important;
+  stroke-dasharray: 4 4 !important;
+}
+
+:root body.ranking-redesign-page .sleeve-sparkline-axis {
+  stroke: rgba(79, 107, 137, .35) !important;
+  stroke-width: 1.2 !important;
+}
+
+:root body.ranking-redesign-page .sleeve-sparkline-label {
+  display: block !important;
+  fill: #6f86a4 !important;
+  font-family: "Inter", "Noto Sans JP", sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline-area {
-  fill: rgba(217, 45, 32, .09) !important;
+  fill: rgba(7, 156, 162, .16) !important;
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline-line {
-  fill: none !important;
-  stroke: #d92d20 !important;
-  stroke-width: 2.7 !important;
-  stroke-linecap: round !important;
-  stroke-linejoin: round !important;
+  stroke: var(--ranking-teal) !important;
+  stroke-width: 3.2 !important;
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline-dot {
-  fill: #d92d20 !important;
+  fill: var(--ranking-teal) !important;
   stroke: #fff !important;
-  stroke-width: 1.6 !important;
+  stroke-width: 1.8 !important;
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline--down .sleeve-sparkline-area {
-  fill: rgba(6, 118, 71, .09) !important;
+  fill: rgba(6, 118, 71, .12) !important;
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline--down .sleeve-sparkline-line {
@@ -1282,7 +744,7 @@
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline--flat .sleeve-sparkline-area {
-  fill: rgba(71, 85, 105, .08) !important;
+  fill: rgba(71, 85, 105, .10) !important;
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline--flat .sleeve-sparkline-line {
@@ -1293,54 +755,61 @@
   fill: #475467 !important;
 }
 
-:root body.ranking-redesign-page .sleeve-sparkline-foot,
-:root body.ranking-redesign-page .sleeve-sparkline text,
-:root body.ranking-redesign-page .sleeve-sparkline-label,
-:root body.ranking-redesign-page .sleeve-sparkline-value {
-  display: none !important;
+:root body.ranking-redesign-page .sleeve-sparkline-foot {
+  position: absolute !important;
+  left: 64px !important;
+  right: 16px !important;
+  bottom: 8px !important;
+  z-index: 2 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 12px !important;
+  color: #6f86a4 !important;
+  font-family: "Inter", "Noto Sans JP", sans-serif !important;
+}
+
+:root body.ranking-redesign-page .sleeve-sparkline-foot span {
+  display: inline-flex !important;
+  align-items: baseline !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+}
+
+:root body.ranking-redesign-page .sleeve-sparkline-foot span:last-child {
+  color: var(--ranking-teal) !important;
+}
+
+:root body.ranking-redesign-page .sleeve-sparkline-foot small {
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+:root body.ranking-redesign-page .sleeve-sparkline-foot b {
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline--empty {
   display: grid !important;
   place-items: center !important;
-  min-height: 58px !important;
-  border: 1px dashed #cfd8e6 !important;
-  background: #f8fafc !important;
-}
-
-:root body.ranking-redesign-page .podium-market-row .sleeve-sparkline--empty {
-  min-height: 92px !important;
+  height: 158px !important;
+  padding: 0 !important;
+  border: 1px dashed #c7ddeb !important;
+  background: rgba(255,255,255,.64) !important;
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline--empty .sleeve-sparkline-empty {
-  display: inline-block !important;
-  color: #98a2b3 !important;
-  font-size: 11px !important;
+  color: #7b8ca5 !important;
+  font-size: 13px !important;
   font-weight: 900 !important;
-  letter-spacing: 0 !important;
-  line-height: 1.3 !important;
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline--empty .sleeve-sparkline-empty::before {
   content: none !important;
-}
-
-/* Keep sparkline SVGs owned by this redesign stylesheet. */
-:root body.ranking-redesign-page .podium-market-row .sleeve-sparkline svg,
-:root body.ranking-redesign-page .podium-trend-row .sleeve-sparkline svg,
-:root body.ranking-redesign-page .compact-market-row .sleeve-sparkline svg {
-  position: static !important;
-  inset: auto !important;
-  left: auto !important;
-  right: auto !important;
-  top: auto !important;
-  bottom: auto !important;
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-width: 1px !important;
-  min-height: 1px !important;
-  transform: none !important;
 }
 
 :root body.ranking-redesign-page .ranking-rest-section {
@@ -1348,18 +817,21 @@
   gap: 12px !important;
 }
 
-:root body.ranking-redesign-page .compact-grid {
-  display: grid !important;
-  grid-template-columns: 1fr !important;
-  gap: 10px !important;
-  width: 100% !important;
+:root body.ranking-redesign-page .ranking-section-head {
   margin: 0 !important;
+}
+
+:root body.ranking-redesign-page .ranking-section-title {
+  margin: 0 !important;
+  color: var(--ranking-ink) !important;
+  font-size: 22px !important;
+  font-weight: 900 !important;
 }
 
 :root body.ranking-redesign-page #list.grid,
 :root body.ranking-redesign-page #list.compact-grid,
 :root body.ranking-redesign-page .ranking-list,
-:root body.ranking-redesign-page .ranking-list--compact {
+:root body.ranking-redesign-page .compact-grid {
   display: grid !important;
   grid-template-columns: 1fr !important;
   gap: 10px !important;
@@ -1370,51 +842,37 @@
 :root body.ranking-redesign-page .compact-card,
 :root body.ranking-redesign-page .compact-card.ranking-card,
 :root body.ranking-redesign-page .compact-card.ranking-card-frameless {
-  position: relative !important;
   display: grid !important;
-  grid-template-columns: 58px 72px minmax(0, 1fr) minmax(300px, 430px) !important;
+  grid-template-columns: 56px 74px minmax(0, 1fr) minmax(320px, 440px) !important;
   grid-template-rows: auto auto !important;
   grid-template-areas:
     "rank thumb title market"
     "rank thumb meta market" !important;
   align-items: center !important;
   gap: 4px 14px !important;
-  min-height: 96px !important;
-  height: auto !important;
+  min-height: 98px !important;
   padding: 12px 14px !important;
-  border: 1px solid #e3e8f0 !important;
+  border: 1px solid #dce9f3 !important;
   border-radius: 14px !important;
-  background: rgba(255, 255, 255, .96) !important;
-  color: #101828 !important;
-  box-shadow: 0 8px 22px rgba(16, 24, 40, .055) !important;
-  overflow: hidden !important;
+  background: rgba(255,255,255,.96) !important;
+  color: var(--ranking-ink) !important;
+  box-shadow: 0 10px 24px rgba(31, 52, 83, .055) !important;
   text-decoration: none !important;
-}
-
-:root body.ranking-redesign-page .compact-card:hover,
-:root body.ranking-redesign-page .compact-card:focus-visible {
-  border-color: #cfd8e6 !important;
-  box-shadow: 0 12px 28px rgba(16, 24, 40, .09) !important;
-  transform: translateY(-1px) !important;
+  overflow: hidden !important;
 }
 
 :root body.ranking-redesign-page .compact-rank-badge {
   grid-area: rank !important;
-  justify-self: start !important;
-  align-self: center !important;
   display: inline-grid !important;
   place-items: center !important;
-  min-width: 46px !important;
+  min-width: 44px !important;
   height: 30px !important;
   padding: 0 8px !important;
-  border: 0 !important;
   border-radius: 999px !important;
-  background: #eef2f7 !important;
-  color: #475467 !important;
+  background: #eef4f8 !important;
+  color: #45617f !important;
   font-size: 13px !important;
   font-weight: 900 !important;
-  line-height: 1 !important;
-  box-shadow: none !important;
 }
 
 :root body.ranking-redesign-page .compact-rank-badge::before,
@@ -1423,51 +881,37 @@
 }
 
 :root body.ranking-redesign-page .compact-thumb-wrap,
-:root body.ranking-redesign-page .compact-card.ranking-card-frameless .compact-thumb-wrap,
 :root body.ranking-redesign-page .ranking-card-frameless-thumb {
   grid-area: thumb !important;
-  position: static !important;
   display: grid !important;
   place-items: center !important;
-  width: 72px !important;
-  height: 72px !important;
-  min-height: 72px !important;
-  max-height: 72px !important;
-  margin: 0 !important;
-  padding: 6px !important;
-  border: 0 !important;
+  width: 74px !important;
+  height: 74px !important;
+  padding: 7px !important;
   border-radius: 10px !important;
-  background: #f7f9fd !important;
-  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .05) !important;
+  background: #f4f8fb !important;
+  box-shadow: inset 0 0 0 1px rgba(105, 130, 157, .06) !important;
   overflow: hidden !important;
 }
 
 :root body.ranking-redesign-page .compact-thumb,
-:root body.ranking-redesign-page .compact-card.ranking-card-frameless .compact-thumb,
 :root body.ranking-redesign-page .ranking-card-frameless-img {
-  position: static !important;
   width: 100% !important;
   height: 100% !important;
-  max-width: 100% !important;
-  max-height: 100% !important;
   object-fit: contain !important;
   object-position: center !important;
-  filter: drop-shadow(0 6px 8px rgba(16, 24, 40, .12)) !important;
-  transform: none !important;
+  filter: drop-shadow(0 7px 8px rgba(16,24,40,.12)) !important;
 }
 
 :root body.ranking-redesign-page .compact-card-title {
   grid-area: title !important;
   align-self: end !important;
   min-width: 0 !important;
-  min-height: 0 !important;
-  height: auto !important;
   margin: 0 !important;
-  color: #101828 !important;
+  color: var(--ranking-ink) !important;
   font-size: 15px !important;
   font-weight: 900 !important;
   line-height: 1.35 !important;
-  letter-spacing: 0 !important;
   overflow: hidden !important;
   display: -webkit-box !important;
   -webkit-box-orient: vertical !important;
@@ -1479,28 +923,19 @@
   grid-area: meta !important;
   align-self: start !important;
   display: flex !important;
-  align-items: center !important;
   gap: 8px !important;
   min-width: 0 !important;
-  min-height: 0 !important;
-  height: auto !important;
   margin: 0 !important;
   overflow: hidden !important;
 }
 
-:root body.ranking-redesign-page .compact-market-row,
-:root body.ranking-redesign-page .compact-card.ranking-card-frameless .compact-market-row {
+:root body.ranking-redesign-page .compact-market-row {
   grid-area: market !important;
   display: grid !important;
-  grid-template-columns: minmax(116px, 150px) minmax(160px, 1fr) !important;
+  grid-template-columns: minmax(116px, 150px) minmax(170px, 1fr) !important;
   align-items: center !important;
   gap: 12px !important;
   min-width: 0 !important;
-  min-height: 0 !important;
-  height: auto !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: visible !important;
 }
 
 :root body.ranking-redesign-page .compact-price-row {
@@ -1510,192 +945,175 @@
 }
 
 :root body.ranking-redesign-page .compact-price {
-  color: #0f172a !important;
-  font-size: 20px !important;
+  color: var(--ranking-ink) !important;
+  font-size: 21px !important;
   font-weight: 900 !important;
-  line-height: 1.1 !important;
+  line-height: 1.05 !important;
   white-space: nowrap !important;
-  font-variant-numeric: tabular-nums !important;
 }
 
 :root body.ranking-redesign-page .compact-price::before {
   content: none !important;
 }
 
-@media (max-width: 980px) {
+:root body.ranking-redesign-page .compact-delta,
+:root body.ranking-redesign-page .compact-rate {
+  color: var(--ranking-teal) !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1.15 !important;
+}
+
+:root body.ranking-redesign-page .compact-market-row .sleeve-sparkline,
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline {
+  width: 100% !important;
+  height: 62px !important;
+  padding: 8px 8px 6px !important;
+}
+
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline-title,
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline-label,
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline-foot {
+  display: none !important;
+}
+
+@media (max-width: 1180px) {
   :root body.ranking-redesign-page .ranking-top3 {
     grid-template-columns: 1fr !important;
   }
 
-  :root body.ranking-redesign-page .podium-media,
-  :root body.ranking-redesign-page .podium-card--rank1 .podium-media,
-  :root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-media {
-    height: 230px !important;
-    min-height: 230px !important;
-    max-height: 230px !important;
+  :root body.ranking-redesign-page .podium-card {
+    max-width: 720px !important;
+    width: 100% !important;
+    margin-inline: auto !important;
+  }
+}
+
+@media (max-width: 900px) {
+  :root body.ranking-redesign-page .ranking-hero {
+    min-height: 0 !important;
+    padding-right: 0 !important;
   }
 
-  :root body.ranking-redesign-page .compact-card,
-  :root body.ranking-redesign-page .compact-card.ranking-card,
-  :root body.ranking-redesign-page .compact-card.ranking-card-frameless {
-    grid-template-columns: 52px 68px minmax(0, 1fr) !important;
+  :root body.ranking-redesign-page .ranking-hero::before,
+  :root body.ranking-redesign-page .ranking-hero::after,
+  :root body.ranking-redesign-page .page-hero-meta {
+    display: none !important;
+  }
+
+  :root body.ranking-redesign-page .ranking-page-title,
+  :root body.ranking-redesign-page .page-hero-title {
+    font-size: clamp(28px, 8vw, 42px) !important;
+  }
+
+  :root body.ranking-redesign-page .ranking-page-title::before {
+    width: 52px !important;
+    height: 52px !important;
+    font-size: 34px !important;
+  }
+
+  :root body.ranking-redesign-page .ranking-page-title::after,
+  :root body.ranking-redesign-page .page-hero-title::after {
+    position: static !important;
+    display: block !important;
+    margin-top: 8px !important;
+    max-width: none !important;
+    font-size: 13px !important;
+  }
+
+  :root body.ranking-redesign-page .ranking-filter-card {
+    grid-template-columns: 1fr !important;
+  }
+
+  :root body.ranking-redesign-page .ranking-filter-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  :root body.ranking-redesign-page .ranking-filter-field select,
+  :root body.ranking-redesign-page .ranking-filter-actions button {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding-inline: 18px !important;
+  }
+
+  :root body.ranking-redesign-page .compact-card {
+    grid-template-columns: 44px 64px minmax(0, 1fr) !important;
     grid-template-areas:
       "rank thumb title"
       "rank thumb meta"
       "market market market" !important;
-    gap: 8px 12px !important;
   }
 
-  :root body.ranking-redesign-page .compact-market-row,
-  :root body.ranking-redesign-page .compact-card.ranking-card-frameless .compact-market-row {
-    grid-template-columns: minmax(116px, 150px) minmax(0, 1fr) !important;
+  :root body.ranking-redesign-page .compact-market-row {
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 1fr) !important;
+    margin-top: 8px !important;
   }
 }
 
 @media (max-width: 560px) {
-  :root body.ranking-redesign-page .ranking-top3 {
-    display: grid !important;
+  :root body.ranking-redesign-page .page-shell--market {
+    padding-inline: 12px !important;
+  }
+
+  :root body.ranking-redesign-page .ranking-filter-grid {
     grid-template-columns: 1fr !important;
-    gap: 12px !important;
-    margin-inline: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
-    scroll-snap-type: none !important;
   }
 
-  :root body.ranking-redesign-page .ranking-top3 > div {
-    flex: initial !important;
-  }
-
-  :root body.ranking-redesign-page .podium-card,
-  :root body.ranking-redesign-page .podium-card.ranking-card,
-  :root body.ranking-redesign-page .podium-card--rank1,
-  :root body.ranking-redesign-page .podium-card--rank2,
-  :root body.ranking-redesign-page .podium-card--rank3 {
+  :root body.ranking-redesign-page .podium-card {
     padding: 14px !important;
-    gap: 12px !important;
+    border-radius: 14px !important;
   }
 
-  :root body.ranking-redesign-page .podium-media,
-  :root body.ranking-redesign-page .podium-card--rank1 .podium-media,
-  :root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-media {
+  :root body.ranking-redesign-page .podium-badge {
+    width: 54px !important;
+    height: 74px !important;
+    font-size: 25px !important;
+  }
+
+  :root body.ranking-redesign-page .podium-media {
     height: 210px !important;
     min-height: 210px !important;
-    max-height: 210px !important;
+    padding: 18px 14px 8px !important;
   }
 
-  :root body.ranking-redesign-page .podium-media img,
-  :root body.ranking-redesign-page .podium-card--rank1 .podium-media img,
-  :root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-media img {
-    max-width: 82% !important;
+  :root body.ranking-redesign-page .podium-media img {
+    max-width: 78% !important;
   }
 
   :root body.ranking-redesign-page .podium-metrics {
     grid-template-columns: 1fr !important;
-    gap: 8px !important;
-  }
-
-  :root body.ranking-redesign-page .podium-price {
-    font-size: 29px !important;
-  }
-
-  :root body.ranking-redesign-page .compact-card,
-  :root body.ranking-redesign-page .compact-card.ranking-card,
-  :root body.ranking-redesign-page .compact-card.ranking-card-frameless {
-    grid-template-columns: 52px minmax(0, 1fr) !important;
     grid-template-areas:
-      "rank title"
-      "thumb title"
-      "thumb meta"
-      "market market" !important;
-    padding: 12px !important;
+      "label"
+      "primary"
+      "secondary"
+      "rate" !important;
   }
 
-  :root body.ranking-redesign-page .compact-thumb-wrap,
-  :root body.ranking-redesign-page .compact-card.ranking-card-frameless .compact-thumb-wrap,
-  :root body.ranking-redesign-page .ranking-card-frameless-thumb {
-    width: 52px !important;
-    height: 60px !important;
-    min-height: 60px !important;
+  :root body.ranking-redesign-page .podium-rate {
+    justify-self: start !important;
+    min-width: 116px !important;
   }
 
-  :root body.ranking-redesign-page .compact-market-row,
-  :root body.ranking-redesign-page .compact-card.ranking-card-frameless .compact-market-row {
+  :root body.ranking-redesign-page .podium-market-row .sleeve-sparkline {
+    height: 142px !important;
+  }
+
+  :root body.ranking-redesign-page .compact-card {
+    grid-template-columns: 44px 58px minmax(0, 1fr) !important;
+    padding: 10px !important;
+  }
+
+  :root body.ranking-redesign-page .compact-thumb-wrap {
+    width: 58px !important;
+    height: 58px !important;
+  }
+
+  :root body.ranking-redesign-page .compact-market-row {
     grid-template-columns: 1fr !important;
-    gap: 8px !important;
   }
 
-  :root body.ranking-redesign-page .compact-market-row .sleeve-sparkline,
-  :root body.ranking-redesign-page .compact-card .sleeve-sparkline {
-    height: 64px !important;
-    min-height: 64px !important;
+  :root body.ranking-redesign-page .compact-market-row .sleeve-sparkline {
+    height: 58px !important;
   }
-}
-
-/* Keep top-card price and change labels from colliding on every ranking page. */
-:root body.ranking-redesign-page .podium-metrics {
-  display: grid !important;
-  grid-template-columns: 1fr !important;
-  align-items: start !important;
-  gap: 8px !important;
-}
-
-:root body.ranking-redesign-page .podium-metric {
-  min-width: 0 !important;
-  max-width: 100% !important;
-}
-
-:root body.ranking-redesign-page .podium-metric:first-child {
-  display: grid !important;
-  gap: 4px !important;
-}
-
-:root body.ranking-redesign-page .podium-metric:nth-child(n+2) {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  flex-wrap: wrap !important;
-  gap: 6px 8px !important;
-}
-
-:root body.ranking-redesign-page .podium-metric:nth-child(n+2) .podium-metric-label {
-  display: inline-flex !important;
-  width: auto !important;
-  min-width: max-content !important;
-  margin: 0 !important;
-  writing-mode: horizontal-tb !important;
-  white-space: nowrap !important;
-  line-height: 1 !important;
-}
-
-:root body.ranking-redesign-page .podium-diff,
-:root body.ranking-redesign-page .podium-rate {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: auto !important;
-  min-width: max-content !important;
-  max-width: 100% !important;
-  min-height: 26px !important;
-  padding: 0 8px !important;
-  border-radius: 7px !important;
-  white-space: nowrap !important;
-}
-
-:root body.ranking-redesign-page .podium-diff.up,
-:root body.ranking-redesign-page .podium-rate.up {
-  border: 1px solid rgba(217, 45, 32, .35) !important;
-  background: rgba(217, 45, 32, .04) !important;
-}
-
-:root body.ranking-redesign-page .podium-diff.down,
-:root body.ranking-redesign-page .podium-rate.down {
-  border: 1px solid rgba(6, 118, 71, .32) !important;
-  background: rgba(6, 118, 71, .04) !important;
-}
-
-:root body.ranking-redesign-page .podium-diff.flat,
-:root body.ranking-redesign-page .podium-rate.flat {
-  border: 1px solid #d7e0ec !important;
-  background: #f8fafc !important;
 }
