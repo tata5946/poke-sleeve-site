@@ -251,10 +251,10 @@
 :root body.ranking-page .podium-card,
 :root body.ranking-page .podium-card.ranking-card {
   --rank-card-image-h: 210px;
-  --rank-card-title-h: 46px;
-  --rank-card-meta-h: 18px;
-  --rank-card-price-h: 76px;
-  --rank-card-chart-h: 58px;
+  --rank-card-title-h: 64px;
+  --rank-card-meta-h: 24px;
+  --rank-card-price-h: 64px;
+  --rank-card-chart-h: 130px;
   position: relative !important;
   display: grid !important;
   grid-template-rows:
@@ -262,15 +262,20 @@
     var(--rank-card-title-h)
     var(--rank-card-meta-h)
     var(--rank-card-price-h)
+    1fr
     var(--rank-card-chart-h) !important;
   align-content: start !important;
-  gap: 6px !important;
-  height: 100% !important;
-  min-height: 0 !important;
+  gap: 0 !important;
+  height: 620px !important;
+  min-height: 620px !important;
+  max-height: 620px !important;
   padding: 18px 18px 16px !important;
   border: 1px solid #e3eaf4 !important;
   border-radius: 16px !important;
-  background: rgba(255, 255, 255, .96) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .72), transparent 36%),
+    radial-gradient(circle at 88% 8%, rgba(52, 211, 153, .12), transparent 36%),
+    rgba(255, 255, 255, .96) !important;
   color: #101828 !important;
   box-shadow: 0 10px 26px rgba(16, 24, 40, .08) !important;
   overflow: hidden !important;
@@ -279,31 +284,11 @@
 }
 
 :root body.ranking-page .podium-card::before {
-  content: "" !important;
-  position: absolute !important;
-  inset: 0 !important;
-  display: block !important;
-  pointer-events: none !important;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, .72), transparent 36%),
-    radial-gradient(circle at 88% 8%, rgba(52, 211, 153, .12), transparent 36%) !important;
-  opacity: 1 !important;
-  transform: none !important;
+  display: none !important;
 }
 
 :root body.ranking-page .podium-card::after {
-  content: "\2661";
-  position: absolute;
-  right: 17px;
-  bottom: 15px;
-  z-index: 3;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  color: #667085;
-  font-size: 23px;
-  line-height: 1;
+  display: none !important;
 }
 
 :root body.ranking-page .podium-card:hover {
@@ -363,11 +348,11 @@
 }
 
 :root body.ranking-page .podium-media {
-  position: relative !important;
-  z-index: 2 !important;
+  position: static !important;
   grid-row: 1 !important;
-  display: grid !important;
-  place-items: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   width: 100% !important;
   min-width: 0 !important;
   height: var(--rank-card-image-h) !important;
@@ -410,8 +395,7 @@
 
 :root body.ranking-page .podium-title {
   order: 1 !important;
-  position: relative !important;
-  z-index: 2 !important;
+  position: static !important;
   grid-row: 2 !important;
   align-self: start !important;
   min-height: var(--rank-card-title-h) !important;
@@ -420,7 +404,7 @@
   color: #101828 !important;
   font-size: 18px !important;
   font-weight: 900 !important;
-  line-height: 1.22 !important;
+  line-height: 1.32 !important;
   letter-spacing: 0 !important;
   overflow: hidden !important;
   display: -webkit-box !important;
@@ -430,11 +414,10 @@
 
 :root body.ranking-page .podium-meta {
   order: 2 !important;
-  position: relative !important;
-  z-index: 2 !important;
+  position: static !important;
   grid-row: 3 !important;
   display: flex !important;
-  align-items: center !important;
+  align-items: start !important;
   justify-content: flex-start !important;
   gap: 8px !important;
   min-height: var(--rank-card-meta-h) !important;
@@ -473,17 +456,15 @@
 
 :root body.ranking-page .podium-metrics {
   order: 3 !important;
-  position: relative !important;
-  z-index: 2 !important;
+  position: static !important;
   grid-row: 4 !important;
-  display: grid !important;
-  grid-template-columns: 1fr !important;
-  grid-template-rows: 38px 30px !important;
-  align-content: start !important;
-  gap: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
   min-height: var(--rank-card-price-h) !important;
   height: var(--rank-card-price-h) !important;
-  margin: 2px 0 0 !important;
+  margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
   background: transparent !important;
@@ -491,15 +472,23 @@
 }
 
 :root body.ranking-page .podium-metric {
-  display: grid !important;
-  align-content: start !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
   min-width: 0 !important;
   overflow: hidden !important;
+}
+
+:root body.ranking-page .podium-metric:first-child {
+  flex: 1 1 auto !important;
+  justify-content: flex-start !important;
 }
 
 :root body.ranking-page .podium-metric:nth-child(2) {
   display: flex !important;
   align-items: center !important;
+  justify-content: flex-end !important;
+  flex: 0 1 auto !important;
   gap: 7px !important;
   min-height: 24px !important;
 }
@@ -564,14 +553,14 @@
 
 :root body.ranking-page .podium-market-row {
   order: 4 !important;
-  position: relative !important;
-  z-index: 2 !important;
-  grid-row: 5 !important;
+  position: static !important;
+  grid-row: 6 !important;
+  align-self: end !important;
   grid-template-columns: minmax(0, 1fr) !important;
   min-height: var(--rank-card-chart-h) !important;
   height: var(--rank-card-chart-h) !important;
   max-height: var(--rank-card-chart-h) !important;
-  padding-right: 34px !important;
+  padding: 0 !important;
   overflow: hidden !important;
 }
 
@@ -863,10 +852,13 @@
   :root body.ranking-page .podium-card,
   :root body.ranking-page .podium-card.ranking-card {
     --rank-card-image-h: 190px;
-    --rank-card-title-h: 46px;
-    --rank-card-meta-h: 18px;
-    --rank-card-price-h: 76px;
-    --rank-card-chart-h: 58px;
+    --rank-card-title-h: 64px;
+    --rank-card-meta-h: 24px;
+    --rank-card-price-h: 64px;
+    --rank-card-chart-h: 120px;
+    height: 580px !important;
+    min-height: 580px !important;
+    max-height: 580px !important;
   }
 
   :root body.ranking-page .podium-media {
