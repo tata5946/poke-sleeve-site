@@ -831,6 +831,7 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="./assets/ranking-redesign.css?v=20260911a" />
 </head>
 
 <body class="page-market-list ranking-page ranking-page--rate-up" data-hide-global-header="1">
@@ -1210,7 +1211,7 @@
     }
 
     function getPodiumBadge(rank) {
-      return String(rank).padStart(2, "0");
+      return String(rank);
     }
 
     function buildPodiumCard(row, rank) {
