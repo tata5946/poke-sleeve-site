@@ -1006,25 +1006,27 @@
         return `<div class="sleeve-sparkline sleeve-sparkline--empty" aria-label="価格推移データ不足"><span class="sleeve-sparkline-empty">価格推移データ不足</span></div>`;
       }
 
-      const width = 86;
-      const height = 36;
-      const padX = 5;
-      const padY = 5;
+      const width = 320;
+      const height = 96;
+      const padX = 18;
+      const padTop = 14;
+      const padBottom = 18;
       const min = Math.min(...prices);
       const max = Math.max(...prices);
       const range = max - min;
       const step = (width - padX * 2) / Math.max(1, prices.length - 1);
-      const points = prices.map((price, index) => {
+      const coords = prices.map((price, index) => {
         const x = padX + step * index;
         const y = range === 0
           ? height / 2
-          : height - padY - ((price - min) / range) * (height - padY * 2);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
+          : height - padBottom - ((price - min) / range) * (height - padTop - padBottom);
+        return { x, y };
       });
-      const linePoints = points.join(" ");
-      const firstX = padX.toFixed(1);
-      const lastX = (padX + step * (prices.length - 1)).toFixed(1);
-      const areaPoints = `${firstX},${height - padY} ${linePoints} ${lastX},${height - padY}`;
+      const linePath = coords.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
+      const firstX = coords[0].x.toFixed(1);
+      const lastX = coords[coords.length - 1].x.toFixed(1);
+      const baselineY = height - padBottom;
+      const areaPath = `${linePath} L ${lastX} ${baselineY} L ${firstX} ${baselineY} Z`;
       const compactLabel = (value) => {
         const rounded = Math.round(Number(value) || 0);
         if (rounded >= 10000) return `${Math.round(rounded / 1000) / 10}\u4e07`;
@@ -1032,20 +1034,21 @@
       };
       const firstPrice = prices[0];
       const lastPrice = prices[prices.length - 1];
-      const lastY = range === 0
-        ? height / 2
-        : height - padY - ((lastPrice - min) / range) * (height - padY * 2);
+      const lastPoint = coords[coords.length - 1];
       const trendClass = lastPrice > prices[0] ? "up" : lastPrice < prices[0] ? "down" : "flat";
       const trendColor = trendClass === "up" ? "#d92d20" : trendClass === "down" ? "#067647" : "#475467";
+      const pointMarkup = coords.map((point) => (
+        `<circle cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="5" fill="${trendColor}" stroke="#fff" stroke-width="2.5" vector-effect="non-scaling-stroke"></circle>`
+      )).join("");
 
       return `
         <div class="sleeve-sparkline sleeve-sparkline--${trendClass}" aria-label="直近${prices.length}週の価格推移">
-          <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" focusable="false" aria-hidden="true">
-            <line class="sleeve-sparkline-axis" x1="22" y1="7" x2="22" y2="${height - padY}"></line>
-            <line class="sleeve-sparkline-grid" x1="5" y1="${height - padY}" x2="${width - padX}" y2="${height - padY}"></line>
-            <polygon class="sleeve-sparkline-area" points="${areaPoints}" fill="${trendColor}" opacity="0.10"></polygon>
-            <polyline class="sleeve-sparkline-line" points="${linePoints}" fill="none" stroke="${trendColor}" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></polyline>
-            <circle class="sleeve-sparkline-dot" cx="${lastX}" cy="${lastY.toFixed(1)}" r="2.4" fill="${trendColor}" stroke="#fff" stroke-width="1.4"></circle>
+          <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" focusable="false" aria-hidden="true" style="display:block;width:100%;height:100%;overflow:visible">
+            <path d="M ${padX} ${baselineY} H ${width - padX}" fill="none" stroke="#d7e0ec" stroke-width="1.5"></path>
+            <path d="${areaPath}" fill="${trendColor}" opacity="0.12"></path>
+            <path d="${linePath}" fill="none" stroke="${trendColor}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+            ${pointMarkup}
+            <circle cx="${lastPoint.x.toFixed(1)}" cy="${lastPoint.y.toFixed(1)}" r="6" fill="${trendColor}" stroke="#fff" stroke-width="2.5" vector-effect="non-scaling-stroke"></circle>
           </svg>
           <div class="sleeve-sparkline-foot" aria-hidden="true">
             <span><small>12週前</small><b>${compactLabel(firstPrice)}円</b></span>
