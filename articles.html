@@ -507,7 +507,7 @@
       } catch (_) {}
 
       const map = new Map();
-      [...fileArticles, ...localArticles].forEach((item) => {
+      [...localArticles, ...fileArticles].forEach((item) => {
         const article = normalizeArticle(item);
         if (article && article.status !== "draft") map.set(article.slug, article);
       });
