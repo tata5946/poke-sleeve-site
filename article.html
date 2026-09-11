@@ -407,17 +407,79 @@
       }
 
       .article-body .article-table-wrap {
-        margin: 1.5em -4px;
+        margin: 1.7em 0;
+        overflow: visible;
       }
 
       .article-body table {
-        min-width: 480px;
+        min-width: 0;
+        border: 0;
+        background: transparent;
         font-size: 13px;
       }
 
-      .article-body th,
-      .article-body td {
-        padding: 9px 10px;
+      .article-body table thead {
+        display: none;
+      }
+
+      .article-body table,
+      .article-body table tbody,
+      .article-body table tr,
+      .article-body table th,
+      .article-body table td {
+        display: block;
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      .article-body table tr {
+        margin: 0 0 12px;
+        border: 1px solid #d5deeb;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, .05);
+        overflow: hidden;
+      }
+
+      .article-body table tr:last-child {
+        margin-bottom: 0;
+      }
+
+      .article-body table td,
+      .article-body table tbody th {
+        display: grid;
+        grid-template-columns: minmax(92px, 34%) minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        min-height: 44px;
+        padding: 11px 12px;
+        border: 0;
+        border-bottom: 1px solid #edf1f7;
+      }
+
+      .article-body table td:last-child,
+      .article-body table tbody th:last-child {
+        border-bottom: 0;
+      }
+
+      .article-body table td::before,
+      .article-body table tbody th::before {
+        content: attr(data-label);
+        color: #667085;
+        font-size: 11px;
+        font-weight: 900;
+        line-height: 1.5;
+      }
+
+      .article-body table td:not([data-label])::before,
+      .article-body table tbody th:not([data-label])::before {
+        content: "";
+        display: none;
+      }
+
+      .article-body table td:not([data-label]),
+      .article-body table tbody th:not([data-label]) {
+        display: block;
       }
 
       .article-body pre {
@@ -632,6 +694,32 @@
       });
     }
 
+    function hydrateArticleTables(root) {
+      root.querySelectorAll(".article-body table").forEach((table) => {
+        if (!table.closest(".article-table-wrap")) {
+          const wrap = document.createElement("div");
+          wrap.className = "article-table-wrap";
+          table.before(wrap);
+          wrap.appendChild(table);
+        }
+
+        const headerCells = Array.from(table.querySelectorAll("thead th, thead td"));
+        if (!headerCells.length) return;
+        const labels = headerCells.map((cell) => String(cell.textContent || "").trim());
+        table.querySelectorAll("tbody tr").forEach((row) => {
+          Array.from(row.children).forEach((cell, index) => {
+            const label = labels[index] || "";
+            if (label) cell.setAttribute("data-label", label);
+          });
+        });
+      });
+    }
+
+    function hydrateArticleBody(root) {
+      hydrateArticleBodyImages(root);
+      hydrateArticleTables(root);
+    }
+
     function renderArticle(article, { bodyFallback = "<p>本文がありません。</p>" } = {}) {
       const mount = document.getElementById("articleMount");
       const crumb = document.getElementById("breadcrumbTitle");
@@ -675,7 +763,7 @@
         const body = existingArticle.querySelector(".article-body");
         if (body) {
           body.innerHTML = bodyHtml;
-          hydrateArticleBodyImages(existingArticle);
+          hydrateArticleBody(existingArticle);
           return;
         }
       }
@@ -693,7 +781,7 @@
           <div class="article-body">${bodyHtml}</div>
         </article>
       `;
-      hydrateArticleBodyImages(mount);
+      hydrateArticleBody(mount);
     }
 
     const id = new URLSearchParams(location.search).get("id") || "";
