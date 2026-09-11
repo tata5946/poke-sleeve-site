@@ -307,6 +307,7 @@
       width: 100%;
       min-width: 520px;
       border-collapse: collapse;
+      table-layout: fixed;
       border: 1px solid #d5deeb;
       background: #fff;
       font-size: 14px;
@@ -320,6 +321,17 @@
       padding: 10px 12px;
       border: 1px solid #d5deeb;
       vertical-align: top;
+      overflow-wrap: anywhere;
+    }
+
+    .editor table.is-resize-target {
+      outline: 2px solid rgba(37, 99, 235, .24);
+      outline-offset: 2px;
+    }
+
+    .editor.is-resizing-table,
+    .editor.is-resizing-table * {
+      user-select: none;
     }
 
     .preview th,
@@ -1081,6 +1093,14 @@
           for (const attr of Array.from(child.attributes)) {
             if (!allowedAttrs.has(attr.name)) child.removeAttribute(attr.name);
           }
+          if (child.hasAttribute("class")) {
+            const safeClass = (child.getAttribute("class") || "")
+              .split(/\s+/)
+              .filter((name) => name && name !== "is-resize-target")
+              .join(" ");
+            if (safeClass) child.setAttribute("class", safeClass);
+            else child.removeAttribute("class");
+          }
           if (tagName === "A") {
             const href = child.getAttribute("href") || "";
             if (!/^(https?:|\.\/|\/|#)/i.test(href)) child.removeAttribute("href");
@@ -1100,7 +1120,10 @@
           }
           if (child.hasAttribute("style")) {
             const style = child.getAttribute("style") || "";
-            const safe = style.split(";").map((part) => part.trim()).filter((part) => /^(color|text-align|font-family)\s*:/i.test(part)).join("; ");
+            const safe = style.split(";").map((part) => part.trim()).filter((part) => {
+              if (/^(color|text-align|font-family)\s*:/i.test(part)) return true;
+              return /^(width|min-width|max-width|height)\s*:\s*(\d+(\.\d+)?(px|%)|auto)\s*$/i.test(part);
+            }).join("; ");
             if (safe) child.setAttribute("style", safe);
             else child.removeAttribute("style");
           }
@@ -2232,6 +2255,170 @@
 
       const getCellIndex = (cell) => Array.from(cell.parentElement?.children || []).indexOf(cell);
       const getColumnCount = (table) => Math.max(1, ...Array.from(table.querySelectorAll("tr")).map((row) => row.children.length));
+      const getTableRows = (table) => Array.from(table.querySelectorAll("tr"));
+      const MIN_COLUMN_WIDTH = 54;
+      const MIN_ROW_HEIGHT = 34;
+      const RESIZE_HIT_SIZE = 8;
+      let resizeState = null;
+      let previewUpdateQueued = false;
+
+      const queuePreviewUpdate = () => {
+        if (previewUpdateQueued) return;
+        previewUpdateQueued = true;
+        requestAnimationFrame(() => {
+          previewUpdateQueued = false;
+          updatePreview();
+        });
+      };
+
+      const clearResizeHints = () => {
+        editor.querySelectorAll("table.is-resize-target").forEach((table) => table.classList.remove("is-resize-target"));
+        if (!resizeState) {
+          editor.style.cursor = "";
+          document.body.style.cursor = "";
+        }
+      };
+
+      const setResizeHint = (hit) => {
+        clearResizeHints();
+        if (!hit) return;
+        hit.table.classList.add("is-resize-target");
+        editor.style.cursor = hit.type === "column" ? "col-resize" : "row-resize";
+      };
+
+      const getResizeHit = (event) => {
+        if (resizeState) return null;
+        const cell = getCell(event.target);
+        if (!cell) return null;
+        const table = cell.closest("table");
+        const row = cell.closest("tr");
+        if (!table || !row) return null;
+
+        const tableRect = table.getBoundingClientRect();
+        if (
+          event.clientX < tableRect.left ||
+          event.clientX > tableRect.right ||
+          event.clientY < tableRect.top ||
+          event.clientY > tableRect.bottom
+        ) {
+          return null;
+        }
+
+        const cellRect = cell.getBoundingClientRect();
+        const columnIndex = getCellIndex(cell);
+        const rows = getTableRows(table);
+        const rowIndex = rows.indexOf(row);
+        const nearRight = Math.abs(event.clientX - cellRect.right) <= RESIZE_HIT_SIZE;
+        const nearBottom = Math.abs(event.clientY - cellRect.bottom) <= RESIZE_HIT_SIZE;
+
+        if (nearRight && columnIndex >= 0 && columnIndex < row.children.length - 1) {
+          return { type: "column", table, columnIndex };
+        }
+        if (nearBottom && rowIndex >= 0 && rowIndex < rows.length - 1) {
+          return { type: "row", table, row, rowIndex };
+        }
+        return null;
+      };
+
+      const getColumnWidthSnapshot = (table) => {
+        const columnCount = getColumnCount(table);
+        const sourceRow = getTableRows(table).find((row) => row.children.length === columnCount) || table.rows[0];
+        return Array.from(sourceRow?.children || []).slice(0, columnCount).map((cell) => cell.getBoundingClientRect().width);
+      };
+
+      const applyColumnWidths = (table, widths) => {
+        const total = widths.reduce((sum, width) => sum + width, 0);
+        if (!total) return;
+        table.querySelectorAll("tr").forEach((row) => {
+          Array.from(row.children).forEach((cell, index) => {
+            if (index >= widths.length || Number(cell.getAttribute("colspan") || 1) !== 1) return;
+            cell.style.width = `${((widths[index] / total) * 100).toFixed(3)}%`;
+          });
+        });
+      };
+
+      const normalizeColumnWidths = (table) => {
+        const widths = getColumnWidthSnapshot(table);
+        if (widths.length > 1) applyColumnWidths(table, widths);
+      };
+
+      const beginTableResize = (hit, event) => {
+        if (!hit) return;
+        event.preventDefault();
+        event.stopPropagation();
+        hit.table.classList.add("is-resize-target");
+        editor.classList.add("is-resizing-table");
+        document.body.style.cursor = hit.type === "column" ? "col-resize" : "row-resize";
+        toolbar.classList.remove("is-visible");
+
+        if (hit.type === "column") {
+          const widths = getColumnWidthSnapshot(hit.table);
+          const leftWidth = widths[hit.columnIndex] || MIN_COLUMN_WIDTH;
+          const rightWidth = widths[hit.columnIndex + 1] || MIN_COLUMN_WIDTH;
+          resizeState = {
+            type: "column",
+            table: hit.table,
+            columnIndex: hit.columnIndex,
+            startX: event.clientX,
+            startWidths: widths,
+            pairWidth: leftWidth + rightWidth,
+            leftWidth,
+            rightWidth
+          };
+        } else {
+          resizeState = {
+            type: "row",
+            table: hit.table,
+            row: hit.row,
+            startY: event.clientY,
+            startHeight: hit.row.getBoundingClientRect().height
+          };
+        }
+
+        try {
+          editor.setPointerCapture(event.pointerId);
+        } catch (_) {}
+      };
+
+      const updateTableResize = (event) => {
+        if (!resizeState) {
+          setResizeHint(getResizeHit(event));
+          return;
+        }
+
+        if (resizeState.type === "column") {
+          const widths = [...resizeState.startWidths];
+          const dx = event.clientX - resizeState.startX;
+          const maxLeft = Math.max(MIN_COLUMN_WIDTH, resizeState.pairWidth - MIN_COLUMN_WIDTH);
+          const left = Math.max(MIN_COLUMN_WIDTH, Math.min(maxLeft, resizeState.leftWidth + dx));
+          widths[resizeState.columnIndex] = left;
+          widths[resizeState.columnIndex + 1] = resizeState.pairWidth - left;
+          applyColumnWidths(resizeState.table, widths);
+        } else {
+          const height = Math.max(MIN_ROW_HEIGHT, resizeState.startHeight + event.clientY - resizeState.startY);
+          resizeState.row.style.height = `${Math.round(height)}px`;
+          Array.from(resizeState.row.children).forEach((cell) => {
+            cell.style.height = `${Math.round(height)}px`;
+          });
+        }
+
+        queuePreviewUpdate();
+      };
+
+      const finishTableResize = (event) => {
+        if (!resizeState) return;
+        try {
+          editor.releasePointerCapture(event.pointerId);
+        } catch (_) {}
+        const table = resizeState.table;
+        resizeState = null;
+        editor.classList.remove("is-resizing-table");
+        document.body.style.cursor = "";
+        editor.style.cursor = "";
+        table?.classList.remove("is-resize-target");
+        updatePreview();
+        setStatus("表の線を調整しました。", "ok");
+      };
 
       const createTableCell = (tagName, text = "") => {
         const cell = document.createElement(tagName);
@@ -2293,6 +2480,7 @@
           else row.appendChild(newCell);
           if (row === activeCell.parentElement) newActiveCell = newCell;
         });
+        normalizeColumnWidths(table);
         focusCell(newActiveCell);
         updatePreview();
         setStatus("表に列を追加しました。", "ok");
@@ -2335,11 +2523,21 @@
           if (candidate) nextCell = candidate;
           cell?.remove();
         });
+        normalizeColumnWidths(table);
         focusCell(nextCell);
         updatePreview();
         setStatus("表の列を削除しました。", "ok");
       };
 
+      editor.addEventListener("pointermove", updateTableResize);
+      editor.addEventListener("pointerdown", (event) => beginTableResize(getResizeHit(event), event));
+      editor.addEventListener("pointerleave", () => {
+        if (!resizeState) clearResizeHints();
+      });
+      window.addEventListener("pointermove", (event) => {
+        if (resizeState) updateTableResize(event);
+      });
+      window.addEventListener("pointerup", finishTableResize);
       editor.addEventListener("click", (event) => {
         const cell = getCell(event.target);
         if (cell) updateToolbarPosition(cell);
