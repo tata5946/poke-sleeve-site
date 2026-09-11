@@ -1598,3 +1598,71 @@
     min-height: 64px !important;
   }
 }
+
+/* Keep top-card price and change labels from colliding on every ranking page. */
+:root body.ranking-page .podium-metrics {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  align-items: start !important;
+  gap: 8px !important;
+}
+
+:root body.ranking-page .podium-metric {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+:root body.ranking-page .podium-metric:first-child {
+  display: grid !important;
+  gap: 4px !important;
+}
+
+:root body.ranking-page .podium-metric:nth-child(n+2) {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  flex-wrap: wrap !important;
+  gap: 6px 8px !important;
+}
+
+:root body.ranking-page .podium-metric:nth-child(n+2) .podium-metric-label {
+  display: inline-flex !important;
+  width: auto !important;
+  min-width: max-content !important;
+  margin: 0 !important;
+  writing-mode: horizontal-tb !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+}
+
+:root body.ranking-page .podium-diff,
+:root body.ranking-page .podium-rate {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: max-content !important;
+  max-width: 100% !important;
+  min-height: 26px !important;
+  padding: 0 8px !important;
+  border-radius: 7px !important;
+  white-space: nowrap !important;
+}
+
+:root body.ranking-page .podium-diff.up,
+:root body.ranking-page .podium-rate.up {
+  border: 1px solid rgba(217, 45, 32, .35) !important;
+  background: rgba(217, 45, 32, .04) !important;
+}
+
+:root body.ranking-page .podium-diff.down,
+:root body.ranking-page .podium-rate.down {
+  border: 1px solid rgba(6, 118, 71, .32) !important;
+  background: rgba(6, 118, 71, .04) !important;
+}
+
+:root body.ranking-page .podium-diff.flat,
+:root body.ranking-page .podium-rate.flat {
+  border: 1px solid #d7e0ec !important;
+  background: #f8fafc !important;
+}
