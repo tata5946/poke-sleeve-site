@@ -588,8 +588,16 @@
 }
 
 :root body.ranking-page .sleeve-sparkline svg {
+  display: block !important;
+  position: static !important;
+  inset: auto !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
   width: 100% !important;
   height: 100% !important;
+  transform: none !important;
 }
 
 :root body.ranking-page .sleeve-sparkline-grid,
@@ -1218,8 +1226,15 @@
 
 :root body.ranking-page .sleeve-sparkline svg {
   display: block !important;
+  position: static !important;
+  inset: auto !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
   width: 100% !important;
   height: 100% !important;
+  transform: none !important;
   min-width: 1px !important;
   min-height: 1px !important;
 }
@@ -1308,6 +1323,28 @@
 
 :root body.ranking-page .sleeve-sparkline--empty .sleeve-sparkline-empty::before {
   content: none !important;
+}
+
+/* Final reset for old site.css chart positioning rules. */
+:root body.ranking-page .podium-market-row .sleeve-sparkline svg,
+:root body.ranking-page .podium-trend-row .sleeve-sparkline svg,
+:root body.ranking-page .compact-market-row .sleeve-sparkline svg,
+:root body.page-market-list.ranking-page .podium-market-row .sleeve-sparkline svg,
+:root body.page-surge-ranking.ranking-page .podium-market-row .sleeve-sparkline svg,
+:root body.page-surge-ranking.ranking-page .podium-trend-row .sleeve-sparkline svg,
+:root body.page-surge-ranking.ranking-page .compact-market-row .sleeve-sparkline svg {
+  position: static !important;
+  inset: auto !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 1px !important;
+  min-height: 1px !important;
+  transform: none !important;
 }
 
 :root body.ranking-page .ranking-rest-section {

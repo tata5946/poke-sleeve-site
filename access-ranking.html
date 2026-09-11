@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 
 <head>
@@ -545,7 +545,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="./assets/ranking-redesign.css?v=20260911b" />
+  <link rel="stylesheet" href="./assets/ranking-redesign.css?v=20260911c" />
   <style>
     body.ranking-page .podium-metrics {
       display: grid !important;
@@ -997,33 +997,36 @@
       return Array.from(map.values())
         .sort((a, b) => a.week.localeCompare(b.week))
         .slice(-maxItems)
-        .map((x) => x.price);
+        .map((x) => ({ week: x.week, price: x.price, timestamp: new Date(x.week).getTime() }))
+        .filter((x) => Number.isFinite(x.timestamp));
     }
 
     function buildSparklineSvg(sleeve) {
-      const prices = getSparklinePoints(sleeve);
-      if (prices.length < 2) {
+      const points = getSparklinePoints(sleeve);
+      if (points.length < 2) {
         return `<div class="sleeve-sparkline sleeve-sparkline--empty" aria-label="価格推移データ不足"><span class="sleeve-sparkline-empty">価格推移データ不足</span></div>`;
       }
 
       const width = 320;
       const height = 96;
       const padX = 18;
-      const padTop = 14;
-      const padBottom = 18;
+      const padTop = 10;
+      const padBottom = 10;
+      const prices = points.map((point) => point.price);
       const min = Math.min(...prices);
       const max = Math.max(...prices);
       const range = max - min;
-      const step = (width - padX * 2) / Math.max(1, prices.length - 1);
-      const coords = prices.map((price, index) => {
-        const x = padX + step * index;
+      const minTs = Math.min(...points.map((point) => point.timestamp));
+      const maxTs = Math.max(...points.map((point) => point.timestamp));
+      const spanTs = Math.max(1, maxTs - minTs);
+      const coords = points.map((point) => {
+        const x = padX + ((point.timestamp - minTs) / spanTs) * (width - padX * 2);
         const y = range === 0
           ? height / 2
-          : height - padBottom - ((price - min) / range) * (height - padTop - padBottom);
+          : height - padBottom - ((point.price - min) / range) * (height - padTop - padBottom);
         return { x, y };
       });
       const linePath = coords.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
-      const baselineY = height - padBottom;
       const compactLabel = (value) => {
         const rounded = Math.round(Number(value) || 0);
         if (rounded >= 10000) return `${Math.round(rounded / 1000) / 10}\u4e07`;
@@ -1036,9 +1039,8 @@
       const trendColor = trendClass === "up" ? "#d92d20" : trendClass === "down" ? "#067647" : "#475467";
 
       return `
-        <div class="sleeve-sparkline sleeve-sparkline--${trendClass}" aria-label="直近${prices.length}週の価格推移">
+        <div class="sleeve-sparkline sleeve-sparkline--${trendClass}" aria-label="直近${points.length}週の価格推移">
           <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" focusable="false" aria-hidden="true" style="display:block;width:100%;height:100%;overflow:visible">
-            <path d="M ${padX} ${baselineY} H ${width - padX}" fill="none" stroke="#d7e0ec" stroke-width="1.5"></path>
             <path d="${linePath}" fill="none" stroke="${trendColor}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
             <circle cx="${lastPoint.x.toFixed(1)}" cy="${lastPoint.y.toFixed(1)}" r="3.8" fill="${trendColor}" stroke="#fff" stroke-width="1.8" vector-effect="non-scaling-stroke"></circle>
           </svg>
