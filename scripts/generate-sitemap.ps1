@@ -1,6 +1,7 @@
 param(
   [string]$SiteOrigin = "https://pokesuri-navi.com",
   [string]$DataPath = "data.json",
+  [string]$ArticlesPath = "articles.json",
   [string]$OutputPath = "sitemap.xml",
   [string]$PageOutputRoot = "sleeves/page",
   [int]$PageSize = 50
@@ -51,6 +52,17 @@ function Get-StaticFileLastmod([string]$Path) {
     return (Get-Item -LiteralPath $Path).LastWriteTime.ToString("yyyy-MM-dd")
   }
   return $null
+}
+
+function Get-IsoDateText([object]$Value) {
+  $text = ([string]$Value).Trim()
+  if (-not $text) { return $null }
+  if ($text -match '^\d{4}-\d{2}-\d{2}') { return $text.Substring(0, 10) }
+  try {
+    return ([datetime]$text).ToString("yyyy-MM-dd")
+  } catch {
+    return $null
+  }
 }
 
 function Add-Url([System.Collections.Generic.List[object]]$List, [string]$Url, [hashtable]$ExistingLastmods, [string]$Lastmod = $null) {
@@ -111,6 +123,24 @@ foreach ($page in $staticPages) {
     }
   }
   Add-Url $urls $url $existingLastmods $lastmod
+}
+
+if (Test-Path -LiteralPath $ArticlesPath) {
+  try {
+    $articleData = Get-Content -LiteralPath $ArticlesPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    foreach ($article in @($articleData.articles)) {
+      $slug = ([string]$article.slug).Trim()
+      if (-not $slug) { $slug = ([string]$article.id).Trim() }
+
+      $status = ([string]$article.status).Trim()
+      $linkUrl = ([string]$article.linkUrl).Trim()
+      if ($slug -and $status -ne "draft" -and -not $linkUrl) {
+        $lastmod = Get-IsoDateText $article.updatedAt
+        if (-not $lastmod) { $lastmod = Get-IsoDateText $article.publishedAt }
+        Add-Url $urls ($origin + "/article.html?id=" + [System.Uri]::EscapeDataString($slug)) $existingLastmods $lastmod
+      }
+    }
+  } catch {}
 }
 
 $totalPages = [int][math]::Ceiling($sleeveIds.Count / $PageSize)
