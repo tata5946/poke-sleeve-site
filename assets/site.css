@@ -9303,13 +9303,66 @@ footer.site-footer {
         font-weight: 900;
     }
 
-    .my-collection-quantity,
-    .my-collection-purchase-week,
-    .my-collection-remove {
+    .my-collection-note {
         display: none;
     }
 
-    .my-collection-note {
-        display: none;
+    .my-collection-quantity {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 0 12px 10px;
+    }
+
+    .my-collection-stepper {
+        grid-template-columns: 30px minmax(28px, auto) 30px;
+    }
+
+    .my-collection-stepper button {
+        width: 30px;
+        height: 30px;
+    }
+
+    .my-collection-stepper span {
+        min-width: 28px;
+        line-height: 30px;
+    }
+
+    .my-collection-purchase-week {
+        display: grid;
+        gap: 8px;
+        padding: 0 12px 10px;
+    }
+
+    .my-collection-release-check {
+        min-height: 34px;
+        padding: 0 10px;
+        border: 1px solid #dbe5f2;
+        border-radius: 10px;
+        background: #f8fbff;
+    }
+
+    .my-collection-purchase-price {
+        padding: 8px 10px;
+        border-radius: 10px;
+    }
+
+    .my-collection-purchase-date-field {
+        gap: 6px;
+    }
+
+    .my-collection-date-button,
+    .my-collection-purchase-week .my-collection-date-input {
+        min-height: 34px;
+        border-radius: 10px;
+    }
+
+    .my-collection-remove {
+        display: block;
+        width: calc(100% - 24px);
+        min-height: 36px;
+        margin: 0 12px 12px;
+        border-radius: 10px;
     }
 }
