@@ -619,7 +619,7 @@
   grid-template-areas:
     "label"
     "primary" !important;
-  align-content: center !important;
+  align-content: start !important;
 }
 
 :root body.ranking-redesign-page--price .podium-metric:nth-child(n+2),
@@ -1110,10 +1110,6 @@
   grid-template-columns: minmax(0, 1fr) !important;
   grid-template-areas: "price" !important;
   align-content: center !important;
-}
-
-:root body.ranking-redesign-page--price .compact-price {
-  font-size: 31px !important;
 }
 
 :root body.ranking-redesign-page--price .compact-delta,
