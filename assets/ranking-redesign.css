@@ -1819,4 +1819,44 @@
     width: 100% !important;
     max-width: 100% !important;
   }
+
+  :root body.ranking-redesign-page .ranking-top3,
+  :root body.ranking-redesign-page--price .ranking-top3 {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    scroll-snap-type: none !important;
+  }
+
+  :root body.ranking-redesign-page .ranking-top3 > div,
+  :root body.ranking-redesign-page--price .ranking-top3 > div {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  :root body.ranking-redesign-page--price .ranking-filter-card,
+  :root body.ranking-redesign-page--price .ranking-filter-head,
+  :root body.ranking-redesign-page--price .ranking-filter-grid,
+  :root body.ranking-redesign-page--price .ranking-active-filters,
+  :root body.ranking-redesign-page--price .ranking-error {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  :root body.ranking-redesign-page--price .ranking-filter-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 68px !important;
+    gap: 6px !important;
+    overflow: visible !important;
+    padding-bottom: 0 !important;
+  }
+
+  :root body.ranking-redesign-page--price .ranking-filter-field:nth-child(n+3) {
+    display: none !important;
+  }
 }
