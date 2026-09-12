@@ -1356,7 +1356,7 @@
       const deltaText = `${row.g.rate > 0 ? "+" : row.g.rate < 0 ? "-" : "±"}${Math.abs(row.g.rate).toFixed(1)}%`;
       const sparklineHtml = buildSparklineSvg(s);
       const metaItems = [
-        s.releaseYear ? `YEAR ${escapeHtml(s.releaseYear)}` : "",
+        s.releaseYear ? `${escapeHtml(s.releaseYear)}年発売` : "",
         s.series ? escapeHtml(s.series) : ""
       ].filter(Boolean);
       const metaHtml = metaItems.length

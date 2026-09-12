@@ -2004,7 +2004,7 @@
       const delta = getCompactDeltaDisplay(row.deltaInfo);
       const sparklineHtml = buildSparklineSvg(s);
       const metaItems = [
-        s.releaseYear ? `YEAR ${escapeHtml(s.releaseYear)}` : "",
+        s.releaseYear ? `${escapeHtml(s.releaseYear)}年発売` : "",
         s.series ? escapeHtml(s.series) : ""
       ].filter(Boolean);
       const metaHtml = metaItems.length

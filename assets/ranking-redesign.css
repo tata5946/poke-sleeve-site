@@ -830,18 +830,34 @@
 
 :root body.ranking-redesign-page .ranking-rest-section {
   display: grid !important;
-  gap: 12px !important;
+  gap: 14px !important;
 }
 
 :root body.ranking-redesign-page .ranking-section-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 14px !important;
   margin: 0 !important;
+}
+
+:root body.ranking-redesign-page .ranking-section-head::before {
+  content: "" !important;
+  display: block !important;
+  width: 6px !important;
+  height: 34px !important;
+  border-radius: 999px !important;
+  background: var(--ranking-teal) !important;
 }
 
 :root body.ranking-redesign-page .ranking-section-title {
   margin: 0 !important;
+  width: auto !important;
+  text-align: left !important;
   color: var(--ranking-ink) !important;
-  font-size: 22px !important;
+  font-size: 28px !important;
   font-weight: 900 !important;
+  line-height: 1 !important;
 }
 
 :root body.ranking-redesign-page #list.grid,
@@ -850,7 +866,7 @@
 :root body.ranking-redesign-page .compact-grid {
   display: grid !important;
   grid-template-columns: 1fr !important;
-  gap: 10px !important;
+  gap: 12px !important;
   width: 100% !important;
   margin: 0 !important;
 }
@@ -859,15 +875,16 @@
 :root body.ranking-redesign-page .compact-card.ranking-card,
 :root body.ranking-redesign-page .compact-card.ranking-card-frameless {
   display: grid !important;
-  grid-template-columns: 56px 74px minmax(0, 1fr) minmax(320px, 440px) !important;
-  grid-template-rows: auto auto !important;
+  grid-template-columns: 62px 96px minmax(200px, 1fr) minmax(300px, 330px) minmax(240px, 360px) !important;
+  grid-template-rows: 1fr 1fr !important;
   grid-template-areas:
-    "rank thumb title market"
-    "rank thumb meta market" !important;
+    "rank thumb title price chart"
+    "rank thumb meta price chart" !important;
   align-items: center !important;
-  gap: 4px 14px !important;
-  min-height: 98px !important;
-  padding: 12px 14px !important;
+  gap: 0 14px !important;
+  height: 128px !important;
+  min-height: 128px !important;
+  padding: 14px 18px !important;
   border: 1px solid #dce9f3 !important;
   border-radius: 14px !important;
   background: rgba(255,255,255,.96) !important;
@@ -881,13 +898,16 @@
   grid-area: rank !important;
   display: inline-grid !important;
   place-items: center !important;
-  min-width: 44px !important;
-  height: 30px !important;
-  padding: 0 8px !important;
+  justify-self: center !important;
+  width: 48px !important;
+  min-width: 48px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 0 !important;
   border-radius: 999px !important;
-  background: #eef4f8 !important;
-  color: #45617f !important;
-  font-size: 13px !important;
+  background: #eaf2f8 !important;
+  color: var(--ranking-ink) !important;
+  font-size: 15px !important;
   font-weight: 900 !important;
 }
 
@@ -901,9 +921,9 @@
   grid-area: thumb !important;
   display: grid !important;
   place-items: center !important;
-  width: 74px !important;
-  height: 74px !important;
-  padding: 7px !important;
+  width: 88px !important;
+  height: 88px !important;
+  padding: 8px !important;
   border-radius: 10px !important;
   background: #f4f8fb !important;
   box-shadow: inset 0 0 0 1px rgba(105, 130, 157, .06) !important;
@@ -925,9 +945,9 @@
   min-width: 0 !important;
   margin: 0 !important;
   color: var(--ranking-ink) !important;
-  font-size: 15px !important;
+  font-size: 19px !important;
   font-weight: 900 !important;
-  line-height: 1.35 !important;
+  line-height: 1.25 !important;
   overflow: hidden !important;
   display: -webkit-box !important;
   -webkit-box-orient: vertical !important;
@@ -939,58 +959,130 @@
   grid-area: meta !important;
   align-self: start !important;
   display: flex !important;
+  align-items: center !important;
   gap: 8px !important;
   min-width: 0 !important;
-  margin: 0 !important;
+  margin: 8px 0 0 !important;
   overflow: hidden !important;
 }
 
 :root body.ranking-redesign-page .compact-market-row {
-  grid-area: market !important;
-  display: grid !important;
-  grid-template-columns: minmax(116px, 150px) minmax(170px, 1fr) !important;
-  align-items: center !important;
-  gap: 12px !important;
-  min-width: 0 !important;
+  display: contents !important;
 }
 
 :root body.ranking-redesign-page .compact-price-row {
+  grid-area: price !important;
   display: grid !important;
-  gap: 4px !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-areas:
+    "delta delta"
+    "price rate" !important;
+  align-items: center !important;
+  gap: 8px 14px !important;
   min-width: 0 !important;
+  height: 100% !important;
+  padding: 8px 22px !important;
+  border-left: 1px solid var(--ranking-line) !important;
+  border-right: 1px solid var(--ranking-line) !important;
 }
 
 :root body.ranking-redesign-page .compact-price {
+  grid-area: price !important;
   color: var(--ranking-ink) !important;
-  font-size: 21px !important;
+  font-size: 25px !important;
   font-weight: 900 !important;
   line-height: 1.05 !important;
   white-space: nowrap !important;
 }
 
 :root body.ranking-redesign-page .compact-price::before {
-  content: none !important;
+  content: "現在価格" !important;
+  display: inline-block !important;
+  margin-right: 16px !important;
+  color: #45617f !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  vertical-align: .12em !important;
 }
 
-:root body.ranking-redesign-page .compact-delta,
-:root body.ranking-redesign-page .compact-rate {
+:root body.ranking-redesign-page .compact-delta {
+  grid-area: delta !important;
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 18px !important;
   color: var(--ranking-teal) !important;
-  font-size: 13px !important;
+  font-size: 31px !important;
   font-weight: 900 !important;
-  line-height: 1.15 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+:root body.ranking-redesign-page .compact-delta::before {
+  content: "今週の上昇額" !important;
+  color: #45617f !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+:root body.ranking-redesign-page .compact-rate {
+  grid-area: rate !important;
+  justify-self: end !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 84px !important;
+  min-height: 32px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  background: var(--ranking-teal-soft) !important;
+  color: var(--ranking-teal) !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
 }
 
 :root body.ranking-redesign-page .compact-market-row .sleeve-sparkline,
 :root body.ranking-redesign-page .compact-card .sleeve-sparkline {
+  grid-area: chart !important;
   width: 100% !important;
-  height: 62px !important;
-  padding: 8px 8px 6px !important;
+  height: 96px !important;
+  padding: 24px 14px 10px !important;
 }
 
-:root body.ranking-redesign-page .compact-card .sleeve-sparkline-title,
-:root body.ranking-redesign-page .compact-card .sleeve-sparkline-label,
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline-title {
+  display: block !important;
+  top: 8px !important;
+  left: 14px !important;
+  font-size: 13px !important;
+}
+
 :root body.ranking-redesign-page .compact-card .sleeve-sparkline-foot {
   display: none !important;
+}
+
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline-label {
+  display: none !important;
+}
+
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline-line,
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline--down .sleeve-sparkline-line,
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline--flat .sleeve-sparkline-line {
+  stroke: var(--ranking-teal) !important;
+}
+
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline-area,
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline--down .sleeve-sparkline-area,
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline--flat .sleeve-sparkline-area {
+  fill: rgba(7, 156, 162, .16) !important;
+}
+
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline-dot,
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline--down .sleeve-sparkline-dot,
+:root body.ranking-redesign-page .compact-card .sleeve-sparkline--flat .sleeve-sparkline-dot {
+  fill: var(--ranking-teal) !important;
 }
 
 @media (max-width: 1180px) {
@@ -1054,16 +1146,39 @@
   }
 
   :root body.ranking-redesign-page .compact-card {
-    grid-template-columns: 44px 64px minmax(0, 1fr) !important;
+    grid-template-columns: 54px 76px minmax(0, 1fr) !important;
     grid-template-areas:
       "rank thumb title"
       "rank thumb meta"
-      "market market market" !important;
+      "price price price"
+      "chart chart chart" !important;
+    height: auto !important;
+    min-height: 0 !important;
+    gap: 8px 12px !important;
   }
 
-  :root body.ranking-redesign-page .compact-market-row {
-    grid-template-columns: minmax(0, 1fr) minmax(150px, 1fr) !important;
-    margin-top: 8px !important;
+  :root body.ranking-redesign-page .compact-rank-badge {
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+
+  :root body.ranking-redesign-page .compact-thumb-wrap {
+    width: 76px !important;
+    height: 76px !important;
+  }
+
+  :root body.ranking-redesign-page .compact-price-row {
+    margin-top: 4px !important;
+    padding: 12px 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-top: 1px solid var(--ranking-line) !important;
+  }
+
+  :root body.ranking-redesign-page .compact-card .sleeve-sparkline {
+    height: 86px !important;
   }
 }
 
@@ -1128,11 +1243,20 @@
     height: 58px !important;
   }
 
-  :root body.ranking-redesign-page .compact-market-row {
-    grid-template-columns: 1fr !important;
+  :root body.ranking-redesign-page .compact-price-row {
+    grid-template-columns: 1fr auto !important;
+    gap: 6px 10px !important;
   }
 
-  :root body.ranking-redesign-page .compact-market-row .sleeve-sparkline {
-    height: 58px !important;
+  :root body.ranking-redesign-page .compact-delta {
+    font-size: 24px !important;
+  }
+
+  :root body.ranking-redesign-page .compact-price {
+    font-size: 19px !important;
+  }
+
+  :root body.ranking-redesign-page .compact-card .sleeve-sparkline {
+    height: 70px !important;
   }
 }
