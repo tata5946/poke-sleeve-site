@@ -266,6 +266,7 @@
   width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
+  align-items: stretch !important;
   overflow: visible !important;
 }
 
@@ -284,12 +285,13 @@
 :root body.ranking-redesign-page .podium-card--rank3 {
   position: relative !important;
   display: grid !important;
-  grid-template-rows: auto auto !important;
-  align-content: start !important;
+  grid-template-rows: 260px minmax(0, 1fr) !important;
+  align-content: stretch !important;
+  align-items: stretch !important;
   gap: 0 !important;
   min-width: 0 !important;
   min-height: 0 !important;
-  height: auto !important;
+  height: 100% !important;
   padding: 18px !important;
   border: 1px solid #dce9f3 !important;
   border-radius: 16px !important;
@@ -349,47 +351,35 @@
 
 :root body.ranking-redesign-page .podium-badge {
   position: absolute !important;
-  top: 14px !important;
-  left: 18px !important;
+  top: 16px !important;
+  left: 16px !important;
   z-index: 5 !important;
   display: grid !important;
   place-items: center !important;
-  width: 70px !important;
-  height: 92px !important;
-  padding: 20px 0 16px !important;
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  min-height: 46px !important;
+  padding: 0 !important;
   border: 0 !important;
-  border-radius: 999px 999px 10px 10px !important;
-  background: linear-gradient(180deg, #ffc22f 0%, #f2a51b 62%, #e38d12 100%) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #ffc94a 0%, #f0a51a 58%, #df8b08 100%) !important;
   color: #fff !important;
-  font-size: 33px !important;
+  font-size: 22px !important;
   font-weight: 900 !important;
   line-height: 1 !important;
   letter-spacing: 0 !important;
-  box-shadow: 0 12px 20px rgba(207, 139, 18, .27) !important;
+  box-shadow: 0 8px 16px rgba(207, 139, 18, .24) !important;
 }
 
 :root body.ranking-redesign-page .podium-badge::before {
-  content: "\265B";
-  position: absolute;
-  top: 9px;
-  left: 50%;
-  color: #fff;
-  font-size: 17px;
-  line-height: 1;
-  transform: translateX(-50%);
+  display: none !important;
+  content: none !important;
 }
 
 :root body.ranking-redesign-page .podium-badge::after {
-  content: "";
-  position: absolute;
-  right: -28px;
-  top: 18px;
-  width: 26px;
-  height: 30px;
-  border-top: 5px solid #ffc72d;
-  border-right: 5px solid #ffc72d;
-  transform: rotate(26deg);
-  opacity: .9;
+  display: none !important;
+  content: none !important;
 }
 
 :root body.ranking-redesign-page .podium-card--rank2 .podium-badge {
@@ -418,9 +408,9 @@
   display: grid !important;
   place-items: center !important;
   width: 100% !important;
-  height: clamp(230px, 22vw, 270px) !important;
-  min-height: 230px !important;
-  max-height: 270px !important;
+  height: 260px !important;
+  min-height: 260px !important;
+  max-height: 260px !important;
   margin: 0 !important;
   padding: 22px 24px 12px !important;
   border: 0 !important;
@@ -450,7 +440,15 @@
 :root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-content {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: 78px 42px 158px 158px !important;
+  grid-template-areas:
+    "title"
+    "meta"
+    "metrics"
+    "chart" !important;
+  align-content: stretch !important;
   gap: 0 !important;
+  height: 100% !important;
   min-width: 0 !important;
   margin: 0 !important;
 }
@@ -464,8 +462,13 @@
 :root body.ranking-redesign-page .podium-card--rank1 .podium-title,
 :root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-title {
   order: 1 !important;
-  min-height: 58px !important;
-  margin: 12px 0 0 !important;
+  grid-area: title !important;
+  min-height: 0 !important;
+  height: 78px !important;
+  max-height: 78px !important;
+  margin: 0 !important;
+  padding-top: 12px !important;
+  box-sizing: border-box !important;
   color: var(--ranking-ink) !important;
   font-size: clamp(18px, 1.65vw, 25px) !important;
   font-weight: 900 !important;
@@ -480,13 +483,16 @@
 
 :root body.ranking-redesign-page .podium-meta {
   order: 2 !important;
+  grid-area: meta !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 10px !important;
-  min-height: 26px !important;
-  margin: 0 0 12px !important;
-  padding: 0 0 12px !important;
+  min-height: 0 !important;
+  height: 42px !important;
+  max-height: 42px !important;
+  margin: 0 !important;
+  padding: 0 0 10px !important;
   border-bottom: 1px solid var(--ranking-line) !important;
   overflow: hidden !important;
 }
@@ -519,16 +525,24 @@
 
 :root body.ranking-redesign-page .podium-metrics {
   order: 3 !important;
+  grid-area: metrics !important;
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
   grid-template-areas:
     "label label"
-    "primary rate"
+    "primary primary"
     "secondary rate" !important;
-  gap: 4px 16px !important;
-  align-items: end !important;
+  gap: 5px 16px !important;
+  align-items: center !important;
   min-width: 0 !important;
-  margin: 0 0 12px !important;
+  min-height: 0 !important;
+  height: 158px !important;
+  max-height: 158px !important;
+  margin: 0 !important;
+  padding: 14px 0 16px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 :root body.ranking-redesign-page .podium-metric {
@@ -572,7 +586,7 @@
 :root body.ranking-redesign-page .podium-rate {
   grid-area: rate !important;
   justify-self: end !important;
-  align-self: end !important;
+  align-self: center !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -597,7 +611,7 @@
 :root body.ranking-redesign-page--rate-up .podium-metrics {
   grid-template-areas:
     "label label"
-    "primary rate"
+    "primary primary"
     "secondary rate" !important;
 }
 
@@ -650,6 +664,8 @@
 
 :root body.ranking-redesign-page .podium-market-row {
   order: 4 !important;
+  grid-area: chart !important;
+  align-self: end !important;
   display: block !important;
   width: 100% !important;
   min-width: 0 !important;
@@ -1061,19 +1077,23 @@
   }
 
   :root body.ranking-redesign-page .podium-card {
+    grid-template-rows: 220px minmax(0, 1fr) !important;
     padding: 14px !important;
     border-radius: 14px !important;
   }
 
   :root body.ranking-redesign-page .podium-badge {
-    width: 54px !important;
-    height: 74px !important;
-    font-size: 25px !important;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    font-size: 20px !important;
   }
 
   :root body.ranking-redesign-page .podium-media {
-    height: 210px !important;
-    min-height: 210px !important;
+    height: 220px !important;
+    min-height: 220px !important;
+    max-height: 220px !important;
     padding: 18px 14px 8px !important;
   }
 
@@ -1082,16 +1102,15 @@
   }
 
   :root body.ranking-redesign-page .podium-metrics {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
     grid-template-areas:
-      "label"
-      "primary"
-      "secondary"
-      "rate" !important;
+      "label label"
+      "primary primary"
+      "secondary rate" !important;
   }
 
   :root body.ranking-redesign-page .podium-rate {
-    justify-self: start !important;
+    justify-self: end !important;
     min-width: 116px !important;
   }
 
