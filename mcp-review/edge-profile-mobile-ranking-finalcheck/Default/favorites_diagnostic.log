@@ -1,0 +1,12 @@
+2026-09-12 11:29:09.576: [INFO] CurrentProfilePath: C:\Users\takuy\OneDrive\ドキュメント\GitHub\poke-sleeve-site\mcp-review\edge-profile-mobile-ranking-finalcheck\Default
+2026-09-12 11:29:09.576: [INFO] Profiles total count: 1
+2026-09-12 11:29:09.576: [INFO] Profile: name=プロファイル 1 path=C:\Users\takuy\OneDrive\ドキュメント\GitHub\poke-sleeve-site\mcp-review\edge-profile-mobile-ranking-finalcheck\Default lastActive=2026-09-12T11:29:09.544Z
+2026-09-12 11:29:09.576: [INFO] LastUsedProfileDir: C:\Users\takuy\OneDrive\ドキュメント\GitHub\poke-sleeve-site\mcp-review\edge-profile-mobile-ranking-finalcheck\Default
+2026-09-12 11:29:09.576: [INFO] MostRecentlyActiveProfile: name=プロファイル 1 path=C:\Users\takuy\OneDrive\ドキュメント\GitHub\poke-sleeve-site\mcp-review\edge-profile-mobile-ranking-finalcheck\Default lastActive=2026-09-12T11:29:09.544Z
+2026-09-12 11:29:09.576: [INFO] OnDoneLoading sync enabled: 0
+2026-09-12 11:29:09.576: [INFO] BookmarkModelLoaded, ids_reassigned: 0
+2026-09-12 11:29:09.576: [INFO] BookmarksLoadDropped droppedNodes=0
+2026-09-12 11:29:09.576: [INFO] BookmarksSnapshot Startup total=4 bar=4 other=0 mobile=0 showBar=0 showBarNTP=1
+2026-09-12 11:29:09.580: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-09-12 11:29:09.976: [INFO] VisibilityChanged: 0
+2026-09-12 11:29:17.073: [INFO] BookmarksSnapshot Shutdown total=4 bar=4 other=0 mobile=0 showBar=0 showBarNTP=1

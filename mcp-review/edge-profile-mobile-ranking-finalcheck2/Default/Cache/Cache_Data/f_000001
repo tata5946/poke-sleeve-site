@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022"
+     crossorigin="anonymous"></script>
+  <title>急上昇ランキング｜ポケスリ相場ナビ</title>
+  
+  <meta property="og:title" content="急上昇ランキング｜ポケスリ相場ナビ" />
+  <meta property="og:description" content="ポケカスリーブの急上昇ランキング（前週比）を掲載。検索・絞り込みで相場を比較できます。" />
+  <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
+  <meta property="og:url" content="https://pokesuri-navi.com/surge.html" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- 共通CSS -->
+  <link rel="stylesheet" href="./assets/site.css?v=20260908a" />
+  <style>
+    body {
+      background: #f5f7fb;
+    }
+
+    .ranking-page-top {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .ranking-hero {
+      padding: 16px 18px;
+      background: #0f2b6f;
+      color: #fff;
+    }
+
+    .ranking-page-title {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .ranking-filter-card {
+      padding: 10px 12px;
+      background: #fff;
+      border: 1px solid #e6eaf2;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
+    }
+
+    .ranking-filter-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ranking-filter-title {
+      margin: 0;
+      font-size: 12px;
+      color: #344054;
+      font-weight: 900;
+      letter-spacing: .04em;
+    }
+
+    .ranking-filter-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: #667085;
+      font-weight: 700;
+    }
+
+    .ranking-filter-grid {
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 8px;
+      padding-bottom: 2px;
+    }
+
+    .ranking-filter-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ranking-filter-field {
+      min-width: 120px;
+      flex: 0 0 auto;
+    }
+
+    .ranking-filter-field select,
+    .ranking-filter-actions button {
+      width: auto;
+      min-width: 120px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1px solid #d7deea;
+      background: #fff;
+      color: #101828;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 0 12px;
+      white-space: nowrap;
+      transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+    }
+
+    .ranking-filter-field select:hover,
+    .ranking-filter-actions button:hover {
+      border-color: #b9c5d9;
+      background: #fbfcfe;
+    }
+
+    .ranking-filter-field select:focus,
+    .ranking-filter-actions button:focus {
+      outline: none;
+      border-color: #9db5ff;
+      box-shadow: 0 0 0 4px rgba(71, 122, 255, .12);
+    }
+
+    .ranking-filter-actions {
+      min-width: 0;
+      flex: 0 0 auto;
+    }
+
+    .ranking-filter-actions button {
+      min-width: 92px;
+      background: #f8fafc;
+      color: #344054;
+      cursor: pointer;
+    }
+
+    .ranking-active-filters {
+      display: none;
+      flex-wrap: nowrap;
+      gap: 6px;
+      margin-top: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .ranking-active-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ranking-active-filters.is-visible {
+      display: flex;
+    }
+
+    .ranking-filter-chip {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      min-height: 24px;
+      padding: 0 24px 0 8px;
+      border-radius: 999px;
+      background: #eef4ff;
+      border: 1px solid #d8e5ff;
+      color: #274690;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .ranking-filter-chip-remove {
+      position: absolute;
+      top: -4px;
+      right: -2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #274690;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1;
+      box-shadow: 0 2px 6px rgba(39, 70, 144, .18);
+    }
+
+    .ranking-main {
+      display: grid;
+      gap: 12px;
+    }
+
+    .ranking-top3 {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: minmax(0, 1.7fr) minmax(240px, .85fr) minmax(240px, .85fr);
+      align-items: stretch;
+    }
+
+    .ranking-top3 > div {
+      display: flex;
+    }
+
+    .ranking-top3 > div > .podium-card {
+      width: 100%;
+    }
+
+    .ranking-top3[hidden],
+    .ranking-rest-section[hidden] {
+      display: none;
+    }
+
+    .ranking-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .ranking-section-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 900;
+      color: #101828;
+    }
+
+    .ranking-section-note {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .podium-card {
+      display: grid;
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid #f0dca7;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .10);
+      background: linear-gradient(180deg, #fff7de 0%, #fffdf8 100%);
+      padding: 12px;
+      height: 100%;
+    }
+
+    a.podium-card {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .podium-card--rank1 {
+      display: grid;
+      grid-template-columns: minmax(180px, 260px) minmax(0, 1fr);
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 214, 102, .28), transparent 32%),
+        linear-gradient(145deg, #fff4cd 0%, #fff9ea 44%, #fffdf8 100%);
+    }
+
+    .podium-card--rank2 { background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%); }
+    .podium-card--rank3 { background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%); }
+
+    .podium-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(17, 24, 39, .84);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .podium-media {
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, .84);
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .04);
+      padding: 10px;
+    }
+
+    .podium-media img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      background: transparent;
+    }
+
+    .podium-card--rank1 .podium-media {
+      width: fit-content;
+      max-width: 100%;
+      justify-self: center;
+    }
+
+    .podium-card--rank1 .podium-media img { max-height: 240px; }
+
+    .podium-card:not(.podium-card--rank1) .podium-media {
+      width: fit-content;
+      max-width: 100%;
+      justify-self: center;
+    }
+
+    .podium-card:not(.podium-card--rank1) .podium-media img { max-height: 160px; }
+
+    .podium-content { display: grid; gap: 8px; margin-top: 10px; }
+    .podium-card--rank1 .podium-content { margin-top: 0; }
+
+    .podium-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .05em;
+      color: #7a5b00;
+      text-transform: uppercase;
+    }
+
+    .podium-card:not(.podium-card--rank1) .podium-kicker { color: #52606d; }
+    .podium-title { margin: 0; font-size: 20px; line-height: 1.3; font-weight: 900; color: #101828; }
+    .podium-card:not(.podium-card--rank1) .podium-title { font-size: 16px; }
+
+    .podium-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .podium-metric { padding: 10px; border-radius: 14px; background: rgba(255,255,255,.78); border: 1px solid rgba(255,255,255,.72); }
+    .podium-price-block,
+    .podium-trend-row {
+      min-width: 0;
+      padding: 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(255,255,255,.72);
+    }
+    .podium-price-block { display: grid; gap: 4px; }
+    .podium-trend-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 72px);
+      gap: 8px;
+      align-items: end;
+    }
+    .podium-trend-row .sleeve-sparkline {
+      width: 100%;
+      min-width: 0;
+    }
+    .podium-metric-label { display:block; font-size:11px; color:#667085; font-weight:800; margin-bottom:4px; }
+    .podium-price { font-size:24px; font-weight:900; line-height:1.1; color:#111827; }
+    .podium-card:not(.podium-card--rank1) .podium-price { font-size:18px; }
+    .podium-rate { font-size:20px; font-weight:900; line-height:1.1; }
+    .podium-card:not(.podium-card--rank1) .podium-rate { font-size:16px; }
+    .podium-market-row,
+    .compact-market-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(128px, auto);
+      gap: 8px;
+      align-items: end;
+      min-width: 0;
+    }
+
+    .compact-market-row {
+      grid-template-columns: minmax(0, 1fr) 72px;
+    }
+    .sleeve-sparkline {
+      width: 86px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      align-self: end;
+      overflow: hidden;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #f8fffb 0%, #edf8f1 100%);
+      box-shadow: inset 0 0 0 1px rgba(5, 150, 105, .10);
+    }
+    .sleeve-sparkline svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .sleeve-sparkline-grid {
+      stroke: rgba(71, 85, 105, .18);
+      stroke-width: 1;
+    }
+    .sleeve-sparkline-area {
+      fill: rgba(5, 150, 105, .10);
+    }
+    .sleeve-sparkline-line {
+      fill: none;
+      stroke: #059669;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .sleeve-sparkline-empty {
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .02em;
+      white-space: nowrap;
+    }
+    .podium-market-row .sleeve-sparkline {
+      width: 72px;
+      height: 34px;
+    }
+    .podium-meta { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+    .podium-chip-group { display:flex; flex-wrap:wrap; gap:6px; }
+    .podium-chip { display:inline-flex; align-items:center; min-height:24px; padding:0 8px; border-radius:999px; font-size:10px; font-weight:900; background:rgba(255,255,255,.82); border:1px solid rgba(16,24,40,.08); color:#344054; }
+    .podium-actions { display:flex; align-items:center; justify-content:flex-start; }
+    .podium-actions .btn { margin-top:0; }
+
+    .ranking-page-top { gap: 8px; margin-bottom: 10px; }
+    .ranking-hero {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid #d7e0ee;
+      background: #fff;
+      box-shadow: none;
+      color: #162238;
+    }
+    .ranking-hero::before {
+      display: none;
+    }
+    .ranking-hero-copy {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+    .ranking-hero-label {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 24px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(0, 35, 102, .08);
+      color: #2a4386;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .12em;
+    }
+    .ranking-hero-label::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 2px;
+      background: linear-gradient(135deg, #ffd35a, #4f8bff);
+      transform: rotate(12deg);
+      box-shadow: 0 0 0 4px rgba(255, 211, 90, .16);
+    }
+    .ranking-page-title { font-size: clamp(26px, 2.6vw, 34px); color: #162238; }
+    .page-hero-meta { margin-top: 0; margin-left: auto; justify-content: flex-end; text-align: right; }
+    .page-hero-badge { position: relative; z-index: 1; white-space: nowrap; backdrop-filter: blur(8px); }
+    .ranking-filter-card {
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: none;
+      background: #f1f4f6;
+    }
+    .ranking-filter-head { margin-bottom: 6px; }
+    .ranking-filter-title { font-size: 13px; color: #1a2840; }
+    .ranking-filter-grid { gap: 10px; }
+    .ranking-filter-field select,
+    .ranking-filter-actions button {
+      height: 42px;
+      border: 1px solid #d7e0ee;
+      border-radius: 8px;
+      background: rgba(255,255,255,.95);
+    }
+    .ranking-main { gap: 14px; }
+    .ranking-top3 {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ranking-top3::-webkit-scrollbar { display: none; }
+    .ranking-top3 > div {
+      display: block;
+      flex: 0 0 min(74vw, 240px);
+      scroll-snap-align: start;
+    }
+
+    @media (min-width: 701px) {
+      .ranking-top3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        overflow: visible;
+        padding-bottom: 0;
+        scroll-snap-type: none;
+      }
+
+      .ranking-top3 > div {
+        display: flex;
+        flex: initial;
+        min-width: 0;
+        scroll-snap-align: unset;
+      }
+    }
+
+    .podium-card {
+      border-radius: 8px;
+      border: 1px solid #dbe5f2;
+      box-shadow: none;
+      background: rgba(255,255,255,.94);
+      padding: 8px;
+      gap: 7px;
+    }
+    .podium-card--rank1 {
+      grid-template-columns: 1fr;
+      padding: 8px;
+      gap: 7px;
+      background: #fff;
+    }
+    .podium-card--rank2,
+    .podium-card--rank3 { background: rgba(255,255,255,.94); }
+    .podium-badge {
+      top: 10px;
+      left: 10px;
+      padding: 4px 8px;
+      font-size: 11px;
+      background: #162238;
+    }
+    .podium-media {
+      border-radius: 6px;
+      padding: 6px;
+      background: linear-gradient(180deg, #f8fbff 0%, #f2f6fc 100%);
+    }
+    .podium-card--rank1 .podium-media img { height: 132px; }
+    .podium-card:not(.podium-card--rank1) .podium-media img { height: 132px; }
+    .podium-content { gap: 6px; margin-top: 0; }
+    .podium-kicker,
+    .podium-actions { display: none; }
+    .podium-title {
+      font-size: 13px;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 2.7em;
+    }
+    .podium-card:not(.podium-card--rank1) .podium-title { font-size: 13px; }
+    .podium-metrics {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 6px;
+      align-items: end;
+    }
+    .podium-metric {
+      padding: 0;
+      border-radius: 0;
+      background: #f8fbff;
+      border: 0;
+    }
+    .podium-metric-label { font-size: 9px; margin-bottom: 2px; }
+    .podium-diff {
+      font-size: 20px;
+      line-height: 1.05;
+      font-weight: 900;
+      color: #be123c;
+      white-space: nowrap;
+    }
+    .podium-price {
+      font-size: 11px;
+      color: #475467;
+    }
+    .podium-card:not(.podium-card--rank1) .podium-price { font-size: 11px; }
+    .podium-rate {
+      min-height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 6px;
+      border-radius: 6px;
+      background: #ffe4e6;
+      color: #be123c;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .podium-card:not(.podium-card--rank1) .podium-rate { font-size: 11px; }
+    .podium-chip {
+      min-height: 22px;
+      padding: 0 7px;
+      background: #fff;
+      border: 1px solid #dbe5f2;
+    }
+
+    .compact-grid {
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 10px;
+    }
+
+    .compact-card {
+      gap: 7px;
+      padding: 6px;
+      border-radius: 8px;
+      box-shadow: none;
+    }
+
+    .compact-rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      z-index: 2;
+      min-width: 28px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 6px;
+      background: #111827;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .compact-thumb-wrap {
+      border-radius: 6px;
+      aspect-ratio: 1 / 1;
+    }
+
+    .compact-thumb {
+      object-fit: contain;
+      padding: 6px;
+    }
+
+    .compact-card-title {
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .compact-price-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3px;
+      align-items: start;
+      min-width: 0;
+    }
+
+    .compact-delta {
+      order: -1;
+      font-size: 16px;
+      line-height: 1.1;
+      font-weight: 900;
+      text-align: left;
+      color: #be123c;
+    }
+
+    .compact-price {
+      font-size: 11px;
+      line-height: 1.2;
+      color: #475467;
+      font-weight: 800;
+    }
+
+    .compact-rate {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 20px;
+      padding: 0 6px;
+      border-radius: 6px;
+      background: #ffe4e6;
+      color: #be123c;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .compact-market-row {
+      grid-template-columns: minmax(0, 1fr) 64px;
+      gap: 6px;
+    }
+
+    .compact-market-row .sleeve-sparkline {
+      width: 64px;
+      height: 34px;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 960px) {
+      .ranking-filter-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        overflow: visible;
+        padding-bottom: 0;
+      }
+
+      .ranking-filter-field {
+        min-width: 0;
+      }
+
+      .ranking-filter-field select,
+      .ranking-filter-actions button {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .compact-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .podium-card--rank1 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .ranking-hero { padding: 14px; }
+      .ranking-hero { align-items: flex-start; flex-direction: column; }
+      .page-hero-meta { margin-left: 0; justify-content: flex-start; text-align: left; }
+      .ranking-hero-label { min-height: 22px; font-size: 10px; }
+      .ranking-page-title { font-size: 20px; }
+      .ranking-filter-card { padding: 10px 12px 12px; }
+      .ranking-filter-chip { font-size: 10px; }
+      .ranking-filter-chip-remove { width: 14px; height: 14px; font-size: 9px; }
+
+      .ranking-top3 {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .ranking-top3::-webkit-scrollbar {
+        display: none;
+      }
+
+      .ranking-top3 > div {
+        display: block;
+        flex: 0 0 min(90vw, 380px);
+        min-width: 0;
+        scroll-snap-align: start;
+      }
+
+      .podium-card,
+      .podium-card--rank1 {
+        grid-template-columns: 112px minmax(0, 1fr);
+        grid-template-areas:
+          "media badge"
+          "media content";
+        grid-template-rows: auto minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+        min-height: 180px;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: none;
+        background: rgba(255,255,255,.96);
+      }
+
+      .podium-badge {
+        position: static;
+        grid-area: badge;
+        justify-self: start;
+        align-self: end;
+        min-height: 24px;
+        padding: 0 8px;
+        border-radius: 7px;
+        font-size: 10px;
+      }
+
+      .podium-media,
+      .podium-card--rank1 .podium-media,
+      .podium-card:not(.podium-card--rank1) .podium-media {
+        grid-area: media;
+        width: 112px;
+        height: 112px;
+        padding: 6px;
+        border-radius: 6px;
+        justify-self: start;
+      }
+
+      .podium-media img,
+      .podium-card--rank1 .podium-media img,
+      .podium-card:not(.podium-card--rank1) .podium-media img {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100px;
+      }
+
+      .podium-content,
+      .podium-card--rank1 .podium-content {
+        grid-area: content;
+        min-width: 0;
+        gap: 6px;
+        margin-top: 0;
+      }
+
+      .podium-kicker {
+        display: none;
+      }
+
+      .podium-title,
+      .podium-card:not(.podium-card--rank1) .podium-title {
+        font-size: 16px;
+        line-height: 1.28;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 0;
+      }
+
+      .podium-market-row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+        align-items: stretch;
+      }
+
+      .podium-metrics {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 4px 7px;
+        align-items: center;
+      }
+
+      .podium-metric,
+      .podium-price-block,
+      .podium-trend-row {
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .podium-price-block {
+        display: grid;
+        gap: 1px;
+      }
+
+      .podium-trend-row {
+        display: grid;
+        grid-template-columns: auto minmax(72px, 1fr);
+        gap: 8px;
+        align-items: center;
+      }
+
+      .podium-metric-label {
+        margin-bottom: 1px;
+        font-size: 9px;
+      }
+
+      .podium-diff,
+      .podium-card:not(.podium-card--rank1) .podium-diff {
+        font-size: 23px;
+        line-height: 1.05;
+        white-space: nowrap;
+      }
+
+      .podium-price,
+      .podium-card:not(.podium-card--rank1) .podium-price {
+        font-size: 13px;
+        line-height: 1.15;
+        white-space: nowrap;
+      }
+
+      .podium-rate,
+      .podium-card:not(.podium-card--rank1) .podium-rate {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 22px;
+        padding: 0 7px;
+        border-radius: 6px;
+        background: #ffe4e6;
+        font-size: 12px;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+
+      .podium-meta {
+        display: none;
+      }
+
+      .podium-chip-group {
+        flex-wrap: nowrap;
+        gap: 5px;
+        overflow: hidden;
+      }
+
+      .podium-chip {
+        min-height: 20px;
+        padding: 0 7px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .compact-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .compact-card {
+        grid-template-columns: 80px minmax(0, 1fr);
+        grid-template-areas:
+          "thumb title"
+          "thumb market"
+          "thumb meta";
+        align-items: stretch;
+        gap: 6px 10px;
+        padding: 8px;
+        min-height: 108px;
+      }
+
+      .compact-rank-badge {
+        left: 10px;
+        top: 10px;
+        min-width: 34px;
+        height: 24px;
+        border-radius: 7px;
+        font-size: 10px;
+      }
+
+      .compact-thumb-wrap {
+        grid-area: thumb;
+        width: 80px;
+        height: 80px;
+        align-self: center;
+        aspect-ratio: auto;
+      }
+
+      .compact-card-title {
+        grid-area: title;
+        min-height: 0;
+        font-size: 14px;
+        line-height: 1.28;
+      }
+
+      .compact-market-row {
+        grid-area: market;
+        grid-template-columns: minmax(0, 1fr) 72px;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .compact-price-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 3px 8px;
+        align-items: center;
+      }
+
+      .compact-delta {
+        order: 0;
+        grid-column: 1;
+        grid-row: 1;
+        font-size: 20px;
+        line-height: 1.05;
+      }
+
+      .compact-price {
+        grid-column: 1;
+        grid-row: 2;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .compact-price::before {
+        content: "現在 ";
+        color: #667085;
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .compact-rate {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        align-self: center;
+        max-width: 58px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .compact-meta {
+        grid-area: meta;
+        min-width: 0;
+        overflow: hidden;
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 5px;
+        align-items: center;
+        min-height: 20px;
+      }
+
+      .compact-meta-item {
+        display: inline-flex;
+        align-items: center;
+        min-width: 0;
+        max-width: 100%;
+        height: 20px;
+        padding: 0 7px;
+        border: 1px solid #dbe5f2;
+        border-radius: 999px;
+        background: #fff;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 10px;
+        line-height: 1;
+      }
+
+      .compact-meta-item:nth-child(n+3) {
+        display: none;
+      }
+
+      .compact-market-row .sleeve-sparkline {
+        width: 72px;
+        height: 34px;
+      }
+
+      .podium-market-row .sleeve-sparkline {
+        width: 100%;
+        min-width: 0;
+        height: 36px;
+      }
+    }
+
+    @media (min-width: 560px) and (max-width: 700px) {
+      .compact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    body.page-surge-ranking .podium-card,
+    body.page-surge-ranking .podium-card--rank1,
+    body.page-surge-ranking .podium-card--rank2,
+    body.page-surge-ranking .podium-card--rank3 {
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    body.page-surge-ranking a.compact-card,
+    body.page-surge-ranking .compact-card {
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    body.page-surge-ranking a.compact-card.ranking-card-frameless,
+    body.page-surge-ranking .compact-card.ranking-card-frameless {
+      border: 0 !important;
+      outline: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    body.page-surge-ranking .compact-card.ranking-card-frameless .compact-market-row {
+      display: block !important;
+      grid-template-columns: 1fr !important;
+      min-width: 0 !important;
+      margin-top: 4px !important;
+    }
+
+    body.page-surge-ranking .compact-card.ranking-card-frameless .compact-thumb-wrap {
+      display: block !important;
+      width: 100% !important;
+      height: auto !important;
+      aspect-ratio: 4 / 3.75 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+    }
+
+    body.page-surge-ranking .compact-card.ranking-card-frameless .compact-thumb {
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none !important;
+      max-height: none !important;
+      object-fit: contain !important;
+      object-position: center !important;
+      transform: none !important;
+    }
+
+    body.page-surge-ranking .ranking-card-frameless-thumb {
+      display: block !important;
+      width: 100% !important;
+      height: auto !important;
+      aspect-ratio: 4 / 3.75 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+    }
+
+    body.page-surge-ranking .ranking-card-frameless-img {
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none !important;
+      max-height: none !important;
+      object-fit: contain !important;
+      object-position: center !important;
+      transform: none !important;
+    }
+
+    body.page-surge-ranking .compact-card.ranking-card-frameless .compact-market-row .sleeve-sparkline {
+      position: relative !important;
+      display: block !important;
+      width: 100% !important;
+      height: 230px !important;
+      min-width: 0 !important;
+      padding: 0 !important;
+      border: 1px solid #d8dee8 !important;
+      border-radius: 7px !important;
+      background: #fff !important;
+      box-shadow: none !important;
+      overflow: hidden !important;
+    }
+
+    body.page-surge-ranking .compact-card.ranking-card-frameless .compact-market-row .sleeve-sparkline svg {
+      position: absolute !important;
+      left: 18px !important;
+      right: 18px !important;
+      top: 54px !important;
+      bottom: 82px !important;
+      width: calc(100% - 36px) !important;
+      height: calc(100% - 136px) !important;
+    }
+
+  </style>
+  <link rel="stylesheet" href="./assets/ranking-redesign.css?v=20260911e" />
+</head>
+
+<body class="ranking-redesign-page ranking-redesign-page--price-up" data-hide-global-header="1">
+  <!-- 共通ヘッダー差し込み -->
+  <div id="site-header"></div>
+
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー">
+      <div id="dashboardSidebarSlot" data-dashboard-sidebar-active="surge"></div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot" data-dashboard-topbar-active="market"></div>
+      </header>
+      <div class="dashboard-content">
+  <div class="container page-shell page-shell--market">
+    <nav class="breadcrumb" aria-label="パンくず">
+      <a href="./">ホーム</a>
+      <span class="breadcrumb-sep" aria-hidden="true">></span>
+      <span class="breadcrumb-current" aria-current="page">急上昇ランキング</span>
+    </nav>
+    <div class="ranking-page-top page-market-top">
+      <section class="ranking-hero page-hero-card" aria-label="ページ見出し">
+        <div class="ranking-hero-copy">
+          <span class="ranking-hero-label">MARKET RANKING</span>
+          <h1 class="ranking-page-title page-hero-title">週間 値上がり額ランキング</h1>
+        </div>
+        <div class="page-hero-meta">
+          <span class="page-hero-badge">最終更新：<strong id="updatedAt">確認中</strong></span>
+          <span class="page-hero-badge">更新件数：<strong id="countInfo">0件</strong></span>
+        </div>
+      </section>
+
+      <section class="ranking-filter-card page-toolbar-card" aria-label="フィルタバー">
+        <div class="ranking-filter-head">
+          <div>
+            <h2 class="ranking-filter-title">絞り込み</h2>
+          </div>
+        </div>
+
+        <div id="error" class="error"></div>
+        <div class="ranking-filter-grid">
+          <div class="ranking-filter-field">
+            <select id="metric">
+              <option value="diffDesc">上昇額（円）</option>
+              <option value="rateDesc">上昇率（%）</option>
+            </select>
+          </div>
+
+          <div class="ranking-filter-field">
+            <select id="releaseYear">
+              <option value="">発売年</option>
+            </select>
+          </div>
+
+          <div class="ranking-filter-field">
+            <select id="series">
+              <option value="">シリーズ</option>
+            </select>
+          </div>
+
+          <div class="ranking-filter-field">
+            <select id="minDiff">
+              <option value="0">最低上昇額</option>
+              <option value="100">+100円以上</option>
+              <option value="300">+300円以上</option>
+              <option value="500">+500円以上</option>
+              <option value="1000">+1,000円以上</option>
+              <option value="2000">+2,000円以上</option>
+              <option value="5000">+5,000円以上</option>
+            </select>
+          </div>
+
+          <div class="ranking-filter-actions">
+            <button id="clear" type="button">クリア</button>
+          </div>
+        </div>
+        <div id="activeFilters" class="ranking-active-filters" aria-label="選択中の絞り込み条件"></div>
+      </section>
+    </div>
+
+    <div class="ranking-main">
+      <section id="top3" class="ranking-top3" aria-label="ランキング上位3件" hidden>
+        <div id="top1"></div>
+        <div id="top2"></div>
+        <div id="top3Card"></div>
+      </section>
+      <section id="restSection" class="ranking-rest-section">
+        <div class="ranking-section-head">
+          <h2 class="ranking-section-title">4位以降</h2>
+        </div>
+        <div id="list" class="grid compact-grid"></div>
+      </section>
+    </main>
+
+    <!-- 共通フッター差し込み -->
+    <div id="site-footer"></div>
+  </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // -----------------------------
+    // utils
+    // -----------------------------
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function showError(msg) {
+      const el = document.getElementById("error");
+      if (!el) return;
+      el.style.display = "block";
+      el.textContent = msg;
+    }
+
+    function hideError() {
+      const el = document.getElementById("error");
+      if (!el) return;
+      el.style.display = "none";
+      el.textContent = "";
+    }
+
+    function uniq(arr) {
+      const s = new Set();
+      for (const v of arr) {
+        const t = (v == null) ? "" : String(v).trim();
+        if (t) s.add(t);
+      }
+      return Array.from(s);
+    }
+
+    function getCompactTagLabels(sleeve, maxItems = 2) {
+      const candidates = [];
+      if (typeof sleeve.series === "string") candidates.push(sleeve.series);
+      if (typeof sleeve.condition === "string") candidates.push(sleeve.condition);
+      if (Array.isArray(sleeve.tags)) candidates.push(...sleeve.tags);
+      if (typeof sleeve.tag === "string") candidates.push(sleeve.tag);
+      if (typeof sleeve.badge === "string") candidates.push(sleeve.badge);
+      const seen = new Set();
+      const result = [];
+      for (const raw of candidates) {
+        const text = String(raw || "").trim().replace(/^#/, "");
+        if (!text || seen.has(text)) continue;
+        seen.add(text);
+        result.push(text);
+        if (result.length >= maxItems) break;
+      }
+      return result;
+    }
+
+    function toISODate(d) {
+      const dd = new Date(d);
+      if (Number.isNaN(dd.getTime())) return null;
+      const y = dd.getFullYear();
+      const m = String(dd.getMonth() + 1).padStart(2, "0");
+      const day = String(dd.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function isLegacyMonthlyRow(weekISO) {
+      return String(weekISO || "").slice(-2) === "01" && String(weekISO || "") < "2026-01-01";
+    }
+
+    function numOrNull(v) {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    async function fetchJsonWithTimeout(url, { timeoutMs = 12000 } = {}) {
+      const controller = new AbortController();
+      const t = setTimeout(() => controller.abort(), timeoutMs);
+
+      try {
+        const res = await fetch(url, {
+          cache: "no-store",
+          signal: controller.signal,
+          headers: { "Accept": "application/json" }
+        });
+        if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
+        return await res.json();
+      } catch (e) {
+        if (e && e.name === "AbortError") {
+          throw new Error("データ取得がタイムアウトしました。時間をおいて再度お試しください。");
+        }
+        throw e;
+      } finally {
+        clearTimeout(t);
+      }
+    }
+
+    async function loadData() {
+      if (window.common && typeof window.common.loadData === "function") {
+        return await window.common.loadData();
+      }
+      const url = window.GAS_URL;
+      if (!url) throw new Error("GAS_URL が未設定です（common.js を確認してください）");
+      const res = await fetch(url, { cache: "default" });
+      if (!res.ok) throw new Error(`データ取得に失敗しました（HTTP ${res.status}）`);
+      return await res.json();
+    }
+
+    // -----------------------------
+    // weekly logic
+    // -----------------------------
+    /**
+     * 週次データから「直近の取引週」「その1つ前の取引週」を返す
+     * - 取引なし週は除外（count=0 または price非数）
+     * - week は ISO (YYYY-MM-DD) に正規化
+     * - 同一 week が複数ある場合は最後の1つを採用（データが後勝ち）
+     */
+    function getWeeklyPair(sleeve) {
+      const arr = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      if (arr.length === 0) return null;
+
+      const map = new Map();
+      for (const x of arr) {
+        const weekISO = toISODate(x.week);
+        if (!weekISO) continue;
+        if (isLegacyMonthlyRow(weekISO)) continue;
+
+        const price = numOrNull(x.price);
+        const count = numOrNull(x.count);
+
+        const hasTrade = price != null && price > 0;
+        if (!hasTrade) continue;
+
+        map.set(weekISO, { week: weekISO, price, count: count == null ? null : count });
+      }
+      if (map.size === 0) return null;
+
+      const sorted = Array.from(map.values()).sort((a, b) => a.week.localeCompare(b.week));
+      const latest = sorted[sorted.length - 1];
+      const prev = sorted.length >= 2 ? sorted[sorted.length - 2] : null;
+
+      return { latest, prev };
+    }
+
+    function getSparklinePoints(sleeve, maxItems = 12) {
+      const arr = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      const map = new Map();
+
+      for (const x of arr) {
+        const weekISO = toISODate(x.week);
+        if (!weekISO) continue;
+        if (isLegacyMonthlyRow(weekISO)) continue;
+
+        const price = numOrNull(x.price);
+        const count = numOrNull(x.count);
+        const hasTrade = price != null && price > 0;
+        if (!hasTrade || !(price > 0)) continue;
+
+        map.set(weekISO, { week: weekISO, price });
+      }
+
+      return Array.from(map.values())
+        .sort((a, b) => a.week.localeCompare(b.week))
+        .slice(-maxItems)
+        .map((x) => ({ week: x.week, price: x.price, timestamp: new Date(x.week).getTime() }))
+        .filter((x) => Number.isFinite(x.timestamp));
+    }
+
+    function buildSparklineSvg(sleeve) {
+      const points = getSparklinePoints(sleeve);
+      if (points.length < 2) {
+        return `<div class="sleeve-sparkline sleeve-sparkline--empty" aria-label="価格推移データ不足"><span class="sleeve-sparkline-empty">価格推移データ不足</span></div>`;
+      }
+
+      const width = 320;
+      const height = 96;
+      const padX = 18;
+      const padTop = 12;
+      const padBottom = 20;
+      const prices = points.map((point) => point.price);
+      const min = Math.min(...prices);
+      const max = Math.max(...prices);
+      const range = max - min;
+      const minTs = Math.min(...points.map((point) => point.timestamp));
+      const maxTs = Math.max(...points.map((point) => point.timestamp));
+      const spanTs = Math.max(1, maxTs - minTs);
+      const coords = points.map((point) => {
+        const x = padX + ((point.timestamp - minTs) / spanTs) * (width - padX * 2);
+        const y = range === 0
+          ? height / 2
+          : height - padBottom - ((point.price - min) / range) * (height - padTop - padBottom);
+        return { x, y };
+      });
+      const linePath = coords.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
+      const baseY = height - padBottom;
+      const areaPath = `${linePath} L ${coords[coords.length - 1].x.toFixed(1)} ${baseY.toFixed(1)} L ${coords[0].x.toFixed(1)} ${baseY.toFixed(1)} Z`;
+      const lastPrice = prices[prices.length - 1];
+      const lastPoint = coords[coords.length - 1];
+      const compactLabel = (value) => {
+        const rounded = Math.round(Number(value) || 0);
+        if (rounded >= 10000) return `${Math.round(rounded / 1000) / 10}\u4e07`;
+        return rounded.toLocaleString();
+      };
+      const firstPrice = prices[0];
+      const trendClass = lastPrice > prices[0] ? "up" : lastPrice < prices[0] ? "down" : "flat";
+      const trendColor = trendClass === "down" ? "#067647" : trendClass === "flat" ? "#475467" : "#079ca2";
+      const axisValues = range === 0
+        ? [max, min]
+        : [max, min + range / 2, min];
+
+      return `
+        <div class="sleeve-sparkline sleeve-sparkline--${trendClass}" aria-label="直近${points.length}週の価格推移">
+          <div class="sleeve-sparkline-title">直近12週間</div>
+          <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" focusable="false" aria-hidden="true" style="display:block;width:100%;height:100%;overflow:visible">
+            <line class="sleeve-sparkline-axis" x1="${padX}" y1="${baseY}" x2="${width - padX}" y2="${baseY}" vector-effect="non-scaling-stroke"></line>
+            ${axisValues.map((value, index) => {
+              const y = padTop + index * ((height - padTop - padBottom) / Math.max(1, axisValues.length - 1));
+              return `<line class="sleeve-sparkline-grid" x1="${padX}" y1="${y.toFixed(1)}" x2="${width - padX}" y2="${y.toFixed(1)}" vector-effect="non-scaling-stroke"></line><text class="sleeve-sparkline-label" x="2" y="${(y + 4).toFixed(1)}">${compactLabel(value)}</text>`;
+            }).join("")}
+            <path class="sleeve-sparkline-area" d="${areaPath}"></path>
+            <path class="sleeve-sparkline-line" d="${linePath}" fill="none" stroke="${trendColor}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+            <circle class="sleeve-sparkline-dot" cx="${lastPoint.x.toFixed(1)}" cy="${lastPoint.y.toFixed(1)}" r="3.8" fill="${trendColor}" stroke="#fff" stroke-width="1.8" vector-effect="non-scaling-stroke"></circle>
+          </svg>
+          <div class="sleeve-sparkline-foot" aria-hidden="true">
+            <span><small>12週前</small><b>${compactLabel(firstPrice)}円</b></span>
+            <span><small>今週</small><b>${compactLabel(lastPrice)}円</b></span>
+          </div>
+        </div>
+      `;
+    }
+
+    function getTotalTradeCount(sleeve) {
+      const arr = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      let sum = 0;
+      let hasAny = false;
+
+      for (const x of arr) {
+        const c = numOrNull(x.count);
+        if (Number.isFinite(c) && c > 0) {
+          sum += c;
+          hasAny = true;
+        }
+      }
+      return hasAny ? sum : null;
+    }
+
+    function getMarketRange(sleeve) {
+      const arr = Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
+      const prices = arr.map((x) => numOrNull(x && x.price)).filter((v) => Number.isFinite(v) && v > 0);
+      if (!prices.length) return { min: null, max: null };
+      return { min: Math.min(...prices), max: Math.max(...prices) };
+    }
+
+    function getTagLabels(sleeve, maxItems = 3) {
+      const candidates = [];
+      if (Array.isArray(sleeve.tags)) candidates.push(...sleeve.tags);
+      if (typeof sleeve.tag === "string") candidates.push(sleeve.tag);
+      if (typeof sleeve.badge === "string") candidates.push(sleeve.badge);
+      if (typeof sleeve.series === "string") candidates.push(sleeve.series);
+      if (typeof sleeve.condition === "string") candidates.push(sleeve.condition);
+      if (typeof sleeve.releaseYear === "number" || typeof sleeve.releaseYear === "string") candidates.push(`${sleeve.releaseYear}`);
+      const seen = new Set();
+      const result = [];
+      for (const raw of candidates) {
+        const tag = String(raw || "").trim();
+        if (!tag) continue;
+        const normalized = tag.startsWith("#") ? tag : `#${tag}`;
+        if (seen.has(normalized)) continue;
+        seen.add(normalized);
+        result.push(normalized);
+        if (result.length >= maxItems) break;
+      }
+      return result.length ? result : ["#注目"];
+    }
+
+    function getPodiumBadge(rank) {
+      return String(rank);
+    }
+
+    function buildPodiumCard(row, rank) {
+      const s = row.s;
+      const pair = row.pair;
+      const imgSrc = String(s.imageUrl || "").trim();
+      const rate = row.rate;
+      const rateClass = (rate ?? 0) > 0 ? "up" : (rate ?? 0) < 0 ? "down" : "flat";
+      const diffText = `+${row.diff.toLocaleString()}円`;
+      const rateText = rate == null ? "—" : `${rate > 0 ? "+" : ""}${rate.toFixed(1)}%`;
+      const sparklineHtml = buildSparklineSvg(s);
+      const metaItems = [
+        s.releaseYear ? `${escapeHtml(s.releaseYear)}年発売` : "",
+        s.series ? escapeHtml(s.series) : ""
+      ].filter(Boolean);
+      const metaHtml = metaItems.map((item) => `<span class="podium-chip">${item}</span>`).join("");
+      return `
+        <a class="podium-card ranking-card ranking-card--featured podium-card--rank${rank}" data-sleeve-link="1" href="${row.detailHref}" aria-label="${escapeHtml(String(s.name ?? ""))}の詳細を見る">
+          <div class="podium-badge">${getPodiumBadge(rank)}</div>
+          <div class="podium-media">
+            <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(s.name ?? "")}" loading="${rank === 1 ? "eager" : "lazy"}" referrerpolicy="no-referrer"
+              onerror="this.onerror=null; this.style.display='none';">
+          </div>
+          <div class="podium-content">
+            <div class="podium-kicker">PRICE UP RANKING</div>
+            <h${rank === 1 ? "2" : "3"} class="podium-title">${escapeHtml(s.name ?? "")}</h${rank === 1 ? "2" : "3"}>
+            <div class="podium-metrics">
+              <div class="podium-metric">
+                <span class="podium-metric-label">現在価格</span>
+                <div class="podium-price">${pair.latest.price.toLocaleString()}円</div>
+              </div>
+              <div class="podium-metric">
+                <span class="podium-metric-label">前週比</span>
+                <div class="podium-diff">${escapeHtml(diffText)}</div>
+                <div class="podium-rate ${rateClass}">${escapeHtml(rateText)}</div>
+              </div>
+            </div>
+            <div class="podium-market-row">
+              ${sparklineHtml}
+            </div>
+            <div class="podium-meta">
+              <div class="podium-chip-group">${metaHtml}</div>
+            </div>
+          </div>
+        </a>
+      `;
+    }
+
+    function getGlobalLatestTradeWeek(sleeves) {
+      let maxWeek = null;
+      for (const s of (Array.isArray(sleeves) ? sleeves : [])) {
+        const pair = getWeeklyPair(s);
+        if (!pair) continue;
+        const w = String(pair.latest.week || "");
+        if (!w) continue;
+        if (!maxWeek || w > maxWeek) maxWeek = w;
+      }
+      return maxWeek;
+    }
+
+    function formatMetaDate(value) {
+      const text = String(value ?? "").trim();
+      const match = text.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+      if (!match) return text || "-";
+      return `${match[1]}/${Number(match[2])}/${Number(match[3])}`;
+    }
+
+    function computeSurge(sleeve, latestWeek) {
+      const pair = getWeeklyPair(sleeve);
+      if (!pair || !pair.prev) return null;
+      if (latestWeek && pair.latest.week !== latestWeek) return null;
+
+      const diff = pair.latest.price - pair.prev.price;
+      if (!(diff > 0)) return null; // 上昇だけ
+
+      let rate = null;
+      if (pair.prev.price !== 0) {
+        const r = (diff / pair.prev.price) * 100;
+        rate = Number.isFinite(r) ? r : null;
+      }
+
+      return { pair, diff, rate };
+    }
+
+    function formatSurgeDelta(pair) {
+      if (!pair) return `<div class="delta"><span class="flat">直近の取引なし</span></div>`;
+
+      const { latest, prev } = pair;
+
+      if (!prev) {
+        const cntText = Number.isFinite(latest.count) ? ` / ${latest.count}件` : "";
+        return `
+          <div class="delta">
+            <span class="flat">比較できる前回データなし</span>
+            <span class="chip">直近 ${latest.price.toLocaleString()}円${cntText}</span>
+          </div>
+        `;
+      }
+
+      const diff = latest.price - prev.price;
+      const cls = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
+      const arrow = diff > 0 ? "↑" : diff < 0 ? "↓" : "→";
+      const sign = diff > 0 ? "+" : diff < 0 ? "−" : "±";
+      const abs = Math.abs(diff);
+
+      let pctText = "";
+      if (prev.price !== 0) {
+        const rate = (diff / prev.price) * 100;
+        if (Number.isFinite(rate)) pctText = `（${rate.toFixed(1)}%）`;
+      }
+
+      const prevCnt = Number.isFinite(prev.count) ? `${prev.count}件` : "—";
+      const latestCnt = Number.isFinite(latest.count) ? `${latest.count}件` : "—";
+
+      return `
+        <div class="delta">
+          <span class="delta-main ${cls}">${arrow} 前回取引週比 ${sign}${abs.toLocaleString()}円 ${escapeHtml(pctText)}</span>
+          <span class="chip">前回 ${prev.price.toLocaleString()}円 / ${prevCnt}</span>
+          <span class="chip">直近 ${latest.price.toLocaleString()}円 / ${latestCnt}</span>
+        </div>
+      `;
+    }
+
+    function renderActiveFilters(metricSel, releaseYearSel, seriesSel, minDiffSel) {
+      const activeFilters = document.getElementById("activeFilters");
+      if (!activeFilters) return;
+      const chips = [];
+      if (metricSel.value === "rateDesc") chips.push({ key: "metric", text: "指標: 上昇率（%）" });
+      if (releaseYearSel.value) chips.push({ key: "releaseYear", text: `発売年: ${releaseYearSel.value}` });
+      if (seriesSel.value) chips.push({ key: "series", text: `シリーズ: ${seriesSel.value}` });
+      if (minDiffSel.value && minDiffSel.value !== "0") {
+        const selected = minDiffSel.options[minDiffSel.selectedIndex];
+        const label = selected ? selected.textContent.trim() : "";
+        if (label) chips.push({ key: "minDiff", text: label });
+      }
+      activeFilters.innerHTML = chips.map((chip) =>
+        `<button class="ranking-filter-chip" type="button" data-filter-key="${escapeHtml(chip.key)}" aria-label="${escapeHtml(chip.text)} を解除">
+          <span>${escapeHtml(chip.text)}</span>
+          <span class="ranking-filter-chip-remove" aria-hidden="true">×</span>
+        </button>`
+      ).join("");
+      activeFilters.classList.toggle("is-visible", chips.length > 0);
+    }
+
+    function buildStandardCard(row, rank) {
+      const s = row.s;
+      const deltaClass = row.diff > 0 ? "up" : row.diff < 0 ? "down" : "flat";
+      const deltaText = `${row.diff > 0 ? "+" : row.diff < 0 ? "-" : "±"}${Math.abs(row.diff).toLocaleString()}円`;
+      const rateText = row.rate == null ? "—" : `${row.rate > 0 ? "+" : ""}${row.rate.toFixed(1)}%`;
+      const sparklineHtml = buildSparklineSvg(s);
+      const metaItems = [
+        s.releaseYear ? `${escapeHtml(s.releaseYear)}年発売` : "",
+        s.series ? escapeHtml(s.series) : ""
+      ].filter(Boolean);
+      const metaHtml = metaItems.length
+        ? `<div class="compact-meta">${metaItems.map((item) => `<span class="compact-meta-item">${item}</span>`).join("")}</div>`
+        : "";
+      return `
+        <span class="compact-rank-badge">${rank}位</span>
+        <span class="compact-thumb-wrap ranking-card-frameless-thumb">
+          ${s.imageUrl
+            ? `<img class="compact-thumb ranking-card-frameless-img" src="${escapeHtml(s.imageUrl)}" alt="${escapeHtml(s.name ?? "")}" loading="lazy" referrerpolicy="no-referrer"
+                onerror="this.onerror=null; this.style.display='none';">`
+            : ""}
+        </span>
+        <h3 class="compact-card-title">${escapeHtml(s.name ?? "")}</h3>
+        <div class="compact-market-row">
+          <div class="compact-price-row">
+            <div class="compact-price">${row.pair.latest.price.toLocaleString()}円</div>
+            <div class="compact-delta ${deltaClass}">${escapeHtml(deltaText)}</div>
+            <div class="compact-rate ${deltaClass}">${escapeHtml(rateText)}</div>
+          </div>
+          ${sparklineHtml}
+        </div>
+        ${metaHtml}
+      `;
+    }
+
+    // -----------------------------
+    // main
+    // -----------------------------
+    async function main() {
+      await window.common.setupDashboardChrome({ sidebarActive: "surge", topbarActive: "market" });
+      const list = document.getElementById("list");
+      const top3 = document.getElementById("top3");
+      const top1 = document.getElementById("top1");
+      const top2 = document.getElementById("top2");
+      const top3Card = document.getElementById("top3Card");
+      const restSection = document.getElementById("restSection");
+      const metricSel = document.getElementById("metric");
+      const releaseYearSel = document.getElementById("releaseYear");
+      const seriesSel = document.getElementById("series");
+      const minDiffSel = document.getElementById("minDiff");
+      const clearBtn = document.getElementById("clear");
+      const activeFilters = document.getElementById("activeFilters");
+
+      let data;
+      try {
+        data = await loadData();
+      } catch (e) {
+        showError(e.message || "不明なエラーが発生しました");
+        return;
+      }
+      hideError();
+
+      const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
+      const latestWeek = getGlobalLatestTradeWeek(sleeves);
+
+      // 最終更新（直近取引週の最大日付）
+      try {
+        if (latestWeek) {
+          const u = document.getElementById("updatedAt");
+          if (u) u.textContent = formatMetaDate(latestWeek);
+        }
+      } catch (_) { }
+
+      // セレクト初期化
+      const releaseYears = uniq(sleeves.map(s => s.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
+      const seriesList = uniq(sleeves.map(s => s.series)).sort();
+
+      for (const y of releaseYears) {
+        const opt = document.createElement("option");
+        opt.value = String(y);
+        opt.textContent = String(y);
+        releaseYearSel.appendChild(opt);
+      }
+      for (const ser of seriesList) {
+        const opt = document.createElement("option");
+        opt.value = ser;
+        opt.textContent = ser;
+        seriesSel.appendChild(opt);
+      }
+
+      function render() {
+        const metric = metricSel.value;
+        const releaseYear = releaseYearSel.value;
+        const series = seriesSel.value;
+        const minDiff = Number(minDiffSel.value || "0");
+
+        list.innerHTML = "";
+        top1.innerHTML = "";
+        top2.innerHTML = "";
+        top3Card.innerHTML = "";
+        top3.hidden = true;
+        restSection.hidden = false;
+        renderActiveFilters(metricSel, releaseYearSel, seriesSel, minDiffSel);
+
+        const rows = [];
+        for (const s of sleeves) {
+          if (releaseYear && String(s.releaseYear ?? "") !== releaseYear) continue;
+          if (series && String(s.series || "") !== series) continue;
+
+          const surge = computeSurge(s, latestWeek);
+          if (!surge) continue;
+          if (surge.diff < minDiff) continue;
+
+          const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
+            ? window.common.buildSleeveDetailHref(s.id ?? "")
+            : `./sleeve/${encodeURIComponent(s.id ?? "")}/`;
+          rows.push({ s, ...surge, detailHref, marketRange: getMarketRange(s) });
+        }
+
+        rows.sort((a, b) => {
+          if (metric === "rateDesc") {
+            const ra = a.rate ?? -Infinity;
+            const rb = b.rate ?? -Infinity;
+            if (rb !== ra) return rb - ra;
+            return b.diff - a.diff;
+          }
+          if (b.diff !== a.diff) return b.diff - a.diff;
+          return (b.rate ?? -Infinity) - (a.rate ?? -Infinity);
+        });
+
+        const c = document.getElementById("countInfo");
+        if (c) c.textContent = `${rows.length.toLocaleString()}件`;
+        if (window.common && typeof window.common.updateItemListStructuredData === "function") {
+          window.common.updateItemListStructuredData("surgeItemListStructuredData", rows, {
+            name: "ポケカスリーブ急上昇ランキング",
+            description: "ポケカスリーブの急上昇ランキング一覧です。"
+          });
+        }
+
+        if (rows.length === 0) {
+          list.innerHTML = `<div class="card"><div class="title">該当なし</div><div class="meta">条件に一致する急上昇スリーブがありません</div></div>`;
+          return;
+        }
+
+        const topRows = rows.slice(0, 3);
+        if (topRows.length) {
+          top3.hidden = false;
+          top1.innerHTML = buildPodiumCard(topRows[0], 1);
+          if (topRows[1]) top2.innerHTML = buildPodiumCard(topRows[1], 2);
+          if (topRows[2]) top3Card.innerHTML = buildPodiumCard(topRows[2], 3);
+        }
+
+        const normalRows = rows.slice(3);
+        restSection.hidden = normalRows.length === 0;
+
+        const frag = document.createDocumentFragment();
+
+        for (let i = 0; i < normalRows.length; i++) {
+          const row = normalRows[i];
+          const rank = i + 4;
+          const card = document.createElement("a");
+          card.className = "compact-card ranking-card ranking-card--compact ranking-card-frameless";
+          card.style.border = "0";
+          card.style.borderRadius = "0";
+          card.style.background = "transparent";
+          card.style.boxShadow = "none";
+          card.href = row.detailHref;
+          card.setAttribute("data-sleeve-link", "1");
+          card.setAttribute("aria-label", `${String(row.s.name ?? "")}の詳細を見る`);
+          card.innerHTML = buildStandardCard(row, rank);
+          frag.appendChild(card);
+        }
+
+        list.appendChild(frag);
+      }
+
+      // events
+      metricSel.addEventListener("change", render);
+      releaseYearSel.addEventListener("change", render);
+      seriesSel.addEventListener("change", render);
+      minDiffSel.addEventListener("change", render);
+
+      clearBtn.addEventListener("click", () => {
+        metricSel.value = "diffDesc";
+        releaseYearSel.value = "";
+        seriesSel.value = "";
+        minDiffSel.value = "0";
+        render();
+      });
+
+      if (activeFilters) {
+        activeFilters.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-filter-key]");
+          if (!button) return;
+          const key = button.getAttribute("data-filter-key");
+          if (key === "metric") metricSel.value = "diffDesc";
+          if (key === "releaseYear") releaseYearSel.value = "";
+          if (key === "series") seriesSel.value = "";
+          if (key === "minDiff") minDiffSel.value = "0";
+          render();
+        });
+      }
+
+      render();
+    }
+  document.addEventListener("site:injected", () => {
+    main();
+  });
+  </script>
+
+  <!-- 共通JS（ヘッダー/フッター注入 + Active Nav） -->
+  <script src="./assets/common.js?v=20260908a"></script>
+</body>
+
+</html>
+
+
+
+
+
+
+
