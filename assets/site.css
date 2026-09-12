@@ -8881,3 +8881,418 @@ footer.site-footer {
         line-height: 34px;
     }
 }
+
+.my-collection-hero-copy {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+}
+
+.my-collection-add-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #11b7bd 0%, #079ca2 100%);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 900;
+    text-decoration: none;
+    box-shadow: 0 10px 22px rgba(7, 156, 162, .22);
+    white-space: nowrap;
+}
+
+.my-asset-gain-badge {
+    display: grid;
+    gap: 2px;
+    align-self: center;
+    justify-items: center;
+    min-width: 116px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: #d9f7f7;
+    color: #079455;
+    font-weight: 900;
+}
+
+.my-asset-gain-badge strong {
+    font-size: 20px;
+    line-height: 1.05;
+}
+
+.my-asset-gain-badge small {
+    font-size: 12px;
+    line-height: 1;
+}
+
+.my-asset-primary-foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+    color: #536783;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.my-asset-primary-foot > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: 10px;
+    background: #eef5ff;
+}
+
+.my-asset-inline-pnl.is-positive,
+.my-asset-inline-rate.is-positive,
+.my-asset-gain-badge .is-positive {
+    color: #079455;
+}
+
+.my-asset-inline-pnl.is-negative,
+.my-asset-inline-rate.is-negative,
+.my-asset-gain-badge .is-negative {
+    color: #d92d20;
+}
+
+.my-asset-gain-badge:has(.is-negative) {
+    background: #fff1f1;
+}
+
+.my-collection-list-section {
+    width: min(100%, 1160px);
+    margin-inline: auto;
+}
+
+.my-collection-list-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: min(100%, 1160px);
+    margin: 0 auto 12px;
+}
+
+.my-collection-list-head h2 {
+    margin: 0;
+    color: #071635;
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 900;
+}
+
+.my-collection-sort select {
+    height: 42px;
+    min-width: 168px;
+    padding: 0 38px 0 16px;
+    border: 1px solid #d7e4f0;
+    border-radius: 999px;
+    background: #fff;
+    color: #344054;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.my-collection-info {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+.my-collection-meta {
+    color: #667795;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+.my-collection-qty-pill {
+    width: fit-content;
+    min-height: 22px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: #eef5ff;
+    color: #071635;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 22px;
+}
+
+.my-collection-price strong {
+    display: block;
+    color: #071635;
+    font-size: 20px;
+    line-height: 1.1;
+    font-weight: 900;
+}
+
+.my-collection-price small {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    min-height: 22px;
+    margin-top: 5px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: #d9f7f7;
+    color: #079ca2;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.my-collection-price small.is-negative {
+    background: #fff1f1;
+    color: #d92d20;
+}
+
+.my-collection-row-arrow {
+    display: none;
+}
+
+@media (max-width: 700px) {
+    .my-collection-page .dashboard-content {
+        width: min(100%, 430px);
+        padding-inline: 16px;
+        padding-bottom: 92px;
+        gap: 12px;
+    }
+
+    .my-collection-page .breadcrumb {
+        margin-bottom: 0;
+        font-size: 12px;
+        font-weight: 900;
+    }
+
+    .my-collection-page .page-hero-card {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .my-collection-page .page-hero-title {
+        font-size: 28px;
+        line-height: 1.05;
+    }
+
+    .my-collection-lead {
+        max-width: 240px;
+        font-size: 12px;
+        line-height: 1.45;
+    }
+
+    .my-collection-add-btn {
+        min-height: 40px;
+        padding: 0 14px;
+        font-size: 13px;
+    }
+
+    .my-asset-panel {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+    .my-asset-card {
+        min-height: 72px;
+        padding: 12px;
+        border-radius: 10px;
+        box-shadow: 0 8px 22px rgba(15, 23, 42, .05);
+    }
+
+    .my-asset-card--primary {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 54px minmax(0, 1fr) auto;
+        gap: 12px;
+        border-color: #cfe2f3;
+        background: linear-gradient(135deg, #fff 0%, #eefaff 100%);
+        box-shadow: 0 8px 22px rgba(21, 74, 111, .08);
+    }
+
+    .my-asset-card-icon {
+        flex-basis: 44px;
+        width: 44px;
+        height: 44px;
+    }
+
+    .my-asset-total-value {
+        font-size: 32px;
+    }
+
+    .my-asset-card-value,
+    .my-collection-summary {
+        font-size: 22px;
+    }
+
+    .my-asset-gain-badge {
+        min-width: 92px;
+        padding: 9px 10px;
+    }
+
+    .my-asset-gain-badge strong {
+        font-size: 18px;
+    }
+
+    .my-asset-primary-foot {
+        gap: 6px;
+        font-size: 11px;
+    }
+
+    .my-asset-primary-foot > span {
+        min-height: 24px;
+        padding: 0 8px;
+    }
+
+    .my-asset-chart-panel {
+        width: 100%;
+        gap: 8px;
+        margin-bottom: 2px;
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .my-asset-chart-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .my-asset-chart-head h2 {
+        font-size: 20px;
+    }
+
+    .my-asset-chart-head p {
+        display: none;
+    }
+
+    .my-asset-periods {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 4px;
+    }
+
+    .my-asset-period-btn {
+        min-height: 28px;
+        padding: 0 9px;
+        font-size: 11px;
+    }
+
+    .my-asset-chart-wrap,
+    .my-asset-chart-wrap.is-mobile-density {
+        margin-inline: 0;
+        border-radius: 10px;
+    }
+
+    .my-collection-list-section,
+    .my-collection-grid {
+        width: 100%;
+    }
+
+    .my-collection-list-head {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .my-collection-list-head h2 {
+        font-size: 22px;
+    }
+
+    .my-collection-sort select {
+        min-width: 136px;
+        height: 38px;
+        padding-inline: 12px 28px;
+        font-size: 12px;
+    }
+
+    .my-collection-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .my-collection-card {
+        padding: 0;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .my-collection-card-link {
+        position: relative;
+        grid-template-columns: 72px minmax(0, 1fr) auto 14px;
+        grid-template-areas: "thumb info price arrow";
+        align-items: center;
+        gap: 10px;
+        min-height: 86px;
+        padding: 10px 12px;
+    }
+
+    .my-collection-thumb {
+        grid-area: thumb;
+        width: 72px;
+        height: 58px;
+        min-height: 0;
+        border-radius: 10px;
+    }
+
+    .my-collection-info {
+        grid-area: info;
+    }
+
+    .my-collection-title {
+        font-size: 13px;
+        line-height: 1.25;
+        -webkit-line-clamp: 2;
+    }
+
+    .my-collection-meta {
+        font-size: 11px;
+    }
+
+    .my-collection-price {
+        grid-area: price;
+        justify-self: end;
+        min-width: 74px;
+        text-align: right;
+        font-size: 12px;
+    }
+
+    .my-collection-price strong {
+        font-size: 16px;
+    }
+
+    .my-collection-price small {
+        justify-content: center;
+        margin-left: auto;
+        font-size: 10px;
+    }
+
+    .my-collection-row-arrow {
+        display: block;
+        grid-area: arrow;
+        color: #071635;
+        font-size: 24px;
+        font-weight: 900;
+    }
+
+    .my-collection-quantity,
+    .my-collection-purchase-week,
+    .my-collection-remove {
+        display: none;
+    }
+
+    .my-collection-note {
+        display: none;
+    }
+}

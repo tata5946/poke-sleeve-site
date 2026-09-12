@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/site.css?v=20260908a" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260912a" />
 </head>
 
 <body class="page-market-list my-collection-page" data-hide-global-header="1">
@@ -39,8 +39,11 @@
         </nav>
 
         <section class="page-hero-card" aria-label="ページ見出し">
-          <h1 class="page-hero-title">マイコレクション</h1>
-          <p class="my-collection-lead">持っているデッキシールドを登録して、自分だけのコレクションを管理できます。</p>
+          <div class="my-collection-hero-copy">
+            <h1 class="page-hero-title">マイコレクション</h1>
+            <p class="my-collection-lead">持っているデッキシールドを登録して、自分だけのコレクションを管理できます。</p>
+          </div>
+          <a class="my-collection-add-btn" href="./sleeves/">＋ 追加する</a>
         </section>
 
         <section class="my-asset-panel" aria-label="コレクション資産サマリー">
@@ -56,31 +59,15 @@
             <span class="my-asset-card-body">
               <span class="my-asset-label">総資産額</span>
               <strong id="collectionAssetTotal" class="my-asset-card-value my-asset-total-value">―</strong>
+              <span class="my-asset-primary-foot">
+                <span>取得総額 <strong id="collectionAcquisitionTotal">―</strong></span>
+                <span>評価損益 <strong id="collectionValuationPnl" class="my-asset-inline-pnl">―</strong> <strong id="collectionValuationRate" class="my-asset-inline-rate">―</strong></span>
+              </span>
               <small id="collectionValuationNote" class="my-asset-card-note" hidden>※取得価格・評価損益は購入価格取得済みアイテムのみで計算</small>
             </span>
-          </div>
-          <div class="my-asset-card">
-            <span class="my-asset-card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
-                <path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V5a2 2 0 0 1 2-2h7a2 2 0 0 1 1.4.6l7.4 7.4a1.9 1.9 0 0 1 0 2.4Z"></path>
-                <circle cx="8" cy="8" r="1.4"></circle>
-              </svg>
-            </span>
-            <span class="my-asset-card-body">
-              <span class="my-asset-label">取得価格</span>
-              <strong id="collectionAcquisitionTotal" class="my-asset-card-value">―</strong>
-            </span>
-          </div>
-          <div class="my-asset-card my-asset-card--gain">
-            <span class="my-asset-card-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
-                <path d="m4 17 6-6 4 4 6-8"></path>
-                <path d="M14 7h6v6"></path>
-              </svg>
-            </span>
-            <span class="my-asset-card-body">
-              <span class="my-asset-label">評価損益</span>
-              <strong id="collectionValuationPnl" class="my-asset-card-value">―</strong>
+            <span class="my-asset-gain-badge" aria-label="評価損益">
+              <strong id="collectionValuationPnlBadge">―</strong>
+              <small id="collectionValuationRateBadge">―</small>
             </span>
           </div>
           <div class="my-asset-card">
@@ -118,8 +105,8 @@
               <p>コレクションの追加・削除・保有数変更の履歴と、各時点の相場で評価した参考推移です。</p>
             </div>
             <div class="my-asset-periods" aria-label="表示期間">
-              <button type="button" class="my-asset-period-btn" data-asset-period="1m">1か月</button>
-              <button type="button" class="my-asset-period-btn is-active" data-asset-period="3m">3か月</button>
+              <button type="button" class="my-asset-period-btn is-active" data-asset-period="1m">1か月</button>
+              <button type="button" class="my-asset-period-btn" data-asset-period="3m">3か月</button>
               <button type="button" class="my-asset-period-btn" data-asset-period="6m">6か月</button>
               <button type="button" class="my-asset-period-btn" data-asset-period="1y">1年</button>
               <button type="button" class="my-asset-period-btn" data-asset-period="all">全期間</button>
@@ -128,7 +115,19 @@
           <div id="collectionAssetChart" class="my-asset-chart" aria-live="polite"></div>
         </section>
 
-        <section aria-label="登録済みデッキシールド">
+        <section class="my-collection-list-section" aria-label="登録済みデッキシールド">
+          <div class="my-collection-list-head">
+            <h2>コレクション一覧</h2>
+            <label class="my-collection-sort">
+              <span class="sr-only">並び替え</span>
+              <select id="collectionSort">
+                <option value="valuationDesc">評価額の高い順</option>
+                <option value="pnlDesc">評価損益の高い順</option>
+                <option value="quantityDesc">保有枚数の多い順</option>
+                <option value="nameAsc">名前順</option>
+              </select>
+            </label>
+          </div>
           <div id="collectionList" class="my-collection-grid" aria-live="polite"></div>
         </section>
 
@@ -143,7 +142,7 @@
 
   <script src="./assets/common.js?v=20260908a"></script>
   <script>
-    let currentAssetPeriod = "3m";
+    let currentAssetPeriod = "1m";
     let currentAssetTimeline = [];
 
     function escapeHtml(str) {
@@ -542,6 +541,8 @@
           minPurchaseDate: timestampToDateValue(releaseTimestamp),
           maxPurchaseDate: latestIndexWeek,
           price: sleeve ? getLatestPrice(sleeve) : null,
+          releaseYear: sleeve?.releaseYear ?? sleeve?.release_year ?? "",
+          condition: sleeve?.condition || "公式",
           releaseTimestamp,
           pricePoints,
           weeklyPoints: pricePoints,
@@ -678,6 +679,8 @@
       const currentValuationEl = document.getElementById("collectionCurrentValuation");
       const pnlEl = document.getElementById("collectionValuationPnl");
       const pnlRateEl = document.getElementById("collectionValuationRate");
+      const pnlBadgeEl = document.getElementById("collectionValuationPnlBadge");
+      const pnlRateBadgeEl = document.getElementById("collectionValuationRateBadge");
       const valuationNoteEl = document.getElementById("collectionValuationNote");
       const countEl = document.getElementById("collectionCount");
       const quantityEl = document.getElementById("collectionQuantityTotal");
@@ -703,11 +706,23 @@
         const tone = getValuationToneClass(summary.pnlTotal);
         if (tone) pnlEl.classList.add(tone);
       }
+      if (pnlBadgeEl) {
+        pnlBadgeEl.textContent = summary.pnlTotal != null ? formatSignedValuationMoney(summary.pnlTotal) : "―";
+        pnlBadgeEl.classList.remove("is-positive", "is-negative");
+        const tone = getValuationToneClass(summary.pnlTotal);
+        if (tone) pnlBadgeEl.classList.add(tone);
+      }
       if (pnlRateEl) {
         pnlRateEl.textContent = summary.pnlRate != null ? formatSignedRate(summary.pnlRate) : "―";
         pnlRateEl.classList.remove("is-positive", "is-negative");
         const tone = getValuationToneClass(summary.pnlRate);
         if (tone) pnlRateEl.classList.add(tone);
+      }
+      if (pnlRateBadgeEl) {
+        pnlRateBadgeEl.textContent = summary.pnlRate != null ? formatSignedRate(summary.pnlRate) : "―";
+        pnlRateBadgeEl.classList.remove("is-positive", "is-negative");
+        const tone = getValuationToneClass(summary.pnlRate);
+        if (tone) pnlRateBadgeEl.classList.add(tone);
       }
       if (valuationNoteEl) valuationNoteEl.hidden = summary.missingPurchaseCount <= 0;
       if (countEl) countEl.textContent = `${rows.length}種類`;
@@ -839,11 +854,11 @@
 
       const isMobileChart = window.matchMedia("(max-width: 700px)").matches;
       const W = isMobileChart ? 360 : 760;
-      const H = isMobileChart ? 340 : 320;
-      const padL = isMobileChart ? 46 : 82;
-      const padR = isMobileChart ? 28 : 64;
-      const padT = isMobileChart ? 24 : 32;
-      const padB = isMobileChart ? 42 : 54;
+      const H = isMobileChart ? 190 : 320;
+      const padL = isMobileChart ? 38 : 82;
+      const padR = isMobileChart ? 18 : 64;
+      const padT = isMobileChart ? 18 : 32;
+      const padB = isMobileChart ? 30 : 54;
       const values = scoped.map((point) => point.value);
       const quantities = scoped.map((point) => point.totalQuantity || 0);
       const axis = buildAssetAxis(Math.min(...values), Math.max(...values), isMobileChart ? 4 : 5);
@@ -956,17 +971,27 @@
       const purchasePriceNote = row.purchasePriceInfo?.note ? `（${row.purchasePriceInfo.note}）` : "";
       const valuation = row.valuation || buildCollectionValuation(row);
       const cardPnlClass = getValuationToneClass(valuation.pnlValue);
+      const cardPnlRate = valuation.pnlCostBasis > 0 && valuation.pnlValue != null ? (valuation.pnlValue / valuation.pnlCostBasis) * 100 : null;
+      const valuationTotal = valuation.currentValue != null ? valuation.currentValue : null;
+      const releaseText = row.releaseYear ? `${row.releaseYear}年発売` : "";
+      const conditionText = row.condition || "公式";
       return `
         <article class="my-collection-card">
           <a class="my-collection-card-link" href="${escapeHtml(row.href)}" data-sleeve-link="1" aria-label="${escapeHtml(row.name)}の詳細を見る">
             <span class="my-collection-thumb">
               ${row.image ? `<img src="${escapeHtml(row.image)}" alt="${escapeHtml(row.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}
             </span>
-            <h2 class="my-collection-title">${escapeHtml(row.name)}</h2>
+            <span class="my-collection-info">
+              <h2 class="my-collection-title">${escapeHtml(row.name)}</h2>
+              <span class="my-collection-meta">${escapeHtml([releaseText, conditionText].filter(Boolean).join("　"))}</span>
+              <span class="my-collection-qty-pill">${escapeHtml(row.quantity)}枚</span>
+            </span>
             <div class="my-collection-price">
-              <span class="my-collection-price-label">現在相場</span>
-              ${escapeHtml(formatPrice(row.price))}
+              <span class="my-collection-price-label">評価額</span>
+              <strong>${escapeHtml(valuationTotal != null ? formatValuationMoney(valuationTotal) : formatPrice(row.price))}</strong>
+              ${valuation.hasPnl ? `<small class="${escapeHtml(cardPnlClass)}">${escapeHtml(formatSignedValuationMoney(valuation.pnlValue))}${cardPnlRate != null ? ` ${escapeHtml(formatSignedRate(cardPnlRate))}` : ""}</small>` : ""}
             </div>
+            <span class="my-collection-row-arrow" aria-hidden="true">›</span>
           </a>
           <div class="my-collection-quantity" aria-label="${escapeHtml(row.name)}の保有数">
             <span class="my-collection-quantity-label">保有数</span>
@@ -1018,6 +1043,23 @@
       `;
     }
 
+    function sortCollectionRows(rows, sortValue) {
+      const collator = new Intl.Collator("ja-JP", { numeric: true, sensitivity: "base" });
+      const list = [...rows];
+      const getValuation = (row) => Number(row?.valuation?.currentValue ?? row?.price ?? 0);
+      const getPnl = (row) => Number(row?.valuation?.pnlValue ?? Number.NEGATIVE_INFINITY);
+      if (sortValue === "pnlDesc") {
+        return list.sort((a, b) => getPnl(b) - getPnl(a));
+      }
+      if (sortValue === "quantityDesc") {
+        return list.sort((a, b) => (Number(b.quantity) || 0) - (Number(a.quantity) || 0));
+      }
+      if (sortValue === "nameAsc") {
+        return list.sort((a, b) => collator.compare(a.name || "", b.name || ""));
+      }
+      return list.sort((a, b) => getValuation(b) - getValuation(a));
+    }
+
     async function renderCollection() {
       const root = document.getElementById("collectionList");
       const countEl = document.getElementById("collectionCount");
@@ -1061,7 +1103,9 @@
       updateAssetSummary(rows, currentAssetTimeline);
       renderAssetChart(currentAssetTimeline);
 
-      root.innerHTML = rows.map(buildCard).join("");
+      const sortSel = document.getElementById("collectionSort");
+      const sortedRows = sortCollectionRows(rows, sortSel?.value || "valuationDesc");
+      root.innerHTML = sortedRows.map(buildCard).join("");
       root.querySelectorAll("[data-remove-collection]").forEach((button) => {
         button.addEventListener("click", () => {
           window.common.removeFromMyCollection(button.getAttribute("data-remove-collection"));
@@ -1106,6 +1150,10 @@
           window.common.updateMyCollectionPurchaseDate(sleeveId, selectedDate);
         });
       });
+      if (sortSel && !sortSel.dataset.bound) {
+        sortSel.dataset.bound = "1";
+        sortSel.addEventListener("change", () => renderCollection());
+      }
     }
 
     async function main() {
