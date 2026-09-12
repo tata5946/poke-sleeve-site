@@ -7232,7 +7232,7 @@ footer.site-footer {
         box-sizing: border-box !important;
         width: 100% !important;
         max-width: 100% !important;
-        padding: 18px 16px calc(120px + env(safe-area-inset-bottom, 0px)) !important;
+        padding: 18px 28px calc(120px + env(safe-area-inset-bottom, 0px)) !important;
         overflow-x: hidden !important;
     }
 
@@ -7253,7 +7253,7 @@ footer.site-footer {
 
     :root body.page-market-list .breadcrumb,
     :root body.ranking-page .breadcrumb {
-        margin-bottom: 12px !important;
+        margin-bottom: 0 !important;
     }
 
     :root body.page-market-list .ranking-page-top,
@@ -7269,7 +7269,7 @@ footer.site-footer {
     :root body.ranking-page .ranking-hero,
     :root body.ranking-page .page-hero-card {
         align-items: flex-start !important;
-        padding: 16px !important;
+        padding: 22px 0 16px !important;
         gap: 12px !important;
     }
 
@@ -9388,7 +9388,7 @@ footer.site-footer {
 @media (max-width: 700px) {
     .my-collection-page .dashboard-content {
         width: min(100%, 430px);
-        padding-inline: 16px;
+        padding-inline: 28px;
         padding-bottom: 92px;
         gap: 12px;
     }
@@ -9404,7 +9404,7 @@ footer.site-footer {
         align-items: center;
         gap: 10px;
         width: 100%;
-        padding: 0;
+        padding: 22px 0 16px;
         border: 0;
         background: transparent;
         box-shadow: none;
