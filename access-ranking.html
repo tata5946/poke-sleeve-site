@@ -545,7 +545,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="./assets/ranking-redesign.css?v=20260912c" />
+  <link rel="stylesheet" href="./assets/ranking-redesign.css?v=20260912e" />
 </head>
 
 <body class="ranking-redesign-page ranking-redesign-page--views" data-hide-global-header="1">
@@ -1068,7 +1068,6 @@
             </div>
             <div class="podium-meta">
               <div class="podium-chip-group">${tagHtml}</div>
-              <span class="podium-chip">ID ${escapeHtml(row.id)}</span>
             </div>
             <div class="podium-actions">
               <span class="btn">価格推移を見る →</span>
@@ -1140,7 +1139,7 @@
         const id = String(item && item.id || "");
         const access = Number(item && item.access);
         const sleeve = sleeveMap.get(id);
-        const name = sleeve && sleeve.name ? sleeve.name : `ID: ${id}`;
+        const name = sleeve && sleeve.name ? sleeve.name : "商品名不明";
         const imageUrl = sleeve && sleeve.imageUrl ? String(sleeve.imageUrl) : "";
         const detailHref = (window.common && typeof window.common.buildSleeveDetailHref === "function")
           ? window.common.buildSleeveDetailHref(id)
