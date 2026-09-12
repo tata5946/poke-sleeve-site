@@ -614,6 +614,20 @@
   content: "現在価格";
 }
 
+:root body.ranking-redesign-page--price .podium-metrics {
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-areas:
+    "label"
+    "primary" !important;
+  align-content: center !important;
+}
+
+:root body.ranking-redesign-page--price .podium-metric:nth-child(n+2),
+:root body.ranking-redesign-page--price .podium-diff,
+:root body.ranking-redesign-page--price .podium-rate {
+  display: none !important;
+}
+
 :root body.ranking-redesign-page--price-up .podium-metrics,
 :root body.ranking-redesign-page--rate-up .podium-metrics {
   grid-template-areas:
@@ -1090,6 +1104,21 @@
 :root body.ranking-redesign-page .compact-card .sleeve-sparkline--down .sleeve-sparkline-dot,
 :root body.ranking-redesign-page .compact-card .sleeve-sparkline--flat .sleeve-sparkline-dot {
   fill: var(--ranking-teal) !important;
+}
+
+:root body.ranking-redesign-page--price .compact-price-row {
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-areas: "price" !important;
+  align-content: center !important;
+}
+
+:root body.ranking-redesign-page--price .compact-price {
+  font-size: 31px !important;
+}
+
+:root body.ranking-redesign-page--price .compact-delta,
+:root body.ranking-redesign-page--price .compact-rate {
+  display: none !important;
 }
 
 @media (max-width: 1180px) {
