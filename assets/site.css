@@ -9074,15 +9074,17 @@ footer.site-footer {
 
 .my-collection-edit-panel {
     position: absolute;
-    right: 0;
+    right: auto;
     bottom: 0;
-    left: 0;
-    max-height: min(86dvh, 720px);
+    left: 50%;
+    width: min(calc(100% - 24px), 430px);
+    max-height: min(92dvh, 760px);
     overflow: auto;
-    padding: 16px 16px max(22px, env(safe-area-inset-bottom));
+    padding: 18px 16px max(24px, env(safe-area-inset-bottom));
     border-radius: 22px 22px 0 0;
     background: #fff;
     box-shadow: 0 -18px 40px rgba(15, 23, 42, .18);
+    transform: translateX(-50%);
 }
 
 .my-collection-edit-open {
@@ -9090,11 +9092,19 @@ footer.site-footer {
 }
 
 .my-collection-edit-head {
-    display: grid;
-    grid-template-columns: 82px minmax(0, 1fr) 36px;
+    display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 14px;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.my-collection-edit-head h2 {
+    margin: 0;
+    color: #071635;
+    font-size: 19px;
+    line-height: 1.2;
+    font-weight: 900;
 }
 
 .my-collection-edit-thumb {
@@ -9116,85 +9126,196 @@ footer.site-footer {
 
 .my-collection-edit-titleblock {
     display: grid;
-    gap: 4px;
+    gap: 8px;
     min-width: 0;
 }
 
-.my-collection-edit-kicker,
-.my-collection-edit-meta,
-.my-collection-edit-label {
-    color: #667795;
-    font-size: 12px;
-    line-height: 1.25;
-    font-weight: 900;
-}
-
-.my-collection-edit-titleblock h2 {
-    margin: 0;
+.my-collection-edit-titleblock strong {
     color: #071635;
     font-size: 18px;
     line-height: 1.25;
     font-weight: 900;
 }
 
-.my-collection-edit-close {
-    width: 36px;
-    height: 36px;
-    border: 1px solid #dbe5f2;
+.my-collection-edit-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.my-collection-edit-chips span {
+    min-height: 26px;
+    padding: 0 10px;
+    border: 1px solid #dbe8f4;
     border-radius: 999px;
-    background: #fff;
+    background: #f8fbff;
+    color: #667795;
+    font-size: 12px;
+    line-height: 24px;
+    font-weight: 900;
+}
+
+.my-collection-edit-close {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    background: transparent;
     color: #071635;
-    font-size: 22px;
+    font-size: 30px;
     line-height: 1;
     font-weight: 800;
 }
 
-.my-collection-edit-summary,
-.my-collection-edit-field,
-.my-collection-edit-check {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    min-width: 0;
-    padding: 12px 0;
-    border-top: 1px solid #e4edf6;
-}
-
-.my-collection-edit-summary span,
-.my-collection-edit-field.is-stacked {
+.my-collection-edit-product {
     display: grid;
-    gap: 3px;
+    grid-template-columns: 108px minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.my-collection-edit-product .my-collection-edit-thumb {
+    width: 108px;
+    height: 108px;
+}
+
+.my-collection-edit-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.my-collection-edit-metric {
+    display: grid;
+    gap: 6px;
     min-width: 0;
+    padding: 14px 12px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f8fbff 0%, #eef5ff 100%);
 }
 
-.my-collection-edit-summary small,
-.my-collection-edit-field small {
+.my-collection-edit-metric.is-gain {
+    background: linear-gradient(135deg, #eefcf9 0%, #dff8f4 100%);
+}
+
+.my-collection-edit-metric span,
+.my-collection-edit-section-head span,
+.my-collection-edit-purchase label > span,
+.my-collection-edit-purchase small {
     color: #667795;
-    font-size: 11px;
-    font-weight: 800;
+    font-size: 12px;
+    line-height: 1.25;
+    font-weight: 900;
 }
 
-.my-collection-edit-summary strong,
-.my-collection-edit-field strong {
+.my-collection-edit-metric strong {
     color: #071635;
-    font-size: 20px;
+    font-size: 24px;
+    line-height: 1.05;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.my-collection-edit-metric small {
+    color: #099aa1;
+    font-size: 15px;
     line-height: 1.15;
     font-weight: 900;
 }
 
-.my-collection-edit-summary .is-positive,
-.my-collection-edit-field .is-positive {
+.my-collection-edit-quantity,
+.my-collection-edit-purchase {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+    margin-bottom: 16px;
+}
+
+.my-collection-edit-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+}
+
+.my-collection-edit-section-head h3,
+.my-collection-edit-purchase h3 {
+    margin: 0;
+    color: #071635;
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 900;
+}
+
+.my-collection-edit-stepper {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) 40px 56px;
+    align-items: center;
+    min-height: 58px;
+    overflow: hidden;
+    border: 1px solid #dbe8f4;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.my-collection-edit-stepper button {
+    width: 56px;
+    height: 58px;
+    border: 0;
+    background: #f8fbff;
+    color: #071635;
+    font: inherit;
+    font-size: 28px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+.my-collection-edit-stepper strong {
+    color: #071635;
+    font-size: 26px;
+    text-align: center;
+    font-weight: 900;
+}
+
+.my-collection-edit-stepper > span {
+    color: #667795;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.my-collection-edit-quantity p {
+    margin: 0;
+    color: #667795;
+    font-size: 12px;
+    line-height: 1.4;
+    text-align: center;
+    font-weight: 900;
+}
+
+.my-collection-edit-metric .is-positive,
+.my-collection-edit-purchase .is-positive {
     color: #099aa1;
 }
 
-.my-collection-edit-summary .is-negative,
-.my-collection-edit-field .is-negative {
+.my-collection-edit-metric .is-negative,
+.my-collection-edit-purchase .is-negative {
     color: #d92d20;
 }
 
+.my-collection-edit-purchase {
+    padding: 14px;
+    border: 1px solid #dbe8f4;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+}
+
 .my-collection-edit-check {
-    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     color: #071635;
     font-size: 14px;
     font-weight: 900;
@@ -9204,13 +9325,43 @@ footer.site-footer {
     width: 18px;
     height: 18px;
     margin: 0;
-    accent-color: #0aa0a6;
+    accent-color: #071635;
+}
+
+.my-collection-edit-purchase-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
+}
+
+.my-collection-edit-purchase label {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+}
+
+.my-collection-edit-purchase input[type="text"],
+.my-collection-edit-purchase .my-collection-date-button {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 10px;
+    border: 1px solid #dbe5f2;
+    border-radius: 10px;
+    background: #fff;
+    color: #071635;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.my-collection-edit-purchase input[readonly] {
+    cursor: default;
 }
 
 .my-collection-edit-remove {
     width: 100%;
-    min-height: 44px;
-    margin-top: 10px;
+    min-height: 48px;
+    margin-top: 4px;
     border: 1px solid #fecaca;
     border-radius: 12px;
     background: #fff5f5;
@@ -9218,6 +9369,20 @@ footer.site-footer {
     font: inherit;
     font-size: 14px;
     font-weight: 900;
+}
+
+.my-collection-edit-save {
+    width: 100%;
+    min-height: 52px;
+    margin-top: 12px;
+    border: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #071635 0%, #082f78 100%);
+    color: #fff;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 900;
+    box-shadow: 0 12px 22px rgba(7, 22, 53, .18);
 }
 
 @media (max-width: 700px) {
