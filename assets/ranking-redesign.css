@@ -1421,6 +1421,7 @@
   :root body.ranking-redesign-page .podium-card--rank3 {
     grid-template-columns: 36% minmax(0, 1fr) !important;
     grid-template-rows: 236px !important;
+    grid-template-areas: "media content" !important;
     gap: 0 !important;
     height: 236px !important;
     min-height: 236px !important;
@@ -1457,6 +1458,7 @@
   :root body.ranking-redesign-page .podium-media,
   :root body.ranking-redesign-page .podium-card--rank1 .podium-media,
   :root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-media {
+    grid-area: media !important;
     grid-column: 1 !important;
     grid-row: 1 !important;
     width: 100% !important;
@@ -1477,6 +1479,7 @@
   :root body.ranking-redesign-page .podium-content,
   :root body.ranking-redesign-page .podium-card--rank1 .podium-content,
   :root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-content {
+    grid-area: content !important;
     grid-column: 2 !important;
     grid-row: 1 !important;
     grid-template-rows: 44px 24px 76px 64px !important;
@@ -1629,11 +1632,13 @@
   }
 
   :root body.ranking-redesign-page .compact-price-row {
-    grid-template-columns: minmax(0, 1fr) auto auto !important;
-    grid-template-areas: "delta price rate" !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-areas:
+      "delta rate"
+      "price price" !important;
     align-self: start !important;
     align-content: center !important;
-    gap: 8px !important;
+    gap: 2px 6px !important;
     height: auto !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -1642,6 +1647,8 @@
 
   :root body.ranking-redesign-page .compact-delta {
     font-size: 20px !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
   }
 
   :root body.ranking-redesign-page .compact-delta::before,
@@ -1651,6 +1658,8 @@
 
   :root body.ranking-redesign-page .compact-price {
     font-size: 15px !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
   }
 
   :root body.ranking-redesign-page .compact-rate {
