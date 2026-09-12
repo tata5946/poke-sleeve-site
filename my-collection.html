@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/site.css?v=20260912c" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260912d" />
 </head>
 
 <body class="page-market-list my-collection-page" data-hide-global-header="1">
@@ -129,6 +129,13 @@
           </div>
           <div id="collectionList" class="my-collection-grid" aria-live="polite"></div>
         </section>
+
+        <div id="collectionEditSheet" class="my-collection-edit-sheet" hidden>
+          <button class="my-collection-edit-backdrop" type="button" data-edit-close aria-label="編集を閉じる"></button>
+          <section class="my-collection-edit-panel" role="dialog" aria-modal="true" aria-labelledby="collectionEditTitle">
+            <div id="collectionEditContent"></div>
+          </section>
+        </div>
 
         <p class="my-collection-note">
           マイコレクションのデータは、このブラウザ内に保存されます。ブラウザのサイトデータ・Cookie等を削除した場合や、シークレットモード、別ブラウザ、別端末ではデータが引き継がれない場合があります。
@@ -976,7 +983,7 @@
       const conditionText = row.condition || "公式";
       return `
         <article class="my-collection-card">
-          <a class="my-collection-card-link" href="${escapeHtml(row.href)}" data-sleeve-link="1" aria-label="${escapeHtml(row.name)}の詳細を見る">
+          <a class="my-collection-card-link" href="${escapeHtml(row.href)}" data-edit-collection="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の詳細を見る">
             <span class="my-collection-thumb">
               ${row.image ? `<img src="${escapeHtml(row.image)}" alt="${escapeHtml(row.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}
             </span>
@@ -1059,6 +1066,143 @@
       return list.sort((a, b) => getValuation(b) - getValuation(a));
     }
 
+    function isMobileCollectionView() {
+      return window.matchMedia("(max-width: 700px)").matches;
+    }
+
+    function closeCollectionEditSheet() {
+      const sheet = document.getElementById("collectionEditSheet");
+      if (!sheet) return;
+      sheet.hidden = true;
+      document.body.classList.remove("my-collection-edit-open");
+    }
+
+    function buildCollectionEditSheet(row) {
+      const maxPurchaseDateValue = normalizeDate(row.maxPurchaseDate) || normalizePurchaseDateForCollection(new Date());
+      const minPurchaseDateValue = row.minPurchaseDate && row.minPurchaseDate <= maxPurchaseDateValue ? row.minPurchaseDate : "";
+      const purchaseDateValue = clampPurchaseDate(row.purchaseDate || row.purchaseWeek, minPurchaseDateValue, maxPurchaseDateValue);
+      const purchaseDateLabel = formatPurchaseDateLabel(purchaseDateValue);
+      const purchasePriceNote = row.purchasePriceInfo?.note ? `・${row.purchasePriceInfo.note}` : "";
+      const valuation = row.valuation || buildCollectionValuation(row);
+      const cardPnlClass = getValuationToneClass(valuation.pnlValue);
+      const releaseText = row.releaseYear ? `${row.releaseYear}年発売` : "";
+      const conditionText = row.condition || "公式";
+
+      return `
+        <header class="my-collection-edit-head">
+          <span class="my-collection-edit-thumb">
+            ${row.image ? `<img src="${escapeHtml(row.image)}" alt="${escapeHtml(row.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}
+          </span>
+          <span class="my-collection-edit-titleblock">
+            <span class="my-collection-edit-kicker">コレクション編集</span>
+            <h2 id="collectionEditTitle">${escapeHtml(row.name)}</h2>
+            <span class="my-collection-edit-meta">${escapeHtml([releaseText, conditionText].filter(Boolean).join("　"))}</span>
+          </span>
+          <button class="my-collection-edit-close" type="button" data-edit-close aria-label="編集を閉じる">×</button>
+        </header>
+        <div class="my-collection-edit-summary">
+          <span>
+            <small>評価額</small>
+            <strong>${escapeHtml(valuation.currentValue != null ? formatValuationMoney(valuation.currentValue) : formatPrice(row.price))}</strong>
+          </span>
+          ${valuation.hasPnl ? `
+            <span>
+              <small>評価損益</small>
+              <strong class="${escapeHtml(cardPnlClass)}">${escapeHtml(formatSignedValuationMoney(valuation.pnlValue))}</strong>
+            </span>
+          ` : ""}
+        </div>
+        <div class="my-collection-edit-field">
+          <span class="my-collection-edit-label">保有枚数</span>
+          <div class="my-collection-stepper">
+            <button type="button" data-sheet-quantity-action="decrease" data-sleeve-id="${escapeHtml(row.sleeveId)}" aria-label="保有枚数を減らす">−</button>
+            <span>${escapeHtml(row.quantity)}</span>
+            <button type="button" data-sheet-quantity-action="increase" data-sleeve-id="${escapeHtml(row.sleeveId)}" aria-label="保有枚数を増やす">＋</button>
+          </div>
+        </div>
+        <label class="my-collection-edit-check">
+          <input type="checkbox" data-sheet-purchased-on-release="${escapeHtml(row.sleeveId)}" ${row.purchasedOnRelease ? "checked" : ""}>
+          <span>発売日に購入</span>
+        </label>
+        <div class="my-collection-edit-field is-stacked">
+          <span class="my-collection-edit-label">購入価格</span>
+          <strong>${escapeHtml(formatPurchasePrice(row.purchasePriceInfo?.price))}</strong>
+          ${purchasePriceNote ? `<small>${escapeHtml(purchasePriceNote)}</small>` : ""}
+        </div>
+        <div class="my-collection-edit-field is-stacked" ${row.purchasedOnRelease ? "hidden" : ""}>
+          <span class="my-collection-edit-label">購入日</span>
+          <span class="my-collection-date-picker">
+            <button class="my-collection-date-button" type="button" data-sheet-purchase-date-open="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の購入日を選ぶ">
+              <span data-sheet-purchase-date-label="${escapeHtml(row.sleeveId)}">${escapeHtml(purchaseDateLabel)}</span>
+              <span class="my-collection-calendar-mark" aria-hidden="true"></span>
+            </button>
+            <input class="my-collection-date-input" type="date" value="${escapeHtml(purchaseDateValue)}" min="${escapeHtml(minPurchaseDateValue)}" max="${escapeHtml(maxPurchaseDateValue)}" data-sheet-purchase-date="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の購入日" ${row.purchasedOnRelease ? "disabled" : ""}>
+          </span>
+        </div>
+        <button class="my-collection-edit-remove" type="button" data-sheet-remove-collection="${escapeHtml(row.sleeveId)}">コレクションから削除</button>
+      `;
+    }
+
+    function openCollectionEditSheet(row) {
+      const sheet = document.getElementById("collectionEditSheet");
+      const content = document.getElementById("collectionEditContent");
+      if (!sheet || !content || !row) return;
+      content.innerHTML = buildCollectionEditSheet(row);
+      sheet.hidden = false;
+      document.body.classList.add("my-collection-edit-open");
+
+      content.querySelectorAll("[data-edit-close]").forEach((button) => {
+        button.addEventListener("click", closeCollectionEditSheet);
+      });
+      content.querySelectorAll("[data-sheet-quantity-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const sleeveId = button.getAttribute("data-sleeve-id");
+          if (!sleeveId || !window.common.updateMyCollectionQuantity) return;
+          const delta = button.getAttribute("data-sheet-quantity-action") === "increase" ? 1 : -1;
+          window.common.updateMyCollectionQuantity(sleeveId, Math.max(1, row.quantity + delta));
+          closeCollectionEditSheet();
+        });
+      });
+      const releaseInput = content.querySelector("[data-sheet-purchased-on-release]");
+      if (releaseInput) {
+        releaseInput.addEventListener("change", () => {
+          const sleeveId = releaseInput.getAttribute("data-sheet-purchased-on-release");
+          if (!sleeveId || !window.common.updateMyCollectionPurchasedOnRelease) return;
+          window.common.updateMyCollectionPurchasedOnRelease(sleeveId, releaseInput.checked);
+          closeCollectionEditSheet();
+        });
+      }
+      const openDateButton = content.querySelector("[data-sheet-purchase-date-open]");
+      const dateInput = content.querySelector("[data-sheet-purchase-date]");
+      if (openDateButton && dateInput) {
+        openDateButton.addEventListener("click", () => {
+          if (dateInput.disabled) return;
+          if (typeof dateInput.showPicker === "function") {
+            dateInput.showPicker();
+          } else {
+            dateInput.click();
+          }
+        });
+        dateInput.addEventListener("change", () => {
+          const sleeveId = dateInput.getAttribute("data-sheet-purchase-date");
+          if (!sleeveId || !window.common.updateMyCollectionPurchaseDate) return;
+          const selectedDate = clampPurchaseDate(dateInput.value, dateInput.min, dateInput.max);
+          dateInput.value = selectedDate;
+          const label = Array.from(content.querySelectorAll("[data-sheet-purchase-date-label]")).find((item) => item.getAttribute("data-sheet-purchase-date-label") === sleeveId);
+          if (label) label.textContent = formatPurchaseDateLabel(selectedDate);
+          window.common.updateMyCollectionPurchaseDate(sleeveId, selectedDate);
+          closeCollectionEditSheet();
+        });
+      }
+      const removeButton = content.querySelector("[data-sheet-remove-collection]");
+      if (removeButton) {
+        removeButton.addEventListener("click", () => {
+          window.common.removeFromMyCollection(removeButton.getAttribute("data-sheet-remove-collection"));
+          closeCollectionEditSheet();
+        });
+      }
+    }
+
     async function renderCollection() {
       const root = document.getElementById("collectionList");
       const countEl = document.getElementById("collectionCount");
@@ -1105,6 +1249,16 @@
       const sortSel = document.getElementById("collectionSort");
       const sortedRows = sortCollectionRows(rows, sortSel?.value || "valuationDesc");
       root.innerHTML = sortedRows.map(buildCard).join("");
+      root.querySelectorAll("[data-edit-collection]").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          if (!isMobileCollectionView()) return;
+          const sleeveId = link.getAttribute("data-edit-collection");
+          const row = rows.find((item) => item.sleeveId === sleeveId);
+          if (!row) return;
+          event.preventDefault();
+          openCollectionEditSheet(row);
+        });
+      });
       root.querySelectorAll("[data-remove-collection]").forEach((button) => {
         button.addEventListener("click", () => {
           window.common.removeFromMyCollection(button.getAttribute("data-remove-collection"));
@@ -1158,6 +1312,9 @@
     async function main() {
       await window.common.setupDashboardChrome({ sidebarActive: "collection", topbarActive: "collection" });
       setupAssetPeriodButtons();
+      document.querySelectorAll("[data-edit-close]").forEach((button) => {
+        button.addEventListener("click", closeCollectionEditSheet);
+      });
       await renderCollection();
       document.addEventListener("pokesuri:my-collection-change", () => renderCollection());
       let resizeTimer = 0;
