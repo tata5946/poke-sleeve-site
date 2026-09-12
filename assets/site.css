@@ -9202,33 +9202,35 @@ footer.site-footer {
 
     .my-collection-list-head {
         width: 100%;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(112px, 40%);
+        display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 8px;
         margin-bottom: 8px;
     }
 
     .my-collection-list-head h2 {
-        min-width: 0;
-        font-size: 19px;
-        line-height: 1.15;
+        flex: 0 0 auto;
+        min-width: max-content;
+        font-size: 18px;
+        line-height: 1;
         white-space: nowrap;
     }
 
     .my-collection-sort {
-        min-width: 0;
-        justify-self: end;
-        width: 100%;
-        max-width: 142px;
+        display: block;
+        flex: 0 1 128px;
+        min-width: 112px;
+        max-width: 128px;
     }
 
     .my-collection-sort select {
         width: 100%;
         min-width: 0;
-        height: 36px;
-        padding-inline: 10px 24px;
-        font-size: 11px;
+        height: 34px;
+        padding-inline: 10px 22px;
+        font-size: 10px;
+        line-height: 1;
     }
 
     .my-collection-grid {
