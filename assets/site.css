@@ -9332,11 +9332,14 @@ footer.site-footer {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
+        gap: 6px;
     }
 
     .my-asset-chart-head h2 {
-        font-size: 20px;
+        flex: 0 0 auto;
+        font-size: 16px;
+        line-height: 1.15;
+        white-space: nowrap;
     }
 
     .my-asset-chart-head p {
@@ -9346,13 +9349,17 @@ footer.site-footer {
     .my-asset-periods {
         display: flex;
         flex-wrap: nowrap;
-        gap: 4px;
+        justify-content: flex-end;
+        gap: 3px;
+        min-width: 0;
     }
 
     .my-asset-period-btn {
-        min-height: 28px;
-        padding: 0 9px;
-        font-size: 11px;
+        min-height: 24px;
+        padding: 0 6px;
+        font-size: 10px;
+        line-height: 1;
+        white-space: nowrap;
     }
 
     .my-asset-chart-wrap,
