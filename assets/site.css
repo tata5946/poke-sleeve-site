@@ -9202,18 +9202,33 @@ footer.site-footer {
 
     .my-collection-list-head {
         width: 100%;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(112px, 40%);
+        align-items: center;
+        gap: 8px;
         margin-bottom: 8px;
     }
 
     .my-collection-list-head h2 {
-        font-size: 22px;
+        min-width: 0;
+        font-size: 19px;
+        line-height: 1.15;
+        white-space: nowrap;
+    }
+
+    .my-collection-sort {
+        min-width: 0;
+        justify-self: end;
+        width: 100%;
+        max-width: 142px;
     }
 
     .my-collection-sort select {
-        min-width: 136px;
-        height: 38px;
-        padding-inline: 12px 28px;
-        font-size: 12px;
+        width: 100%;
+        min-width: 0;
+        height: 36px;
+        padding-inline: 10px 24px;
+        font-size: 11px;
     }
 
     .my-collection-grid {
