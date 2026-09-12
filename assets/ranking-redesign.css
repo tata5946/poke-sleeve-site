@@ -1328,32 +1328,34 @@
   }
 
   :root body.ranking-redesign-page .ranking-main {
-    gap: 20px !important;
+    gap: 16px !important;
   }
 
   :root body.ranking-redesign-page .ranking-page-top {
-    gap: 14px !important;
+    gap: 8px !important;
+    margin-bottom: 14px !important;
   }
 
   :root body.ranking-redesign-page .ranking-hero {
-    padding: 14px 0 0 !important;
+    min-height: 0 !important;
+    padding: 10px 0 0 !important;
   }
 
   :root body.ranking-redesign-page .ranking-page-title,
   :root body.ranking-redesign-page .page-hero-title {
     display: flex !important;
     flex-wrap: wrap !important;
-    gap: 10px 12px !important;
+    gap: 4px 10px !important;
     align-items: center !important;
-    font-size: 23px !important;
-    line-height: 1.08 !important;
+    font-size: 24px !important;
+    line-height: 1.04 !important;
   }
 
   :root body.ranking-redesign-page .ranking-page-title::before {
-    width: 52px !important;
-    height: 52px !important;
-    font-size: 36px !important;
-    flex: 0 0 52px !important;
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 31px !important;
+    flex: 0 0 44px !important;
   }
 
   :root body.ranking-redesign-page .ranking-page-title::after,
@@ -1361,13 +1363,33 @@
     flex: 0 0 100% !important;
     margin: 0 !important;
     max-width: none !important;
-    font-size: 14px !important;
-    line-height: 1.35 !important;
+    font-size: 13px !important;
+    line-height: 1.28 !important;
+  }
+
+  :root body.ranking-redesign-page--price .ranking-page-title::after,
+  :root body.ranking-redesign-page--price .page-hero-title::after {
+    content: "価格が高いデッキシールドTOP10" !important;
+  }
+
+  :root body.ranking-redesign-page--price-up .ranking-page-title::after,
+  :root body.ranking-redesign-page--price-up .page-hero-title::after {
+    content: "今週値上がりしたデッキシールドTOP10" !important;
+  }
+
+  :root body.ranking-redesign-page--rate-up .ranking-page-title::after,
+  :root body.ranking-redesign-page--rate-up .page-hero-title::after {
+    content: "高騰率が高いデッキシールドTOP10" !important;
+  }
+
+  :root body.ranking-redesign-page--views .ranking-page-title::after,
+  :root body.ranking-redesign-page--views .page-hero-title::after {
+    content: "注目されているデッキシールドTOP10" !important;
   }
 
   :root body.ranking-redesign-page .ranking-filter-card {
     grid-template-columns: 1fr !important;
-    gap: 10px !important;
+    gap: 0 !important;
     width: calc(100vw - 88px) !important;
     max-width: calc(100vw - 88px) !important;
     justify-self: center !important;
@@ -1379,8 +1401,8 @@
 
   :root body.ranking-redesign-page .ranking-filter-grid {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-    gap: 10px !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 76px !important;
+    gap: 8px !important;
     width: 100% !important;
     min-width: 0 !important;
   }
@@ -1400,11 +1422,18 @@
 
   :root body.ranking-redesign-page .ranking-filter-field select,
   :root body.ranking-redesign-page .ranking-filter-actions button {
-    height: 58px !important;
-    border-radius: 16px !important;
-    font-size: 17px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 42px !important;
+    padding: 0 12px !important;
+    border-radius: 14px !important;
+    font-size: 13px !important;
     text-align: left !important;
     box-sizing: border-box !important;
+  }
+
+  :root body.ranking-redesign-page .ranking-filter-actions button {
+    text-align: center !important;
   }
 
   :root body.ranking-redesign-page .ranking-top3 {
