@@ -19,7 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
   <!-- 共通CSS -->
-  <link rel="stylesheet" href="./assets/site.css?v=20260908a" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260913c" />
   <style>
     .market-terminal-shell--embedded {
       grid-template-columns: minmax(0, 1fr);
@@ -1907,6 +1907,36 @@
       .ai-market-panel .section-title {
         color: #08275c;
         font-size: 18px;
+      }
+    }
+  </style>
+  <style>
+    @media (max-width: 767px) {
+      body.page-market-list .dashboard-content {
+        padding: 0 0 calc(120px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+
+      body.page-market-list .container,
+      body.page-market-list .page-shell,
+      body.page-market-list .page-shell--market {
+        padding: 0 !important;
+      }
+
+      .market-index-shell .breadcrumb {
+        display: flex !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 18px 28px 0 !important;
+        box-sizing: border-box !important;
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+      }
+
+      .market-index-hero {
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 22px 28px 16px !important;
+        box-sizing: border-box !important;
       }
     }
   </style>
