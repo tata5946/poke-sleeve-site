@@ -93,6 +93,13 @@
   opacity: .78;
 }
 
+:root body.ranking-redesign-page--views .ranking-hero::before,
+:root body.ranking-redesign-page--rate-up .ranking-hero::before,
+:root body.ranking-redesign-page--views .page-hero-meta {
+  display: none !important;
+  content: none !important;
+}
+
 :root body.ranking-redesign-page .ranking-hero-copy {
   position: relative !important;
   z-index: 2 !important;
