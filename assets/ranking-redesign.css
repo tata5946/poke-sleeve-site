@@ -1965,11 +1965,19 @@
 /* Canonical mobile heading geometry from sleeves/index.html. This must remain
    after every legacy ranking override in this file. */
 @media (max-width: 900px) {
+  html:root body.ranking-redesign-page .dashboard-content {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding: 0 0 calc(92px + env(safe-area-inset-bottom, 0px)) !important;
+    gap: 0 !important;
+  }
+
   html:root body.ranking-redesign-page .page-shell--market {
-    width: calc(100vw - 56px) !important;
-    max-width: calc(100vw - 56px) !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
     margin-inline: auto !important;
-    padding: 0 0 56px !important;
+    padding: 0 28px 56px !important;
+    box-sizing: border-box !important;
   }
 
   html:root body.ranking-redesign-page .breadcrumb {

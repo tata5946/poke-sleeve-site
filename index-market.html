@@ -1912,13 +1912,17 @@
   </style>
   <style>
     @media (max-width: 767px) {
-      body.page-market-list .dashboard-content {
+      html:root body.page-market-list .dashboard-content {
         padding: 0 0 calc(120px + env(safe-area-inset-bottom, 0px)) !important;
+        gap: 0 !important;
       }
 
-      body.page-market-list .container,
-      body.page-market-list .page-shell,
-      body.page-market-list .page-shell--market {
+      html:root body.page-market-list .container,
+      html:root body.page-market-list .page-shell,
+      html:root body.page-market-list .page-shell--market {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        margin: 0 !important;
         padding: 0 !important;
       }
 
