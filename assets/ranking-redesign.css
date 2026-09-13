@@ -2178,7 +2178,17 @@
     height: 100% !important;
     min-height: 82px !important;
     padding: 18px 6px 5px !important;
-    border-radius: 10px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-card .sleeve-sparkline {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
   }
 
   html:root body.ranking-redesign-page .podium-market-row {
