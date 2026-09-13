@@ -2044,6 +2044,11 @@
     gap: 0 !important;
   }
 
+  html:root body.ranking-redesign-page .podium-card::before {
+    display: none !important;
+    content: none !important;
+  }
+
   html:root body.ranking-redesign-page .ranking-top3 .podium-card > .podium-badge {
     top: 10px !important;
     left: 10px !important;
