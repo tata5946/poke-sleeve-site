@@ -1961,3 +1961,38 @@
     line-height: 1 !important;
   }
 }
+
+/* Canonical mobile heading geometry from sleeves/index.html. This must remain
+   after every legacy ranking override in this file. */
+@media (max-width: 900px) {
+  :root body.ranking-redesign-page .page-shell--market {
+    width: calc(100vw - 56px) !important;
+    max-width: calc(100vw - 56px) !important;
+    margin-inline: auto !important;
+    padding: 0 0 56px !important;
+  }
+
+  :root body.ranking-redesign-page .breadcrumb {
+    display: flex !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 18px 0 0 !important;
+    box-sizing: border-box !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+
+  :root body.ranking-redesign-page .ranking-page-top,
+  :root body.ranking-redesign-page--price .ranking-page-top {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  :root body.ranking-redesign-page .ranking-hero,
+  :root body.ranking-redesign-page .ranking-hero.page-hero-card,
+  :root body.ranking-redesign-page--price .ranking-hero,
+  :root body.ranking-redesign-page--price .ranking-hero.page-hero-card {
+    margin: 0 !important;
+    padding: 22px 0 16px !important;
+  }
+}
