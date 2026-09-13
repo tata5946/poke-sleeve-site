@@ -9386,6 +9386,19 @@ footer.site-footer {
 }
 
 @media (max-width: 700px) {
+    .my-collection-page .my-collection-edit-stepper,
+    .my-collection-page .my-collection-edit-stepper button,
+    .my-collection-page .my-collection-edit-stepper [data-sheet-quantity-value] {
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .my-collection-page .my-collection-edit-stepper button {
+        cursor: pointer;
+    }
+
     .my-collection-page .dashboard-content {
         width: min(100%, 430px);
         padding-inline: 28px;
