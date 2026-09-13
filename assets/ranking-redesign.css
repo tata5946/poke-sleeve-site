@@ -20,6 +20,31 @@
     radial-gradient(circle at 88% 0%, rgba(163, 205, 238, .28), transparent 28rem),
     linear-gradient(180deg, #f7fbff 0%, #f4f8fb 46%, #f6f8fb 100%) !important;
   color: var(--ranking-ink) !important;
+  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif !important;
+}
+
+:root body.ranking-redesign-page .ranking-page-title,
+:root body.ranking-redesign-page .page-hero-title,
+:root body.ranking-redesign-page .ranking-section-title,
+:root body.ranking-redesign-page .podium-title,
+:root body.ranking-redesign-page .compact-card-title,
+:root body.ranking-redesign-page .podium-meta,
+:root body.ranking-redesign-page .compact-meta,
+:root body.ranking-redesign-page .ranking-filter-card,
+:root body.ranking-redesign-page button,
+:root body.ranking-redesign-page select {
+  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif !important;
+}
+
+:root body.ranking-redesign-page .podium-badge,
+:root body.ranking-redesign-page .compact-rank-badge,
+:root body.ranking-redesign-page .podium-price,
+:root body.ranking-redesign-page .podium-diff,
+:root body.ranking-redesign-page .podium-rate,
+:root body.ranking-redesign-page .compact-price,
+:root body.ranking-redesign-page .compact-delta,
+:root body.ranking-redesign-page .compact-rate {
+  font-family: "Inter", "Noto Sans JP", sans-serif !important;
 }
 
 :root body.ranking-redesign-page .dashboard-content {
