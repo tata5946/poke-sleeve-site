@@ -1720,6 +1720,10 @@
   }
 }
 
+:root body.ranking-redesign-page .sleeve-sparkline-x-label {
+  display: none;
+}
+
 @media (max-width: 900px) {
   html:root body.ranking-redesign-page .page-shell--market {
     width: calc(100vw - 32px) !important;
@@ -2200,5 +2204,15 @@
     top: 5px !important;
     left: 7px !important;
     font-size: 9px !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-market-row .sleeve-sparkline-label,
+  html:root body.ranking-redesign-page .compact-card .sleeve-sparkline-label,
+  html:root body.ranking-redesign-page .sleeve-sparkline-x-label {
+    display: block !important;
+    fill: #71839d !important;
+    font-family: "Inter", "Noto Sans JP", sans-serif !important;
+    font-size: 8px !important;
+    font-weight: 800 !important;
   }
 }

@@ -831,7 +831,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="./assets/ranking-redesign.css?v=20260913o" />
+  <link rel="stylesheet" href="./assets/ranking-redesign.css?v=20260913p" />
 </head>
 
 <body class="ranking-redesign-page ranking-redesign-page--rate-up" data-hide-global-header="1">
@@ -1138,6 +1138,12 @@
         if (rounded >= 10000) return `${Math.round(rounded / 1000) / 10}\u4e07`;
         return rounded.toLocaleString();
       };
+      const compactAxisLabel = (value) => {
+        const rounded = Math.round(Number(value) || 0);
+        if (rounded >= 10000) return `${Math.round(rounded / 10000)}\u4e07`;
+        if (rounded >= 1000) return `${Math.round(rounded / 1000)}\u5343`;
+        return String(rounded);
+      };
       const firstPrice = prices[0];
       const lastPrice = prices[prices.length - 1];
       const lastPoint = coords[coords.length - 1];
@@ -1154,11 +1160,13 @@
             <line class="sleeve-sparkline-axis" x1="${padX}" y1="${baseY}" x2="${width - padX}" y2="${baseY}" vector-effect="non-scaling-stroke"></line>
             ${axisValues.map((value, index) => {
               const y = padTop + index * ((height - padTop - padBottom) / Math.max(1, axisValues.length - 1));
-              return `<line class="sleeve-sparkline-grid" x1="${padX}" y1="${y.toFixed(1)}" x2="${width - padX}" y2="${y.toFixed(1)}" vector-effect="non-scaling-stroke"></line><text class="sleeve-sparkline-label" x="2" y="${(y + 4).toFixed(1)}">${compactLabel(value)}</text>`;
+              return `<line class="sleeve-sparkline-grid" x1="${padX}" y1="${y.toFixed(1)}" x2="${width - padX}" y2="${y.toFixed(1)}" vector-effect="non-scaling-stroke"></line><text class="sleeve-sparkline-label" x="2" y="${(y + 4).toFixed(1)}">${compactAxisLabel(value)}</text>`;
             }).join("")}
             <path class="sleeve-sparkline-area" d="${areaPath}"></path>
             <path class="sleeve-sparkline-line" d="${linePath}" fill="none" stroke="${trendColor}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
             <circle class="sleeve-sparkline-dot" cx="${lastPoint.x.toFixed(1)}" cy="${lastPoint.y.toFixed(1)}" r="3.8" fill="${trendColor}" stroke="#fff" stroke-width="1.8" vector-effect="non-scaling-stroke"></circle>
+            <text class="sleeve-sparkline-x-label" x="${padX}" y="94" text-anchor="start">12</text>
+            <text class="sleeve-sparkline-x-label" x="${width - padX}" y="94" text-anchor="end">0</text>
           </svg>
           <div class="sleeve-sparkline-foot" aria-hidden="true">
             <span><small>12週前</small><b>${compactLabel(firstPrice)}円</b></span>
