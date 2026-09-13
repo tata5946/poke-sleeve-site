@@ -1995,7 +1995,8 @@
   html:root body.ranking-redesign-page--price-up .ranking-page-top,
   html:root body.ranking-redesign-page--rate-up .ranking-page-top,
   html:root body.ranking-redesign-page--views .ranking-page-top {
-    margin-top: 0 !important;
+    gap: 24px !important;
+    margin: 0 0 16px !important;
     padding-top: 0 !important;
   }
 
@@ -2010,6 +2011,19 @@
   html:root body.ranking-redesign-page--views .ranking-hero,
   html:root body.ranking-redesign-page--views .ranking-hero.page-hero-card {
     margin: 0 !important;
-    padding: 22px 0 16px !important;
+    padding: 20px 0 0 !important;
+  }
+
+  html:root body.ranking-redesign-page .ranking-main,
+  html:root body.ranking-redesign-page .ranking-top3,
+  html:root body.ranking-redesign-page--price .ranking-top3,
+  html:root body.ranking-redesign-page .compact-grid,
+  html:root body.ranking-redesign-page .ranking-list {
+    gap: 20px !important;
+  }
+
+  html:root body.ranking-redesign-page .ranking-main,
+  html:root body.ranking-redesign-page--price .ranking-main {
+    padding-top: 0 !important;
   }
 }
