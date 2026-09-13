@@ -1720,6 +1720,28 @@
   }
 }
 
+:root body.ranking-redesign-page .sleeve-sparkline-y-axis {
+  position: absolute;
+  z-index: 2;
+  top: 38px;
+  bottom: 38px;
+  left: 3px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #6f86a4;
+  font-family: "Inter", "Noto Sans JP", sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+:root body.ranking-redesign-page .sleeve-sparkline-x-axis {
+  display: none;
+}
+
 :root body.ranking-redesign-page .sleeve-sparkline-x-label {
   display: none;
 }
@@ -2206,13 +2228,35 @@
     font-size: 9px !important;
   }
 
-  html:root body.ranking-redesign-page .podium-market-row .sleeve-sparkline-label,
-  html:root body.ranking-redesign-page .compact-card .sleeve-sparkline-label,
-  html:root body.ranking-redesign-page .sleeve-sparkline-x-label {
-    display: block !important;
-    fill: #71839d !important;
+  html:root body.ranking-redesign-page .sleeve-sparkline-y-axis,
+  html:root body.ranking-redesign-page .sleeve-sparkline-x-axis {
+    color: #71839d !important;
     font-family: "Inter", "Noto Sans JP", sans-serif !important;
     font-size: 8px !important;
     font-weight: 800 !important;
+    line-height: 1 !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-market-row .sleeve-sparkline-y-axis {
+    top: 24px !important;
+    bottom: 12px !important;
+    left: 0 !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-card .sleeve-sparkline-y-axis {
+    top: 21px !important;
+    bottom: 9px !important;
+    left: 0 !important;
+  }
+
+  html:root body.ranking-redesign-page .sleeve-sparkline-x-axis {
+    position: absolute !important;
+    z-index: 2 !important;
+    right: 7px !important;
+    bottom: 3px !important;
+    left: 11px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    pointer-events: none !important;
   }
 }
