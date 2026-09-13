@@ -2082,21 +2082,20 @@
   html:root body.ranking-redesign-page .podium-card--rank1 .podium-content,
   html:root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-content {
     grid-template-columns: minmax(0, 1fr) !important;
-    grid-template-rows: 44px 54px 24px 54px !important;
+    grid-template-rows: auto 50px minmax(82px, 1fr) !important;
     grid-template-areas:
       "title"
       "metrics"
-      "meta"
       "chart" !important;
-    align-content: center !important;
-    gap: 4px !important;
+    align-content: stretch !important;
+    gap: 3px !important;
     padding: 4px 4px 4px 9px !important;
   }
 
   html:root body.ranking-redesign-page .podium-title,
   html:root body.ranking-redesign-page .podium-card--rank1 .podium-title,
   html:root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-title {
-    height: 44px !important;
+    height: auto !important;
     max-height: 44px !important;
     font-size: 15px !important;
     line-height: 1.35 !important;
@@ -2114,8 +2113,8 @@
     grid-template-rows: 13px minmax(0, 1fr) !important;
     grid-template-areas: "label" "primary" !important;
     align-content: center !important;
-    height: 54px !important;
-    max-height: 54px !important;
+    height: 50px !important;
+    max-height: 50px !important;
     padding: 0 !important;
     gap: 2px !important;
   }
@@ -2154,10 +2153,7 @@
   }
 
   html:root body.ranking-redesign-page .podium-meta {
-    justify-content: flex-start !important;
-    height: 24px !important;
-    max-height: 24px !important;
-    overflow: hidden !important;
+    display: none !important;
   }
 
   html:root body.ranking-redesign-page .podium-chip-group {
@@ -2174,9 +2170,15 @@
   }
 
   html:root body.ranking-redesign-page .podium-market-row .sleeve-sparkline {
-    height: 54px !important;
-    padding: 16px 5px 4px !important;
+    height: 100% !important;
+    min-height: 82px !important;
+    padding: 18px 6px 5px !important;
     border-radius: 10px !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-market-row {
+    align-self: stretch !important;
+    height: 100% !important;
   }
 
   html:root body.ranking-redesign-page .podium-market-row .sleeve-sparkline-title {
