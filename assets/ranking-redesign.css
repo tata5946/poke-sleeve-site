@@ -2026,4 +2026,162 @@
   html:root body.ranking-redesign-page--price .ranking-main {
     padding-top: 0 !important;
   }
+
+  /* Mobile top-three cards: let the sleeve artwork lead the composition. */
+  html:root body.ranking-redesign-page .podium-card,
+  html:root body.ranking-redesign-page .podium-card.ranking-card,
+  html:root body.ranking-redesign-page .podium-card--rank1,
+  html:root body.ranking-redesign-page .podium-card--rank2,
+  html:root body.ranking-redesign-page .podium-card--rank3 {
+    grid-template-columns: 42% minmax(0, 58%) !important;
+    grid-template-rows: 218px !important;
+    grid-template-areas: "media content" !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 218px !important;
+    min-height: 218px !important;
+    padding: 6px !important;
+    gap: 0 !important;
+  }
+
+  html:root body.ranking-redesign-page .ranking-top3 .podium-card > .podium-badge {
+    top: 10px !important;
+    left: 10px !important;
+    width: 38px !important;
+    min-width: 38px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    font-size: 18px !important;
+    box-shadow: 0 6px 12px rgba(31, 52, 83, .18) !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-media,
+  html:root body.ranking-redesign-page .podium-card--rank1 .podium-media,
+  html:root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-media {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 8px 4px 6px !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-media img,
+  html:root body.ranking-redesign-page .podium-card--rank1 .podium-media img,
+  html:root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-media img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    color: transparent !important;
+    font-size: 0 !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-content,
+  html:root body.ranking-redesign-page .podium-card--rank1 .podium-content,
+  html:root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-content {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: 44px 54px 24px 54px !important;
+    grid-template-areas:
+      "title"
+      "metrics"
+      "meta"
+      "chart" !important;
+    align-content: center !important;
+    gap: 4px !important;
+    padding: 4px 4px 4px 9px !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-title,
+  html:root body.ranking-redesign-page .podium-card--rank1 .podium-title,
+  html:root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-title {
+    height: 44px !important;
+    max-height: 44px !important;
+    font-size: 15px !important;
+    line-height: 1.35 !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-metrics,
+  html:root body.ranking-redesign-page--price .podium-metrics,
+  html:root body.ranking-redesign-page--price-up .podium-metrics,
+  html:root body.ranking-redesign-page--rate-up .podium-metrics,
+  html:root body.ranking-redesign-page--views .podium-metrics {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: 13px minmax(0, 1fr) !important;
+    grid-template-areas: "label" "primary" !important;
+    align-content: center !important;
+    height: 54px !important;
+    max-height: 54px !important;
+    padding: 0 !important;
+    gap: 2px !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-metric:first-child .podium-metric-label,
+  html:root body.ranking-redesign-page--price-up .podium-metric:first-child .podium-metric-label,
+  html:root body.ranking-redesign-page--rate-up .podium-metric:first-child .podium-metric-label {
+    grid-area: label !important;
+    display: block !important;
+    color: #617491 !important;
+    font-size: 0 !important;
+    line-height: 1.2 !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-metric:first-child .podium-metric-label::after {
+    content: "最新価格" !important;
+    font-size: 10px !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-metric:nth-child(n+2) {
+    display: none !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-price,
+  html:root body.ranking-redesign-page--price-up .podium-price,
+  html:root body.ranking-redesign-page--rate-up .podium-price {
+    grid-area: primary !important;
+    color: var(--ranking-ink) !important;
+    font-size: 25px !important;
+    line-height: 1 !important;
+  }
+
+  html:root body.ranking-redesign-page--price-up .podium-price::before,
+  html:root body.ranking-redesign-page--rate-up .podium-price::before {
+    content: none !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-meta {
+    justify-content: flex-start !important;
+    height: 24px !important;
+    max-height: 24px !important;
+    overflow: hidden !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-chip-group {
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    overflow: hidden !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-chip {
+    font-size: 10px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-market-row .sleeve-sparkline {
+    height: 54px !important;
+    padding: 16px 5px 4px !important;
+    border-radius: 10px !important;
+  }
+
+  html:root body.ranking-redesign-page .podium-market-row .sleeve-sparkline-title {
+    top: 5px !important;
+    left: 7px !important;
+    font-size: 9px !important;
+  }
 }
