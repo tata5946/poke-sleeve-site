@@ -852,6 +852,9 @@
 :root body.ranking-redesign-page .ranking-rest-section {
   display: grid !important;
   gap: 14px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 :root body.ranking-redesign-page .ranking-section-head {
@@ -2281,6 +2284,13 @@
     max-width: 100% !important;
   }
 
+  html:root body.ranking-redesign-page #list.grid,
+  html:root body.ranking-redesign-page #list.compact-grid,
+  html:root body.ranking-redesign-page .ranking-section-head {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
   html:root body.ranking-redesign-page .compact-card > *,
   html:root body.ranking-redesign-page .compact-market-row,
   html:root body.ranking-redesign-page .compact-price-row {
@@ -2360,5 +2370,34 @@
   html:root body.ranking-redesign-page .compact-card .sleeve-sparkline-y-axis {
     top: 23px !important;
     bottom: 12px !important;
+  }
+
+  html:root body.ranking-redesign-page--price .compact-price-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto !important;
+    grid-template-areas: "price" !important;
+    align-self: stretch !important;
+    align-content: center !important;
+    gap: 0 !important;
+  }
+
+  html:root body.ranking-redesign-page--price .compact-price {
+    grid-area: price !important;
+    display: grid !important;
+    gap: 2px !important;
+    color: var(--ranking-ink) !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+  }
+
+  html:root body.ranking-redesign-page--price .compact-price::before {
+    content: "最新価格" !important;
+    display: block !important;
+    margin: 0 !important;
+    color: #617491 !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
   }
 }
