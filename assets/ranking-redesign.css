@@ -2259,4 +2259,106 @@
     justify-content: space-between !important;
     pointer-events: none !important;
   }
+
+  /* Mobile ranks 4+: enlarge the artwork and chart without sacrificing scanability. */
+  html:root body.ranking-redesign-page .compact-card,
+  html:root body.ranking-redesign-page .compact-card.ranking-card,
+  html:root body.ranking-redesign-page .compact-card.ranking-card-frameless {
+    grid-template-columns: 30px 70px minmax(0, 1fr) 114px !important;
+    grid-template-rows: minmax(34px, auto) auto minmax(28px, auto) !important;
+    min-height: 116px !important;
+    padding: 6px !important;
+    column-gap: 4px !important;
+    row-gap: 3px !important;
+  }
+
+  html:root body.ranking-redesign-page #list.grid,
+  html:root body.ranking-redesign-page #list.compact-grid,
+  html:root body.ranking-redesign-page .ranking-list,
+  html:root body.ranking-redesign-page .compact-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-card > *,
+  html:root body.ranking-redesign-page .compact-market-row,
+  html:root body.ranking-redesign-page .compact-price-row {
+    min-width: 0 !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-rank-badge {
+    width: 30px !important;
+    min-width: 30px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    font-size: 11px !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-thumb-wrap {
+    width: 70px !important;
+    height: 70px !important;
+    padding: 3px !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-thumb {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-card-title {
+    align-self: end !important;
+    max-width: 100% !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-meta,
+  html:root body.ranking-redesign-page .compact-tags {
+    gap: 4px !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-delta {
+    font-size: 18px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-price {
+    font-size: 14px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-rate {
+    min-width: 48px !important;
+    min-height: 21px !important;
+    padding: 0 5px !important;
+    font-size: 10px !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-card .sleeve-sparkline {
+    width: 114px !important;
+    height: 80px !important;
+    min-height: 80px !important;
+    padding: 17px 5px 8px !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-card .sleeve-sparkline-title {
+    top: 4px !important;
+    left: 6px !important;
+    font-size: 9px !important;
+  }
+
+  html:root body.ranking-redesign-page .compact-card .sleeve-sparkline-y-axis {
+    top: 23px !important;
+    bottom: 12px !important;
+  }
 }
