@@ -2425,4 +2425,51 @@
     font-weight: 800 !important;
     line-height: 1 !important;
   }
+
+  html:root body.ranking-redesign-page--views .compact-price-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto !important;
+    grid-template-areas: "price" !important;
+    align-self: stretch !important;
+    align-content: center !important;
+    gap: 0 !important;
+  }
+
+  html:root body.ranking-redesign-page--views .compact-delta,
+  html:root body.ranking-redesign-page--views .compact-rate {
+    display: none !important;
+  }
+
+  html:root body.ranking-redesign-page--views .compact-price {
+    grid-area: price !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+  }
+
+  html:root body.ranking-redesign-page--price-up .compact-price-row {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto !important;
+    grid-template-areas:
+      "delta delta"
+      "price rate" !important;
+    gap: 3px 4px !important;
+  }
+
+  html:root body.ranking-redesign-page--price-up .compact-delta {
+    grid-area: delta !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+  }
+
+  html:root body.ranking-redesign-page--price-up .compact-price {
+    grid-area: price !important;
+    font-size: 13px !important;
+  }
+
+  html:root body.ranking-redesign-page--price-up .compact-rate {
+    grid-area: rate !important;
+    min-width: 43px !important;
+    padding: 0 4px !important;
+    font-size: 9px !important;
+  }
 }
