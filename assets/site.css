@@ -8947,6 +8947,30 @@ footer.site-footer {
     background: #eef5ff;
 }
 
+@media (min-width: 1101px) {
+    body.my-collection-page .my-asset-panel {
+        grid-template-columns: minmax(460px, 1.6fr) repeat(2, minmax(190px, 1fr));
+    }
+
+    body.my-collection-page .my-asset-card--primary {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr) minmax(104px, 116px);
+        align-items: center;
+        column-gap: 13px;
+    }
+
+    body.my-collection-page .my-asset-card--primary .my-asset-card-body {
+        min-width: 0;
+    }
+
+    body.my-collection-page .my-asset-total-value,
+    body.my-collection-page .my-asset-gain-badge strong,
+    body.my-collection-page .my-asset-gain-badge small,
+    body.my-collection-page .my-asset-primary-foot > span {
+        white-space: nowrap;
+    }
+}
+
 .my-asset-inline-pnl.is-positive,
 .my-asset-inline-rate.is-positive,
 .my-asset-gain-badge .is-positive {
