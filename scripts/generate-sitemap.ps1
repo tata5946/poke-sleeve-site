@@ -96,6 +96,7 @@ $staticPages = @(
   "surge.html",
   "index-market.html",
   "articles.html",
+  "30th-celebration.html",
   "abyss-eye.html",
   "chaos-rising.html",
   "storm-emerald.html",
@@ -116,11 +117,10 @@ foreach ($page in $staticPages) {
   $lastmod = $null
   if ([string]::IsNullOrWhiteSpace($page)) {
     $url = $origin + "/"
+    $lastmod = Get-StaticFileLastmod "index.html"
   } else {
     $url = $origin + "/" + $page
-    if ($page -eq "sleeves/all.html") {
-      $lastmod = Get-StaticFileLastmod $page
-    }
+    $lastmod = Get-StaticFileLastmod $page
   }
   Add-Url $urls $url $existingLastmods $lastmod
 }
