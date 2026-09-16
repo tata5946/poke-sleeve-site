@@ -984,7 +984,16 @@
 
     .market-index-shell {
       display: grid;
-      gap: 12px;
+      width: min(100%, 1260px);
+      margin: 0 auto;
+      padding-inline: clamp(28px, 4.2vw, 60px);
+      box-sizing: border-box;
+      gap: 24px;
+    }
+
+    html:root body.page-market-list .market-index-shell .breadcrumb {
+      width: 100% !important;
+      padding: 18px 0 0 !important;
     }
 
     .market-index-hero {
@@ -1310,7 +1319,7 @@
       }
 
       .market-index-shell {
-        gap: 10px;
+        gap: 18px;
       }
 
       .market-index-shell .breadcrumb {
@@ -1927,7 +1936,7 @@
       }
 
       html:root body.page-market-list .market-index-shell {
-        gap: 0 !important;
+        gap: 18px !important;
       }
 
       html:root body.page-market-list .market-index-shell .breadcrumb {
