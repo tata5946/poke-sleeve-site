@@ -6321,25 +6321,27 @@
       const banners = RELEASE_FEATURE_BANNERS;
       const dotCount = banners.length;
       const initialBannerIndex = 0;
-      const loopSets = 3;
+      const loopSets = 7;
+      const middleStart = dotCount * Math.floor(loopSets / 2);
       const cards = Array.from({ length: dotCount * loopSets }, (_, index) => {
         const logicalIndex = index % dotCount;
         const banner = banners[logicalIndex];
         return `
         <a class="release-feature-card release-feature-card--image" href="${escapeHtml(banner.href)}" data-banner-index="${logicalIndex}" aria-label="${escapeHtml(banner.label)}を見る">
-          <img class="release-feature-image" src="${escapeHtml(banner.imageSrc)}" alt="${escapeHtml(banner.label)}" loading="${index === dotCount + initialBannerIndex ? "eager" : "lazy"}" decoding="async">
+          <img class="release-feature-image" src="${escapeHtml(banner.imageSrc)}" alt="${escapeHtml(banner.label)}" loading="${index === middleStart + initialBannerIndex ? "eager" : "lazy"}" decoding="async">
           <span class="release-feature-caption">${escapeHtml(banner.label)}</span>
         </a>
       `;
       });
       track.innerHTML = cards.join("");
       track.dataset.loopSize = String(dotCount);
+      track.dataset.loopMiddleStart = String(middleStart);
       const dots = document.getElementById("releaseBannerDots");
       if (dots) {
         dots.innerHTML = Array.from({ length: dotCount }, (_, index) => `<button class="release-banner-dot${index === initialBannerIndex ? " is-active" : ""}" type="button" data-banner-dot="${index}" aria-label="${index + 1}番目のバナーへ"></button>`).join("");
       }
       requestAnimationFrame(() => {
-        const initialCard = track.querySelectorAll(".release-feature-card")[dotCount + initialBannerIndex];
+        const initialCard = track.querySelectorAll(".release-feature-card")[middleStart + initialBannerIndex];
         scrollReleaseBannerCardIntoTrack(track, initialCard, "auto");
         updateReleaseBannerDots(track);
       });
@@ -6384,10 +6386,12 @@
       if (!track || !loopSize) return;
       const cards = Array.from(track.querySelectorAll(".release-feature-card"));
       if (cards.length < loopSize * 3) return;
+      const middleStart = Number(track.dataset.loopMiddleStart || loopSize);
+      const middleEnd = middleStart + loopSize;
       const centeredIndex = getCenteredReleaseBannerIndex(track);
       let targetIndex = centeredIndex;
-      if (centeredIndex < loopSize) targetIndex = centeredIndex + loopSize;
-      if (centeredIndex >= loopSize * 2) targetIndex = centeredIndex - loopSize;
+      while (targetIndex < middleStart) targetIndex += loopSize;
+      while (targetIndex >= middleEnd) targetIndex -= loopSize;
       if (targetIndex === centeredIndex) return;
       const before = track.scrollLeft;
       scrollReleaseBannerCardIntoTrack(track, cards[targetIndex], "auto");
@@ -6411,7 +6415,7 @@
       normalizeReleaseBannerLoop(track);
       const cards = Array.from(track.querySelectorAll(".release-feature-card"));
       const currentIndex = getCenteredReleaseBannerIndex(track);
-      const middleStart = loopSize;
+      const middleStart = Number(track.dataset.loopMiddleStart || loopSize);
       const targetIndex = middleStart + (((Number(logicalIndex) || 0) % loopSize) + loopSize) % loopSize;
       const alternateIndex = targetIndex + (targetIndex <= currentIndex ? loopSize : -loopSize);
       const candidates = [targetIndex, alternateIndex].filter((index) => cards[index]);
@@ -6425,6 +6429,7 @@
       if (!track || track.dataset.carouselWired === "1") return;
       track.dataset.carouselWired = "1";
       let scrollTimer = null;
+      let normalizeFrame = null;
       let autoplayTimer = null;
       let isPaused = false;
       const autoplayMs = 4200;
@@ -6447,6 +6452,13 @@
       };
       track.addEventListener("scroll", () => {
         updateReleaseBannerDots(track);
+        if (!normalizeFrame) {
+          normalizeFrame = window.requestAnimationFrame(() => {
+            normalizeFrame = null;
+            normalizeReleaseBannerLoop(track);
+            updateReleaseBannerDots(track);
+          });
+        }
         window.clearTimeout(scrollTimer);
         scrollTimer = window.setTimeout(() => {
           normalizeReleaseBannerLoop(track);
