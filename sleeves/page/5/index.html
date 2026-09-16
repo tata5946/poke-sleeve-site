@@ -22,8 +22,12 @@
     .index-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
     .index-action-link { display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border: 1px solid #dbe4f0; border-radius: 8px; background: #fff; color: #0f172a; font-weight: 800; text-decoration: none; }
     .sleeve-index-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; padding: 0; margin: 0; list-style: none; }
+    .sleeve-index-item { position: relative; }
     .sleeve-index-item a { min-height: 148px; display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 12px; padding: 12px; border: 1px solid #dbe4f0; border-radius: 8px; background: #fff; color: inherit; text-decoration: none; }
     .sleeve-index-item a:hover { border-color: #94a3b8; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); }
+    .collection-quick-add { position: absolute; z-index: 2; top: 8px; right: 8px; width: 30px; height: 30px; display: inline-grid; place-items: center; border: 1px solid rgba(15, 23, 42, 0.12); border-radius: 999px; background: rgba(255, 255, 255, 0.94); color: #0f172a; font-size: 20px; line-height: 1; font-weight: 900; cursor: pointer; box-shadow: 0 10px 22px rgba(15, 23, 42, 0.16); transition: transform .16s ease, background-color .16s ease, color .16s ease; }
+    .collection-quick-add:hover, .collection-quick-add:focus-visible { transform: translateY(-1px); background: #0f172a; color: #fff; outline: none; }
+    .collection-quick-add.is-saved { background: #16a34a; border-color: #16a34a; color: #fff; font-size: 17px; }
     .sleeve-index-thumb { width: 76px; aspect-ratio: 1 / 1; display: grid; place-items: center; overflow: hidden; border-radius: 7px; background: #f1f5f9; }
     .sleeve-index-thumb img { width: 100%; height: 100%; object-fit: contain; }
     .sleeve-index-body { display: grid; align-content: start; gap: 6px; min-width: 0; }
@@ -78,6 +82,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345413" data-sleeve-name="キラフロル" data-sleeve-image="https://drive.google.com/thumbnail?id=1k5fo4hkJe6xELgpSiMeKBn1zELOWarG-&amp;sz=w1200" data-sleeve-release-date="2023-07-28" aria-label="キラフロル&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345390/">
@@ -93,6 +98,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345390" data-sleeve-name="ポピー" data-sleeve-image="https://drive.google.com/thumbnail?id=1c094GrQWTLlSJPUmYWgivNVfVR_xvtTL&amp;sz=w1200" data-sleeve-release-date="2023-07-28" aria-label="ポピー&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345451/">
@@ -108,6 +114,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345451" data-sleeve-name="悪テラスタルリザードン" data-sleeve-image="https://drive.google.com/thumbnail?id=1tfzYBb_9AT-4EJo1SuNbjvuFtXjLO-c0&amp;sz=w1200" data-sleeve-release-date="2023-07-28" aria-label="悪テラスタルリザードン&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345420/">
@@ -123,6 +130,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345420" data-sleeve-name="雷テラスタルバンギラス" data-sleeve-image="https://drive.google.com/thumbnail?id=1ReEU1HrB8TAu5ACJziqsssrlI7jiOGfA&amp;sz=w1200" data-sleeve-release-date="2023-07-28" aria-label="雷テラスタルバンギラス&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345529/">
@@ -138,6 +146,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345529" data-sleeve-name="BALL&amp;ENERGY" data-sleeve-image="https://drive.google.com/thumbnail?id=1nONd137ZrGgjIWhNBGPhYS2h4yH640SA&amp;sz=w1200" data-sleeve-release-date="2023-07-07" aria-label="BALL&amp;ENERGY&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345499/">
@@ -153,6 +162,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345499" data-sleeve-name="ゲッコウガ" data-sleeve-image="https://drive.google.com/thumbnail?id=19CcSo0FPTfQFZzB_TCXOIDSAnJGK98yx&amp;sz=w1200" data-sleeve-release-date="2023-07-07" aria-label="ゲッコウガ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345581/">
@@ -168,6 +178,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345581" data-sleeve-name="ピカチュウ大集合" data-sleeve-image="https://drive.google.com/thumbnail?id=1EcB5kZ2WHFAkny24WTL-RUHEAoIp9c-z&amp;sz=w1200" data-sleeve-release-date="2023-07-07" aria-label="ピカチュウ大集合&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345482/">
@@ -183,6 +194,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345482" data-sleeve-name="進化の軌跡 ジュナイパー" data-sleeve-image="https://drive.google.com/thumbnail?id=1a6WdSpPwLEPIyYWoJCQYO8U4vTaX9Abe&amp;sz=w1200" data-sleeve-release-date="2023-07-07" aria-label="進化の軌跡 ジュナイパー&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329377261/">
@@ -198,6 +210,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="377261" data-sleeve-name="エリカの休日" data-sleeve-image="https://drive.google.com/thumbnail?id=1VReXINHtOQpZMd5ipTnYWgXlWFbDonDW&amp;sz=w1200" data-sleeve-release-date="2023-06-16" aria-label="エリカの休日&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329377247/">
@@ -213,6 +226,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="377247" data-sleeve-name="サカキの指令" data-sleeve-image="https://drive.google.com/thumbnail?id=1_mOc3bhk6WwNI7ufhyQqXuCI5VCPLrcR&amp;sz=w1200" data-sleeve-release-date="2023-06-16" aria-label="サカキの指令&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329379319/">
@@ -228,6 +242,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="379319" data-sleeve-name="ミュウ" data-sleeve-image="https://drive.google.com/thumbnail?id=12ZrlXRNYm0V6E7Uh0Salrpm5_GYX9So_&amp;sz=w1200" data-sleeve-release-date="2023-06-16" aria-label="ミュウ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329377223/">
@@ -243,6 +258,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="377223" data-sleeve-name="ラッキー＆プクリン＆ピクシー" data-sleeve-image="https://drive.google.com/thumbnail?id=1iisJy7hevll80UKGcCwRNN9zBgsj3xAr&amp;sz=w1200" data-sleeve-release-date="2023-06-16" aria-label="ラッキー＆プクリン＆ピクシー&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329394909/">
@@ -258,6 +274,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="394909" data-sleeve-name="DOWASURE" data-sleeve-image="https://drive.google.com/thumbnail?id=1OffvIn0H5qFLV--uqk2H302lOfta32l6&amp;sz=w1200" data-sleeve-release-date="2023-05-19" aria-label="DOWASURE&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329394039/">
@@ -273,6 +290,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="394039" data-sleeve-name="Midnight Agent -the cinema- インテレオン" data-sleeve-image="https://drive.google.com/thumbnail?id=1A6MK7RXnfWKXuz1C0vUIzUIc1PCuSuHL&amp;sz=w1200" data-sleeve-release-date="2023-05-19" aria-label="Midnight Agent -the cinema- インテレオン&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329394015/">
@@ -288,6 +306,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="394015" data-sleeve-name="Midnight Agent -the cinema- ゲッコウガ" data-sleeve-image="https://drive.google.com/thumbnail?id=1hgqgByioE28TFvIsRua4jYJuY2Oi6PLB&amp;sz=w1200" data-sleeve-release-date="2023-05-19" aria-label="Midnight Agent -the cinema- ゲッコウガ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329394008/">
@@ -303,6 +322,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="394008" data-sleeve-name="Midnight Agent -the cinema- ゲンガー" data-sleeve-image="https://drive.google.com/thumbnail?id=1plhIXi1gcX1e9rFYzuWIeK-F5yq66gNh&amp;sz=w1200" data-sleeve-release-date="2023-05-19" aria-label="Midnight Agent -the cinema- ゲンガー&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329394022/">
@@ -318,6 +338,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="394022" data-sleeve-name="Midnight Agent -the cinema- ニンフィア" data-sleeve-image="https://drive.google.com/thumbnail?id=1SC-_-zzNyNjzRGntB3KHoKYsuDTmDsvB&amp;sz=w1200" data-sleeve-release-date="2023-05-19" aria-label="Midnight Agent -the cinema- ニンフィア&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329395005/">
@@ -333,6 +354,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="395005" data-sleeve-name="MIMOSA e POK&#201;MON" data-sleeve-image="https://drive.google.com/thumbnail?id=1wHcTFl-rZV8UJOqqBUo_o6G9yzT3wS2Y&amp;sz=w1200" data-sleeve-release-date="2023-05-19" aria-label="MIMOSA e POK&#201;MON&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345628/">
@@ -348,6 +370,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345628" data-sleeve-name="パーモット" data-sleeve-image="https://drive.google.com/thumbnail?id=1Ix-_9_9k4ySAcCx7lHEUlmiEfKurZnUN&amp;sz=w1200" data-sleeve-release-date="2023-05-19" aria-label="パーモット&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345604/">
@@ -363,6 +386,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345604" data-sleeve-name="ハカドッグ" data-sleeve-image="https://drive.google.com/thumbnail?id=1pxoTZc2YlqLSOGBBHfJ0yNz2rvaPTvpo&amp;sz=w1200" data-sleeve-release-date="2023-05-19" aria-label="ハカドッグ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329395029/">
@@ -378,6 +402,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="395029" data-sleeve-name="ポケパルレのみがわり" data-sleeve-image="https://drive.google.com/thumbnail?id=1nonHsJSDd03YNGfJfgooz3py5hUVBPkm&amp;sz=w1200" data-sleeve-release-date="2023-05-19" aria-label="ポケパルレのみがわり&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345598/">
@@ -393,6 +418,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345598" data-sleeve-name="リククラゲ" data-sleeve-image="https://drive.google.com/thumbnail?id=1Y3UQJMNavxYWz2NyPARfACqc58FP8cqd&amp;sz=w1200" data-sleeve-release-date="2023-05-19" aria-label="リククラゲ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345703/">
@@ -408,6 +434,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345703" data-sleeve-name="タギングル" data-sleeve-image="https://drive.google.com/thumbnail?id=18AuzKN0NUvL4K5BQj2Ylk92UXPvycWDs&amp;sz=w1200" data-sleeve-release-date="2023-04-14" aria-label="タギングル&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345741/">
@@ -423,6 +450,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345741" data-sleeve-name="ディンルー" data-sleeve-image="https://drive.google.com/thumbnail?id=10_PhgAiO_K2I-8DdxKPlZpftP_W072TJ&amp;sz=w1200" data-sleeve-release-date="2023-04-14" aria-label="ディンルー&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/45213292023001/">
@@ -438,6 +466,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="2023001" data-sleeve-name="ナンジャモ" data-sleeve-image="https://drive.google.com/thumbnail?id=1IG1m9LkDbAFynWRmyShY02DRs-04h3Rx&amp;sz=w1200" data-sleeve-release-date="2023-04-14" aria-label="ナンジャモ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345758/">
@@ -453,6 +482,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345758" data-sleeve-name="パオジアン" data-sleeve-image="https://drive.google.com/thumbnail?id=1bje4w--YFjEF9CcbCT8rIP167-2uqqjv&amp;sz=w1200" data-sleeve-release-date="2023-04-14" aria-label="パオジアン&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345673/">
@@ -468,6 +498,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345673" data-sleeve-name="ハルクジラ" data-sleeve-image="https://drive.google.com/thumbnail?id=1zZUdtoh-r7IoqqivmqW0ZdiraCvVkTzl&amp;sz=w1200" data-sleeve-release-date="2023-04-14" aria-label="ハルクジラ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345666/">
@@ -483,6 +514,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345666" data-sleeve-name="花かんむりとマリルたち" data-sleeve-image="https://drive.google.com/thumbnail?id=1ttaH-8yxp-asxvkBmC-MX7hL4g2rrkmO&amp;sz=w1200" data-sleeve-release-date="2023-04-14" aria-label="花かんむりとマリルたち&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329346076/">
@@ -498,6 +530,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="346076" data-sleeve-name="ウパー（パルデアのすがた）" data-sleeve-image="https://drive.google.com/thumbnail?id=1MsDVSxVVILP48q6gAZLRdi3S8o4JHQaF&amp;sz=w1200" data-sleeve-release-date="2023-03-10" aria-label="ウパー（パルデアのすがた）&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329346113/">
@@ -513,6 +546,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="346113" data-sleeve-name="テラスタルウインディ" data-sleeve-image="https://drive.google.com/thumbnail?id=14Vm5FrQsMgIUTPSo9mq3nYs_IAgAIFUJ&amp;sz=w1200" data-sleeve-release-date="2023-03-10" aria-label="テラスタルウインディ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329346120/">
@@ -528,6 +562,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="346120" data-sleeve-name="テラスタルギャラドス" data-sleeve-image="https://drive.google.com/thumbnail?id=1l7UgIltbkxnKIzA9oVBLMoBpivg0qkD3&amp;sz=w1200" data-sleeve-release-date="2023-03-10" aria-label="テラスタルギャラドス&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329346106/">
@@ -543,6 +578,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="346106" data-sleeve-name="テラスタルデデンネ" data-sleeve-image="https://drive.google.com/thumbnail?id=19KXGIUjiPFDKTCabsPAlPE4pG3wxcLN2&amp;sz=w1200" data-sleeve-release-date="2023-03-10" aria-label="テラスタルデデンネ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345765/">
@@ -558,6 +594,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345765" data-sleeve-name="ニャオハ・ホゲータ・クワッスの贈り物" data-sleeve-image="https://drive.google.com/thumbnail?id=1mqlI4iQhrNd5o8W7WrTciYBQXVJMRrtJ&amp;sz=w1200" data-sleeve-release-date="2023-03-10" aria-label="ニャオハ・ホゲータ・クワッスの贈り物&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329346069/">
@@ -573,6 +610,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="346069" data-sleeve-name="ハヤト" data-sleeve-image="https://drive.google.com/thumbnail?id=178eKtCoiDak8GYRQOzYO46NyrlBn80Cw&amp;sz=w1200" data-sleeve-release-date="2023-03-10" aria-label="ハヤト&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345710/">
@@ -588,6 +626,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345710" data-sleeve-name="ピカチュウ＆パモ" data-sleeve-image="https://drive.google.com/thumbnail?id=1Lcnl0uzOKdAmH1uB7NGmjyvQhB1s6PMs&amp;sz=w1200" data-sleeve-release-date="2023-03-10" aria-label="ピカチュウ＆パモ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329345772/">
@@ -603,6 +642,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="345772" data-sleeve-name="ピカチュウの贈り物" data-sleeve-image="https://drive.google.com/thumbnail?id=1kw7Wq3gWF08dxNBzB2gytA6_Jtm7mP7y&amp;sz=w1200" data-sleeve-release-date="2023-03-10" aria-label="ピカチュウの贈り物&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329346144/">
@@ -618,6 +658,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="346144" data-sleeve-name="マスカーニャ＆ラウドボーン＆ウェーニバル" data-sleeve-image="https://drive.google.com/thumbnail?id=1eacrlSsN4KEact1MaryFUjnom1-1b0mv&amp;sz=w1200" data-sleeve-release-date="2023-03-10" aria-label="マスカーニャ＆ラウドボーン＆ウェーニバル&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329373881/">
@@ -633,6 +674,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="373881" data-sleeve-name="グルトン" data-sleeve-image="https://drive.google.com/thumbnail?id=1FrzPh9ovBplMal_FOCCtR1h7e3VnOJPf&amp;sz=w1200" data-sleeve-release-date="2023-01-20" aria-label="グルトン&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329373744/">
@@ -648,6 +690,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="373744" data-sleeve-name="コライドン" data-sleeve-image="https://drive.google.com/thumbnail?id=1jUOrt2Wf15w76_fhPhJ22cvCVVAtikeJ&amp;sz=w1200" data-sleeve-release-date="2023-01-20" aria-label="コライドン&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329373843/">
@@ -663,6 +706,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="373843" data-sleeve-name="ニャオハ・ホゲータ・クワッス" data-sleeve-image="https://drive.google.com/thumbnail?id=1U7oXh66W0b3yAjWPJHFbd5dntABzBQqP&amp;sz=w1200" data-sleeve-release-date="2023-01-20" aria-label="ニャオハ・ホゲータ・クワッス&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329373751/">
@@ -678,6 +722,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="373751" data-sleeve-name="ミライドン" data-sleeve-image="https://drive.google.com/thumbnail?id=1C0Mml5v4FC9I1-4Y0-EgJBoJvLzKDycs&amp;sz=w1200" data-sleeve-release-date="2023-01-20" aria-label="ミライドン&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329373850/">
@@ -693,6 +738,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="373850" data-sleeve-name="進化の軌跡 サーナイト" data-sleeve-image="https://drive.google.com/thumbnail?id=14KUZBNWEq3ZEMF2VFuRt6sjwV6e1qC_1&amp;sz=w1200" data-sleeve-release-date="2023-01-20" aria-label="進化の軌跡 サーナイト&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329373867/">
@@ -708,6 +754,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="373867" data-sleeve-name="進化の軌跡 ジバコイル" data-sleeve-image="https://drive.google.com/thumbnail?id=1HRhky0GR79QWPL0KZbv6AGUCapB4F_MW&amp;sz=w1200" data-sleeve-release-date="2023-01-20" aria-label="進化の軌跡 ジバコイル&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329373690/">
@@ -723,6 +770,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="373690" data-sleeve-name="エンテイ＆ライコウ＆スイクン" data-sleeve-image="https://drive.google.com/thumbnail?id=1eDvG1vn6NMQA6m7FJjNO3-e6X1n2ll0D&amp;sz=w1200" data-sleeve-release-date="2022-12-02" aria-label="エンテイ＆ライコウ＆スイクン&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329373713/">
@@ -738,6 +786,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="373713" data-sleeve-name="かがやくデンヂムシ" data-sleeve-image="https://drive.google.com/thumbnail?id=1TmQsNybNiDdFMYNxRnjC0bG25keqeSB6&amp;sz=w1200" data-sleeve-release-date="2022-12-02" aria-label="かがやくデンヂムシ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329373645/">
@@ -753,6 +802,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="373645" data-sleeve-name="かがやくムゲンダイナ" data-sleeve-image="https://drive.google.com/thumbnail?id=1P46f8YCI2rKUfcJ93f6RS_2KHLawm3ig&amp;sz=w1200" data-sleeve-release-date="2022-12-02" aria-label="かがやくムゲンダイナ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329373652/">
@@ -768,6 +818,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="373652" data-sleeve-name="コウキ&amp;ヒカリ" data-sleeve-image="https://drive.google.com/thumbnail?id=13MNJDqzE3DUlgCqI3NE6CrzXB05V9wzh&amp;sz=w1200" data-sleeve-release-date="2022-12-02" aria-label="コウキ&amp;ヒカリ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/45213292022006/">
@@ -783,6 +834,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="2022006" data-sleeve-name="コンゴウ団の仲間たち" data-sleeve-image="https://drive.google.com/thumbnail?id=1P7lp99kkeL40WGAmuqJUxDDug46LrwSW&amp;sz=w1200" data-sleeve-release-date="2022-12-02" aria-label="コンゴウ団の仲間たち&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/4521329373584/">
@@ -798,6 +850,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="373584" data-sleeve-name="シンオウしんわ" data-sleeve-image="https://drive.google.com/thumbnail?id=1nWGUkn09ppBZ9Cuak2CSCbQxdC42nyLq&amp;sz=w1200" data-sleeve-release-date="2022-12-02" aria-label="シンオウしんわ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
             <li class="sleeve-index-item">
               <a href="/sleeve/45213292022005/">
@@ -813,6 +866,7 @@
                   </span>
                 </span>
               </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="2022005" data-sleeve-name="シンジュ団の仲間たち" data-sleeve-image="https://drive.google.com/thumbnail?id=1--KQEQ4fW8HtHRYX9FPDTHyxZdVAhAiG&amp;sz=w1200" data-sleeve-release-date="2022-12-02" aria-label="シンジュ団の仲間たち&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
           </ul>
           <nav class="index-pager" aria-label="&#12506;&#12540;&#12472;&#36865;&#12426;">
@@ -841,11 +895,14 @@
       </div>
     </main>
   </div>
-  <script src="./assets/common.js?v=20260907a"></script>
+  <script src="./assets/common.js?v=20260916a"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       if (window.common && typeof window.common.setupDashboardChrome === "function") {
         await window.common.setupDashboardChrome({ sidebarActive: "zukan" });
+      }
+      if (window.common && typeof window.common.setupQuickCollectionButtons === "function") {
+        window.common.setupQuickCollectionButtons(document);
       }
     });
   </script>

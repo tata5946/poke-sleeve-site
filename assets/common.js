@@ -30,6 +30,7 @@ const AUTOCOMPLETE_MAX_ITEMS = 8;
 let __dataCacheMem = null;
 let __dataCachePromise = null;
 let __sleeveFeedbackWired = false;
+let __quickCollectionButtonsWired = false;
 let __headerOffsetWired = false;
 let __autocompleteIndexPromise = null;
 
@@ -1081,6 +1082,60 @@ function setupMyCollectionButton(sleeve, buttonOrSelector = "[data-my-collection
     });
   }
   render();
+}
+
+function getQuickCollectionButtonSleeve(button) {
+  if (!button) return null;
+  const id = normalizeMyCollectionSleeveId(button.dataset.sleeveId);
+  if (!id) return null;
+  return {
+    id,
+    sleeveId: id,
+    name: String(button.dataset.sleeveName || "").trim(),
+    imageUrl: String(button.dataset.sleeveImage || "").trim(),
+    releaseDate: String(button.dataset.sleeveReleaseDate || "").trim()
+  };
+}
+
+function renderQuickCollectionButton(button) {
+  const sleeve = getQuickCollectionButtonSleeve(button);
+  if (!sleeve) {
+    button.hidden = true;
+    return;
+  }
+  const saved = isInMyCollection(sleeve.sleeveId);
+  button.hidden = false;
+  button.classList.toggle("is-saved", saved);
+  button.textContent = saved ? "✓" : "+";
+  button.setAttribute("aria-pressed", saved ? "true" : "false");
+  button.setAttribute("aria-label", saved
+    ? `${sleeve.name || "このスリーブ"}をマイコレクションから削除`
+    : `${sleeve.name || "このスリーブ"}をマイコレクションに追加`);
+  button.title = saved ? "コレクション登録済み" : "マイコレクションに追加";
+}
+
+function renderQuickCollectionButtons(root = document) {
+  const scope = root && typeof root.querySelectorAll === "function" ? root : document;
+  scope.querySelectorAll("[data-my-collection-quick-add]").forEach(renderQuickCollectionButton);
+}
+
+function setupQuickCollectionButtons(root = document) {
+  renderQuickCollectionButtons(root);
+  if (__quickCollectionButtonsWired) return;
+  __quickCollectionButtonsWired = true;
+  document.addEventListener("click", (event) => {
+    const button = event.target?.closest?.("[data-my-collection-quick-add]");
+    if (!button) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const sleeve = getQuickCollectionButtonSleeve(button);
+    if (!sleeve) return;
+    toggleMyCollectionSleeve(sleeve);
+    renderQuickCollectionButtons(document);
+  });
+  document.addEventListener("pokesuri:my-collection-change", () => {
+    renderQuickCollectionButtons(document);
+  });
 }
 
 function setStructuredData(id, data) {
@@ -2523,6 +2578,8 @@ window.common = {
   toggleMyCollectionSleeve,
   updateMyCollectionCountBadges,
   setupMyCollectionButton,
+  setupQuickCollectionButtons,
+  renderQuickCollectionButtons,
   setStructuredData,
   updateItemListStructuredData,
   updateArticleStructuredData,
@@ -2553,6 +2610,7 @@ document.addEventListener("DOMContentLoaded", () => {
   try { ensureFavicon(); } catch (e) { console.error(e); }
   injectHeaderFooter();
   try { updateMyCollectionCountBadges(); } catch (e) { console.error(e); }
+  try { setupQuickCollectionButtons(document); } catch (e) { console.error(e); }
   try {
     if (document.getElementById("dashboardSidebarSlot") || document.getElementById("dashboardTopbarSlot")) {
       injectDashboardChrome();

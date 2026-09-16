@@ -184,8 +184,12 @@ function Append-PageShellStart([System.Text.StringBuilder]$Html, [string]$TitleH
   [void]$Html.AppendLine('    .index-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }')
   [void]$Html.AppendLine('    .index-action-link { display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border: 1px solid #dbe4f0; border-radius: 8px; background: #fff; color: #0f172a; font-weight: 800; text-decoration: none; }')
   [void]$Html.AppendLine('    .sleeve-index-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; padding: 0; margin: 0; list-style: none; }')
+  [void]$Html.AppendLine('    .sleeve-index-item { position: relative; }')
   [void]$Html.AppendLine('    .sleeve-index-item a { min-height: 148px; display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 12px; padding: 12px; border: 1px solid #dbe4f0; border-radius: 8px; background: #fff; color: inherit; text-decoration: none; }')
   [void]$Html.AppendLine('    .sleeve-index-item a:hover { border-color: #94a3b8; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); }')
+  [void]$Html.AppendLine('    .collection-quick-add { position: absolute; z-index: 2; top: 8px; right: 8px; width: 30px; height: 30px; display: inline-grid; place-items: center; border: 1px solid rgba(15, 23, 42, 0.12); border-radius: 999px; background: rgba(255, 255, 255, 0.94); color: #0f172a; font-size: 20px; line-height: 1; font-weight: 900; cursor: pointer; box-shadow: 0 10px 22px rgba(15, 23, 42, 0.16); transition: transform .16s ease, background-color .16s ease, color .16s ease; }')
+  [void]$Html.AppendLine('    .collection-quick-add:hover, .collection-quick-add:focus-visible { transform: translateY(-1px); background: #0f172a; color: #fff; outline: none; }')
+  [void]$Html.AppendLine('    .collection-quick-add.is-saved { background: #16a34a; border-color: #16a34a; color: #fff; font-size: 17px; }')
   [void]$Html.AppendLine('    .sleeve-index-thumb { width: 76px; aspect-ratio: 1 / 1; display: grid; place-items: center; overflow: hidden; border-radius: 7px; background: #f1f5f9; }')
   [void]$Html.AppendLine('    .sleeve-index-thumb img { width: 100%; height: 100%; object-fit: contain; }')
   [void]$Html.AppendLine('    .sleeve-index-body { display: grid; align-content: start; gap: 6px; min-width: 0; }')
@@ -218,11 +222,14 @@ function Append-PageShellEnd([System.Text.StringBuilder]$Html) {
   [void]$Html.AppendLine('      </div>')
   [void]$Html.AppendLine('    </main>')
   [void]$Html.AppendLine('  </div>')
-  [void]$Html.AppendLine('  <script src="./assets/common.js?v=20260907a"></script>')
+  [void]$Html.AppendLine('  <script src="./assets/common.js?v=20260916a"></script>')
   [void]$Html.AppendLine('  <script>')
   [void]$Html.AppendLine('    document.addEventListener("DOMContentLoaded", async () => {')
   [void]$Html.AppendLine('      if (window.common && typeof window.common.setupDashboardChrome === "function") {')
   [void]$Html.AppendLine('        await window.common.setupDashboardChrome({ sidebarActive: "zukan" });')
+  [void]$Html.AppendLine('      }')
+  [void]$Html.AppendLine('      if (window.common && typeof window.common.setupQuickCollectionButtons === "function") {')
+  [void]$Html.AppendLine('        window.common.setupQuickCollectionButtons(document);')
   [void]$Html.AppendLine('      }')
   [void]$Html.AppendLine('    });')
   [void]$Html.AppendLine('  </script>')
@@ -244,8 +251,10 @@ function Append-ItemList([System.Text.StringBuilder]$Html, [array]$Items) {
   [void]$Html.AppendLine('          <ul class="sleeve-index-list">')
   foreach ($sleeve in $Items) {
     $href = Get-SleeveHref $sleeve
+    $id = ConvertTo-HtmlText $sleeve.id
     $name = ConvertTo-HtmlText $sleeve.name
     $imageUrl = ConvertTo-HtmlText $sleeve.imageUrl
+    $releaseDateAttr = ConvertTo-HtmlText (Get-IsoDate $sleeve.releaseDate)
     $releaseDate = Get-DateText $sleeve.releaseDate
     $firstPrice = Get-YenText $sleeve.firstPrice "&#26410;&#21462;&#24471;" $true
     $latestPrice = Get-LatestPriceValue $sleeve
@@ -266,6 +275,7 @@ function Append-ItemList([System.Text.StringBuilder]$Html, [array]$Items) {
     [void]$Html.AppendLine('                  </span>')
     [void]$Html.AppendLine('                </span>')
     [void]$Html.AppendLine('              </a>')
+    [void]$Html.AppendLine(("              <button class=""collection-quick-add"" type=""button"" data-my-collection-quick-add data-sleeve-id=""{0}"" data-sleeve-name=""{1}"" data-sleeve-image=""{2}"" data-sleeve-release-date=""{3}"" aria-label=""{1}&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;"">+</button>" -f $id, $name, $imageUrl, $releaseDateAttr))
     [void]$Html.AppendLine('            </li>')
   }
   [void]$Html.AppendLine('          </ul>')

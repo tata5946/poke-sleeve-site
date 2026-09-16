@@ -780,6 +780,11 @@
       gap: 52px clamp(30px, 3vw, 52px);
     }
 
+    .zukan-card-shell {
+      position: relative;
+      min-width: 0;
+    }
+
     .zukan-pagination {
       width: min(100%, 1360px);
       margin: 44px auto 0;
@@ -889,6 +894,42 @@
       padding: 0;
       box-shadow: none;
       transition: transform .26s ease;
+    }
+
+    .collection-quick-add {
+      position: absolute;
+      z-index: 3;
+      top: 6px;
+      right: 6px;
+      width: 32px;
+      height: 32px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.96);
+      color: #0f172a;
+      font-size: 21px;
+      line-height: 1;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.16);
+      transition: transform .16s ease, background-color .16s ease, color .16s ease;
+    }
+
+    .collection-quick-add:hover,
+    .collection-quick-add:focus-visible {
+      transform: translateY(-1px);
+      background: #0f172a;
+      color: #fff;
+      outline: none;
+    }
+
+    .collection-quick-add.is-saved {
+      background: #16a34a;
+      border-color: #16a34a;
+      color: #fff;
+      font-size: 18px;
     }
 
     .zukan-card:hover {
@@ -1693,7 +1734,7 @@
     </main>
   </div>
 
-  <script src="./assets/common.js?v=20260914a"></script>
+  <script src="./assets/common.js?v=20260916a"></script>
   <script>
     function escapeHtml(str) {
       return String(str ?? "")
@@ -2367,6 +2408,9 @@
             ? window.common.buildSleeveDetailHref(s.id ?? "")
             : `./sleeve/${encodeURIComponent(s.id ?? "")}/`;
 
+          const shell = document.createElement("div");
+          shell.className = "zukan-card-shell";
+
           const card = document.createElement("a");
           card.className = "zukan-card";
           card.href = detailHref;
@@ -2395,10 +2439,25 @@
               <span class="zukan-card-cta">詳細を見る →</span>
             </div>
           `;
-          frag.appendChild(card);
+          const quickButton = document.createElement("button");
+          quickButton.className = "collection-quick-add";
+          quickButton.type = "button";
+          quickButton.setAttribute("data-my-collection-quick-add", "");
+          quickButton.dataset.sleeveId = String(s.id ?? "");
+          quickButton.dataset.sleeveName = String(s.name ?? "");
+          quickButton.dataset.sleeveImage = imgSrc;
+          quickButton.dataset.sleeveReleaseDate = toISODate(s.releaseDate) || "";
+          quickButton.setAttribute("aria-label", `${String(s.name ?? "")}をマイコレクションに追加`);
+          quickButton.textContent = "+";
+
+          shell.append(card, quickButton);
+          frag.appendChild(shell);
         });
 
         list.appendChild(frag);
+        if (window.common && typeof window.common.setupQuickCollectionButtons === "function") {
+          window.common.setupQuickCollectionButtons(list);
+        }
       }
 
       let t = null;
