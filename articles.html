@@ -158,37 +158,6 @@
     }
 
     @media (max-width: 700px) {
-      body.page-content-focus {
-        background: #fff;
-      }
-
-      .dashboard-content {
-        padding: 0;
-        background: #fff;
-      }
-
-      .page-shell--content {
-        padding: 0 18px 28px;
-      }
-
-      .breadcrumb {
-        display: flex;
-        width: 100vw;
-        margin: 0 0 0 calc(50% - 50vw);
-        padding: 18px 28px 0;
-        box-sizing: border-box;
-        font-size: 12px;
-        line-height: 1.4;
-        white-space: nowrap;
-        overflow: hidden;
-      }
-
-      .breadcrumb-current {
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
       .article-list-wrap {
         gap: 0;
         margin-top: 0;
@@ -322,7 +291,7 @@
   </style>
 </head>
 
-<body class="page-content-focus" data-hide-global-header="1">
+<body class="page-content-focus shared-page-layout" data-hide-global-header="1">
   <div id="site-header"></div>
 
   <div class="dashboard-shell">
@@ -334,7 +303,7 @@
         <div id="dashboardTopbarSlot" data-dashboard-topbar-active="articles"></div>
       </header>
       <div class="dashboard-content">
-        <div class="container page-shell page-shell--content">
+        <div class="container page-shell page-shell--content shared-page-content">
           <nav class="breadcrumb" aria-label="パンくず">
             <a href="./">ホーム</a>
             <span class="breadcrumb-sep" aria-hidden="true">></span>

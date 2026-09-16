@@ -20,24 +20,6 @@
   <link rel="stylesheet" href="./assets/site.css?v=20260917c" />
   <style>
     @media (max-width: 700px) {
-      html:root body.my-collection-page .dashboard-content {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding-top: 0 !important;
-        padding-right: 28px !important;
-        padding-left: 28px !important;
-        gap: 0 !important;
-      }
-
-      html:root body.my-collection-page .breadcrumb {
-        display: flex !important;
-        margin: 0 !important;
-        padding: 18px 0 0 !important;
-        box-sizing: border-box !important;
-        font-size: 12px !important;
-        line-height: 1.4 !important;
-      }
-
       html:root body.my-collection-page .my-collection-hero-copy {
         display: grid !important;
         gap: 0 !important;
@@ -50,7 +32,7 @@
   </style>
 </head>
 
-<body class="page-market-list my-collection-page" data-hide-global-header="1">
+<body class="page-market-list my-collection-page shared-page-layout" data-hide-global-header="1">
   <div id="site-header"></div>
 
   <div class="dashboard-shell">
@@ -61,7 +43,7 @@
       <header class="dashboard-topbar">
         <div id="dashboardTopbarSlot" data-dashboard-topbar-active="collection"></div>
       </header>
-      <div class="dashboard-content">
+      <div class="dashboard-content shared-page-content">
         <nav class="breadcrumb" aria-label="パンくず">
           <a href="./">ホーム</a>
           <span class="breadcrumb-sep" aria-hidden="true">></span>

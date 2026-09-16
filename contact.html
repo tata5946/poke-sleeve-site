@@ -43,24 +43,6 @@
     }
 
     @media (max-width: 700px) {
-      html:root body.contact-page .dashboard-content {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 28px calc(96px + env(safe-area-inset-bottom, 0px)) !important;
-      }
-
-      html:root body.contact-page .page-shell {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-
-      html:root body.contact-page .breadcrumb {
-        margin: 0 0 12px !important;
-        padding: 18px 0 0 !important;
-      }
-
       html:root body.contact-page .page-focus-intro {
         gap: 0 !important;
         margin: 0 !important;
@@ -155,7 +137,7 @@
   </style>
 </head>
 
-<body class="page-content-focus contact-page" data-hide-global-header="1">
+<body class="page-content-focus contact-page shared-page-layout" data-hide-global-header="1">
   <div id="site-header"></div>
 
   <div class="dashboard-shell">
@@ -167,7 +149,7 @@
         <div id="dashboardTopbarSlot" data-dashboard-topbar-active="contact"></div>
       </header>
       <div class="dashboard-content">
-        <div class="container page-shell page-shell--content">
+        <div class="container page-shell page-shell--content shared-page-content">
           <nav class="breadcrumb" aria-label="パンくず">
             <a href="./">ホーム</a>
             <span class="breadcrumb-sep" aria-hidden="true">></span>
