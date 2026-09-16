@@ -1956,6 +1956,22 @@
         box-sizing: border-box !important;
       }
     }
+
+    body.page-market-list .market-index-hero,
+    body.page-market-list .index-summary-card,
+    body.page-market-list .chart-panel,
+    body.page-market-list .market-panel,
+    body.page-market-list .price-index-chart-wrap,
+    body.page-market-list .ai-comment-card {
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    body.page-market-list .market-index-hero::before {
+      display: none !important;
+    }
   </style>
 </head>
 
@@ -3686,7 +3702,7 @@
 
       setText("kpiLatestPrice", latest ? formatMarketYen(latest.avgPrice) : "--");
       setHtml("kpiLatestMeta", latest
-        ? `<span class="latest-date">${escapeHtml(formatMetaDate(latest.week))}</span><span class="latest-chip">対象 ${Number(latest.targetCount || 0).toLocaleString()}種類</span><span class="latest-chip">今週更新 ${Number(latest.updateCount || 0).toLocaleString()}種類</span>`
+        ? `<span class="latest-date">${escapeHtml(formatMetaDate(latest.week))}</span>`
         : "集計中");
       setChange("kpiPrevChange", "kpiPrevPct", latest, prev);
       setChange("kpiMonthChange", "kpiMonthPct", latest, monthBase);
