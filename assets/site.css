@@ -1340,36 +1340,6 @@ body.page-content-focus {
 }
 
 @media (max-width: 700px) {
-    .mobile-page-heading {
-        padding-top: 22px !important;
-        padding-bottom: 18px !important;
-    }
-
-    .mobile-page-heading-title {
-        margin: 0 !important;
-        font-size: 24px !important;
-        line-height: 1.35 !important;
-        font-weight: 800 !important;
-        letter-spacing: 0 !important;
-    }
-
-    .mobile-page-heading-desc {
-        margin: 8px 0 0 !important;
-        max-width: none !important;
-        color: #5f6368 !important;
-        font-size: 13px !important;
-        line-height: 1.85 !important;
-        font-weight: 400 !important;
-    }
-
-    .page-market-list .market-index-shell > .error:empty {
-        display: none !important;
-    }
-
-    .page-market-list .market-index-hero.mobile-page-heading {
-        margin-top: -18px !important;
-    }
-
     .dashboard-shell,
     .dashboard-main,
     .dashboard-content,
@@ -9810,5 +9780,63 @@ footer.site-footer {
         min-height: 36px;
         margin: 0 12px 12px;
         border-radius: 10px;
+    }
+}
+
+/* Shared page heading rhythm for content pages. */
+.shared-page-heading {
+    padding-top: 26px !important;
+    padding-bottom: 22px !important;
+}
+
+.shared-page-heading-title {
+    margin: 0 !important;
+    font-family: "Zen Kaku Gothic New", var(--font-heading) !important;
+    font-size: clamp(30px, 3.6vw, 42px) !important;
+    line-height: 1.15 !important;
+    font-weight: 900 !important;
+    letter-spacing: 0 !important;
+}
+
+.shared-page-heading-desc {
+    margin: 12px 0 0 !important;
+    max-width: 62ch !important;
+    color: #5f6368 !important;
+    font-size: 14px !important;
+    line-height: 1.8 !important;
+    font-weight: 400 !important;
+}
+
+.page-market-list .market-index-shell > .error:empty {
+    display: none !important;
+}
+
+@media (min-width: 701px) {
+    .page-market-list .market-index-hero.shared-page-heading {
+        margin-top: -12px !important;
+    }
+}
+
+@media (max-width: 700px) {
+    .shared-page-heading {
+        padding-top: 22px !important;
+        padding-bottom: 18px !important;
+    }
+
+    .shared-page-heading-title {
+        font-size: 24px !important;
+        line-height: 1.35 !important;
+        font-weight: 800 !important;
+    }
+
+    .shared-page-heading-desc {
+        margin-top: 8px !important;
+        max-width: none !important;
+        font-size: 13px !important;
+        line-height: 1.85 !important;
+    }
+
+    .page-market-list .market-index-hero.shared-page-heading {
+        margin-top: -18px !important;
     }
 }
