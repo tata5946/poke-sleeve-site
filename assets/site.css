@@ -1340,6 +1340,36 @@ body.page-content-focus {
 }
 
 @media (max-width: 700px) {
+    .mobile-page-heading {
+        padding-top: 22px !important;
+        padding-bottom: 18px !important;
+    }
+
+    .mobile-page-heading-title {
+        margin: 0 !important;
+        font-size: 24px !important;
+        line-height: 1.35 !important;
+        font-weight: 800 !important;
+        letter-spacing: 0 !important;
+    }
+
+    .mobile-page-heading-desc {
+        margin: 8px 0 0 !important;
+        max-width: none !important;
+        color: #5f6368 !important;
+        font-size: 13px !important;
+        line-height: 1.85 !important;
+        font-weight: 400 !important;
+    }
+
+    .page-market-list .market-index-shell > .error:empty {
+        display: none !important;
+    }
+
+    .page-market-list .market-index-hero.mobile-page-heading {
+        margin-top: -18px !important;
+    }
+
     .dashboard-shell,
     .dashboard-main,
     .dashboard-content,
