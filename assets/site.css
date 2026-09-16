@@ -1249,6 +1249,13 @@ body.page-market-list .page-toolbar-copy {
     padding: 28px;
 }
 
+.policy-card.page-reading-panel {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
 .page-focus-intro {
     display: grid;
     gap: 10px;
