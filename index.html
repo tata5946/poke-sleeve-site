@@ -5247,7 +5247,7 @@
           <div class="mobile-category-tabs" aria-label="カテゴリ">
             <button type="button" class="mobile-category-tab is-active">ポケモン</button>
             <button type="button" class="mobile-category-tab">トレーナー</button>
-            <button type="button" class="mobile-category-tab">限定・シリーズ</button>
+            <button type="button" class="mobile-category-tab">シリーズ</button>
           </div>
           <p class="mobile-category-subhead">人気タグ</p>
           <div class="mobile-category-grid">
@@ -5274,7 +5274,7 @@
     </main>
   </div>
 
-  <script src="./assets/common.js?v=20260914a"></script>
+  <script src="./assets/common.js?v=20260917b"></script>
   <script>
     const ACCESS_RANKING_ENDPOINT = window.GAS_URL || "";
     const ACCESS_RANKING_CACHE_KEY = "home_access_ranking_cache_v2";
@@ -6751,7 +6751,7 @@
     const MOBILE_CATEGORY_GROUPS = [
       { key: "pokemon", label: "ポケモン" },
       { key: "trainer", label: "トレーナー" },
-      { key: "category", label: "限定・シリーズ" }
+      { key: "series", label: "シリーズ" }
     ];
 
     function buildMobileCategoryHref(groupKey, tag = "") {
