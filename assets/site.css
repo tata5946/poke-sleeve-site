@@ -9793,6 +9793,7 @@ footer.site-footer {
 html:root body.shared-page-layout .shared-page-heading {
     width: 100% !important;
     min-width: 0 !important;
+    margin-top: 0 !important;
     margin-right: 0 !important;
     margin-bottom: 0 !important;
     margin-left: 0 !important;
@@ -9805,6 +9806,12 @@ html:root body.shared-page-layout .shared-page-heading {
     background: transparent !important;
     box-shadow: none !important;
     box-sizing: border-box !important;
+}
+
+html:root body.shared-page-layout .page-focus-intro.shared-page-heading,
+html:root body.shared-page-layout .shared-page-heading .market-index-copy,
+html:root body.shared-page-layout .shared-page-heading .my-collection-hero-copy {
+    gap: 0 !important;
 }
 
 html:root body.shared-page-layout .shared-page-body {
