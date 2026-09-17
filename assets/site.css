@@ -9805,6 +9805,11 @@ html:root body.shared-page-layout .shared-page-heading {
     box-sizing: border-box !important;
 }
 
+html:root body.shared-page-layout .shared-page-body {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
 html:root body.shared-page-layout .shared-page-heading-title {
     margin: 0 !important;
     font-family: "Zen Kaku Gothic New", var(--font-heading) !important;
@@ -9823,7 +9828,7 @@ html:root body.shared-page-layout .shared-page-heading-desc {
     font-weight: 400 !important;
 }
 
-.page-market-list .market-index-shell > .error:empty {
+html:root body.shared-page-layout .shared-page-content > .error:empty {
     display: none !important;
 }
 
