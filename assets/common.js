@@ -618,6 +618,30 @@ function sleeveMatchesDetailTag(sleeve, tag) {
   return values.includes(target);
 }
 
+let categoryPageMapPromise = null;
+
+function ensureCategoryPageMapLoaded() {
+  if (window.__CATEGORY_PAGE_MAP__) return Promise.resolve(true);
+  if (categoryPageMapPromise) return categoryPageMapPromise;
+
+  categoryPageMapPromise = new Promise((resolve) => {
+    const existing = document.querySelector('script[data-category-page-map]');
+    if (existing) {
+      existing.addEventListener('load', () => resolve(Boolean(window.__CATEGORY_PAGE_MAP__)), { once: true });
+      existing.addEventListener('error', () => resolve(false), { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = buildSiteHref('assets/category-page-map.js?v=20260917a');
+    script.dataset.categoryPageMap = 'true';
+    script.addEventListener('load', () => resolve(Boolean(window.__CATEGORY_PAGE_MAP__)), { once: true });
+    script.addEventListener('error', () => resolve(false), { once: true });
+    document.head.appendChild(script);
+  });
+  return categoryPageMapPromise;
+}
+
 function buildSleeveCategoryHref(groupKey, tag) {
   const params = new URLSearchParams();
   const group = normalizeSleeveTextValue(groupKey).toLowerCase();
@@ -1368,6 +1392,7 @@ async function ensureCategoryNavsRendered(preloadedSleeves = null) {
   if (!roots.length) return;
 
   try {
+    await ensureCategoryPageMapLoaded();
     let sleeves = Array.isArray(preloadedSleeves) ? preloadedSleeves : null;
     if (!Array.isArray(sleeves)) {
       sleeves = await loadCategoryNavSleeves();
