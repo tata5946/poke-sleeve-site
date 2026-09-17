@@ -160,7 +160,9 @@ function PageHtml([object]$Entry, [string]$Slug) {
   <script src="./assets/common.js?v=20260917a"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      if (window.common?.setupDashboardChrome) await window.common.setupDashboardChrome({ sidebarActive: 'zukan' });
+      const chromeReady = window.common?.setupDashboardChrome
+        ? window.common.setupDashboardChrome({ sidebarActive: 'zukan' })
+        : Promise.resolve();
       const list = document.getElementById('categoryCards');
       document.getElementById('categorySort')?.addEventListener('change', (event) => {
         const mode = event.target.value;
@@ -343,14 +345,20 @@ function IndexPageHtml([string]$Group, [array]$Items) {
             input.value = '';
             input.dispatchEvent(new Event('input'));
           }
-          const topbar = document.querySelector('.dashboard-topbar');
-          const topbarRect = topbar?.getBoundingClientRect();
-          const offset = Math.max(0, topbarRect?.bottom || 0) + 16;
-          const top = target.getBoundingClientRect().top + window.scrollY - offset;
-          window.scrollTo({ top: Math.max(0, top), behavior: 'auto' });
+          const scrollToTarget = () => {
+            target.scrollIntoView({ block: 'start', inline: 'nearest', behavior: 'auto' });
+            requestAnimationFrame(() => {
+              const topbarBottom = Math.max(0, document.querySelector('.dashboard-topbar')?.getBoundingClientRect().bottom || 0);
+              const delta = target.getBoundingClientRect().top - topbarBottom - 16;
+              if (Math.abs(delta) > 1) window.scrollBy({ top: delta, behavior: 'auto' });
+            });
+          };
+          scrollToTarget();
+          chromeReady.then(scrollToTarget, scrollToTarget);
           history.replaceState(null, '', `#${encodeURIComponent(targetId)}`);
         });
       });
+      await chromeReady.catch((error) => console.error('Dashboard chrome setup failed:', error));
     });
   </script>
 </body>
