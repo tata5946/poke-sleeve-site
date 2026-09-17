@@ -3,6 +3,8 @@
    - header / nav / hero / panels / tiles / grid / responsive を含む
 */
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;600;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;600;700;800;900&display=swap");
+
 :root {
     --bg: #f5f9ff;
     --bg-soft-1: #eef4ff;
@@ -20,7 +22,7 @@
     --max-width: 100%;
     --site-header-h: 0px;
     --font-ui: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
-    --font-heading: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+    --font-heading: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
     --font-numeric: "Inter", "Segoe UI", "Arial", sans-serif;
 }
 
@@ -1247,6 +1249,15 @@ body.page-market-list .page-toolbar-copy {
 
 .page-reading-panel {
     padding: 28px;
+}
+
+/* Public-page typography. The home page keeps its own editorial font system. */
+body:not(.home-page) {
+    font-family: var(--font-ui);
+}
+
+body:not(.home-page) :is(h1, h2, .page-title, .page-hero-title, .page-focus-title, .shared-page-heading-title, .ranking-shared-title, .ranking-page-title, .zukan-title, .category-page-hero-title) {
+    font-family: var(--font-heading);
 }
 
 .policy-card.page-reading-panel {
@@ -10118,4 +10129,27 @@ html:root body.ranking-shared-layout .ranking-shared-heading + .ranking-filter-c
     html:root body.ranking-shared-layout .ranking-shared-heading .page-hero-meta {
         justify-content: flex-start !important;
     }
+}
+
+/* Keep public-page numerals consistent after page-specific styles. */
+html:root body:not(.home-page) :is(
+    [class$="-price"],
+    [class*="-price-"],
+    [class$="-value"],
+    [class*="-value-"],
+    [class$="-amount"],
+    [class*="-amount-"],
+    [class$="-count"],
+    [class*="-count-"],
+    [class$="-delta"],
+    [class*="-delta-"],
+    [class$="-rate"],
+    [class*="-rate-"],
+    [class$="-metric"],
+    [class*="-metric-"],
+    [class$="-stat"],
+    [class*="-stat-"]
+) {
+    font-family: var(--font-numeric) !important;
+    font-variant-numeric: tabular-nums;
 }
