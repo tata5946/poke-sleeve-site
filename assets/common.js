@@ -530,7 +530,7 @@ function uniq(arr) {
 const SLEEVE_CATEGORY_FIELD_GROUPS = {
   pokemon: ["category1", "category2", "category3"],
   trainer: ["category4", "category5", "category6"],
-  series: ["category4", "category5", "category6"],
+  series: ["category7", "category8", "category9"],
   category: ["category7", "category8", "category9"],
   character: ["category4", "category5", "category6"],
   other: ["category7", "category8", "category9"]
@@ -572,6 +572,7 @@ function countSleevesByGroup(sleeves) {
   return {
     pokemon: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "pokemon") ? 1 : 0), 0),
     trainer: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "trainer") ? 1 : 0), 0),
+    series: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "series") ? 1 : 0), 0),
     category: list.reduce((sum, sleeve) => sum + (sleeveMatchesGroup(sleeve, "category") ? 1 : 0), 0)
   };
 }
@@ -1249,7 +1250,7 @@ function buildCategoryNavMarkup(sleeves) {
   const configs = [
     { key: "pokemon", label: "ポケモン" },
     { key: "trainer", label: "トレーナー" },
-    { key: "category", label: "限定" }
+    { key: "series", label: "シリーズ" }
   ];
   const counts = countSleevesByGroup(sleeves);
   const items = configs

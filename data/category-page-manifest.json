@@ -3708,5 +3708,593 @@
         "slug":  "trainer-3779410d871b",
         "count":  1,
         "path":  "/sleeves/trainer/trainer-3779410d871b/"
+    },
+    {
+        "group":  "series",
+        "label":  "#GOGO!YELL!!シリーズ",
+        "slug":  "series-33c433329b4a",
+        "count":  3,
+        "path":  "/sleeves/series/series-33c433329b4a/"
+    },
+    {
+        "group":  "series",
+        "label":  "10枚販売",
+        "slug":  "series-2db5a9fffdf5",
+        "count":  3,
+        "path":  "/sleeves/series/series-2db5a9fffdf5/"
+    },
+    {
+        "group":  "series",
+        "label":  "24じかんポケモンCHUシリーズ",
+        "slug":  "series-63fbd0c929b6",
+        "count":  3,
+        "path":  "/sleeves/series/series-63fbd0c929b6/"
+    },
+    {
+        "group":  "series",
+        "label":  "30枚販売",
+        "slug":  "series-1f740aa94ce3",
+        "count":  1,
+        "path":  "/sleeves/series/series-1f740aa94ce3/"
+    },
+    {
+        "group":  "series",
+        "label":  "32枚販売",
+        "slug":  "series-9e35bbebb628",
+        "count":  121,
+        "path":  "/sleeves/series/series-9e35bbebb628/"
+    },
+    {
+        "group":  "series",
+        "label":  "60枚販売",
+        "slug":  "series-f9939fb6e6db",
+        "count":  6,
+        "path":  "/sleeves/series/series-f9939fb6e6db/"
+    },
+    {
+        "group":  "series",
+        "label":  "62枚販売",
+        "slug":  "series-54d09c7beeb8",
+        "count":  16,
+        "path":  "/sleeves/series/series-54d09c7beeb8/"
+    },
+    {
+        "group":  "series",
+        "label":  "65枚販売",
+        "slug":  "series-bdd4b7b8c9d7",
+        "count":  1,
+        "path":  "/sleeves/series/series-bdd4b7b8c9d7/"
+    },
+    {
+        "group":  "series",
+        "label":  "BALL FREAKシリーズ",
+        "slug":  "series-17265b647214",
+        "count":  5,
+        "path":  "/sleeves/series/series-17265b647214/"
+    },
+    {
+        "group":  "series",
+        "label":  "Berry’s forest, Ghost’s castleシリーズ",
+        "slug":  "series-31c0b9c1d529",
+        "count":  2,
+        "path":  "/sleeves/series/series-31c0b9c1d529/"
+    },
+    {
+        "group":  "series",
+        "label":  "BL Pokémonシリーズ",
+        "slug":  "series-7fe511a35610",
+        "count":  1,
+        "path":  "/sleeves/series/series-7fe511a35610/"
+    },
+    {
+        "group":  "series",
+        "label":  "CL",
+        "slug":  "series-a477646a79fa",
+        "count":  3,
+        "path":  "/sleeves/series/series-a477646a79fa/"
+    },
+    {
+        "group":  "series",
+        "label":  "COOL×METALシリーズ",
+        "slug":  "series-9527c3392158",
+        "count":  3,
+        "path":  "/sleeves/series/series-9527c3392158/"
+    },
+    {
+        "group":  "series",
+        "label":  "ex会員限定",
+        "slug":  "series-c92380a41ce9",
+        "count":  1,
+        "path":  "/sleeves/series/series-c92380a41ce9/"
+    },
+    {
+        "group":  "series",
+        "label":  "HELLO PONYTAシリーズ",
+        "slug":  "series-9804760af537",
+        "count":  2,
+        "path":  "/sleeves/series/series-9804760af537/"
+    },
+    {
+        "group":  "series",
+        "label":  "HISUI DAYSシリーズ",
+        "slug":  "series-dcd9b1226bf0",
+        "count":  4,
+        "path":  "/sleeves/series/series-dcd9b1226bf0/"
+    },
+    {
+        "group":  "series",
+        "label":  "Midnight Agent -the cinema-シリーズ",
+        "slug":  "series-12474be67d5b",
+        "count":  4,
+        "path":  "/sleeves/series/series-12474be67d5b/"
+    },
+    {
+        "group":  "series",
+        "label":  "Oceanic Operettaシリーズ",
+        "slug":  "series-8ba878f52465",
+        "count":  4,
+        "path":  "/sleeves/series/series-8ba878f52465/"
+    },
+    {
+        "group":  "series",
+        "label":  "PIKACHU ADVENTUREシリーズ",
+        "slug":  "series-0fc888ee8b5a",
+        "count":  4,
+        "path":  "/sleeves/series/series-0fc888ee8b5a/"
+    },
+    {
+        "group":  "series",
+        "label":  "PIKAPIKACHUシリーズ",
+        "slug":  "series-02a93204d101",
+        "count":  2,
+        "path":  "/sleeves/series/series-02a93204d101/"
+    },
+    {
+        "group":  "series",
+        "label":  "PJCS",
+        "slug":  "series-3e9eeb160069",
+        "count":  4,
+        "path":  "/sleeves/series/series-3e9eeb160069/"
+    },
+    {
+        "group":  "series",
+        "label":  "POKÉMON TRAINERSシリーズ",
+        "slug":  "series-cb02e9d074ca",
+        "count":  18,
+        "path":  "/sleeves/series/series-cb02e9d074ca/"
+    },
+    {
+        "group":  "series",
+        "label":  "Pokémon Yuruttoシリーズ",
+        "slug":  "series-04db1ff88f8f",
+        "count":  6,
+        "path":  "/sleeves/series/series-04db1ff88f8f/"
+    },
+    {
+        "group":  "series",
+        "label":  "SECRET TEAMSシリーズ",
+        "slug":  "series-434d2588f08c",
+        "count":  7,
+        "path":  "/sleeves/series/series-434d2588f08c/"
+    },
+    {
+        "group":  "series",
+        "label":  "TAG TEAM GX",
+        "slug":  "series-22bfcb6b6fe6",
+        "count":  11,
+        "path":  "/sleeves/series/series-22bfcb6b6fe6/"
+    },
+    {
+        "group":  "series",
+        "label":  "UB ULTRA GRAPHIXシリーズ",
+        "slug":  "series-e790424153c6",
+        "count":  3,
+        "path":  "/sleeves/series/series-e790424153c6/"
+    },
+    {
+        "group":  "series",
+        "label":  "VSTAR",
+        "slug":  "series-36c4d53c5388",
+        "count":  3,
+        "path":  "/sleeves/series/series-36c4d53c5388/"
+    },
+    {
+        "group":  "series",
+        "label":  "WCS",
+        "slug":  "series-ac3675a9b0d0",
+        "count":  1,
+        "path":  "/sleeves/series/series-ac3675a9b0d0/"
+    },
+    {
+        "group":  "series",
+        "label":  "アカツキ",
+        "slug":  "series-ad7da431bb77",
+        "count":  1,
+        "path":  "/sleeves/series/series-ad7da431bb77/"
+    },
+    {
+        "group":  "series",
+        "label":  "あくタイプ",
+        "slug":  "series-7249fd9248c9",
+        "count":  1,
+        "path":  "/sleeves/series/series-7249fd9248c9/"
+    },
+    {
+        "group":  "series",
+        "label":  "アローラ",
+        "slug":  "series-b4816e212644",
+        "count":  7,
+        "path":  "/sleeves/series/series-b4816e212644/"
+    },
+    {
+        "group":  "series",
+        "label":  "ウルトラビースト",
+        "slug":  "series-8e24581cbc0d",
+        "count":  6,
+        "path":  "/sleeves/series/series-8e24581cbc0d/"
+    },
+    {
+        "group":  "series",
+        "label":  "エスパータイプ",
+        "slug":  "series-4b05f8878450",
+        "count":  1,
+        "path":  "/sleeves/series/series-4b05f8878450/"
+    },
+    {
+        "group":  "series",
+        "label":  "おやすみシリーズ",
+        "slug":  "series-09e77fb239c7",
+        "count":  3,
+        "path":  "/sleeves/series/series-09e77fb239c7/"
+    },
+    {
+        "group":  "series",
+        "label":  "オリジン",
+        "slug":  "series-5aaeb62bbb29",
+        "count":  3,
+        "path":  "/sleeves/series/series-5aaeb62bbb29/"
+    },
+    {
+        "group":  "series",
+        "label":  "かがやくシリーズ",
+        "slug":  "series-1c0924e615b8",
+        "count":  2,
+        "path":  "/sleeves/series/series-1c0924e615b8/"
+    },
+    {
+        "group":  "series",
+        "label":  "カモネギ三葱隊ものがたりシリーズ",
+        "slug":  "series-d9a4c2a764b3",
+        "count":  3,
+        "path":  "/sleeves/series/series-d9a4c2a764b3/"
+    },
+    {
+        "group":  "series",
+        "label":  "ガラル",
+        "slug":  "series-497cb9d318fa",
+        "count":  5,
+        "path":  "/sleeves/series/series-497cb9d318fa/"
+    },
+    {
+        "group":  "series",
+        "label":  "カントー",
+        "slug":  "series-5e8d80cbb4c8",
+        "count":  1,
+        "path":  "/sleeves/series/series-5e8d80cbb4c8/"
+    },
+    {
+        "group":  "series",
+        "label":  "キョダイマックス",
+        "slug":  "series-60eafa601caa",
+        "count":  12,
+        "path":  "/sleeves/series/series-60eafa601caa/"
+    },
+    {
+        "group":  "series",
+        "label":  "くさタイプ",
+        "slug":  "series-3f02abc84d62",
+        "count":  2,
+        "path":  "/sleeves/series/series-3f02abc84d62/"
+    },
+    {
+        "group":  "series",
+        "label":  "ゲンシ",
+        "slug":  "series-75acfc5fc4d8",
+        "count":  1,
+        "path":  "/sleeves/series/series-75acfc5fc4d8/"
+    },
+    {
+        "group":  "series",
+        "label":  "ゴーストタイプ",
+        "slug":  "series-cb67126e9c6d",
+        "count":  1,
+        "path":  "/sleeves/series/series-cb67126e9c6d/"
+    },
+    {
+        "group":  "series",
+        "label":  "ジムチャレンジ限定",
+        "slug":  "series-8cfe1b1fe16f",
+        "count":  1,
+        "path":  "/sleeves/series/series-8cfe1b1fe16f/"
+    },
+    {
+        "group":  "series",
+        "label":  "ジュエルシリーズ",
+        "slug":  "series-00346b53bea3",
+        "count":  2,
+        "path":  "/sleeves/series/series-00346b53bea3/"
+    },
+    {
+        "group":  "series",
+        "label":  "スカル団",
+        "slug":  "series-0feedaa5dfe0",
+        "count":  1,
+        "path":  "/sleeves/series/series-0feedaa5dfe0/"
+    },
+    {
+        "group":  "series",
+        "label":  "タイプファイターズシリーズ",
+        "slug":  "series-937e101b0b96",
+        "count":  10,
+        "path":  "/sleeves/series/series-937e101b0b96/"
+    },
+    {
+        "group":  "series",
+        "label":  "ダイマックス",
+        "slug":  "series-825609e25c1b",
+        "count":  2,
+        "path":  "/sleeves/series/series-825609e25c1b/"
+    },
+    {
+        "group":  "series",
+        "label":  "たいようとげっこうシリーズ",
+        "slug":  "series-8d91cc5e044a",
+        "count":  2,
+        "path":  "/sleeves/series/series-8d91cc5e044a/"
+    },
+    {
+        "group":  "series",
+        "label":  "ダメカンシリーズ",
+        "slug":  "series-ccd4bad5e29b",
+        "count":  4,
+        "path":  "/sleeves/series/series-ccd4bad5e29b/"
+    },
+    {
+        "group":  "series",
+        "label":  "つながるせかいシリーズ",
+        "slug":  "series-b33bbaa43a03",
+        "count":  3,
+        "path":  "/sleeves/series/series-b33bbaa43a03/"
+    },
+    {
+        "group":  "series",
+        "label":  "デッキシールドコレクション 古代・未来シリーズ",
+        "slug":  "series-0593a61ff906",
+        "count":  10,
+        "path":  "/sleeves/series/series-0593a61ff906/"
+    },
+    {
+        "group":  "series",
+        "label":  "テラスタル",
+        "slug":  "series-ca427ea4e124",
+        "count":  18,
+        "path":  "/sleeves/series/series-ca427ea4e124/"
+    },
+    {
+        "group":  "series",
+        "label":  "でんきタイプ",
+        "slug":  "series-190733e02905",
+        "count":  1,
+        "path":  "/sleeves/series/series-190733e02905/"
+    },
+    {
+        "group":  "series",
+        "label":  "とうタイプ",
+        "slug":  "series-e1359e6c1d25",
+        "count":  1,
+        "path":  "/sleeves/series/series-e1359e6c1d25/"
+    },
+    {
+        "group":  "series",
+        "label":  "トウホク",
+        "slug":  "series-9bf102f56913",
+        "count":  6,
+        "path":  "/sleeves/series/series-9bf102f56913/"
+    },
+    {
+        "group":  "series",
+        "label":  "どのポケモンの目かな？シリーズ",
+        "slug":  "series-8847d8a41f76",
+        "count":  3,
+        "path":  "/sleeves/series/series-8847d8a41f76/"
+    },
+    {
+        "group":  "series",
+        "label":  "ドラゴンタイプ",
+        "slug":  "series-fd56b91e5bce",
+        "count":  1,
+        "path":  "/sleeves/series/series-fd56b91e5bce/"
+    },
+    {
+        "group":  "series",
+        "label":  "にたものどうしシリーズ",
+        "slug":  "series-e3863afc5e07",
+        "count":  3,
+        "path":  "/sleeves/series/series-e3863afc5e07/"
+    },
+    {
+        "group":  "series",
+        "label":  "ノーマルタイプ",
+        "slug":  "series-6577188ec6d4",
+        "count":  1,
+        "path":  "/sleeves/series/series-6577188ec6d4/"
+    },
+    {
+        "group":  "series",
+        "label":  "はがねタイプ",
+        "slug":  "series-b96e49f9b9dc",
+        "count":  1,
+        "path":  "/sleeves/series/series-b96e49f9b9dc/"
+    },
+    {
+        "group":  "series",
+        "label":  "パルデア",
+        "slug":  "series-e7a4b18f4b01",
+        "count":  1,
+        "path":  "/sleeves/series/series-e7a4b18f4b01/"
+    },
+    {
+        "group":  "series",
+        "label":  "ヒスイ",
+        "slug":  "series-f09a5f469765",
+        "count":  9,
+        "path":  "/sleeves/series/series-f09a5f469765/"
+    },
+    {
+        "group":  "series",
+        "label":  "フェアリータイプ",
+        "slug":  "series-e4cf2021f4a8",
+        "count":  1,
+        "path":  "/sleeves/series/series-e4cf2021f4a8/"
+    },
+    {
+        "group":  "series",
+        "label":  "ぼうしをかぶったピカチュウシリーズ",
+        "slug":  "series-e382b76c6da6",
+        "count":  6,
+        "path":  "/sleeves/series/series-e382b76c6da6/"
+    },
+    {
+        "group":  "series",
+        "label":  "ポケモンGO",
+        "slug":  "series-78a3b2ee17c1",
+        "count":  2,
+        "path":  "/sleeves/series/series-78a3b2ee17c1/"
+    },
+    {
+        "group":  "series",
+        "label":  "ほのおタイプ",
+        "slug":  "series-a425f3af91ec",
+        "count":  1,
+        "path":  "/sleeves/series/series-a425f3af91ec/"
+    },
+    {
+        "group":  "series",
+        "label":  "ポンチョを着たシリーズ",
+        "slug":  "series-4b2b51a1c509",
+        "count":  15,
+        "path":  "/sleeves/series/series-4b2b51a1c509/"
+    },
+    {
+        "group":  "series",
+        "label":  "マリオシリーズ",
+        "slug":  "series-d3949ff76ac4",
+        "count":  2,
+        "path":  "/sleeves/series/series-d3949ff76ac4/"
+    },
+    {
+        "group":  "series",
+        "label":  "みずタイプ",
+        "slug":  "series-f6e467832ca9",
+        "count":  1,
+        "path":  "/sleeves/series/series-f6e467832ca9/"
+    },
+    {
+        "group":  "series",
+        "label":  "ミックスオレシリーズ",
+        "slug":  "series-8d7f6073c1dc",
+        "count":  1,
+        "path":  "/sleeves/series/series-8d7f6073c1dc/"
+    },
+    {
+        "group":  "series",
+        "label":  "ムゲンダイマックス",
+        "slug":  "series-690cbca44d56",
+        "count":  1,
+        "path":  "/sleeves/series/series-690cbca44d56/"
+    },
+    {
+        "group":  "series",
+        "label":  "メガシンカ",
+        "slug":  "series-7b7fcccdf210",
+        "count":  45,
+        "path":  "/sleeves/series/series-7b7fcccdf210/"
+    },
+    {
+        "group":  "series",
+        "label":  "ロケット団シリーズ",
+        "slug":  "series-a010575369a4",
+        "count":  3,
+        "path":  "/sleeves/series/series-a010575369a4/"
+    },
+    {
+        "group":  "series",
+        "label":  "拡張パックシリーズ",
+        "slug":  "series-f84dc828301d",
+        "count":  4,
+        "path":  "/sleeves/series/series-f84dc828301d/"
+    },
+    {
+        "group":  "series",
+        "label":  "記念デッキシールド",
+        "slug":  "series-c9e25f2c02a6",
+        "count":  16,
+        "path":  "/sleeves/series/series-c9e25f2c02a6/"
+    },
+    {
+        "group":  "series",
+        "label":  "限定デッキシールド",
+        "slug":  "series-663175d07b07",
+        "count":  79,
+        "path":  "/sleeves/series/series-663175d07b07/"
+    },
+    {
+        "group":  "series",
+        "label":  "色違い",
+        "slug":  "series-d08145e895e0",
+        "count":  5,
+        "path":  "/sleeves/series/series-d08145e895e0/"
+    },
+    {
+        "group":  "series",
+        "label":  "進化の軌跡シリーズ",
+        "slug":  "series-cd6f37922071",
+        "count":  7,
+        "path":  "/sleeves/series/series-cd6f37922071/"
+    },
+    {
+        "group":  "series",
+        "label":  "進化の系譜シリーズ",
+        "slug":  "series-6f2639505ff4",
+        "count":  4,
+        "path":  "/sleeves/series/series-6f2639505ff4/"
+    },
+    {
+        "group":  "series",
+        "label":  "百ポケ夜行シリーズ",
+        "slug":  "series-ef673688305e",
+        "count":  2,
+        "path":  "/sleeves/series/series-ef673688305e/"
+    },
+    {
+        "group":  "series",
+        "label":  "浮世絵シリーズ",
+        "slug":  "series-9fd04dd269b3",
+        "count":  1,
+        "path":  "/sleeves/series/series-9fd04dd269b3/"
+    },
+    {
+        "group":  "series",
+        "label":  "冒険シリーズ",
+        "slug":  "series-b08463b99fca",
+        "count":  9,
+        "path":  "/sleeves/series/series-b08463b99fca/"
+    },
+    {
+        "group":  "series",
+        "label":  "墨絵列伝シリーズ",
+        "slug":  "series-0f241a1df287",
+        "count":  5,
+        "path":  "/sleeves/series/series-0f241a1df287/"
     }
 ]

@@ -249,7 +249,7 @@ function Get-StaticSleeveTags([object]$Sleeve) {
   $items = @($values | ForEach-Object {
     '<a class="detail-tag" href="./sleeves/?tag=' + [System.Uri]::EscapeDataString([string]$_) + '">' + (ConvertTo-HtmlText $_) + '</a>'
   })
-  foreach ($spec in @(@('pokemon','pokemonCategories'), @('trainer','trainerCategories'))) {
+  foreach ($spec in @(@('pokemon','pokemonCategories'), @('trainer','trainerCategories'), @('series','categoryTags'))) {
     foreach ($label in @($Sleeve.($spec[1]))) {
       $name = ([string]$label).Trim()
       if (-not $name) { continue }

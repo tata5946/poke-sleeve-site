@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <base href="../../../" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>みずタイプのデッキシールド一覧｜歴代1種類・相場価格 | ポケスリ相場ナビ</title>
+  <meta name="description" content="みずタイプに該当する歴代デッキシールド1種類を一覧で掲載。現在相場や発売時価格、価格推移を確認できます。" />
+  <meta property="og:title" content="みずタイプのデッキシールド一覧｜歴代1種類・相場価格 | ポケスリ相場ナビ" />
+  <meta property="og:description" content="みずタイプに該当する歴代デッキシールド1種類を一覧で掲載。現在相場や発売時価格、価格推移を確認できます。" />
+  <meta property="og:url" content="https://pokesuri-navi.com/sleeves/series/series-f6e467832ca9/" />
+  <link rel="canonical" href="https://pokesuri-navi.com/sleeves/series/series-f6e467832ca9/" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260917m" />
+  <link rel="stylesheet" href="./assets/category-pages.css?v=20260917a" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"トップ","item":"https://pokesuri-navi.com/"},{"@type":"ListItem","position":2,"name":"デッキシールド図鑑","item":"https://pokesuri-navi.com/sleeves/"},{"@type":"ListItem","position":3,"name":"シリーズから探す","item":"https://pokesuri-navi.com/sleeves/?group=series"},{"@type":"ListItem","position":4,"name":"みずタイプ","item":"https://pokesuri-navi.com/sleeves/series/series-f6e467832ca9/"}]}</script>
+</head>
+<body class="page-market-list" data-hide-global-header="1">
+  <div id="site-header"></div>
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー"><div id="dashboardSidebarSlot" data-dashboard-sidebar-active="zukan"></div></aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar"><div id="dashboardTopbarSlot"></div></header>
+      <div class="dashboard-content">
+        <div class="category-page-wrap">
+          <nav class="breadcrumb" aria-label="パンくず"><a href="/">トップ</a><span class="breadcrumb-sep">&gt;</span><a href="/sleeves/">デッキシールド図鑑</a><span class="breadcrumb-sep">&gt;</span><a href="/sleeves/?group=series">シリーズから探す</a><span class="breadcrumb-sep">&gt;</span><span class="breadcrumb-current" aria-current="page">みずタイプ</span></nav>
+          <section class="category-page-hero"><h1>みずタイプのデッキシールド一覧</h1><p>みずタイプに該当する歴代デッキシールド1種類を一覧で掲載。現在相場や発売時価格、価格推移を確認できます。</p></section>
+          <div class="category-sort"><label>並び替え<select id="categorySort"><option value="default">おすすめ・既定順</option><option value="priceDesc">価格が高い順</option><option value="priceAsc">価格が安い順</option><option value="newest">新しい順</option><option value="oldest">古い順</option></select></label></div>
+          <ul id="categoryCards" class="category-card-grid">      <li class="category-card" data-index="0" data-price="2805.5" data-date="2019-12-06">
+        <a href="/sleeve/4521329283791/">
+          <span class="category-card-image"><img src="https://drive.google.com/thumbnail?id=1vZlKrmYuHkZlOftU1pzffQc0Domm0GyY&amp;sz=w1200" alt="タイプファイターズ 水" loading="lazy" referrerpolicy="no-referrer" /></span>
+          <span class="category-card-body">
+            <span class="category-card-name">タイプファイターズ 水</span>
+            <span class="category-card-meta"><span>発売日 2019-12-06</span><span>発売時価格 792円</span><span>現在相場 2,806円</span></span>
+          </span>
+        </a>
+      </li></ul>
+        </div>
+        <div id="site-footer"></div>
+      </div>
+    </main>
+  </div>
+  <script src="./assets/common.js?v=20260917a"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (window.common?.setupDashboardChrome) await window.common.setupDashboardChrome({ sidebarActive: 'zukan' });
+      const list = document.getElementById('categoryCards');
+      document.getElementById('categorySort')?.addEventListener('change', (event) => {
+        const mode = event.target.value;
+        const cards = Array.from(list.children);
+        cards.sort((a,b) => {
+          if (mode === 'priceDesc' || mode === 'priceAsc') {
+            const ap = a.dataset.price === '' ? -1 : Number(a.dataset.price);
+            const bp = b.dataset.price === '' ? -1 : Number(b.dataset.price);
+            return mode === 'priceDesc' ? bp-ap : ap-bp;
+          }
+          if (mode === 'newest' || mode === 'oldest') {
+            const d=String(b.dataset.date).localeCompare(String(a.dataset.date));
+            return mode === 'newest' ? d : -d;
+          }
+          return Number(a.dataset.index)-Number(b.dataset.index);
+        });
+        cards.forEach(card => list.appendChild(card));
+      });
+    });
+  </script>
+</body>
+</html>

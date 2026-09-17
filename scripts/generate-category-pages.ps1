@@ -101,12 +101,21 @@ function CardHtml([object]$Sleeve, [int]$Index) {
 "@
 }
 function PageHtml([object]$Entry, [string]$Slug) {
-  $groupLabel = if ($Entry.group -eq 'pokemon') { 'ポケモン' } else { 'トレーナー' }
+  $groupLabel = switch ($Entry.group) {
+    'pokemon' { 'ポケモン' }
+    'trainer' { 'トレーナー' }
+    default { 'シリーズ' }
+  }
   $label = [string]$Entry.label
   $count = @($Entry.items).Count
   $url = "$($SiteOrigin.TrimEnd('/'))/sleeves/$($Entry.group)/$Slug/"
-  $title = "${label}のデッキシールド一覧｜歴代${count}種類・相場価格 | ポケスリ相場ナビ"
-  $description = "${label}が描かれた歴代デッキシールド${count}種類を一覧で掲載。現在相場や発売時価格、価格推移を確認できます。"
+  $heading = if ($label.EndsWith('デッキシールド')) { "${label}一覧" } else { "${label}のデッキシールド一覧" }
+  $title = "${heading}｜歴代${count}種類・相場価格 | ポケスリ相場ナビ"
+  $description = if ($Entry.group -eq 'series') {
+    "${label}に該当する歴代デッキシールド${count}種類を一覧で掲載。現在相場や発売時価格、価格推移を確認できます。"
+  } else {
+    "${label}が描かれた歴代デッキシールド${count}種類を一覧で掲載。現在相場や発売時価格、価格推移を確認できます。"
+  }
   $cards = New-Object System.Text.StringBuilder
   $i = 0
   foreach ($sleeve in @($Entry.items | Sort-Object @{Expression={[string]$_.releaseDate};Descending=$true}, @{Expression={[string]$_.name};Ascending=$true})) {
@@ -139,7 +148,7 @@ function PageHtml([object]$Entry, [string]$Slug) {
       <div class="dashboard-content">
         <div class="category-page-wrap">
           <nav class="breadcrumb" aria-label="パンくず"><a href="/">トップ</a><span class="breadcrumb-sep">&gt;</span><a href="/sleeves/">デッキシールド図鑑</a><span class="breadcrumb-sep">&gt;</span><a href="/sleeves/?group=$($Entry.group)">${groupLabel}から探す</a><span class="breadcrumb-sep">&gt;</span><span class="breadcrumb-current" aria-current="page">$(Html $label)</span></nav>
-          <section class="category-page-hero"><h1>$(Html $label)のデッキシールド一覧</h1><p>$(Html $description)</p></section>
+          <section class="category-page-hero"><h1>$(Html $heading)</h1><p>$(Html $description)</p></section>
           <div class="category-sort"><label>並び替え<select id="categorySort"><option value="default">おすすめ・既定順</option><option value="priceDesc">価格が高い順</option><option value="priceAsc">価格が安い順</option><option value="newest">新しい順</option><option value="oldest">古い順</option></select></label></div>
           <ul id="categoryCards" class="category-card-grid">$cards</ul>
         </div>
@@ -181,11 +190,19 @@ if (-not (Test-Path -LiteralPath $SlugMapPath)) { throw "Slug map not found: $Sl
 $data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $slugData = Get-Content -LiteralPath $SlugMapPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $previous = if (Test-Path -LiteralPath $ManifestPath) { Get-Content -LiteralPath $ManifestPath -Raw -Encoding UTF8 | ConvertFrom-Json } else { @() }
-$entries = @((CategoryEntries @($data.sleeves) 'pokemon' 'pokemonCategories') + (CategoryEntries @($data.sleeves) 'trainer' 'trainerCategories'))
+$entries = @(
+  (CategoryEntries @($data.sleeves) 'pokemon' 'pokemonCategories') +
+  (CategoryEntries @($data.sleeves) 'trainer' 'trainerCategories') +
+  (CategoryEntries @($data.sleeves) 'series' 'categoryTags')
+)
 $used = @{}
 $manifest = New-Object 'System.Collections.Generic.List[object]'
 foreach ($entry in $entries) {
   $map = $slugData.($entry.group)
+  if (-not $map) {
+    $slugData | Add-Member -NotePropertyName $entry.group -NotePropertyValue ([pscustomobject]@{})
+    $map = $slugData.($entry.group)
+  }
   $property = $map.PSObject.Properties[[string]$entry.label]
   $slug = if ($property) { [string]$property.Value } else { '' }
   if (-not $slug) {
@@ -217,4 +234,5 @@ foreach ($item in $manifest) {
 WriteText $BrowserMapPath ('window.__CATEGORY_PAGE_MAP__ = ' + ($browserMap | ConvertTo-Json -Depth 6 -Compress) + ';')
 $pokemonCount = @($manifest | Where-Object group -eq 'pokemon').Count
 $trainerCount = @($manifest | Where-Object group -eq 'trainer').Count
-Write-Output "Generated $($manifest.Count) category pages (pokemon=$pokemonCount, trainer=$trainerCount)."
+$seriesCount = @($manifest | Where-Object group -eq 'series').Count
+Write-Output "Generated $($manifest.Count) category pages (pokemon=$pokemonCount, trainer=$trainerCount, series=$seriesCount)."
