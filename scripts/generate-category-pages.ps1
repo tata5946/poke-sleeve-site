@@ -70,7 +70,7 @@ function BreadcrumbJson([string]$Group, [string]$GroupLabel, [string]$Label, [st
     '@context'='https://schema.org'; '@type'='BreadcrumbList'; itemListElement=@(
       [ordered]@{'@type'='ListItem';position=1;name='トップ';item="$SiteOrigin/"},
       [ordered]@{'@type'='ListItem';position=2;name='デッキシールド図鑑';item="$SiteOrigin/sleeves/"},
-      [ordered]@{'@type'='ListItem';position=3;name="${GroupLabel}から探す";item="$SiteOrigin/sleeves/?group=$Group"},
+      [ordered]@{'@type'='ListItem';position=3;name="${GroupLabel}から探す";item="$SiteOrigin/sleeves/$Group/"},
       [ordered]@{'@type'='ListItem';position=4;name=$Label;item=$Url}
     )
   }
@@ -112,9 +112,9 @@ function PageHtml([object]$Entry, [string]$Slug) {
   $heading = if ($label.EndsWith('デッキシールド')) { "${label}一覧" } else { "${label}のデッキシールド一覧" }
   $title = "${heading}｜歴代${count}種類・相場価格 | ポケスリ相場ナビ"
   $description = if ($Entry.group -eq 'series') {
-    "${label}に該当する歴代デッキシールド${count}種類を一覧で掲載。現在相場や発売時価格、価格推移を確認できます。"
+    "${label}に該当する歴代デッキシールドを一覧で掲載。現在、ポケスリ相場ナビでは${count}種類を掲載しています。現在相場や発売時価格、価格推移を確認できます。"
   } else {
-    "${label}が描かれた歴代デッキシールド${count}種類を一覧で掲載。現在相場や発売時価格、価格推移を確認できます。"
+    "${label}が描かれた歴代デッキシールドを一覧で掲載。現在、ポケスリ相場ナビでは${count}種類を掲載しています。現在相場や発売時価格、価格推移を確認できます。"
   }
   $cards = New-Object System.Text.StringBuilder
   $i = 0
@@ -147,7 +147,7 @@ function PageHtml([object]$Entry, [string]$Slug) {
       <header class="dashboard-topbar"><div id="dashboardTopbarSlot"></div></header>
       <div class="dashboard-content">
         <div class="category-page-wrap">
-          <nav class="breadcrumb" aria-label="パンくず"><a href="/">トップ</a><span class="breadcrumb-sep">&gt;</span><a href="/sleeves/">デッキシールド図鑑</a><span class="breadcrumb-sep">&gt;</span><a href="/sleeves/?group=$($Entry.group)">${groupLabel}から探す</a><span class="breadcrumb-sep">&gt;</span><span class="breadcrumb-current" aria-current="page">$(Html $label)</span></nav>
+          <nav class="breadcrumb" aria-label="パンくず"><a href="/">トップ</a><span class="breadcrumb-sep">&gt;</span><a href="/sleeves/">デッキシールド図鑑</a><span class="breadcrumb-sep">&gt;</span><a href="/sleeves/$($Entry.group)/">${groupLabel}から探す</a><span class="breadcrumb-sep">&gt;</span><span class="breadcrumb-current" aria-current="page">$(Html $label)</span></nav>
           <section class="category-page-hero"><h1>$(Html $heading)</h1><p>$(Html $description)</p></section>
           <div class="category-sort"><label>並び替え<select id="categorySort"><option value="default">おすすめ・既定順</option><option value="priceDesc">価格が高い順</option><option value="priceAsc">価格が安い順</option><option value="newest">新しい順</option><option value="oldest">古い順</option></select></label></div>
           <ul id="categoryCards" class="category-card-grid">$cards</ul>
@@ -177,6 +177,112 @@ function PageHtml([object]$Entry, [string]$Slug) {
           return Number(a.dataset.index)-Number(b.dataset.index);
         });
         cards.forEach(card => list.appendChild(card));
+      });
+    });
+  </script>
+</body>
+</html>
+"@
+}
+
+function KanaBucket([string]$Label) {
+  if (-not $Label) { return 'その他' }
+  $first = $Label.Substring(0, 1)
+  if ($first -match '[あいうえおアイウエオヴ]') { return 'あ' }
+  if ($first -match '[かきくけこがぎぐげごカキクケコガギグゲゴ]') { return 'か' }
+  if ($first -match '[さしすせそざじずぜぞサシスセソザジズゼゾ]') { return 'さ' }
+  if ($first -match '[たちつてとだぢづでどタチツテトダヂヅデド]') { return 'た' }
+  if ($first -match '[なにぬねのナニヌネノ]') { return 'な' }
+  if ($first -match '[はひふへほばびぶべぼぱぴぷぺぽハヒフヘホバビブベボパピプペポ]') { return 'は' }
+  if ($first -match '[まみむめもマミムメモ]') { return 'ま' }
+  if ($first -match '[やゆよヤユヨ]') { return 'や' }
+  if ($first -match '[らりるれろラリルレロ]') { return 'ら' }
+  if ($first -match '[わをんワヲン]') { return 'わ' }
+  return '英数・その他'
+}
+
+function IndexPageHtml([string]$Group, [array]$Items) {
+  $groupLabel = switch ($Group) { 'pokemon' { 'ポケモン' } 'trainer' { 'トレーナー' } default { 'シリーズ' } }
+  $heading = "${groupLabel}からデッキシールドを探す"
+  $description = "ポケスリ相場ナビに掲載している${groupLabel}別のデッキシールドを一覧から探せます。各カテゴリーの現在相場や発売時価格を確認できます。"
+  $url = "$($SiteOrigin.TrimEnd('/'))/sleeves/$Group/"
+  $title = "$heading | ポケスリ相場ナビ"
+  $jsonData = [ordered]@{
+    '@context'='https://schema.org'; '@type'='BreadcrumbList'; itemListElement=@(
+      [ordered]@{'@type'='ListItem';position=1;name='トップ';item="$SiteOrigin/"},
+      [ordered]@{'@type'='ListItem';position=2;name='デッキシールド図鑑';item="$SiteOrigin/sleeves/"},
+      [ordered]@{'@type'='ListItem';position=3;name=$heading;item=$url}
+    )
+  }
+  $json = ($jsonData | ConvertTo-Json -Depth 10 -Compress).Replace('</script','<\/script')
+  $sections = New-Object System.Text.StringBuilder
+  $buckets = [ordered]@{}
+  foreach ($item in @($Items | Sort-Object label)) {
+    $bucket = KanaBucket ([string]$item.label)
+    if (-not $buckets.Contains($bucket)) { $buckets[$bucket] = New-Object 'System.Collections.Generic.List[object]' }
+    $buckets[$bucket].Add($item)
+  }
+  $order = @('あ','か','さ','た','な','は','ま','や','ら','わ','英数・その他')
+  $nav = New-Object System.Text.StringBuilder
+  foreach ($bucket in $order) {
+    if (-not $buckets.Contains($bucket)) { continue }
+    $id = if ($bucket -eq '英数・その他') { 'other' } else { "kana-$bucket" }
+    [void]$nav.Append('<a href="#' + $id + '">' + (Html $bucket) + '</a>')
+    $list = New-Object System.Text.StringBuilder
+    foreach ($item in $buckets[$bucket]) {
+      [void]$list.Append('<li class="category-index-item" data-category-name="' + (Html ([string]$item.label).ToLowerInvariant()) + '"><a href="' + (Html $item.path) + '"><span>' + (Html $item.label) + '</span><span class="category-index-count">' + (Html $item.count) + '件</span></a></li>')
+    }
+    [void]$sections.Append('<section id="' + $id + '" class="category-index-section"><h2>' + (Html $bucket) + '</h2><ul class="category-index-list">' + $list.ToString() + '</ul></section>')
+  }
+  return @"
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <base href="../../" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>$(Html $title)</title>
+  <meta name="description" content="$(Html $description)" />
+  <link rel="canonical" href="$(Html $url)" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260917m" />
+  <link rel="stylesheet" href="./assets/category-pages.css?v=20260917b" />
+  <script type="application/ld+json">$json</script>
+</head>
+<body class="page-market-list" data-hide-global-header="1">
+  <div id="site-header"></div>
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー"><div id="dashboardSidebarSlot" data-dashboard-sidebar-active="zukan"></div></aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar"><div id="dashboardTopbarSlot"></div></header>
+      <div class="dashboard-content">
+        <div class="category-page-wrap">
+          <nav class="breadcrumb" aria-label="パンくず"><a href="/">トップ</a><span class="breadcrumb-sep">&gt;</span><a href="/sleeves/">デッキシールド図鑑</a><span class="breadcrumb-sep">&gt;</span><span class="breadcrumb-current" aria-current="page">$(Html $groupLabel)から探す</span></nav>
+          <section class="category-page-hero"><h1>$(Html $heading)</h1><p>$(Html $description)</p></section>
+          <div class="category-index-tools">
+            <input id="categoryIndexSearch" class="category-index-search" type="search" placeholder="$(Html $groupLabel)名を検索" aria-label="$(Html $groupLabel)名を検索" />
+            <nav class="category-index-kana" aria-label="五十音索引">$($nav.ToString())</nav>
+          </div>
+          <div id="categoryIndexSections">$($sections.ToString())</div>
+          <p id="categoryIndexEmpty" class="category-index-empty" hidden>該当するカテゴリーがありません。</p>
+        </div>
+        <div id="site-footer"></div>
+      </div>
+    </main>
+  </div>
+  <script src="./assets/common.js?v=20260917b"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (window.common?.setupDashboardChrome) await window.common.setupDashboardChrome({ sidebarActive: 'zukan' });
+      const input = document.getElementById('categoryIndexSearch');
+      const items = Array.from(document.querySelectorAll('.category-index-item'));
+      const sections = Array.from(document.querySelectorAll('.category-index-section'));
+      const empty = document.getElementById('categoryIndexEmpty');
+      input?.addEventListener('input', () => {
+        const query = input.value.trim().toLocaleLowerCase('ja');
+        let visible = 0;
+        items.forEach((item) => { item.hidden = query !== '' && !item.dataset.categoryName.includes(query); if (!item.hidden) visible += 1; });
+        sections.forEach((section) => { section.hidden = !section.querySelector('.category-index-item:not([hidden])'); });
+        empty.hidden = visible !== 0;
       });
     });
   </script>
@@ -223,6 +329,10 @@ foreach ($old in $previous) {
   $path = Join-Path $OutputRoot (Join-Path $old.group (Join-Path $old.slug 'index.html'))
   $retired = '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="robots" content="noindex, follow"><link rel="canonical" href="' + $SiteOrigin + $fallback + '"><meta http-equiv="refresh" content="0;url=' + $fallback + '"><title>カテゴリページを移動しました</title></head><body><p><a href="' + $fallback + '">絞り込み結果へ移動</a></p></body></html>'
   WriteText $path $retired
+}
+foreach ($group in @('pokemon','trainer','series')) {
+  $groupItems = @($manifest | Where-Object group -eq $group)
+  WriteText (Join-Path $OutputRoot (Join-Path $group 'index.html')) (IndexPageHtml $group $groupItems)
 }
 WriteText $SlugMapPath ($slugData | ConvertTo-Json -Depth 10)
 WriteText $ManifestPath ($manifest | ConvertTo-Json -Depth 6)

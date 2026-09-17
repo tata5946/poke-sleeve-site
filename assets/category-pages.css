@@ -15,6 +15,18 @@
 .category-card-body { display: grid; align-content: start; gap: 7px; min-width: 0; }
 .category-card-name { font-weight: 900; line-height: 1.4; overflow-wrap: anywhere; }
 .category-card-meta { display: grid; gap: 3px; color: #64748b; font-size: 12px; line-height: 1.5; }
+.category-index-tools { display: grid; gap: 14px; margin-bottom: 24px; }
+.category-index-search { width: min(560px, 100%); min-height: 46px; padding: 0 14px; border: 1px solid #d7e0ee; border-radius: 8px; background: #fff; color: #172033; font: inherit; box-sizing: border-box; }
+.category-index-kana { display: flex; flex-wrap: wrap; gap: 8px; }
+.category-index-kana a { display: grid; place-items: center; min-width: 38px; height: 38px; padding: 0 9px; border: 1px solid #d7e0ee; border-radius: 7px; background: #fff; color: #173a78; font-size: 13px; font-weight: 800; text-decoration: none; box-sizing: border-box; }
+.category-index-section { margin-top: 28px; scroll-margin-top: 24px; }
+.category-index-section[hidden], .category-index-item[hidden] { display: none; }
+.category-index-section h2 { margin: 0 0 12px; font-size: 22px; }
+.category-index-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.category-index-item a { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 9px 12px; border: 1px solid #dbe4f0; border-radius: 7px; background: #fff; color: #172033; font-weight: 700; text-decoration: none; box-sizing: border-box; }
+.category-index-item a:hover { border-color: #94a3b8; }
+.category-index-count { flex: none; color: #64748b; font-size: 12px; }
+.category-index-empty { margin: 24px 0; color: #64748b; }
 @media (max-width: 700px) {
   .category-page-wrap { padding: 0 18px 96px; }
   .category-page-wrap .breadcrumb { width: 100vw; margin-left: calc(50% - 50vw); padding: 18px 28px 0; box-sizing: border-box; white-space: nowrap; overflow: hidden; }
@@ -26,4 +38,12 @@
   .category-card-grid { grid-template-columns: 1fr; gap: 10px; }
   .category-card > a { grid-template-columns: 78px minmax(0, 1fr); }
   .category-card-image { width: 78px; }
+  .category-index-tools { gap: 12px; margin-bottom: 18px; }
+  .category-index-kana { gap: 6px; }
+  .category-index-kana a { min-width: 34px; height: 34px; padding: 0 7px; }
+  .category-index-section { margin-top: 22px; }
+  .category-index-section h2 { font-size: 18px; }
+  .category-index-list { grid-template-columns: 1fr 1fr; gap: 7px; }
+  .category-index-item a { min-width: 0; padding: 8px 9px; font-size: 13px; }
+  .category-index-item a span:first-child { min-width: 0; overflow-wrap: anywhere; }
 }

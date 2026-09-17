@@ -578,7 +578,11 @@ function countSleevesByGroup(sleeves) {
 }
 
 function buildSleeveGroupHref(groupKey) {
-  return buildSiteHref(`sleeves/?group=${encodeURIComponent(normalizeSleeveTextValue(groupKey).toLowerCase())}`);
+  const group = normalizeSleeveTextValue(groupKey).toLowerCase();
+  if (["pokemon", "trainer", "series"].includes(group)) {
+    return buildSiteHref(`sleeves/${group}/`);
+  }
+  return buildSiteHref(`sleeves/?group=${encodeURIComponent(group)}`);
 }
 
 function collectGroupDetailItems(sleeves, groupKey) {
@@ -1279,6 +1283,10 @@ function buildCategoryNavMarkup(sleeves) {
               </a>
             `;
           }).join("")}
+          <a class="category-flyout-link category-flyout-link--all" href="${escapeHtml(buildSiteHref(`sleeves/${item.key}/`))}">
+            <span>すべての${escapeHtml(item.label)}を見る</span>
+            <span class="category-nav-arrow" aria-hidden="true">›</span>
+          </a>
         </div>
       `
       : "";

@@ -91,6 +91,9 @@ $existingLastmods = Get-ExistingLastmodMap $OutputPath
 $staticPages = @(
   "",
   "sleeves/",
+  "sleeves/pokemon/",
+  "sleeves/trainer/",
+  "sleeves/series/",
   "sleeves/all.html",
   "ranking.html",
   "access-ranking.html",
