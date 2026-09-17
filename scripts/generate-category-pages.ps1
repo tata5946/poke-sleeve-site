@@ -1,5 +1,6 @@
 ﻿param(
   [string]$DataPath = "data.json",
+  [string]$TemplatePath = "sleeves/index.html",
   [string]$SlugMapPath = "data/category-slugs.json",
   [string]$OutputRoot = "sleeves",
   [string]$ManifestPath = "data/category-page-manifest.json",
@@ -185,6 +186,45 @@ function PageHtml([object]$Entry, [string]$Slug) {
 "@
 }
 
+function ZukanCategoryPageHtml([object]$Entry, [string]$Slug, [string]$Template) {
+  $groupLabel = switch ($Entry.group) { 'pokemon' { 'ポケモン' } 'trainer' { 'トレーナー' } default { 'シリーズ' } }
+  $label = [string]$Entry.label
+  $count = @($Entry.items).Count
+  $url = "$($SiteOrigin.TrimEnd('/'))/sleeves/$($Entry.group)/$Slug/"
+  $heading = if ($label.EndsWith('デッキシールド')) { "${label}一覧" } else { "${label}のデッキシールド一覧" }
+  $title = "${heading}｜歴代${count}種類・相場価格 | ポケスリ相場ナビ"
+  $description = if ($Entry.group -eq 'series') {
+    "${label}に該当する歴代デッキシールドを一覧で掲載。現在、ポケスリ相場ナビでは${count}種類を掲載しています。現在相場や発売時価格、価格推移を確認できます。"
+  } else {
+    "${label}が描かれた歴代デッキシールドを一覧で掲載。現在、ポケスリ相場ナビでは${count}種類を掲載しています。現在相場や発売時価格、価格推移を確認できます。"
+  }
+  $breadcrumbJson = BreadcrumbJson $Entry.group $groupLabel $label $url
+  $configJson = ([ordered]@{ group=[string]$Entry.group; tag=$label } | ConvertTo-Json -Compress).Replace('</script','<\/script')
+  $staticLinks = New-Object System.Text.StringBuilder
+  foreach ($sleeve in @($Entry.items)) {
+    $routeId = RouteId $sleeve.id
+    [void]$staticLinks.Append('<li><a href="/sleeve/' + (Html $routeId) + '/">' + (Html $sleeve.name) + '</a></li>')
+  }
+  $breadcrumbMarkup = '<nav class="breadcrumb" aria-label="パンくず"><a href="/">ホーム</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><a href="/sleeves/">デッキシールド図鑑</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><a href="/sleeves/' + $Entry.group + '/">' + (Html $groupLabel) + 'から探す</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><span class="breadcrumb-current" aria-current="page">' + (Html $label) + '</span></nav>'
+  $html = $Template
+  $html = $html.Replace('<base href="../" />', '<base href="../../../" />')
+  $html = [regex]::Replace($html, '<title>.*?</title>', '<title>' + (Html $title) + '</title>', 1)
+  $html = [regex]::Replace($html, '<meta name="description" content="[^"]*"\s*/>', '<meta name="description" content="' + (Html $description) + '" />', 1)
+  $html = [regex]::Replace($html, '<meta property="og:title" content="[^"]*"\s*/>', '<meta property="og:title" content="' + (Html $title) + '" />', 1)
+  $html = [regex]::Replace($html, '<meta property="og:description" content="[^"]*"\s*/>', '<meta property="og:description" content="' + (Html $description) + '" />', 1)
+  $html = [regex]::Replace($html, '<meta property="og:url" content="[^"]*"\s*/>', '<meta property="og:url" content="' + (Html $url) + '" />', 1)
+  $html = [regex]::Replace($html, '<link rel="canonical" href="[^"]*"\s*/>', '<link rel="canonical" href="' + (Html $url) + '" />', 1)
+  $html = [regex]::Replace($html, '<script id="sleevesCollectionStructuredData" type="application/ld\+json">.*?</script>', '<script id="sleevesCollectionStructuredData" type="application/ld+json">' + $breadcrumbJson + '</script>', [System.Text.RegularExpressions.RegexOptions]::Singleline)
+  $html = [regex]::Replace($html, '<nav class="breadcrumb" aria-label="パンくず">.*?</nav>', $breadcrumbMarkup, [System.Text.RegularExpressions.RegexOptions]::Singleline)
+  $html = [regex]::Replace($html, '<h1 class="zukan-title">.*?</h1>', '<h1 class="zukan-title">' + (Html $heading) + '</h1>', [System.Text.RegularExpressions.RegexOptions]::Singleline)
+  $html = [regex]::Replace($html, '<p class="zukan-lead">.*?</p>', '<p class="zukan-lead">' + (Html $description) + '</p>', [System.Text.RegularExpressions.RegexOptions]::Singleline)
+  $noscript = '<noscript><div class="zukan-noscript"><p>掲載中のデッキシールド一覧</p><ul>' + $staticLinks.ToString() + '</ul></div></noscript>'
+  $html = [regex]::Replace($html, '<noscript>.*?</noscript>', $noscript, [System.Text.RegularExpressions.RegexOptions]::Singleline)
+  $configScript = '<script>window.__SLEEVE_CATEGORY_PAGE__ = ' + $configJson + ';</script>' + "`r`n  "
+  $html = $html.Replace('<script src="./assets/category-page-map.js?v=20260917a"></script>', $configScript + '<script src="./assets/category-page-map.js?v=20260917a"></script>')
+  return $html
+}
+
 function KanaBucket([string]$Label) {
   if (-not $Label) { return 'その他' }
   $first = $Label.Substring(0, 1)
@@ -293,8 +333,10 @@ function IndexPageHtml([string]$Group, [array]$Items) {
 
 if (-not (Test-Path -LiteralPath $DataPath)) { throw "Data not found: $DataPath" }
 if (-not (Test-Path -LiteralPath $SlugMapPath)) { throw "Slug map not found: $SlugMapPath" }
+if (-not (Test-Path -LiteralPath $TemplatePath)) { throw "Template not found: $TemplatePath" }
 $data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $slugData = Get-Content -LiteralPath $SlugMapPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$zukanTemplate = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
 $previous = if (Test-Path -LiteralPath $ManifestPath) { Get-Content -LiteralPath $ManifestPath -Raw -Encoding UTF8 | ConvertFrom-Json } else { @() }
 $entries = @(
   (CategoryEntries @($data.sleeves) 'pokemon' 'pokemonCategories') +
@@ -319,7 +361,7 @@ foreach ($entry in $entries) {
   if ($used.ContainsKey($key)) { throw "Duplicate category slug: $key" }
   $used[$key] = $true
   $path = Join-Path $OutputRoot (Join-Path $entry.group (Join-Path $slug 'index.html'))
-  WriteText $path (PageHtml $entry $slug)
+  WriteText $path (ZukanCategoryPageHtml $entry $slug $zukanTemplate)
   $manifest.Add([pscustomobject]@{group=$entry.group;label=$entry.label;slug=$slug;count=@($entry.items).Count;path="/sleeves/$($entry.group)/$slug/"})
 }
 foreach ($old in $previous) {

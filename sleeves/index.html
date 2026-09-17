@@ -2086,9 +2086,10 @@
       let currentPage = 1;
 
       const url = new URL(location.href);
+      const staticCategoryPage = window.__SLEEVE_CATEGORY_PAGE__ || null;
       const qParam = (url.searchParams.get("q") || "").trim();
-      let currentGroupParam = (url.searchParams.get("group") || "").trim();
-      let currentTagParam = (url.searchParams.get("tag") || "").trim();
+      let currentGroupParam = (url.searchParams.get("group") || staticCategoryPage?.group || "").trim();
+      let currentTagParam = (url.searchParams.get("tag") || staticCategoryPage?.tag || "").trim();
       let currentTypeParam = (url.searchParams.get("type") || "").trim();
       if (qParam) {
         if (pageSearchInput) pageSearchInput.value = qParam;
@@ -2143,7 +2144,7 @@
       hideError();
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
-      updateSleevesSeoHead(sleeves.length);
+      if (!staticCategoryPage) updateSleevesSeoHead(sleeves.length);
 
       let maxWeek = null;
       for (const s of sleeves) {
@@ -2530,8 +2531,8 @@
         if (pageSearchInput) pageSearchInput.value = "";
         searchInput.value = "";
         syncInputs("", searchInput);
-        currentGroupParam = "";
-        currentTagParam = "";
+        currentGroupParam = staticCategoryPage?.group || "";
+        currentTagParam = staticCategoryPage?.tag || "";
         currentTypeParam = "";
         try {
           const nextUrl = new URL(location.href);
