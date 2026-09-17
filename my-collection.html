@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/site.css?v=20260917j" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260917k" />
   <style>
     @media (max-width: 700px) {
       html:root body.my-collection-page .my-collection-hero-copy {
@@ -76,10 +76,6 @@
                 <span>評価損益 <strong id="collectionValuationPnl" class="my-asset-inline-pnl">―</strong> <strong id="collectionValuationRate" class="my-asset-inline-rate">―</strong></span>
               </span>
               <small id="collectionValuationNote" class="my-asset-card-note" hidden>※取得価格・評価損益は購入価格取得済みアイテムのみで計算</small>
-            </span>
-            <span class="my-asset-gain-badge" aria-label="評価損益">
-              <strong id="collectionValuationPnlBadge">―</strong>
-              <small id="collectionValuationRateBadge">―</small>
             </span>
           </div>
           <div class="my-asset-card">
@@ -697,8 +693,6 @@
       const currentValuationEl = document.getElementById("collectionCurrentValuation");
       const pnlEl = document.getElementById("collectionValuationPnl");
       const pnlRateEl = document.getElementById("collectionValuationRate");
-      const pnlBadgeEl = document.getElementById("collectionValuationPnlBadge");
-      const pnlRateBadgeEl = document.getElementById("collectionValuationRateBadge");
       const valuationNoteEl = document.getElementById("collectionValuationNote");
       const countEl = document.getElementById("collectionCount");
       const quantityEl = document.getElementById("collectionQuantityTotal");
@@ -724,23 +718,11 @@
         const tone = getValuationToneClass(summary.pnlTotal);
         if (tone) pnlEl.classList.add(tone);
       }
-      if (pnlBadgeEl) {
-        pnlBadgeEl.textContent = summary.pnlTotal != null ? formatSignedValuationMoney(summary.pnlTotal) : "―";
-        pnlBadgeEl.classList.remove("is-positive", "is-negative");
-        const tone = getValuationToneClass(summary.pnlTotal);
-        if (tone) pnlBadgeEl.classList.add(tone);
-      }
       if (pnlRateEl) {
         pnlRateEl.textContent = summary.pnlRate != null ? formatSignedRate(summary.pnlRate) : "―";
         pnlRateEl.classList.remove("is-positive", "is-negative");
         const tone = getValuationToneClass(summary.pnlRate);
         if (tone) pnlRateEl.classList.add(tone);
-      }
-      if (pnlRateBadgeEl) {
-        pnlRateBadgeEl.textContent = summary.pnlRate != null ? formatSignedRate(summary.pnlRate) : "―";
-        pnlRateBadgeEl.classList.remove("is-positive", "is-negative");
-        const tone = getValuationToneClass(summary.pnlRate);
-        if (tone) pnlRateBadgeEl.classList.add(tone);
       }
       if (valuationNoteEl) valuationNoteEl.hidden = summary.missingPurchaseCount <= 0;
       if (countEl) countEl.textContent = `${rows.length}種類`;

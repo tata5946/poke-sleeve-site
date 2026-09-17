@@ -8917,29 +8917,6 @@ footer.site-footer {
     white-space: nowrap;
 }
 
-.my-asset-gain-badge {
-    display: grid;
-    gap: 2px;
-    align-self: center;
-    justify-items: center;
-    min-width: 116px;
-    padding: 10px 12px;
-    border-radius: 16px;
-    background: #d9f7f7;
-    color: #079455;
-    font-weight: 900;
-}
-
-.my-asset-gain-badge strong {
-    font-size: 20px;
-    line-height: 1.05;
-}
-
-.my-asset-gain-badge small {
-    font-size: 12px;
-    line-height: 1;
-}
-
 .my-asset-primary-foot {
     display: flex;
     flex-wrap: wrap;
@@ -8967,7 +8944,7 @@ footer.site-footer {
 
     body.my-collection-page .my-asset-card--primary {
         display: grid;
-        grid-template-columns: 44px minmax(0, 1fr) minmax(104px, 116px);
+        grid-template-columns: 44px minmax(0, 1fr);
         align-items: center;
         column-gap: 13px;
     }
@@ -8977,27 +8954,19 @@ footer.site-footer {
     }
 
     body.my-collection-page .my-asset-total-value,
-    body.my-collection-page .my-asset-gain-badge strong,
-    body.my-collection-page .my-asset-gain-badge small,
     body.my-collection-page .my-asset-primary-foot > span {
         white-space: nowrap;
     }
 }
 
 .my-asset-inline-pnl.is-positive,
-.my-asset-inline-rate.is-positive,
-.my-asset-gain-badge .is-positive {
+.my-asset-inline-rate.is-positive {
     color: #079455;
 }
 
 .my-asset-inline-pnl.is-negative,
-.my-asset-inline-rate.is-negative,
-.my-asset-gain-badge .is-negative {
+.my-asset-inline-rate.is-negative {
     color: #d92d20;
-}
-
-.my-asset-gain-badge:has(.is-negative) {
-    background: #fff1f1;
 }
 
 .my-collection-list-section {
@@ -9494,7 +9463,7 @@ footer.site-footer {
     .my-asset-card--primary {
         grid-column: 1 / -1;
         display: grid;
-        grid-template-columns: 54px minmax(0, 1fr) auto;
+        grid-template-columns: 54px minmax(0, 1fr);
         gap: 12px;
         border-color: #cfe2f3;
         background: linear-gradient(135deg, #fff 0%, #eefaff 100%);
@@ -9514,15 +9483,6 @@ footer.site-footer {
     .my-asset-card-value,
     .my-collection-summary {
         font-size: 22px;
-    }
-
-    .my-asset-gain-badge {
-        min-width: 92px;
-        padding: 9px 10px;
-    }
-
-    .my-asset-gain-badge strong {
-        font-size: 18px;
     }
 
     .my-asset-primary-foot {
