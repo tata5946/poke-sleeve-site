@@ -58,14 +58,20 @@
       });
       document.querySelectorAll('.category-index-kana a').forEach((link) => {
         link.addEventListener('click', (event) => {
-          const target = document.querySelector(link.getAttribute('href'));
+          const targetId = decodeURIComponent(link.hash.slice(1));
+          const target = document.getElementById(targetId);
           if (!target) return;
           event.preventDefault();
+          if (target.hidden) {
+            input.value = '';
+            input.dispatchEvent(new Event('input'));
+          }
           const topbar = document.querySelector('.dashboard-topbar');
-          const offset = (topbar?.getBoundingClientRect().height || 0) + 16;
+          const topbarRect = topbar?.getBoundingClientRect();
+          const offset = Math.max(0, topbarRect?.bottom || 0) + 16;
           const top = target.getBoundingClientRect().top + window.scrollY - offset;
-          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
-          history.replaceState(null, '', link.getAttribute('href'));
+          window.scrollTo({ top: Math.max(0, top), behavior: 'auto' });
+          history.replaceState(null, '', `#${encodeURIComponent(targetId)}`);
         });
       });
     });
