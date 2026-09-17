@@ -9932,3 +9932,125 @@ html:root body.shared-page-layout .shared-page-content > .error:empty {
         margin-top: 18px !important;
     }
 }
+
+/* Shared shell and heading rhythm for ranking pages. */
+html:root body.ranking-shared-layout .dashboard-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    box-sizing: border-box !important;
+}
+
+html:root body.ranking-shared-layout .ranking-shared-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 48px 64px !important;
+    box-sizing: border-box !important;
+}
+
+html:root body.ranking-shared-layout .ranking-shared-content > .breadcrumb {
+    display: flex !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 24px 0 0 !important;
+    align-items: center !important;
+    gap: 6px !important;
+    box-sizing: border-box !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+}
+
+html:root body.ranking-shared-layout .ranking-page-top {
+    width: 100% !important;
+    margin: 0 !important;
+    gap: 0 !important;
+}
+
+html:root body.ranking-shared-layout .ranking-shared-heading {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: end !important;
+    gap: 24px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 26px 0 22px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+}
+
+html:root body.ranking-shared-layout .ranking-shared-heading::before,
+html:root body.ranking-shared-layout .ranking-shared-heading .ranking-hero-label::before {
+    display: none !important;
+}
+
+html:root body.ranking-shared-layout .ranking-shared-heading .ranking-hero-copy {
+    display: grid !important;
+    gap: 8px !important;
+    min-width: 0 !important;
+}
+
+html:root body.ranking-shared-layout .ranking-shared-heading .ranking-hero-label {
+    margin: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+    letter-spacing: .16em !important;
+}
+
+html:root body.ranking-shared-layout .ranking-shared-title {
+    margin: 0 !important;
+    color: #111827 !important;
+    font-family: "Zen Kaku Gothic New", var(--font-heading) !important;
+    font-size: 42px !important;
+    line-height: 1.15 !important;
+    font-weight: 900 !important;
+    letter-spacing: 0 !important;
+    white-space: normal !important;
+}
+
+html:root body.ranking-shared-layout .ranking-shared-heading + .ranking-filter-card {
+    margin-top: 18px !important;
+}
+
+@media (max-width: 700px) {
+    html:root body.ranking-shared-layout .ranking-shared-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 18px 64px !important;
+    }
+
+    html:root body.ranking-shared-layout .ranking-shared-content > .breadcrumb {
+        width: 100vw !important;
+        margin: 0 0 0 calc(50% - 50vw) !important;
+        padding: 18px 28px 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+    }
+
+    html:root body.ranking-shared-layout .ranking-shared-heading {
+        grid-template-columns: 1fr !important;
+        align-items: start !important;
+        gap: 12px !important;
+        padding: 22px 0 18px !important;
+    }
+
+    html:root body.ranking-shared-layout .ranking-shared-title {
+        font-size: 24px !important;
+        line-height: 1.35 !important;
+        font-weight: 800 !important;
+    }
+
+    html:root body.ranking-shared-layout .ranking-shared-heading .page-hero-meta {
+        justify-content: flex-start !important;
+    }
+}
