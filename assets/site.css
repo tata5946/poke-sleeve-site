@@ -9963,6 +9963,63 @@ html:root body.ranking-shared-layout .ranking-shared-content > .breadcrumb {
     line-height: 1.4 !important;
 }
 
+/* Canonical breadcrumb position across dashboard pages. */
+html:root body.page-content-focus:not(.shared-page-layout) .dashboard-content > .container {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 48px 64px !important;
+    box-sizing: border-box !important;
+}
+
+html:root body.page-content-focus:not(.shared-page-layout) .dashboard-content > .container > .breadcrumb,
+html:root body.page-market-list:not(.shared-page-layout) .dashboard-content > .breadcrumb {
+    display: flex !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 24px 0 0 !important;
+    box-sizing: border-box !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+}
+
+html:root body.page-market-list .category-page-wrap > .breadcrumb {
+    display: flex !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 24px 0 0 !important;
+    box-sizing: border-box !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+}
+
+@media (max-width: 700px) {
+    html:root body.page-content-focus:not(.shared-page-layout) .dashboard-content > .container {
+        padding: 0 18px 64px !important;
+    }
+
+    html:root body.page-content-focus:not(.shared-page-layout) .dashboard-content > .container > .breadcrumb,
+    html:root body.page-market-list:not(.shared-page-layout) .dashboard-content > .breadcrumb {
+        width: 100vw !important;
+        margin: 0 0 0 calc(50% - 50vw) !important;
+        padding: 18px 28px 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+    }
+
+    html:root body.page-market-list .category-page-wrap > .breadcrumb {
+        width: 100vw !important;
+        margin: 0 0 0 calc(50% - 50vw) !important;
+        padding: 18px 28px 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+    }
+}
+
 html:root body.ranking-shared-layout .ranking-page-top {
     width: 100% !important;
     margin: 0 !important;

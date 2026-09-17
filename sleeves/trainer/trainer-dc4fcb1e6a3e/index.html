@@ -26,7 +26,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./assets/site.css?v=20260908a" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260917n" />
   <style>
     body {
       font-family: "Zen Kaku Gothic New", "Noto Sans JP", system-ui, sans-serif;
@@ -491,10 +491,10 @@
     }
 
     .breadcrumb {
-      width: min(100%, 1260px);
-      margin: 0 auto;
+      width: 100%;
+      margin: 0;
       box-sizing: border-box;
-      padding: 18px clamp(28px, 4.2vw, 60px) 0;
+      padding: 24px 48px 0;
     }
 
     .zukan-filter-head,
@@ -1395,6 +1395,15 @@
       .ranking-error {
         width: 100%;
         max-width: 100%;
+      }
+
+      .breadcrumb {
+        width: 100vw;
+        margin: 0;
+        padding: 18px 28px 0;
+        box-sizing: border-box;
+        white-space: nowrap;
+        overflow: hidden;
       }
 
       .zukan-hero {
