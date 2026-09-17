@@ -9791,8 +9791,18 @@ footer.site-footer {
 
 /* Shared page heading rhythm for content pages. */
 html:root body.shared-page-layout .shared-page-heading {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+    margin-left: 0 !important;
     padding-top: 26px !important;
     padding-bottom: 22px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
 }
 
 html:root body.shared-page-layout .shared-page-heading-title {
@@ -9836,11 +9846,21 @@ html:root body.shared-page-layout .shared-page-heading-desc {
         background: #fff !important;
     }
 
-    html:root body.shared-page-layout .shared-page-content {
+    html:root body.shared-page-layout .shared-page-host {
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    html:root body.shared-page-layout .shared-page-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
         padding: 0 18px 28px !important;
+        gap: 0 !important;
         box-sizing: border-box !important;
     }
 
@@ -9850,6 +9870,8 @@ html:root body.shared-page-layout .shared-page-heading-desc {
         margin: 0 0 0 calc(50% - 50vw) !important;
         padding: 18px 28px 0 !important;
         box-sizing: border-box !important;
+        align-items: center !important;
+        gap: 6px !important;
         font-size: 12px !important;
         line-height: 1.4 !important;
         white-space: nowrap !important;
@@ -9880,7 +9902,12 @@ html:root body.shared-page-layout .shared-page-heading-desc {
         line-height: 1.85 !important;
     }
 
-    .page-market-list .market-index-hero.shared-page-heading {
-        margin-top: -18px !important;
+    html:root body.shared-page-layout .market-index-shell .chart-panel,
+    html:root body.shared-page-layout .market-index-shell .market-panel {
+        margin-top: 18px !important;
+    }
+
+    html:root body.my-collection-page .my-collection-list-section {
+        margin-top: 18px !important;
     }
 }
