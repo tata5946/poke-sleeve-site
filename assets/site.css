@@ -9790,12 +9790,12 @@ footer.site-footer {
 }
 
 /* Shared page heading rhythm for content pages. */
-.shared-page-heading {
+html:root body.shared-page-layout .shared-page-heading {
     padding-top: 26px !important;
     padding-bottom: 22px !important;
 }
 
-.shared-page-heading-title {
+html:root body.shared-page-layout .shared-page-heading-title {
     margin: 0 !important;
     font-family: "Zen Kaku Gothic New", var(--font-heading) !important;
     font-size: clamp(30px, 3.6vw, 42px) !important;
@@ -9804,7 +9804,7 @@ footer.site-footer {
     letter-spacing: 0 !important;
 }
 
-.shared-page-heading-desc {
+html:root body.shared-page-layout .shared-page-heading-desc {
     margin: 12px 0 0 !important;
     max-width: 62ch !important;
     color: #5f6368 !important;
@@ -9824,11 +9824,11 @@ footer.site-footer {
 }
 
 @media (max-width: 700px) {
-    body.shared-page-layout {
+    html:root body.shared-page-layout {
         background: #fff !important;
     }
 
-    body.shared-page-layout .dashboard-content:not(.shared-page-content) {
+    html:root body.shared-page-layout .dashboard-content:not(.shared-page-content) {
         width: 100% !important;
         max-width: 100% !important;
         padding: 0 !important;
@@ -9836,7 +9836,7 @@ footer.site-footer {
         background: #fff !important;
     }
 
-    body.shared-page-layout .shared-page-content {
+    html:root body.shared-page-layout .shared-page-content {
         width: 100% !important;
         max-width: 100% !important;
         margin: 0 !important;
@@ -9844,7 +9844,7 @@ footer.site-footer {
         box-sizing: border-box !important;
     }
 
-    body.shared-page-layout .shared-page-content > .breadcrumb {
+    html:root body.shared-page-layout .shared-page-content > .breadcrumb {
         display: flex !important;
         width: 100vw !important;
         margin: 0 0 0 calc(50% - 50vw) !important;
@@ -9856,24 +9856,24 @@ footer.site-footer {
         overflow: hidden !important;
     }
 
-    body.shared-page-layout .shared-page-content > .breadcrumb .breadcrumb-current {
+    html:root body.shared-page-layout .shared-page-content > .breadcrumb .breadcrumb-current {
         min-width: 0 !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
     }
 
-    .shared-page-heading {
+    html:root body.shared-page-layout .shared-page-heading {
         padding-top: 22px !important;
         padding-bottom: 18px !important;
     }
 
-    .shared-page-heading-title {
+    html:root body.shared-page-layout .shared-page-heading-title {
         font-size: 24px !important;
         line-height: 1.35 !important;
         font-weight: 800 !important;
     }
 
-    .shared-page-heading-desc {
+    html:root body.shared-page-layout .shared-page-heading-desc {
         margin-top: 8px !important;
         max-width: none !important;
         font-size: 13px !important;
