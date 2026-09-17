@@ -3,6 +3,7 @@
   [string]$TemplatePath = "detail.html",
   [string]$OutputRoot = "sleeve",
   [string]$RakutenLinksPath = "data/rakuten-links.json",
+  [string]$CategorySlugMapPath = "data/category-slugs.json",
   [string[]]$Ids = @()
 )
 
@@ -245,10 +246,25 @@ function Get-StaticSleeveTags([object]$Sleeve) {
   $values = @($Sleeve.categories) |
     Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } |
     Select-Object -Unique
-  if ($values.Count -eq 0) { return '<div id="detailTags" class="detail-tag-list" hidden></div>' }
-  $items = $values | ForEach-Object {
+  $items = @($values | ForEach-Object {
     '<a class="detail-tag" href="./sleeves/?tag=' + [System.Uri]::EscapeDataString([string]$_) + '">' + (ConvertTo-HtmlText $_) + '</a>'
+  })
+  foreach ($spec in @(@('pokemon','pokemonCategories'), @('trainer','trainerCategories'))) {
+    foreach ($label in @($Sleeve.($spec[1]))) {
+      $name = ([string]$label).Trim()
+      if (-not $name) { continue }
+      $slug = ''
+      if ($script:categorySlugData) {
+        $groupMap = $script:categorySlugData.($spec[0])
+        $slugProperty = $groupMap.PSObject.Properties[$name]
+        if ($slugProperty) { $slug = [string]$slugProperty.Value }
+      }
+      if ($slug) {
+        $items += '<a class="detail-tag" href="/sleeves/' + $spec[0] + '/' + (ConvertTo-HtmlText $slug) + '/">' + (ConvertTo-HtmlText $name) + 'のデッキシールドをもっと見る</a>'
+      }
+    }
   }
+  if ($items.Count -eq 0) { return '<div id="detailTags" class="detail-tag-list" hidden></div>' }
   return '<div id="detailTags" class="detail-tag-list">' + ($items -join '') + '</div>'
 }
 
@@ -257,6 +273,7 @@ Assert-Exists -Path $TemplatePath -Label "Template"
 
 $data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $template = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
+$script:categorySlugData = if (Test-Path -LiteralPath $CategorySlugMapPath) { Get-Content -LiteralPath $CategorySlugMapPath -Raw -Encoding UTF8 | ConvertFrom-Json } else { $null }
 $rakutenLinksByRouteId = @{}
 if (Test-Path -LiteralPath $RakutenLinksPath) {
   $rakutenCache = Get-Content -LiteralPath $RakutenLinksPath -Raw -Encoding UTF8 | ConvertFrom-Json

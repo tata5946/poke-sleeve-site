@@ -1,8 +1,10 @@
-param(
+﻿param(
   [string]$SiteOrigin = "https://pokesuri-navi.com",
   [string]$DataPath = "data.json",
   [string]$ArticlesPath = "articles.json",
   [string]$OutputPath = "sitemap.xml",
+  [string]$CategoryManifestPath = "data/category-page-manifest.json",
+  [string]$CategoryOutputRoot = "sleeves",
   [string]$PageOutputRoot = "sleeves/page",
   [int]$PageSize = 50
 )
@@ -151,6 +153,16 @@ for ($page = 1; $page -le $totalPages; $page++) {
 foreach ($id in $sleeveIds) {
   $routeId = Get-SleeveRouteId $id
   Add-Url $urls ($origin + "/sleeve/" + [System.Uri]::EscapeDataString($routeId) + "/") $existingLastmods
+}
+if (Test-Path -LiteralPath $CategoryManifestPath) {
+  $categoryPages = Get-Content -LiteralPath $CategoryManifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+  foreach ($category in $categoryPages) {
+    $path = ([string]$category.path).Trim()
+    if (-not $path) { continue }
+    $relativePath = ($path -replace '^/sleeves/', '').TrimEnd('/')
+    $filePath = Join-Path $CategoryOutputRoot (Join-Path ($relativePath.Replace('/', [System.IO.Path]::DirectorySeparatorChar)) 'index.html')
+    Add-Url $urls ($origin + $path) $existingLastmods (Get-StaticFileLastmod $filePath)
+  }
 }
 
 $xml = New-Object System.Text.StringBuilder

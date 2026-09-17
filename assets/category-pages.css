@@ -1,0 +1,29 @@
+.category-page-wrap { width: 100%; padding: 0 48px 64px; box-sizing: border-box; }
+.category-page-wrap .breadcrumb { margin: 0; padding-top: 24px; }
+.category-page-hero { padding: 26px 0 22px; }
+.category-page-hero h1 { margin: 0; font-family: "Zen Kaku Gothic New", var(--font-heading); font-size: 42px; line-height: 1.15; letter-spacing: 0; }
+.category-page-hero p { margin: 12px 0 0; color: #5f6368; font-size: 14px; line-height: 1.8; }
+.category-sort { display: flex; align-items: end; justify-content: flex-end; margin: 0 0 18px; }
+.category-sort label { display: grid; gap: 5px; min-width: 220px; color: #475467; font-size: 12px; font-weight: 700; }
+.category-sort select { width: 100%; min-height: 40px; padding: 0 38px 0 12px; border: 1px solid #d7e0ee; border-radius: 8px; background: #fff; color: #172033; font: inherit; }
+.category-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.category-card { min-width: 0; }
+.category-card > a { height: 100%; display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; padding: 12px; border: 1px solid #dbe4f0; border-radius: 8px; background: #fff; color: inherit; text-decoration: none; box-sizing: border-box; }
+.category-card > a:hover { border-color: #94a3b8; box-shadow: 0 8px 20px rgba(15, 23, 42, .08); }
+.category-card-image { width: 92px; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden; border-radius: 7px; background: #f3f6fa; }
+.category-card-image img { width: 100%; height: 100%; object-fit: contain; }
+.category-card-body { display: grid; align-content: start; gap: 7px; min-width: 0; }
+.category-card-name { font-weight: 900; line-height: 1.4; overflow-wrap: anywhere; }
+.category-card-meta { display: grid; gap: 3px; color: #64748b; font-size: 12px; line-height: 1.5; }
+@media (max-width: 700px) {
+  .category-page-wrap { padding: 0 18px 96px; }
+  .category-page-wrap .breadcrumb { width: 100vw; margin-left: calc(50% - 50vw); padding: 18px 28px 0; box-sizing: border-box; white-space: nowrap; overflow: hidden; }
+  .category-page-hero { padding: 22px 0 18px; }
+  .category-page-hero h1 { font-size: 24px; line-height: 1.35; }
+  .category-page-hero p { margin-top: 8px; font-size: 13px; }
+  .category-sort { justify-content: stretch; }
+  .category-sort label { width: 100%; min-width: 0; }
+  .category-card-grid { grid-template-columns: 1fr; gap: 10px; }
+  .category-card > a { grid-template-columns: 78px minmax(0, 1fr); }
+  .category-card-image { width: 78px; }
+}

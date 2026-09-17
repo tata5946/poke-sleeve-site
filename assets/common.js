@@ -617,6 +617,8 @@ function buildSleeveCategoryHref(groupKey, tag) {
   const params = new URLSearchParams();
   const group = normalizeSleeveTextValue(groupKey).toLowerCase();
   const detailTag = normalizeSleeveTextValue(tag);
+  const staticHref = window.__CATEGORY_PAGE_MAP__?.[group]?.[detailTag];
+  if (staticHref) return buildSiteHref(String(staticHref).replace(/^\//, ""));
   if (group) params.set("group", group);
   if (detailTag) params.set("tag", detailTag);
   return buildSiteHref(`sleeves/?${params.toString()}`);

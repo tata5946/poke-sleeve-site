@@ -7,8 +7,14 @@ param(
 $ErrorActionPreference = "Stop"
 
 $generator = Join-Path $PSScriptRoot "generate-sleeve-pages.ps1"
-if (-not (Test-Path -LiteralPath $generator)) {
-  throw "Generator not found: $generator"
+$categoryGenerator = Join-Path $PSScriptRoot "generate-category-pages.ps1"
+$sitemapGenerator = Join-Path $PSScriptRoot "generate-sitemap.ps1"
+foreach ($requiredGenerator in @($categoryGenerator, $generator, $sitemapGenerator)) {
+  if (-not (Test-Path -LiteralPath $requiredGenerator)) {
+    throw "Generator not found: $requiredGenerator"
+  }
 }
 
+& $categoryGenerator -DataPath $DataPath
 & $generator -DataPath $DataPath -TemplatePath $TemplatePath -OutputRoot $OutputRoot
+& $sitemapGenerator -DataPath $DataPath
