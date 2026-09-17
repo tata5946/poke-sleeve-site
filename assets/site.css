@@ -10017,6 +10017,14 @@ html:root body.ranking-shared-layout .ranking-shared-title {
     white-space: normal !important;
 }
 
+html:root body.ranking-shared-layout .ranking-shared-heading .page-hero-desc {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+    line-height: 1.8 !important;
+}
+
 html:root body.ranking-shared-layout .ranking-shared-heading + .ranking-filter-card {
     margin-top: 18px !important;
 }
