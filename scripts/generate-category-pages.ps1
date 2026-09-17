@@ -309,7 +309,7 @@ function IndexPageHtml([string]$Group, [array]$Items) {
       </div>
     </main>
   </div>
-  <script src="./assets/common.js?v=20260917b"></script>
+  <script src="./assets/common.js?v=20260917c"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       if (window.common?.setupDashboardChrome) await window.common.setupDashboardChrome({ sidebarActive: 'zukan' });
@@ -318,11 +318,32 @@ function IndexPageHtml([string]$Group, [array]$Items) {
       const sections = Array.from(document.querySelectorAll('.category-index-section'));
       const empty = document.getElementById('categoryIndexEmpty');
       input?.addEventListener('input', () => {
-        const query = input.value.trim().toLocaleLowerCase('ja');
+        const query = input.value.trim();
+        const queryVariants = window.common?.buildSearchVariants
+          ? window.common.buildSearchVariants(query)
+          : [query.toLocaleLowerCase('ja')];
         let visible = 0;
-        items.forEach((item) => { item.hidden = query !== '' && !item.dataset.categoryName.includes(query); if (!item.hidden) visible += 1; });
+        items.forEach((item) => {
+          const nameVariants = window.common?.buildSearchVariants
+            ? window.common.buildSearchVariants(item.dataset.categoryName)
+            : [item.dataset.categoryName];
+          item.hidden = query !== '' && !queryVariants.some((needle) => nameVariants.some((name) => name.includes(needle)));
+          if (!item.hidden) visible += 1;
+        });
         sections.forEach((section) => { section.hidden = !section.querySelector('.category-index-item:not([hidden])'); });
         empty.hidden = visible !== 0;
+      });
+      document.querySelectorAll('.category-index-kana a').forEach((link) => {
+        link.addEventListener('click', (event) => {
+          const target = document.querySelector(link.getAttribute('href'));
+          if (!target) return;
+          event.preventDefault();
+          const topbar = document.querySelector('.dashboard-topbar');
+          const offset = (topbar?.getBoundingClientRect().height || 0) + 16;
+          const top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+          history.replaceState(null, '', link.getAttribute('href'));
+        });
       });
     });
   </script>

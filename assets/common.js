@@ -2551,6 +2551,8 @@ window.common = {
   getFlowMetrics,
   buildFlowBadgeHtml,
   uniq,
+  normalizeSearchText,
+  buildSearchVariants,
   normalizeSleeveTextValue,
   getSleeveCategoryValues,
   getSleeveCategoryBuckets,
