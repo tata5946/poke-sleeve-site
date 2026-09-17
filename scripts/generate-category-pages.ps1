@@ -267,7 +267,7 @@ function IndexPageHtml([string]$Group, [array]$Items) {
   foreach ($bucket in $order) {
     if (-not $buckets.Contains($bucket)) { continue }
     $id = if ($bucket -eq '英数・その他') { 'other' } else { "kana-$bucket" }
-    [void]$nav.Append('<a href="#' + $id + '">' + (Html $bucket) + '</a>')
+    [void]$nav.Append('<a href="/sleeves/' + $Group + '/#' + $id + '">' + (Html $bucket) + '</a>')
     $list = New-Object System.Text.StringBuilder
     foreach ($item in $buckets[$bucket]) {
       [void]$list.Append('<li class="category-index-item" data-category-name="' + (Html ([string]$item.label).ToLowerInvariant()) + '"><a href="' + (Html $item.path) + '"><span>' + (Html $item.label) + '</span><span class="category-index-count">' + (Html $item.count) + '件</span></a></li>')
