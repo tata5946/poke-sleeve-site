@@ -9879,14 +9879,6 @@ html:root body.shared-page-layout .shared-page-content > .error:empty {
         line-height: 1.4 !important;
     }
 
-    html:root body.my-collection-page .my-asset-panel,
-    html:root body.my-collection-page .my-asset-chart-panel,
-    html:root body.my-collection-page .my-collection-list-section,
-    html:root body.my-collection-page .my-collection-grid,
-    html:root body.my-collection-page .my-collection-note {
-        margin-left: 0 !important;
-        margin-right: auto !important;
-    }
 }
 
 @media (max-width: 700px) {
