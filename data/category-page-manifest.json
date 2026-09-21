@@ -1,6 +1,13 @@
 [
     {
         "group":  "pokemon",
+        "label":  "32",
+        "slug":  "pokemon-72049f83d8bb",
+        "count":  1,
+        "path":  "/sleeves/pokemon/pokemon-72049f83d8bb/"
+    },
+    {
+        "group":  "pokemon",
         "label":  "アーゴヨン",
         "slug":  "pokemon-5c6a1e86c141",
         "count":  1,
@@ -3741,7 +3748,7 @@
         "group":  "series",
         "label":  "32枚販売",
         "slug":  "series-9e35bbebb628",
-        "count":  121,
+        "count":  120,
         "path":  "/sleeves/series/series-9e35bbebb628/"
     },
     {

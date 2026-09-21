@@ -383,14 +383,14 @@ $manifest = New-Object 'System.Collections.Generic.List[object]'
 foreach ($entry in $entries) {
   $map = $slugData.($entry.group)
   if (-not $map) {
-    $slugData | Add-Member -NotePropertyName $entry.group -NotePropertyValue ([pscustomobject]@{})
+    $slugData | Add-Member -MemberType NoteProperty -Name $entry.group -Value ([pscustomobject]@{})
     $map = $slugData.($entry.group)
   }
   $property = $map.PSObject.Properties[[string]$entry.label]
   $slug = if ($property) { [string]$property.Value } else { '' }
   if (-not $slug) {
     $slug = StableSlug $entry.group $entry.label
-    $map | Add-Member -NotePropertyName $entry.label -NotePropertyValue $slug
+    $map | Add-Member -MemberType NoteProperty -Name $entry.label -Value $slug
   }
   $key = "$($entry.group)/$slug"
   if ($used.ContainsKey($key)) { throw "Duplicate category slug: $key" }
