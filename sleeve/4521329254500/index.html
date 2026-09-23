@@ -3341,7 +3341,7 @@
       const baseName = String(name || "").trim();
       const keyword = baseName ? `${baseName} デッキシールド` : "";
       if (!keyword) return "https://jp.mercari.com/search";
-      return `https://jp.mercari.com/search?keyword=${encodeURIComponent(keyword)}`;
+      return `https://jp.mercari.com/search?afid=0848495959&keyword=${encodeURIComponent(keyword)}`;
     }
 
     function buildYahooAuctionSearchUrl(name) {
