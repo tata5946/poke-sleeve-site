@@ -2136,6 +2136,56 @@
     .collection-popularity[hidden] {
       display: none;
     }
+
+    .btn-row {
+      grid-template-columns: minmax(220px, 280px) auto;
+      align-items: center;
+      justify-content: start;
+      column-gap: 10px;
+    }
+
+    .detail-action-buttons {
+      min-width: 0;
+      display: block;
+    }
+
+    .btn-row .my-collection-toggle {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 18px;
+      font-size: 14px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .btn-row .collection-popularity {
+      justify-self: start;
+    }
+
+    .btn-row .marketplace-row {
+      grid-column: 1 / -1;
+      width: 100%;
+    }
+
+    @media (max-width: 420px) {
+      .btn-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        column-gap: 6px;
+      }
+
+      .btn-row .my-collection-toggle {
+        min-width: 0;
+        min-height: 40px;
+        padding: 0 6px;
+        font-size: 11px;
+      }
+
+      .btn-row .collection-popularity {
+        min-height: 40px;
+        padding: 6px;
+        font-size: 11px;
+      }
+    }
   </style>
 </head>
 
