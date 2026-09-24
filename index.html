@@ -6329,7 +6329,7 @@
         const banner = banners[logicalIndex];
         return `
         <a class="release-feature-card release-feature-card--image" href="${escapeHtml(banner.href)}" data-banner-index="${logicalIndex}" aria-label="${escapeHtml(banner.label)}を見る">
-          <img class="release-feature-image" src="${escapeHtml(banner.imageSrc)}" alt="${escapeHtml(banner.label)}" loading="${index === middleStart + initialBannerIndex ? "eager" : "lazy"}" decoding="async">
+          <img class="release-feature-image" src="${escapeHtml(banner.imageSrc)}" alt="${escapeHtml(banner.label)}" loading="eager" decoding="async">
           <span class="release-feature-caption">${escapeHtml(banner.label)}</span>
         </a>
       `;
@@ -6394,10 +6394,14 @@
       while (targetIndex < middleStart) targetIndex += loopSize;
       while (targetIndex >= middleEnd) targetIndex -= loopSize;
       if (targetIndex === centeredIndex) return;
-      const before = track.scrollLeft;
-      scrollReleaseBannerCardIntoTrack(track, cards[targetIndex], "auto");
-      track.scrollLeft = track.scrollLeft;
-      if (Math.abs(track.scrollLeft - before) < 1) scrollReleaseBannerCardIntoTrack(track, cards[targetIndex], "auto");
+      const offset = cards[targetIndex].offsetLeft - cards[centeredIndex].offsetLeft;
+      const previousSnapType = track.style.scrollSnapType;
+      track.style.scrollSnapType = "none";
+      track.scrollLeft += offset;
+      void track.offsetWidth;
+      window.requestAnimationFrame(() => {
+        track.style.scrollSnapType = previousSnapType;
+      });
     }
 
     function scrollReleaseBannerByStep(track, step = 1, behavior = "smooth") {
