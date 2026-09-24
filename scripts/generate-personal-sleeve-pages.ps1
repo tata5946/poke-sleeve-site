@@ -189,12 +189,11 @@ foreach ($item in @($items)) {
   $descParts = @($name, $series, $type, $releaseYear) | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) }
   $description = (($descParts | Select-Object -Unique) -join " / ") + $labels.descriptionSuffix
   $inlineScript = '  <script>window.__SLEEVE_PAGE_ID = ' + (ConvertTo-JsJson $id) + ';window.__SLEEVE_PAGE_DATA = ' + (ConvertTo-JsJson $sleeve) + ';</script>'
-  $badgeValues = @($series, $condition, $type) | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } | Select-Object -Unique
+  $badgeValues = @($condition, $type) | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } | Select-Object -Unique
   if ($badgeValues.Count -eq 0) { $badgeValues = @($labels.personal, $labels.deckShield) }
   $badges = '<div id="badges" class="badges">' + (($badgeValues | ForEach-Object { '<span class="badge">' + (ConvertTo-HtmlText $_) + '</span>' }) -join '') + '</div>'
   $infoRows = @()
   foreach ($pair in @(
-    @($labels.series, $series),
     @($labels.condition, $condition),
     @($labels.type, $type),
     @("releaseYear", $releaseYear),

@@ -2053,8 +2053,8 @@
 
             <div class="detail-hero-main">
               <h1 id="name" class="name">Pokemon Yuruttoクッションでまったり</h1>
-              <div id="badges" class="badges"><span class="badge">公式</span><span class="badge">未開封</span><span class="badge">デッキシールド</span></div>
-              <div id="detailInfo" class="detail-info-card"><div class="detail-info-row"><span>JAN&#12467;&#12540;&#12489;</span><strong>4521329319100</strong></div><div class="detail-info-row"><span>&#30330;&#22770;&#26085;</span><strong>2021-01-22</strong></div><div class="detail-info-row"><span>&#30330;&#22770;&#26178;&#20385;&#26684;</span><strong>792円</strong></div><div class="detail-info-row"><span>&#30330;&#22770;&#24180;</span><strong>2021</strong></div><div class="detail-info-row"><span>&#12471;&#12522;&#12540;&#12474;</span><strong>公式</strong></div><div class="detail-info-row"><span>&#29366;&#24907;</span><strong>未開封</strong></div><div class="detail-info-row"><span>&#31278;&#21029;</span><strong>デッキシールド</strong></div><div class="detail-info-row"><span>&#12452;&#12521;&#12473;&#12488;&#12524;&#12540;&#12479;&#12540;</span><strong>カナヘイ</strong></div><div class="detail-info-row"><span>&#20837;&#25163;&#21306;&#20998;</span><strong>ポケモンセンター</strong></div></div>
+              <div id="badges" class="badges"><span class="badge">未開封</span><span class="badge">デッキシールド</span></div>
+              <div id="detailInfo" class="detail-info-card"><div class="detail-info-row"><span>&#30330;&#22770;&#26085;</span><strong>2021-01-22</strong></div><div class="detail-info-row"><span>&#30330;&#22770;&#26178;&#20385;&#26684;</span><strong>792円</strong></div><div class="detail-info-row"><span>&#30330;&#22770;&#24180;</span><strong>2021</strong></div><div class="detail-info-row"><span>&#29366;&#24907;</span><strong>未開封</strong></div><div class="detail-info-row"><span>&#31278;&#21029;</span><strong>デッキシールド</strong></div><div class="detail-info-row"><span>&#12452;&#12521;&#12473;&#12488;&#12524;&#12540;&#12479;&#12540;</span><strong>カナヘイ</strong></div><div class="detail-info-row"><span>&#20837;&#25163;&#21306;&#20998;</span><strong>ポケモンセンター</strong></div></div>
               <div id="detailTags" class="detail-tag-list"><a class="detail-tag" href="./sleeves/?tag=%E3%83%A1%E3%83%83%E3%82%BD%E3%83%B3">メッソン</a><a class="detail-tag" href="./sleeves/?tag=%E3%83%92%E3%83%90%E3%83%8B%E3%83%BC">ヒバニー</a><a class="detail-tag" href="./sleeves/?tag=%E3%82%B5%E3%83%AB%E3%83%8E%E3%83%AA">サルノリ</a><a class="detail-tag" href="./sleeves/?tag=Pok%C3%A9mon%20Yurutto%E3%82%B7%E3%83%AA%E3%83%BC%E3%82%BA">Pok&#233;mon Yuruttoシリーズ</a><a class="detail-tag" href="/sleeves/pokemon/pokemon-87ca3c968e3b/">メッソンのデッキシールドをもっと見る</a><a class="detail-tag" href="/sleeves/pokemon/scorbunny/">ヒバニーのデッキシールドをもっと見る</a><a class="detail-tag" href="/sleeves/pokemon/pokemon-d320f2ee8fee/">サルノリのデッキシールドをもっと見る</a><a class="detail-tag" href="/sleeves/series/series-04db1ff88f8f/">Pok&#233;mon Yuruttoシリーズのデッキシールドをもっと見る</a></div>
 
               <div class="kpi">
@@ -2069,7 +2069,6 @@
 
               <div class="btn-row">
                 <div class="detail-action-buttons">
-                  <a class="btn primary" id="backLink" href="./sleeves/" aria-label="ポケモンカードのスリーブ・デッキシールド一覧へ戻る">← スリーブ・デッキシールド一覧へ</a>
                   <button class="btn my-collection-toggle" id="myCollectionToggle" type="button" data-my-collection-toggle hidden>＋ マイコレクションに追加</button>
                 </div>
                 <div class="marketplace-row" aria-label="外部サイトで探す">
@@ -2691,10 +2690,8 @@
 
     function getDetailFieldRows(sleeve) {
       return [
-        { label: "JANコード", value: getSleeveRouteIdForDisplay(sleeve?.id || getSleeveId()) },
         { label: "発売日", value: getReleaseDateText(sleeve) },
         { label: "発売時価格", value: getFirstPriceText(sleeve) },
-        { label: "公式/非公式", value: getTextValue(sleeve?.series) },
         { label: "種類", value: getTextValue(sleeve?.type) },
         { label: "イラストレーター", value: getIllustratorText(sleeve) },
         { label: "販売元", value: getTextValue(sleeve?.acquisitionType) }
@@ -5387,7 +5384,6 @@
       renderDetailInfo(s);
       renderDetailTags(s);
       renderAiMarketDiagnosis(s);
-      document.getElementById("backLink").href = "./sleeves/";
       const mercariLink = document.getElementById("mercariLink");
       if (mercariLink) mercariLink.href = buildMercariSearchUrl(s.name);
       const yahooAuctionLink = document.getElementById("yahooAuctionLink");

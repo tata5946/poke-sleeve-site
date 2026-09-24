@@ -206,7 +206,7 @@ function Get-StaticSleeveStructuredDataHtml([object]$Sleeve, [string]$CanonicalU
 }
 
 function Get-StaticSleeveBadges([object]$Sleeve) {
-  $values = @($Sleeve.series, $Sleeve.condition, $Sleeve.type) |
+  $values = @($Sleeve.condition, $Sleeve.type) |
     Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } |
     Select-Object -Unique
   if ($values.Count -eq 0) { return '<div id="badges" class="badges"></div>' }
@@ -217,13 +217,10 @@ function Get-StaticSleeveBadges([object]$Sleeve) {
 }
 
 function Get-StaticSleeveInfo([object]$Sleeve) {
-  $routeId = Get-SleeveRouteId ([string]$Sleeve.id)
   $pairs = @(
-    @('JAN&#12467;&#12540;&#12489;', $routeId),
     @('&#30330;&#22770;&#26085;', $Sleeve.releaseDate),
     @('&#30330;&#22770;&#26178;&#20385;&#26684;', (Get-FirstPriceText $Sleeve)),
     @('&#30330;&#22770;&#24180;', $Sleeve.releaseYear),
-    @('&#12471;&#12522;&#12540;&#12474;', $Sleeve.series),
     @('&#29366;&#24907;', $Sleeve.condition),
     @('&#31278;&#21029;', $Sleeve.type),
     @('&#12452;&#12521;&#12473;&#12488;&#12524;&#12540;&#12479;&#12540;', $Sleeve.illustrator),
@@ -365,7 +362,6 @@ foreach ($sleeve in @($data.sleeves)) {
   $content = $content.Replace('<h1 id="name" class="name">読み込み中...</h1>', '<h1 id="name" class="name">' + (ConvertTo-HtmlText $name) + '</h1>')
   $content = $content.Replace('<span id="sleeveSeoNoteName">このデッキシールド</span>', '<span id="sleeveSeoNoteName">' + (ConvertTo-HtmlText $seoNoteHeadingName) + '</span>')
   $content = $content.Replace('<p id="sleeveSeoLead" class="detail-seo-note-text">ポケモンカードのスリーブ・デッキシールドの現在相場と価格推移を確認できます。</p>', '<p id="sleeveSeoLead" class="detail-seo-note-text">' + (ConvertTo-HtmlText (Get-SleeveIntroText $sleeve)) + '</p>')
-  $content = $content.Replace('<a class="btn primary" id="backLink" href="./sleeves/" aria-label="ポケモンカードのスリーブ・デッキシールド一覧へ戻る">← スリーブ・デッキシールド一覧へ</a>', '<a class="btn primary" id="backLink" href="./sleeves/" aria-label="ポケモンカードのスリーブ・デッキシールド一覧へ戻る">← スリーブ・デッキシールド一覧へ</a>')
   $content = $content.Replace('<div id="badges" class="badges"></div>', (Get-StaticSleeveBadges $sleeve))
   $content = $content.Replace('<div id="detailInfo" class="detail-info-card" hidden></div>', (Get-StaticSleeveInfo $sleeve))
   $content = $content.Replace('<div id="detailTags" class="detail-tag-list" hidden></div>', (Get-StaticSleeveTags $sleeve))
