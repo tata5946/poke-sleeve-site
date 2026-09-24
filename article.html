@@ -646,6 +646,7 @@
         slug,
         title,
         excerpt: String(article.excerpt || "").trim(),
+        metaDescription: String(article.summary || article.description || article.excerpt || "").trim(),
         category,
         coverImage: String(article.coverImage || "").trim(),
         publishedAt: String(article.publishedAt || article.updatedAt || "").trim(),
@@ -734,13 +735,17 @@
         return;
       }
       if (crumb) crumb.textContent = article.title;
-      document.title = `${article.title} - ポケスリ相場ナビ`;
+      document.title = article.title;
+      document.querySelector('meta[property="og:title"]')?.setAttribute("content", article.title);
+      const articleDescription = article.metaDescription || article.excerpt;
       const metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc && article.excerpt) metaDesc.setAttribute("content", article.excerpt);
+      if (metaDesc && articleDescription) metaDesc.setAttribute("content", articleDescription);
+      const ogDescription = document.querySelector('meta[property="og:description"]');
+      if (ogDescription && articleDescription) ogDescription.setAttribute("content", articleDescription);
       if (window.common && typeof window.common.updateArticleStructuredData === "function") {
         window.common.updateArticleStructuredData("articleStructuredData", {
           title: article.title,
-          description: article.excerpt,
+          description: articleDescription,
           image: article.coverImage,
           datePublished: article.publishedAt,
           dateModified: article.updatedAt || article.publishedAt,
