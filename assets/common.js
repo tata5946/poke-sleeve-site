@@ -2278,8 +2278,32 @@ function injectDashboardChrome({ sidebarActive = "", topbarActive = "", sidebarS
     topbarSlot.innerHTML = buildDashboardTopbarHtml(active);
   }
 
+  injectSiteAttentionBar();
   injectMobileBottomNav();
   updateMyCollectionCountBadges();
+}
+
+function injectSiteAttentionBar() {
+  const dashboardMain = document.querySelector(".dashboard-main");
+  const dashboardContent = dashboardMain?.querySelector(".dashboard-content");
+  if (!dashboardMain || !dashboardContent) return;
+
+  let attentionBar = dashboardMain.querySelector(".site-attention-bar");
+  if (!attentionBar) {
+    attentionBar = document.createElement("aside");
+    attentionBar.className = "site-attention-bar";
+    attentionBar.setAttribute("aria-label", "注目情報");
+    dashboardMain.insertBefore(attentionBar, dashboardContent);
+  }
+
+  dashboardMain.classList.add("has-attention-bar");
+  attentionBar.innerHTML = `
+    <a class="site-attention-link" href="${escapeHtml(buildSiteHref("article.html?id=article-2026-08-26"))}">
+      <span class="site-attention-label">注目情報</span>
+      <span class="site-attention-message">📢 コレクションページを追加しました！</span>
+      <span class="site-attention-arrow" aria-hidden="true">›</span>
+    </a>
+  `;
 }
 
 function getMobileBottomNavKeyFromHref(href) {

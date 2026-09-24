@@ -9760,6 +9760,101 @@ footer.site-footer {
     }
 }
 
+/* Header attention notice */
+:root body .dashboard-main.has-attention-bar {
+    grid-template-rows: auto auto 1fr !important;
+}
+
+.site-attention-bar {
+    min-width: 0;
+    padding: 10px 28px 0;
+    background: #f8fafc;
+}
+
+.site-attention-link {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 8px 14px;
+    color: #fff;
+    text-decoration: none;
+    border: 1px solid rgba(45, 212, 191, .34);
+    border-radius: 12px;
+    background: linear-gradient(100deg, #071d40 0%, #0a3150 65%, #0f766e 130%);
+    box-shadow: 0 6px 18px rgba(7, 29, 64, .12);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.site-attention-link:hover,
+.site-attention-link:focus-visible {
+    color: #fff;
+    border-color: rgba(94, 234, 212, .72);
+    box-shadow: 0 8px 22px rgba(7, 29, 64, .2);
+    transform: translateY(-1px);
+}
+
+.site-attention-link:focus-visible {
+    outline: 3px solid rgba(45, 212, 191, .28);
+    outline-offset: 2px;
+}
+
+.site-attention-label {
+    padding: 4px 9px;
+    color: #ccfbf1;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .08em;
+    white-space: nowrap;
+    border: 1px solid rgba(94, 234, 212, .38);
+    border-radius: 999px;
+    background: rgba(13, 148, 136, .2);
+}
+
+.site-attention-message {
+    min-width: 0;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.45;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.site-attention-arrow {
+    color: #99f6e4;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 1;
+}
+
+@media (max-width: 700px) {
+    .site-attention-bar {
+        padding: 8px 12px 0;
+    }
+
+    .site-attention-link {
+        gap: 8px;
+        min-height: 40px;
+        padding: 7px 10px;
+        border-radius: 10px;
+    }
+
+    .site-attention-label {
+        padding: 3px 7px;
+        font-size: 9px;
+    }
+
+    .site-attention-message {
+        font-size: 12px;
+    }
+
+    .site-attention-arrow {
+        font-size: 21px;
+    }
+}
+
 /* Shared page heading rhythm for content pages. */
 html:root body.shared-page-layout .shared-page-heading {
     width: 100% !important;
