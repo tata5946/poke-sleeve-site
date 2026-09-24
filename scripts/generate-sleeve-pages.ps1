@@ -317,8 +317,6 @@ foreach ($sleeve in @($data.sleeves)) {
   $structuredDataHtml = Get-StaticSleeveStructuredDataHtml -Sleeve $sleeve -CanonicalUrl $ogUrl
   $inlinePageDataScript = '  <script>window.__SLEEVE_PAGE_ID = ' + $jsId + ';window.__SLEEVE_PAGE_DATA = ' + $jsSleeve + ';</script>'
   $latestPriceText = if ($latestTrade) { ([double]$latestTrade.price).ToString("N0") + "円" } else { "-" }
-  $latestDateText = if ($latestTrade) { [string]$latestTrade.observedText } else { "最終観測日: -" }
-  $latestCountText = if ($latestTrade -and $null -ne $latestTrade.count -and [double]$latestTrade.count -gt 0) { $latestDateText + " / 取引件数: " + ([string]$latestTrade.count) + "件" } else { $latestDateText }
   $seoNoteHeadingName = if ($name) { $name } else { "このデッキシールド" }
 
   $content = $template
@@ -366,8 +364,6 @@ foreach ($sleeve in @($data.sleeves)) {
   $content = $content.Replace('<div id="detailInfo" class="detail-info-card" hidden></div>', (Get-StaticSleeveInfo $sleeve))
   $content = $content.Replace('<div id="detailTags" class="detail-tag-list" hidden></div>', (Get-StaticSleeveTags $sleeve))
   $content = $content.Replace('<div id="latestWeekly" class="value">-</div>', '<div id="latestWeekly" class="value">' + (ConvertTo-HtmlText $latestPriceText) + '</div>')
-  $content = $content.Replace('<div id="weeklyDelta" class="delta" style="margin-top:6px;"></div>', '<div id="weeklyDelta" class="delta flat" style="margin-top:6px;">価格推移データを掲載</div>')
-  $content = $content.Replace('<div id="weeklyCount" class="meta" style="margin-top:6px;">最終観測日: -</div>', '<div id="weeklyCount" class="meta" style="margin-top:6px;">' + (ConvertTo-HtmlText $latestCountText) + '</div>')
   if ($rakutenLinksByRouteId.ContainsKey($routeId)) {
     $rakutenHref = ConvertTo-HtmlText $rakutenLinksByRouteId[$routeId]
     $content = [regex]::Replace(

@@ -2019,6 +2019,75 @@
         padding: 12px;
       }
     }
+
+    /* Keep the two primary price metrics side by side at every viewport width. */
+    .kpi {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .kpi .price-kpi-card {
+      min-width: 0;
+      min-height: 112px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    .kpi .price-kpi-card .label,
+    .kpi .price-kpi-card .value,
+    #weeklyUnitPrice.price-unit-value {
+      width: 100%;
+      margin: 0;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .kpi .price-kpi-card .label {
+      font-size: clamp(11px, 1.3vw, 14px);
+      line-height: 1.2;
+      letter-spacing: .02em;
+    }
+
+    .kpi .price-kpi-card .value,
+    #weeklyUnitPrice.price-unit-value {
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #00113a;
+      font-size: clamp(24px, 3.2vw, 42px);
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -.03em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 420px) {
+      .kpi {
+        gap: 6px;
+      }
+
+      .kpi .price-kpi-card {
+        min-height: 92px;
+        gap: 8px;
+        padding: 10px 5px;
+      }
+
+      .kpi .price-kpi-card .label {
+        font-size: 11px;
+      }
+
+      .kpi .price-kpi-card .value,
+      #weeklyUnitPrice.price-unit-value {
+        font-size: clamp(21px, 7.2vw, 30px);
+      }
+    }
   </style>
 </head>
 
@@ -2058,12 +2127,13 @@
               <div id="detailTags" class="detail-tag-list"><a class="detail-tag" href="./sleeves/?tag=%E3%83%A1%E3%82%BF%E3%83%A2%E3%83%B3">メタモン</a><a class="detail-tag" href="./sleeves/?tag=%E3%83%94%E3%82%AB%E3%83%81%E3%83%A5%E3%82%A6">ピカチュウ</a><a class="detail-tag" href="/sleeves/pokemon/pokemon-703f885a1ba5/">メタモンのデッキシールドをもっと見る</a><a class="detail-tag" href="/sleeves/pokemon/pikachu/">ピカチュウのデッキシールドをもっと見る</a></div>
 
               <div class="kpi">
-                <div class="box">
+                <div class="box price-kpi-card">
                   <div id="latestPriceLabel" class="label">現在価格</div>
                   <div id="latestWeekly" class="value">950円</div>
-                  <div id="weeklyUnitPrice" class="unit-price" hidden></div>
-                  <div id="weeklyDelta" class="delta flat" style="margin-top:6px;">価格推移データを掲載</div>
-                  <div id="weeklyCount" class="meta" style="margin-top:6px;">最終観測日: 2026-08-03 / 取引件数: 2件</div>
+                </div>
+                <div class="box price-kpi-card">
+                  <div class="label">1枚あたり価格</div>
+                  <div id="weeklyUnitPrice" class="value price-unit-value">-</div>
                 </div>
               </div>
 
@@ -3780,8 +3850,8 @@
 
     function setPriceKpiFromObservations(rows) {
       const latestEl = document.getElementById("latestWeekly");
-      const deltaEl = document.getElementById("weeklyDelta");
-      const countEl = document.getElementById("weeklyCount");
+      const deltaEl = document.getElementById("weeklyDelta") || { textContent: "", className: "" };
+      const countEl = document.getElementById("weeklyCount") || { textContent: "" };
       const labelEl = document.getElementById("latestPriceLabel");
       if (labelEl) labelEl.textContent = "最新観測価格";
 
@@ -3919,8 +3989,8 @@
 
     function setPriceKpi(rows, labelText) {
       const latestEl = document.getElementById("latestWeekly");
-      const deltaEl = document.getElementById("weeklyDelta");
-      const countEl = document.getElementById("weeklyCount");
+      const deltaEl = document.getElementById("weeklyDelta") || { textContent: "", className: "" };
+      const countEl = document.getElementById("weeklyCount") || { textContent: "" };
       const labelEl = document.getElementById("latestPriceLabel");
       if (labelEl) labelEl.textContent = labelText;
 
@@ -4786,21 +4856,19 @@
       const el = document.getElementById("weeklyUnitPrice");
       if (!el) return;
       if (!Number.isFinite(latestPrice) || latestPrice <= 0) {
-        el.hidden = true;
-        el.textContent = "";
+        el.textContent = "-";
         return;
       }
 
       const sheetCount = getSleeveSheetCount(sleeve);
       const unitPrice = Math.round(latestPrice / sheetCount);
-      el.textContent = `1枚あたり 約${unitPrice.toLocaleString()}円（${sheetCount}枚入り）`;
-      el.hidden = false;
+      el.textContent = `約${unitPrice.toLocaleString()}円`;
     }
 
     function setPriceKpiFromSeries(points, sleeve) {
       const latestEl = document.getElementById("latestWeekly");
-      const deltaEl = document.getElementById("weeklyDelta");
-      const countEl = document.getElementById("weeklyCount");
+      const deltaEl = document.getElementById("weeklyDelta") || { textContent: "", className: "" };
+      const countEl = document.getElementById("weeklyCount") || { textContent: "" };
       const labelEl = document.getElementById("latestPriceLabel");
       if (labelEl) labelEl.textContent = "現在価格";
       const list = enrichSeries(points);

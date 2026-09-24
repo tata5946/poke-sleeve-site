@@ -214,13 +214,6 @@ foreach ($item in @($items)) {
   }
   $latestTrade = Get-LatestTrade $sleeve
   $latestPriceText = if ($latestTrade) { ([double]$latestTrade.price).ToString("N0") + $labels.yen } else { "-" }
-  $weeklyCountText = if ($latestTrade) {
-    $week = Get-TextValue $latestTrade.week
-    $count = Get-TextValue $latestTrade.count
-    if ($count) { "$($labels.latestObserved): $week / $($labels.tradeCount): $count $($labels.countSuffix)" } else { "$($labels.latestObserved): $week" }
-  } else {
-    $labels.priceMissing
-  }
 
   $content = $template
   $content = Replace-Required $content '<head>' "<head>`r`n  <base href=""../../"" />"
@@ -237,7 +230,6 @@ foreach ($item in @($items)) {
   $content = $content.Replace('<div id="detailInfo" class="detail-info-card" hidden></div>', $info)
   $content = $content.Replace('<div id="detailTags" class="detail-tag-list" hidden></div>', $tags)
   $content = $content.Replace('<div id="latestWeekly" class="value">-</div>', '<div id="latestWeekly" class="value">' + (ConvertTo-HtmlText $latestPriceText) + '</div>')
-  $content = Replace-Required $content '<div id="weeklyCount" class="meta" style="margin-top:6px;">.*?</div>' ('<div id="weeklyCount" class="meta" style="margin-top:6px;">' + (ConvertTo-HtmlText $weeklyCountText) + '</div>')
 
   $targetDir = Join-Path $OutputRoot $routeId
   if (-not (Test-Path -LiteralPath $targetDir)) {
