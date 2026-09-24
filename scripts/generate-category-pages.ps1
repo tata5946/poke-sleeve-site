@@ -113,9 +113,9 @@ function PageHtml([object]$Entry, [string]$Slug) {
   $heading = if ($label.EndsWith('デッキシールド')) { "${label}一覧" } else { "${label}のデッキシールド一覧" }
   $title = "${heading}｜歴代${count}種類・相場価格 | ポケスリ相場ナビ"
   $description = if ($Entry.group -eq 'series') {
-    "${label}に該当する歴代デッキシールドを一覧で掲載。現在、ポケスリ相場ナビでは${count}種類を掲載しています。現在相場や発売時価格、価格推移を確認できます。"
+    "${label}のポケカスリーブ・デッキシールドを一覧で掲載。歴代${count}種類の現在相場や発売時価格、価格推移を確認できます。"
   } else {
-    "${label}が描かれた歴代デッキシールドを一覧で掲載。現在、ポケスリ相場ナビでは${count}種類を掲載しています。現在相場や発売時価格、価格推移を確認できます。"
+    "${label}が描かれたポケカスリーブ・デッキシールドを一覧で掲載。歴代${count}種類の現在相場や発売時価格、価格推移を確認できます。"
   }
   $cards = New-Object System.Text.StringBuilder
   $i = 0
@@ -196,9 +196,9 @@ function ZukanCategoryPageHtml([object]$Entry, [string]$Slug, [string]$Template)
   $heading = if ($label.EndsWith('デッキシールド')) { "${label}一覧" } else { "${label}のデッキシールド一覧" }
   $title = "${heading}｜歴代${count}種類・相場価格 | ポケスリ相場ナビ"
   $description = if ($Entry.group -eq 'series') {
-    "${label}に該当する歴代デッキシールドを一覧で掲載。現在、ポケスリ相場ナビでは${count}種類を掲載しています。現在相場や発売時価格、価格推移を確認できます。"
+    "${label}のポケカスリーブ・デッキシールドを一覧で掲載。歴代${count}種類の現在相場や発売時価格、価格推移を確認できます。"
   } else {
-    "${label}が描かれた歴代デッキシールドを一覧で掲載。現在、ポケスリ相場ナビでは${count}種類を掲載しています。現在相場や発売時価格、価格推移を確認できます。"
+    "${label}が描かれたポケカスリーブ・デッキシールドを一覧で掲載。歴代${count}種類の現在相場や発売時価格、価格推移を確認できます。"
   }
   $breadcrumbJson = BreadcrumbJson $Entry.group $groupLabel $label $url
   $configJson = ([ordered]@{ group=[string]$Entry.group; tag=$label } | ConvertTo-Json -Compress).Replace('</script','<\/script')

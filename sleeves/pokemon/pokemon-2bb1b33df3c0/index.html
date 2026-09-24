@@ -9,9 +9,9 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022"
      crossorigin="anonymous"></script>
   <title>マニューラのデッキシールド一覧｜歴代1種類・相場価格 | ポケスリ相場ナビ</title>
-  <meta name="description" content="マニューラが描かれた歴代デッキシールドを一覧で掲載。現在、ポケスリ相場ナビでは1種類を掲載しています。現在相場や発売時価格、価格推移を確認できます。" />
+  <meta name="description" content="マニューラが描かれたポケカスリーブ・デッキシールドを一覧で掲載。歴代1種類の現在相場や発売時価格、価格推移を確認できます。" />
   <meta property="og:title" content="マニューラのデッキシールド一覧｜歴代1種類・相場価格 | ポケスリ相場ナビ" />
-  <meta property="og:description" content="マニューラが描かれた歴代デッキシールドを一覧で掲載。現在、ポケスリ相場ナビでは1種類を掲載しています。現在相場や発売時価格、価格推移を確認できます。" />
+  <meta property="og:description" content="マニューラが描かれたポケカスリーブ・デッキシールドを一覧で掲載。歴代1種類の現在相場や発売時価格、価格推移を確認できます。" />
   <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
   <meta property="og:url" content="https://pokesuri-navi.com/sleeves/pokemon/pokemon-2bb1b33df3c0/" />
   <link rel="canonical" href="https://pokesuri-navi.com/sleeves/pokemon/pokemon-2bb1b33df3c0/" />
@@ -1571,7 +1571,7 @@
           <div class="zukan-hero-copy">
             <p class="zukan-kicker">SLEEVE DIRECTORY</p>
             <h1 class="zukan-title">マニューラのデッキシールド一覧</h1>
-            <p class="zukan-lead">マニューラが描かれた歴代デッキシールドを一覧で掲載。現在、ポケスリ相場ナビでは1種類を掲載しています。現在相場や発売時価格、価格推移を確認できます。</p>
+            <p class="zukan-lead">マニューラが描かれたポケカスリーブ・デッキシールドを一覧で掲載。歴代1種類の現在相場や発売時価格、価格推移を確認できます。</p>
           </div>
           <div class="zukan-hero-meta" aria-label="集計状況">
             <div id="updatedChip" class="zukan-meta-chip is-loading skeleton-shimmer">最終更新 <strong id="updatedAt">読み込み中</strong></div>
@@ -1922,7 +1922,7 @@
     }
 
     const SLEEVES_SEO_TITLE_BASE = "ポケモンカードのスリーブ一覧｜歴代デッキシールドの相場・価格";
-    const SLEEVES_SEO_DESCRIPTION_SUFFIX = "を一覧掲載。発売年・シリーズ・ポケモンなどから検索でき、各商品の現在相場や価格推移も確認できます。";
+    const SLEEVES_SEO_DESCRIPTION = "日本で発売されたポケモンカードの歴代スリーブ・デッキシールドを一覧掲載。発売年・シリーズ・ポケモン・トレーナーから探せて、現在相場や価格推移も確認できます。";
 
     function getSleevesSeoCount(total) {
       const count = Number(total);
@@ -1934,11 +1934,8 @@
       if (el && value) el.setAttribute("content", value);
     }
 
-    function buildSleevesSeoDescription(total) {
-      const countText = getSleevesSeoCount(total);
-      return countText
-        ? `ポケモンカードの歴代スリーブ・デッキシールド${countText}${SLEEVES_SEO_DESCRIPTION_SUFFIX}`
-        : `ポケモンカードの歴代スリーブ・デッキシールド${SLEEVES_SEO_DESCRIPTION_SUFFIX}`;
+    function buildSleevesSeoDescription() {
+      return SLEEVES_SEO_DESCRIPTION;
     }
 
     function buildSleevesCollectionStructuredData(total) {
