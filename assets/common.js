@@ -25,6 +25,9 @@ const SEARCH_HISTORY_MAX = 8;
 const MY_COLLECTION_STORAGE_KEY = "pokesuri_my_collection";
 const MY_COLLECTION_HISTORY_STORAGE_KEY = "pokesuri_my_collection_history";
 const MY_COLLECTION_HISTORY_SEEDED_KEY = "pokesuri_my_collection_history_seeded";
+const COLLECTION_SYNC_USER_ID_KEY = "pokeSleeve:accessUserId";
+const COLLECTION_SYNC_LAST_AT_KEY = "pokesuri_collection_sync_last_at";
+const COLLECTION_SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const AUTOCOMPLETE_MIN_CHARS = 1;
 const AUTOCOMPLETE_MAX_ITEMS = 8;
 let __dataCacheMem = null;
@@ -968,7 +971,75 @@ function writeMyCollection(items) {
   } catch (_) {}
   updateMyCollectionCountBadges(list.length);
   document.dispatchEvent(new CustomEvent("pokesuri:my-collection-change", { detail: { items: list } }));
+  scheduleCollectionSync(list);
   return list;
+}
+
+function getOrCreateCollectionSyncUserId() {
+  try {
+    const saved = String(localStorage.getItem(COLLECTION_SYNC_USER_ID_KEY) || "").trim();
+    if (saved) return saved;
+  } catch (_) {}
+  const next = (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function")
+    ? globalThis.crypto.randomUUID()
+    : `u_${Date.now()}_${Math.random().toString(36).slice(2, 12)}`;
+  try { localStorage.setItem(COLLECTION_SYNC_USER_ID_KEY, next); } catch (_) {}
+  return next;
+}
+
+let __collectionSyncTimer = null;
+
+async function syncMyCollectionStats(items = readMyCollection()) {
+  if (!GAS_URL) return null;
+  const payload = {
+    action: "collection_sync",
+    userId: getOrCreateCollectionSyncUserId(),
+    items: (Array.isArray(items) ? items : []).map((item) => ({
+      sleeveId: normalizeMyCollectionSleeveId(item?.sleeveId ?? item?.id),
+      name: String(item?.name || "").trim(),
+      quantity: Math.max(1, Math.floor(Number(item?.quantity) || 1))
+    })).filter((item) => item.sleeveId)
+  };
+  try {
+    const response = await fetch(GAS_URL, {
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8", "Accept": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+    if (!result?.ok) return null;
+    try { localStorage.setItem(COLLECTION_SYNC_LAST_AT_KEY, String(Date.now())); } catch (_) {}
+    document.dispatchEvent(new CustomEvent("pokesuri:collection-stats-synced"));
+    return result;
+  } catch (_) {
+    return null;
+  }
+}
+
+function scheduleCollectionSync(items = readMyCollection(), delay = 450) {
+  window.clearTimeout(__collectionSyncTimer);
+  __collectionSyncTimer = window.setTimeout(() => syncMyCollectionStats(items), delay);
+}
+
+function syncCollectionOnVisit() {
+  let lastAt = 0;
+  try { lastAt = Number(localStorage.getItem(COLLECTION_SYNC_LAST_AT_KEY) || 0); } catch (_) {}
+  if (Date.now() - lastAt >= COLLECTION_SYNC_INTERVAL_MS) scheduleCollectionSync(readMyCollection(), 1200);
+}
+
+async function fetchSleeveCollectionCount(sleeveId) {
+  const id = normalizeMyCollectionSleeveId(sleeveId);
+  if (!id || !GAS_URL) return null;
+  try {
+    const url = `${GAS_URL}?mode=collection-count&sleeveId=${encodeURIComponent(id)}&v=${Date.now()}`;
+    const response = await fetch(url, { cache: "no-store" });
+    const data = await response.json();
+    const count = Number(data?.count);
+    return data?.ok && Number.isFinite(count) ? Math.max(0, count) : null;
+  } catch (_) {
+    return null;
+  }
 }
 
 function getMyCollectionCount() {
@@ -2616,6 +2687,8 @@ window.common = {
   toggleMyCollectionSleeve,
   updateMyCollectionCountBadges,
   setupMyCollectionButton,
+  syncMyCollectionStats,
+  fetchSleeveCollectionCount,
   setupQuickCollectionButtons,
   renderQuickCollectionButtons,
   setStructuredData,
@@ -2648,6 +2721,7 @@ document.addEventListener("DOMContentLoaded", () => {
   try { ensureFavicon(); } catch (e) { console.error(e); }
   injectHeaderFooter();
   try { updateMyCollectionCountBadges(); } catch (e) { console.error(e); }
+  try { syncCollectionOnVisit(); } catch (e) { console.error(e); }
   try { setupQuickCollectionButtons(document); } catch (e) { console.error(e); }
   try {
     if (document.getElementById("dashboardSidebarSlot") || document.getElementById("dashboardTopbarSlot")) {
