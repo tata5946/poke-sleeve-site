@@ -2045,9 +2045,28 @@
     }
 
     .kpi .price-kpi-card .label {
-      font-size: clamp(11px, 1.3vw, 14px);
-      line-height: 1.2;
-      letter-spacing: .02em;
+      width: fit-content;
+      min-height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 12px;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: clamp(13px, 1.45vw, 15px);
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: .03em;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+    }
+
+    .kpi .price-kpi-card:nth-child(2) .label {
+      border-color: #a7f3d0;
+      background: #ecfdf5;
+      color: #047857;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.08);
     }
 
     .kpi .price-kpi-card .value,
@@ -2077,7 +2096,10 @@
       }
 
       .kpi .price-kpi-card .label {
-        font-size: 11px;
+        min-height: 28px;
+        padding: 5px 8px;
+        font-size: 12px;
+        letter-spacing: 0;
       }
 
       .kpi .price-kpi-card .value,
