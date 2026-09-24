@@ -1199,12 +1199,6 @@
     }
 
     /* Stitch detail-page polish: keep the existing data hooks, simplify the visual hierarchy. */
-    body.page-content-focus .dashboard-content {
-      background:
-        radial-gradient(circle at 18% 0%, rgba(219, 225, 255, 0.72), transparent 28%),
-        linear-gradient(180deg, #f6fafe 0%, #eef4fb 100%);
-    }
-
     body.page-content-focus .page-shell--content {
       width: min(100%, 1280px);
     }
@@ -2028,7 +2022,7 @@
   </style>
 </head>
 
-<body class="page-content-focus" data-hide-global-header="1">
+<body class="page-content-focus shared-page-layout" data-hide-global-header="1">
   <div id="site-header"></div>
 
   <div class="dashboard-shell">
@@ -2040,7 +2034,7 @@
         <div id="dashboardTopbarSlot"></div>
       </header>
       <div class="dashboard-content">
-  <div class="container page-shell page-shell--content">
+  <div class="container page-shell page-shell--content shared-page-content">
     <div id="error" class="error"></div>
 
     <nav class="breadcrumb" aria-label="パンくず">
