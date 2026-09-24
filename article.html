@@ -7,9 +7,9 @@
   <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022" crossorigin="anonymous"></script>
   <title>記事 - ポケスリ相場ナビ</title>
-  <meta name="description" content="ポケカスリーブ相場の記事ページです。" />
+  <meta name="description" content="ポケモンカードのスリーブ・デッキシールドに関する相場や価格、新商品などを紹介する記事です。" />
   <meta property="og:title" content="記事 - ポケスリ相場ナビ" />
-  <meta property="og:description" content="ポケカスリーブ相場の記事ページです。" />
+  <meta property="og:description" content="ポケモンカードのスリーブ・デッキシールドに関する相場や価格、新商品などを紹介する記事です。" />
   <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
   <meta property="og:url" content="https://pokesuri-navi.com/article.html" />
 
@@ -737,7 +737,7 @@
       if (crumb) crumb.textContent = article.title;
       document.title = article.title;
       document.querySelector('meta[property="og:title"]')?.setAttribute("content", article.title);
-      const articleDescription = article.metaDescription || article.excerpt;
+      const articleDescription = article.metaDescription || article.excerpt || "ポケモンカードのスリーブ・デッキシールドに関する相場や価格、新商品などを紹介する記事です。";
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc && articleDescription) metaDesc.setAttribute("content", articleDescription);
       const ogDescription = document.querySelector('meta[property="og:description"]');
