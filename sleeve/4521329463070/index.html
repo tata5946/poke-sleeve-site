@@ -2242,7 +2242,7 @@
                 <div class="detail-action-buttons">
                   <button class="btn my-collection-toggle" id="myCollectionToggle" type="button" data-my-collection-toggle hidden>＋ マイコレクションに追加</button>
                 </div>
-                <div id="collectionPopularity" class="collection-popularity" aria-live="polite" hidden></div>
+                <div id="collectionPopularity" class="collection-popularity" aria-live="polite">♡ コレクション登録数を確認中</div>
                 <div class="marketplace-row" aria-label="外部サイトで探す">
                   <a class="marketplace-link marketplace-link--mercari" id="mercariLink" href="https://jp.mercari.com/search" target="_blank" rel="noopener noreferrer nofollow" aria-label="メルカリで探す">
                     <span class="marketplace-logo marketplace-logo--mercari" aria-hidden="true">m</span>
@@ -2345,7 +2345,7 @@
   <script src="./assets/category-page-map.js?v=20260917a"></script>
     <script>window.__SLEEVE_PAGE_ID = "463070";window.__SLEEVE_PAGE_DATA = {"id":"463070","name":"ブラッキー 30th CELEBRATION","imageUrl":"https://drive.google.com/thumbnail?id=1Ozqthzej8WwbnND625WaIgxqL1o0kQ9-\u0026sz=w1200","releaseDate":"2026-09-16","releaseYear":2026,"firstPrice":990,"series":"公式","condition":"未開封","type":"デッキシールド　プレミアム・グロス","feature":"デッキシールド　プレミアム・グロス","acquisitionType":"ポケモンセンター","illustrator":"","note":"","category1":"ブラッキー","category2":"","category3":"","category4":"","category5":"","category6":"","category7":"","category8":"","category9":"","pokemonCategories":["ブラッキー"],"trainerCategories":[],"categoryTags":[],"categories":["ブラッキー"],"weeklyPrices":[{"week":"2026-09-14","price":1333,"count":3}],"monthlyPrices":[{"month":"2026-09-01","price":1333,"count":null}],"yearlyPrices":[{"year":2026,"price":1333,"count":null}],"pricesByYear":{"2026":1333}};</script>
 
-<script src="./assets/common.js?v=20260924b"></script>
+<script src="./assets/common.js?v=20260924c"></script>
 
   <script>
     function escapeHtml(str) {
@@ -5543,9 +5543,15 @@
     async function renderCollectionPopularity(sleeve) {
       const root = document.getElementById("collectionPopularity");
       if (!root || !window.common || typeof window.common.fetchSleeveCollectionCount !== "function") return;
+      const cachedCount = typeof window.common.getCachedSleeveCollectionCount === "function"
+        ? window.common.getCachedSleeveCollectionCount(sleeve?.id)
+        : null;
+      if (Number.isFinite(cachedCount)) {
+        root.textContent = `♡ ${cachedCount.toLocaleString()}人がコレクション登録`;
+      }
+      root.hidden = false;
       const count = await window.common.fetchSleeveCollectionCount(sleeve?.id);
       if (!Number.isFinite(count)) {
-        root.hidden = true;
         return;
       }
       root.textContent = `♡ ${count.toLocaleString()}人がコレクション登録`;

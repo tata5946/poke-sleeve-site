@@ -28,6 +28,7 @@ const MY_COLLECTION_HISTORY_SEEDED_KEY = "pokesuri_my_collection_history_seeded"
 const COLLECTION_SYNC_USER_ID_KEY = "pokeSleeve:accessUserId";
 const COLLECTION_SYNC_LAST_AT_KEY = "pokesuri_collection_sync_last_at";
 const COLLECTION_SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
+const COLLECTION_COUNT_CACHE_PREFIX = "pokesuri_collection_count:";
 const AUTOCOMPLETE_MIN_CHARS = 1;
 const AUTOCOMPLETE_MAX_ITEMS = 8;
 let __dataCacheMem = null;
@@ -1036,7 +1037,21 @@ async function fetchSleeveCollectionCount(sleeveId) {
     const response = await fetch(url, { cache: "no-store" });
     const data = await response.json();
     const count = Number(data?.count);
-    return data?.ok && Number.isFinite(count) ? Math.max(0, count) : null;
+    if (!data?.ok || !Number.isFinite(count)) return null;
+    const normalizedCount = Math.max(0, count);
+    try { localStorage.setItem(COLLECTION_COUNT_CACHE_PREFIX + id, String(normalizedCount)); } catch (_) {}
+    return normalizedCount;
+  } catch (_) {
+    return null;
+  }
+}
+
+function getCachedSleeveCollectionCount(sleeveId) {
+  const id = normalizeMyCollectionSleeveId(sleeveId);
+  if (!id) return null;
+  try {
+    const value = Number(localStorage.getItem(COLLECTION_COUNT_CACHE_PREFIX + id));
+    return Number.isFinite(value) && value >= 0 ? value : null;
   } catch (_) {
     return null;
   }
@@ -2689,6 +2704,7 @@ window.common = {
   setupMyCollectionButton,
   syncMyCollectionStats,
   fetchSleeveCollectionCount,
+  getCachedSleeveCollectionCount,
   setupQuickCollectionButtons,
   renderQuickCollectionButtons,
   setStructuredData,
