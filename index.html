@@ -6394,14 +6394,7 @@
       while (targetIndex < middleStart) targetIndex += loopSize;
       while (targetIndex >= middleEnd) targetIndex -= loopSize;
       if (targetIndex === centeredIndex) return;
-      const offset = cards[targetIndex].offsetLeft - cards[centeredIndex].offsetLeft;
-      const previousSnapType = track.style.scrollSnapType;
-      track.style.scrollSnapType = "none";
-      track.scrollLeft += offset;
-      void track.offsetWidth;
-      window.requestAnimationFrame(() => {
-        track.style.scrollSnapType = previousSnapType;
-      });
+      scrollReleaseBannerCardIntoTrack(track, cards[targetIndex], "auto");
     }
 
     function scrollReleaseBannerByStep(track, step = 1, behavior = "smooth") {
