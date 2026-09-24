@@ -6430,7 +6430,6 @@
       if (!track || track.dataset.carouselWired === "1") return;
       track.dataset.carouselWired = "1";
       let scrollTimer = null;
-      let normalizeFrame = null;
       let autoplayTimer = null;
       let isPaused = false;
       const autoplayMs = 4200;
@@ -6453,13 +6452,6 @@
       };
       track.addEventListener("scroll", () => {
         updateReleaseBannerDots(track);
-        if (!normalizeFrame) {
-          normalizeFrame = window.requestAnimationFrame(() => {
-            normalizeFrame = null;
-            normalizeReleaseBannerLoop(track);
-            updateReleaseBannerDots(track);
-          });
-        }
         window.clearTimeout(scrollTimer);
         scrollTimer = window.setTimeout(() => {
           normalizeReleaseBannerLoop(track);
