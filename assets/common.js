@@ -2284,6 +2284,11 @@ function injectDashboardChrome({ sidebarActive = "", topbarActive = "", sidebarS
 }
 
 function injectSiteAttentionBar() {
+  const currentPath = String(location.pathname || "").replace(/\/+$/, "/");
+  const siteRootPath = new URL("./", document.baseURI).pathname.replace(/\/+$/, "/");
+  const siteIndexPath = new URL("index.html", document.baseURI).pathname;
+  if (currentPath !== siteRootPath && currentPath !== siteIndexPath) return;
+
   const dashboardMain = document.querySelector(".dashboard-main");
   const dashboardContent = dashboardMain?.querySelector(".dashboard-content");
   if (!dashboardMain || !dashboardContent) return;
