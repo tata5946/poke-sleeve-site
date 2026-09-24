@@ -148,10 +148,14 @@ function Get-SleeveReleasePrefix([object]$Sleeve) {
 }
 
 function Get-SleeveMetaDescription([object]$Sleeve) {
-  $prefix = Get-SleeveReleasePrefix $Sleeve
   $subject = Get-SleeveDescriptionSubject $Sleeve
-  $lead = if ($prefix) { "${prefix}${subject}" } else { $subject }
-  return "${lead}の相場・価格情報。現在相場、過去の価格推移、商品情報を掲載しています。ポケカスリーブの購入・売却時の価格確認にご利用ください。"
+  $releaseYear = Get-SleeveReleaseYearText $Sleeve
+  $releaseDetails = if ([string]::IsNullOrWhiteSpace($releaseYear)) {
+    "発売時の定価や発売日などの商品情報も確認できます。"
+  } else {
+    "${releaseYear}発売時の定価や発売日などの商品情報も確認できます。"
+  }
+  return "${subject}の相場・価格推移を掲載。${releaseDetails}ポケカスリーブの購入・売却時の相場確認にもご活用ください。"
 }
 
 function Get-SleeveIntroText([object]$Sleeve) {

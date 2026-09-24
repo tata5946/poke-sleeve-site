@@ -9,9 +9,9 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022"
      crossorigin="anonymous"></script>
     <title>アセロラ｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ</title>
-    <meta name="description" content="2025年に発売されたポケモンカード公式デッキシールド「アセロラ」の相場・価格情報。現在相場、過去の価格推移、商品情報を掲載しています。ポケカスリーブの購入・売却時の価格確認にご利用ください。" />
+    <meta name="description" content="ポケモンカード公式デッキシールド「アセロラ」の相場・価格推移を掲載。2025年発売時の定価や発売日などの商品情報も確認できます。ポケカスリーブの購入・売却時の相場確認にもご活用ください。" />
     <meta property="og:title" content="アセロラ｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ" />
-    <meta property="og:description" content="2025年に発売されたポケモンカード公式デッキシールド「アセロラ」の相場・価格情報。現在相場、過去の価格推移、商品情報を掲載しています。ポケカスリーブの購入・売却時の価格確認にご利用ください。" />
+    <meta property="og:description" content="ポケモンカード公式デッキシールド「アセロラ」の相場・価格推移を掲載。2025年発売時の定価や発売日などの商品情報も確認できます。ポケカスリーブの購入・売却時の相場確認にもご活用ください。" />
     <meta property="og:image" content="https://drive.google.com/thumbnail?id=1B0pmWM8dAe7LHhN3jMwKjkYcd_py4Qt3&sz=w1200" />
     <meta property="og:url" content="https://pokesuri-navi.com/sleeve/45213292025002/" />
   <link rel="canonical" href="https://pokesuri-navi.com/sleeve/45213292025002/" />
@@ -2505,10 +2505,12 @@
     }
 
     function getSleeveMetaDescription(sleeve) {
-      const prefix = getSleeveReleasePrefix(sleeve);
       const subject = getSleeveDescriptionSubject(sleeve);
-      const lead = prefix ? `${prefix}${subject}` : subject;
-      return `${lead}の相場・価格情報。現在相場、過去の価格推移、商品情報を掲載しています。ポケカスリーブの購入・売却時の価格確認にご利用ください。`;
+      const releaseYear = getReleaseYearText(sleeve);
+      const releaseDetails = releaseYear
+        ? `${releaseYear}発売時の定価や発売日などの商品情報も確認できます。`
+        : "発売時の定価や発売日などの商品情報も確認できます。";
+      return `${subject}の相場・価格推移を掲載。${releaseDetails}ポケカスリーブの購入・売却時の相場確認にもご活用ください。`;
     }
 
     function getSleeveIntroText(sleeve) {
