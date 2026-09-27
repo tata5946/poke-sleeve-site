@@ -1506,29 +1506,6 @@
       line-height: 1.16;
     }
 
-    .detail-seo-note {
-      margin: 18px 2px 24px;
-      color: #64748b;
-    }
-
-    .detail-seo-note h2 {
-      margin: 0 0 7px;
-      color: #475569;
-      font-size: 14px;
-      line-height: 1.5;
-      font-weight: 800;
-      letter-spacing: 0;
-    }
-
-    .detail-seo-note-text {
-      margin: 0;
-      max-width: 840px;
-      color: #64748b;
-      font-size: 13px;
-      line-height: 1.85;
-      font-weight: 500;
-    }
-
     .detail-info-card {
       grid-area: info;
       padding: 0;
@@ -2614,10 +2591,6 @@
           </section>
         </div>
 
-        <section class="detail-seo-note" aria-labelledby="sleeveSeoNoteTitle">
-          <h2 id="sleeveSeoNoteTitle"><span id="sleeveSeoNoteName">鋼テラスタルラウドボーン</span>について</h2>
-          <p id="sleeveSeoLead" class="detail-seo-note-text">ポケモンカード公式デッキシールド「鋼テラスタルラウドボーン」は2023年に発売されたポケカのスリーブです。現在の相場や過去の価格推移、商品情報を掲載しています。</p>
-        </section>
       </div>
     </div>
 
@@ -2796,17 +2769,6 @@
         ? `${releaseYear}発売時の定価や発売日などの商品情報も確認できます。`
         : "発売時の定価や発売日などの商品情報も確認できます。";
       return `${subject}の相場・価格推移を掲載。${releaseDetails}ポケカスリーブの購入・売却時の相場確認にもご活用ください。`;
-    }
-
-    function getSleeveIntroText(sleeve) {
-      const name = getSleeveDisplayName(sleeve);
-      if (!name) return "ポケモンカード公式デッキシールドの現在相場や過去の価格推移、商品情報を掲載しています。ポケカのスリーブの購入・売却時の価格目安として利用できます。";
-      const releaseYear = getReleaseYearText(sleeve);
-      const yearText = releaseYear ? `${releaseYear}に発売された` : "";
-      const productText = sleeveNameHasDeckShield(name)
-        ? `ポケモンカード公式「${name}」`
-        : `ポケモンカード公式デッキシールド「${name}」`;
-      return `${productText}は${yearText}ポケカのスリーブです。現在の相場や過去の価格推移、商品情報を掲載しています。`;
     }
 
     function updateSleeveHeadMeta(sleeve) {
@@ -5973,10 +5935,6 @@
       const breadcrumbCurrent = document.getElementById("breadcrumbCurrent");
       if (breadcrumbCurrent) breadcrumbCurrent.textContent = s.name || "";
       document.getElementById("name").textContent = productHeading;
-      const seoNoteName = document.getElementById("sleeveSeoNoteName");
-      if (seoNoteName) seoNoteName.textContent = productHeading || "このデッキシールド";
-      const seoLead = document.getElementById("sleeveSeoLead");
-      if (seoLead) seoLead.textContent = getSleeveIntroText(s);
       document.getElementById("badges").innerHTML = buildHeaderBadges(s);
       renderDetailInfo(s);
       renderDetailTags(s);
