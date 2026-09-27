@@ -3500,7 +3500,7 @@
       if (position.overallRank && position.overallTotal) {
         cards.push(`
           <div class="market-position-item">
-            <div class="market-position-label"><span aria-hidden="true">♛</span><span>総合ランキング</span></div>
+            <div class="market-position-label"><span>総合ランキング</span></div>
             <div class="market-position-value">${position.overallRank.toLocaleString("ja-JP")}<small> 位 / ${position.overallTotal.toLocaleString("ja-JP")}種類</small></div>
             <div class="market-position-track" aria-hidden="true"><span class="market-position-fill" style="--market-position-progress:${getMarketRankProgress(position.overallRank, position.overallTotal).toFixed(1)}%"></span></div>
           </div>
@@ -3509,7 +3509,7 @@
       if (position.yearRank && position.yearTotal && position.releaseYear) {
         cards.push(`
           <div class="market-position-item market-position-item--year">
-            <div class="market-position-label"><span aria-hidden="true">▣</span><span>${position.releaseYear}年発売の中では</span></div>
+            <div class="market-position-label"><span>${position.releaseYear}年発売の中では</span></div>
             <div class="market-position-value">${position.yearRank.toLocaleString("ja-JP")}<small> 位 / ${position.yearTotal.toLocaleString("ja-JP")}種類</small></div>
             <div class="market-position-track" aria-hidden="true"><span class="market-position-fill" style="--market-position-progress:${getMarketRankProgress(position.yearRank, position.yearTotal).toFixed(1)}%"></span></div>
           </div>
@@ -3521,7 +3521,7 @@
         const progress = Math.max(4, Math.min(100, Math.abs(percent)));
         cards.push(`
           <div class="market-position-item market-position-item--ratio">
-            <div class="market-position-label"><span aria-hidden="true">◆</span><span>発売価格との比較</span></div>
+            <div class="market-position-label"><span>発売価格との比較</span></div>
             <span class="market-position-price-compare">${formatDiagnosisYen(position.firstPrice)} → <strong>${formatDiagnosisYen(position.latestPrice)}</strong></span>
             <div class="market-position-value">${sign}${percent.toLocaleString("ja-JP")}%</div>
             <div class="market-position-track" aria-hidden="true"><span class="market-position-fill" style="--market-position-progress:${progress.toFixed(1)}%"></span></div>
@@ -3532,7 +3532,7 @@
 
       return `
         <section class="market-position" aria-labelledby="marketPositionTitle">
-          <h4 class="market-position-title" id="marketPositionTitle"><span aria-hidden="true">♜</span>このスリーブの立ち位置<span class="market-position-help" title="最新の取引相場を基準に、価格が高い順で順位を算出しています。">?</span></h4>
+          <h4 class="market-position-title" id="marketPositionTitle">このスリーブの立ち位置<span class="market-position-help" title="最新の取引相場を基準に、価格が高い順で順位を算出しています。">?</span></h4>
           <div class="market-position-grid">${cards.join("")}</div>
         </section>
       `;
