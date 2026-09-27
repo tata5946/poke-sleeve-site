@@ -206,20 +206,6 @@
       line-height: 1.3;
     }
 
-    .market-position-help {
-      display: inline-grid;
-      width: 16px;
-      height: 16px;
-      margin-left: auto;
-      place-items: center;
-      border: 1px solid #7eb6ed;
-      border-radius: 50%;
-      color: #2585d8;
-      font-size: 10px;
-      font-weight: 900;
-      cursor: help;
-    }
-
     .market-position-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -331,6 +317,26 @@
 
       .market-position-panel .market-position-item {
         padding: 7px 5px 6px;
+      }
+
+      .market-position-panel .market-position-label {
+        min-height: 28px;
+        align-items: flex-start;
+        font-size: 10px;
+        line-height: 1.35;
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+
+      .market-position-panel .market-position-value {
+        margin-top: 4px;
+        font-size: 18px;
+        white-space: nowrap;
+      }
+
+      .market-position-panel .market-position-value small,
+      .market-position-panel .market-position-price-compare {
+        font-size: 8px;
       }
 
       .market-position-label {
@@ -3537,7 +3543,7 @@
 
       return `
         <section class="market-position" aria-labelledby="marketPositionTitle">
-          <h4 class="market-position-title" id="marketPositionTitle">このスリーブの立ち位置<span class="market-position-help" title="最新の取引相場を基準に、価格が高い順で順位を算出しています。">?</span></h4>
+          <h4 class="market-position-title" id="marketPositionTitle">このスリーブの立ち位置</h4>
           <div class="market-position-grid">${cards.join("")}</div>
         </section>
       `;
