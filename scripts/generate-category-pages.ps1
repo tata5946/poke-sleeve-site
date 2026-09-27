@@ -209,6 +209,10 @@ function ZukanCategoryPageHtml([object]$Entry, [string]$Slug, [string]$Template)
   }
   $breadcrumbMarkup = '<nav class="breadcrumb" aria-label="パンくず"><a href="/">ホーム</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><a href="/sleeves/">デッキシールド図鑑</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><a href="/sleeves/' + $Entry.group + '/">' + (Html $groupLabel) + 'から探す</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><span class="breadcrumb-current" aria-current="page">' + (Html $label) + '</span></nav>'
   $html = $Template
+  $staticListPattern = '<div id="list" class="zukan-grid">\s*<!-- STATIC_ZUKAN_CARDS_START -->.*?<!-- STATIC_ZUKAN_CARDS_END -->\s*</div>'
+  $html = [regex]::Replace($html, $staticListPattern, '<div id="list" class="zukan-grid"></div>', [System.Text.RegularExpressions.RegexOptions]::Singleline)
+  $html = $html.Replace('        if (list.querySelector("[data-static-zukan-card]")) return;' + "`r`n", '')
+  $html = $html.Replace('        if (list.querySelector("[data-static-zukan-card]")) return;' + "`n", '')
   $html = $html.Replace('<base href="../" />', '<base href="../../../" />')
   $html = [regex]::Replace($html, '<title>.*?</title>', '<title>' + (Html $title) + '</title>', 1)
   $html = [regex]::Replace($html, '<meta name="description" content="[^"]*"\s*/>', '<meta name="description" content="' + (Html $description) + '" />', 1)

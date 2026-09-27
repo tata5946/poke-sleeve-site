@@ -2,6 +2,7 @@ param(
   [string]$DataPath = "data.json",
   [string]$OutputPath = "sleeves/all.html",
   [string]$PageOutputRoot = "sleeves/page",
+  [string]$ZukanPath = "sleeves/index.html",
   [int]$PageSize = 50,
   [string]$SiteOrigin = "https://pokesuri-navi.com"
 )
@@ -128,6 +129,115 @@ function Get-LatestPriceValue([object]$Sleeve) {
   }
 
   return $null
+}
+
+function Get-LatestWeeklyPair([object]$Sleeve) {
+  $rows = @($Sleeve.weeklyPrices) |
+    Where-Object { (Get-IsoDate $_.week) -and $null -ne (Get-NumberOrNull $_.price) -and (Get-NumberOrNull $_.price) -gt 0 } |
+    Sort-Object { Get-IsoDate $_.week }
+  if ($rows.Count -eq 0) { return $null }
+  $previous = if ($rows.Count -gt 1) { $rows[-2] } else { $null }
+  return [pscustomobject]@{
+    latest = $rows[-1]
+    previous = $previous
+  }
+}
+
+function Get-ZukanDeltaHtml([object]$Sleeve) {
+  $pair = Get-LatestWeeklyPair $Sleeve
+  if ($null -eq $pair -or $null -eq $pair.previous) { return "" }
+  $latest = Get-NumberOrNull $pair.latest.price
+  $previous = Get-NumberOrNull $pair.previous.price
+  if ($null -eq $latest -or $null -eq $previous) { return "" }
+  $diff = $latest - $previous
+  $className = if ($diff -gt 0) { "up" } elseif ($diff -lt 0) { "down" } else { "flat" }
+  $sign = if ($diff -gt 0) { "+" } elseif ($diff -lt 0) { "-" } else { "&plusmn;" }
+  $text = $sign + ([Math]::Abs($diff)).ToString("N0") + "&#20870;"
+  return '<span class="zukan-badge zukan-badge--delta ' + $className + '">' + $text + '</span>'
+}
+
+function Get-ZukanLatestPriceValue([object]$Sleeve) {
+  $weekly = Get-LatestSeriesPrice $Sleeve.weeklyPrices "week"
+  if ($null -ne $weekly) { return $weekly }
+
+  $yearly = Get-LatestSeriesPrice $Sleeve.yearlyPrices "year"
+  if ($null -ne $yearly) { return $yearly }
+
+  if ($Sleeve.pricesByYear) {
+    $latestYear = 0
+    $latestPrice = $null
+    foreach ($property in @($Sleeve.pricesByYear.PSObject.Properties)) {
+      $year = 0
+      $price = Get-NumberOrNull $property.Value
+      if ([int]::TryParse($property.Name, [ref]$year) -and $null -ne $price -and $price -gt 0 -and $year -gt $latestYear) {
+        $latestYear = $year
+        $latestPrice = $price
+      }
+    }
+    return $latestPrice
+  }
+  return $null
+}
+
+function Get-ZukanYenText([object]$Value) {
+  $price = Get-NumberOrNull $Value
+  if ($null -eq $price) { return "-" }
+  return $price.ToString("#,0.###", [System.Globalization.CultureInfo]::InvariantCulture) + "&#20870;"
+}
+
+function Get-ZukanCardHtml([object]$Sleeve) {
+  $href = ConvertTo-HtmlText (Get-SleeveHref $Sleeve)
+  $id = ConvertTo-HtmlText $Sleeve.id
+  $name = ConvertTo-HtmlText $Sleeve.name
+  $imageUrl = ConvertTo-HtmlText $Sleeve.imageUrl
+  $releaseDateAttr = ConvertTo-HtmlText (Get-IsoDate $Sleeve.releaseDate)
+  $releaseYear = ConvertTo-HtmlText $Sleeve.releaseYear
+  $currentPrice = Get-ZukanYenText (Get-ZukanLatestPriceValue $Sleeve)
+  $deltaHtml = Get-ZukanDeltaHtml $Sleeve
+  $imageHtml = if ([string]::IsNullOrWhiteSpace($imageUrl)) { "" } else {
+    '<img src="' + $imageUrl + '" alt="' + $name + '" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display=''none'';" />'
+  }
+  $releaseHtml = if ([string]::IsNullOrWhiteSpace($releaseYear)) { "" } else {
+    '<div class="zukan-card-meta zukan-card-meta--release"><span class="zukan-card-spec">' + $releaseYear + '&#24180;&#30330;&#22770;</span></div>'
+  }
+  return @"
+            <div class="zukan-card-shell" data-static-zukan-card data-sleeve-id="$id">
+              <a class="zukan-card" href="$href" data-sleeve-link="1" aria-label="${name}&#12398;&#35443;&#32048;&#12434;&#35211;&#12427;">
+                <div class="zukan-card-media">$imageHtml</div>
+                <div class="zukan-card-body">
+                  <h2 class="zukan-card-title">$name</h2>
+                  $releaseHtml
+                  <div class="zukan-card-price-wrap zukan-price-panel">
+                    <div class="zukan-price-copy">
+                      <p class="zukan-card-price-label">&#29694;&#22312;&#30456;&#22580;</p>
+                      <p class="zukan-card-price">$currentPrice</p>
+                      <div class="zukan-card-badges">$deltaHtml</div>
+                    </div>
+                  </div>
+                  <span class="zukan-card-cta">&#35443;&#32048;&#12434;&#35211;&#12427; &rarr;</span>
+                </div>
+              </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="$id" data-sleeve-name="$name" data-sleeve-image="$imageUrl" data-sleeve-release-date="$releaseDateAttr" aria-label="${name}&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
+            </div>
+"@
+}
+
+function Update-ZukanStaticCards([string]$Path, [array]$Items) {
+  Assert-Exists -Path $Path -Label "Zukan page"
+  $content = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
+  $cards = New-Object System.Text.StringBuilder
+  foreach ($sleeve in @($Items | Select-Object -First $PageSize)) {
+    [void]$cards.AppendLine((Get-ZukanCardHtml $sleeve).TrimEnd("`r", "`n"))
+  }
+  $startMarker = '<!-- STATIC_ZUKAN_CARDS_START -->'
+  $endMarker = '<!-- STATIC_ZUKAN_CARDS_END -->'
+  $pattern = [regex]::Escape($startMarker) + '.*?' + [regex]::Escape($endMarker)
+  if (-not [regex]::IsMatch($content, $pattern, [Text.RegularExpressions.RegexOptions]::Singleline)) {
+    throw "Static zukan card markers were not found: $Path"
+  }
+  $replacement = $startMarker + "`r`n" + $cards.ToString().TrimEnd("`r", "`n") + "`r`n            " + $endMarker
+  $updated = [regex]::Replace($content, $pattern, { param($match) $replacement }, [Text.RegularExpressions.RegexOptions]::Singleline)
+  return Write-TextIfChanged $Path $updated
 }
 
 function Get-LatestDataDate([array]$Items) {
@@ -375,6 +485,9 @@ $totalPages = [int][math]::Ceiling($items.Count / $PageSize)
 if ($totalPages -lt 1) { $totalPages = 1 }
 
 $changed = @()
+if (Update-ZukanStaticCards $ZukanPath $items) {
+  $changed += $ZukanPath
+}
 $allIndexHtml = Build-AllIndexHtml $items $totalPages $lastUpdated
 if (Write-TextIfChanged $OutputPath $allIndexHtml) {
   $changed += $OutputPath
