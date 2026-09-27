@@ -300,6 +300,116 @@
       }
     }
 
+    @media (min-width: 960px) {
+      .ai-diagnosis-panel.has-market-position {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(390px, 0.75fr);
+        column-gap: 22px;
+        align-items: start;
+        padding: 18px 20px;
+        background: #fff;
+      }
+
+      .ai-diagnosis-panel.has-market-position .ai-diagnosis-head,
+      .ai-diagnosis-panel.has-market-position .ai-diagnosis-title,
+      .ai-diagnosis-panel.has-market-position .ai-diagnosis-reason,
+      .ai-diagnosis-panel.has-market-position .ai-diagnosis-factors {
+        grid-column: 1;
+      }
+
+      .ai-diagnosis-panel.has-market-position .ai-diagnosis-head {
+        margin-bottom: 12px;
+      }
+
+      .ai-diagnosis-panel.has-market-position .ai-diagnosis-title {
+        margin-bottom: 8px;
+        font-size: 20px;
+      }
+
+      .ai-diagnosis-panel.has-market-position .ai-diagnosis-reason {
+        max-width: 72ch;
+        color: #354052;
+        font-size: 14px;
+        line-height: 1.75;
+      }
+
+      .ai-diagnosis-panel.has-market-position .ai-diagnosis-factors {
+        align-self: end;
+        margin-top: 14px;
+      }
+
+      .ai-diagnosis-panel.has-market-position .market-position {
+        grid-column: 2;
+        grid-row: 1 / span 4;
+        height: 100%;
+        margin: 0;
+        padding: 2px 0 2px 22px;
+        border-top: 0;
+        border-left: 1px solid #d7e1f0;
+      }
+
+      .ai-diagnosis-panel.has-market-position .market-position-title {
+        margin-bottom: 12px;
+        font-size: 15px;
+      }
+
+      .ai-diagnosis-panel.has-market-position .market-position-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .ai-diagnosis-panel.has-market-position .market-position-item {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        column-gap: 12px;
+        align-items: center;
+        padding: 10px 12px 9px;
+        border-color: #d7e1ec;
+        background: #f9fbfd;
+      }
+
+      .ai-diagnosis-panel.has-market-position .market-position-label {
+        grid-column: 1;
+        grid-row: 1;
+        font-size: 12px;
+      }
+
+      .ai-diagnosis-panel.has-market-position .market-position-value {
+        grid-column: 2;
+        grid-row: 1;
+        margin: 0;
+        font-size: 22px;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .ai-diagnosis-panel.has-market-position .market-position-track {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        margin-top: 8px;
+      }
+
+      .ai-diagnosis-panel.has-market-position .market-position-item--ratio {
+        grid-template-rows: auto auto auto;
+      }
+
+      .ai-diagnosis-panel.has-market-position .market-position-item--ratio .market-position-value {
+        grid-row: 1 / span 2;
+      }
+
+      .ai-diagnosis-panel.has-market-position .market-position-price-compare {
+        grid-column: 1;
+        grid-row: 2;
+        margin-top: 3px;
+        font-size: 10px;
+      }
+
+      .ai-diagnosis-panel.has-market-position .market-position-item--ratio .market-position-track {
+        grid-row: 3;
+      }
+    }
+
     .detail-hero {
       display: grid;
       grid-template-columns: 264px minmax(0, 1fr);
@@ -3455,6 +3565,8 @@
         return;
       }
 
+      const marketPositionHtml = renderMarketPosition(sleeve, allSleeves);
+      root.classList.toggle("has-market-position", Boolean(marketPositionHtml));
       root.innerHTML = `
         <div class="ai-diagnosis-head">
           <span class="ai-diagnosis-kicker">AI相場診断</span>
@@ -3465,7 +3577,7 @@
         <div class="ai-diagnosis-factors" aria-label="評価ポイント">
           ${diagnosis.factors.map((factor) => `<span class="ai-diagnosis-factor">${escapeHtml(factor)}</span>`).join("")}
         </div>
-        ${renderMarketPosition(sleeve, allSleeves)}
+        ${marketPositionHtml}
       `;
       root.hidden = false;
     }
