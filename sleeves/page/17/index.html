@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="./assets/site.css?v=20260907a" />
   <style>
     body { background: #f7f9fd; color: #0f172a; }
-    .index-wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 48px; }
+    .index-wrap { width: 100%; min-width: 0; margin: 0; padding: 0 0 48px; }
     .breadcrumb { margin-bottom: 16px; }
     .index-hero { display: grid; gap: 8px; margin-bottom: 22px; }
     .index-hero h1 { margin: 0; font-size: clamp(28px, 4vw, 44px); letter-spacing: 0; }
@@ -40,7 +40,7 @@
     @media (max-width: 560px) { .sleeve-index-list { grid-template-columns: 1fr; } .sleeve-index-item a { grid-template-columns: 70px minmax(0, 1fr); } }
   </style>
 </head>
-<body class="page-market-list" data-hide-global-header="1">
+<body data-hide-global-header="1">
   <div id="site-header"></div>
   <div class="dashboard-shell">
     <aside class="dashboard-sidebar" aria-label="&#12469;&#12452;&#12489;&#12496;&#12540;">
