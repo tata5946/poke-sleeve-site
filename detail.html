@@ -3563,15 +3563,8 @@
       }
 
       root.innerHTML = `
-        <div class="ai-diagnosis-head">
-          <span class="ai-diagnosis-kicker">AI相場診断</span>
-          <span class="ai-diagnosis-grade ai-diagnosis-grade--${escapeHtml(diagnosis.tone)}">${escapeHtml(diagnosis.label)}</span>
-        </div>
         <h3 class="ai-diagnosis-title">AI相場診断：${escapeHtml(diagnosis.label)}</h3>
         <p class="ai-diagnosis-reason">理由：${escapeHtml(diagnosis.reason)}</p>
-        <div class="ai-diagnosis-factors" aria-label="評価ポイント">
-          ${diagnosis.factors.map((factor) => `<span class="ai-diagnosis-factor">${escapeHtml(factor)}</span>`).join("")}
-        </div>
       `;
       root.hidden = false;
     }
