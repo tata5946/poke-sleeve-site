@@ -151,6 +151,158 @@
       line-height: 1.2;
     }
 
+    .market-position {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #d7e1f0;
+    }
+
+    .market-position-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0 0 9px;
+      color: #172033;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.3;
+    }
+
+    .market-position-help {
+      display: inline-grid;
+      width: 16px;
+      height: 16px;
+      margin-left: auto;
+      place-items: center;
+      border: 1px solid #7eb6ed;
+      border-radius: 50%;
+      color: #2585d8;
+      font-size: 10px;
+      font-weight: 900;
+      cursor: help;
+    }
+
+    .market-position-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .market-position-item {
+      min-width: 0;
+      padding: 9px 10px 8px;
+      border: 1px solid #dbe4ee;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .market-position-label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+      color: #344054;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+
+    .market-position-value {
+      margin-top: 5px;
+      color: #f0174f;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.05;
+    }
+
+    .market-position-value small {
+      color: #667085;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .market-position-item--year .market-position-value {
+      color: #119b94;
+    }
+
+    .market-position-item--ratio .market-position-value {
+      color: #f0174f;
+    }
+
+    .market-position-price-compare {
+      display: block;
+      margin-top: 4px;
+      color: #667085;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .market-position-price-compare strong {
+      color: #f0174f;
+      font-weight: 900;
+    }
+
+    .market-position-track {
+      height: 5px;
+      margin-top: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #dce3ea;
+    }
+
+    .market-position-fill {
+      display: block;
+      width: var(--market-position-progress, 0%);
+      height: 100%;
+      border-radius: inherit;
+      background: #278fe4;
+    }
+
+    .market-position-item--year .market-position-fill {
+      background: #18aaa3;
+    }
+
+    .market-position-item--ratio .market-position-fill {
+      background: #f0174f;
+    }
+
+    @media (max-width: 520px) {
+      .market-position {
+        width: min(100%, calc(100vw - 64px));
+        overflow: hidden;
+      }
+
+      .market-position-grid {
+        gap: 4px;
+      }
+
+      .market-position-item {
+        padding: 7px 5px 6px;
+      }
+
+      .market-position-label {
+        gap: 2px;
+        font-size: 9px;
+      }
+
+      .market-position-value {
+        font-size: 18px;
+      }
+
+      .market-position-value small,
+      .market-position-price-compare {
+        font-size: 8px;
+      }
+
+      .market-position-price-compare {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
     .detail-hero {
       display: grid;
       grid-template-columns: 264px minmax(0, 1fr);
@@ -3203,7 +3355,101 @@
       };
     }
 
-    function renderAiMarketDiagnosis(sleeve) {
+    function getSleeveLatestMarketPrice(sleeve) {
+      const rows = getMarketDiagnosisPriceRows(sleeve);
+      return rows.length ? Number(rows[rows.length - 1].avgPrice) : null;
+    }
+
+    function buildMarketPosition(sleeve, allSleeves) {
+      const latestPrice = getSleeveLatestMarketPrice(sleeve);
+      const sleeves = Array.isArray(allSleeves) ? allSleeves.filter(Boolean) : [];
+      if (!Number.isFinite(latestPrice) || latestPrice <= 0) return null;
+
+      const pricedSleeves = sleeves
+        .map((item) => ({ item, price: getSleeveLatestMarketPrice(item) }))
+        .filter((entry) => Number.isFinite(entry.price) && entry.price > 0);
+      const overallRank = pricedSleeves.length
+        ? 1 + pricedSleeves.filter((entry) => entry.price > latestPrice).length
+        : null;
+
+      const releaseYear = getSleeveReleaseYearNumber(sleeve);
+      const yearSleeves = Number.isFinite(releaseYear)
+        ? sleeves.filter((item) => getSleeveReleaseYearNumber(item) === releaseYear)
+        : [];
+      const yearPricedSleeves = pricedSleeves.filter((entry) => getSleeveReleaseYearNumber(entry.item) === releaseYear);
+      const yearRank = yearPricedSleeves.length
+        ? 1 + yearPricedSleeves.filter((entry) => entry.price > latestPrice).length
+        : null;
+
+      const firstPrice = getFirstPriceValue(sleeve);
+      const releasePriceRate = Number.isFinite(firstPrice) && firstPrice > 0
+        ? (latestPrice - firstPrice) / firstPrice
+        : null;
+
+      return {
+        latestPrice,
+        overallRank,
+        overallTotal: sleeves.length,
+        releaseYear,
+        yearRank,
+        yearTotal: yearSleeves.length,
+        firstPrice,
+        releasePriceRate
+      };
+    }
+
+    function getMarketRankProgress(rank, total) {
+      if (!Number.isFinite(rank) || !Number.isFinite(total) || total <= 0) return 0;
+      return Math.max(4, Math.min(100, ((total - rank + 1) / total) * 100));
+    }
+
+    function renderMarketPosition(sleeve, allSleeves) {
+      const position = buildMarketPosition(sleeve, allSleeves);
+      if (!position) return "";
+
+      const cards = [];
+      if (position.overallRank && position.overallTotal) {
+        cards.push(`
+          <div class="market-position-item">
+            <div class="market-position-label"><span aria-hidden="true">♛</span><span>総合ランキング</span></div>
+            <div class="market-position-value">${position.overallRank.toLocaleString("ja-JP")}<small> 位 / ${position.overallTotal.toLocaleString("ja-JP")}種類</small></div>
+            <div class="market-position-track" aria-hidden="true"><span class="market-position-fill" style="--market-position-progress:${getMarketRankProgress(position.overallRank, position.overallTotal).toFixed(1)}%"></span></div>
+          </div>
+        `);
+      }
+      if (position.yearRank && position.yearTotal && position.releaseYear) {
+        cards.push(`
+          <div class="market-position-item market-position-item--year">
+            <div class="market-position-label"><span aria-hidden="true">▣</span><span>${position.releaseYear}年発売内</span></div>
+            <div class="market-position-value">${position.yearRank.toLocaleString("ja-JP")}<small> 位 / ${position.yearTotal.toLocaleString("ja-JP")}種類</small></div>
+            <div class="market-position-track" aria-hidden="true"><span class="market-position-fill" style="--market-position-progress:${getMarketRankProgress(position.yearRank, position.yearTotal).toFixed(1)}%"></span></div>
+          </div>
+        `);
+      }
+      if (Number.isFinite(position.releasePriceRate)) {
+        const percent = Math.round(position.releasePriceRate * 100);
+        const sign = percent > 0 ? "+" : "";
+        const progress = Math.max(4, Math.min(100, Math.abs(percent)));
+        cards.push(`
+          <div class="market-position-item market-position-item--ratio">
+            <div class="market-position-label"><span aria-hidden="true">◆</span><span>発売価格との比較</span></div>
+            <span class="market-position-price-compare">${formatDiagnosisYen(position.firstPrice)} → <strong>${formatDiagnosisYen(position.latestPrice)}</strong></span>
+            <div class="market-position-value">${sign}${percent.toLocaleString("ja-JP")}%</div>
+            <div class="market-position-track" aria-hidden="true"><span class="market-position-fill" style="--market-position-progress:${progress.toFixed(1)}%"></span></div>
+          </div>
+        `);
+      }
+      if (!cards.length) return "";
+
+      return `
+        <section class="market-position" aria-labelledby="marketPositionTitle">
+          <h4 class="market-position-title" id="marketPositionTitle"><span aria-hidden="true">♜</span>市場内ポジション<span class="market-position-help" title="最新の取引相場を基準に、価格が高い順で順位を算出しています。">?</span></h4>
+          <div class="market-position-grid">${cards.join("")}</div>
+        </section>
+      `;
+    }
+
+    function renderAiMarketDiagnosis(sleeve, allSleeves = []) {
       const root = document.getElementById("aiMarketDiagnosis");
       if (!root) return;
 
@@ -3224,6 +3470,7 @@
         <div class="ai-diagnosis-factors" aria-label="評価ポイント">
           ${diagnosis.factors.map((factor) => `<span class="ai-diagnosis-factor">${escapeHtml(factor)}</span>`).join("")}
         </div>
+        ${renderMarketPosition(sleeve, allSleeves)}
       `;
       root.hidden = false;
     }
@@ -5482,6 +5729,7 @@
             renderSleevePage(nextSleeve, allSleeves);
             return;
           }
+          renderAiMarketDiagnosis(sleeve, allSleeves);
           renderRelatedSleeves(sleeve, allSleeves);
         }).catch(() => { });
       };
@@ -5573,7 +5821,7 @@
       document.getElementById("badges").innerHTML = buildHeaderBadges(s);
       renderDetailInfo(s);
       renderDetailTags(s);
-      renderAiMarketDiagnosis(s);
+      renderAiMarketDiagnosis(s, relatedSleeves);
       const mercariLink = document.getElementById("mercariLink");
       if (mercariLink) mercariLink.href = buildMercariSearchUrl(s.name);
       const yahooAuctionLink = document.getElementById("yahooAuctionLink");
