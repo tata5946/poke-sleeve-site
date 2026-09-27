@@ -2533,9 +2533,36 @@
           </div>
         </div>
 
-        <section class="panel ai-diagnosis-panel page-focus-panel" id="aiMarketDiagnosis" hidden></section>
+        <section class="panel ai-diagnosis-panel page-focus-panel" id="aiMarketDiagnosis">
+        <h3 class="ai-diagnosis-title">AI相場診断：相場どおり</h3>
+        <p class="ai-diagnosis-reason">理由：今回の目安は3,500円で、直近3か月の中央値3,750円より7%低い水準です。レンジは3,199円〜5,500円です。前回からは約36%下がっています。急がず、状態や送料込み価格を見て選ぶのがおすすめです。</p>
+      </section>
 
-        <section class="panel market-position-panel page-focus-panel" id="marketPositionPanel" hidden></section>
+        <section class="panel market-position-panel page-focus-panel" id="marketPositionPanel">
+        <section class="market-position" aria-labelledby="marketPositionTitle">
+          <h4 class="market-position-title" id="marketPositionTitle">このスリーブの立ち位置</h4>
+          <div class="market-position-grid">
+          <div class="market-position-item">
+            <div class="market-position-label"><span>総合ランキング</span></div>
+            <div class="market-position-value">144<small> 位 / 849種類</small></div>
+            <div class="market-position-track" aria-hidden="true"><span class="market-position-fill" style="--market-position-progress:83.2%"></span></div>
+          </div>
+        
+          <div class="market-position-item market-position-item--year">
+            <div class="market-position-label"><span>2021年発売の中では</span></div>
+            <div class="market-position-value">5<small> 位 / 71種類</small></div>
+            <div class="market-position-track" aria-hidden="true"><span class="market-position-fill" style="--market-position-progress:94.4%"></span></div>
+          </div>
+        
+          <div class="market-position-item market-position-item--ratio">
+            <div class="market-position-label"><span>発売価格との比較</span></div>
+            <span class="market-position-price-compare">792円 → <strong>3,500円</strong></span>
+            <div class="market-position-value">+342%</div>
+            <div class="market-position-track" aria-hidden="true"><span class="market-position-fill" style="--market-position-progress:100.0%"></span></div>
+          </div>
+        </div>
+        </section>
+      </section>
 
         <div class="detail-price-grid">
           <section class="panel price-panel page-focus-panel" id="pricePanel">
@@ -2552,7 +2579,14 @@
               <div id="chartLegend" class="chart-legend" aria-label="凡例"></div>
               <div id="weeklyChart"></div>
               <div id="chartFootnotes" class="chart-footnotes"></div>
-              <div id="weeklyTable"></div>
+              <div id="weeklyTable">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>期間</th><th>種別</th><th>価格</th></tr></thead>
+            <tbody><tr><td>2026-08-10</td><td>週次</td><td>3,500円</td></tr><tr><td>2026-07-27</td><td>週次</td><td>5,500円</td></tr><tr><td>2026-06-29</td><td>週次</td><td>3,199円</td></tr><tr><td>2026-05-25</td><td>週次</td><td>3,999円</td></tr><tr><td>2026-05-04</td><td>週次</td><td>2,666円</td></tr><tr><td>2026-03-09</td><td>週次</td><td>3,980円</td></tr><tr><td>2026-01-12</td><td>週次</td><td>3,333円</td></tr></tbody>
+          </table>
+        </div>
+      </div>
             </div>
           </section>
         </div>
@@ -3459,23 +3493,44 @@
       return rows.length ? Number(rows[rows.length - 1].avgPrice) : null;
     }
 
+    const marketPositionIndexCache = new WeakMap();
+
+    function getMarketPositionIndex(allSleeves) {
+      const source = Array.isArray(allSleeves) ? allSleeves : [];
+      const cached = marketPositionIndexCache.get(source);
+      if (cached) return cached;
+
+      const sleeves = source.filter(Boolean);
+      const entries = sleeves.map((item) => ({
+        item,
+        price: getSleeveLatestMarketPrice(item),
+        releaseYear: getSleeveReleaseYearNumber(item)
+      }));
+      const index = {
+        sleeves,
+        entries,
+        pricedEntries: entries.filter((entry) => Number.isFinite(entry.price) && entry.price > 0)
+      };
+      marketPositionIndexCache.set(source, index);
+      return index;
+    }
+
     function buildMarketPosition(sleeve, allSleeves) {
       const latestPrice = getSleeveLatestMarketPrice(sleeve);
-      const sleeves = Array.isArray(allSleeves) ? allSleeves.filter(Boolean) : [];
+      const index = getMarketPositionIndex(allSleeves);
+      const sleeves = index.sleeves;
       if (!Number.isFinite(latestPrice) || latestPrice <= 0) return null;
 
-      const pricedSleeves = sleeves
-        .map((item) => ({ item, price: getSleeveLatestMarketPrice(item) }))
-        .filter((entry) => Number.isFinite(entry.price) && entry.price > 0);
+      const pricedSleeves = index.pricedEntries;
       const overallRank = pricedSleeves.length
         ? 1 + pricedSleeves.filter((entry) => entry.price > latestPrice).length
         : null;
 
       const releaseYear = getSleeveReleaseYearNumber(sleeve);
       const yearSleeves = Number.isFinite(releaseYear)
-        ? sleeves.filter((item) => getSleeveReleaseYearNumber(item) === releaseYear)
+        ? index.entries.filter((entry) => entry.releaseYear === releaseYear)
         : [];
-      const yearPricedSleeves = pricedSleeves.filter((entry) => getSleeveReleaseYearNumber(entry.item) === releaseYear);
+      const yearPricedSleeves = pricedSleeves.filter((entry) => entry.releaseYear === releaseYear);
       const yearRank = yearPricedSleeves.length
         ? 1 + yearPricedSleeves.filter((entry) => entry.price > latestPrice).length
         : null;
@@ -3551,6 +3606,10 @@
     function renderMarketPositionPanel(sleeve, allSleeves = []) {
       const root = document.getElementById("marketPositionPanel");
       if (!root) return;
+      if (!allSleeves.length && root.innerHTML.trim()) {
+        root.hidden = false;
+        return;
+      }
       const html = renderMarketPosition(sleeve, allSleeves);
       root.innerHTML = html;
       root.hidden = !html;

@@ -2533,9 +2533,29 @@
           </div>
         </div>
 
-        <section class="panel ai-diagnosis-panel page-focus-panel" id="aiMarketDiagnosis" hidden></section>
+        <section class="panel ai-diagnosis-panel page-focus-panel" id="aiMarketDiagnosis">
+        <h3 class="ai-diagnosis-title">AI相場診断：相場どおり</h3>
+        <p class="ai-diagnosis-reason">理由：最近の観測が少ないため、全期間の相場を参考にしています。今回の目安は1,888円で、全期間の中央値1,888円よりほぼ同じ水準です。同じ価格帯での観測が中心です。観測が少ないため、出品状態や送料込み価格もあわせて見てください。急がず、状態や送料込み価格を見て選ぶのがおすすめです。</p>
+      </section>
 
-        <section class="panel market-position-panel page-focus-panel" id="marketPositionPanel" hidden></section>
+        <section class="panel market-position-panel page-focus-panel" id="marketPositionPanel">
+        <section class="market-position" aria-labelledby="marketPositionTitle">
+          <h4 class="market-position-title" id="marketPositionTitle">このスリーブの立ち位置</h4>
+          <div class="market-position-grid">
+          <div class="market-position-item">
+            <div class="market-position-label"><span>総合ランキング</span></div>
+            <div class="market-position-value">305<small> 位 / 849種類</small></div>
+            <div class="market-position-track" aria-hidden="true"><span class="market-position-fill" style="--market-position-progress:64.2%"></span></div>
+          </div>
+        
+          <div class="market-position-item market-position-item--year">
+            <div class="market-position-label"><span>2017年発売の中では</span></div>
+            <div class="market-position-value">42<small> 位 / 58種類</small></div>
+            <div class="market-position-track" aria-hidden="true"><span class="market-position-fill" style="--market-position-progress:29.3%"></span></div>
+          </div>
+        </div>
+        </section>
+      </section>
 
         <div class="detail-price-grid">
           <section class="panel price-panel page-focus-panel" id="pricePanel">
@@ -2552,7 +2572,14 @@
               <div id="chartLegend" class="chart-legend" aria-label="凡例"></div>
               <div id="weeklyChart"></div>
               <div id="chartFootnotes" class="chart-footnotes"></div>
-              <div id="weeklyTable"></div>
+              <div id="weeklyTable">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>期間</th><th>種別</th><th>価格</th></tr></thead>
+            <tbody><tr><td>2026-04-13</td><td>週次</td><td>1,888円</td></tr></tbody>
+          </table>
+        </div>
+      </div>
             </div>
           </section>
         </div>
@@ -3459,23 +3486,44 @@
       return rows.length ? Number(rows[rows.length - 1].avgPrice) : null;
     }
 
+    const marketPositionIndexCache = new WeakMap();
+
+    function getMarketPositionIndex(allSleeves) {
+      const source = Array.isArray(allSleeves) ? allSleeves : [];
+      const cached = marketPositionIndexCache.get(source);
+      if (cached) return cached;
+
+      const sleeves = source.filter(Boolean);
+      const entries = sleeves.map((item) => ({
+        item,
+        price: getSleeveLatestMarketPrice(item),
+        releaseYear: getSleeveReleaseYearNumber(item)
+      }));
+      const index = {
+        sleeves,
+        entries,
+        pricedEntries: entries.filter((entry) => Number.isFinite(entry.price) && entry.price > 0)
+      };
+      marketPositionIndexCache.set(source, index);
+      return index;
+    }
+
     function buildMarketPosition(sleeve, allSleeves) {
       const latestPrice = getSleeveLatestMarketPrice(sleeve);
-      const sleeves = Array.isArray(allSleeves) ? allSleeves.filter(Boolean) : [];
+      const index = getMarketPositionIndex(allSleeves);
+      const sleeves = index.sleeves;
       if (!Number.isFinite(latestPrice) || latestPrice <= 0) return null;
 
-      const pricedSleeves = sleeves
-        .map((item) => ({ item, price: getSleeveLatestMarketPrice(item) }))
-        .filter((entry) => Number.isFinite(entry.price) && entry.price > 0);
+      const pricedSleeves = index.pricedEntries;
       const overallRank = pricedSleeves.length
         ? 1 + pricedSleeves.filter((entry) => entry.price > latestPrice).length
         : null;
 
       const releaseYear = getSleeveReleaseYearNumber(sleeve);
       const yearSleeves = Number.isFinite(releaseYear)
-        ? sleeves.filter((item) => getSleeveReleaseYearNumber(item) === releaseYear)
+        ? index.entries.filter((entry) => entry.releaseYear === releaseYear)
         : [];
-      const yearPricedSleeves = pricedSleeves.filter((entry) => getSleeveReleaseYearNumber(entry.item) === releaseYear);
+      const yearPricedSleeves = pricedSleeves.filter((entry) => entry.releaseYear === releaseYear);
       const yearRank = yearPricedSleeves.length
         ? 1 + yearPricedSleeves.filter((entry) => entry.price > latestPrice).length
         : null;
@@ -3551,6 +3599,10 @@
     function renderMarketPositionPanel(sleeve, allSleeves = []) {
       const root = document.getElementById("marketPositionPanel");
       if (!root) return;
+      if (!allSleeves.length && root.innerHTML.trim()) {
+        root.hidden = false;
+        return;
+      }
       const html = renderMarketPosition(sleeve, allSleeves);
       root.innerHTML = html;
       root.hidden = !html;

@@ -4,6 +4,7 @@
   [string]$OutputRoot = "sleeve",
   [string]$RakutenLinksPath = "data/rakuten-links.json",
   [string]$CategorySlugMapPath = "data/category-slugs.json",
+  [string]$StaticContentBuilderPath = "scripts/build-static-sleeve-content.js",
   [string[]]$Ids = @()
 )
 
@@ -271,9 +272,20 @@ function Get-StaticSleeveTags([object]$Sleeve) {
 
 Assert-Exists -Path $DataPath -Label "Data file"
 Assert-Exists -Path $TemplatePath -Label "Template"
+Assert-Exists -Path $StaticContentBuilderPath -Label "Static content builder"
 
 $data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $template = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
+$staticContentPath = Join-Path $OutputRoot ".static-sleeve-content.json"
+if (-not (Test-Path -LiteralPath $OutputRoot)) {
+  New-Item -ItemType Directory -Path $OutputRoot | Out-Null
+}
+& node $StaticContentBuilderPath --data $DataPath --template $TemplatePath --output $staticContentPath
+if ($LASTEXITCODE -ne 0) {
+  throw "Static sleeve content generation failed with exit code $LASTEXITCODE"
+}
+$staticContentById = Get-Content -LiteralPath $staticContentPath -Raw -Encoding UTF8 | ConvertFrom-Json
+Remove-Item -LiteralPath $staticContentPath -Force
 $script:categorySlugData = if (Test-Path -LiteralPath $CategorySlugMapPath) { Get-Content -LiteralPath $CategorySlugMapPath -Raw -Encoding UTF8 | ConvertFrom-Json } else { $null }
 $rakutenLinksByRouteId = @{}
 if (Test-Path -LiteralPath $RakutenLinksPath) {
@@ -368,6 +380,28 @@ foreach ($sleeve in @($data.sleeves)) {
   $content = $content.Replace('<div id="detailInfo" class="detail-info-card" hidden></div>', (Get-StaticSleeveInfo $sleeve))
   $content = $content.Replace('<div id="detailTags" class="detail-tag-list" hidden></div>', (Get-StaticSleeveTags $sleeve))
   $content = $content.Replace('<div id="latestWeekly" class="value">-</div>', '<div id="latestWeekly" class="value">' + (ConvertTo-HtmlText $latestPriceText) + '</div>')
+  $staticContentProperty = $staticContentById.PSObject.Properties[$id]
+  if ($staticContentProperty) {
+    $staticContent = $staticContentProperty.Value
+    $diagnosisHtml = [string]$staticContent.diagnosisHtml
+    $positionHtml = [string]$staticContent.marketPositionHtml
+    $historyHtml = [string]$staticContent.priceHistoryHtml
+    if (-not [string]::IsNullOrWhiteSpace($diagnosisHtml)) {
+      $content = $content.Replace(
+        '<section class="panel ai-diagnosis-panel page-focus-panel" id="aiMarketDiagnosis" hidden></section>',
+        '<section class="panel ai-diagnosis-panel page-focus-panel" id="aiMarketDiagnosis">' + $diagnosisHtml + '</section>'
+      )
+    }
+    if (-not [string]::IsNullOrWhiteSpace($positionHtml)) {
+      $content = $content.Replace(
+        '<section class="panel market-position-panel page-focus-panel" id="marketPositionPanel" hidden></section>',
+        '<section class="panel market-position-panel page-focus-panel" id="marketPositionPanel">' + $positionHtml + '</section>'
+      )
+    }
+    if (-not [string]::IsNullOrWhiteSpace($historyHtml)) {
+      $content = $content.Replace('<div id="weeklyTable"></div>', '<div id="weeklyTable">' + $historyHtml + '</div>')
+    }
+  }
   if ($rakutenLinksByRouteId.ContainsKey($routeId)) {
     $rakutenHref = ConvertTo-HtmlText $rakutenLinksByRouteId[$routeId]
     $content = [regex]::Replace(

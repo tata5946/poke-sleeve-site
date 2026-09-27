@@ -3454,23 +3454,44 @@
       return rows.length ? Number(rows[rows.length - 1].avgPrice) : null;
     }
 
+    const marketPositionIndexCache = new WeakMap();
+
+    function getMarketPositionIndex(allSleeves) {
+      const source = Array.isArray(allSleeves) ? allSleeves : [];
+      const cached = marketPositionIndexCache.get(source);
+      if (cached) return cached;
+
+      const sleeves = source.filter(Boolean);
+      const entries = sleeves.map((item) => ({
+        item,
+        price: getSleeveLatestMarketPrice(item),
+        releaseYear: getSleeveReleaseYearNumber(item)
+      }));
+      const index = {
+        sleeves,
+        entries,
+        pricedEntries: entries.filter((entry) => Number.isFinite(entry.price) && entry.price > 0)
+      };
+      marketPositionIndexCache.set(source, index);
+      return index;
+    }
+
     function buildMarketPosition(sleeve, allSleeves) {
       const latestPrice = getSleeveLatestMarketPrice(sleeve);
-      const sleeves = Array.isArray(allSleeves) ? allSleeves.filter(Boolean) : [];
+      const index = getMarketPositionIndex(allSleeves);
+      const sleeves = index.sleeves;
       if (!Number.isFinite(latestPrice) || latestPrice <= 0) return null;
 
-      const pricedSleeves = sleeves
-        .map((item) => ({ item, price: getSleeveLatestMarketPrice(item) }))
-        .filter((entry) => Number.isFinite(entry.price) && entry.price > 0);
+      const pricedSleeves = index.pricedEntries;
       const overallRank = pricedSleeves.length
         ? 1 + pricedSleeves.filter((entry) => entry.price > latestPrice).length
         : null;
 
       const releaseYear = getSleeveReleaseYearNumber(sleeve);
       const yearSleeves = Number.isFinite(releaseYear)
-        ? sleeves.filter((item) => getSleeveReleaseYearNumber(item) === releaseYear)
+        ? index.entries.filter((entry) => entry.releaseYear === releaseYear)
         : [];
-      const yearPricedSleeves = pricedSleeves.filter((entry) => getSleeveReleaseYearNumber(entry.item) === releaseYear);
+      const yearPricedSleeves = pricedSleeves.filter((entry) => entry.releaseYear === releaseYear);
       const yearRank = yearPricedSleeves.length
         ? 1 + yearPricedSleeves.filter((entry) => entry.price > latestPrice).length
         : null;
@@ -3546,6 +3567,10 @@
     function renderMarketPositionPanel(sleeve, allSleeves = []) {
       const root = document.getElementById("marketPositionPanel");
       if (!root) return;
+      if (!allSleeves.length && root.innerHTML.trim()) {
+        root.hidden = false;
+        return;
+      }
       const html = renderMarketPosition(sleeve, allSleeves);
       root.innerHTML = html;
       root.hidden = !html;
