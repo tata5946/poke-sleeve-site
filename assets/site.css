@@ -10226,6 +10226,29 @@ html:root body.ranking-shared-layout .ranking-shared-heading + .ranking-filter-c
     }
 }
 
+/* Keep ranking product images fully visible inside the fixed podium frame. */
+html:root body.ranking-redesign-page .podium-media {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+html:root body.ranking-redesign-page .podium-media img,
+html:root body.ranking-redesign-page .podium-card--rank1 .podium-media img,
+html:root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podium-media img {
+    position: absolute !important;
+    inset: 10px !important;
+    display: block !important;
+    width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    padding: 0 !important;
+    object-fit: contain !important;
+    object-position: center !important;
+}
+
 /* Keep public-page numerals consistent after page-specific styles. */
 html:root body:not(.home-page) :is(
     [class$="-price"],
