@@ -142,7 +142,7 @@ if (Test-Path -LiteralPath $ArticlesPath) {
       if ($slug -and $status -ne "draft" -and -not $linkUrl) {
         $lastmod = Get-IsoDateText $article.updatedAt
         if (-not $lastmod) { $lastmod = Get-IsoDateText $article.publishedAt }
-        Add-Url $urls ($origin + "/article.html?id=" + [System.Uri]::EscapeDataString($slug)) $existingLastmods $lastmod
+        Add-Url $urls ($origin + "/articles/" + [System.Uri]::EscapeDataString($slug) + "/") $existingLastmods $lastmod
       }
     }
   } catch {}

@@ -122,6 +122,8 @@ function Get-SleeveSeoTitle([object]$Sleeve) {
   if ([string]::IsNullOrWhiteSpace($name)) {
     return "ポケモンカード スリーブ｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ"
   }
+  $qualifier = [string]$script:SleeveSeoQualifierById[[string]$Sleeve.id]
+  if ($qualifier) { $name = "${name}（${qualifier}）" }
   return "${name}｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ"
 }
 
@@ -136,6 +138,8 @@ function Get-SleeveDescriptionSubject([object]$Sleeve) {
   if ([string]::IsNullOrWhiteSpace($name)) {
     return "ポケモンカードのスリーブ・デッキシールド"
   }
+  $qualifier = [string]$script:SleeveSeoQualifierById[[string]$Sleeve.id]
+  if ($qualifier) { $name = "${name}（${qualifier}）" }
   if (Test-SleeveNameHasDeckShield $name) {
     return "ポケモンカード公式「${name}」"
   }
@@ -260,6 +264,25 @@ Assert-Exists -Path $TemplatePath -Label "Template"
 Assert-Exists -Path $StaticContentBuilderPath -Label "Static content builder"
 
 $data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$script:SleeveSeoQualifierById = @{}
+foreach ($group in @($data.sleeves | Where-Object { ([string]$_.name).Trim() } | Group-Object { ([string]$_.name).Trim() } | Where-Object Count -gt 1)) {
+  $used = @{}
+  foreach ($item in @($group.Group | Sort-Object id)) {
+    $year = ([string]$item.releaseYear).Trim()
+    $series = ([string]$item.series).Trim()
+    $date = ([string]$item.releaseDate).Trim()
+    $parts = @()
+    if ($year) { $parts += "${year}年発売" }
+    if ($series -and $series -ne '公式') { $parts += $series }
+    $qualifier = ($parts -join '・')
+    if (-not $qualifier -or $used.ContainsKey($qualifier)) {
+      if ($date) { $qualifier = "${date}発売" }
+    }
+    if (-not $qualifier -or $used.ContainsKey($qualifier)) { $qualifier = "商品ID $([string]$item.id)" }
+    $used[$qualifier] = $true
+    $script:SleeveSeoQualifierById[[string]$item.id] = $qualifier
+  }
+}
 $template = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
 $staticContentPath = Join-Path $OutputRoot ".static-sleeve-content.json"
 if (-not (Test-Path -LiteralPath $OutputRoot)) {

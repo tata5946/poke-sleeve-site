@@ -11,8 +11,10 @@ $categoryGenerator = Join-Path $PSScriptRoot "generate-category-pages.ps1"
 $linkIndexGenerator = Join-Path $PSScriptRoot "generate-sleeve-link-index.ps1"
 $rankingGenerator = Join-Path $PSScriptRoot "generate-ranking-static-content.ps1"
 $marketIndexGenerator = Join-Path $PSScriptRoot "generate-market-index-static-content.ps1"
+$articleGenerator = Join-Path $PSScriptRoot "generate-article-pages.ps1"
+$duplicateSeoUpdater = Join-Path $PSScriptRoot "update-duplicate-sleeve-seo.ps1"
 $sitemapGenerator = Join-Path $PSScriptRoot "generate-sitemap.ps1"
-foreach ($requiredGenerator in @($categoryGenerator, $generator, $linkIndexGenerator, $rankingGenerator, $marketIndexGenerator, $sitemapGenerator)) {
+foreach ($requiredGenerator in @($categoryGenerator, $generator, $duplicateSeoUpdater, $linkIndexGenerator, $rankingGenerator, $marketIndexGenerator, $articleGenerator, $sitemapGenerator)) {
   if (-not (Test-Path -LiteralPath $requiredGenerator)) {
     throw "Generator not found: $requiredGenerator"
   }
@@ -20,7 +22,9 @@ foreach ($requiredGenerator in @($categoryGenerator, $generator, $linkIndexGener
 
 & $categoryGenerator -DataPath $DataPath
 & $generator -DataPath $DataPath -TemplatePath $TemplatePath -OutputRoot $OutputRoot
+& $duplicateSeoUpdater -DataPath $DataPath -OutputRoot $OutputRoot
 & $linkIndexGenerator -DataPath $DataPath
 & $rankingGenerator -DataPath $DataPath
 & $marketIndexGenerator -DataPath $DataPath
+& $articleGenerator
 & $sitemapGenerator -DataPath $DataPath
