@@ -262,6 +262,7 @@ function ZukanCategoryPageHtml([object]$Entry, [string]$Slug, [string]$Template)
   $groupLabel = switch ($Entry.group) { 'pokemon' { 'ポケモン' } 'trainer' { 'トレーナー' } default { 'シリーズ' } }
   $label = [string]$Entry.label
   $count = @($Entry.items).Count
+  $robotsMeta = if ($count -eq 1) { '  <meta name="robots" content="noindex, follow" />' + "`r`n" } else { '' }
   $url = "$($SiteOrigin.TrimEnd('/'))/sleeves/$($Entry.group)/$Slug/"
   $heading = if ($label.EndsWith('デッキシールド')) { "${label}一覧" } else { "${label}のデッキシールド一覧" }
   $title = "${heading}｜歴代${count}種類・相場価格 | ポケスリ相場ナビ"
@@ -296,6 +297,9 @@ function ZukanCategoryPageHtml([object]$Entry, [string]$Slug, [string]$Template)
     '          </div>'
   $html = [regex]::Replace($html, $staticListPattern, { param($match) $staticList }, [System.Text.RegularExpressions.RegexOptions]::Singleline)
   $html = $html.Replace('<base href="../" />', '<base href="../../../" />')
+  $html = [regex]::Replace($html, '<meta name="robots" content="[^"]*"\s*/>\s*', '', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+  $html = $html.Replace('  <meta name="viewport" content="width=device-width, initial-scale=1" />' + "`r`n", '  <meta name="viewport" content="width=device-width, initial-scale=1" />' + "`r`n" + $robotsMeta)
+  $html = $html.Replace('  <meta name="viewport" content="width=device-width, initial-scale=1" />' + "`n", '  <meta name="viewport" content="width=device-width, initial-scale=1" />' + "`n" + $robotsMeta.Replace("`r`n", "`n"))
   $html = [regex]::Replace($html, '<title>.*?</title>', '<title>' + (Html $title) + '</title>', 1)
   $html = [regex]::Replace($html, '<meta name="description" content="[^"]*"\s*/>', '<meta name="description" content="' + (Html $description) + '" />', 1)
   $html = [regex]::Replace($html, '<meta property="og:title" content="[^"]*"\s*/>', '<meta property="og:title" content="' + (Html $title) + '" />', 1)

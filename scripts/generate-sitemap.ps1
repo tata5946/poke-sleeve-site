@@ -160,6 +160,7 @@ foreach ($id in $sleeveIds) {
 if (Test-Path -LiteralPath $CategoryManifestPath) {
   $categoryPages = Get-Content -LiteralPath $CategoryManifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
   foreach ($category in $categoryPages) {
+    if ([int]$category.count -lt 2) { continue }
     $path = ([string]$category.path).Trim()
     if (-not $path) { continue }
     $relativePath = ($path -replace '^/sleeves/', '').TrimEnd('/')
