@@ -1673,7 +1673,28 @@
             <div class="zukan-results-meta"><strong id="resultCountBadge">集計中</strong><span id="resultRangeText"> 件表示</span></div>
           </div>
           <noscript><div class="zukan-noscript"><p>掲載中のデッキシールド一覧</p><ul><li><a href="/sleeve/4521329362304/">バウッツェル</a></li></ul></div></noscript>
-          <div id="list" class="zukan-grid"></div>
+          <div id="list" class="zukan-grid">
+            <!-- STATIC_ZUKAN_CARDS_START -->
+            <div class="zukan-card-shell" data-static-zukan-card data-sleeve-id="362304">
+              <a class="zukan-card" href="/sleeve/4521329362304/" data-sleeve-link="1" aria-label="バウッツェル&#12398;&#35443;&#32048;&#12434;&#35211;&#12427;">
+                <div class="zukan-card-media"><img src="https://drive.google.com/thumbnail?id=1HRPTwXyKksyfCJQ2HW9yGysy-mJZ-BHi&amp;sz=w1200" alt="バウッツェル" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';" /></div>
+                <div class="zukan-card-body">
+                  <h2 class="zukan-card-title">バウッツェル</h2>
+                  <div class="zukan-card-meta zukan-card-meta--release"><span class="zukan-card-spec">2024&#24180;&#30330;&#22770;</span></div>
+                  <div class="zukan-card-price-wrap zukan-price-panel">
+                    <div class="zukan-price-copy">
+                      <p class="zukan-card-price-label">&#29694;&#22312;&#30456;&#22580;</p>
+                      <p class="zukan-card-price">1,333&#20870;</p>
+                      <div class="zukan-card-badges"><span class="zukan-badge zukan-badge--delta up">+134&#20870;</span></div>
+                    </div>
+                  </div>
+                  <span class="zukan-card-cta">&#35443;&#32048;&#12434;&#35211;&#12427; &rarr;</span>
+                </div>
+              </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="362304" data-sleeve-name="バウッツェル" data-sleeve-image="https://drive.google.com/thumbnail?id=1HRPTwXyKksyfCJQ2HW9yGysy-mJZ-BHi&amp;sz=w1200" data-sleeve-release-date="2024-07-19" aria-label="バウッツェル&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
+            </div>
+            <!-- STATIC_ZUKAN_CARDS_END -->
+          </div>
           <nav id="zukanPagination" class="zukan-pagination" aria-label="図鑑ページ送り" hidden>
             <button id="zukanPrevPage" class="zukan-page-button" type="button">前へ</button>
             <div id="zukanPageNumbers" class="zukan-page-numbers" aria-label="ページ番号"></div>
@@ -2055,6 +2076,7 @@
         });
         if (pagination) pagination.hidden = true;
         if (activeSummary) activeSummary.innerHTML = "";
+        if (list.querySelector("[data-static-zukan-card]")) return;
         list.innerHTML = Array.from({ length: 12 }, () => `
           <div class="zukan-card is-skeleton">
             <div class="zukan-card-media skeleton-shimmer"></div>

@@ -1673,7 +1673,46 @@
             <div class="zukan-results-meta"><strong id="resultCountBadge">集計中</strong><span id="resultRangeText"> 件表示</span></div>
           </div>
           <noscript><div class="zukan-noscript"><p>掲載中のデッキシールド一覧</p><ul><li><a href="/sleeve/4521329289908/">キョダイマックスオーロンゲ</a></li><li><a href="/sleeve/4521329431147/">マリィ＆オーロンゲ</a></li></ul></div></noscript>
-          <div id="list" class="zukan-grid"></div>
+          <div id="list" class="zukan-grid">
+            <!-- STATIC_ZUKAN_CARDS_START -->
+            <div class="zukan-card-shell" data-static-zukan-card data-sleeve-id="431147">
+              <a class="zukan-card" href="/sleeve/4521329431147/" data-sleeve-link="1" aria-label="マリィ＆オーロンゲ&#12398;&#35443;&#32048;&#12434;&#35211;&#12427;">
+                <div class="zukan-card-media"><img src="https://drive.google.com/thumbnail?id=1bKufBv14rmkVfWuy2BaXv2gp6r2IKNtT&amp;sz=w1200" alt="マリィ＆オーロンゲ" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';" /></div>
+                <div class="zukan-card-body">
+                  <h2 class="zukan-card-title">マリィ＆オーロンゲ</h2>
+                  <div class="zukan-card-meta zukan-card-meta--release"><span class="zukan-card-spec">2025&#24180;&#30330;&#22770;</span></div>
+                  <div class="zukan-card-price-wrap zukan-price-panel">
+                    <div class="zukan-price-copy">
+                      <p class="zukan-card-price-label">&#29694;&#22312;&#30456;&#22580;</p>
+                      <p class="zukan-card-price">2,334&#20870;</p>
+                      <div class="zukan-card-badges"><span class="zukan-badge zukan-badge--delta flat">&plusmn;0&#20870;</span></div>
+                    </div>
+                  </div>
+                  <span class="zukan-card-cta">&#35443;&#32048;&#12434;&#35211;&#12427; &rarr;</span>
+                </div>
+              </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="431147" data-sleeve-name="マリィ＆オーロンゲ" data-sleeve-image="https://drive.google.com/thumbnail?id=1bKufBv14rmkVfWuy2BaXv2gp6r2IKNtT&amp;sz=w1200" data-sleeve-release-date="2025-05-23" aria-label="マリィ＆オーロンゲ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
+            </div>
+            <div class="zukan-card-shell" data-static-zukan-card data-sleeve-id="289908">
+              <a class="zukan-card" href="/sleeve/4521329289908/" data-sleeve-link="1" aria-label="キョダイマックスオーロンゲ&#12398;&#35443;&#32048;&#12434;&#35211;&#12427;">
+                <div class="zukan-card-media"><img src="https://drive.google.com/thumbnail?id=1HTB_xkIHYj69BF5qtrJsoPbgl37wM3oN&amp;sz=w1200" alt="キョダイマックスオーロンゲ" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';" /></div>
+                <div class="zukan-card-body">
+                  <h2 class="zukan-card-title">キョダイマックスオーロンゲ</h2>
+                  <div class="zukan-card-meta zukan-card-meta--release"><span class="zukan-card-spec">2020&#24180;&#30330;&#22770;</span></div>
+                  <div class="zukan-card-price-wrap zukan-price-panel">
+                    <div class="zukan-price-copy">
+                      <p class="zukan-card-price-label">&#29694;&#22312;&#30456;&#22580;</p>
+                      <p class="zukan-card-price">800&#20870;</p>
+                      <div class="zukan-card-badges"><span class="zukan-badge zukan-badge--delta flat">&plusmn;0&#20870;</span></div>
+                    </div>
+                  </div>
+                  <span class="zukan-card-cta">&#35443;&#32048;&#12434;&#35211;&#12427; &rarr;</span>
+                </div>
+              </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="289908" data-sleeve-name="キョダイマックスオーロンゲ" data-sleeve-image="https://drive.google.com/thumbnail?id=1HTB_xkIHYj69BF5qtrJsoPbgl37wM3oN&amp;sz=w1200" data-sleeve-release-date="2020-03-27" aria-label="キョダイマックスオーロンゲ&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
+            </div>
+            <!-- STATIC_ZUKAN_CARDS_END -->
+          </div>
           <nav id="zukanPagination" class="zukan-pagination" aria-label="図鑑ページ送り" hidden>
             <button id="zukanPrevPage" class="zukan-page-button" type="button">前へ</button>
             <div id="zukanPageNumbers" class="zukan-page-numbers" aria-label="ページ番号"></div>
@@ -2055,6 +2094,7 @@
         });
         if (pagination) pagination.hidden = true;
         if (activeSummary) activeSummary.innerHTML = "";
+        if (list.querySelector("[data-static-zukan-card]")) return;
         list.innerHTML = Array.from({ length: 12 }, () => `
           <div class="zukan-card is-skeleton">
             <div class="zukan-card-media skeleton-shimmer"></div>

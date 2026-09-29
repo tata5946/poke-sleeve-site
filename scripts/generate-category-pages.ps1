@@ -32,6 +32,76 @@ function LatestPrice([object]$Sleeve) {
   }
   return $null
 }
+function IsoDate([object]$Value) {
+  $text = ([string]$Value).Trim()
+  if (-not $text) { return '' }
+  if ($text -match '^\d{4}-\d{2}-\d{2}$') { return $text }
+  if ($text -match '^\d{4}-\d{2}$') { return "$text-01" }
+  if ($text -match '^\d{4}$') { return "$text-01-01" }
+  try { return ([datetime]$text).ToString('yyyy-MM-dd') } catch { return '' }
+}
+function LatestWeeklyPair([object]$Sleeve) {
+  $rows = @($Sleeve.weeklyPrices) |
+    Where-Object { (IsoDate $_.week) -and $null -ne (NumberOrNull $_.price) -and (NumberOrNull $_.price) -gt 0 } |
+    Sort-Object { IsoDate $_.week }
+  if (-not $rows.Count) { return $null }
+  return [pscustomobject]@{ latest=$rows[-1]; previous=$(if ($rows.Count -gt 1) { $rows[-2] } else { $null }) }
+}
+function ZukanLatestPrice([object]$Sleeve) {
+  $pair = LatestWeeklyPair $Sleeve
+  if ($null -ne $pair) { return NumberOrNull $pair.latest.price }
+  $yearly = @($Sleeve.yearlyPrices) | Where-Object { $null -ne (NumberOrNull $_.price) -and (NumberOrNull $_.price) -gt 0 } | Sort-Object { [string]$_.year }
+  if ($yearly.Count) { return NumberOrNull $yearly[-1].price }
+  if ($Sleeve.pricesByYear) {
+    $rows = @($Sleeve.pricesByYear.PSObject.Properties) | Where-Object { $null -ne (NumberOrNull $_.Value) -and (NumberOrNull $_.Value) -gt 0 } | Sort-Object { [int]$_.Name }
+    if ($rows.Count) { return NumberOrNull $rows[-1].Value }
+  }
+  return $null
+}
+function ZukanDeltaHtml([object]$Sleeve) {
+  $pair = LatestWeeklyPair $Sleeve
+  if ($null -eq $pair -or $null -eq $pair.previous) { return '' }
+  $latest = NumberOrNull $pair.latest.price
+  $previous = NumberOrNull $pair.previous.price
+  if ($null -eq $latest -or $null -eq $previous) { return '' }
+  $diff = $latest - $previous
+  $className = if ($diff -gt 0) { 'up' } elseif ($diff -lt 0) { 'down' } else { 'flat' }
+  $sign = if ($diff -gt 0) { '+' } elseif ($diff -lt 0) { '-' } else { '&plusmn;' }
+  return '<span class="zukan-badge zukan-badge--delta ' + $className + '">' + $sign + ([math]::Abs($diff)).ToString('N0') + '&#20870;</span>'
+}
+function ZukanCardHtml([object]$Sleeve) {
+  $routeId = Html (RouteId $Sleeve.id)
+  $dataId = Html $Sleeve.id
+  $name = Html $Sleeve.name
+  $imageUrl = Html $Sleeve.imageUrl
+  $releaseDate = Html (IsoDate $Sleeve.releaseDate)
+  $releaseYear = Html $Sleeve.releaseYear
+  $latest = ZukanLatestPrice $Sleeve
+  $currentPrice = if ($null -eq $latest) { '-' } else { $latest.ToString('#,0.###', [System.Globalization.CultureInfo]::InvariantCulture) + '&#20870;' }
+  $deltaHtml = ZukanDeltaHtml $Sleeve
+  $imageHtml = if ($imageUrl) { '<img src="' + $imageUrl + '" alt="' + $name + '" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display=''none'';" />' } else { '' }
+  $releaseHtml = if ($releaseYear) { '<div class="zukan-card-meta zukan-card-meta--release"><span class="zukan-card-spec">' + $releaseYear + '&#24180;&#30330;&#22770;</span></div>' } else { '' }
+  return @"
+            <div class="zukan-card-shell" data-static-zukan-card data-sleeve-id="$dataId">
+              <a class="zukan-card" href="/sleeve/$routeId/" data-sleeve-link="1" aria-label="${name}&#12398;&#35443;&#32048;&#12434;&#35211;&#12427;">
+                <div class="zukan-card-media">$imageHtml</div>
+                <div class="zukan-card-body">
+                  <h2 class="zukan-card-title">$name</h2>
+                  $releaseHtml
+                  <div class="zukan-card-price-wrap zukan-price-panel">
+                    <div class="zukan-price-copy">
+                      <p class="zukan-card-price-label">&#29694;&#22312;&#30456;&#22580;</p>
+                      <p class="zukan-card-price">$currentPrice</p>
+                      <div class="zukan-card-badges">$deltaHtml</div>
+                    </div>
+                  </div>
+                  <span class="zukan-card-cta">&#35443;&#32048;&#12434;&#35211;&#12427; &rarr;</span>
+                </div>
+              </a>
+              <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="$dataId" data-sleeve-name="$name" data-sleeve-image="$imageUrl" data-sleeve-release-date="$releaseDate" aria-label="${name}&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
+            </div>
+"@
+}
 function Yen([object]$Value, [string]$Fallback = "未取得") {
   $number = NumberOrNull $Value
   if ($null -eq $number) { return $Fallback }
@@ -207,12 +277,24 @@ function ZukanCategoryPageHtml([object]$Entry, [string]$Slug, [string]$Template)
     $routeId = RouteId $sleeve.id
     [void]$staticLinks.Append('<li><a href="/sleeve/' + (Html $routeId) + '/">' + (Html $sleeve.name) + '</a></li>')
   }
+  $staticCards = New-Object System.Text.StringBuilder
+  $sortedItems = @($Entry.items | Sort-Object @{Expression={
+    $date = IsoDate $_.releaseDate
+    if (-not $date) { $date = IsoDate $_.releaseYear }
+    $date
+  };Descending=$true}, @{Expression={[string]$_.name};Ascending=$true})
+  foreach ($sleeve in @($sortedItems | Select-Object -First 50)) {
+    [void]$staticCards.AppendLine((ZukanCardHtml $sleeve).TrimEnd("`r", "`n"))
+  }
   $breadcrumbMarkup = '<nav class="breadcrumb" aria-label="パンくず"><a href="/">ホーム</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><a href="/sleeves/">デッキシールド図鑑</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><a href="/sleeves/' + $Entry.group + '/">' + (Html $groupLabel) + 'から探す</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><span class="breadcrumb-current" aria-current="page">' + (Html $label) + '</span></nav>'
   $html = $Template
   $staticListPattern = '<div id="list" class="zukan-grid">\s*<!-- STATIC_ZUKAN_CARDS_START -->.*?<!-- STATIC_ZUKAN_CARDS_END -->\s*</div>'
-  $html = [regex]::Replace($html, $staticListPattern, '<div id="list" class="zukan-grid"></div>', [System.Text.RegularExpressions.RegexOptions]::Singleline)
-  $html = $html.Replace('        if (list.querySelector("[data-static-zukan-card]")) return;' + "`r`n", '')
-  $html = $html.Replace('        if (list.querySelector("[data-static-zukan-card]")) return;' + "`n", '')
+  $staticList = '<div id="list" class="zukan-grid">' + "`r`n" +
+    '            <!-- STATIC_ZUKAN_CARDS_START -->' + "`r`n" +
+    $staticCards.ToString().TrimEnd("`r", "`n") + "`r`n" +
+    '            <!-- STATIC_ZUKAN_CARDS_END -->' + "`r`n" +
+    '          </div>'
+  $html = [regex]::Replace($html, $staticListPattern, { param($match) $staticList }, [System.Text.RegularExpressions.RegexOptions]::Singleline)
   $html = $html.Replace('<base href="../" />', '<base href="../../../" />')
   $html = [regex]::Replace($html, '<title>.*?</title>', '<title>' + (Html $title) + '</title>', 1)
   $html = [regex]::Replace($html, '<meta name="description" content="[^"]*"\s*/>', '<meta name="description" content="' + (Html $description) + '" />', 1)
