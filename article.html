@@ -95,8 +95,14 @@
       margin: 0 auto;
       padding: clamp(22px, 4vw, 38px);
       color: #243044;
+      font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
       font-size: 16px;
       line-height: 2;
+    }
+
+    .article-detail h1,
+    .article-body :is(h1, h2, h3, h4, h5, h6, p, li, blockquote, strong, b, em, i, u, s, span, a) {
+      font-family: inherit !important;
     }
 
     .article-body h2,
