@@ -698,10 +698,46 @@ function buildSleeveRouteId(id) {
   return sleeveId;
 }
 
-function buildSleeveDetailHref(id) {
+function buildSleeveDetailPath(id) {
   const routeId = buildSleeveRouteId(id);
-  if (!routeId) return buildSiteHref("sleeves/");
-  return buildSiteHref(`sleeve/${encodeURIComponent(routeId)}/`);
+  if (!routeId) return "./sleeves/";
+  return `./sleeve/${encodeURIComponent(routeId)}/`;
+}
+
+function buildSleeveDetailHref(id) {
+  return buildSiteHref(buildSleeveDetailPath(id));
+}
+
+function buildMercariSearchUrl(name) {
+  const baseName = String(name || "").trim();
+  const keyword = baseName ? `${baseName} デッキシールド` : "";
+  if (!keyword) return "https://jp.mercari.com/search";
+  return `https://jp.mercari.com/search?afid=0848495959&keyword=${encodeURIComponent(keyword)}`;
+}
+
+function buildSurugayaAffiliateUrl(name) {
+  const baseName = String(name || "").trim();
+  const surugayaUrl = baseName
+    ? `https://www.suruga-ya.jp/search?search_word=${encodeURIComponent(`${baseName} デッキシールド`)}`
+    : "https://www.suruga-ya.jp/search";
+  return `https://affiliate.suruga-ya.jp/modules/af/af_jump.php?user_id=5394&goods_url=${encodeURIComponent(surugayaUrl)}`;
+}
+
+function isSafeRakutenAffiliateUrl(url) {
+  try {
+    const parsed = new URL(String(url || ""));
+    return parsed.protocol === "https:" && parsed.hostname === "hb.afl.rakuten.co.jp";
+  } catch (_) {
+    return false;
+  }
+}
+
+function getRakutenAffiliateUrl(sleeve, cache) {
+  const routeId = buildSleeveRouteId(sleeve?.id);
+  if (!routeId || !cache?.items) return "";
+  const entry = cache.items[routeId];
+  const affiliateUrl = String(entry?.status === "accepted" ? entry.affiliateUrl || "" : "").trim();
+  return isSafeRakutenAffiliateUrl(affiliateUrl) ? affiliateUrl : "";
 }
 
 function normalizeMyCollectionSleeveId(id) {
@@ -2708,7 +2744,13 @@ window.common = {
   fetchJsonWithTimeout,
   loadData,
   buildSiteHref,
+  buildSleeveRouteId,
+  buildSleeveDetailPath,
   buildSleeveDetailHref,
+  buildMercariSearchUrl,
+  buildSurugayaAffiliateUrl,
+  isSafeRakutenAffiliateUrl,
+  getRakutenAffiliateUrl,
   normalizeMyCollectionSleeveId,
   normalizeMyCollectionPurchaseWeek,
   normalizeMyCollectionPurchaseDate,

@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
   <meta name="robots" content="noindex,nofollow,noarchive" />
   <title>記事エディタ | ポケスリ相場ナビ</title>
-  <link rel="stylesheet" href="./assets/site.css?v=20260924p" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260929c" />
   <style>
     :root {
       --admin-bg:
@@ -1043,7 +1043,14 @@
             <option value="'Hiragino Mincho ProN', 'Yu Mincho', serif">明朝</option>
             <option value="Inter, sans-serif">Inter</option>
           </select>
+          <select id="fontSizeSelect" class="tool-select" aria-label="文字サイズ">
+            <option value="">文字サイズ</option>
+            <option value="3">標準</option>
+            <option value="5">大</option>
+            <option value="6">特大</option>
+          </select>
           <input id="colorInput" class="tool-color" type="color" value="#243044" aria-label="文字色" />
+          <button id="clearFormatBtn" class="tool-btn" type="button">書式クリア</button>
           <button id="linkBtn" class="tool-btn" type="button">リンク</button>
           <button id="imageBtn" class="tool-btn" type="button">画像</button>
           <button id="quoteBtn" class="tool-btn" type="button">引用</button>
@@ -1060,13 +1067,16 @@
     </section>
   </main>
 
-  <script src="./assets/common.js?v=20260924e"></script>
+  <script src="./assets/common.js?v=20260929a"></script>
   <script>
     const ARTICLE_LOCAL_KEY = "pokeSleeve:articles:local:v1";
     let currentId = "";
     let sleeveData = [];
     let selectedSleeve = null;
     let articleStoreCache = [];
+    let rakutenLinkCache = { items: {} };
+    let savedEditorRange = null;
+    let editorIsComposing = false;
 
     const qs = (id) => document.getElementById(id);
 
@@ -1106,7 +1116,7 @@
       const template = document.createElement("template");
       template.innerHTML = String(html || "");
       const allowedTags = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "S", "DEL", "H2", "H3", "UL", "OL", "LI", "A", "IMG", "BLOCKQUOTE", "HR", "PRE", "CODE", "SPAN", "DIV", "SECTION", "FIGURE", "FIGCAPTION", "FONT", "TABLE", "THEAD", "TBODY", "TR", "TH", "TD", "CAPTION", "SVG", "G", "PATH", "POLYLINE", "LINE", "CIRCLE", "RECT", "TEXT"]);
-      const allowedAttrs = new Set(["href", "src", "alt", "title", "style", "target", "rel", "face", "color", "size", "class", "id", "scope", "colspan", "rowspan", "data-sleeve-id", "viewBox", "viewbox", "xmlns", "role", "aria-hidden", "aria-label", "d", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "stroke-dasharray", "points", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "width", "height", "opacity", "font-size", "font-weight", "text-anchor"]);
+      const allowedAttrs = new Set(["href", "src", "alt", "title", "style", "target", "rel", "face", "color", "size", "class", "id", "scope", "colspan", "rowspan", "data-sleeve-id", "contenteditable", "viewBox", "viewbox", "xmlns", "role", "aria-hidden", "aria-label", "d", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "stroke-dasharray", "points", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "width", "height", "opacity", "font-size", "font-weight", "text-anchor"]);
 
       const walk = (node) => {
         for (const child of Array.from(node.children)) {
@@ -1130,7 +1140,11 @@
             const href = child.getAttribute("href") || "";
             if (!/^(https?:|\.\/|\/|#)/i.test(href)) child.removeAttribute("href");
             child.setAttribute("target", "_blank");
-            child.setAttribute("rel", "noopener");
+            const relTokens = new Set((child.getAttribute("rel") || "")
+              .split(/\s+/)
+              .filter((token) => ["noopener", "noreferrer", "nofollow", "sponsored"].includes(token)));
+            relTokens.add("noopener");
+            child.setAttribute("rel", Array.from(relTokens).join(" "));
           }
           if (tagName === "IMG") {
             const src = child.getAttribute("src") || "";
@@ -1355,6 +1369,9 @@
     }
 
     function buildSleeveHref(sleeve) {
+      if (window.common && typeof window.common.buildSleeveDetailPath === "function") {
+        return window.common.buildSleeveDetailPath(sleeve?.id || "");
+      }
       if (window.common && typeof window.common.buildSleeveDetailHref === "function") {
         return window.common.buildSleeveDetailHref(sleeve?.id || "");
       }
@@ -1363,13 +1380,17 @@
       return routeId ? `./sleeve/${encodeURIComponent(routeId)}/` : "./sleeves/";
     }
 
-    function resolveSleeveFromInput() {
-      const raw = String(qs("sleeveInput")?.value || "").trim();
+    function resolveSleeveFromValue(value) {
+      const raw = String(value || "").trim();
       if (!raw) return null;
       return sleeveData.find((sleeve) => String(sleeve.id || "") === raw)
         || sleeveData.find((sleeve) => buildSleeveOptionLabel(sleeve) === raw)
         || sleeveData.find((sleeve) => String(sleeve.name || "").trim() === raw)
         || null;
+    }
+
+    function resolveSleeveFromInput() {
+      return resolveSleeveFromValue(qs("sleeveInput")?.value);
     }
 
     function updateSleevePreview(sleeve) {
@@ -1398,12 +1419,19 @@
 
     async function loadSleevesForTool() {
       try {
-        const data = window.common && typeof window.common.loadData === "function"
-          ? await window.common.loadData({ forceRefresh: false })
-          : await fetch("./data.json?v=20260831a", { cache: "reload" }).then((res) => res.json());
+        const [data, rakuten] = await Promise.all([
+          window.common && typeof window.common.loadData === "function"
+            ? window.common.loadData({ forceRefresh: false })
+            : fetch("./data.json?v=20260831a", { cache: "reload" }).then((res) => res.json()),
+          fetch("./data/rakuten-links.json?v=20260907a", { cache: "no-store" })
+            .then((res) => res.ok ? res.json() : { items: {} })
+            .catch(() => ({ items: {} }))
+        ]);
         sleeveData = Array.isArray(data?.sleeves) ? data.sleeves.filter((sleeve) => sleeve && sleeve.id && sleeve.name) : [];
+        rakutenLinkCache = rakuten && typeof rakuten === "object" ? rakuten : { items: {} };
       } catch (_) {
         sleeveData = [];
+        rakutenLinkCache = { items: {} };
       }
 
       const datalist = qs("sleeveOptions");
@@ -1650,6 +1678,48 @@
       `;
     }
 
+    function getSleevePurchaseLinks(sleeve) {
+      const name = String(sleeve?.name || "").trim();
+      if (!name) return [];
+      const common = window.common || {};
+      const rakutenUrl = typeof common.getRakutenAffiliateUrl === "function"
+        ? common.getRakutenAffiliateUrl(sleeve, rakutenLinkCache)
+        : "";
+      const mercariUrl = typeof common.buildMercariSearchUrl === "function"
+        ? common.buildMercariSearchUrl(name)
+        : "";
+      const surugayaUrl = typeof common.buildSurugayaAffiliateUrl === "function"
+        ? common.buildSurugayaAffiliateUrl(name)
+        : "";
+      return [
+        rakutenUrl ? { className: "rakuten", label: "楽天市場で見る", url: rakutenUrl, rel: "nofollow sponsored noopener" } : null,
+        mercariUrl ? { className: "mercari", label: "メルカリで探す", url: mercariUrl, rel: "noopener noreferrer nofollow" } : null,
+        surugayaUrl ? { className: "surugaya", label: "駿河屋で探す", url: surugayaUrl, rel: "noopener noreferrer nofollow" } : null
+      ].filter(Boolean);
+    }
+
+    function buildArticleSleeveCardHtml(sleeve) {
+      const stats = buildSleeveStats(sleeve);
+      const detailHref = buildSleeveHref(sleeve);
+      const purchaseLinks = getSleevePurchaseLinks(sleeve);
+      return `
+        <section class="article-sleeve-product-card" data-sleeve-id="${escapeHtml(sleeve.id || "")}" contenteditable="false">
+          <div class="article-sleeve-product-card__main">
+            <a class="article-sleeve-product-card__image-link" href="${escapeHtml(detailHref)}" target="_blank" rel="noopener" aria-label="${escapeHtml(sleeve.name || "スリーブ")}の詳細を見る">
+              ${sleeve.imageUrl ? `<img class="article-sleeve-product-card__image" src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name || "")}">` : `<span class="article-sleeve-product-card__image article-sleeve-product-card__image--empty">画像なし</span>`}
+            </a>
+            <div class="article-sleeve-product-card__body">
+              <h2 class="article-sleeve-product-card__title"><a href="${escapeHtml(detailHref)}" target="_blank" rel="noopener">${escapeHtml(sleeve.name || "名称未設定")}</a></h2>
+              <div class="article-sleeve-product-card__price"><span>現在相場</span><strong>${escapeHtml(formatPrice(stats.latest?.price))}</strong></div>
+              <a class="article-sleeve-product-card__detail" href="${escapeHtml(detailHref)}" target="_blank" rel="noopener">個別ページを見る</a>
+            </div>
+          </div>
+          ${purchaseLinks.length ? `<div class="article-sleeve-product-card__shops" aria-label="購入先リンク">${purchaseLinks.map((link) => `<a class="article-sleeve-shop-link article-sleeve-shop-link--${escapeHtml(link.className)}" href="${escapeHtml(link.url)}" target="_blank" rel="${escapeHtml(link.rel)}">${escapeHtml(link.label)}</a>`).join("")}</div>` : ""}
+        </section>
+        <p><br></p>
+      `;
+    }
+
     function buildSleeveImageHtml(sleeve) {
       if (!sleeve.imageUrl) {
         return `<p class="article-sleeve-embed__note">このスリーブには画像URLが登録されていません。</p>`;
@@ -1672,13 +1742,16 @@
 
     function insertHtmlAtCursor(html) {
       const editor = qs("editor");
-      editor.focus();
+      restoreEditorSelection();
+      editor.focus({ preventScroll: true });
+      restoreEditorSelection();
       const normalized = sanitizeHtml(html);
       if (document.queryCommandSupported && document.queryCommandSupported("insertHTML")) {
         document.execCommand("insertHTML", false, normalized);
       } else {
         editor.insertAdjacentHTML("beforeend", normalized);
       }
+      saveEditorSelection();
       ensureEditableImageCaptions(editor);
       updatePreview();
     }
@@ -1695,7 +1768,11 @@
 
     function ensureEditableImageCaptions(root = qs("editor")) {
       if (!root) return;
-      const rawImages = Array.from(root.querySelectorAll("img")).filter((img) => !img.closest(".article-sleeve-embed") && !img.closest(".note-image-block"));
+      const rawImages = Array.from(root.querySelectorAll("img")).filter((img) =>
+        !img.closest(".article-sleeve-embed")
+        && !img.closest(".article-sleeve-product-card")
+        && !img.closest(".note-image-block")
+      );
       for (const img of rawImages) {
         const figure = document.createElement("figure");
         figure.className = "note-image-block";
@@ -1781,6 +1858,7 @@
     }
 
     function fillForm(article) {
+      savedEditorRange = null;
       currentId = article?.id || "";
       qs("titleInput").value = article?.title || "";
       qs("slugInput").value = article?.slug || "";
@@ -1841,10 +1919,43 @@
       `;
     }
 
+    function selectionBelongsToEditor(selection) {
+      const editor = qs("editor");
+      if (!editor || !selection || !selection.rangeCount) return false;
+      const range = selection.getRangeAt(0);
+      return editor.contains(range.startContainer) && editor.contains(range.endContainer);
+    }
+
+    function saveEditorSelection() {
+      const selection = window.getSelection();
+      if (!selectionBelongsToEditor(selection)) return savedEditorRange;
+      savedEditorRange = selection.getRangeAt(0).cloneRange();
+      return savedEditorRange;
+    }
+
+    function restoreEditorSelection() {
+      const editor = qs("editor");
+      if (!editor || !savedEditorRange) return false;
+      if (!editor.contains(savedEditorRange.startContainer) || !editor.contains(savedEditorRange.endContainer)) {
+        savedEditorRange = null;
+        return false;
+      }
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(savedEditorRange);
+      return true;
+    }
+
     function exec(command, value = null) {
-      qs("editor").focus();
-      document.execCommand(command, false, value);
+      const editor = qs("editor");
+      if (!editor || editorIsComposing) return false;
+      restoreEditorSelection();
+      editor.focus({ preventScroll: true });
+      restoreEditorSelection();
+      const applied = document.execCommand(command, false, value);
+      saveEditorSelection();
       updatePreview();
+      return applied;
     }
 
     function dispatchInput(el) {
@@ -2626,7 +2737,131 @@
       if (kind === "hr") return insertHtmlAtCursor("<hr><p><br></p>");
       if (kind === "table") return insertTableBlock();
       if (kind === "toc") return insertTocBlock();
-      if (kind === "sleeve") return insertSleeveMaterial("bundle");
+      if (kind === "sleeve") return openSleeveCardPicker();
+    }
+
+    function ensureSleeveCardPicker() {
+      let backdrop = document.getElementById("sleeveCardPickerBackdrop");
+      if (backdrop) return backdrop;
+      backdrop = document.createElement("div");
+      backdrop.id = "sleeveCardPickerBackdrop";
+      backdrop.className = "sleeve-card-picker-backdrop";
+      backdrop.innerHTML = `
+        <section class="sleeve-card-picker" role="dialog" aria-modal="true" aria-labelledby="sleeveCardPickerTitle">
+          <h2 id="sleeveCardPickerTitle">デッキシールドを挿入</h2>
+          <p>名前またはIDで検索し、候補から選択してください。</p>
+          <input id="sleeveCardPickerInput" type="text" list="sleeveOptions" autocomplete="off" placeholder="名前またはIDで検索">
+          <div class="sleeve-card-picker__actions">
+            <button type="button" class="btn-admin secondary" data-sleeve-picker-cancel>キャンセル</button>
+            <button type="button" class="btn-admin primary" data-sleeve-picker-confirm>挿入</button>
+          </div>
+        </section>
+      `;
+      document.body.appendChild(backdrop);
+      backdrop.querySelector("[data-sleeve-picker-cancel]").addEventListener("click", closeSleeveCardPicker);
+      backdrop.addEventListener("click", (event) => {
+        if (event.target === backdrop) closeSleeveCardPicker();
+      });
+      backdrop.querySelector("[data-sleeve-picker-confirm]").addEventListener("click", () => {
+        const input = backdrop.querySelector("#sleeveCardPickerInput");
+        const sleeve = resolveSleeveFromValue(input.value);
+        if (!sleeve) {
+          setStatus("候補からデッキシールドを選択してください。", "ng");
+          input.focus();
+          return;
+        }
+        const target = backdrop._replaceTarget;
+        const html = sanitizeHtml(buildArticleSleeveCardHtml(sleeve));
+        if (target && target.isConnected) {
+          const template = document.createElement("template");
+          template.innerHTML = html;
+          const replacement = template.content.querySelector(".article-sleeve-product-card");
+          if (replacement) target.replaceWith(replacement);
+          setStatus("デッキシールドカードを変更しました。", "ok");
+        } else {
+          insertHtmlAtCursor(html);
+          setStatus("デッキシールドカードを挿入しました。", "ok");
+        }
+        updatePreview();
+        closeSleeveCardPicker();
+      });
+      return backdrop;
+    }
+
+    function openSleeveCardPicker(replaceTarget = null) {
+      saveEditorSelection();
+      const backdrop = ensureSleeveCardPicker();
+      const input = backdrop.querySelector("#sleeveCardPickerInput");
+      backdrop._replaceTarget = replaceTarget;
+      const currentSleeve = replaceTarget
+        ? sleeveData.find((sleeve) => String(sleeve.id || "") === String(replaceTarget.dataset.sleeveId || ""))
+        : null;
+      input.value = currentSleeve ? buildSleeveOptionLabel(currentSleeve) : "";
+      backdrop.classList.add("is-visible");
+      requestAnimationFrame(() => input.focus());
+    }
+
+    function closeSleeveCardPicker() {
+      const backdrop = document.getElementById("sleeveCardPickerBackdrop");
+      if (!backdrop) return;
+      backdrop.classList.remove("is-visible");
+      backdrop._replaceTarget = null;
+    }
+
+    function initSleeveCardEditingTools() {
+      const editor = qs("editor");
+      if (!editor || document.getElementById("sleeveCardEditToolbar")) return;
+      const toolbar = document.createElement("div");
+      toolbar.id = "sleeveCardEditToolbar";
+      toolbar.className = "sleeve-card-edit-toolbar";
+      toolbar.innerHTML = `
+        <button type="button" data-sleeve-card-action="change">別のスリーブに変更</button>
+        <button type="button" data-sleeve-card-action="delete">カードを削除</button>
+      `;
+      document.body.appendChild(toolbar);
+      let activeCard = null;
+
+      const position = () => {
+        if (!activeCard || !activeCard.isConnected) {
+          activeCard = null;
+          toolbar.classList.remove("is-visible");
+          return;
+        }
+        const rect = activeCard.getBoundingClientRect();
+        toolbar.style.left = `${Math.max(12, Math.min(window.innerWidth - toolbar.offsetWidth - 12, rect.left))}px`;
+        toolbar.style.top = `${Math.max(12, rect.top - 48)}px`;
+        toolbar.classList.add("is-visible");
+      };
+
+      editor.addEventListener("click", (event) => {
+        const card = event.target.closest(".article-sleeve-product-card");
+        if (!card) {
+          toolbar.classList.remove("is-visible");
+          activeCard = null;
+          return;
+        }
+        event.preventDefault();
+        activeCard = card;
+        position();
+      });
+      toolbar.addEventListener("mousedown", (event) => event.preventDefault());
+      toolbar.addEventListener("click", (event) => {
+        const action = event.target.closest("button")?.dataset.sleeveCardAction;
+        if (!activeCard || !action) return;
+        if (action === "change") {
+          openSleeveCardPicker(activeCard);
+          toolbar.classList.remove("is-visible");
+        }
+        if (action === "delete") {
+          activeCard.remove();
+          activeCard = null;
+          toolbar.classList.remove("is-visible");
+          updatePreview();
+          setStatus("デッキシールドカードを削除しました。", "ok");
+        }
+      });
+      window.addEventListener("scroll", position, { passive: true });
+      window.addEventListener("resize", position, { passive: true });
     }
 
     function applyMarkdownShortcut(event) {
@@ -2659,6 +2894,9 @@
         <button type="button" data-format="h2" title="大見出し">大</button>
         <button type="button" data-format="h3" title="小見出し">小</button>
         <button type="button" data-command="bold" title="太字">B</button>
+        <button type="button" data-size="3" title="標準の文字サイズに戻す">標準</button>
+        <button type="button" data-size="5" title="文字を大きくする">大字</button>
+        <button type="button" data-action="clear-format" title="選択範囲の書式をクリア">クリア</button>
         <button type="button" data-command="strikeThrough" title="取り消し線">S</button>
         <button type="button" data-command="insertUnorderedList" title="箇条書き">・</button>
         <button type="button" data-command="insertOrderedList" title="番号付きリスト">1.</button>
@@ -2683,19 +2921,25 @@
         toolbar.classList.add("is-visible");
       };
 
-      toolbar.addEventListener("mousedown", (event) => event.preventDefault());
+      toolbar.addEventListener("mousedown", (event) => {
+        saveEditorSelection();
+        event.preventDefault();
+      });
       toolbar.addEventListener("click", (event) => {
         const button = event.target.closest("button");
         if (!button) return;
         const command = button.dataset.command;
         const format = button.dataset.format;
+        const size = button.dataset.size;
         const action = button.dataset.action;
         if (command) exec(command);
         if (format) exec("formatBlock", format);
+        if (size) exec("fontSize", size);
         if (action === "link") {
           const url = prompt("リンクURLを入力してください");
           if (url) exec("createLink", url);
         }
+        if (action === "clear-format") exec("removeFormat");
         if (action === "delete") exec("delete");
         setTimeout(updateToolbar, 0);
       });
@@ -2729,7 +2973,7 @@
         <button type="button" data-block-kind="toc">目次</button>
         <button type="button" data-block-kind="code">コード</button>
         <button type="button" data-block-kind="hr">区切り線</button>
-        <button type="button" data-block-kind="sleeve">スリーブ素材</button>
+        <button type="button" data-block-kind="sleeve">デッキシールドを挿入</button>
       `;
       document.body.appendChild(button);
       document.body.appendChild(menu);
@@ -2822,7 +3066,10 @@
         if (document.activeElement === coverDrop || pickerOpen) handleCoverPaste(event);
       });
       document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") closeCoverImagePicker();
+        if (event.key === "Escape") {
+          closeCoverImagePicker();
+          closeSleeveCardPicker();
+        }
       });
       qs("coverInput").addEventListener("input", updateCoverDropPreview);
       qs("editor").addEventListener("keydown", applyMarkdownShortcut);
@@ -2833,6 +3080,7 @@
       initSelectionToolbar();
       initBlockInserter();
       initTableEditingTools();
+      initSleeveCardEditingTools();
     }
 
     function downloadJson() {
@@ -2865,17 +3113,41 @@
       renderArticleList();
       loadSleevesForTool();
 
-      document.querySelectorAll("[data-command]").forEach((button) => {
+      const editor = qs("editor");
+      const mainToolbar = editor.closest(".admin-panel")?.querySelector(".toolbar");
+      document.addEventListener("selectionchange", saveEditorSelection);
+      editor.addEventListener("compositionstart", () => {
+        editorIsComposing = true;
+      });
+      editor.addEventListener("compositionend", () => {
+        editorIsComposing = false;
+        saveEditorSelection();
+        updatePreview();
+      });
+      mainToolbar?.addEventListener("mousedown", (event) => {
+        saveEditorSelection();
+        if (event.target.closest("button")) event.preventDefault();
+      });
+      mainToolbar?.addEventListener("focusin", saveEditorSelection);
+
+      mainToolbar?.querySelectorAll("[data-command]").forEach((button) => {
         button.addEventListener("click", () => exec(button.dataset.command));
       });
-      document.querySelectorAll("[data-block]").forEach((button) => {
+      mainToolbar?.querySelectorAll("[data-block]").forEach((button) => {
         button.addEventListener("click", () => exec("formatBlock", button.dataset.block));
       });
       qs("fontSelect").addEventListener("change", (event) => {
         if (!event.target.value) return;
         exec("fontName", event.target.value);
+        event.target.value = "";
+      });
+      qs("fontSizeSelect").addEventListener("change", (event) => {
+        if (!event.target.value) return;
+        exec("fontSize", event.target.value);
+        event.target.value = "";
       });
       qs("colorInput").addEventListener("input", (event) => exec("foreColor", event.target.value));
+      qs("clearFormatBtn").addEventListener("click", () => exec("removeFormat"));
       qs("linkBtn").addEventListener("click", () => {
         const url = prompt("リンクURLを入力してください");
         if (url) exec("createLink", url);

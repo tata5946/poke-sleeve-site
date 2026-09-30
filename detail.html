@@ -2564,7 +2564,7 @@
   </div>
 
   <script src="./assets/category-page-map.js?v=20260917a"></script>
-  <script src="./assets/common.js?v=20260924e"></script>
+  <script src="./assets/common.js?v=20260929a"></script>
 
   <script>
     function escapeHtml(str) {
@@ -2665,6 +2665,9 @@
     }
 
     function isSafeRakutenAffiliateUrl(url) {
+      if (window.common && typeof window.common.isSafeRakutenAffiliateUrl === "function") {
+        return window.common.isSafeRakutenAffiliateUrl(url);
+      }
       try {
         const parsed = new URL(String(url || ""));
         return parsed.protocol === "https:" && parsed.hostname === "hb.afl.rakuten.co.jp";
@@ -3790,6 +3793,9 @@
     }
 
     function buildMercariSearchUrl(name) {
+      if (window.common && typeof window.common.buildMercariSearchUrl === "function") {
+        return window.common.buildMercariSearchUrl(name);
+      }
       const baseName = String(name || "").trim();
       const keyword = baseName ? `${baseName} デッキシールド` : "";
       if (!keyword) return "https://jp.mercari.com/search";
@@ -3804,6 +3810,9 @@
     }
 
     function buildSurugayaAffiliateUrl(name) {
+      if (window.common && typeof window.common.buildSurugayaAffiliateUrl === "function") {
+        return window.common.buildSurugayaAffiliateUrl(name);
+      }
       const baseName = String(name || "").trim();
       const surugayaUrl = baseName
         ? `https://www.suruga-ya.jp/search?search_word=${encodeURIComponent(`${baseName} デッキシールド`)}`
