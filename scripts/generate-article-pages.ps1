@@ -69,7 +69,7 @@ foreach ($article in $dynamic) {
           <article class="article-detail" data-article-slug="$(AttrEncode $slug)">$cover
             <header class="article-header">
               <div class="article-meta"><span>$(HtmlEncode $category)</span><span>$(HtmlEncode $date)</span></div>
-              <h1>$(HtmlEncode $title)</h1>$excerpt
+              <h1 class="article-detail-title">$(HtmlEncode $title)</h1>$excerpt
             </header>
             <div class="article-body">$articleBody</div>
           </article>
