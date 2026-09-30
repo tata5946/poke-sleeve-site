@@ -2492,6 +2492,17 @@ footer.site-footer {
     box-shadow: 0 12px 28px rgba(15, 23, 42, .06);
 }
 
+.article-sleeve-embed--graph-only,
+.article-sleeve-embed:has(> .article-sleeve-chart-wrap) {
+    gap: 0;
+    margin: 1em 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
 .article-sleeve-embed__top {
     display: grid;
     grid-template-columns: 132px minmax(0, 1fr);
@@ -2830,14 +2841,12 @@ footer.site-footer {
 .article-sleeve-embed .chart-wrap {
     position: relative;
     margin-top: 0;
-    border: 1px solid var(--border, #d7e1f0);
-    border-radius: 14px;
-    background:
-        radial-gradient(circle at top left, rgba(30, 91, 215, .07), transparent 34%),
-        linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-    box-shadow: 0 8px 18px rgba(16, 24, 40, .07);
-    padding: 10px;
-    overflow: hidden;
+    padding: 4px 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
 }
 
 .article-sleeve-embed .chart-viewport {

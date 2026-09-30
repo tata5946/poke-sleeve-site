@@ -1758,7 +1758,7 @@
 
     function buildSleeveGraphHtml(sleeve) {
       return `
-        <section class="article-sleeve-embed" data-sleeve-id="${escapeHtml(sleeve.id || "")}">
+        <section class="article-sleeve-embed article-sleeve-embed--graph-only" data-sleeve-id="${escapeHtml(sleeve.id || "")}">
           ${buildSleeveChartSvg(sleeve)}
         </section>
       `;
