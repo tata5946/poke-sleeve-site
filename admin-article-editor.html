@@ -693,9 +693,16 @@
       border-radius: 0;
       background: transparent;
       color: #1f2937;
+      font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
       font-size: 18px;
       line-height: 2.05;
       letter-spacing: 0;
+    }
+
+    /* Text formatting must never silently switch the editor typeface. */
+    .editor :is(h1, h2, h3, h4, h5, h6, p, li, blockquote, strong, b, em, i, u, s),
+    .preview :is(h1, h2, h3, h4, h5, h6, p, li, blockquote, strong, b, em, i, u, s) {
+      font-family: inherit !important;
     }
 
     .editor:focus {
