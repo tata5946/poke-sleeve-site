@@ -2606,9 +2606,9 @@ footer.site-footer {
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
-    gap: 8px;
-    margin: .9em 0;
-    padding: 12px;
+    gap: 6px;
+    margin: .6em 0;
+    padding: 8px;
     border: 1px solid #d7e1f0;
     border-radius: 8px;
     background: #fff;
@@ -2618,8 +2618,8 @@ footer.site-footer {
 .article-sleeve-product-card__main {
     display: grid;
     min-width: 0;
-    grid-template-columns: 96px minmax(0, 1fr);
-    gap: 14px;
+    grid-template-columns: 132px minmax(0, 1fr);
+    gap: 12px;
     align-items: center;
 }
 
@@ -2627,9 +2627,10 @@ footer.site-footer {
     display: grid;
     place-items: center;
     aspect-ratio: 1 / 1;
-    padding: 6px;
+    padding: 0;
     border-radius: 6px;
     background: #f3f6fb;
+    overflow: hidden;
 }
 
 .article-sleeve-product-card__image {
@@ -2650,7 +2651,7 @@ footer.site-footer {
 .article-sleeve-product-card__body {
     display: grid;
     align-content: center;
-    gap: 6px;
+    gap: 4px;
     min-width: 0;
 }
 
@@ -2699,9 +2700,9 @@ footer.site-footer {
 .article-sleeve-product-card__shops {
     display: grid;
     min-width: 0;
-    grid-template-columns: repeat(3, minmax(0, 144px));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 6px;
-    margin-left: 110px;
+    margin-left: 144px;
 }
 
 .article-sleeve-shop-link {
@@ -2891,14 +2892,14 @@ footer.site-footer {
 
 @media (max-width: 700px) {
     .article-sleeve-product-card {
-        gap: 10px;
+        gap: 6px;
         margin: .75em 0;
-        padding: 10px;
+        padding: 8px;
     }
 
     .article-sleeve-product-card__main {
-        grid-template-columns: 88px minmax(0, 1fr);
-        gap: 10px;
+        grid-template-columns: 104px minmax(0, 1fr);
+        gap: 8px;
     }
 
     .article-sleeve-product-card__shops {
