@@ -2812,16 +2812,19 @@ footer.site-footer {
 .article-sleeve-image-only {
     display: grid;
     justify-items: center;
-    margin: 1.4em 0;
+    margin: .8em 0;
 }
 
 .article-sleeve-image-only img {
-    width: min(100%, 420px);
-    max-height: 560px;
+    width: min(100%, 620px);
+    height: auto;
+    max-height: none;
+    padding: 0;
     object-fit: contain;
-    border-radius: 18px;
-    background: #f3f6fb;
-    box-shadow: 0 14px 30px rgba(15, 23, 42, .08);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
 }
 
 .article-sleeve-embed .chart-wrap {
