@@ -10531,3 +10531,6 @@ html:root body:not(.home-page) :is(
     font-family: var(--font-numeric) !important;
     font-variant-numeric: tabular-nums;
 }
+#weeklyTable {
+  display: none !important;
+}
