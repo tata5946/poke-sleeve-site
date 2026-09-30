@@ -1080,7 +1080,6 @@
     const ARTICLE_LOCAL_KEY = "pokeSleeve:articles:local:v1";
     let currentId = "";
     let sleeveData = [];
-    let editorSelectionRange = null;
     let selectedSleeve = null;
     let articleStoreCache = [];
     let rakutenLinkCache = { items: {} };
@@ -1928,11 +1927,6 @@
       `;
     }
 
-<<<<<<< HEAD
-    function rememberEditorSelection() {
-      const selection = getEditorSelection();
-      if (selection?.rangeCount) editorSelectionRange = selection.getRangeAt(0).cloneRange();
-=======
     function selectionBelongsToEditor(selection) {
       const editor = qs("editor");
       if (!editor || !selection || !selection.rangeCount) return false;
@@ -1945,24 +1939,10 @@
       if (!selectionBelongsToEditor(selection)) return savedEditorRange;
       savedEditorRange = selection.getRangeAt(0).cloneRange();
       return savedEditorRange;
->>>>>>> 2873ab47158731339596352236adecc1a9ee0da6
     }
 
     function restoreEditorSelection() {
       const editor = qs("editor");
-<<<<<<< HEAD
-      editor.focus();
-      if (!editorSelectionRange || !editor.contains(editorSelectionRange.commonAncestorContainer)) return;
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(editorSelectionRange);
-    }
-
-    function exec(command, value = null) {
-      restoreEditorSelection();
-      document.execCommand(command, false, value);
-      rememberEditorSelection();
-=======
       if (!editor || !savedEditorRange) return false;
       if (!editor.contains(savedEditorRange.startContainer) || !editor.contains(savedEditorRange.endContainer)) {
         savedEditorRange = null;
@@ -1982,7 +1962,6 @@
       restoreEditorSelection();
       const applied = document.execCommand(command, false, value);
       saveEditorSelection();
->>>>>>> 2873ab47158731339596352236adecc1a9ee0da6
       updatePreview();
       return applied;
     }
@@ -3142,11 +3121,6 @@
       renderArticleList();
       loadSleevesForTool();
 
-<<<<<<< HEAD
-      document.addEventListener("selectionchange", rememberEditorSelection);
-
-      document.querySelectorAll("[data-command]").forEach((button) => {
-=======
       const editor = qs("editor");
       const mainToolbar = editor.closest(".admin-panel")?.querySelector(".toolbar");
       document.addEventListener("selectionchange", saveEditorSelection);
@@ -3165,7 +3139,6 @@
       mainToolbar?.addEventListener("focusin", saveEditorSelection);
 
       mainToolbar?.querySelectorAll("[data-command]").forEach((button) => {
->>>>>>> 2873ab47158731339596352236adecc1a9ee0da6
         button.addEventListener("click", () => exec(button.dataset.command));
       });
       mainToolbar?.querySelectorAll("[data-block]").forEach((button) => {
