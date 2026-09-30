@@ -63,7 +63,8 @@ foreach ($article in $dynamic) {
   if (([string]$article.coverImage).Trim()) {
     $cover = "`n            <img class=`"article-cover`" src=`"$(AttrEncode $article.coverImage)`" alt=`"$(AttrEncode $title)`" width=`"1600`" height=`"900`" decoding=`"async`">"
   }
-  $excerpt = ''; if ($description) { $excerpt = "`n              <p class=`"article-lead`">$(HtmlEncode $description)</p>" }
+  $explicitExcerpt = ([string]$article.excerpt).Trim()
+  $excerpt = ''; if ($explicitExcerpt) { $excerpt = "`n              <p class=`"article-lead`">$(HtmlEncode $explicitExcerpt)</p>" }
   $staticArticle = @"
           <article class="article-detail" data-article-slug="$(AttrEncode $slug)">$cover
             <header class="article-header">
@@ -84,6 +85,7 @@ foreach ($article in $dynamic) {
   $html = [regex]::Replace($html, '<meta property="og:image" content=".*?"\s*/>', "<meta property=`"og:image`" content=`"$(AttrEncode $image)`" />", 1)
   $html = [regex]::Replace($html, '<meta property="og:url" content=".*?"\s*/>', "<meta property=`"og:url`" content=`"$(AttrEncode $canonical)`" />`r`n  <link rel=`"canonical`" href=`"$(AttrEncode $canonical)`" />`r`n  <script type=`"application/ld+json`">$jsonLd</script>", 1)
   $html = $html -replace '<body class="page-content-focus" data-hide-global-header="1">', "<body class=`"page-content-focus`" data-hide-global-header=`"1`" data-article-slug=`"$(AttrEncode $slug)`">"
+  $html = $html.Replace('<span id="breadcrumbTitle" class="breadcrumb-current" aria-current="page">読み込み中</span>', '<span id="breadcrumbTitle" class="breadcrumb-current" aria-current="page">' + (HtmlEncode $title) + '</span>')
   $html = [regex]::Replace($html, '<div id="articleMount" class="article-page">.*?</div>\s*</main>', "<div id=`"articleMount`" class=`"article-page`">`r`n$staticArticle        </div>`r`n      </main>", [System.Text.RegularExpressions.RegexOptions]::Singleline)
 
   $dir = Join-Path $OutputRoot $slug
