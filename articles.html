@@ -617,14 +617,10 @@
       });
     }
 
-    const initialArticles = INITIAL_ARTICLE_SUMMARIES.map(normalizeArticle).filter(Boolean);
-    articleListState = initialArticles;
     wireArticleTabs();
-    renderArticles(articleListState);
 
     loadArticles().then((articles) => {
       articleListState = articles;
-      renderArticles(articleListState);
     }).catch(() => { /* Keep the static article cards. */ });
   </script>
 </body>
