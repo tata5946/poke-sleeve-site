@@ -81,6 +81,10 @@
       font-weight: 900;
     }
 
+    .article-title-tail {
+      display: inline-block;
+    }
+
     .article-detail-excerpt {
       max-width: 780px;
       margin: 0;
@@ -355,6 +359,10 @@
         line-height: 1.42;
         font-weight: 800;
         letter-spacing: 0;
+      }
+
+      .article-title-tail {
+        display: inline;
       }
 
       .article-detail-excerpt {
@@ -1135,6 +1143,15 @@
         .replaceAll("'", "&#039;");
     }
 
+    function formatArticleTitle(value) {
+      const title = String(value || "");
+      const separatorIndex = title.indexOf("｜");
+      if (separatorIndex < 0) return escapeHtml(title);
+      const prefix = escapeHtml(title.slice(0, separatorIndex));
+      const tail = escapeHtml(title.slice(separatorIndex));
+      return `${prefix}<span class="article-title-tail">${tail}</span>`;
+    }
+
     function formatDate(value) {
       const d = new Date(value);
       if (Number.isNaN(d.getTime())) return "";
@@ -1288,7 +1305,7 @@
               <span>${escapeHtml(categoryLabel)}</span>
               <span>${escapeHtml(formatDate(article.publishedAt))}</span>
             </div>
-            <h1 class="article-detail-title">${escapeHtml(article.title)}</h1>
+            <h1 class="article-detail-title">${formatArticleTitle(article.title)}</h1>
             ${article.excerpt ? `<p class="article-detail-excerpt">${escapeHtml(article.excerpt)}</p>` : ""}
           </header>
           <div class="article-body">${bodyHtml}</div>

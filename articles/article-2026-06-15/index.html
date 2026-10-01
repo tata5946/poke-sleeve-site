@@ -81,6 +81,10 @@
       font-weight: 900;
     }
 
+    .article-title-tail {
+      display: inline-block;
+    }
+
     .article-detail-excerpt {
       max-width: 780px;
       margin: 0;
@@ -357,6 +361,10 @@
         letter-spacing: 0;
       }
 
+      .article-title-tail {
+        display: inline;
+      }
+
       .article-detail-excerpt {
         color: #5f6368;
         font-size: 13px;
@@ -539,7 +547,7 @@
             <img class="article-cover" src="./assets/4521329266626_04.jpg" alt="シロナのデッキシールド相場を比較｜歴代5種類の価格ランキングと高額になる理由" width="1600" height="900" decoding="async">
             <header class="article-header">
               <div class="article-meta"><span>相場コラム</span><span>2026-09-11</span></div>
-              <h1 class="article-detail-title">シロナのデッキシールド相場を比較｜歴代5種類の価格ランキングと高額になる理由</h1>
+              <h1 class="article-detail-title">シロナのデッキシールド相場を比較<span class="article-title-tail">｜歴代5種類の価格ランキングと高額になる理由</span></h1>
             </header>
             <div class="article-body"><h2 id="section-1">初めに</h2><div><p>シロナはポケモンシリーズ屈指の人気キャラクターであり、ポケモンカードのデッキシールド（スリーブ）でも高い人気を誇ります。</p>
 <p>ポケモンカードのデッキシールドには、対戦で使うだけでなく、お気に入りのキャラクターやイラストを集める楽しみがあります。なかでもシロナのデッキシールドは、ガブリアスとともに描かれたものや、カトレアとの組み合わせなど、異なる魅力を持つ商品が発売されてきました。</p><p>では、シロナのデッキシールドは現在どのくらいの価格で取引されているのでしょうか。</p><p>ポケスリ相場ナビに登録されている6種類を比較すると、相場が確認できる商品だけでも、1,000円台から6,000円台まで価格に差があります。同じシロナをテーマにした商品でも、発売時期や販売形態、デザインによって相場は一様ではありません。</p><p>この記事では、シロナのデッキシールド5種類について、現在の相場をランキング形式で比較します。さらに、発売当時の情報や取引件数、価格推移を確認しながら、高額になっている商品にはどのような特徴があるのかを考えていきます。</p><p>これからシロナのスリーブを集めたい方はもちろん、すでに持っている商品の相場が気になる方も、ぜひ参考にしてください。</p><p>※本記事の相場は、ポケスリ相場ナビが収集したメルカリの売却データをもとにした参考値です。実際の販売価格や買取価格を保証するものではありません。</p><div class="article-toc" role="navigation" aria-label="目次">
@@ -666,6 +674,15 @@
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+    }
+
+    function formatArticleTitle(value) {
+      const title = String(value || "");
+      const separatorIndex = title.indexOf("｜");
+      if (separatorIndex < 0) return escapeHtml(title);
+      const prefix = escapeHtml(title.slice(0, separatorIndex));
+      const tail = escapeHtml(title.slice(separatorIndex));
+      return `${prefix}<span class="article-title-tail">${tail}</span>`;
     }
 
     function formatDate(value) {
@@ -821,7 +838,7 @@
               <span>${escapeHtml(categoryLabel)}</span>
               <span>${escapeHtml(formatDate(article.publishedAt))}</span>
             </div>
-            <h1 class="article-detail-title">${escapeHtml(article.title)}</h1>
+            <h1 class="article-detail-title">${formatArticleTitle(article.title)}</h1>
             ${article.excerpt ? `<p class="article-detail-excerpt">${escapeHtml(article.excerpt)}</p>` : ""}
           </header>
           <div class="article-body">${bodyHtml}</div>

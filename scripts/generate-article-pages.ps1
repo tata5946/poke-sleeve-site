@@ -41,6 +41,13 @@ foreach ($article in $dynamic) {
   $slug = ([string]$article.slug).Trim(); if (-not $slug) { $slug = ([string]$article.id).Trim() }
   if (-not $slug -or $slug -notmatch '^[A-Za-z0-9._-]+$') { throw "Unsafe article slug: $slug" }
   $title = ([string]$article.title).Trim()
+  $titleHtml = HtmlEncode $title
+  $separatorIndex = $title.IndexOf('｜')
+  if ($separatorIndex -ge 0) {
+    $titlePrefix = HtmlEncode $title.Substring(0, $separatorIndex)
+    $titleTail = HtmlEncode $title.Substring($separatorIndex)
+    $titleHtml = $titlePrefix + '<span class="article-title-tail">' + $titleTail + '</span>'
+  }
   $pageTitle = "$title｜ポケスリ相場ナビ"
   $description = Plain-Text $article
   $canonical = "$($SiteOrigin.TrimEnd('/'))/articles/$([uri]::EscapeDataString($slug))/"
@@ -69,7 +76,7 @@ foreach ($article in $dynamic) {
           <article class="article-detail" data-article-slug="$(AttrEncode $slug)">$cover
             <header class="article-header">
               <div class="article-meta"><span>$(HtmlEncode $category)</span><span>$(HtmlEncode $date)</span></div>
-              <h1 class="article-detail-title">$(HtmlEncode $title)</h1>$excerpt
+              <h1 class="article-detail-title">$titleHtml</h1>$excerpt
             </header>
             <div class="article-body">$articleBody</div>
           </article>

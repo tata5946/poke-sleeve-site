@@ -81,6 +81,10 @@
       font-weight: 900;
     }
 
+    .article-title-tail {
+      display: inline-block;
+    }
+
     .article-detail-excerpt {
       max-width: 780px;
       margin: 0;
@@ -357,6 +361,10 @@
         letter-spacing: 0;
       }
 
+      .article-title-tail {
+        display: inline;
+      }
+
       .article-detail-excerpt {
         color: #5f6368;
         font-size: 13px;
@@ -539,7 +547,7 @@
             <img class="article-cover" src="./assets/shield_main_8ddcc469.webp" alt="【2026年9月16日発売】ポケカ30周年デッキシールド全7種まとめ｜価格・販売場所・注目デザインを紹介" width="1600" height="900" decoding="async">
             <header class="article-header">
               <div class="article-meta"><span>商品情報</span><span>2026-09-10</span></div>
-              <h1 class="article-detail-title">【2026年9月16日発売】ポケカ30周年デッキシールド全7種まとめ｜価格・販売場所・注目デザインを紹介</h1>
+              <h1 class="article-detail-title">【2026年9月16日発売】ポケカ30周年デッキシールド全7種まとめ<span class="article-title-tail">｜価格・販売場所・注目デザインを紹介</span></h1>
             </header>
             <div class="article-body"><h2>初めに</h2><p><span>2026年9月16日（水）、ポケモンカードゲーム30周年を記念した新作デッキシールドが一斉に発売されます。</span><span>今回登場するのは、30周年を前面に押し出した「30th CELEBRATION」をはじめ、エーフィ、ブラッキー、ニドリーナなどをデザインした全7種類。</span></p><p><br></p><p>なかでもエーフィとブラッキーは「30th CELEBRATION」仕様となっており、発売前から気になっている人も多いのではないでしょうか。<span>この記事では、2026年9月16日に発売される新作デッキシールド全7種類について、価格・販売場所・デザインの特徴をまとめます。</span></p><p><br></p><p>さらにポケスリ相場ナビの視点から、発売後の相場で特に注目したいデッキシールドについても考えていきます。</p><p><br></p><p>※この記事は2026年9月10日時点の公式発表をもとに作成しています。発売後のメルカリ相場については、データ確認後に順次追記予定です。</p><h2>2026年9月16日に新作デッキシールド7種類が発売</h2><p>ポケモンカードゲームは2026年で30周年。<span>その記念商品として、2026年9月16日（水）に多数の関連グッズが発売されます。</span><span>今回発表されたデッキシールドは以下の7種類です。公式によると、いずれも64枚入りとなっています</span></p><div class="article-table-wrap">
           <table>
@@ -826,6 +834,15 @@
         .replaceAll("'", "&#039;");
     }
 
+    function formatArticleTitle(value) {
+      const title = String(value || "");
+      const separatorIndex = title.indexOf("｜");
+      if (separatorIndex < 0) return escapeHtml(title);
+      const prefix = escapeHtml(title.slice(0, separatorIndex));
+      const tail = escapeHtml(title.slice(separatorIndex));
+      return `${prefix}<span class="article-title-tail">${tail}</span>`;
+    }
+
     function formatDate(value) {
       const d = new Date(value);
       if (Number.isNaN(d.getTime())) return "";
@@ -979,7 +996,7 @@
               <span>${escapeHtml(categoryLabel)}</span>
               <span>${escapeHtml(formatDate(article.publishedAt))}</span>
             </div>
-            <h1 class="article-detail-title">${escapeHtml(article.title)}</h1>
+            <h1 class="article-detail-title">${formatArticleTitle(article.title)}</h1>
             ${article.excerpt ? `<p class="article-detail-excerpt">${escapeHtml(article.excerpt)}</p>` : ""}
           </header>
           <div class="article-body">${bodyHtml}</div>

@@ -81,6 +81,10 @@
       font-weight: 900;
     }
 
+    .article-title-tail {
+      display: inline-block;
+    }
+
     .article-detail-excerpt {
       max-width: 780px;
       margin: 0;
@@ -357,6 +361,10 @@
         letter-spacing: 0;
       }
 
+      .article-title-tail {
+        display: inline;
+      }
+
       .article-detail-excerpt {
         color: #5f6368;
         font-size: 13px;
@@ -539,7 +547,7 @@
             <img class="article-cover" src="https://drive.google.com/thumbnail?id=1eKfQgzxpLyHAqsQ315T9zvJw84_HKRB9&amp;sz=w1200" alt="発売から1年以内で高騰中！デッキシールド4選｜定価の約2.8倍になったスリーブも" width="1600" height="900" decoding="async">
             <header class="article-header">
               <div class="article-meta"><span>相場コラム</span><span>2026-09-30</span></div>
-              <h1 class="article-detail-title">発売から1年以内で高騰中！デッキシールド4選｜定価の約2.8倍になったスリーブも</h1>
+              <h1 class="article-detail-title">発売から1年以内で高騰中！デッキシールド4選<span class="article-title-tail">｜定価の約2.8倍になったスリーブも</span></h1>
             </header>
             <div class="article-body"><h2>初めに</h2><p>ポケモンカードのデッキシールドは、過去に発売された希少なものだけが高くなるとは限りません。<span style="font-family: inherit">発売からまだ1年も経っていない比較的新しいデッキシールドでも、すでに発売時価格を大きく上回っているものがあります。</span></p><p>今回は、2025年11月〜2026年3月に発売された比較的新しいデッキシールドの中から、現在価格が発売時価格を大きく上回っている4種類をピックアップ。</p><p>発売時価格と現在価格だけでなく、これまでの価格推移もあわせて見ていきます。</p><p>※掲載している相場価格は未開封品を対象とした集計値です。相場は取引状況などによって変動するため、最新価格は各デッキシールドの詳細ページをご確認ください。</p><hr><h2>今回紹介する高騰デッキシールド4選</h2><div class="article-table-wrap">
           <table>
@@ -1166,6 +1174,15 @@
         .replaceAll("'", "&#039;");
     }
 
+    function formatArticleTitle(value) {
+      const title = String(value || "");
+      const separatorIndex = title.indexOf("｜");
+      if (separatorIndex < 0) return escapeHtml(title);
+      const prefix = escapeHtml(title.slice(0, separatorIndex));
+      const tail = escapeHtml(title.slice(separatorIndex));
+      return `${prefix}<span class="article-title-tail">${tail}</span>`;
+    }
+
     function formatDate(value) {
       const d = new Date(value);
       if (Number.isNaN(d.getTime())) return "";
@@ -1319,7 +1336,7 @@
               <span>${escapeHtml(categoryLabel)}</span>
               <span>${escapeHtml(formatDate(article.publishedAt))}</span>
             </div>
-            <h1 class="article-detail-title">${escapeHtml(article.title)}</h1>
+            <h1 class="article-detail-title">${formatArticleTitle(article.title)}</h1>
             ${article.excerpt ? `<p class="article-detail-excerpt">${escapeHtml(article.excerpt)}</p>` : ""}
           </header>
           <div class="article-body">${bodyHtml}</div>

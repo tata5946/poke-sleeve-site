@@ -81,6 +81,10 @@
       font-weight: 900;
     }
 
+    .article-title-tail {
+      display: inline-block;
+    }
+
     .article-detail-excerpt {
       max-width: 780px;
       margin: 0;
@@ -357,6 +361,10 @@
         letter-spacing: 0;
       }
 
+      .article-title-tail {
+        display: inline;
+      }
+
       .article-detail-excerpt {
         color: #5f6368;
         font-size: 13px;
@@ -539,7 +547,7 @@
             <img class="article-cover" src="https://drive.google.com/thumbnail?id=1TxWwnNa133FlzanhnYShCdNY-vWNPSfb&amp;sz=w1200" alt="定価割れしているデッキシールド4選｜今なら500円前後で買えるスリーブを紹介" width="1600" height="900" decoding="async">
             <header class="article-header">
               <div class="article-meta"><span>相場コラム</span><span>2026-10-01</span></div>
-              <h1 class="article-detail-title">定価割れしているデッキシールド4選｜今なら500円前後で買えるスリーブを紹介</h1>
+              <h1 class="article-detail-title">定価割れしているデッキシールド4選<span class="article-title-tail">｜今なら500円前後で買えるスリーブを紹介</span></h1>
             </header>
             <div class="article-body">初めに<p>ポケモンカードのデッキシールドというと、人気キャラクターや販売終了品を中心に「発売後に価格が上がる」というイメージを持っている人も多いのではないでしょうか。</p><p>しかし、すべてのデッキシールドが値上がりしているわけではありません。</p><p>中には、発売から数年が経過しているにもかかわらず、<strong>発売時の価格を下回る500円前後で取引されているデッキシールド</strong>もあります。</p><p>今回はポケスリ相場ナビの価格データから、現在定価割れしているデッキシールドを4種類ピックアップしました。</p><p>※価格はポケスリ相場ナビの最終観測時点の相場です。フリマサイトなどの販売価格は日々変動します。</p><hr><h2>今回紹介する定価割れデッキシールド</h2><table><tbody><tr><th>デッキシールド</th><th>発売時価格</th><th>現在相場</th><th>発売時比</th></tr><tr><td>ロストデザイン</td><td>889円</td><td>499円</td><td>-44%</td></tr><tr><td>キョダイマックスリザードン</td><td>792円</td><td>500円</td><td>-37%</td></tr><tr><td>色違いのザシアン&amp;ザマゼンタ</td><td>913円</td><td>500円</td><td>-45%</td></tr><tr><td>レッド&amp;グリーン</td><td>792円</td><td>550円</td><td>-31%</td></tr></tbody></table><p>いずれも現在は500円前後。</p><p>ただし価格推移を見てみると、ずっとこの価格だったわけではありません。一時は1,000円を超えていたものもあり、直近になって大きく価格を下げているデッキシールドもあります。</p><p>それぞれ詳しく見ていきます。</p><hr><h2>① ロストデザイン</h2><div><figure class="article-sleeve-image-only note-image-block" data-sleeve-id="373027"><img src="https://drive.google.com/thumbnail?id=1TxWwnNa133FlzanhnYShCdNY-vWNPSfb&amp;sz=w1200" alt="ロストデザイン"><figcaption class="note-image-caption" contenteditable="true">ロストデザイン</figcaption></figure></div><p>2022年7月15日に発売された「ロストデザイン」。</p><p>マフォクシー、ダーテング、ウッウ、ロトム、キュワワー、ギラティナなどが描かれたデザインで、「ロストゾーン」をイメージした独特なビジュアルが特徴です。</p><p>現在相場は<strong>499円</strong>。</p><p>ポケスリ相場ナビに登録している発売時価格889円と比較すると、<strong>約44％の定価割れ</strong>となっています。</p><h3>一時は1,167円まで上昇</h3><p>注目したいのは価格推移です。</p><p>2026年5月には一時<strong>1,167円</strong>を記録していました。</p><p>ところがその後は、</p><p>1,167円 → 777円 → 857円 → 650円 → 400円 → 499円</p><p>と下落。</p><p>現在の499円は、2026年5月の1,167円から見ると<strong>約57％安い水準</strong>です。</p><section class="article-sleeve-embed article-sleeve-embed--graph-only" data-sleeve-id="373027">
           
@@ -1101,6 +1109,15 @@
         .replaceAll("'", "&#039;");
     }
 
+    function formatArticleTitle(value) {
+      const title = String(value || "");
+      const separatorIndex = title.indexOf("｜");
+      if (separatorIndex < 0) return escapeHtml(title);
+      const prefix = escapeHtml(title.slice(0, separatorIndex));
+      const tail = escapeHtml(title.slice(separatorIndex));
+      return `${prefix}<span class="article-title-tail">${tail}</span>`;
+    }
+
     function formatDate(value) {
       const d = new Date(value);
       if (Number.isNaN(d.getTime())) return "";
@@ -1254,7 +1271,7 @@
               <span>${escapeHtml(categoryLabel)}</span>
               <span>${escapeHtml(formatDate(article.publishedAt))}</span>
             </div>
-            <h1 class="article-detail-title">${escapeHtml(article.title)}</h1>
+            <h1 class="article-detail-title">${formatArticleTitle(article.title)}</h1>
             ${article.excerpt ? `<p class="article-detail-excerpt">${escapeHtml(article.excerpt)}</p>` : ""}
           </header>
           <div class="article-body">${bodyHtml}</div>

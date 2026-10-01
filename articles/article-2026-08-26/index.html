@@ -81,6 +81,10 @@
       font-weight: 900;
     }
 
+    .article-title-tail {
+      display: inline-block;
+    }
+
     .article-detail-excerpt {
       max-width: 780px;
       margin: 0;
@@ -357,6 +361,10 @@
         letter-spacing: 0;
       }
 
+      .article-title-tail {
+        display: inline;
+      }
+
       .article-detail-excerpt {
         color: #5f6368;
         font-size: 13px;
@@ -538,7 +546,7 @@
           <article class="article-detail" data-article-slug="article-2026-08-26">
             <header class="article-header">
               <div class="article-meta"><span>サイト情報</span><span>2026-08-26</span></div>
-              <h1 class="article-detail-title">ポケカのデッキシールドをコレクション管理｜「マイコレクション」機能を追加しました</h1>
+              <h1 class="article-detail-title">ポケカのデッキシールドをコレクション管理<span class="article-title-tail">｜「マイコレクション」機能を追加しました</span></h1>
             </header>
             <div class="article-body"><p><span>ポケスリ相場ナビに、新機能マイコレクションを追加しました。</span></p><p>マイコレクションは、自分が持っているポケモンカードゲームのデッキシールドを登録して、<strong>コレクションと現在の相場をまとめて管理できる機能</strong>です。</p><p>「持っているデッキシールドが増えて、何を持っているのか分からなくなってきた」</p><p>「自分のコレクションは、現在どれくらいの価値になっているんだろう？」</p><p>そんなときに使える機能を目指して作りました。</p><h2>持っているデッキシールドを登録</h2><p>ポケスリ相場ナビに掲載されているデッキシールドから、持っているものをマイコレクションへ追加できます。</p><p>同じデッキシールドを複数持っている場合にも対応しており、<strong>「＋」「－」から所持数を変更</strong>できます。</p><p>1個だけ持っているスリーブはもちろん、保存用・使用用などで複数持っているスリーブもまとめて管理できます。</p><p><br></p><figure class="note-image-block">
           <img src="./assets/article-images/article-2026-08-26-01.png" alt="image.png">
@@ -645,6 +653,15 @@
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+    }
+
+    function formatArticleTitle(value) {
+      const title = String(value || "");
+      const separatorIndex = title.indexOf("｜");
+      if (separatorIndex < 0) return escapeHtml(title);
+      const prefix = escapeHtml(title.slice(0, separatorIndex));
+      const tail = escapeHtml(title.slice(separatorIndex));
+      return `${prefix}<span class="article-title-tail">${tail}</span>`;
     }
 
     function formatDate(value) {
@@ -800,7 +817,7 @@
               <span>${escapeHtml(categoryLabel)}</span>
               <span>${escapeHtml(formatDate(article.publishedAt))}</span>
             </div>
-            <h1 class="article-detail-title">${escapeHtml(article.title)}</h1>
+            <h1 class="article-detail-title">${formatArticleTitle(article.title)}</h1>
             ${article.excerpt ? `<p class="article-detail-excerpt">${escapeHtml(article.excerpt)}</p>` : ""}
           </header>
           <div class="article-body">${bodyHtml}</div>
