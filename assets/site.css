@@ -23,7 +23,7 @@
     --site-header-h: 0px;
     --font-ui: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
     --font-heading: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
-    --font-numeric: "Inter", "Segoe UI", "Arial", sans-serif;
+    --font-numeric: "BIZ UDPGothic", "Segoe UI", "Arial", sans-serif;
 }
 
 /* base */
@@ -10533,7 +10533,7 @@ html:root body :where(
     font-weight: 700 !important;
 }
 
-/* Keep public-page numerals consistent after page-specific styles. */
+/* Keep prices and metrics consistent with the BIZ UDPGothic UI. */
 html:root body :is(
     [class$="-price"],
     [class*="-price-"],
@@ -10552,7 +10552,8 @@ html:root body :is(
     [class$="-stat"],
     [class*="-stat-"]
 ) {
-    font-family: var(--font-numeric) !important;
+    font-family: var(--font-heading) !important;
+    font-weight: 700 !important;
     font-variant-numeric: tabular-nums;
 }
 
