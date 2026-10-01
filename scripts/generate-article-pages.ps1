@@ -8,6 +8,7 @@
 
 $ErrorActionPreference = "Stop"
 $utf8 = [System.Text.UTF8Encoding]::new($false)
+$defaultCoverImage = './assets/生成画像1.png'
 
 function HtmlEncode([object]$Value) { return [System.Net.WebUtility]::HtmlEncode([string]$Value) }
 function AttrEncode([object]$Value) { return (HtmlEncode $Value) }
@@ -51,7 +52,10 @@ foreach ($article in $dynamic) {
   $pageTitle = "$title｜ポケスリ相場ナビ"
   $description = Plain-Text $article
   $canonical = "$($SiteOrigin.TrimEnd('/'))/articles/$([uri]::EscapeDataString($slug))/"
-  $image = Absolute-Url ([string]$article.coverImage)
+  $coverImage = ([string]$article.coverImage).Trim()
+  $hasCoverImage = -not [string]::IsNullOrWhiteSpace($coverImage)
+  if (-not $hasCoverImage) { $coverImage = $defaultCoverImage }
+  $image = Absolute-Url $coverImage
   $date = ([string]$article.publishedAt).Trim()
   $updated = ([string]$article.updatedAt).Trim(); if (-not $updated) { $updated = $date }
   $category = ([string]$article.category).Trim()
@@ -66,10 +70,8 @@ foreach ($article in $dynamic) {
   }
   $jsonLd = ($jsonLdObject | ConvertTo-Json -Depth 8 -Compress) -replace '</script', '<\/script'
 
-  $cover = ''
-  if (([string]$article.coverImage).Trim()) {
-    $cover = "`n            <img class=`"article-cover`" src=`"$(AttrEncode $article.coverImage)`" alt=`"$(AttrEncode $title)`" width=`"1600`" height=`"900`" decoding=`"async`">"
-  }
+  $coverClass = if ($hasCoverImage) { 'article-cover' } else { 'article-cover article-cover--default' }
+  $cover = "`n            <img class=`"$coverClass`" src=`"$(AttrEncode $coverImage)`" alt=`"$(AttrEncode $title)`" width=`"1600`" height=`"900`" decoding=`"async`">"
   $explicitExcerpt = ([string]$article.excerpt).Trim()
   $excerpt = ''; if ($explicitExcerpt) { $excerpt = "`n              <p class=`"article-lead`">$(HtmlEncode $explicitExcerpt)</p>" }
   $staticArticle = @"
@@ -106,10 +108,15 @@ $cards = foreach ($article in ($published | Sort-Object `
   $slug = ([string]$article.slug).Trim(); if (-not $slug) { $slug = ([string]$article.id).Trim() }
   $href = ([string]$article.linkUrl).Trim(); if (-not $href) { $href = "./articles/$([uri]::EscapeDataString($slug))/" }
   $description = Plain-Text $article
-  $image = ([string]$article.coverImage).Trim(); if (-not $image) { $image = './assets/favicon.svg' }
+  $image = ([string]$article.coverImage).Trim()
+  $imageClass = 'article-thumb'
+  if (-not $image) {
+    $image = $defaultCoverImage
+    $imageClass += ' article-thumb--default'
+  }
 @"
               <a class="article-card" href="$(AttrEncode $href)">
-                <img class="article-thumb" src="$(AttrEncode $image)" alt="" width="1600" height="900" decoding="async">
+                <img class="$imageClass" src="$(AttrEncode $image)" alt="" width="1600" height="900" decoding="async">
                 <div class="article-card-body"><div class="article-meta"><span>$(HtmlEncode $article.category)</span><span>$(HtmlEncode $article.publishedAt)</span></div><h2 class="article-card-title">$(HtmlEncode $article.title)</h2></div>
               </a>
 "@
