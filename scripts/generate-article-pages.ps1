@@ -100,7 +100,9 @@ foreach ($article in $dynamic) {
   [System.IO.File]::WriteAllText((Join-Path $dir 'index.html'), $html, $utf8)
 }
 
-$cards = foreach ($article in ($published | Sort-Object publishedAt -Descending)) {
+$cards = foreach ($article in ($published | Sort-Object `
+  @{ Expression = { [string]$_.publishedAt }; Descending = $true },
+  @{ Expression = { [string]$_.updatedAt }; Descending = $true })) {
   $slug = ([string]$article.slug).Trim(); if (-not $slug) { $slug = ([string]$article.id).Trim() }
   $href = ([string]$article.linkUrl).Trim(); if (-not $href) { $href = "./articles/$([uri]::EscapeDataString($slug))/" }
   $description = Plain-Text $article
