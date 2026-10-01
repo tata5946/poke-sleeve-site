@@ -28,11 +28,11 @@
     }
 
     .article-detail {
-      overflow: hidden;
-      border: 1px solid #d7e1f0;
-      border-radius: 22px;
-      background: #fff;
-      box-shadow: 0 14px 30px rgba(15, 23, 42, .05);
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .article-cover {
@@ -41,6 +41,7 @@
       height: auto;
       aspect-ratio: 16 / 7;
       object-fit: cover;
+      border-radius: 0;
       background:
         radial-gradient(circle at 20% 18%, rgba(255, 204, 0, .34), transparent 30%),
         radial-gradient(circle at 82% 16%, rgba(30, 91, 215, .2), transparent 28%),
@@ -544,7 +545,7 @@
 
           <div id="articleMount" class="article-page">
           <article class="article-detail" data-article-slug="article-2026-08-26">
-            <header class="article-header">
+            <header class="article-head">
               <div class="article-meta"><span>サイト情報</span><span>2026-08-26</span></div>
               <h1 class="article-detail-title">ポケカのデッキシールドをコレクション管理<span class="article-title-tail">｜「マイコレクション」機能を追加しました</span></h1>
             </header>

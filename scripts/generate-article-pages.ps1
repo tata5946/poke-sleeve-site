@@ -74,7 +74,7 @@ foreach ($article in $dynamic) {
   $excerpt = ''; if ($explicitExcerpt) { $excerpt = "`n              <p class=`"article-lead`">$(HtmlEncode $explicitExcerpt)</p>" }
   $staticArticle = @"
           <article class="article-detail" data-article-slug="$(AttrEncode $slug)">$cover
-            <header class="article-header">
+            <header class="article-head">
               <div class="article-meta"><span>$(HtmlEncode $category)</span><span>$(HtmlEncode $date)</span></div>
               <h1 class="article-detail-title">$titleHtml</h1>$excerpt
             </header>
