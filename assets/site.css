@@ -8603,8 +8603,17 @@ footer.site-footer {
     display: block;
     width: 100%;
     height: auto;
-    font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif;
+    font-family: var(--font-heading);
     touch-action: manipulation;
+}
+
+/* Keep every inline SVG chart on the shared BIZ UDPGothic type system. */
+svg.chart,
+svg[class*="-chart"],
+.chart svg,
+.price-index-chart,
+.my-asset-chart-svg {
+    font-family: var(--font-heading) !important;
 }
 
 .my-asset-chart-wrap.is-mobile-density {
