@@ -110,7 +110,7 @@ $cards = foreach ($article in ($published | Sort-Object `
 @"
               <a class="article-card" href="$(AttrEncode $href)">
                 <img class="article-thumb" src="$(AttrEncode $image)" alt="" width="1600" height="900" decoding="async">
-                <div class="article-card-body"><div class="article-meta"><span>$(HtmlEncode $article.category)</span><span>$(HtmlEncode $article.publishedAt)</span></div><h2 class="article-card-title">$(HtmlEncode $article.title)</h2><p class="article-excerpt">$(HtmlEncode $description)</p></div>
+                <div class="article-card-body"><div class="article-meta"><span>$(HtmlEncode $article.category)</span><span>$(HtmlEncode $article.publishedAt)</span></div><h2 class="article-card-title">$(HtmlEncode $article.title)</h2></div>
               </a>
 "@
 }
