@@ -10520,6 +10520,19 @@ html:root body :where(
     font-family: var(--font-ui) !important;
 }
 
+/* Use the native BIZ UDPGothic Bold face instead of synthesized 800/900 weights. */
+html:root body :where(
+    h1, h2, h3, h4, h5, h6,
+    strong, b, th,
+    button, .btn,
+    .name,
+    [class$="-title"],
+    [class*="-title-"]
+) {
+    font-family: var(--font-heading) !important;
+    font-weight: 700 !important;
+}
+
 /* Keep public-page numerals consistent after page-specific styles. */
 html:root body :is(
     [class$="-price"],
