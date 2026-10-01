@@ -20,7 +20,7 @@
     radial-gradient(circle at 88% 0%, rgba(163, 205, 238, .28), transparent 28rem),
     linear-gradient(180deg, #f7fbff 0%, #f4f8fb 46%, #f6f8fb 100%) !important;
   color: var(--ranking-ink) !important;
-  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif !important;
+  font-family: var(--font-ui) !important;
 }
 
 :root body.ranking-redesign-page .ranking-page-title,
@@ -33,7 +33,7 @@
 :root body.ranking-redesign-page .ranking-filter-card,
 :root body.ranking-redesign-page button,
 :root body.ranking-redesign-page select {
-  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif !important;
+  font-family: var(--font-heading) !important;
 }
 
 :root body.ranking-redesign-page .podium-badge,
@@ -44,7 +44,7 @@
 :root body.ranking-redesign-page .compact-price,
 :root body.ranking-redesign-page .compact-delta,
 :root body.ranking-redesign-page .compact-rate {
-  font-family: "Inter", "Noto Sans JP", sans-serif !important;
+  font-family: var(--font-heading) !important;
 }
 
 :root body.ranking-redesign-page .dashboard-content {
@@ -696,7 +696,7 @@
   margin-right: 16px;
   color: #45617f;
   font-size: 15px;
-  font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+  font-family: var(--font-heading);
   font-weight: 900;
 }
 
@@ -773,7 +773,7 @@
 :root body.ranking-redesign-page .sleeve-sparkline-label {
   display: block !important;
   fill: #6f86a4 !important;
-  font-family: "Inter", "Noto Sans JP", sans-serif !important;
+  font-family: var(--font-heading) !important;
   font-size: 10px !important;
   font-weight: 800 !important;
 }
@@ -828,7 +828,7 @@
   align-items: center !important;
   gap: 12px !important;
   color: #6f86a4 !important;
-  font-family: "Inter", "Noto Sans JP", sans-serif !important;
+  font-family: var(--font-heading) !important;
 }
 
 :root body.ranking-redesign-page .sleeve-sparkline-foot span {
@@ -1758,7 +1758,7 @@
   flex-direction: column;
   justify-content: space-between;
   color: #6f86a4;
-  font-family: "Inter", "Noto Sans JP", sans-serif;
+  font-family: var(--font-heading);
   font-size: 10px;
   font-weight: 800;
   line-height: 1;
@@ -2259,7 +2259,7 @@
   html:root body.ranking-redesign-page .sleeve-sparkline-y-axis,
   html:root body.ranking-redesign-page .sleeve-sparkline-x-axis {
     color: #71839d !important;
-    font-family: "Inter", "Noto Sans JP", sans-serif !important;
+    font-family: var(--font-heading) !important;
     font-size: 8px !important;
     font-weight: 800 !important;
     line-height: 1 !important;
