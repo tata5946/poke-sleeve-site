@@ -10542,6 +10542,16 @@ html:root body :is(
     font-family: var(--font-numeric) !important;
     font-variant-numeric: tabular-nums;
 }
+
+/* Product metadata values can contain Japanese text, so keep them on the UI font. */
+html:root body .detail-info-card :is(
+    .detail-meta-chip-label,
+    .detail-meta-chip-value,
+    .detail-info-label,
+    .detail-info-value
+) {
+    font-family: var(--font-ui) !important;
+}
 #weeklyTable {
   display: none !important;
 }
