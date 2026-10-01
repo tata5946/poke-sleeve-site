@@ -3,7 +3,7 @@
    - header / nav / hero / panels / tiles / grid / responsive を含む
 */
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;600;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Inter:wght@400;500;600;700;800;900&display=swap");
 
 :root {
     --bg: #f5f9ff;
@@ -21,8 +21,8 @@
     --accent2: #ffcc00;
     --max-width: 100%;
     --site-header-h: 0px;
-    --font-ui: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
-    --font-heading: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+    --font-ui: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+    --font-heading: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
     --font-numeric: "Inter", "Segoe UI", "Arial", sans-serif;
 }
 
@@ -10509,8 +10509,19 @@ html:root body.ranking-redesign-page .podium-card:not(.podium-card--rank1) .podi
     object-position: center !important;
 }
 
+/* Apply the shared Japanese webfont after page-specific inline styles. */
+html:root body,
+html:root body :where(
+    h1, h2, h3, h4, h5, h6,
+    p, a, button, input, select, textarea, label,
+    th, td, li, dt, dd, figcaption,
+    div, span, strong, em, small
+) {
+    font-family: var(--font-ui) !important;
+}
+
 /* Keep public-page numerals consistent after page-specific styles. */
-html:root body:not(.home-page) :is(
+html:root body :is(
     [class$="-price"],
     [class*="-price-"],
     [class$="-value"],
