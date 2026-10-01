@@ -10147,10 +10147,10 @@ html:root body.shared-page-layout .shared-page-body {
 
 html:root body.shared-page-layout .shared-page-heading-title {
     margin: 0 !important;
-    font-family: "Zen Kaku Gothic New", var(--font-heading) !important;
+    font-family: var(--font-heading) !important;
     font-size: clamp(30px, 3.6vw, 42px) !important;
     line-height: 1.15 !important;
-    font-weight: 900 !important;
+    font-weight: 700 !important;
     letter-spacing: 0 !important;
 }
 
@@ -10432,10 +10432,10 @@ html:root body.ranking-shared-layout .ranking-shared-heading .ranking-hero-label
 html:root body.ranking-shared-layout .ranking-shared-title {
     margin: 0 !important;
     color: #111827 !important;
-    font-family: "Zen Kaku Gothic New", var(--font-heading) !important;
+    font-family: var(--font-heading) !important;
     font-size: 42px !important;
     line-height: 1.15 !important;
-    font-weight: 900 !important;
+    font-weight: 700 !important;
     letter-spacing: 0 !important;
     white-space: normal !important;
 }
