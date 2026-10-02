@@ -134,8 +134,12 @@ const FOOTER_HTML = `
 <footer class="site-footer">
   <div>&copy; 2026 ポケスリ相場ナビ | <a href="./policy.html">プライバシーポリシー・免責事項</a></div>
   <div class="footer-disclosure">当サイトはアフィリエイト広告を利用しています</div>
+  <a class="footer-x-link" href="https://x.com/pokesurinavi" target="_blank" rel="noopener noreferrer" aria-label="ポケスリ相場ナビのXアカウント @pokesurinavi">
+    <svg class="footer-x-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg>
+    <span>@pokesurinavi</span>
+  </a>
   <!-- Rakuten Web Services Attribution Snippet FROM HERE -->
-  <a href="https://developers.rakuten.com/" target="_blank">Supported by Rakuten Developers</a>
+  <a href="https://developers.rakuten.com/" target="_blank" rel="noopener noreferrer">Supported by Rakuten Developers</a>
   <!-- Rakuten Web Services Attribution Snippet TO HERE -->
 </footer>
 `;
