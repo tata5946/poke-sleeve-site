@@ -1,4 +1,9 @@
-.access-mobile-list, .access-mobile-sort, .access-ranking-help { display: none; }
+.access-mobile-list, .access-ranking-help { display: none; }
+
+html:root body.ranking-redesign-page--views .ranking-main [hidden],
+html:root body.ranking-redesign-page--views .access-mobile-card[hidden],
+html:root body.ranking-redesign-page--views .access-ranking-empty[hidden] { display: none !important; }
+.access-ranking-empty { padding: 24px 12px; color: #637695; font-size: 13px; text-align: center; }
 
 html:root body.ranking-redesign-page--views .shared-page-heading .shared-page-heading-title::before,
 html:root body.ranking-redesign-page--views .shared-page-heading .shared-page-heading-title::after { content: none !important; display: none !important; }
@@ -14,18 +19,15 @@ html:root body.ranking-redesign-page--views .shared-page-heading .shared-page-he
   .access-ranking-help summary span { font-size: 18px; }
   .access-ranking-help p { margin: 8px 0 0; line-height: 1.7; }
   html:root body.ranking-redesign-page--views .ranking-filter-card { display: block !important; padding: 0 !important; background: transparent !important; box-shadow: none !important; border: 0 !important; }
-  html:root body.ranking-redesign-page--views .ranking-filter-grid { display: grid !important; grid-template-columns: 1fr 1fr 1.15fr !important; gap: 8px !important; overflow: visible !important; }
+  html:root body.ranking-redesign-page--views .ranking-filter-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; overflow: visible !important; }
   html:root body.ranking-redesign-page--views .ranking-filter-field { min-width: 0 !important; width: 100% !important; }
   html:root body.ranking-redesign-page--views .ranking-filter-field:has(#priceBand) { display: none !important; }
-  html:root body.ranking-redesign-page--views .access-mobile-sort { display: block !important; grid-column: 3; grid-row: 1; }
   html:root body.ranking-redesign-page--views .ranking-filter-field select { width: 100% !important; min-width: 0 !important; height: 40px !important; font-size: 11px !important; padding: 0 6px !important; text-overflow: ellipsis; }
   html:root body.ranking-redesign-page--views .ranking-filter-actions { grid-column: 1 / -1; display: none !important; }
   html:root body.ranking-redesign-page--views .ranking-filter-actions:has(.has-filters) { display: block !important; }
   html:root body.ranking-redesign-page--views #top3,
   html:root body.ranking-redesign-page--views #restSection { display: none !important; }
   .access-mobile-list { display: grid; gap: 10px; margin-top: 20px; }
-  .access-mobile-loading, .access-mobile-load-error { margin: 0; padding: 24px 12px; color: #637695; font-size: 13px; text-align: center; }
-  .access-mobile-load-error a { display: inline-block; margin-top: 12px; padding: 10px 16px; border: 1px solid #dce6f1; border-radius: 8px; color: #1e5bd7; text-decoration: none; }
   .access-mobile-card { position: relative; display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 12px; padding: 10px; border: 1px solid #dce6f1; border-radius: 12px; background: #fff; color: #071635; text-decoration: none; min-height: 128px; }
   .access-mobile-card:focus-visible { outline: 3px solid #2475dc; outline-offset: 2px; }
   .access-mobile-image { position: relative; display: grid; place-items: center; min-height: 106px; background: #edf2f8; border-radius: 8px; overflow: hidden; font-size: 11px; color: #8290a5; }
