@@ -1711,7 +1711,7 @@
 
   <script>window.__SLEEVE_CATEGORY_PAGE__ = {"group":"pokemon","tag":"エレキテル"};</script>
   <script src="./assets/category-page-map.js?v=20260917a"></script>
-  <script src="./assets/common.js?v=20261002category"></script>
+  <script src="./assets/common.js?v=20261002categorysearch"></script>
   <script>
     function escapeHtml(str) {
       return String(str ?? "")
@@ -2463,6 +2463,12 @@
       attachSearchSync(pageSearchInput);
       attachSearchSync(headerSearchInput);
       attachSearchSync(dashboardSearchInput);
+      pageSearchInput?.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" || event.defaultPrevented) return;
+        if (!window.common || typeof window.common.navigateToZukanSearch !== "function") return;
+        event.preventDefault();
+        window.common.navigateToZukanSearch(pageSearchInput.value).catch(() => {});
+      });
 
       releaseYearSel.addEventListener("change", renderFromFirstPage);
       seriesSel.addEventListener("change", renderFromFirstPage);

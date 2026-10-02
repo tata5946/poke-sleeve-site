@@ -1828,10 +1828,36 @@ function defaultNavigateToDetail(item) {
   location.href = item.detailHref || buildSleeveDetailHref(item.id);
 }
 
-function defaultNavigateToZukan(query) {
+async function resolveCategorySearchHref(query) {
+  const q = String(query || "").trim();
+  if (!q) return "";
+  await ensureCategoryPageMapLoaded();
+  const target = normalizeSearchText(q);
+  const groupOrder = ["pokemon", "trainer", "series"];
+  for (const group of groupOrder) {
+    const entries = Object.entries(window.__CATEGORY_PAGE_MAP__?.[group] || {});
+    const match = entries.find(([label]) => normalizeSearchText(label) === target);
+    if (match?.[1]) return buildSiteHref(String(match[1]).replace(/^\//, ""));
+  }
+  return "";
+}
+
+async function navigateToZukanSearch(query) {
   const q = String(query || "").trim();
   recordSearchHistory(q);
-  location.href = q ? `./sleeves/?q=${encodeURIComponent(q)}` : "./sleeves/";
+  if (!q) {
+    location.href = buildSiteHref("sleeves/");
+    return;
+  }
+  const categoryHref = await resolveCategorySearchHref(q);
+  location.href = categoryHref || buildSiteHref(`sleeves/?q=${encodeURIComponent(q)}`);
+}
+
+function defaultNavigateToZukan(query) {
+  navigateToZukanSearch(query).catch(() => {
+    const q = String(query || "").trim();
+    location.href = q ? buildSiteHref(`sleeves/?q=${encodeURIComponent(q)}`) : buildSiteHref("sleeves/");
+  });
 }
 
 function wireSleeveAutocomplete(input, options = {}) {
@@ -2404,9 +2430,9 @@ function wireDashboardSearch() {
     input.addEventListener("keydown", (event) => {
       if (event.key !== "Enter") return;
       if (event.defaultPrevented) return;
+      event.preventDefault();
       const q = input.value.trim();
-      recordSearchHistory(q);
-      location.href = q ? buildSiteHref(`sleeves/?q=${encodeURIComponent(q)}`) : buildSiteHref("sleeves/");
+      navigateToZukanSearch(q).catch(() => {});
     });
   });
 }
@@ -2628,10 +2654,9 @@ function wireHeaderSearch() {
   search.addEventListener("keydown", (e) => {
     if (e.key !== "Enter") return;
     if (e.defaultPrevented) return;
+    e.preventDefault();
     const q = search.value.trim();
-    recordSearchHistory(q);
-    if (!q) { location.href = "./sleeves/"; return; }
-    location.href = "./sleeves/?q=" + encodeURIComponent(q);
+    navigateToZukanSearch(q).catch(() => {});
   });
 }
 
@@ -2798,6 +2823,8 @@ window.common = {
   wireDashboardSearch,
   wireSleeveAutocomplete,
   recordSearchHistory,
+  resolveCategorySearchHref,
+  navigateToZukanSearch,
   wireSleeveSelectionFeedback,
   getLatestPositivePrice,
   waitForInjected,
