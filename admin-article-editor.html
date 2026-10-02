@@ -912,7 +912,7 @@
     }
 
     .block-insert-button {
-      position: fixed;
+      position: absolute;
       z-index: 70;
       display: none;
       border: 1px solid #d0d7de;
@@ -927,6 +927,7 @@
     }
 
     .block-insert-menu {
+      position: absolute;
       flex-direction: column;
       align-items: stretch;
       width: 228px;
@@ -2471,6 +2472,9 @@
         const nearRight = Math.abs(event.clientX - cellRect.right) <= RESIZE_HIT_SIZE;
         const nearBottom = Math.abs(event.clientY - cellRect.bottom) <= RESIZE_HIT_SIZE;
 
+        if (nearRight && Math.abs(event.clientX - tableRect.right) <= RESIZE_HIT_SIZE) {
+          return { type: "column", table, columnIndex: getColumnCount(table) - 1, outerEdge: true };
+        }
         if (nearRight && columnIndex >= 0 && columnIndex < row.children.length - 1) {
           return { type: "column", table, columnIndex };
         }
@@ -2521,6 +2525,8 @@
             columnIndex: hit.columnIndex,
             startX: event.clientX,
             startWidths: widths,
+            outerEdge: Boolean(hit.outerEdge),
+            startTableWidth: hit.table.getBoundingClientRect().width,
             pairWidth: leftWidth + rightWidth,
             leftWidth,
             rightWidth
@@ -2549,10 +2555,18 @@
         if (resizeState.type === "column") {
           const widths = [...resizeState.startWidths];
           const dx = event.clientX - resizeState.startX;
-          const maxLeft = Math.max(MIN_COLUMN_WIDTH, resizeState.pairWidth - MIN_COLUMN_WIDTH);
-          const left = Math.max(MIN_COLUMN_WIDTH, Math.min(maxLeft, resizeState.leftWidth + dx));
-          widths[resizeState.columnIndex] = left;
-          widths[resizeState.columnIndex + 1] = resizeState.pairWidth - left;
+          if (resizeState.outerEdge) {
+            const index = resizeState.columnIndex;
+            widths[index] = Math.max(MIN_COLUMN_WIDTH, resizeState.leftWidth + dx);
+            const fixedWidth = resizeState.startTableWidth - resizeState.leftWidth;
+            resizeState.table.style.minWidth = `${fixedWidth + MIN_COLUMN_WIDTH}px`;
+            resizeState.table.style.width = `${fixedWidth + widths[index]}px`;
+          } else {
+            const maxLeft = Math.max(MIN_COLUMN_WIDTH, resizeState.pairWidth - MIN_COLUMN_WIDTH);
+            const left = Math.max(MIN_COLUMN_WIDTH, Math.min(maxLeft, resizeState.leftWidth + dx));
+            widths[resizeState.columnIndex] = left;
+            widths[resizeState.columnIndex + 1] = resizeState.pairWidth - left;
+          }
           applyColumnWidths(resizeState.table, widths);
         } else {
           const height = Math.max(MIN_ROW_HEIGHT, resizeState.startHeight + event.clientY - resizeState.startY);
@@ -2698,6 +2712,7 @@
         if (resizeState) updateTableResize(event);
       });
       window.addEventListener("pointerup", finishTableResize);
+      window.addEventListener("pointercancel", finishTableResize);
       editor.addEventListener("click", (event) => {
         const cell = getCell(event.target);
         if (cell) updateToolbarPosition(cell);
@@ -3011,16 +3026,21 @@
         }
         const rect = getSelectionRect(selection) || editor.getBoundingClientRect();
         const editorRect = editor.getBoundingClientRect();
-        button.style.left = `${Math.max(8, editorRect.left - 48)}px`;
-        button.style.top = `${Math.max(76, rect.top - 7)}px`;
+        button.style.left = `${window.scrollX + Math.max(8, editorRect.left - 48)}px`;
+        button.style.top = `${window.scrollY + rect.top - 7}px`;
         button.classList.add("is-visible");
+        if (menu.classList.contains("is-visible")) positionMenu();
+      };
+
+      const positionMenu = () => {
+        const rect = button.getBoundingClientRect();
+        menu.style.left = `${window.scrollX + rect.right + 8}px`;
+        menu.style.top = `${window.scrollY + rect.top}px`;
       };
 
       button.addEventListener("mousedown", (event) => event.preventDefault());
       button.addEventListener("click", () => {
-        const rect = button.getBoundingClientRect();
-        menu.style.left = `${rect.right + 8}px`;
-        menu.style.top = `${rect.top}px`;
+        positionMenu();
         menu.classList.toggle("is-visible");
       });
       menu.addEventListener("mousedown", (event) => event.preventDefault());
@@ -3038,7 +3058,8 @@
       editor.addEventListener("click", positionButton);
       editor.addEventListener("keyup", positionButton);
       document.addEventListener("selectionchange", positionButton);
-      window.addEventListener("scroll", positionButton, { passive: true });
+      window.addEventListener("scroll", positionButton, { passive: true, capture: true });
+      window.addEventListener("resize", positionButton, { passive: true });
     }
 
     function initNoteLikeWritingSurface() {
