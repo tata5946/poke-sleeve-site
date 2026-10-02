@@ -13,7 +13,8 @@ assert.ok(!/mobileSort|ranking-mobile-sort/.test(html + css + code), 'Sorting mu
 assert.ok(!/loadData|fetch\s*\(/.test(code), 'Static ranking must not request data');
 assert.ok(!/ranking-mobile-loading|aria-busy="true"/.test(html + css), 'Initial rendering must not wait for JavaScript');
 assert.ok(!css.includes('ranking-mobile-ready'), 'Old cards must be hidden before JavaScript runs');
-assert.match(css, /body\.ranking-redesign-page #top3,[\s\S]*body\.ranking-redesign-page #restSection \{ display: none !important; \}/);
+assert.match(css, /body\.ranking-redesign-page #top3 \{ display: none !important; \}/);
+assert.match(css, /body\.ranking-redesign-page #restSection \{ display: block !important; \}/);
 
 function decode(text) {
   return text.replace(/&#(\d+);/g, (_, number) => String.fromCodePoint(Number(number))).replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
@@ -27,12 +28,12 @@ function cards(attribute) {
 }
 const mobile = cards('data-ranking-mobile-item');
 const desktop = cards('data-static-ranking-item');
-assert.equal(mobile.length, snapshot.length, 'Every ranked item must be in the initial mobile HTML');
-assert.equal(desktop.length, snapshot.length, 'Desktop and mobile must contain the same ranking');
-assert.deepEqual(mobile.map(card => card.dataset.rankingId), desktop.map(card => card.dataset.rankingId));
-for (let index = 3; index < mobile.length; index++) assert.equal(desktop[index].markup, mobile[index].markup, 'Desktop cards after the podium must share mobile content');
-assert.equal(new Set(mobile.map(card => card.dataset.rankingId)).size, mobile.length, 'No duplicate items');
-for (const [index, card] of mobile.entries()) {
+assert.equal(mobile.length, Math.min(3, snapshot.length), 'Only the mobile podium is duplicated');
+assert.equal(desktop.length, snapshot.length, 'Every ranked item must remain in static HTML');
+assert.deepEqual(mobile.map(card => card.dataset.rankingId), desktop.slice(0, 3).map(card => card.dataset.rankingId));
+assert.equal(new Set(desktop.map(card => card.dataset.rankingId)).size, desktop.length, 'No duplicate desktop items');
+const mobileView = [...mobile, ...desktop.slice(3)];
+for (const [index, card] of mobileView.entries()) {
   assert.equal(Number(card.dataset.rankingRank), index + 1);
   assert.ok(card.markup.includes('<h3>') && card.markup.includes('ranking-mobile-price') && card.markup.includes('sleeve-sparkline'), 'Names, prices and graphs must be static');
 }
@@ -45,4 +46,4 @@ const context = createContext({ document: { body: { dataset: { rankingActive: 'a
 new Script(code, { filename: 'assets/ranking-static.js' }).runInContext(context);
 await Promise.resolve();
 assert.ok(navigationCalled);
-console.log('PASS: ' + mobile.length + ' static mobile/desktop cards, no sorting/filtering or ranking fetch, static graph markup, and navigation failure fallback.');
+console.log('PASS: ' + desktop.length + ' static responsive cards, no sorting/filtering or ranking fetch, static graph markup, and navigation failure fallback.');

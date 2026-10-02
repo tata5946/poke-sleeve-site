@@ -212,7 +212,9 @@ function ReplaceRanking([string]$Path,[array]$Rows,[string]$Type) {
   $html=[regex]::Replace($html,'(?s)<div id="list" class="[^"]+">.*?</div>\s*</section>',{param($m)$listMarkup+"`r`n      </section>"},1)
 
   if($html -notmatch '<!-- STATIC_RANKING_MOBILE_START -->' -or $html -notmatch '<!-- STATIC_RANKING_MOBILE_END -->'){throw 'Static mobile ranking markers are missing'}
-  $mobile=@();for($i=0;$i -lt $selected.Count;$i++){$mobile+=RankingMobileHtml $selected[$i] ($i+1) $Type}
+  # Only the podium needs separate mobile markup. Ranks 4+ reuse the identical
+  # static cards in #list, avoiding a second copy of the full ranking in HTML.
+  $mobile=@();for($i=0;$i -lt [math]::Min(3,$selected.Count);$i++){$mobile+=RankingMobileHtml $selected[$i] ($i+1) $Type}
   $mobileMarkup='<!-- STATIC_RANKING_MOBILE_START -->' + "`r`n" + '<div id="rankingMobileList" class="ranking-mobile-list" aria-label="&#12521;&#12531;&#12461;&#12531;&#12464;&#19968;&#35239;">' + "`r`n" + ($mobile -join "`r`n") + "`r`n" + '</div>' + "`r`n" + '<!-- STATIC_RANKING_MOBILE_END -->'
   $html=[regex]::Replace($html,'(?s)<!-- STATIC_RANKING_MOBILE_START -->.*?<!-- STATIC_RANKING_MOBILE_END -->',{param($m)$mobileMarkup},1)
   $html=[regex]::Replace($html,'<strong id="countInfo">.*?</strong>',{param($m)'<strong id="countInfo">'+$selected.Count+'&#20214;</strong>'},1)
@@ -249,7 +251,7 @@ function ReplaceRanking([string]$Path,[array]$Rows,[string]$Type) {
   if($mismatches){throw "Static ranking validation failed ($mismatches mismatches): $Path"}
 
   $mobileCards=[regex]::Matches($written,'data-ranking-mobile-item\s+data-ranking-id="([^"]*)"\s+data-ranking-rank="(\d+)"')
-  if($mobileCards.Count -ne $selected.Count){throw 'Static mobile ranking count does not match desktop'}
+  if($mobileCards.Count -ne [math]::Min(3,$selected.Count)){throw 'Static mobile podium count does not match desktop'}
   for($i=0;$i -lt $mobileCards.Count;$i++){if($mobileCards[$i].Groups[1].Value -ne [string]$selected[$i].s.id -or [int]$mobileCards[$i].Groups[2].Value -ne $i+1){throw 'Static mobile ranking order does not match desktop'}}
   Write-Output "Generated and validated $($selected.Count) static ranking items (0 mismatches): $Path"
 }

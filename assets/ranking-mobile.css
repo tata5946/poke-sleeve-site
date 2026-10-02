@@ -14,14 +14,22 @@ html:root body.ranking-redesign-page .shared-page-heading .shared-page-heading-t
   .ranking-help summary span { font-size: 18px; }
   .ranking-help p { margin: 8px 0 0; line-height: 1.7; }
 
-  html:root body.ranking-redesign-page #top3,
-  html:root body.ranking-redesign-page #restSection { display: none !important; }
+  html:root body.ranking-redesign-page #top3 { display: none !important; }
+  html:root body.ranking-redesign-page #restSection { display: block !important; }
+  html:root body.ranking-redesign-page #restSection .ranking-section-head { display: none !important; }
+  html:root body.ranking-redesign-page #list {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+    margin-top: 10px !important;
+  }
   .ranking-mobile-list { display: grid; gap: 10px; margin-top: 20px; }
   .ranking-mobile-empty { padding: 24px; text-align: center; font-size: 13px; }
 }
 
 /* The desktop list and mobile list use the same card component. */
   .ranking-mobile-card { position: relative; display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 12px; padding: 10px; border: 1px solid #dce6f1; border-radius: 12px; background: #fff; color: #071635; text-decoration: none; min-height: 128px; }
+  #list .ranking-mobile-card { content-visibility: auto; contain-intrinsic-size: auto 136px; }
   .ranking-mobile-card:focus-visible { outline: 3px solid #2475dc; outline-offset: 2px; }
   .ranking-mobile-image { position: relative; display: grid; place-items: center; min-height: 106px; background: #edf2f8; border-radius: 8px; overflow: hidden; font-size: 11px; color: #8290a5; }
   .ranking-mobile-image img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 5px; background: #edf2f8; }
