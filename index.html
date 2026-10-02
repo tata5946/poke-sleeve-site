@@ -5285,7 +5285,7 @@
   </div>
 
   <script src="./assets/category-page-map.js?v=20260917a"></script>
-  <script src="./assets/common.js?v=20261002xfooter"></script>
+  <script src="./assets/common.js?v=20261002category"></script>
   <script>
     const ACCESS_RANKING_ENDPOINT = window.GAS_URL || "";
     const ACCESS_RANKING_CACHE_KEY = "home_access_ranking_cache_v2";
@@ -6965,9 +6965,10 @@
       };
 
       const syncVisibility = () => {
+        const isLoading = !!list.querySelector(".skeleton-block");
         const hasItems = !!list.querySelector(".category-nav-item");
-        shell.hidden = !hasItems;
-        if (!hasItems) setOpen(false);
+        shell.hidden = !isLoading && !hasItems;
+        if (!isLoading && !hasItems) setOpen(false);
       };
 
       button.addEventListener("click", () => {
@@ -7024,6 +7025,11 @@
       const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
       wireHomeSleeveSearch(sleeves);
       wireSidebarCategoryToggle();
+      if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
+        try {
+          await window.common.ensureCategoryNavsRendered(sleeves);
+        } catch (_) {}
+      }
       const latestWeek = getGlobalLatestTradeWeek(sleeves);
 
       const priceRank = sleeves.map((s) => ({ s, price: getLatestWeeklyPrice(s) })).filter((row) => row.price != null).sort((a, b) => b.price - a.price).slice(0, 10).map((row) => row.s);
@@ -7049,13 +7055,6 @@
         renderMarketSnapshot(marketSeries, sleeves);
       });
 
-      runDeferred(async () => {
-        if (window.common && typeof window.common.ensureCategoryNavsRendered === "function") {
-          try {
-            await window.common.ensureCategoryNavsRendered(sleeves);
-          } catch (_) {}
-        }
-      });
     }
 
     main().catch((error) => {

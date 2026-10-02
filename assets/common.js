@@ -155,7 +155,7 @@ function buildDashboardSidebarHtml(activeSidebar = "") {
     <a class="${itemClass("index")}" href="${escapeHtml(buildSiteHref("index.html"))}"><span class="sidebar-link-icon" aria-hidden="true">⌂</span><span>ホーム</span></a>
     <a class="${itemClass("zukan")}" href="${escapeHtml(buildSiteHref("sleeves/"))}"><span class="sidebar-link-icon" aria-hidden="true">▤</span><span>スリーブ図鑑</span></a>
     <a class="${itemClass("collection")}" href="${escapeHtml(buildSiteHref("my-collection.html"))}"><span class="sidebar-link-icon" aria-hidden="true">＋</span><span>マイコレクション</span><span class="my-collection-count-badge" data-my-collection-count hidden>0</span></a>
-    <div id="sidebarCategoryShell" class="sidebar-category-shell" hidden>
+    <div id="sidebarCategoryShell" class="sidebar-category-shell">
       <button type="button" class="sidebar-link sidebar-category-toggle" id="sidebarCategoryToggle" aria-expanded="false" aria-controls="categoryNav">
         <span class="sidebar-category-toggle-label">
           <span class="sidebar-link-icon" aria-hidden="true">☰</span>
@@ -2426,9 +2426,10 @@ function wireDashboardSidebarCategoryToggle() {
   };
 
   const syncVisibility = () => {
+    const isLoading = !!list.querySelector(".skeleton-block");
     const hasItems = !!list.querySelector(".category-nav-item");
-    shell.hidden = !hasItems;
-    if (!hasItems) setOpen(false);
+    shell.hidden = !isLoading && !hasItems;
+    if (!isLoading && !hasItems) setOpen(false);
   };
 
   button.addEventListener("click", () => {
