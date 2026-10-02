@@ -1596,14 +1596,31 @@
     }
 
     @media (max-width:600px) {
-      .category-market-summary { width:calc(100% - 36px); max-width:calc(100% - 36px); margin:0 18px 22px; padding:14px; }
+      .category-market-summary { gap:12px; width:calc(100% - 36px); max-width:calc(100% - 36px); margin:0 18px 22px; padding:14px; }
       .category-market-summary-head { align-items:flex-start; flex-direction:column; gap:4px; }
-      .category-market-stat { grid-template-columns:40px minmax(0,1fr); padding:11px 9px; }
-      .category-market-stat-icon { width:40px; height:40px; font-size:22px; }
-      .category-market-highest { grid-template-columns:1fr; gap:10px; padding:14px; }
-      .category-market-highest-divider { display:none; }
-      .category-market-highest-price-wrap { justify-items:start; }
-      .category-market-highest-price { font-size:24px; }
+      .category-market-summary-title { width:100%; gap:8px; font-size:clamp(15px,4vw,19px); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .category-market-title-icon { width:24px; height:27px; flex:0 0 24px; }
+      .category-market-title-icon i { width:5px; }
+      .category-market-title-icon i:nth-child(1) { height:12px; }
+      .category-market-title-icon i:nth-child(2) { height:19px; }
+      .category-market-title-icon i:nth-child(3) { height:26px; }
+      .category-market-summary-note { align-self:stretch; justify-content:flex-end; font-size:10px; }
+      .category-market-summary-grid { gap:8px; }
+      .category-market-stat { grid-template-columns:36px minmax(0,1fr); gap:8px; padding:10px 8px; }
+      .category-market-stat-icon { width:36px; height:36px; font-size:20px; }
+      .category-market-stat-label { font-size:10px; }
+      .category-market-stat-value { font-size:clamp(17px,5vw,22px); }
+      .category-market-stat-unit { font-size:9px; }
+      .category-market-stat:last-child { position:relative; }
+      .category-market-stat:last-child::after { content:"›"; position:absolute; right:14px; color:#64748b; font-size:26px; font-weight:700; }
+      .category-market-highest { grid-template-columns:minmax(0,1fr) 1px auto; gap:10px 14px; padding:13px 14px; }
+      .category-market-highest-label { grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; font-size:15px; }
+      .category-market-highest-label::after { content:"›"; font-size:27px; line-height:1; }
+      .category-market-highest-divider { display:block; grid-column:2; grid-row:2; }
+      .category-market-highest-copy { grid-column:1; grid-row:2; }
+      .category-market-highest-price-wrap { grid-column:3; grid-row:2; justify-items:end; }
+      .category-market-highest-name { font-size:17px; }
+      .category-market-highest-price { font-size:23px; }
     }
   </style>
 </head>
