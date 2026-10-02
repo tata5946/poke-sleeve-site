@@ -625,6 +625,15 @@
       box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.08);
     }
 
+    .zukan-filter-field.is-category-locked select:disabled {
+      cursor: default;
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+      background: #eff6ff;
+      opacity: 1;
+      font-weight: 700;
+    }
+
     .zukan-filter-actions {
       min-width: 82px;
     }
@@ -2204,6 +2213,29 @@
       fillSelectOptions(trainerFilterSel, trainerList);
       fillSelectOptions(illustratorFilterSel, illustratorList);
 
+      function applyStaticCategoryFilter() {
+        if (!staticCategoryPage?.group || !staticCategoryPage?.tag) return;
+        const selectByGroup = {
+          pokemon: pokemonFilterSel,
+          trainer: trainerFilterSel,
+          series: seriesSel
+        };
+        const selectEl = selectByGroup[staticCategoryPage.group];
+        if (!selectEl) return;
+        if (!Array.from(selectEl.options).some((option) => option.value === staticCategoryPage.tag)) {
+          const option = document.createElement("option");
+          option.value = staticCategoryPage.tag;
+          option.textContent = staticCategoryPage.tag;
+          selectEl.appendChild(option);
+        }
+        selectEl.value = staticCategoryPage.tag;
+        selectEl.disabled = true;
+        selectEl.setAttribute("aria-label", `${staticCategoryPage.tag}で固定`);
+        selectEl.closest(".zukan-filter-field")?.classList.add("is-category-locked");
+      }
+
+      applyStaticCategoryFilter();
+
       function getCardPrice(s) {
         return getLatestWeeklyPrice(s);
       }
@@ -2292,8 +2324,8 @@
         if (!activeSummary) return;
         const chips = [];
         if (kw) chips.push(`<span class="zukan-active-chip">検索 <strong>${escapeHtml(kw)}</strong></span>`);
-        if (group) chips.push(`<span class="zukan-active-chip">カテゴリ <strong>${escapeHtml(group)}</strong></span>`);
-        if (tag) chips.push(`<span class="zukan-active-chip">タグ <strong>${escapeHtml(tag)}</strong></span>`);
+        if (group && !staticCategoryPage) chips.push(`<span class="zukan-active-chip">カテゴリ <strong>${escapeHtml(group)}</strong></span>`);
+        if (tag && !staticCategoryPage) chips.push(`<span class="zukan-active-chip">タグ <strong>${escapeHtml(tag)}</strong></span>`);
         if (type) chips.push(`<span class="zukan-active-chip">種別 <strong>${escapeHtml(type)}</strong></span>`);
         if (releaseYear) chips.push(`<span class="zukan-active-chip">発売年 <strong>${escapeHtml(releaseYear)}</strong></span>`);
         if (series) chips.push(`<span class="zukan-active-chip">シリーズ <strong>${escapeHtml(series)}</strong></span>`);
@@ -2582,6 +2614,7 @@
         if (trainerFilterSel) trainerFilterSel.value = "";
         if (illustratorFilterSel) illustratorFilterSel.value = "";
         sortOrderSel.value = "releaseDesc";
+        applyStaticCategoryFilter();
         renderFromFirstPage();
       });
 
