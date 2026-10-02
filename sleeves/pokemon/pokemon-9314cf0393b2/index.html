@@ -1561,18 +1561,34 @@
 
     .category-market-summary { display:grid; gap:14px; width:min(100%,1180px); margin:0 auto 22px; padding:18px; border:1px solid #f3cf67; border-radius:16px; background:linear-gradient(135deg,#fffdf5 0%,#fff9df 100%); box-shadow:0 10px 28px rgba(146,104,18,.08); }
     .category-market-summary-head { display:flex; align-items:center; justify-content:space-between; gap:16px; }
-    .category-market-summary-title { display:flex; align-items:center; gap:9px; margin:0; color:#172033; font-size:clamp(18px,2vw,24px); font-weight:900; }
-    .category-market-summary-note { margin:0; color:#667085; font-size:11px; font-weight:700; }
+    .category-market-summary-title { display:flex; align-items:center; gap:12px; margin:0; color:#10213f; font-size:clamp(22px,2.3vw,30px); font-weight:900; letter-spacing:-.02em; }
+    .category-market-title-icon { display:inline-flex; align-items:flex-end; gap:3px; width:30px; height:34px; color:#f4b400; }
+    .category-market-title-icon i { display:block; width:6px; border-radius:3px 3px 0 0; background:currentColor; }
+    .category-market-title-icon i:nth-child(1) { height:16px; }
+    .category-market-title-icon i:nth-child(2) { height:25px; }
+    .category-market-title-icon i:nth-child(3) { height:32px; }
+    .category-market-summary-note { display:flex; align-items:center; gap:6px; margin:0; color:#667085; font-size:11px; font-weight:700; }
+    .category-market-help { display:inline-grid; place-items:center; width:18px; height:18px; border-radius:50%; background:#64748b; color:#fff; font-size:11px; font-weight:900; }
     .category-market-summary-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
-    .category-market-stat { display:grid; place-items:center; gap:5px; min-width:0; padding:12px 8px; border:1px solid #e9edf3; border-radius:10px; background:rgba(255,255,255,.9); text-align:center; box-shadow:0 3px 10px rgba(15,23,42,.04); }
+    .category-market-stat { display:grid; grid-template-columns:48px minmax(0,1fr); align-items:center; gap:10px; min-width:0; padding:14px 12px; border:1px solid #e1e7f0; border-radius:12px; background:rgba(255,255,255,.94); box-shadow:0 3px 10px rgba(15,23,42,.05); }
+    .category-market-stat-icon { display:grid; place-items:center; width:48px; height:48px; border-radius:50%; font-size:27px; font-weight:900; }
+    .category-market-stat-icon--count { color:#2878df; background:#e8f2ff; }
+    .category-market-stat-icon--average { color:#e9a400; background:#fff5d9; }
+    .category-market-stat-icon--median { color:#11a86b; background:#e1f7ed; }
+    .category-market-stat-icon--highest { color:#e9a400; background:#fff3d4; }
+    .category-market-stat-icon--retail { color:#ef513f; background:#ffebe8; }
+    .category-market-stat-copy { display:grid; gap:4px; min-width:0; }
     .category-market-stat-label { color:#667085; font-size:11px; font-weight:700; }
-    .category-market-stat-value { color:#172033; font-size:clamp(17px,2vw,22px); font-weight:900; line-height:1.15; white-space:nowrap; }
+    .category-market-stat-value { color:#10213f; font-size:clamp(20px,2vw,27px); font-weight:900; line-height:1.1; white-space:nowrap; }
     .category-market-stat-unit { margin-left:2px; font-size:11px; font-weight:800; }
-    .category-market-highest { display:grid; grid-template-columns:auto 72px minmax(0,1fr) auto; align-items:center; gap:14px; padding:12px 16px; border-radius:12px; background:linear-gradient(110deg,#fff0f3 0%,#fff8e9 100%); color:inherit; text-decoration:none; }
-    .category-market-highest-label { color:#e11d48; font-size:13px; font-weight:900; }
-    .category-market-highest-image { width:72px; height:72px; object-fit:contain; border-radius:8px; background:#fff; }
-    .category-market-highest-name { min-width:0; color:#172033; font-size:14px; font-weight:900; line-height:1.4; }
-    .category-market-highest-price { color:#e11d48; font-size:22px; font-weight:900; white-space:nowrap; }
+    .category-market-highest { display:grid; grid-template-columns:minmax(220px,auto) 1px minmax(0,1fr) auto; align-items:center; gap:24px; padding:16px 22px; border-left:6px solid #f5a623; border-radius:12px; background:linear-gradient(110deg,#fff0f3 0%,#fff8e9 100%); color:inherit; text-decoration:none; }
+    .category-market-highest-label { color:#e11d48; font-size:17px; font-weight:900; }
+    .category-market-highest-divider { align-self:stretch; background:#f4bdc8; }
+    .category-market-highest-copy { display:grid; gap:4px; min-width:0; }
+    .category-market-highest-kicker { color:#667085; font-size:11px; font-weight:800; }
+    .category-market-highest-name { min-width:0; color:#10213f; font-size:19px; font-weight:900; line-height:1.3; }
+    .category-market-highest-price-wrap { display:grid; justify-items:end; gap:3px; }
+    .category-market-highest-price { color:#e11d48; font-size:30px; font-weight:900; white-space:nowrap; }
 
     @media (max-width:900px) {
       .category-market-summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
@@ -1582,10 +1598,12 @@
     @media (max-width:600px) {
       .category-market-summary { padding:14px; }
       .category-market-summary-head { align-items:flex-start; flex-direction:column; gap:4px; }
-      .category-market-highest { grid-template-columns:56px minmax(0,1fr); padding:10px; }
-      .category-market-highest-label { grid-column:1/-1; }
-      .category-market-highest-image { width:56px; height:56px; }
-      .category-market-highest-price { grid-column:2; font-size:19px; }
+      .category-market-stat { grid-template-columns:40px minmax(0,1fr); padding:11px 9px; }
+      .category-market-stat-icon { width:40px; height:40px; font-size:22px; }
+      .category-market-highest { grid-template-columns:1fr; gap:10px; padding:14px; }
+      .category-market-highest-divider { display:none; }
+      .category-market-highest-price-wrap { justify-items:start; }
+      .category-market-highest-price { font-size:24px; }
     }
   </style>
 </head>
@@ -1619,7 +1637,7 @@
           </div>
         </section>
 
-        <section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle" data-static-market-summary="1"><div class="category-market-summary-head"><h2 id="categoryMarketSummaryTitle" class="category-market-summary-title"><span aria-hidden="true">▥</span>ナマコブシのデッキシールド相場</h2><p class="category-market-summary-note">※最新週の取引データをもとに集計</p></div><div class="category-market-summary-grid"><div class="category-market-stat"><span class="category-market-stat-label">掲載数</span><strong class="category-market-stat-value">2<span class="category-market-stat-unit">種類</span></strong></div><div class="category-market-stat"><span class="category-market-stat-label">平均相場</span><strong class="category-market-stat-value">2,400円</strong></div><div class="category-market-stat"><span class="category-market-stat-label">中央値</span><strong class="category-market-stat-value">2,400円</strong></div><div class="category-market-stat"><span class="category-market-stat-label">最高相場</span><strong class="category-market-stat-value">2,999円</strong></div><div class="category-market-stat"><span class="category-market-stat-label">定価以上</span><strong class="category-market-stat-value">2<span class="category-market-stat-unit">種類（約100%）</span></strong></div></div><a class="category-market-highest" href="/sleeve/4521329191959/"><span class="category-market-highest-label">♛ 最も高いデッキシールド</span><img class="category-market-highest-image" src="https://drive.google.com/thumbnail?id=1ObFxBEoIlbKOIF_UbowRnQcCxLtJ8CkA&amp;sz=w1200" alt="" loading="lazy" referrerpolicy="no-referrer"><span class="category-market-highest-name">ナマコブシ</span><strong class="category-market-highest-price">2,999円</strong></a></section>
+        <section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle" data-static-market-summary="1"><div class="category-market-summary-head"><h2 id="categoryMarketSummaryTitle" class="category-market-summary-title"><span class="category-market-title-icon" aria-hidden="true"><i></i><i></i><i></i></span>ナマコブシのデッキシールド相場</h2><p class="category-market-summary-note">※最新週の取引データをもとに集計<span class="category-market-help" aria-hidden="true">?</span></p></div><div class="category-market-summary-grid"><div class="category-market-stat"><span class="category-market-stat-icon category-market-stat-icon--count" aria-hidden="true">▱</span><span class="category-market-stat-copy"><span class="category-market-stat-label">掲載数</span><strong class="category-market-stat-value">2<span class="category-market-stat-unit">種類</span></strong></span></div><div class="category-market-stat"><span class="category-market-stat-icon category-market-stat-icon--average" aria-hidden="true">&#165;</span><span class="category-market-stat-copy"><span class="category-market-stat-label">平均相場</span><strong class="category-market-stat-value">2,400円</strong></span></div><div class="category-market-stat"><span class="category-market-stat-icon category-market-stat-icon--median" aria-hidden="true">▥</span><span class="category-market-stat-copy"><span class="category-market-stat-label">中央値</span><strong class="category-market-stat-value">2,400円</strong></span></div><div class="category-market-stat"><span class="category-market-stat-icon category-market-stat-icon--highest" aria-hidden="true">♛</span><span class="category-market-stat-copy"><span class="category-market-stat-label">最高相場</span><strong class="category-market-stat-value">2,999円</strong></span></div><div class="category-market-stat"><span class="category-market-stat-icon category-market-stat-icon--retail" aria-hidden="true">↗</span><span class="category-market-stat-copy"><span class="category-market-stat-label">定価以上</span><strong class="category-market-stat-value">2<span class="category-market-stat-unit">種類（約100%）</span></strong></span></div></div><a class="category-market-highest" href="/sleeve/4521329191959/"><span class="category-market-highest-label">♛ 最も高いデッキシールド</span><span class="category-market-highest-divider" aria-hidden="true"></span><span class="category-market-highest-copy"><span class="category-market-highest-kicker">スリーブ名</span><span class="category-market-highest-name">ナマコブシ</span></span><span class="category-market-highest-price-wrap"><span class="category-market-highest-kicker">現在相場</span><strong class="category-market-highest-price">2,999円</strong></span></a></section>
 
         <section class="zukan-filter-card" aria-label="フィルタバー">
           <div class="zukan-filter-head">
@@ -2211,36 +2229,35 @@
         const aboveRetailRate = scopeItems.length ? Math.round((aboveRetail / scopeItems.length) * 100) : 0;
         const titleLabel = staticCategoryPage?.tag || "全デッキシールド";
         const yen = (value) => Number.isFinite(value) ? `${Math.round(value).toLocaleString("ja-JP")}円` : "—";
-        const stat = (label, value, unit = "") => `
+        const stat = (label, value, unit = "", icon = "", tone = "count") => `
           <div class="category-market-stat">
-            <span class="category-market-stat-label">${escapeHtml(label)}</span>
-            <strong class="category-market-stat-value">${escapeHtml(String(value))}${unit ? `<span class="category-market-stat-unit">${escapeHtml(unit)}</span>` : ""}</strong>
+            <span class="category-market-stat-icon category-market-stat-icon--${escapeHtml(tone)}" aria-hidden="true">${escapeHtml(icon)}</span>
+            <span class="category-market-stat-copy">
+              <span class="category-market-stat-label">${escapeHtml(label)}</span>
+              <strong class="category-market-stat-value">${escapeHtml(String(value))}${unit ? `<span class="category-market-stat-unit">${escapeHtml(unit)}</span>` : ""}</strong>
+            </span>
           </div>`;
         const highestHref = highest && window.common && typeof window.common.buildSleeveDetailHref === "function"
           ? window.common.buildSleeveDetailHref(highest.sleeve.id)
           : "./sleeves/";
-        const highestImage = highest?.sleeve?.imageUrl
-          ? `<img class="category-market-highest-image" src="${escapeHtml(highest.sleeve.imageUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
-          : `<span class="category-market-highest-image" aria-hidden="true"></span>`;
-
         root.innerHTML = `
           <div class="category-market-summary-head">
-            <h2 id="categoryMarketSummaryTitle" class="category-market-summary-title"><span aria-hidden="true">▥</span>${escapeHtml(titleLabel)}のデッキシールド相場</h2>
-            <p class="category-market-summary-note">※最新週の取引データをもとに集計</p>
+            <h2 id="categoryMarketSummaryTitle" class="category-market-summary-title"><span class="category-market-title-icon" aria-hidden="true"><i></i><i></i><i></i></span>${escapeHtml(titleLabel)}のデッキシールド相場</h2>
+            <p class="category-market-summary-note">※最新週の取引データをもとに集計<span class="category-market-help" aria-hidden="true">?</span></p>
           </div>
           <div class="category-market-summary-grid">
-            ${stat("掲載数", scopeItems.length.toLocaleString("ja-JP"), "種類")}
-            ${stat("平均相場", yen(average))}
-            ${stat("中央値", yen(median))}
-            ${stat("最高相場", yen(highest?.price))}
-            ${stat("定価以上", aboveRetail.toLocaleString("ja-JP"), `種類（約${aboveRetailRate}%）`)}
+            ${stat("掲載数", scopeItems.length.toLocaleString("ja-JP"), "種類", "▱", "count")}
+            ${stat("平均相場", yen(average), "", "¥", "average")}
+            ${stat("中央値", yen(median), "", "▥", "median")}
+            ${stat("最高相場", yen(highest?.price), "", "♛", "highest")}
+            ${stat("定価以上", aboveRetail.toLocaleString("ja-JP"), `種類（約${aboveRetailRate}%）`, "↗", "retail")}
           </div>
           ${highest ? `
             <a class="category-market-highest" href="${escapeHtml(highestHref)}">
               <span class="category-market-highest-label">♛ 最も高いデッキシールド</span>
-              ${highestImage}
-              <span class="category-market-highest-name">${escapeHtml(highest.sleeve.name || "名称未設定")}</span>
-              <strong class="category-market-highest-price">${escapeHtml(yen(highest.price))}</strong>
+              <span class="category-market-highest-divider" aria-hidden="true"></span>
+              <span class="category-market-highest-copy"><span class="category-market-highest-kicker">スリーブ名</span><span class="category-market-highest-name">${escapeHtml(highest.sleeve.name || "名称未設定")}</span></span>
+              <span class="category-market-highest-price-wrap"><span class="category-market-highest-kicker">現在相場</span><strong class="category-market-highest-price">${escapeHtml(yen(highest.price))}</strong></span>
             </a>` : ""}
         `;
         root.hidden = false;
