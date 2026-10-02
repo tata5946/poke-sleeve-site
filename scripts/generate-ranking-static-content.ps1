@@ -185,7 +185,7 @@ function AccessMobileHtml([object]$Row, [int]$Rank) {
   $year=if($s.releaseYear){(Html $s.releaseYear)+'&#24180;'}else{'&#19981;&#26126;'}
   $series=if($s.series){Html $s.series}else{'&#19981;&#26126;'}
   return @"
-      <a class="access-mobile-card" data-access-mobile-item data-ranking-id="$(Html $s.id)" data-ranking-rank="$Rank" data-ranking-current="$(Html $Row.latest)" data-release-year="$(Html $s.releaseYear)" data-series="$(Html $s.series)" data-sleeve-link="1" href="$(DetailHref $s)" aria-label="$Rank &#20301; $(Html $s.name)&#12398;&#35443;&#32048;&#12434;&#35211;&#12427;">
+      <a class="access-mobile-card" data-access-mobile-item data-ranking-id="$(Html $s.id)" data-ranking-rank="$Rank" data-ranking-current="$(Html $Row.latest)" data-sleeve-link="1" href="$(DetailHref $s)" aria-label="$Rank &#20301; $(Html $s.name)&#12398;&#35443;&#32048;&#12434;&#35211;&#12427;">
         <span class="access-mobile-rank rank-$Rank">$Rank</span>
         <span class="access-mobile-image"><span aria-hidden="true">&#30011;&#20687;&#12394;&#12375;</span>$image</span>
         <div class="access-mobile-info">$popular<h3>$(Html $s.name)</h3><p class="access-mobile-meta">&#30330;&#22770;&#24180; $year &#65372; &#12471;&#12522;&#12540;&#12474; $series</p><div class="access-mobile-market"><strong class="access-mobile-price $direction">$price</strong><span class="access-mobile-change $direction"><small>&#21069;&#36913;&#27604;</small>$change</span>$graph</div></div>
@@ -227,13 +227,8 @@ function ReplaceRanking([string]$Path,[array]$Rows,[string]$Type) {
     $mobile=@();for($i=0;$i -lt $selected.Count;$i++){$mobile+=AccessMobileHtml $selected[$i] ($i+1)}
     $mobileMarkup='<!-- STATIC_ACCESS_MOBILE_START -->' + "`r`n" + '<div id="accessMobileList" class="access-mobile-list" aria-label="&#12450;&#12463;&#12475;&#12473;&#12521;&#12531;&#12461;&#12531;&#12464;&#19968;&#35239;">' + "`r`n" + ($mobile -join "`r`n") + "`r`n" + '</div>' + "`r`n" + '<!-- STATIC_ACCESS_MOBILE_END -->'
     $html=[regex]::Replace($html,'(?s)<!-- STATIC_ACCESS_MOBILE_START -->.*?<!-- STATIC_ACCESS_MOBILE_END -->',{param($m)$mobileMarkup},1)
-    $yearOptions=@($selected|ForEach-Object{[string]$_.s.releaseYear}|Where-Object{$_}|Sort-Object -Unique|ForEach-Object{'<option value="'+(Html $_)+'">'+(Html $_)+'</option>'}) -join ''
-    $seriesOptions=@($selected|ForEach-Object{[string]$_.s.series}|Where-Object{$_}|Sort-Object -Unique|ForEach-Object{'<option value="'+(Html $_)+'">'+(Html $_)+'</option>'}) -join ''
-    $html=[regex]::Replace($html,'(?s)(<select id="releaseYear"[^>]*>).*?</select>',{param($m)$m.Groups[1].Value+'<option value="">&#30330;&#22770;&#24180;</option>'+$yearOptions+'</select>'},1)
-    $html=[regex]::Replace($html,'(?s)(<select id="series"[^>]*>).*?</select>',{param($m)$m.Groups[1].Value+'<option value="">&#12471;&#12522;&#12540;&#12474;</option>'+$seriesOptions+'</select>'},1)
     $html=[regex]::Replace($html,'<strong id="countInfo">.*?</strong>',{param($m)'<strong id="countInfo">'+$selected.Count+'&#20214;</strong>'},1)
-    $byId=@{};foreach($row in $selected){$byId[[string]$row.s.id]=$row.s}
-    $html=[regex]::Replace($html,'(<a\s[^>]*data-static-ranking-item[^>]*data-ranking-id="([^"]+)"[^>]*)(>)',{param($m)$s=$byId[$m.Groups[2].Value];$clean=[regex]::Replace($m.Groups[1].Value,'\sdata-release-year="[^"]*"|\sdata-series="[^"]*"','');$clean+' data-release-year="'+(Html $s.releaseYear)+'" data-series="'+(Html $s.series)+'"'+$m.Groups[3].Value})
+
   }
   [System.IO.File]::WriteAllText((Resolve-Path $Path),$html,[System.Text.UTF8Encoding]::new($false))
   $written=Get-Content $Path -Raw -Encoding UTF8

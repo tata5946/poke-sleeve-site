@@ -37,55 +37,11 @@ for (const [index, card] of mobile.entries()) {
 }
 assert.ok(mobile[0].markup.includes('loading="eager"'));
 
-const elements = new Map();
-function element() {
-  return { hidden: false, value: '', textContent: '', children: [], listeners: {}, classList: { toggle() {} }, setAttribute() {}, appendChild(child) { this.children.push(child); }, replaceChildren() { this.children = []; }, addEventListener(type, callback) { this.listeners[type] = callback; } };
-}
-for (const id of ['releaseYear', 'series', 'priceBand', 'clear', 'activeFilters', 'countInfo', 'accessRankingEmpty', 'top1', 'top2', 'top3Card', 'top3', 'restSection']) elements.set(id, element());
-for (const id of ['releaseYear', 'series', 'priceBand']) {
-  const select = elements.get(id);
-  const markup = html.match(new RegExp('<select id="' + id + '"[^>]*>([\\s\\S]*?)</select>'))[1];
-  select.options = [...markup.matchAll(/<option value="([^"]*)">([\s\S]*?)<\/option>/g)].map(([, value, label]) => ({ value: decode(value), textContent: decode(label) }));
-  Object.defineProperty(select, 'selectedIndex', { get() { return this.options.findIndex(option => option.value === this.value); } });
-}
-for (const [id, items] of Object.entries({ top1: desktop.slice(0, 1), top2: desktop.slice(1, 2), top3Card: desktop.slice(2, 3), top3: desktop.slice(0, 3), restSection: desktop.slice(3) })) elements.get(id).querySelectorAll = () => items;
-const document = { getElementById: id => elements.get(id), querySelectorAll: selector => selector === '[data-access-mobile-item]' ? mobile : desktop, createElement: element };
-const context = createContext({ document, window: { common: { setupDashboardChrome: async () => { throw new Error('navigation unavailable'); } } } });
+assert.ok(!/<select\b|id="(?:clear|activeFilters|accessRankingEmpty)"/.test(html), 'No filtering controls or empty filter state should remain');
+assert.ok(!/applyFilters|querySelectorAll|addEventListener/.test(code), 'Ranking JavaScript must not filter or change static cards');
+let navigationCalled = false;
+const context = createContext({ window: { common: { setupDashboardChrome: async () => { navigationCalled = true; throw new Error('navigation unavailable'); } } } });
 new Script(code, { filename: 'assets/access-ranking.js' }).runInContext(context);
 await Promise.resolve();
-assert.equal(mobile.filter(card => !card.hidden).length, mobile.length, 'Navigation failures must preserve static cards');
-const year = elements.get('releaseYear');
-year.value = mobile[0].dataset.releaseYear;
-year.listeners.change();
-const expected = mobile.filter(card => card.dataset.releaseYear === year.value).length;
-assert.equal(mobile.filter(card => !card.hidden).length, expected, 'Year filtering uses existing markup');
-assert.equal(desktop.filter(card => !card.hidden).length, expected, 'Desktop filters stay synchronized');
-assert.equal(elements.get('countInfo').textContent, expected + '件');
-assert.equal(elements.get('activeFilters').children.length, 1);
-elements.get('activeFilters').children[0].listeners.click();
-assert.equal(mobile.filter(card => !card.hidden).length, mobile.length, 'Removing a chip restores cards');
-year.value = mobile[0].dataset.releaseYear;
-year.listeners.change();
-elements.get('clear').listeners.click();
-assert.equal(mobile.filter(card => !card.hidden).length, mobile.length, 'Clear restores the static ranking');
-const priceBand = elements.get('priceBand');
-let unmatched;
-for (const yearOption of year.options.filter(option => option.value)) {
-  for (const bandOption of priceBand.options.filter(option => option.value)) {
-    const [minimum, maximum] = bandOption.value.split('-').map(Number);
-    if (!mobile.some(card => card.dataset.releaseYear === yearOption.value && card.dataset.rankingCurrent && Number(card.dataset.rankingCurrent) >= minimum && Number(card.dataset.rankingCurrent) <= maximum)) { unmatched = [yearOption.value, bandOption.value]; break; }
-  }
-  if (unmatched) break;
-}
-assert.ok(unmatched, 'Fixture must provide an unmatched filter combination');
-[year.value, priceBand.value] = unmatched;
-year.listeners.change();
-assert.equal(mobile.filter(card => !card.hidden).length, 0);
-assert.equal(elements.get('accessRankingEmpty').hidden, false, 'No matches shows the empty state');
-elements.get('clear').listeners.click();
-assert.equal(elements.get('accessRankingEmpty').hidden, true);
-priceBand.value = '0-999';
-priceBand.listeners.change();
-assert.equal(mobile.filter(card => !card.hidden).length, mobile.filter(card => card.dataset.rankingCurrent && Number(card.dataset.rankingCurrent) <= 999).length, 'Price filtering uses static prices');
-elements.get('clear').listeners.click();
-console.log('PASS: ' + mobile.length + ' static mobile/desktop cards, no sorting or ranking fetch, static graph markup, filter/chip/reset behavior, and navigation failure fallback.');
+assert.ok(navigationCalled);
+console.log('PASS: ' + mobile.length + ' static mobile/desktop cards, no sorting/filtering or ranking fetch, static graph markup, and navigation failure fallback.');
