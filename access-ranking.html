@@ -547,7 +547,8 @@
     }
   </style>
   <link rel="stylesheet" href="./assets/ranking-redesign.css?v=20261002sharedlayout" />
-  <link rel="stylesheet" href="./assets/access-ranking-mobile.css?v=20261002accessspacing" />
+  <link rel="stylesheet" href="./assets/access-ranking-mobile.css?v=20261002noflash" />
+  <noscript><style>.access-mobile-loading { display: none; }</style></noscript>
 </head>
 
 <body class="ranking-redesign-page ranking-redesign-page--views shared-page-layout" data-hide-global-header="1">
@@ -617,7 +618,10 @@
         <div id="activeFilters" class="ranking-active-filters" aria-label="選択中の絞り込み条件"></div>
       </section>
     </div>
-    <div id="accessMobileList" class="access-mobile-list" aria-label="アクセスランキング一覧"></div>
+    <div id="accessMobileList" class="access-mobile-list" aria-label="アクセスランキング一覧" aria-busy="true">
+      <p class="access-mobile-loading" role="status">ランキングを読み込み中…</p>
+      <noscript><p class="access-mobile-load-error">ランキングの表示にはJavaScriptを有効にしてください。</p></noscript>
+    </div>
 
     <div class="ranking-main">
       <section id="top3" class="ranking-top3" aria-label="&#12521;&#12531;&#12461;&#12531;&#12464;&#19978;&#20301;3&#20214;">
@@ -942,6 +946,11 @@
       if (!el) return;
       el.style.display = "block";
       el.textContent = msg;
+      const mobileList = document.getElementById("accessMobileList");
+      if (mobileList) {
+        mobileList.setAttribute("aria-busy", "false");
+        mobileList.innerHTML = '<div class="access-mobile-load-error" role="status">ランキングを読み込めませんでした。<br><a href="./access-ranking.html">再読み込み</a></div>';
+      }
     }
 
     function hideError() {
@@ -1311,7 +1320,7 @@
           </div><span class="access-mobile-chevron" aria-hidden="true">›</span>
         </a>`;
       }).join("") || '<p class="access-mobile-empty" role="status">条件に一致するスリーブがありません。</p>';
-      document.body.classList.add("access-mobile-ready");
+      root.setAttribute("aria-busy", "false");
       document.getElementById("clear").classList.toggle("has-filters", !!(document.getElementById("releaseYear").value || document.getElementById("series").value || document.getElementById("priceBand").value));
     }
 
@@ -1403,8 +1412,8 @@
     }
 
     async function main() {
-      await window.common.setupDashboardChrome({ sidebarActive: "access-ranking", topbarActive: "market" });
       try {
+        await window.common.setupDashboardChrome({ sidebarActive: "access-ranking", topbarActive: "market" });
         const releaseYearSel = document.getElementById("releaseYear");
         const seriesSel = document.getElementById("series");
         const priceBandSel = document.getElementById("priceBand");
