@@ -1,0 +1,51 @@
+.ranking-mobile-list, .ranking-help { display: none; }
+
+html:root body.ranking-redesign-page .shared-page-heading .shared-page-heading-title::before,
+html:root body.ranking-redesign-page .shared-page-heading .shared-page-heading-title::after { content: none !important; display: none !important; }
+
+@media (max-width: 700px) {
+  html:root body.ranking-redesign-page .shared-page-heading .page-hero-desc,
+  html:root body.ranking-redesign-page .shared-page-heading .page-hero-meta,
+  html:root body.ranking-redesign-page .ranking-hero-label { display: none !important; }
+
+  .ranking-help { display: block; margin: 0; background: #e8f3ff; border-radius: 8px; padding: 9px 10px; color: #365779; font-size: 11px; }
+  .ranking-help summary { cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 6px; list-style: none; min-height: 24px; }
+  .ranking-help summary::-webkit-details-marker { display: none; }
+  .ranking-help summary span { font-size: 18px; }
+  .ranking-help p { margin: 8px 0 0; line-height: 1.7; }
+
+  html:root body.ranking-redesign-page #top3,
+  html:root body.ranking-redesign-page #restSection { display: none !important; }
+  .ranking-mobile-list { display: grid; gap: 10px; margin-top: 20px; }
+  .ranking-mobile-card { position: relative; display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 12px; padding: 10px; border: 1px solid #dce6f1; border-radius: 12px; background: #fff; color: #071635; text-decoration: none; min-height: 128px; }
+  .ranking-mobile-card:focus-visible { outline: 3px solid #2475dc; outline-offset: 2px; }
+  .ranking-mobile-image { position: relative; display: grid; place-items: center; min-height: 106px; background: #edf2f8; border-radius: 8px; overflow: hidden; font-size: 11px; color: #8290a5; }
+  .ranking-mobile-image img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 5px; background: #edf2f8; }
+  .ranking-mobile-rank { position: absolute; z-index: 1; top: 3px; left: 3px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: #e5eaf1; font-size: 20px; font-weight: 800; box-shadow: 0 3px 7px #07163515; }
+  .ranking-mobile-rank.rank-1 { background: linear-gradient(135deg, #ffd82c, #eba900); color: white; }
+  .ranking-mobile-rank.rank-2 { background: linear-gradient(135deg, #b5c7d9, #8399ae); color: white; }
+  .ranking-mobile-rank.rank-3 { background: linear-gradient(135deg, #f3a45c, #b76323); color: white; }
+  .ranking-mobile-info { min-width: 0; align-self: center; }
+  .ranking-mobile-info h3 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 15px; line-height: 1.45; margin: 0 14px 4px 0; }
+  .ranking-mobile-meta { font-size: 10px; line-height: 1.5; color: #637695; margin: 0 0 7px; }
+  .ranking-mobile-popular { display: inline-block; font-size: 10px; font-weight: 700; color: #ed1850; background: #ffe3ed; border-radius: 5px; padding: 2px 6px; margin-bottom: 3px; }
+  .ranking-mobile-market { display: flex; align-items: end; gap: 7px; flex-wrap: wrap; }
+  .ranking-mobile-price { font-size: 20px; line-height: 1.2; white-space: nowrap; letter-spacing: -.03em; }
+  .ranking-mobile-change { font-size: 10px; font-weight: 700; white-space: nowrap; }
+  .ranking-mobile-change small { display: block; font-size: 9px; color: #637695; font-weight: 500; margin-bottom: 2px; }
+  .ranking-mobile-price.up, .ranking-mobile-change.up { color: #ef1748; }
+  .ranking-mobile-change.down { color: #009451; }
+  .ranking-mobile-change.flat { color: #637695; }
+  .ranking-mobile-chevron { position: absolute; right: 10px; top: 26px; color: #637695; font-size: 24px; }
+  html:root body.ranking-redesign-page .ranking-mobile-market .sleeve-sparkline { margin: 0 0 0 auto !important; padding: 0 !important; width: 58px !important; height: 28px !important; min-width: 0 !important; flex: 0 0 58px !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
+  html:root body.ranking-redesign-page .ranking-mobile-market .sleeve-sparkline svg { position: static !important; width: 100% !important; height: 100% !important; }
+  html:root body.ranking-redesign-page .ranking-mobile-market .sleeve-sparkline-title,
+  html:root body.ranking-redesign-page .ranking-mobile-market .sleeve-sparkline-y-axis,
+  html:root body.ranking-redesign-page .ranking-mobile-market .sleeve-sparkline-x-axis,
+  html:root body.ranking-redesign-page .ranking-mobile-market .sleeve-sparkline-foot,
+  html:root body.ranking-redesign-page .ranking-mobile-market .sleeve-sparkline-grid,
+  html:root body.ranking-redesign-page .ranking-mobile-market .sleeve-sparkline-axis,
+  html:root body.ranking-redesign-page .ranking-mobile-market .sleeve-sparkline-dot { display: none !important; }
+  .ranking-mobile-market .sleeve-sparkline-empty { white-space: normal; font-size: 8px; }
+  .ranking-mobile-empty { padding: 24px; text-align: center; font-size: 13px; }
+}
