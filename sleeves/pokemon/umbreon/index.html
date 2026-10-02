@@ -2546,45 +2546,92 @@
         if (nextPageBtn) nextPageBtn.disabled = currentPage >= totalPages;
       }
 
+      function getActiveFilterState() {
+        return {
+          rawKeyword: (pageSearchInput ? pageSearchInput.value : searchInput.value).trim(),
+          releaseYear: releaseYearSel.value,
+          series: seriesSel.value,
+          band: parseBand(priceBandSel.value),
+          pokemon: pokemonFilterSel ? pokemonFilterSel.value : "",
+          trainer: trainerFilterSel ? trainerFilterSel.value : "",
+          illustrator: illustratorFilterSel ? illustratorFilterSel.value : "",
+          group: window.common && typeof window.common.normalizeSleeveTextValue === "function"
+            ? window.common.normalizeSleeveTextValue(currentGroupParam).toLowerCase()
+            : String(currentGroupParam || "").trim().toLowerCase(),
+          tag: window.common && typeof window.common.normalizeSleeveTextValue === "function"
+            ? window.common.normalizeSleeveTextValue(currentTagParam)
+            : String(currentTagParam || "").trim(),
+          type: window.common && typeof window.common.normalizeSleeveTextValue === "function"
+            ? window.common.normalizeSleeveTextValue(currentTypeParam)
+            : String(currentTypeParam || "").trim()
+        };
+      }
+
+      function sleeveMatchesFilters(sleeve, state, excludedFacet = "") {
+        const keyword = state.rawKeyword.toLowerCase();
+        if (keyword && !getSleeveSearchText(sleeve).includes(keyword)) return false;
+        if (state.group && (!window.common || typeof window.common.sleeveMatchesGroup !== "function" || !window.common.sleeveMatchesGroup(sleeve, state.group))) return false;
+        if (state.tag && (!window.common || typeof window.common.sleeveMatchesDetailTag !== "function" || !window.common.sleeveMatchesDetailTag(sleeve, state.tag))) return false;
+        if (state.type && (!window.common || typeof window.common.sleeveMatchesType !== "function" || !window.common.sleeveMatchesType(sleeve, state.type))) return false;
+        if (excludedFacet !== "releaseYear" && state.releaseYear && String(sleeve.releaseYear ?? "") !== state.releaseYear) return false;
+        if (excludedFacet !== "series" && state.series && !getSeriesFilterValues(sleeve).includes(state.series)) return false;
+        if (excludedFacet !== "pokemon" && state.pokemon && !getPokemonFilterValues(sleeve).includes(state.pokemon)) return false;
+        if (excludedFacet !== "trainer" && state.trainer && !getTrainerFilterValues(sleeve).includes(state.trainer)) return false;
+        if (excludedFacet !== "illustrator" && state.illustrator && !getIllustratorFilterValues(sleeve).includes(state.illustrator)) return false;
+        if (state.band) {
+          const price = getCardPrice(sleeve);
+          if (price == null || price < state.band.min || price > state.band.max) return false;
+        }
+        return true;
+      }
+
+      function replaceFacetOptions(selectEl, values) {
+        if (!selectEl || selectEl.disabled) return;
+        const selectedValue = selectEl.value;
+        const allOption = document.createElement("option");
+        allOption.value = "";
+        allOption.textContent = "全部";
+        const options = values.map((value) => {
+          const option = document.createElement("option");
+          option.value = String(value);
+          option.textContent = String(value);
+          return option;
+        });
+        selectEl.replaceChildren(allOption, ...options);
+        selectEl.value = values.some((value) => String(value) === selectedValue) ? selectedValue : "";
+      }
+
+      function refreshFacetOptions(state) {
+        const facetConfigs = [
+          { key: "releaseYear", select: releaseYearSel, values: (items) => uniq(items.map((sleeve) => sleeve.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b) },
+          { key: "series", select: seriesSel, values: (items) => uniq(items.flatMap(getSeriesFilterValues)).sort((a, b) => a.localeCompare(b, "ja")) },
+          { key: "pokemon", select: pokemonFilterSel, values: (items) => uniq(items.flatMap(getPokemonFilterValues)).sort((a, b) => a.localeCompare(b, "ja")) },
+          { key: "trainer", select: trainerFilterSel, values: (items) => uniq(items.flatMap(getTrainerFilterValues)).sort((a, b) => a.localeCompare(b, "ja")) },
+          { key: "illustrator", select: illustratorFilterSel, values: (items) => uniq(items.flatMap(getIllustratorFilterValues)).sort((a, b) => a.localeCompare(b, "ja")) }
+        ];
+        for (const facet of facetConfigs) {
+          if (!facet.select || facet.select.disabled) continue;
+          const matchingSleeves = sleeves.filter((sleeve) => sleeveMatchesFilters(sleeve, state, facet.key));
+          replaceFacetOptions(facet.select, facet.values(matchingSleeves));
+        }
+      }
+
       function render() {
-        const rawKeyword = (pageSearchInput ? pageSearchInput.value : searchInput.value).trim();
+        let filterState = getActiveFilterState();
+        refreshFacetOptions(filterState);
+        filterState = getActiveFilterState();
+        const { rawKeyword, releaseYear, series, band, pokemon, trainer, illustrator } = filterState;
         const kw = rawKeyword.toLowerCase();
-        const releaseYear = releaseYearSel.value;
-        const series = seriesSel.value;
-        const band = parseBand(priceBandSel.value);
-        const pokemon = pokemonFilterSel ? pokemonFilterSel.value : "";
-        const trainer = trainerFilterSel ? trainerFilterSel.value : "";
-        const illustrator = illustratorFilterSel ? illustratorFilterSel.value : "";
         const sortOrder = sortOrderSel.value;
-        const normalizedGroup = window.common && typeof window.common.normalizeSleeveTextValue === "function"
-          ? window.common.normalizeSleeveTextValue(currentGroupParam).toLowerCase()
-          : String(currentGroupParam || "").trim().toLowerCase();
-        const normalizedTag = window.common && typeof window.common.normalizeSleeveTextValue === "function"
-          ? window.common.normalizeSleeveTextValue(currentTagParam)
-          : String(currentTagParam || "").trim();
-        const normalizedType = window.common && typeof window.common.normalizeSleeveTextValue === "function"
-          ? window.common.normalizeSleeveTextValue(currentTypeParam)
-          : String(currentTypeParam || "").trim();
+        const normalizedGroup = filterState.group;
+        const normalizedTag = filterState.tag;
+        const normalizedType = filterState.type;
 
         list.innerHTML = "";
 
         const filtered = [];
         for (const s of sleeves) {
-          if (kw && !getSleeveSearchText(s).includes(kw)) continue;
-          if (normalizedGroup && (!window.common || typeof window.common.sleeveMatchesGroup !== "function" || !window.common.sleeveMatchesGroup(s, normalizedGroup))) continue;
-          if (normalizedTag && (!window.common || typeof window.common.sleeveMatchesDetailTag !== "function" || !window.common.sleeveMatchesDetailTag(s, normalizedTag))) continue;
-          if (normalizedType && (!window.common || typeof window.common.sleeveMatchesType !== "function" || !window.common.sleeveMatchesType(s, normalizedType))) continue;
-          if (releaseYear && String(s.releaseYear ?? "") !== releaseYear) continue;
-          if (series && !getSeriesFilterValues(s).includes(series)) continue;
-          if (pokemon && !getPokemonFilterValues(s).includes(pokemon)) continue;
-          if (trainer && !getTrainerFilterValues(s).includes(trainer)) continue;
-          if (illustrator && !getIllustratorFilterValues(s).includes(illustrator)) continue;
-
-          if (band) {
-            const p = getCardPrice(s);
-            if (p == null) continue;
-            if (p < band.min || p > band.max) continue;
-          }
+          if (!sleeveMatchesFilters(s, filterState)) continue;
           filtered.push(s);
         }
 
