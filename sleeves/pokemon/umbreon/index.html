@@ -1558,6 +1558,35 @@
         font-size: 19px;
       }
     }
+
+    .category-market-summary { display:grid; gap:14px; margin:0 0 22px; padding:18px; border:1px solid #f3cf67; border-radius:16px; background:linear-gradient(135deg,#fffdf5 0%,#fff9df 100%); box-shadow:0 10px 28px rgba(146,104,18,.08); }
+    .category-market-summary-head { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .category-market-summary-title { display:flex; align-items:center; gap:9px; margin:0; color:#172033; font-size:clamp(18px,2vw,24px); font-weight:900; }
+    .category-market-summary-note { margin:0; color:#667085; font-size:11px; font-weight:700; }
+    .category-market-summary-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
+    .category-market-stat { display:grid; place-items:center; gap:5px; min-width:0; padding:12px 8px; border:1px solid #e9edf3; border-radius:10px; background:rgba(255,255,255,.9); text-align:center; box-shadow:0 3px 10px rgba(15,23,42,.04); }
+    .category-market-stat-label { color:#667085; font-size:11px; font-weight:700; }
+    .category-market-stat-value { color:#172033; font-size:clamp(17px,2vw,22px); font-weight:900; line-height:1.15; white-space:nowrap; }
+    .category-market-stat-unit { margin-left:2px; font-size:11px; font-weight:800; }
+    .category-market-highest { display:grid; grid-template-columns:auto 72px minmax(0,1fr) auto; align-items:center; gap:14px; padding:12px 16px; border-radius:12px; background:linear-gradient(110deg,#fff0f3 0%,#fff8e9 100%); color:inherit; text-decoration:none; }
+    .category-market-highest-label { color:#e11d48; font-size:13px; font-weight:900; }
+    .category-market-highest-image { width:72px; height:72px; object-fit:contain; border-radius:8px; background:#fff; }
+    .category-market-highest-name { min-width:0; color:#172033; font-size:14px; font-weight:900; line-height:1.4; }
+    .category-market-highest-price { color:#e11d48; font-size:22px; font-weight:900; white-space:nowrap; }
+
+    @media (max-width:900px) {
+      .category-market-summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .category-market-stat:last-child { grid-column:1/-1; }
+    }
+
+    @media (max-width:600px) {
+      .category-market-summary { padding:14px; }
+      .category-market-summary-head { align-items:flex-start; flex-direction:column; gap:4px; }
+      .category-market-highest { grid-template-columns:56px minmax(0,1fr); padding:10px; }
+      .category-market-highest-label { grid-column:1/-1; }
+      .category-market-highest-image { width:56px; height:56px; }
+      .category-market-highest-price { grid-column:2; font-size:19px; }
+    }
   </style>
 </head>
 
@@ -1589,6 +1618,8 @@
             <a class="zukan-meta-chip" href="./sleeves/page/1/">ページ分割一覧</a>
           </div>
         </section>
+
+        <section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle" hidden></section>
 
         <section class="zukan-filter-card" aria-label="フィルタバー">
           <div class="zukan-filter-head">
@@ -2361,6 +2392,73 @@
 
       const sleeves = Array.isArray(data.sleeves) ? data.sleeves : [];
       if (!staticCategoryPage) updateSleevesSeoHead(sleeves.length);
+
+      function renderCategoryMarketSummary() {
+        const root = document.getElementById("categoryMarketSummary");
+        if (!root) return;
+        const scopeItems = staticCategoryPage?.group && staticCategoryPage?.tag
+          ? sleeves.filter((sleeve) => {
+              const groupMatches = window.common && typeof window.common.sleeveMatchesGroup === "function"
+                ? window.common.sleeveMatchesGroup(sleeve, staticCategoryPage.group)
+                : true;
+              const tagMatches = window.common && typeof window.common.sleeveMatchesDetailTag === "function"
+                ? window.common.sleeveMatchesDetailTag(sleeve, staticCategoryPage.tag)
+                : true;
+              return groupMatches && tagMatches;
+            })
+          : sleeves;
+        const pricedItems = scopeItems
+          .map((sleeve) => ({ sleeve, price: getWeeklyPair(sleeve)?.latest?.price ?? null }))
+          .filter((item) => Number.isFinite(item.price) && item.price > 0)
+          .sort((a, b) => a.price - b.price);
+        const prices = pricedItems.map((item) => item.price);
+        const average = prices.length ? Math.round(prices.reduce((sum, price) => sum + price, 0) / prices.length) : null;
+        const middle = Math.floor(prices.length / 2);
+        const median = !prices.length ? null : Math.round(prices.length % 2 ? prices[middle] : (prices[middle - 1] + prices[middle]) / 2);
+        const highest = pricedItems.length ? pricedItems[pricedItems.length - 1] : null;
+        const aboveRetail = pricedItems.filter(({ sleeve, price }) => {
+          const retail = Number(sleeve?.firstPrice);
+          return Number.isFinite(retail) && retail > 0 && price >= retail;
+        }).length;
+        const aboveRetailRate = scopeItems.length ? Math.round((aboveRetail / scopeItems.length) * 100) : 0;
+        const titleLabel = staticCategoryPage?.tag || "全デッキシールド";
+        const yen = (value) => Number.isFinite(value) ? `${Math.round(value).toLocaleString("ja-JP")}円` : "—";
+        const stat = (label, value, unit = "") => `
+          <div class="category-market-stat">
+            <span class="category-market-stat-label">${escapeHtml(label)}</span>
+            <strong class="category-market-stat-value">${escapeHtml(String(value))}${unit ? `<span class="category-market-stat-unit">${escapeHtml(unit)}</span>` : ""}</strong>
+          </div>`;
+        const highestHref = highest && window.common && typeof window.common.buildSleeveDetailHref === "function"
+          ? window.common.buildSleeveDetailHref(highest.sleeve.id)
+          : "./sleeves/";
+        const highestImage = highest?.sleeve?.imageUrl
+          ? `<img class="category-market-highest-image" src="${escapeHtml(highest.sleeve.imageUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
+          : `<span class="category-market-highest-image" aria-hidden="true"></span>`;
+
+        root.innerHTML = `
+          <div class="category-market-summary-head">
+            <h2 id="categoryMarketSummaryTitle" class="category-market-summary-title"><span aria-hidden="true">▥</span>${escapeHtml(titleLabel)}のデッキシールド相場</h2>
+            <p class="category-market-summary-note">※最新週の取引データをもとに集計</p>
+          </div>
+          <div class="category-market-summary-grid">
+            ${stat("掲載数", scopeItems.length.toLocaleString("ja-JP"), "種類")}
+            ${stat("平均相場", yen(average))}
+            ${stat("中央値", yen(median))}
+            ${stat("最高相場", yen(highest?.price))}
+            ${stat("定価以上", aboveRetail.toLocaleString("ja-JP"), `種類（約${aboveRetailRate}%）`)}
+          </div>
+          ${highest ? `
+            <a class="category-market-highest" href="${escapeHtml(highestHref)}">
+              <span class="category-market-highest-label">♛ 最も高いデッキシールド</span>
+              ${highestImage}
+              <span class="category-market-highest-name">${escapeHtml(highest.sleeve.name || "名称未設定")}</span>
+              <strong class="category-market-highest-price">${escapeHtml(yen(highest.price))}</strong>
+            </a>` : ""}
+        `;
+        root.hidden = false;
+      }
+
+      renderCategoryMarketSummary();
 
       let maxWeek = null;
       for (const s of sleeves) {
