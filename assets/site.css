@@ -10368,6 +10368,10 @@ html:root body.shared-page-layout.ranking-redesign-page .shared-page-heading + .
     html:root body.shared-page-layout.ranking-redesign-page .shared-page-heading .page-hero-meta {
         justify-content: flex-start !important;
     }
+    /* The access-ranking explanation belongs to its filter toolbar. */
+    html:root body.shared-page-layout.ranking-redesign-page--views .shared-page-heading + .ranking-filter-card {
+        margin-top: 0 !important;
+    }
 }
 }
 
