@@ -1745,7 +1745,7 @@
             <div>
               <h2 class="zukan-results-title">デッキシールド一覧</h2>
             </div>
-            <div class="zukan-results-meta"><strong id="resultCountBadge">集計中</strong><span id="resultRangeText"> 件表示</span></div>
+            <div class="zukan-results-meta"><strong id="resultCountBadge">5</strong><span id="resultRangeText">&#20214;&#34920;&#31034;</span></div>
           </div>
           <noscript><div class="zukan-noscript"><p>掲載中のデッキシールド一覧</p><ul><li><a href="/sleeve/4521329204024/">ラプラスに乗って</a></li><li><a href="/sleeve/4521329289830/">キョダイマックス　湖に響く旋律</a></li><li><a href="/sleeve/4521329362298/">テラスタイプ：ステラ ラプラス</a></li><li><a href="/sleeve/4521329373133/">Let&#39;s GO</a></li><li><a href="/sleeve/45213292021002/">メロン</a></li></ul></div></noscript>
           <div id="list" class="zukan-grid">
@@ -2093,7 +2093,7 @@
     const SLEEVES_SEO_DESCRIPTION = "日本で発売されたポケモンカードの歴代スリーブ・デッキシールドを一覧掲載。発売年・シリーズ・ポケモン・トレーナーから探せて、現在相場や価格推移も確認できます。";
 
     function getSleevesSeoCount(total) {
-      const count = Number(total);
+      const count = Number(window.common?.getCatalogCount?.() ?? total);
       return Number.isFinite(count) && count > 0 ? `${count.toLocaleString("ja-JP")}種` : "";
     }
 

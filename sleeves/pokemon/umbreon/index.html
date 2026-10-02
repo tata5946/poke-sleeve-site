@@ -1745,7 +1745,7 @@
             <div>
               <h2 class="zukan-results-title">デッキシールド一覧</h2>
             </div>
-            <div class="zukan-results-meta"><strong id="resultCountBadge">集計中</strong><span id="resultRangeText"> 件表示</span></div>
+            <div class="zukan-results-meta"><strong id="resultCountBadge">14</strong><span id="resultRangeText">&#20214;&#34920;&#31034;</span></div>
           </div>
           <noscript><div class="zukan-noscript"><p>掲載中のデッキシールド一覧</p><ul><li><a href="/sleeve/4521329100654/">エーフィ・ブラッキー</a></li><li><a href="/sleeve/4521329130118/">イーブイ・エーフィ・ブラッキー</a></li><li><a href="/sleeve/4521329190020/">ブラッキー・グレイシア</a></li><li><a href="/sleeve/4521329191249/">ブラッキー・グレイシア（プレミアム・グロス）</a></li><li><a href="/sleeve/4521329191942/">エーフィ&amp;ブラッキー フラワー</a></li><li><a href="/sleeve/4521329228549/">イーブイポンチョシリーズ BK</a></li><li><a href="/sleeve/4521329288895/">たいようとげっこう BK</a></li><li><a href="/sleeve/4521329288963/">Berry’s forest, Ghost’s castle 城</a></li><li><a href="/sleeve/4521329330280/">Eievui Collection</a></li><li><a href="/sleeve/4521329336039/">BALL FREAK BK</a></li><li><a href="/sleeve/4521329374963/">POK&#201;MON TRAINERS ボタン＆ブラッキー</a></li><li><a href="/sleeve/4521329382289/">月明かりとブラッキー</a></li><li><a href="/sleeve/45213292011001/">悪の軍団</a></li><li><a href="/sleeve/4521329463070/">ブラッキー 30th CELEBRATION</a></li></ul></div></noscript>
           <div id="list" class="zukan-grid">
@@ -2255,7 +2255,7 @@
     const SLEEVES_SEO_DESCRIPTION = "日本で発売されたポケモンカードの歴代スリーブ・デッキシールドを一覧掲載。発売年・シリーズ・ポケモン・トレーナーから探せて、現在相場や価格推移も確認できます。";
 
     function getSleevesSeoCount(total) {
-      const count = Number(total);
+      const count = Number(window.common?.getCatalogCount?.() ?? total);
       return Number.isFinite(count) && count > 0 ? `${count.toLocaleString("ja-JP")}種` : "";
     }
 

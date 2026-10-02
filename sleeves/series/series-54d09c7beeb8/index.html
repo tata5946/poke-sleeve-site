@@ -1745,7 +1745,7 @@
             <div>
               <h2 class="zukan-results-title">デッキシールド一覧</h2>
             </div>
-            <div class="zukan-results-meta"><strong id="resultCountBadge">集計中</strong><span id="resultRangeText"> 件表示</span></div>
+            <div class="zukan-results-meta"><strong id="resultCountBadge">16</strong><span id="resultRangeText">&#20214;&#34920;&#31034;</span></div>
           </div>
           <noscript><div class="zukan-noscript"><p>掲載中のデッキシールド一覧</p><ul><li><a href="/sleeve/4521329116174/">シロナ</a></li><li><a href="/sleeve/4521329116181/">ノボリ・クダリ</a></li><li><a href="/sleeve/4521329123769/">N</a></li><li><a href="/sleeve/4521329123776/">フウロ</a></li><li><a href="/sleeve/4521329127774/">シロナ ゴールドVer.</a></li><li><a href="/sleeve/4521329131580/">カミツレver.2</a></li><li><a href="/sleeve/4521329131597/">レッド＆グリーン</a></li><li><a href="/sleeve/4521329134925/">リザードンメガバトル</a></li><li><a href="/sleeve/4521329135175/">ゲッコウガ</a></li><li><a href="/sleeve/4521329135441/">メガエルレイド</a></li><li><a href="/sleeve/4521329135618/">ミツル＆メガエルレイド</a></li><li><a href="/sleeve/4521329136233/">夜のスリーパー（プレミアム）</a></li><li><a href="/sleeve/4521329136301/">first design</a></li><li><a href="/sleeve/4521329190044/">メガフーディン</a></li><li><a href="/sleeve/4521329190327/">カメックスメガバトル</a></li><li><a href="/sleeve/4521329190891/">リザードンVSフシギバナ</a></li></ul></div></noscript>
           <div id="list" class="zukan-grid">
@@ -2291,7 +2291,7 @@
     const SLEEVES_SEO_DESCRIPTION = "日本で発売されたポケモンカードの歴代スリーブ・デッキシールドを一覧掲載。発売年・シリーズ・ポケモン・トレーナーから探せて、現在相場や価格推移も確認できます。";
 
     function getSleevesSeoCount(total) {
-      const count = Number(total);
+      const count = Number(window.common?.getCatalogCount?.() ?? total);
       return Number.isFinite(count) && count > 0 ? `${count.toLocaleString("ja-JP")}種` : "";
     }
 

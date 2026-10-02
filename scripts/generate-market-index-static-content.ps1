@@ -104,6 +104,8 @@ $countText='&#23550;&#35937; '+$latest.targetCount.ToString('N0')+'&#31278;&#390
 $html=ReplaceElement $html 'countInfo' $countText
 $html=ReplaceElement $html 'kpiLatestPrice' (FormatYen $latest.avgPrice)
 $html=ReplaceElement $html 'kpiLatestMeta' ('<span class="latest-date">'+(FormatDate $latest.week)+'</span>') 'metric-foot flat'
+$subtitle='&#30331;&#37682;&#65306;'+$sleeves.Count.ToString('N0')+'&#20214; / &#36913;&#26399;&#38291;&#65306;'+(FormatDate $rows[0].week)+'&#12316;'+(FormatDate $latest.week)
+$html=ReplaceElement $html 'subtitle' $subtitle
 foreach($item in @(
   @{value='kpiPrevChange';pct='kpiPrevPct';change=$prevChange},
   @{value='kpiMonthChange';pct='kpiMonthPct';change=$monthChange},
@@ -116,6 +118,11 @@ foreach($item in @(
 
 $latestRate=if($prevChange){$prevChange.rate}else{$null}
 $trend=if($null -eq $latestRate){'&#12411;&#12412;&#27178;&#12400;&#12356;&#12391;&#12377;'}elseif($latestRate -ge 2){'&#24375;&#12367;&#19978;&#26119;&#12375;&#12390;&#12356;&#12414;&#12377;'}elseif($latestRate -le -2){'&#19979;&#33853;&#12375;&#12390;&#12356;&#12414;&#12377;'}elseif($latestRate -ge .8){'&#19978;&#26119;&#12375;&#12390;&#12356;&#12414;&#12377;'}elseif($latestRate -le -.8){'&#12420;&#12420;&#36575;&#35519;&#12391;&#12377;'}else{'&#12411;&#12412;&#27178;&#12400;&#12356;&#12391;&#12377;'}
+$stateLabel=if($null -eq $prevChange){'&#21028;&#23450;&#12391;&#12365;&#12414;&#12379;&#12435;'}elseif($prevChange.amount -gt 0){'&#19978;&#26119;&#20013;'}elseif($prevChange.amount -lt 0){'&#19979;&#33853;'}else{'&#27178;&#12400;&#12356;'}
+$stateClass=if($null -eq $prevChange){'flat'}else{TrendClass $prevChange.amount}
+$stateNote=if($null -eq $prevChange){'&#24179;&#22343;&#30456;&#22580;&#12487;&#12540;&#12479;&#12364;&#19981;&#36275;&#12375;&#12390;&#12356;&#12414;&#12377;&#12290;'}else{'&#20840;&#12473;&#12522;&#12540;&#12502;&#24179;&#22343;&#30456;&#22580;&#12399;&#21069;&#22238;&#27604;&#12391;'+(FormatSignedYen $prevChange.amount)+'&#12391;&#12377;&#12290;'}
+$html=ReplaceElement $html 'marketStateValue' $stateLabel ('market-state-value '+$stateClass)
+$html=ReplaceElement $html 'marketStateNote' $stateNote
 function ChangeSentence([string]$Label,[object]$Change){
   if($null -eq $Change){return $Label+'&#12399;&#27604;&#36611;&#12487;&#12540;&#12479;&#12364;&#19981;&#36275;&#12375;&#12390;&#12356;&#12414;&#12377;'}
   return $Label+'&#12399;'+(FormatSignedYen $Change.amount)+'&#65288;'+(FormatPercent $Change.rate)+'&#65289;'
@@ -131,6 +138,7 @@ $html=ReplaceElement $html 'aiCommentBody' $comment
 $written=Get-Content -LiteralPath $PagePath -Raw -Encoding UTF8
 $expected=@{
   updatedAt=(FormatDate $latest.week);kpiLatestPrice=(FormatYen $latest.avgPrice);
+  subtitle=$subtitle;marketStateValue=$stateLabel;marketStateNote=$stateNote;
   kpiPrevChange=$(if($prevChange){FormatSignedYen $prevChange.amount}else{'--'});
   kpiMonthChange=$(if($monthChange){FormatSignedYen $monthChange.amount}else{'--'});
   kpiYearChange=$(if($yearChange){FormatSignedYen $yearChange.amount}else{'--'})

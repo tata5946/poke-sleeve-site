@@ -239,6 +239,8 @@ function Update-ZukanStaticCards([string]$Path, [array]$Items) {
   $updated = [regex]::Replace($content, $pattern, { param($match) $replacement }, [Text.RegularExpressions.RegexOptions]::Singleline)
   $updated = [regex]::Replace($updated, '\u3010\d+\u7a2e\u3011', { param($match) ([char]0x3010) + [string]$Items.Count + ([char]0x7a2e) + ([char]0x3011) })
   $updated = [regex]::Replace($updated, '<strong id="countInfo">.*?</strong>', '<strong id="countInfo">' + $Items.Count + '&#20214;</strong>')
+  $updated = [regex]::Replace($updated, '<strong id="resultCountBadge">.*?</strong>', '<strong id="resultCountBadge">' + $Items.Count + '</strong>')
+  $updated = [regex]::Replace($updated, '<span id="resultRangeText">.*?</span>', '<span id="resultRangeText">&#20214;&#34920;&#31034;</span>')
   return Write-TextIfChanged $Path $updated
 }
 

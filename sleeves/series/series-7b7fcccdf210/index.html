@@ -1745,7 +1745,7 @@
             <div>
               <h2 class="zukan-results-title">デッキシールド一覧</h2>
             </div>
-            <div class="zukan-results-meta"><strong id="resultCountBadge">集計中</strong><span id="resultRangeText"> 件表示</span></div>
+            <div class="zukan-results-meta"><strong id="resultCountBadge">45</strong><span id="resultRangeText">&#20214;&#34920;&#31034;</span></div>
           </div>
           <noscript><div class="zukan-noscript"><p>掲載中のデッキシールド一覧</p><ul><li><a href="/sleeve/4521329134918/">メガリザードン</a></li><li><a href="/sleeve/4521329135021/">メガルカリオ</a></li><li><a href="/sleeve/4521329135151/">メガゲンガー</a></li><li><a href="/sleeve/4521329135427/">メガレックウザ</a></li><li><a href="/sleeve/4521329135441/">メガエルレイド</a></li><li><a href="/sleeve/4521329135601/">ダイゴ&amp;メガメタグロス</a></li><li><a href="/sleeve/4521329135618/">ミツル＆メガエルレイド</a></li><li><a href="/sleeve/4521329135793/">メガミュウツーX・メガミュウツーY</a></li><li><a href="/sleeve/4521329135823/">メガアブソル</a></li><li><a href="/sleeve/4521329136202/">メガギャラドス</a></li><li><a href="/sleeve/4521329136219/">メガハッサム</a></li><li><a href="/sleeve/4521329168869/">決戦！メガバトル</a></li><li><a href="/sleeve/4521329186511/">メガルカリオのポンチョを着たピカチュウ</a></li><li><a href="/sleeve/4521329186528/">メガヤドランのポンチョを着たピカチュウ</a></li><li><a href="/sleeve/4521329186535/">メガヤミラミのポンチョを着たピカチュウ</a></li><li><a href="/sleeve/4521329186542/">メガポンチョを着たピカチュウ（メガタブンネ・メガチルタリス・メガディアンシー）</a></li><li><a href="/sleeve/4521329190044/">メガフーディン</a></li><li><a href="/sleeve/4521329190181/">色違いのメガサーナイト</a></li><li><a href="/sleeve/4521329190204/">メガハガネール デュアルタイプver.</a></li><li><a href="/sleeve/4521329190327/">カメックスメガバトル</a></li><li><a href="/sleeve/4521329190433/">メガクチート</a></li><li><a href="/sleeve/4521329266619/">メガレックウザ 降臨</a></li><li><a href="/sleeve/4521329290508/">メガレックウザ 降臨</a></li><li><a href="/sleeve/4521329431987/">メガサーナイト</a></li><li><a href="/sleeve/4521329431994/">メガルカリオ</a></li><li><a href="/sleeve/4521329432144/">with elegance メガクチート</a></li><li><a href="/sleeve/4521329432151/">with elegance メガアブソル</a></li><li><a href="/sleeve/4521329432182/">メガガルーラ</a></li><li><a href="/sleeve/4521329432298/">メガリザードンX</a></li><li><a href="/sleeve/4521329432762/">メガゲンガー</a></li><li><a href="/sleeve/4521329432779/">メガディアンシー</a></li><li><a href="/sleeve/4521329461977/">メガリザードンX 古城</a></li><li><a href="/sleeve/4521329462288/">メガフラエッテ</a></li><li><a href="/sleeve/4521329462509/">ムク＆メガシャンデラ</a></li><li><a href="/sleeve/4521329462585/">メガダークライ</a></li><li><a href="/sleeve/4521329463513/">PJCS2026</a></li><li><a href="/sleeve/4521329463544/">メガレックウザ</a></li><li><a href="/sleeve/4521329463599/">カナリィ＆メガシビルドン</a></li><li><a href="/sleeve/4521329463605/">メガスターミー</a></li><li><a href="/sleeve/4521329463612/">メガピクシー</a></li><li><a href="/sleeve/4521329463674/">メガゲッコウガ</a></li><li><a href="/sleeve/4521329463735/">メガカイリュー</a></li><li><a href="/sleeve/45213292014001/">メガサーナイト</a></li><li><a href="/sleeve/45213292016003/">メガリザードンXのポンチョを着たピカチュウ</a></li><li><a href="/sleeve/45213292016004/">メガリザードンYのポンチョを着たピカチュウ</a></li></ul></div></noscript>
           <div id="list" class="zukan-grid">
@@ -2813,7 +2813,7 @@
     const SLEEVES_SEO_DESCRIPTION = "日本で発売されたポケモンカードの歴代スリーブ・デッキシールドを一覧掲載。発売年・シリーズ・ポケモン・トレーナーから探せて、現在相場や価格推移も確認できます。";
 
     function getSleevesSeoCount(total) {
-      const count = Number(total);
+      const count = Number(window.common?.getCatalogCount?.() ?? total);
       return Number.isFinite(count) && count > 0 ? `${count.toLocaleString("ja-JP")}種` : "";
     }
 

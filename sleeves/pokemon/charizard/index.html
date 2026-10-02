@@ -1745,7 +1745,7 @@
             <div>
               <h2 class="zukan-results-title">デッキシールド一覧</h2>
             </div>
-            <div class="zukan-results-meta"><strong id="resultCountBadge">集計中</strong><span id="resultRangeText"> 件表示</span></div>
+            <div class="zukan-results-meta"><strong id="resultCountBadge">25</strong><span id="resultRangeText">&#20214;&#34920;&#31034;</span></div>
           </div>
           <noscript><div class="zukan-noscript"><p>掲載中のデッキシールド一覧</p><ul><li><a href="/sleeve/4521329134918/">メガリザードン</a></li><li><a href="/sleeve/4521329134925/">リザードンメガバトル</a></li><li><a href="/sleeve/4521329168869/">決戦！メガバトル</a></li><li><a href="/sleeve/4521329168937/">ポケモンセンターメガトウキョーのピカチュウ</a></li><li><a href="/sleeve/4521329190464/">リザードンver.2</a></li><li><a href="/sleeve/4521329190471/">拡張パック第1弾</a></li><li><a href="/sleeve/4521329190891/">リザードンVSフシギバナ</a></li><li><a href="/sleeve/4521329246710/">レシラム＆リザードン TAG TEAM GX</a></li><li><a href="/sleeve/4521329266190/">進化の系譜 リザードン</a></li><li><a href="/sleeve/4521329289878/">キョダイマックスリザードン</a></li><li><a href="/sleeve/4521329290515/">進化の系譜 リザードン</a></li><li><a href="/sleeve/4521329305820/">ピカチュウと空</a></li><li><a href="/sleeve/4521329305912/">色違いのリザードン</a></li><li><a href="/sleeve/4521329332352/">2021年4月-5月ポケモンカード定期便</a></li><li><a href="/sleeve/4521329345451/">悪テラスタルリザードン</a></li><li><a href="/sleeve/4521329364902/">リザードン</a></li><li><a href="/sleeve/4521329365442/">リザードン</a></li><li><a href="/sleeve/4521329367880/">バトルスタート！</a></li><li><a href="/sleeve/4521329373553/">飛翔リザードン</a></li><li><a href="/sleeve/4521329432298/">メガリザードンX</a></li><li><a href="/sleeve/4521329461977/">メガリザードンX 古城</a></li><li><a href="/sleeve/45213292011004/">リザードン</a></li><li><a href="/sleeve/45213292016003/">メガリザードンXのポンチョを着たピカチュウ</a></li><li><a href="/sleeve/45213292016004/">メガリザードンYのポンチョを着たピカチュウ</a></li><li><a href="/sleeve/45213292020004/">ダンテ</a></li></ul></div></noscript>
           <div id="list" class="zukan-grid">
@@ -2453,7 +2453,7 @@
     const SLEEVES_SEO_DESCRIPTION = "日本で発売されたポケモンカードの歴代スリーブ・デッキシールドを一覧掲載。発売年・シリーズ・ポケモン・トレーナーから探せて、現在相場や価格推移も確認できます。";
 
     function getSleevesSeoCount(total) {
-      const count = Number(total);
+      const count = Number(window.common?.getCatalogCount?.() ?? total);
       return Number.isFinite(count) && count > 0 ? `${count.toLocaleString("ja-JP")}種` : "";
     }
 

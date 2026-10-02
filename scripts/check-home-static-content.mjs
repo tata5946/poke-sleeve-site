@@ -20,7 +20,8 @@ for (const id of ['homeSiteIntroSleeveCount', 'homeSleeveSearchLeadCount', 'home
 assert.match(common, new RegExp(`const SITE_CATALOG_COUNT = ${count};`));
 assert.match(common, /DATA_CACHE_KEY = `pokeSleeve:dataCache:v27:\$\{CATALOG_CACHE_REVISION\}`/);
 assert.match(directory, new RegExp(`<title>[^<]*【${count}種】</title>`));
-assert.match(directory, new RegExp(`<strong id="countInfo">${count}件</strong>`));
+assert.match(directory, new RegExp(`<strong id="countInfo">${count}(?:件|&#20214;)</strong>`));
+assert.match(directory, new RegExp(`<strong id="resultCountBadge">${count}</strong><span id="resultRangeText">(?:件表示|&#20214;&#34920;&#31034;)</span>`));
 assert.ok(!/記事を読み込み中|分類中|選択中: 読み込み中|-- COLLECTIONS/.test(initialBody));
 assert.equal((initialBody.match(/class="home-article-card"/g) || []).length, 8);
 for (const article of snapshot.slice(0, 8)) assert.ok(initialBody.includes(article.title.replaceAll('&', '&amp;').replaceAll('"', '&quot;')));
@@ -67,5 +68,6 @@ for (const category of manifest) {
     assert.match(page, /class="category-market-help" role="img" aria-label="集計方法"/);
   }
   assert.match(page, new RegExp(`<strong id="countInfo">${category.count}(?:件|&#20214;)</strong>`), 'Category result counts remain category-specific');
+  assert.match(page, new RegExp(`<strong id="resultCountBadge">${category.count}</strong><span id="resultRangeText">(?:件表示|&#20214;&#34920;&#31034;)</span>`), 'Category list heading count is static');
 }
 console.log(`PASS: master count ${count}; 8 initial article cards and offline fallback; static market/charts/rankings; category counts, help display, and crawlable tags; ${manifest.length} category result counts.`);

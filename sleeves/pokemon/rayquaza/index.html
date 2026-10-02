@@ -1745,7 +1745,7 @@
             <div>
               <h2 class="zukan-results-title">デッキシールド一覧</h2>
             </div>
-            <div class="zukan-results-meta"><strong id="resultCountBadge">集計中</strong><span id="resultRangeText"> 件表示</span></div>
+            <div class="zukan-results-meta"><strong id="resultCountBadge">17</strong><span id="resultRangeText">&#20214;&#34920;&#31034;</span></div>
           </div>
           <noscript><div class="zukan-noscript"><p>掲載中のデッキシールド一覧</p><ul><li><a href="/sleeve/4521329115566/">レックウザ</a></li><li><a href="/sleeve/4521329115580/">ドラゴンセレクション</a></li><li><a href="/sleeve/4521329119458/">carnival2012sp</a></li><li><a href="/sleeve/4521329135427/">メガレックウザ</a></li><li><a href="/sleeve/4521329226552/">レックウザ 墨絵ver.</a></li><li><a href="/sleeve/4521329246024/">歴戦の強者達</a></li><li><a href="/sleeve/4521329246307/">レックウザ CL2019</a></li><li><a href="/sleeve/4521329246543/">レックウザ墨絵ver ver.2</a></li><li><a href="/sleeve/4521329266619/">メガレックウザ 降臨</a></li><li><a href="/sleeve/4521329290508/">メガレックウザ 降臨</a></li><li><a href="/sleeve/4521329292106/">墨絵列伝 レックウザ</a></li><li><a href="/sleeve/4521329322490/">ダイマックスレックウザ</a></li><li><a href="/sleeve/4521329322537/">ドラゴン襲来</a></li><li><a href="/sleeve/4521329356143/">PIKACHU ADVENTURE レックウザ</a></li><li><a href="/sleeve/4521329373560/">飛来レックウザ</a></li><li><a href="/sleeve/4521329463544/">メガレックウザ</a></li><li><a href="/sleeve/45213292018006/">『チャンピオンズリーグ2018』</a></li></ul></div></noscript>
           <div id="list" class="zukan-grid">
@@ -2309,7 +2309,7 @@
     const SLEEVES_SEO_DESCRIPTION = "日本で発売されたポケモンカードの歴代スリーブ・デッキシールドを一覧掲載。発売年・シリーズ・ポケモン・トレーナーから探せて、現在相場や価格推移も確認できます。";
 
     function getSleevesSeoCount(total) {
-      const count = Number(total);
+      const count = Number(window.common?.getCatalogCount?.() ?? total);
       return Number.isFinite(count) && count > 0 ? `${count.toLocaleString("ja-JP")}種` : "";
     }
 

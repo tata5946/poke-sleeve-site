@@ -1745,7 +1745,7 @@
             <div>
               <h2 class="zukan-results-title">デッキシールド一覧</h2>
             </div>
-            <div class="zukan-results-meta"><strong id="resultCountBadge">集計中</strong><span id="resultRangeText"> 件表示</span></div>
+            <div class="zukan-results-meta"><strong id="resultCountBadge">9</strong><span id="resultRangeText">&#20214;&#34920;&#31034;</span></div>
           </div>
           <noscript><div class="zukan-noscript"><p>掲載中のデッキシールド一覧</p><ul><li><a href="/sleeve/4521329362410/">パルデアの冒険 コライドン＆ドオー</a></li><li><a href="/sleeve/4521329362427/">ガラルの冒険 ザシアン＆マホイップ</a></li><li><a href="/sleeve/4521329362434/">アローラの冒険 カプ・コケコ＆ミミッキュ</a></li><li><a href="/sleeve/4521329362441/">カロスの冒険 ゼルネアス＆オンバーン</a></li><li><a href="/sleeve/4521329362458/">イッシュの冒険 レシラム＆モロバレル</a></li><li><a href="/sleeve/4521329362465/">シンオウの冒険 ディアルガ＆ルカリオ</a></li><li><a href="/sleeve/4521329362472/">ホウエンの冒険 カイオーガ＆バシャーモ</a></li><li><a href="/sleeve/4521329362489/">ジョウトの冒険 ルギア＆バンギラス</a></li><li><a href="/sleeve/4521329362502/">カントーの冒険 ピカチュウ＆カビゴン</a></li></ul></div></noscript>
           <div id="list" class="zukan-grid">
@@ -2165,7 +2165,7 @@
     const SLEEVES_SEO_DESCRIPTION = "日本で発売されたポケモンカードの歴代スリーブ・デッキシールドを一覧掲載。発売年・シリーズ・ポケモン・トレーナーから探せて、現在相場や価格推移も確認できます。";
 
     function getSleevesSeoCount(total) {
-      const count = Number(total);
+      const count = Number(window.common?.getCatalogCount?.() ?? total);
       return Number.isFinite(count) && count > 0 ? `${count.toLocaleString("ja-JP")}種` : "";
     }
 
