@@ -1560,7 +1560,7 @@
       }
     }
 
-    .category-market-summary { display:grid; gap:14px; margin:0 0 22px; padding:18px; border:1px solid #f3cf67; border-radius:16px; background:linear-gradient(135deg,#fffdf5 0%,#fff9df 100%); box-shadow:0 10px 28px rgba(146,104,18,.08); }
+    .category-market-summary { display:grid; gap:14px; width:min(100%,1180px); margin:0 auto 22px; padding:18px; border:1px solid #f3cf67; border-radius:16px; background:linear-gradient(135deg,#fffdf5 0%,#fff9df 100%); box-shadow:0 10px 28px rgba(146,104,18,.08); }
     .category-market-summary-head { display:flex; align-items:center; justify-content:space-between; gap:16px; }
     .category-market-summary-title { display:flex; align-items:center; gap:9px; margin:0; color:#172033; font-size:clamp(18px,2vw,24px); font-weight:900; }
     .category-market-summary-note { margin:0; color:#667085; font-size:11px; font-weight:700; }
@@ -1620,7 +1620,7 @@
           </div>
         </section>
 
-        <section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle" hidden></section>
+        <section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle" data-static-market-summary="1"><div class="category-market-summary-head"><h2 id="categoryMarketSummaryTitle" class="category-market-summary-title"><span aria-hidden="true">▥</span>キリキザンのデッキシールド相場</h2><p class="category-market-summary-note">※最新週の取引データをもとに集計</p></div><div class="category-market-summary-grid"><div class="category-market-stat"><span class="category-market-stat-label">掲載数</span><strong class="category-market-stat-value">1<span class="category-market-stat-unit">種類</span></strong></div><div class="category-market-stat"><span class="category-market-stat-label">平均相場</span><strong class="category-market-stat-value">3,500円</strong></div><div class="category-market-stat"><span class="category-market-stat-label">中央値</span><strong class="category-market-stat-value">3,500円</strong></div><div class="category-market-stat"><span class="category-market-stat-label">最高相場</span><strong class="category-market-stat-value">3,500円</strong></div><div class="category-market-stat"><span class="category-market-stat-label">定価以上</span><strong class="category-market-stat-value">0<span class="category-market-stat-unit">種類（約0%）</span></strong></div></div><a class="category-market-highest" href="/sleeve/45213292011002/"><span class="category-market-highest-label">♛ 最も高いデッキシールド</span><img class="category-market-highest-image" src="https://drive.google.com/thumbnail?id=1Kf4SS0SZoZQnuPBHBaM1lH6wBsaoXYCj&amp;sz=w1200" alt="" loading="lazy" referrerpolicy="no-referrer"><span class="category-market-highest-name">キリキザン</span><strong class="category-market-highest-price">3,500円</strong></a></section>
 
         <section class="zukan-filter-card" aria-label="フィルタバー">
           <div class="zukan-filter-head">
@@ -2163,6 +2163,10 @@
       function renderCategoryMarketSummary() {
         const root = document.getElementById("categoryMarketSummary");
         if (!root) return;
+        if (root.dataset.staticMarketSummary === "1") {
+          root.hidden = false;
+          return;
+        }
         const scopeItems = staticCategoryPage?.group && staticCategoryPage?.tag
           ? sleeves.filter((sleeve) => {
               const groupMatches = window.common && typeof window.common.sleeveMatchesGroup === "function"

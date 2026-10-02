@@ -32,6 +32,47 @@ function LatestPrice([object]$Sleeve) {
   }
   return $null
 }
+function LatestWeeklyTradePrice([object]$Sleeve) {
+  $rows = @($Sleeve.weeklyPrices) |
+    Where-Object { (IsoDate $_.week) -and $null -ne (NumberOrNull $_.price) -and (NumberOrNull $_.price) -gt 0 } |
+    Sort-Object { IsoDate $_.week }
+  if (-not $rows.Count) { return $null }
+  return NumberOrNull $rows[-1].price
+}
+function CategoryMarketSummaryHtml([object]$Entry) {
+  $items = @($Entry.items)
+  $priced = @()
+  foreach ($sleeve in $items) {
+    $price = LatestWeeklyTradePrice $sleeve
+    if ($null -ne $price -and $price -gt 0) {
+      $priced += [pscustomobject]@{ sleeve = $sleeve; price = [double]$price }
+    }
+  }
+  $priced = @($priced | Sort-Object price)
+  $prices = @($priced | ForEach-Object { [double]$_.price })
+  $average = if ($prices.Count) { [math]::Round(($prices | Measure-Object -Average).Average) } else { $null }
+  $median = $null
+  if ($prices.Count) {
+    $middle = [math]::Floor($prices.Count / 2)
+    $median = if ($prices.Count % 2) { $prices[$middle] } else { [math]::Round(($prices[$middle - 1] + $prices[$middle]) / 2) }
+  }
+  $highest = if ($priced.Count) { $priced[-1] } else { $null }
+  $aboveRetail = @($priced | Where-Object {
+    $retail = NumberOrNull $_.sleeve.firstPrice
+    $null -ne $retail -and $retail -gt 0 -and $_.price -ge $retail
+  }).Count
+  $rate = if ($items.Count) { [math]::Round(($aboveRetail / $items.Count) * 100) } else { 0 }
+  $yen = { param($value) if ($null -eq $value) { '—' } else { ([math]::Round([double]$value)).ToString('N0') + '円' } }
+  $label = Html $Entry.label
+  $highestMarkup = ''
+  if ($null -ne $highest) {
+    $sleeve = $highest.sleeve
+    $routeId = RouteId $sleeve.id
+    $image = if ([string]$sleeve.imageUrl) { '<img class="category-market-highest-image" src="' + (Html $sleeve.imageUrl) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' } else { '<span class="category-market-highest-image" aria-hidden="true"></span>' }
+    $highestMarkup = '<a class="category-market-highest" href="/sleeve/' + (Html $routeId) + '/"><span class="category-market-highest-label">♛ 最も高いデッキシールド</span>' + $image + '<span class="category-market-highest-name">' + (Html $sleeve.name) + '</span><strong class="category-market-highest-price">' + (Html (& $yen $highest.price)) + '</strong></a>'
+  }
+  return '<section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle" data-static-market-summary="1"><div class="category-market-summary-head"><h2 id="categoryMarketSummaryTitle" class="category-market-summary-title"><span aria-hidden="true">▥</span>' + $label + 'のデッキシールド相場</h2><p class="category-market-summary-note">※最新週の取引データをもとに集計</p></div><div class="category-market-summary-grid"><div class="category-market-stat"><span class="category-market-stat-label">掲載数</span><strong class="category-market-stat-value">' + $items.Count.ToString('N0') + '<span class="category-market-stat-unit">種類</span></strong></div><div class="category-market-stat"><span class="category-market-stat-label">平均相場</span><strong class="category-market-stat-value">' + (Html (& $yen $average)) + '</strong></div><div class="category-market-stat"><span class="category-market-stat-label">中央値</span><strong class="category-market-stat-value">' + (Html (& $yen $median)) + '</strong></div><div class="category-market-stat"><span class="category-market-stat-label">最高相場</span><strong class="category-market-stat-value">' + (Html (& $yen $(if ($highest) { $highest.price } else { $null }))) + '</strong></div><div class="category-market-stat"><span class="category-market-stat-label">定価以上</span><strong class="category-market-stat-value">' + $aboveRetail.ToString('N0') + '<span class="category-market-stat-unit">種類（約' + $rate + '%）</span></strong></div></div>' + $highestMarkup + '</section>'
+}
 function IsoDate([object]$Value) {
   $text = ([string]$Value).Trim()
   if (-not $text) { return '' }
@@ -289,6 +330,7 @@ function ZukanCategoryPageHtml([object]$Entry, [string]$Slug, [string]$Template)
   }
   $breadcrumbMarkup = '<nav class="breadcrumb" aria-label="パンくず"><a href="/">ホーム</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><a href="/sleeves/">デッキシールド図鑑</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><a href="/sleeves/' + $Entry.group + '/">' + (Html $groupLabel) + 'から探す</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><span class="breadcrumb-current" aria-current="page">' + (Html $label) + '</span></nav>'
   $html = $Template
+  $html = $html.Replace('<section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle" hidden></section>', (CategoryMarketSummaryHtml $Entry))
   $staticListPattern = '<div id="list" class="zukan-grid">\s*<!-- STATIC_ZUKAN_CARDS_START -->.*?<!-- STATIC_ZUKAN_CARDS_END -->\s*</div>'
   $staticList = '<div id="list" class="zukan-grid">' + "`r`n" +
     '            <!-- STATIC_ZUKAN_CARDS_START -->' + "`r`n" +
