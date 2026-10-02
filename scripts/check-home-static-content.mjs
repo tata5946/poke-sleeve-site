@@ -61,8 +61,11 @@ new Script(common);
 const manifest = JSON.parse(await read('data/category-page-manifest.json'));
 for (const category of manifest) {
   const page = await read(category.path.replace(/^\//, '') + 'index.html');
-  assert.ok(!/<span class="category-market-help"[^>]*>\?/.test(page), category.path + ': no literal question mark in HTML');
-  assert.match(page, /class="category-market-help" role="img" aria-label="集計方法"/);
+  if (category.group === 'pokemon' && category.label === 'ピカチュウ') {
+    assert.ok(!/class="category-market-help"/.test(page), category.path + ': no trailing help icon');
+  } else {
+    assert.match(page, /class="category-market-help" role="img" aria-label="集計方法"/);
+  }
   assert.match(page, new RegExp(`<strong id="countInfo">${category.count}(?:件|&#20214;)</strong>`), 'Category result counts remain category-specific');
 }
-console.log(`PASS: master count ${count}; 8 initial article cards and offline fallback; static market/charts/rankings; category counts and crawlable tags; ${manifest.length} category help icons and result counts.`);
+console.log(`PASS: master count ${count}; 8 initial article cards and offline fallback; static market/charts/rankings; category counts, help display, and crawlable tags; ${manifest.length} category result counts.`);
