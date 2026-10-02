@@ -47,21 +47,6 @@
   font-family: var(--font-heading) !important;
 }
 
-:root body.ranking-redesign-page .dashboard-content {
-  background: transparent !important;
-}
-
-:root body.ranking-redesign-page .page-shell--market {
-  width: min(100%, 1500px) !important;
-  max-width: 1500px !important;
-  margin-inline: auto !important;
-  padding: 18px clamp(18px, 3vw, 46px) 56px !important;
-}
-
-:root body.ranking-redesign-page .breadcrumb {
-  display: none !important;
-}
-
 :root body.ranking-redesign-page .ranking-page-top {
   position: relative !important;
   display: grid !important;
@@ -1243,10 +1228,6 @@
 }
 
 @media (max-width: 560px) {
-  :root body.ranking-redesign-page .page-shell--market {
-    padding-inline: 12px !important;
-  }
-
   :root body.ranking-redesign-page .ranking-filter-grid {
     grid-template-columns: 1fr !important;
   }
@@ -1322,8 +1303,7 @@
 }
 
 @media (max-width: 900px) {
-  :root body.ranking-redesign-page,
-  :root body.ranking-redesign-page .dashboard-content {
+  :root body.ranking-redesign-page {
     width: 100% !important;
     max-width: 100vw !important;
     min-width: 0 !important;
@@ -1332,25 +1312,6 @@
 
   :root body.ranking-redesign-page {
     background: linear-gradient(90deg, #eaf8ff 0, #f8fcff 22px, #f8fcff calc(100% - 22px), #eaf8ff 100%) !important;
-  }
-
-  :root body.ranking-redesign-page .page-shell--market {
-    width: calc(100vw - 56px) !important;
-    max-width: calc(100vw - 56px) !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-    margin-inline: auto !important;
-    padding: 0 0 56px !important;
-  }
-
-  :root body.ranking-redesign-page .breadcrumb {
-    display: flex !important;
-    width: 100% !important;
-    margin: 0 auto !important;
-    padding: 18px 0 0 !important;
-    box-sizing: border-box !important;
-    font-size: 12px !important;
-    line-height: 1.4 !important;
   }
 
   :root body.ranking-redesign-page .ranking-page-top,
@@ -1428,8 +1389,8 @@
   :root body.ranking-redesign-page .ranking-filter-card {
     grid-template-columns: 1fr !important;
     gap: 0 !important;
-    width: calc(100vw - 88px) !important;
-    max-width: calc(100vw - 88px) !important;
+    width: 100% !important;
+    max-width: 100% !important;
     justify-self: center !important;
   }
 
@@ -1492,8 +1453,8 @@
     gap: 0 !important;
     height: 236px !important;
     min-height: 236px !important;
-    width: calc(100vw - 88px) !important;
-    max-width: calc(100vw - 88px) !important;
+    width: 100% !important;
+    max-width: 100% !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
     padding: 8px !important;
@@ -1664,8 +1625,8 @@
     padding: 8px !important;
     gap: 4px 6px !important;
     border-radius: 12px !important;
-    width: calc(100vw - 88px) !important;
-    max-width: calc(100vw - 88px) !important;
+    width: 100% !important;
+    max-width: 100% !important;
     box-sizing: border-box !important;
   }
 
@@ -1775,11 +1736,6 @@
 }
 
 @media (max-width: 900px) {
-  html:root body.ranking-redesign-page .page-shell--market {
-    width: calc(100vw - 32px) !important;
-    max-width: calc(100vw - 32px) !important;
-  }
-
   :root body.ranking-redesign-page .ranking-page-top {
     gap: 8px !important;
     margin: 0 0 12px !important;
@@ -2016,58 +1972,8 @@
   }
 }
 
-/* Canonical mobile heading geometry from sleeves/index.html. This must remain
-   after every legacy ranking override in this file. */
+/* Mobile ranking cards. Shared shell and heading geometry lives in site.css. */
 @media (max-width: 900px) {
-  html:root body.ranking-redesign-page .dashboard-content {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    padding: 0 0 calc(92px + env(safe-area-inset-bottom, 0px)) !important;
-    gap: 0 !important;
-  }
-
-  html:root body.ranking-redesign-page .page-shell--market {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    margin-inline: auto !important;
-    padding: 0 28px 56px !important;
-    box-sizing: border-box !important;
-  }
-
-  html:root body.ranking-redesign-page .breadcrumb {
-    display: flex !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 18px 0 0 !important;
-    box-sizing: border-box !important;
-    font-size: 12px !important;
-    line-height: 1.4 !important;
-  }
-
-  html:root body.ranking-redesign-page .ranking-page-top,
-  html:root body.ranking-redesign-page--price .ranking-page-top,
-  html:root body.ranking-redesign-page--price-up .ranking-page-top,
-  html:root body.ranking-redesign-page--rate-up .ranking-page-top,
-  html:root body.ranking-redesign-page--views .ranking-page-top {
-    gap: 24px !important;
-    margin: 0 0 16px !important;
-    padding-top: 0 !important;
-  }
-
-  html:root body.ranking-redesign-page .ranking-hero,
-  html:root body.ranking-redesign-page .ranking-hero.page-hero-card,
-  html:root body.ranking-redesign-page--price .ranking-hero,
-  html:root body.ranking-redesign-page--price .ranking-hero.page-hero-card,
-  html:root body.ranking-redesign-page--price-up .ranking-hero,
-  html:root body.ranking-redesign-page--price-up .ranking-hero.page-hero-card,
-  html:root body.ranking-redesign-page--rate-up .ranking-hero,
-  html:root body.ranking-redesign-page--rate-up .ranking-hero.page-hero-card,
-  html:root body.ranking-redesign-page--views .ranking-hero,
-  html:root body.ranking-redesign-page--views .ranking-hero.page-hero-card {
-    margin: 0 !important;
-    padding: 20px 0 0 !important;
-  }
-
   html:root body.ranking-redesign-page .ranking-main,
   html:root body.ranking-redesign-page .ranking-top3,
   html:root body.ranking-redesign-page--price .ranking-top3,

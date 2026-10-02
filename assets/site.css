@@ -1256,7 +1256,7 @@ body:not(.home-page) {
     font-family: var(--font-ui);
 }
 
-body:not(.home-page) :is(h1, h2, .page-title, .page-hero-title, .page-focus-title, .shared-page-heading-title, .ranking-shared-title, .ranking-page-title, .zukan-title, .category-page-hero-title) {
+body:not(.home-page) :is(h1, h2, .page-title, .page-hero-title, .page-focus-title, .shared-page-heading-title, .ranking-page-title, .zukan-title, .category-page-hero-title) {
     font-family: var(--font-heading);
 }
 
@@ -10140,10 +10140,15 @@ svg[class*="-chart"],
     }
 }
 
+/* Shared geometry is authoritative for every opted-in page. Important declarations
+   in this layer take precedence over legacy, unlayered page CSS, regardless of
+   stylesheet order or selector specificity. Keep page/card styles outside it. */
+@layer shared-page-layout {
 /* Shared page heading rhythm for content pages. */
 html:root body.shared-page-layout .shared-page-heading {
     width: 100% !important;
     min-width: 0 !important;
+    min-height: 0 !important;
     margin-top: 0 !important;
     margin-right: 0 !important;
     margin-bottom: 0 !important;
@@ -10324,34 +10329,46 @@ html:root body.shared-page-layout .shared-page-content > .error:empty {
     }
 }
 
-/* Shared shell and heading rhythm for ranking pages. */
-html:root body.ranking-shared-layout .dashboard-content {
+/* Ranking structure only; shell dimensions and title typography are shared above. */
+html:root body.shared-page-layout.ranking-redesign-page .ranking-page-top {
     width: 100% !important;
-    max-width: 100% !important;
+    margin: 0 !important;
     padding: 0 !important;
     gap: 0 !important;
-    box-sizing: border-box !important;
 }
-
-html:root body.ranking-shared-layout .ranking-shared-content {
-    width: 100% !important;
-    max-width: 100% !important;
+html:root body.shared-page-layout.ranking-redesign-page .shared-page-heading {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: end !important;
+    gap: 24px !important;
+}
+html:root body.shared-page-layout.ranking-redesign-page .shared-page-heading::before,
+html:root body.shared-page-layout.ranking-redesign-page .shared-page-heading::after {
+    content: none !important;
+    display: none !important;
+}
+html:root body.shared-page-layout.ranking-redesign-page .ranking-hero-copy {
+    display: grid !important;
+    gap: 8px !important;
     min-width: 0 !important;
-    margin: 0 !important;
-    padding: 0 48px 64px !important;
-    box-sizing: border-box !important;
 }
-
-html:root body.ranking-shared-layout .ranking-shared-content > .breadcrumb {
-    display: flex !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 24px 0 0 !important;
-    align-items: center !important;
-    gap: 6px !important;
-    box-sizing: border-box !important;
-    font-size: 12px !important;
-    line-height: 1.4 !important;
+html:root body.shared-page-layout.ranking-redesign-page .shared-page-heading-title {
+    color: #111827 !important;
+    white-space: normal !important;
+}
+html:root body.shared-page-layout.ranking-redesign-page .shared-page-heading + .ranking-filter-card {
+    margin-top: 18px !important;
+}
+@media (max-width: 700px) {
+    html:root body.shared-page-layout.ranking-redesign-page .shared-page-heading {
+        grid-template-columns: 1fr !important;
+        align-items: start !important;
+        gap: 12px !important;
+    }
+    html:root body.shared-page-layout.ranking-redesign-page .shared-page-heading .page-hero-meta {
+        justify-content: flex-start !important;
+    }
+}
 }
 
 /* Canonical breadcrumb position across dashboard pages. */
@@ -10408,106 +10425,6 @@ html:root body.page-market-list .category-page-wrap > .breadcrumb {
         padding: 18px 28px 0 !important;
         white-space: nowrap !important;
         overflow: hidden !important;
-    }
-}
-
-html:root body.ranking-shared-layout .ranking-page-top {
-    width: 100% !important;
-    margin: 0 !important;
-    gap: 0 !important;
-}
-
-html:root body.ranking-shared-layout .ranking-shared-heading {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    align-items: end !important;
-    gap: 24px !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 26px 0 22px !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    box-sizing: border-box !important;
-}
-
-html:root body.ranking-shared-layout .ranking-shared-heading::before,
-html:root body.ranking-shared-layout .ranking-shared-heading .ranking-hero-label::before {
-    display: none !important;
-}
-
-html:root body.ranking-shared-layout .ranking-shared-heading .ranking-hero-copy {
-    display: grid !important;
-    gap: 8px !important;
-    min-width: 0 !important;
-}
-
-html:root body.ranking-shared-layout .ranking-shared-heading .ranking-hero-label {
-    margin: 0 !important;
-    min-height: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-    background: transparent !important;
-    font-size: 11px !important;
-    line-height: 1.3 !important;
-    letter-spacing: .16em !important;
-}
-
-html:root body.ranking-shared-layout .ranking-shared-title {
-    margin: 0 !important;
-    color: #111827 !important;
-    font-family: var(--font-heading) !important;
-    font-size: 42px !important;
-    line-height: 1.15 !important;
-    font-weight: 700 !important;
-    letter-spacing: 0 !important;
-    white-space: normal !important;
-}
-
-html:root body.ranking-shared-layout .ranking-shared-heading .page-hero-desc {
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
-    font-size: 14px !important;
-    line-height: 1.8 !important;
-}
-
-html:root body.ranking-shared-layout .ranking-shared-heading + .ranking-filter-card {
-    margin-top: 18px !important;
-}
-
-@media (max-width: 700px) {
-    html:root body.ranking-shared-layout .ranking-shared-content {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 0 18px 64px !important;
-    }
-
-    html:root body.ranking-shared-layout .ranking-shared-content > .breadcrumb {
-        width: 100vw !important;
-        margin: 0 0 0 calc(50% - 50vw) !important;
-        padding: 18px 28px 0 !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-    }
-
-    html:root body.ranking-shared-layout .ranking-shared-heading {
-        grid-template-columns: 1fr !important;
-        align-items: start !important;
-        gap: 12px !important;
-        padding: 22px 0 18px !important;
-    }
-
-    html:root body.ranking-shared-layout .ranking-shared-title {
-        font-size: 24px !important;
-        line-height: 1.35 !important;
-        font-weight: 800 !important;
-    }
-
-    html:root body.ranking-shared-layout .ranking-shared-heading .page-hero-meta {
-        justify-content: flex-start !important;
     }
 }
 

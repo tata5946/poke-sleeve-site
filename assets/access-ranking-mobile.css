@@ -1,10 +1,11 @@
 .access-mobile-list, .access-mobile-sort, .access-ranking-help { display: none; }
 
+html:root body.ranking-redesign-page--views .shared-page-heading .shared-page-heading-title::before,
+html:root body.ranking-redesign-page--views .shared-page-heading .shared-page-heading-title::after { content: none !important; display: none !important; }
+
 @media (max-width: 700px) {
-  html:root body.ranking-redesign-page--views .ranking-shared-heading .ranking-shared-title::before { content: none !important; display: none !important; }
-  html:root body.ranking-redesign-page--views .ranking-shared-heading .ranking-shared-title::after { content: none !important; display: none !important; }
-  html:root body.ranking-redesign-page--views .ranking-shared-heading .page-hero-desc,
-  html:root body.ranking-redesign-page--views .ranking-shared-heading .page-hero-meta,
+  html:root body.ranking-redesign-page--views .shared-page-heading .page-hero-desc,
+  html:root body.ranking-redesign-page--views .shared-page-heading .page-hero-meta,
   html:root body.ranking-redesign-page--views .ranking-hero-label,
   html:root body.ranking-redesign-page--views .ranking-filter-head { display: none !important; }
   .access-ranking-help { display: block; background: #e8f3ff; border-radius: 8px; padding: 9px 10px; color: #365779; font-size: 11px; }
