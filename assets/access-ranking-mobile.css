@@ -4,6 +4,7 @@
   html:root body.ranking-redesign-page--views .ranking-hero.page-hero-card.ranking-shared-heading { padding: 0 !important; background: transparent !important; border: 0 !important; box-shadow: none !important; }
   html:root body.ranking-redesign-page--views .ranking-page-top { gap: 12px !important; }
   html:root body.ranking-redesign-page--views .ranking-shared-title { font-size: 24px !important; line-height: 1.3 !important; }
+  html:root body.ranking-redesign-page--views .ranking-shared-heading .ranking-shared-title::after { content: none !important; display: none !important; }
   html:root body.ranking-redesign-page--views .ranking-shared-heading .page-hero-desc,
   html:root body.ranking-redesign-page--views .ranking-shared-heading .page-hero-meta,
   html:root body.ranking-redesign-page--views .ranking-hero-label,
