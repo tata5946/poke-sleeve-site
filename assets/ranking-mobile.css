@@ -17,6 +17,10 @@ html:root body.ranking-redesign-page .shared-page-heading .shared-page-heading-t
   html:root body.ranking-redesign-page #top3,
   html:root body.ranking-redesign-page #restSection { display: none !important; }
   .ranking-mobile-list { display: grid; gap: 10px; margin-top: 20px; }
+  .ranking-mobile-empty { padding: 24px; text-align: center; font-size: 13px; }
+}
+
+/* The desktop list and mobile list use the same card component. */
   .ranking-mobile-card { position: relative; display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 12px; padding: 10px; border: 1px solid #dce6f1; border-radius: 12px; background: #fff; color: #071635; text-decoration: none; min-height: 128px; }
   .ranking-mobile-card:focus-visible { outline: 3px solid #2475dc; outline-offset: 2px; }
   .ranking-mobile-image { position: relative; display: grid; place-items: center; min-height: 106px; background: #edf2f8; border-radius: 8px; overflow: hidden; font-size: 11px; color: #8290a5; }
@@ -47,5 +51,14 @@ html:root body.ranking-redesign-page .shared-page-heading .shared-page-heading-t
   html:root body.ranking-redesign-page .ranking-mobile-market .sleeve-sparkline-axis,
   html:root body.ranking-redesign-page .ranking-mobile-market .sleeve-sparkline-dot { display: none !important; }
   .ranking-mobile-market .sleeve-sparkline-empty { white-space: normal; font-size: 8px; }
-  .ranking-mobile-empty { padding: 24px; text-align: center; font-size: 13px; }
+
+@media (min-width: 701px) {
+  html:root body.ranking-redesign-page #list { grid-template-columns: minmax(0, 1fr) !important; gap: 10px !important; }
+  #list .ranking-mobile-card { grid-template-columns: 96px minmax(0, 1fr); gap: 18px; padding: 14px; }
+  #list .ranking-mobile-info h3 { font-size: 18px; }
+  #list .ranking-mobile-meta { font-size: 12px; }
+  #list .ranking-mobile-price { font-size: 24px; }
+  #list .ranking-mobile-change { font-size: 12px; }
+  #list .ranking-mobile-change small { font-size: 11px; }
+  html:root body.ranking-redesign-page #list .ranking-mobile-market .sleeve-sparkline { width: 112px !important; height: 40px !important; flex-basis: 112px !important; }
 }

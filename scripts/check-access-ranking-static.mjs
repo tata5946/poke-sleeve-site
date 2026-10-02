@@ -30,6 +30,7 @@ const desktop = cards('data-static-ranking-item');
 assert.equal(mobile.length, snapshot.length, 'Every ranked item must be in the initial mobile HTML');
 assert.equal(desktop.length, snapshot.length, 'Desktop and mobile must contain the same ranking');
 assert.deepEqual(mobile.map(card => card.dataset.rankingId), desktop.map(card => card.dataset.rankingId));
+for (let index = 3; index < mobile.length; index++) assert.equal(desktop[index].markup, mobile[index].markup, 'Desktop cards after the podium must share mobile content');
 assert.equal(new Set(mobile.map(card => card.dataset.rankingId)).size, mobile.length, 'No duplicate items');
 for (const [index, card] of mobile.entries()) {
   assert.equal(Number(card.dataset.rankingRank), index + 1);

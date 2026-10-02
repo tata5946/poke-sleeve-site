@@ -40,6 +40,7 @@ for (const [page, type, label] of [['ranking.html','price','前週比'],['surge.
   assert.equal(schema.itemListElement[0].item.url, 'https://pokesuri-navi.com/sleeve/' + (attr(mobile[0].tag, 'data-ranking-id').length <= 7 ? '4521329' : '') + attr(mobile[0].tag, 'data-ranking-id') + '/');
 
   assert.equal(mobile.length, desktop.length, page + ': same static ranking on mobile and desktop');
+  for (let index = 3; index < mobile.length; index++) assert.equal(desktop[index].body, mobile[index].body, page + ': desktop cards after the podium share mobile content');
   const excludeLegacy = type !== 'price';
   const globalWeek = data.sleeves.flatMap(sleeve => weekly(sleeve, excludeLegacy).slice(-1)).reduce((value, row) => row.week > value ? row.week : value, '');
   const eligible = data.sleeves.filter(sleeve => {

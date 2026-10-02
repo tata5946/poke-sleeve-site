@@ -93,26 +93,9 @@ function PodiumHtml([object]$Row, [int]$Rank, [string]$Type) {
 "@
 }
 function StandardHtml([object]$Row, [int]$Rank, [string]$Type) {
-  $s = $Row.s
-  $graphHtml=RankingSparklineHtml $s
-  $extraClass = if ($Type -eq 'surge') { ' ranking-card-frameless' } else { '' }
-  $thumbClass = if ($Type -eq 'surge') { ' ranking-card-frameless-thumb' } else { '' }
-  $imgClass = if ($Type -eq 'surge') { ' ranking-card-frameless-img' } else { '' }
-  $metricHtml = switch ($Type) {
-    'price' { '<div class="compact-price">' + (Yen $Row.price) + '</div><div class="compact-delta ' + $Row.deltaClass + '">' + (Html $Row.deltaText) + '</div>' }
-    'growth' { '<div class="compact-price">' + (Yen $Row.latest) + '</div><div class="compact-delta ' + $Row.deltaClass + '">' + (Html $Row.rateText) + '</div>' }
-    'surge' { '<div class="compact-price">' + (Yen $Row.latest) + '</div><div class="compact-delta ' + $Row.deltaClass + '">' + (Html $Row.deltaText) + '</div><div class="compact-rate ' + $Row.deltaClass + '">' + (Html $Row.rateText) + '</div>' }
-    default { '<div class="compact-price">' + (Yen $Row.latest) + '</div><div class="compact-delta flat">&#26368;&#26032;&#20385;&#26684;</div>' }
-  }
-  return @"
-          <a class="compact-card ranking-card ranking-card--compact$extraClass" data-static-ranking-item data-ranking-rank="$Rank" data-ranking-id="$(Html $s.id)" data-ranking-current="$(Html $Row.latest)" data-ranking-compare="$(Html $Row.compare)" data-ranking-metric="$(Html $Row.metric)" data-sleeve-link="1" href="$(DetailHref $s)" aria-label="$(Html $s.name)&#12398;&#35443;&#32048;&#12434;&#35211;&#12427;"$(if($Type -eq 'surge'){' style="border:0;border-radius:0;background:transparent;box-shadow:none;"'}else{''})>
-            <span class="compact-rank-badge">$Rank&#20301;</span>
-            <span class="compact-thumb-wrap$thumbClass"><img class="compact-thumb$imgClass" src="$(Html $s.imageUrl)" alt="$(Html $s.name)" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';"></span>
-            <h3 class="compact-card-title">$(Html $s.name)</h3>
-            <div class="compact-market-row"><div class="compact-price-row">$metricHtml</div>$graphHtml</div>
-            $(MetaHtml $s 'compact')
-          </a>
-"@
+  $card = RankingMobileHtml $Row $Rank $Type
+  $attributes = 'data-static-ranking-item data-ranking-rank="' + $Rank + '" data-ranking-id="' + (Html $Row.s.id) + '" data-ranking-current="' + (Html $Row.latest) + '" data-ranking-compare="' + (Html $Row.compare) + '" data-ranking-metric="' + (Html $Row.metric) + '"'
+  return [regex]::Replace($card, 'data-ranking-mobile-item data-ranking-id="[^"]*" data-ranking-rank="[^"]*" data-ranking-current="[^"]*"', $attributes)
 }
 function PriceRows([array]$Sleeves) {
   $rows = foreach ($s in $Sleeves) {
