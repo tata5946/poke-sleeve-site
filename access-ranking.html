@@ -547,6 +547,7 @@
     }
   </style>
   <link rel="stylesheet" href="./assets/ranking-redesign.css?v=20260914u" />
+  <link rel="stylesheet" href="./assets/access-ranking-mobile.css?v=20261002" />
 </head>
 
 <body class="ranking-redesign-page ranking-redesign-page--views ranking-shared-layout" data-hide-global-header="1">
@@ -572,6 +573,8 @@
         <div class="ranking-hero-copy">
           <p class="page-hero-kicker ranking-hero-label">MARKET RANKING</p>
           <h1 class="ranking-page-title page-hero-title ranking-shared-title">アクセスランキング</h1>
+          <p class="access-mobile-subtitle">注目されているデッキシールド</p>
+          <details class="access-ranking-help"><summary>累計のページ閲覧数をもとに集計 <span aria-hidden="true">ⓘ</span></summary><p>記録されている閲覧数の累計順です。グラフは直近12週分の価格推移、前週比は最新価格とその1週間前の価格の差を表示します。</p></details>
           <p class="page-hero-desc">実際に見られているスリーブから関心の流れを読むページです。価格ランキングとは別に、需要の気配を先回りで確認できます。</p>
         </div>
         <div class="page-hero-meta">
@@ -588,12 +591,12 @@
         <div id="error" class="error"></div>
         <div class="ranking-filter-grid">
           <div class="ranking-filter-field">
-            <select id="releaseYear">
+            <select id="releaseYear" aria-label="発売年">
               <option value="">発売年</option>
             </select>
           </div>
           <div class="ranking-filter-field">
-            <select id="series">
+            <select id="series" aria-label="シリーズ">
               <option value="">シリーズ</option>
             </select>
           </div>
@@ -610,10 +613,12 @@
           <div class="ranking-filter-actions">
             <button id="clear" type="button">クリア</button>
           </div>
+          <div class="ranking-filter-field access-mobile-sort"><select id="mobileSort" aria-label="並び替え"><option value="access">並び替え：閲覧順</option><option value="price-desc">価格が高い順</option><option value="price-asc">価格が安い順</option><option value="year-desc">発売年が新しい順</option></select></div>
         </div>
         <div id="activeFilters" class="ranking-active-filters" aria-label="選択中の絞り込み条件"></div>
       </section>
     </div>
+    <div id="accessMobileList" class="access-mobile-list" aria-label="アクセスランキング一覧"></div>
 
     <div class="ranking-main">
       <section id="top3" class="ranking-top3" aria-label="&#12521;&#12531;&#12461;&#12531;&#12464;&#19978;&#20301;3&#20214;">
@@ -1281,6 +1286,36 @@
       `;
     }
 
+    function renderMobileRanking(rows) {
+      const root = document.getElementById("accessMobileList");
+      const sorted = rows.map((row, index) => ({ ...row, rank: index + 1 }));
+      const order = document.getElementById("mobileSort").value;
+      if (order.startsWith("price-")) sorted.sort((a, b) => {
+        if (a.latestPrice == null) return b.latestPrice == null ? a.rank - b.rank : 1;
+        if (b.latestPrice == null) return -1;
+        return (order === "price-desc" ? b.latestPrice - a.latestPrice : a.latestPrice - b.latestPrice) || a.rank - b.rank;
+      });
+      if (order === "year-desc") sorted.sort((a, b) => (Number(b.sleeve.releaseYear) || 0) - (Number(a.sleeve.releaseYear) || 0) || a.rank - b.rank);
+      root.innerHTML = sorted.map((row) => {
+        const points = getSparklinePoints(row.sleeve);
+        const latest = points[points.length - 1];
+        const previous = latest && points.find(point => point.timestamp === latest.timestamp - 7 * 86400000);
+        const delta = previous ? latest.price - previous.price : null;
+        const direction = delta > 0 ? "up" : delta < 0 ? "down" : "flat";
+        const change = delta == null ? "データなし" : `${delta > 0 ? "↗ +" : delta < 0 ? "↘ −" : "±"}${Math.round(Math.abs(delta)).toLocaleString("ja-JP")}円`;
+        return `<a class="access-mobile-card" data-sleeve-link="1" href="${escapeHtml(row.detailHref)}" aria-label="${row.rank}位 ${escapeHtml(row.name)}の詳細を見る">
+          <span class="access-mobile-rank rank-${row.rank}">${row.rank}</span>
+          <span class="access-mobile-image"><span aria-hidden="true">画像なし</span>${row.imageUrl ? `<img src="${escapeHtml(row.imageUrl)}" alt="${escapeHtml(row.name)}" loading="${row.rank === 1 ? "eager" : "lazy"}" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ""}</span>
+          <div class="access-mobile-info">${row.rank === 1 ? '<span class="access-mobile-popular">注目度 No.1</span>' : ""}<h3>${escapeHtml(row.name)}</h3>
+            <p class="access-mobile-meta">発売年 ${escapeHtml(String(row.sleeve.releaseYear || "不明"))}${row.sleeve.releaseYear ? "年" : ""} ｜ シリーズ ${escapeHtml(row.sleeve.series || "不明")}</p>
+            <div class="access-mobile-market"><strong class="access-mobile-price ${direction}">${row.latestPrice == null ? "価格なし" : `${Math.round(row.latestPrice).toLocaleString("ja-JP")}円`}</strong><span class="access-mobile-change ${direction}"><small>前週比</small>${change}</span>${buildSparklineSvg(row.sleeve)}</div>
+          </div><span class="access-mobile-chevron" aria-hidden="true">›</span>
+        </a>`;
+      }).join("") || '<p class="access-mobile-empty" role="status">条件に一致するスリーブがありません。</p>';
+      document.body.classList.add("access-mobile-ready");
+      document.getElementById("clear").classList.toggle("has-filters", !!(document.getElementById("releaseYear").value || document.getElementById("series").value || document.getElementById("priceBand").value));
+    }
+
     function renderRanking(list, sleeveMap, filters) {
       const root = document.getElementById("list");
       const top3 = document.getElementById("top3");
@@ -1321,6 +1356,7 @@
       });
 
       rows.sort((a, b) => b.access - a.access || String(a.name).localeCompare(String(b.name)));
+      renderMobileRanking(rows);
 
       renderActiveFilters(filters.releaseYearSel, filters.seriesSel, filters.priceBandSel);
       if (countInfo) countInfo.textContent = `${rows.length}件`;
@@ -1405,10 +1441,12 @@
         releaseYearSel.addEventListener("change", render);
         seriesSel.addEventListener("change", render);
         priceBandSel.addEventListener("change", render);
+        document.getElementById("mobileSort").addEventListener("change", render);
         clearBtn.addEventListener("click", () => {
           releaseYearSel.value = "";
           seriesSel.value = "";
           priceBandSel.value = "";
+          document.getElementById("mobileSort").value = "access";
           render();
         });
         if (activeFilters) {
