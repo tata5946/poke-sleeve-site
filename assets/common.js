@@ -10,13 +10,24 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwSJdC1W3YoXLHTLU-L0aLD3WM4aewlBDDyQTciBYbNNIuYWNFY7M_o9WatMlF0XnYe/exec";
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon.svg";
-const LOCAL_DATA_URL = "./data.json?v=20260921a";
+/* STATIC_CATALOG_META_START */
+const SITE_CATALOG_COUNT = 849;
+const LOCAL_DATA_URL = "./data.json?v=catalog-b72cf69bd4bc";
+const CATALOG_CACHE_REVISION = "b72cf69bd4bc";
+/* STATIC_CATALOG_META_END */
+
+function getCatalogCount() { return SITE_CATALOG_COUNT; }
+
+function readStaticCategoryNavMarkup() {
+  try { return JSON.parse(document.getElementById("homeStaticCategoryNav")?.textContent || '""'); }
+  catch (_) { return ""; }
+}
 const ARTICLE_DB_NAME = "pokeSleeveArticleStore";
 const ARTICLE_DB_VERSION = 1;
 const ARTICLE_STORE_NAME = "kv";
 const ARTICLE_STORE_KEY = "articles";
-const DATA_CACHE_KEY = "pokeSleeve:dataCache:v26";
-const DATA_PERSISTENT_CACHE_KEY = "pokeSleeve:dataCache:persist:v26";
+const DATA_CACHE_KEY = `pokeSleeve:dataCache:v27:${CATALOG_CACHE_REVISION}`;
+const DATA_PERSISTENT_CACHE_KEY = `pokeSleeve:dataCache:persist:v27:${CATALOG_CACHE_REVISION}`;
 const DATA_CACHE_TTL_MS = 5 * 60 * 1000;
 const DATA_STALE_MAX_MS = 10 * 60 * 1000;
 const LAST_SELECTED_SLEEVE_ID_KEY = "pokeSleeve:lastSelectedId";
@@ -165,7 +176,7 @@ function buildDashboardSidebarHtml(activeSidebar = "") {
       </button>
       <aside id="categoryNav" class="category-nav sidebar-category-panel" data-category-nav aria-label="スリーブカテゴリ一覧" hidden>
         <div class="category-nav-list">
-          <div class="category-nav-empty skeleton-block" style="min-height: 128px;"></div>
+          ${readStaticCategoryNavMarkup() || '<div class="category-nav-empty skeleton-block" style="min-height: 128px;"></div>'}
         </div>
       </aside>
     </div>
@@ -2749,6 +2760,7 @@ function wireSleeveSelectionFeedback() {
 
 /* ----- Expose globals ----- */
 window.common = {
+  getCatalogCount,
   escapeHtml,
   toISODate,
   numOrNull,

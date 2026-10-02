@@ -14,7 +14,8 @@ $marketIndexGenerator = Join-Path $PSScriptRoot "generate-market-index-static-co
 $articleGenerator = Join-Path $PSScriptRoot "generate-article-pages.ps1"
 $duplicateSeoUpdater = Join-Path $PSScriptRoot "update-duplicate-sleeve-seo.ps1"
 $sitemapGenerator = Join-Path $PSScriptRoot "generate-sitemap.ps1"
-foreach ($requiredGenerator in @($categoryGenerator, $generator, $duplicateSeoUpdater, $linkIndexGenerator, $rankingGenerator, $marketIndexGenerator, $articleGenerator, $sitemapGenerator)) {
+$homeGenerator = Join-Path $PSScriptRoot "generate-home-static-content.mjs"
+foreach ($requiredGenerator in @($categoryGenerator, $generator, $duplicateSeoUpdater, $linkIndexGenerator, $rankingGenerator, $marketIndexGenerator, $articleGenerator, $sitemapGenerator, $homeGenerator)) {
   if (-not (Test-Path -LiteralPath $requiredGenerator)) {
     throw "Generator not found: $requiredGenerator"
   }
@@ -28,3 +29,5 @@ foreach ($requiredGenerator in @($categoryGenerator, $generator, $duplicateSeoUp
 & $marketIndexGenerator -DataPath $DataPath
 & $articleGenerator
 & $sitemapGenerator -DataPath $DataPath
+& node $homeGenerator --data $DataPath
+if ($LASTEXITCODE -ne 0) { throw "Home static generation failed." }

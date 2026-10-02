@@ -8,9 +8,9 @@
   <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022"
      crossorigin="anonymous"></script>
-  <title>ポケモンカードのスリーブ一覧｜歴代デッキシールドの相場・価格【842種】</title>
+  <title>ポケモンカードのスリーブ一覧｜歴代デッキシールドの相場・価格【849種】</title>
   <meta name="description" content="日本で発売されたポケモンカードの歴代スリーブ・デッキシールドを一覧掲載。発売年・シリーズ・ポケモン・トレーナーから探せて、現在相場や価格推移も確認できます。" />
-  <meta property="og:title" content="ポケモンカードのスリーブ一覧｜歴代デッキシールドの相場・価格【842種】" />
+  <meta property="og:title" content="ポケモンカードのスリーブ一覧｜歴代デッキシールドの相場・価格【849種】" />
   <meta property="og:description" content="日本で発売されたポケモンカードの歴代スリーブ・デッキシールドを一覧掲載。発売年・シリーズ・ポケモン・トレーナーから探せて、現在相場や価格推移も確認できます。" />
   <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon.svg" />
   <meta property="og:url" content="https://pokesuri-navi.com/sleeves/" />
@@ -47,7 +47,7 @@
           "@type": "CollectionPage",
           "@id": "https://pokesuri-navi.com/sleeves/#webpage",
           "url": "https://pokesuri-navi.com/sleeves/",
-          "name": "ポケモンカードのスリーブ一覧｜歴代デッキシールドの相場・価格【842種】",
+          "name": "ポケモンカードのスリーブ一覧｜歴代デッキシールドの相場・価格【849種】",
           "description": "日本で発売されたポケモンカードの歴代スリーブ・デッキシールドを一覧掲載。発売年・シリーズ・ポケモン・トレーナーから探せて、現在相場や価格推移も確認できます。",
           "inLanguage": "ja",
           "isPartOf": {
@@ -1702,7 +1702,7 @@
           </div>
           <div class="zukan-hero-meta" aria-label="集計状況">
             <div id="updatedChip" class="zukan-meta-chip is-loading skeleton-shimmer">最終更新 <strong id="updatedAt">読み込み中</strong></div>
-            <div id="countChip" class="zukan-meta-chip is-loading skeleton-shimmer">表示 <strong id="countInfo">集計中</strong></div>
+            <div id="countChip" class="zukan-meta-chip">表示 <strong id="countInfo">849件</strong></div>
             <a class="zukan-meta-chip" href="./sleeves/all.html">全デッキシールド一覧</a>
             <a class="zukan-meta-chip" href="./sleeves/page/1/">ページ分割一覧</a>
           </div>
@@ -2722,7 +2722,7 @@
   </div>
 
   <script src="./assets/category-page-map.js?v=20260917a"></script>
-  <script src="./assets/common.js?v=20261002categorysearch"></script>
+  <script src="./assets/common.js?v=catalog-b72cf69bd4bc"></script>
   <script>
     function escapeHtml(str) {
       return String(str ?? "")
@@ -2958,7 +2958,7 @@
     const SLEEVES_SEO_DESCRIPTION = "日本で発売されたポケモンカードの歴代スリーブ・デッキシールドを一覧掲載。発売年・シリーズ・ポケモン・トレーナーから探せて、現在相場や価格推移も確認できます。";
 
     function getSleevesSeoCount(total) {
-      const count = Number(total);
+      const count = Number(window.common?.getCatalogCount?.() ?? total);
       return Number.isFinite(count) && count > 0 ? `${count.toLocaleString("ja-JP")}種` : "";
     }
 
@@ -3179,7 +3179,7 @@
         root.innerHTML = `
           <div class="category-market-summary-head">
             <h2 id="categoryMarketSummaryTitle" class="category-market-summary-title"><span class="category-market-title-icon" aria-hidden="true"><i></i><i></i><i></i></span>${escapeHtml(titleLabel)}のデッキシールド相場</h2>
-            <p class="category-market-summary-note">※最新週の取引データをもとに集計<span class="category-market-help" aria-hidden="true">?</span></p>
+            <p class="category-market-summary-note">※最新週の取引データをもとに集計<span class="category-market-help" role="img" aria-label="集計方法" title="最新週の取引データをもとに集計しています"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3.5 3.3a2.5 2.5 0 0 1 5 .2c0 1.5-2.5 1.6-2.5 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="6" cy="9.4" r=".8" fill="currentColor"/></svg></span></p>
           </div>
           <div class="category-market-summary-grid">
             ${stat("掲載数", scopeItems.length.toLocaleString("ja-JP"), "種類", "▱", "count")}
