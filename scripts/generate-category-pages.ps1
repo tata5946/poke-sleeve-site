@@ -572,7 +572,7 @@ foreach ($old in $previous) {
   if ($used.ContainsKey($key)) { continue }
   $fallback = "/sleeves/?group=$($old.group)&tag=$([System.Uri]::EscapeDataString([string]$old.label))"
   $path = Join-Path $OutputRoot (Join-Path $old.group (Join-Path $old.slug 'index.html'))
-  $retired = '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="robots" content="noindex, follow"><link rel="canonical" href="' + $SiteOrigin + $fallback + '"><meta http-equiv="refresh" content="0;url=' + $fallback + '"><title>カテゴリページを移動しました</title></head><body><p><a href="' + $fallback + '">絞り込み結果へ移動</a></p></body></html>'
+  $retired = '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png"><link rel="apple-touch-icon" sizes="192x192" href="/assets/favicon-192x192.png"><meta name="robots" content="noindex, follow"><link rel="canonical" href="' + $SiteOrigin + $fallback + '"><meta http-equiv="refresh" content="0;url=' + $fallback + '"><title>カテゴリページを移動しました</title></head><body><p><a href="' + $fallback + '">絞り込み結果へ移動</a></p></body></html>'
   WriteText $path $retired
 }
 foreach ($group in @('pokemon','trainer','series')) {
