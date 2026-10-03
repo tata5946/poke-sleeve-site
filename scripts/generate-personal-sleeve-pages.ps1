@@ -129,7 +129,7 @@ if ($All) {
   })
 }
 $template = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
-$fallbackImage = "https://pokesuri-navi.com/assets/favicon.svg"
+$fallbackImage = "https://pokesuri-navi.com/assets/favicon-512x512.png"
 
 foreach ($item in @($items)) {
   $id = [string]$item.id

@@ -316,7 +316,7 @@ if (-not (Test-Path -LiteralPath $OutputRoot)) {
 }
 
 $baseTag = '  <base href="../../" />'
-$fallbackOgImage = 'https://pokesuri-navi.com/assets/favicon.svg'
+$fallbackOgImage = 'https://pokesuri-navi.com/assets/favicon-512x512.png'
 
 foreach ($sleeve in @($data.sleeves)) {
   $id = [string]$sleeve.id

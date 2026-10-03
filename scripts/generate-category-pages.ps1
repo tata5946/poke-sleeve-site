@@ -260,6 +260,9 @@ function PageHtml([object]$Entry, [string]$Slug) {
   <base href="../../../" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/assets/favicon-192x192.png" />
   <title>$(Html $title)</title>
   <meta name="description" content="$(Html $description)" />
   <meta property="og:title" content="$(Html $title)" />
@@ -444,6 +447,9 @@ function IndexPageHtml([string]$Group, [array]$Items) {
   <base href="../../" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/assets/favicon-192x192.png" />
   <title>$(Html $title)</title>
   <meta name="description" content="$(Html $description)" />
   <link rel="canonical" href="$(Html $url)" />

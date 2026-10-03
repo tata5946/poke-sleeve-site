@@ -13,7 +13,7 @@ $defaultCoverImage = './assets/生成画像1.png'
 function HtmlEncode([object]$Value) { return [System.Net.WebUtility]::HtmlEncode([string]$Value) }
 function AttrEncode([object]$Value) { return (HtmlEncode $Value) }
 function Absolute-Url([string]$Value) {
-  if (-not $Value) { return "$($SiteOrigin.TrimEnd('/'))/assets/favicon.svg" }
+  if (-not $Value) { return "$($SiteOrigin.TrimEnd('/'))/assets/favicon-512x512.png" }
   if ($Value -match '^https?://') { return $Value }
   return "$($SiteOrigin.TrimEnd('/'))/$($Value.TrimStart('.','/'))"
 }
@@ -66,7 +66,7 @@ foreach ($article in $dynamic) {
     '@context' = 'https://schema.org'; '@type' = 'Article'; headline = $title
     description = $description; image = @($image); datePublished = $date; dateModified = $updated
     mainEntityOfPage = $canonical; url = $canonical
-    publisher = [ordered]@{ '@type'='Organization'; name='ポケスリ相場ナビ'; url="$($SiteOrigin.TrimEnd('/'))/"; logo=[ordered]@{'@type'='ImageObject';url="$($SiteOrigin.TrimEnd('/'))/assets/favicon.svg"} }
+    publisher = [ordered]@{ '@type'='Organization'; name='ポケスリ相場ナビ'; url="$($SiteOrigin.TrimEnd('/'))/"; logo=[ordered]@{'@type'='ImageObject';url="$($SiteOrigin.TrimEnd('/'))/assets/favicon-512x512.png"} }
   }
   $jsonLd = ($jsonLdObject | ConvertTo-Json -Depth 8 -Compress) -replace '</script', '<\/script'
 

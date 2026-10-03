@@ -9,7 +9,7 @@
 /* ----- Config ----- */
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwSJdC1W3YoXLHTLU-L0aLD3WM4aewlBDDyQTciBYbNNIuYWNFY7M_o9WatMlF0XnYe/exec";
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
-const FAVICON_PATH = "./assets/favicon.svg";
+const FAVICON_PATH = "./assets/favicon-512x512.png";
 /* STATIC_CATALOG_META_START */
 const SITE_CATALOG_COUNT = 849;
 const LOCAL_DATA_URL = "./data.json?v=catalog-b72cf69bd4bc";
@@ -1404,7 +1404,7 @@ function updateArticleStructuredData(id, article = {}) {
       name: "ポケスリ相場ナビ",
       logo: {
         "@type": "ImageObject",
-        url: buildSiteHref("assets/favicon.svg")
+        url: buildSiteHref("assets/favicon-512x512.png")
       }
     }
   };
