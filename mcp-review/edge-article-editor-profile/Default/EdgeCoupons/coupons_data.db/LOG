@@ -1,0 +1,5 @@
+2026/10/03-11:07:03.004 38b8 Creating DB C:\Users\takuy\OneDrive\ドキュメント\GitHub\poke-sleeve-site\mcp-review\edge-article-editor-profile\Default\EdgeCoupons/coupons_data.db since it was missing.
+2026/10/03-11:07:03.011 38b8 Reusing MANIFEST C:\Users\takuy\OneDrive\ドキュメント\GitHub\poke-sleeve-site\mcp-review\edge-article-editor-profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/10/03-11:07:03.112 8654 Level-0 table #5: started
+2026/10/03-11:07:03.117 8654 Level-0 table #5: 683284 bytes OK
+2026/10/03-11:07:03.119 8654 Delete type=0 #3

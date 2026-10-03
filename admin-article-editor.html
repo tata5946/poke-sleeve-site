@@ -1209,11 +1209,49 @@
       }
     }
 
+    function articleStoreKey(article) {
+      return String(article?.id || article?.slug || "").trim();
+    }
+
+    function shouldKeepLocalArticle(localArticle, publishedArticle) {
+      if (localArticle?.status === "draft") return true;
+      const localUpdatedAt = Date.parse(localArticle?.updatedAt || "");
+      const publishedUpdatedAt = Date.parse(publishedArticle?.updatedAt || "");
+      if (!Number.isFinite(publishedUpdatedAt)) return true;
+      return Number.isFinite(localUpdatedAt) && localUpdatedAt >= publishedUpdatedAt;
+    }
+
+    async function fetchPublishedArticles() {
+      const response = await fetch(`./articles.json?v=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`articles.json: ${response.status}`);
+      const payload = await response.json();
+      return Array.isArray(payload?.articles) ? payload.articles : [];
+    }
+
     async function loadStoredArticles() {
-      articleStoreCache = window.common?.readLocalArticles
+      const localArticles = window.common?.readLocalArticles
         ? await window.common.readLocalArticles(ARTICLE_LOCAL_KEY)
         : readStoredArticles();
-      return articleStoreCache;
+      try {
+        const publishedArticles = await fetchPublishedArticles();
+        const merged = new Map();
+        publishedArticles.forEach((article) => {
+          const key = articleStoreKey(article);
+          if (key) merged.set(key, article);
+        });
+        localArticles.forEach((article) => {
+          const key = articleStoreKey(article);
+          if (!key) return;
+          const publishedArticle = merged.get(key);
+          if (!publishedArticle || shouldKeepLocalArticle(article, publishedArticle)) merged.set(key, article);
+        });
+        articleStoreCache = Array.from(merged.values());
+        await writeStoredArticles(articleStoreCache);
+        return { articles: articleStoreCache, publishedCount: publishedArticles.length };
+      } catch (_) {
+        articleStoreCache = localArticles;
+        return { articles: articleStoreCache, publishedCount: 0 };
+      }
     }
 
     async function writeStoredArticles(articles) {
@@ -3154,8 +3192,11 @@
       qs("dateInput").value = todayISO();
       fillForm(null);
       initNoteLikeWritingSurface();
-      await loadStoredArticles();
+      const loadedArticles = await loadStoredArticles();
       renderArticleList();
+      if (loadedArticles.publishedCount) {
+        setStatus(`公開中の記事${loadedArticles.publishedCount}件を読み込みました。`, "ok");
+      }
       loadSleevesForTool();
 
       const editor = qs("editor");

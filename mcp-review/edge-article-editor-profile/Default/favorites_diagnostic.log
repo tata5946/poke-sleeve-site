@@ -1,0 +1,18 @@
+2026-10-03 02:07:00.826: [INFO] CurrentProfilePath: C:\Users\takuy\OneDrive\ドキュメント\GitHub\poke-sleeve-site\mcp-review\edge-article-editor-profile\Default
+2026-10-03 02:07:00.826: [INFO] Profiles total count: 1
+2026-10-03 02:07:00.826: [INFO] Profile: name=プロファイル 1 path=C:\Users\takuy\OneDrive\ドキュメント\GitHub\poke-sleeve-site\mcp-review\edge-article-editor-profile\Default lastActive=2026-10-03T02:07:00.796Z
+2026-10-03 02:07:00.826: [INFO] LastUsedProfileDir: C:\Users\takuy\OneDrive\ドキュメント\GitHub\poke-sleeve-site\mcp-review\edge-article-editor-profile\Default
+2026-10-03 02:07:00.826: [INFO] MostRecentlyActiveProfile: name=プロファイル 1 path=C:\Users\takuy\OneDrive\ドキュメント\GitHub\poke-sleeve-site\mcp-review\edge-article-editor-profile\Default lastActive=2026-10-03T02:07:00.796Z
+2026-10-03 02:07:00.826: [INFO] OnDoneLoading sync enabled: 0
+2026-10-03 02:07:00.826: [INFO] BookmarkModelLoaded, ids_reassigned: 0
+2026-10-03 02:07:00.826: [INFO] BookmarksLoadDropped droppedNodes=0
+2026-10-03 02:07:00.826: [INFO] BookmarksSnapshot Startup total=4 bar=4 other=0 mobile=0 showBar=0 showBarNTP=1
+2026-10-03 02:07:00.828: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-10-03 02:07:01.086: [INFO] VisibilityChanged: 0
+2026-10-03 02:07:01.311: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 0
+2026-10-03 02:07:01.315: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 3
+2026-10-03 02:07:01.318: [INFO] Primary account changed.
+2026-10-03 02:07:01.318: [INFO] OnPrimaryAccountChanged PrimaryAccountChangeEvent::Type::kSet
+2026-10-03 02:07:01.328: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 3
+2026-10-03 02:07:01.347: [INFO] RecordSyncInitDuration has_sync_been_enabled: 0 state: 3
+2026-10-03 02:07:05.632: [INFO] BookmarksSnapshot Shutdown total=4 bar=4 other=0 mobile=0 showBar=0 showBarNTP=1

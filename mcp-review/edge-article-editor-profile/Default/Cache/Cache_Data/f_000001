@@ -1,0 +1,3287 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <title>記事エディタ | ポケスリ相場ナビ</title>
+  <link rel="stylesheet" href="./assets/site.css?v=20261002xfooter" />
+  <style>
+    :root {
+      --admin-bg:
+        radial-gradient(circle at 12% 0%, rgba(255, 226, 200, .72), transparent 28%),
+        radial-gradient(circle at 100% 0%, rgba(201, 239, 255, .72), transparent 32%),
+        linear-gradient(180deg, #f8fbff 0%, #f4f7fb 100%);
+      --admin-card: rgba(255, 255, 255, .96);
+      --admin-border: #dbe4f0;
+      --admin-text: #162033;
+      --admin-muted: #667085;
+      --admin-shadow: 0 14px 36px rgba(15, 23, 42, .10);
+    }
+
+    body.admin-article-page {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--admin-bg);
+      color: var(--admin-text);
+      font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+    }
+
+    .admin-shell {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 28px 20px 40px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .admin-hero,
+    .admin-panel {
+      border: 1px solid var(--admin-border);
+      border-radius: 22px;
+      background: var(--admin-card);
+      box-shadow: var(--admin-shadow);
+    }
+
+    .admin-hero {
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .admin-hero h1 {
+      margin: 0;
+      font-size: clamp(26px, 3.2vw, 40px);
+      line-height: 1.1;
+    }
+
+    .admin-hero p {
+      margin: 8px 0 0;
+      color: var(--admin-muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .admin-badge {
+      display: inline-flex;
+      width: fit-content;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: #eff4ff;
+      color: #1849a9;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
+    .admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-admin {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      border: 0;
+      border-radius: 12px;
+      padding: 0 15px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 900;
+      text-decoration: none;
+      cursor: pointer;
+      color: #344054;
+      background: #fff;
+      border: 1px solid #d5deeb;
+    }
+
+    .btn-admin.primary {
+      color: #fff;
+      border-color: transparent;
+      background: linear-gradient(135deg, #2563eb 0%, #14b8a6 100%);
+      box-shadow: 0 12px 22px rgba(37, 99, 235, .18);
+    }
+
+    .btn-admin.secondary {
+      color: #1849a9;
+      background: #eff4ff;
+      border-color: #c7d7fe;
+    }
+
+    .editor-layout {
+      display: grid;
+      grid-template-columns: 390px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .admin-panel {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .field-grid,
+    .field {
+      display: grid;
+      gap: 10px;
+    }
+
+    .field label {
+      color: #344054;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .04em;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      border: 1px solid #d5deeb;
+      border-radius: 12px;
+      background: #fff;
+      padding: 11px 12px;
+      font: inherit;
+      color: #101828;
+      box-sizing: border-box;
+    }
+
+    .field textarea {
+      min-height: 92px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--admin-muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .sleeve-tool {
+      display: grid;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid #d5deeb;
+      border-radius: 16px;
+      background: #f8fbff;
+    }
+
+    .sleeve-tool-preview {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      min-height: 92px;
+      padding: 10px;
+      border: 1px solid #e4eaf3;
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .sleeve-tool-preview img {
+      width: 72px;
+      aspect-ratio: 4 / 5;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #f3f6fb;
+    }
+
+    .sleeve-tool-preview strong {
+      display: block;
+      color: #111827;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .sleeve-tool-preview span {
+      display: block;
+      margin-top: 4px;
+      color: var(--admin-muted);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid #d5deeb;
+      border-radius: 14px;
+      background: #f8fbff;
+    }
+
+    .tool-btn,
+    .tool-select,
+    .tool-color {
+      min-height: 36px;
+      border: 1px solid #cfd8e7;
+      border-radius: 10px;
+      background: #fff;
+      color: #243044;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .tool-btn {
+      min-width: 38px;
+      padding: 0 10px;
+      cursor: pointer;
+    }
+
+    .tool-select {
+      padding: 0 10px;
+    }
+
+    .tool-color {
+      width: 42px;
+      padding: 4px;
+    }
+
+    .editor {
+      min-height: 540px;
+      padding: 24px;
+      border: 1px solid #d5deeb;
+      border-radius: 16px;
+      background: #fff;
+      color: #243044;
+      line-height: 1.95;
+      outline: none;
+      overflow-wrap: anywhere;
+    }
+
+    .editor:focus {
+      border-color: #8db1ff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+    }
+
+    .editor h2,
+    .editor h3 {
+      color: #111827;
+      line-height: 1.35;
+    }
+
+    .preview {
+      min-height: 540px;
+      padding: 24px;
+      border: 1px solid #d5deeb;
+      border-radius: 16px;
+      background: #fff;
+      color: #243044;
+      line-height: 1.95;
+    }
+
+    .preview img,
+    .editor img {
+      max-width: 100%;
+      border-radius: 12px;
+    }
+
+    .preview .article-table-wrap,
+    .editor .article-table-wrap {
+      max-width: 100%;
+      margin: 1.7em 0;
+      overflow-x: auto;
+    }
+
+    .preview table,
+    .editor table {
+      width: 100%;
+      min-width: 520px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1px solid #d5deeb;
+      background: #fff;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .preview th,
+    .preview td,
+    .editor th,
+    .editor td {
+      padding: 10px 12px;
+      border: 1px solid #d5deeb;
+      vertical-align: top;
+      overflow-wrap: anywhere;
+    }
+
+    .editor table.is-resize-target {
+      outline: 2px solid rgba(37, 99, 235, .24);
+      outline-offset: 2px;
+    }
+
+    .editor.is-resizing-table,
+    .editor.is-resizing-table * {
+      user-select: none;
+    }
+
+    .preview th,
+    .editor th {
+      background: #f4f7fb;
+      color: #111827;
+      font-weight: 900;
+      text-align: left;
+    }
+
+    .preview .article-toc,
+    .editor .article-toc {
+      margin: 1.7em 0;
+      padding: 16px 18px;
+      border: 1px solid #d5deeb;
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    .preview .article-toc__title,
+    .editor .article-toc__title {
+      display: block;
+      margin-bottom: 8px;
+      color: #111827;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .preview .article-toc ol,
+    .editor .article-toc ol {
+      display: grid;
+      gap: 4px;
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    .preview .article-toc a,
+    .editor .article-toc a {
+      color: #1e5bd7;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .preview .article-toc__item--h3,
+    .editor .article-toc__item--h3 {
+      margin-left: 1em;
+      font-size: .92em;
+    }
+
+    .article-list {
+      display: grid;
+      gap: 8px;
+      max-height: 360px;
+      overflow: auto;
+    }
+
+    .article-list button {
+      display: grid;
+      gap: 4px;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d5deeb;
+      border-radius: 12px;
+      background: #fff;
+      color: #243044;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .article-list strong {
+      font-size: 13px;
+    }
+
+    .article-list span {
+      color: var(--admin-muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .status-line {
+      min-height: 22px;
+      color: var(--admin-muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .status-line.ok { color: #047857; }
+    .status-line.ng { color: #b42318; }
+
+    @media (max-width: 980px) {
+      .admin-hero,
+      .editor-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .admin-hero {
+        display: grid;
+      }
+    }
+
+    body.admin-article-page {
+      background: #fff;
+    }
+
+    .admin-shell {
+      max-width: 1240px;
+      padding-top: 0;
+    }
+
+    .admin-hero {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      margin: 0 -20px 8px;
+      border-width: 0 0 1px;
+      border-radius: 0;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .06);
+      backdrop-filter: blur(16px);
+    }
+
+    .admin-hero h1 {
+      font-size: 22px;
+    }
+
+    .admin-hero p {
+      display: none;
+    }
+
+    .editor-layout {
+      grid-template-columns: minmax(0, 760px) 320px;
+      justify-content: center;
+      align-items: start;
+    }
+
+    .editor-layout > aside.admin-panel {
+      order: 2;
+      position: sticky;
+      top: 92px;
+      max-height: calc(100vh - 112px);
+      overflow: auto;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .08);
+    }
+
+    .editor-layout > section.admin-panel:nth-of-type(1) {
+      order: 1;
+      padding: 0 12px 80px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .editor-layout > section.admin-panel:nth-of-type(1) > .panel-title,
+    .editor-layout > section.admin-panel:nth-of-type(1) > .toolbar {
+      display: none;
+    }
+
+    .editor-layout > section.admin-panel:nth-of-type(2) {
+      display: none;
+    }
+
+    .note-writing-head {
+      display: grid;
+      gap: 18px;
+      margin: 28px 0 8px;
+    }
+
+    .note-cover-drop {
+      display: grid;
+      place-items: center;
+      min-height: 164px;
+      border: 1px dashed #d0d7de;
+      border-radius: 14px;
+      background: #f6f8fa;
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 800;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .note-cover-drop.is-dragover {
+      border-color: #1e5bd7;
+      background: #eef4ff;
+      color: #1e3a5f;
+      box-shadow: inset 0 0 0 2px rgba(30, 91, 215, .16);
+    }
+
+    .note-cover-drop.has-image {
+      min-height: 220px;
+      border-style: solid;
+      background-size: cover;
+      background-position: center;
+      color: transparent;
+    }
+
+    .cover-picker-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, .42);
+    }
+
+    .cover-picker-backdrop.is-visible {
+      display: grid;
+    }
+
+    .cover-picker {
+      width: min(760px, 100%);
+      max-height: min(720px, calc(100vh - 40px));
+      overflow: auto;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, .24);
+    }
+
+    .cover-picker__head,
+    .cover-picker__body,
+    .cover-picker__foot {
+      padding: 18px 20px;
+    }
+
+    .cover-picker__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid #e4e7ec;
+    }
+
+    .cover-picker__head h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .cover-picker__close {
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 999px;
+      background: #f2f4f7;
+      color: #344054;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .cover-picker__body {
+      display: grid;
+      gap: 18px;
+    }
+
+    .cover-picker__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .cover-picker__url {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+    }
+
+    .cover-picker__url input {
+      min-width: 0;
+    }
+
+    .cover-picker__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+    }
+
+    .cover-picker__image {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      border: 1px solid #d0d5dd;
+      border-radius: 10px;
+      background: #f6f8fa;
+      cursor: pointer;
+    }
+
+    .cover-picker__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cover-picker__image:hover,
+    .cover-picker__image:focus-visible {
+      border-color: #1e5bd7;
+      outline: 3px solid rgba(30, 91, 215, .16);
+    }
+
+    .cover-picker__empty {
+      grid-column: 1 / -1;
+      margin: 0;
+      padding: 18px;
+      border: 1px dashed #d0d5dd;
+      border-radius: 10px;
+      background: #f8fafc;
+      color: #667085;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .cover-picker__foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid #e4e7ec;
+    }
+
+    .note-title-input,
+    .note-excerpt-input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      box-sizing: border-box;
+      color: #111827;
+      font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+    }
+
+    .note-title-input {
+      min-height: 76px;
+      font-size: clamp(34px, 5vw, 52px);
+      font-weight: 900;
+      line-height: 1.22;
+      letter-spacing: 0;
+      resize: none;
+    }
+
+    .note-title-input::placeholder,
+    .note-excerpt-input::placeholder {
+      color: #c3cad5;
+    }
+
+    .note-excerpt-input {
+      min-height: 34px;
+      color: #667085;
+      font-size: 17px;
+      line-height: 1.8;
+      resize: vertical;
+    }
+
+    .editor {
+      min-height: 66vh;
+      padding: 18px 0 120px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #1f2937;
+      font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+      font-size: 18px;
+      line-height: 2.05;
+      letter-spacing: 0;
+    }
+
+    /* Text formatting must never silently switch the editor typeface. */
+    .editor :is(h1, h2, h3, h4, h5, h6, p, li, blockquote, strong, b, em, i, u, s),
+    .preview :is(h1, h2, h3, h4, h5, h6, p, li, blockquote, strong, b, em, i, u, s) {
+      font-family: inherit !important;
+    }
+
+    .editor:focus {
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    .editor:empty::before {
+      content: "本文を書く";
+      color: #c3cad5;
+      pointer-events: none;
+    }
+
+    .editor h2 {
+      margin: 2.1em 0 .8em;
+      font-size: 31px !important;
+    }
+
+    .editor h3 {
+      margin: 1.8em 0 .6em;
+      font-size: 24px !important;
+    }
+
+    .editor h2.article-sleeve-product-card__title,
+    .preview h2.article-sleeve-product-card__title {
+      margin: 0;
+      font-size: clamp(19px, 2.4vw, 24px) !important;
+      line-height: 1.3;
+    }
+
+    .editor .article-sleeve-product-card,
+    .preview .article-sleeve-product-card {
+      line-height: 1.55;
+    }
+
+    .preview h2 {
+      font-size: 31px !important;
+    }
+
+    .preview h3 {
+      font-size: 24px !important;
+    }
+
+    .editor blockquote {
+      margin: 1.6em 0;
+      padding: 1.2em 1.4em;
+      border: 0;
+      border-radius: 8px;
+      background: #f2f4f7;
+      color: #344054;
+    }
+
+    .editor pre {
+      margin: 1.6em 0;
+      padding: 16px;
+      border-radius: 10px;
+      background: #111827;
+      color: #f9fafb;
+      overflow: auto;
+      line-height: 1.7;
+    }
+
+    .editor hr {
+      width: 72px;
+      margin: 2.4em auto;
+      border: 0;
+      border-top: 2px solid #d0d5dd;
+    }
+
+    .editor .article-embed-card {
+      margin: 1.5em 0;
+      border: 1px solid #d5deeb;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .editor .article-embed-card a {
+      display: grid;
+      gap: 4px;
+      padding: 14px 16px;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .editor .article-embed-card span {
+      color: #667085;
+      font-size: 13px;
+      word-break: break-all;
+    }
+
+    .editor .note-image-block {
+      position: relative;
+      margin: 1.8em 0;
+    }
+
+    .editor .note-image-block img {
+      display: block;
+      width: 100%;
+      max-height: 680px;
+      object-fit: contain;
+      border: 1px solid #e4e7ec;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .editor .article-sleeve-image-only,
+    .preview .article-sleeve-image-only {
+      text-align: center;
+    }
+
+    .editor .article-sleeve-image-only img,
+    .preview .article-sleeve-image-only img {
+      display: block;
+      box-sizing: border-box;
+      width: min(620px, 94vw);
+      height: auto;
+      max-width: 100%;
+      max-height: none;
+      margin: 0 auto;
+      padding: 0;
+      object-fit: contain;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .editor .note-image-caption {
+      min-height: 1.8em;
+      margin-top: 8px;
+      color: #667085;
+      font-size: 13px;
+      line-height: 1.7;
+      text-align: center;
+      outline: none;
+      white-space: pre-wrap;
+    }
+
+    .editor .note-image-caption:empty::before {
+      content: attr(data-placeholder);
+      color: #b8c0cc;
+      pointer-events: none;
+    }
+
+    .editor .note-image-caption:focus {
+      color: #344054;
+    }
+
+    .is-mirrored-hidden {
+      display: none;
+    }
+
+    .selection-toolbar,
+    .table-edit-toolbar,
+    .block-insert-menu {
+      position: fixed;
+      z-index: 80;
+      display: none;
+      align-items: center;
+      gap: 4px;
+      padding: 6px;
+      border: 1px solid #d0d7de;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .98);
+      box-shadow: 0 16px 36px rgba(15, 23, 42, .16);
+      backdrop-filter: blur(12px);
+    }
+
+    .selection-toolbar.is-visible,
+    .table-edit-toolbar.is-visible,
+    .block-insert-menu.is-visible {
+      display: flex;
+    }
+
+    .selection-toolbar button,
+    .table-edit-toolbar button,
+    .block-insert-button,
+    .block-insert-menu button {
+      min-width: 34px;
+      min-height: 34px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #344054;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .selection-toolbar button:hover,
+    .table-edit-toolbar button:hover,
+    .block-insert-button:hover,
+    .block-insert-menu button:hover {
+      background: #f2f4f7;
+    }
+
+    .table-edit-toolbar {
+      gap: 6px;
+      z-index: 86;
+    }
+
+    .table-edit-toolbar button {
+      padding: 0 10px;
+      white-space: nowrap;
+    }
+
+    .block-insert-button {
+      position: absolute;
+      z-index: 70;
+      display: none;
+      border: 1px solid #d0d7de;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, .10);
+    }
+
+    .block-insert-button.is-visible {
+      display: inline-grid;
+      place-items: center;
+    }
+
+    .block-insert-menu {
+      position: absolute;
+      flex-direction: column;
+      align-items: stretch;
+      width: 228px;
+      padding: 8px;
+    }
+
+    .block-insert-menu button {
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 0 10px;
+      text-align: left;
+    }
+
+    @media (max-width: 980px) {
+      .editor-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .editor-layout > aside.admin-panel {
+        order: 2;
+        position: static;
+        max-height: none;
+      }
+
+      .editor-layout > section.admin-panel:nth-of-type(1) {
+        padding-inline: 0;
+      }
+    }
+  </style>
+</head>
+
+<body class="admin-article-page">
+  <main class="admin-shell">
+    <section class="admin-hero">
+      <div>
+        <div class="admin-badge">ARTICLE EDITOR</div>
+        <h1>記事を書く</h1>
+        <p>管理画面で記事を作成し、投稿すると公開側の記事一覧に表示されます。実公開用にはJSONを書き出して `articles.json` に反映します。</p>
+      </div>
+      <div class="admin-actions">
+        <a class="btn-admin secondary" href="./articles.html" target="_blank" rel="noopener">記事一覧を見る</a>
+        <a class="btn-admin secondary" href="./admin-promo.html">管理トップへ</a>
+      </div>
+    </section>
+
+    <section class="editor-layout">
+      <aside class="admin-panel">
+        <h2 class="panel-title">記事設定</h2>
+        <div class="field-grid">
+          <div class="field">
+            <label for="titleInput">タイトル</label>
+            <input id="titleInput" type="text" maxlength="120" placeholder="例: 5/11週のスリーブ相場まとめ" />
+          </div>
+          <div class="field">
+            <label for="slugInput">URL用ID</label>
+            <input id="slugInput" type="text" maxlength="80" placeholder="例: weekly-market-2026-05-11" />
+            <p class="hint">半角英数字とハイフン推奨。空ならタイトルから自動生成します。</p>
+          </div>
+          <div class="field">
+            <label for="excerptInput">説明文</label>
+            <textarea id="excerptInput" maxlength="240" placeholder="記事一覧やSNS向けの短い説明"></textarea>
+          </div>
+          <div class="field">
+            <label for="categoryInput">カテゴリ</label>
+            <input id="categoryInput" type="text" maxlength="40" value="サイト情報" list="categoryOptions" />
+            <datalist id="categoryOptions">
+              <option value="FEATURE">
+              <option value="相場コラム">
+              <option value="商品情報">
+              <option value="サイト情報">
+              <option value="その他">
+            </datalist>
+          </div>
+          <div class="field">
+            <label for="coverInput">カバー画像URL</label>
+            <input id="coverInput" type="url" placeholder="https://..." />
+          </div>
+          <div class="field">
+            <label for="dateInput">公開日</label>
+            <input id="dateInput" type="date" />
+          </div>
+        </div>
+        <section class="sleeve-tool" aria-label="スリーブ素材">
+          <h2 class="panel-title">スリーブ素材</h2>
+          <p class="hint">登録済みスリーブから、画像・概要・価格指標・価格推移グラフを本文へ差し込めます。</p>
+          <div class="field">
+            <label for="sleeveInput">対象スリーブ</label>
+            <input id="sleeveInput" list="sleeveOptions" placeholder="名前またはIDで検索" autocomplete="off" />
+            <datalist id="sleeveOptions"></datalist>
+          </div>
+          <div id="sleevePreview" class="sleeve-tool-preview">
+            <div></div>
+            <div>
+              <strong>データ読み込み中</strong>
+              <span>スリーブを選ぶと概要を確認できます。</span>
+            </div>
+          </div>
+          <div class="admin-actions">
+            <button id="insertSleeveImageBtn" type="button" class="btn-admin secondary">画像だけ挿入</button>
+            <button id="insertSleeveCardBtn" type="button" class="btn-admin secondary">概要カード挿入</button>
+            <button id="insertSleeveGraphBtn" type="button" class="btn-admin secondary">グラフ挿入</button>
+            <button id="insertSleeveBundleBtn" type="button" class="btn-admin">概要＋グラフ挿入</button>
+          </div>
+        </section>
+        <div class="admin-actions">
+          <button id="newBtn" type="button" class="btn-admin">新規</button>
+          <button id="draftBtn" type="button" class="btn-admin secondary">下書き保存</button>
+          <button id="publishBtn" type="button" class="btn-admin primary">投稿</button>
+        </div>
+        <div class="admin-actions">
+          <button id="exportBtn" type="button" class="btn-admin secondary">articles.jsonを書き出し</button>
+          <button id="copyJsonBtn" type="button" class="btn-admin">JSONコピー</button>
+        </div>
+        <div id="status" class="status-line"></div>
+        <h2 class="panel-title">保存済み記事</h2>
+        <div id="articleList" class="article-list"></div>
+      </aside>
+
+      <section class="admin-panel">
+        <h2 class="panel-title">本文</h2>
+        <div class="toolbar" aria-label="本文装飾">
+          <button class="tool-btn" type="button" data-command="bold">B</button>
+          <button class="tool-btn" type="button" data-command="italic">I</button>
+          <button class="tool-btn" type="button" data-command="underline">U</button>
+          <button class="tool-btn" type="button" data-block="h2">H2</button>
+          <button class="tool-btn" type="button" data-block="h3">H3</button>
+          <button class="tool-btn" type="button" data-block="p">P</button>
+          <button class="tool-btn" type="button" data-command="insertUnorderedList">箇条書き</button>
+          <button class="tool-btn" type="button" data-command="insertOrderedList">番号</button>
+          <button class="tool-btn" type="button" data-command="justifyLeft">左</button>
+          <button class="tool-btn" type="button" data-command="justifyCenter">中央</button>
+          <button class="tool-btn" type="button" data-command="justifyRight">右</button>
+          <select id="fontSelect" class="tool-select" aria-label="フォント">
+            <option value="">フォント</option>
+            <option value="'Noto Sans JP', sans-serif">Noto Sans JP</option>
+            <option value="'Yu Gothic UI', 'Meiryo', sans-serif">Yu Gothic</option>
+            <option value="'Hiragino Mincho ProN', 'Yu Mincho', serif">明朝</option>
+            <option value="Inter, sans-serif">Inter</option>
+          </select>
+          <select id="fontSizeSelect" class="tool-select" aria-label="文字サイズ">
+            <option value="">文字サイズ</option>
+            <option value="3">標準</option>
+            <option value="5">大</option>
+            <option value="6">特大</option>
+          </select>
+          <input id="colorInput" class="tool-color" type="color" value="#243044" aria-label="文字色" />
+          <button id="clearFormatBtn" class="tool-btn" type="button">書式クリア</button>
+          <button id="linkBtn" class="tool-btn" type="button">リンク</button>
+          <button id="imageBtn" class="tool-btn" type="button">画像</button>
+          <button id="quoteBtn" class="tool-btn" type="button">引用</button>
+          <button class="tool-btn" type="button" data-command="undo">戻す</button>
+          <button class="tool-btn" type="button" data-command="redo">進む</button>
+        </div>
+        <div id="editor" class="editor" contenteditable="true" aria-label="記事本文"></div>
+      </section>
+
+      <section class="admin-panel">
+        <h2 class="panel-title">プレビュー</h2>
+        <div id="preview" class="preview"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="./assets/common.js?v=20261002categorysearch"></script>
+  <script>
+    const ARTICLE_LOCAL_KEY = "pokeSleeve:articles:local:v1";
+    let currentId = "";
+    let sleeveData = [];
+    let selectedSleeve = null;
+    let articleStoreCache = [];
+    let rakutenLinkCache = { items: {} };
+    let savedEditorRange = null;
+    let editorIsComposing = false;
+
+    const qs = (id) => document.getElementById(id);
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function todayISO() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    function slugify(value) {
+      const raw = String(value || "").trim().toLowerCase();
+      const ascii = raw
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/_+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+      return ascii || `article-${todayISO()}`;
+    }
+
+    function setStatus(text, type = "") {
+      const el = qs("status");
+      if (!el) return;
+      el.textContent = text;
+      el.className = `status-line ${type}`;
+    }
+
+    function sanitizeHtml(html) {
+      const template = document.createElement("template");
+      template.innerHTML = String(html || "");
+      const allowedTags = new Set(["P", "BR", "STRONG", "B", "EM", "I", "U", "S", "DEL", "H2", "H3", "UL", "OL", "LI", "A", "IMG", "BLOCKQUOTE", "HR", "PRE", "CODE", "SPAN", "DIV", "SECTION", "FIGURE", "FIGCAPTION", "FONT", "TABLE", "THEAD", "TBODY", "TR", "TH", "TD", "CAPTION", "SVG", "G", "PATH", "POLYLINE", "LINE", "CIRCLE", "RECT", "TEXT"]);
+      const allowedAttrs = new Set(["href", "src", "alt", "title", "style", "target", "rel", "face", "color", "size", "class", "id", "scope", "colspan", "rowspan", "data-sleeve-id", "contenteditable", "viewBox", "viewbox", "xmlns", "role", "aria-hidden", "aria-label", "d", "fill", "stroke", "stroke-width", "stroke-linecap", "stroke-linejoin", "stroke-dasharray", "points", "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "width", "height", "opacity", "font-size", "font-weight", "text-anchor"]);
+
+      const walk = (node) => {
+        for (const child of Array.from(node.children)) {
+          const tagName = child.tagName.toUpperCase();
+          if (!allowedTags.has(tagName)) {
+            child.replaceWith(...Array.from(child.childNodes));
+            continue;
+          }
+          for (const attr of Array.from(child.attributes)) {
+            if (!allowedAttrs.has(attr.name)) child.removeAttribute(attr.name);
+          }
+          if (child.hasAttribute("class")) {
+            const safeClass = (child.getAttribute("class") || "")
+              .split(/\s+/)
+              .filter((name) => name && name !== "is-resize-target")
+              .join(" ");
+            if (safeClass) child.setAttribute("class", safeClass);
+            else child.removeAttribute("class");
+          }
+          if (tagName === "A") {
+            const href = child.getAttribute("href") || "";
+            if (!/^(https?:|\.\/|\/|#)/i.test(href)) child.removeAttribute("href");
+            child.setAttribute("target", "_blank");
+            const relTokens = new Set((child.getAttribute("rel") || "")
+              .split(/\s+/)
+              .filter((token) => ["noopener", "noreferrer", "nofollow", "sponsored"].includes(token)));
+            relTokens.add("noopener");
+            child.setAttribute("rel", Array.from(relTokens).join(" "));
+          }
+          if (tagName === "IMG") {
+            const src = child.getAttribute("src") || "";
+            if (!/^(https?:|data:image\/)/i.test(src)) child.remove();
+          }
+          if (tagName === "SVG") {
+            child.setAttribute("aria-hidden", "true");
+          }
+          if (tagName === "FIGCAPTION" && !String(child.textContent || "").trim()) {
+            child.remove();
+            continue;
+          }
+          if (child.hasAttribute("style")) {
+            const style = child.getAttribute("style") || "";
+            const safe = style.split(";").map((part) => part.trim()).filter((part) => {
+              if (/^(color|text-align|font-family)\s*:/i.test(part)) return true;
+              return /^(width|min-width|max-width|height)\s*:\s*(\d+(\.\d+)?(px|%)|auto)\s*$/i.test(part);
+            }).join("; ");
+            if (safe) child.setAttribute("style", safe);
+            else child.removeAttribute("style");
+          }
+          walk(child);
+        }
+      };
+      walk(template.content);
+      return template.innerHTML.trim();
+    }
+
+    function readStoredArticles() {
+      if (Array.isArray(articleStoreCache)) return articleStoreCache;
+      try {
+        const raw = localStorage.getItem(ARTICLE_LOCAL_KEY);
+        const data = raw ? JSON.parse(raw) : [];
+        return Array.isArray(data) ? data : [];
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function articleStoreKey(article) {
+      return String(article?.id || article?.slug || "").trim();
+    }
+
+    function shouldKeepLocalArticle(localArticle, publishedArticle) {
+      if (localArticle?.status === "draft") return true;
+      const localUpdatedAt = Date.parse(localArticle?.updatedAt || "");
+      const publishedUpdatedAt = Date.parse(publishedArticle?.updatedAt || "");
+      if (!Number.isFinite(publishedUpdatedAt)) return true;
+      return Number.isFinite(localUpdatedAt) && localUpdatedAt >= publishedUpdatedAt;
+    }
+
+    async function fetchPublishedArticles() {
+      const response = await fetch(`./articles.json?v=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`articles.json: ${response.status}`);
+      const payload = await response.json();
+      return Array.isArray(payload?.articles) ? payload.articles : [];
+    }
+
+    async function loadStoredArticles() {
+      const localArticles = window.common?.readLocalArticles
+        ? await window.common.readLocalArticles(ARTICLE_LOCAL_KEY)
+        : readStoredArticles();
+      try {
+        const publishedArticles = await fetchPublishedArticles();
+        const merged = new Map();
+        publishedArticles.forEach((article) => {
+          const key = articleStoreKey(article);
+          if (key) merged.set(key, article);
+        });
+        localArticles.forEach((article) => {
+          const key = articleStoreKey(article);
+          if (!key) return;
+          const publishedArticle = merged.get(key);
+          if (!publishedArticle || shouldKeepLocalArticle(article, publishedArticle)) merged.set(key, article);
+        });
+        articleStoreCache = Array.from(merged.values());
+        await writeStoredArticles(articleStoreCache);
+        return { articles: articleStoreCache, publishedCount: publishedArticles.length };
+      } catch (_) {
+        articleStoreCache = localArticles;
+        return { articles: articleStoreCache, publishedCount: 0 };
+      }
+    }
+
+    async function writeStoredArticles(articles) {
+      articleStoreCache = Array.isArray(articles) ? articles : [];
+      if (window.common?.writeLocalArticles) {
+        await window.common.writeLocalArticles(articleStoreCache, ARTICLE_LOCAL_KEY);
+        return;
+      }
+      localStorage.setItem(ARTICLE_LOCAL_KEY, JSON.stringify(articleStoreCache));
+    }
+
+    function isStorageQuotaError(error) {
+      return error && (
+        error.name === "QuotaExceededError" ||
+        error.name === "NS_ERROR_DOM_QUOTA_REACHED" ||
+        error.code === 22 ||
+        error.code === 1014
+      );
+    }
+
+    function downloadArticlesPayload(articles, filename = "articles.json") {
+      const payload = JSON.stringify({ articles }, null, 2);
+      const blob = new Blob([payload], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function compactArticleForStorage(article) {
+      if (!article || typeof article !== "object") return article;
+      const next = { ...article };
+      next.html = sanitizeHtml(next.html || "");
+      return next;
+    }
+
+    function parseDate(value) {
+      const d = new Date(String(value || ""));
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function formatDateLabel(value) {
+      const d = parseDate(value);
+      if (!d) return "-";
+      return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    function formatPrice(value) {
+      const num = Number(value);
+      return Number.isFinite(num) && num > 0 ? `約${Math.round(num).toLocaleString()}円` : "-";
+    }
+
+    function formatPercent(value) {
+      const num = Number(value);
+      if (!Number.isFinite(num)) return "-";
+      return `${num > 0 ? "+" : ""}${num.toFixed(1)}%`;
+    }
+
+    function normalizeWeeklyRows(sleeve) {
+      return (Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [])
+        .map((row) => {
+          const date = String(row?.week || "").trim();
+          const price = Number(row?.price);
+          const count = Number(row?.count);
+          return {
+            date,
+            timestamp: parseDate(date)?.getTime() || 0,
+            price: Number.isFinite(price) && price > 0 ? price : null,
+            count: Number.isFinite(count) ? count : 0
+          };
+        })
+        .filter((row) => row.timestamp > 0)
+        .sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function normalizeMonthlyRows(sleeve) {
+      return (Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [])
+        .map((row) => {
+          const date = String(row?.month || row?.week || "").trim();
+          const price = Number(row?.price);
+          return {
+            date,
+            timestamp: parseDate(date)?.getTime() || 0,
+            price: Number.isFinite(price) && price > 0 ? price : null,
+            count: 1
+          };
+        })
+        .filter((row) => row.timestamp > 0 && row.price != null)
+        .sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function buildMonthlySeries(sleeve) {
+      return positiveRows(normalizeMonthlyRows(sleeve)).map((row) => ({
+        type: "monthly",
+        date: row.date,
+        timestamp: row.timestamp,
+        price: Math.round(row.price),
+        count: null
+      }));
+    }
+
+    function buildWeeklySeries(sleeve) {
+      return positiveRows(normalizeWeeklyRows(sleeve)).map((row) => ({
+        type: "weekly",
+        date: row.date,
+        timestamp: row.timestamp,
+        price: Math.round(row.price),
+        count: Number.isFinite(row.count) ? Math.round(row.count) : null
+      }));
+    }
+
+    function positiveRows(rows) {
+      return rows.filter((row) => Number.isFinite(row.price) && row.price > 0);
+    }
+
+    function dedupeSeriesByDate(points) {
+      const priorityOf = (type) => type === "monthly" ? 2 : type === "weekly" ? 1 : 0;
+      const map = new Map();
+      for (const point of points) {
+        const key = String(point?.date || "");
+        if (!key) continue;
+        const prev = map.get(key);
+        if (!prev || priorityOf(point.type) >= priorityOf(prev.type)) map.set(key, point);
+      }
+      return Array.from(map.values()).sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function buildFullPeriodSeries(sleeve) {
+      return dedupeSeriesByDate([...buildMonthlySeries(sleeve), ...buildWeeklySeries(sleeve)]);
+    }
+
+    function getRecentSeries(sleeve) {
+      const weekly = positiveRows(normalizeWeeklyRows(sleeve));
+      if (weekly.length >= 4) {
+        const latestTs = weekly[weekly.length - 1].timestamp;
+        const recent = weekly.filter((row) => row.timestamp >= latestTs - 90 * 24 * 60 * 60 * 1000);
+        return recent.length >= 4 ? recent : weekly.slice(-8);
+      }
+      return positiveRows(normalizeMonthlyRows(sleeve)).slice(-8);
+    }
+
+    function buildSleeveStats(sleeve) {
+      const series = getRecentSeries(sleeve);
+      const latest = series[series.length - 1] || null;
+      const first = series[0] || null;
+      const prev = series.length >= 2 ? series[series.length - 2] : null;
+      const weekly = positiveRows(normalizeWeeklyRows(sleeve));
+      const latestTs = (weekly[weekly.length - 1]?.timestamp || latest?.timestamp || Date.now());
+      const tradeCount30 = weekly
+        .filter((row) => row.timestamp >= latestTs - 30 * 24 * 60 * 60 * 1000)
+        .reduce((sum, row) => sum + (Number.isFinite(row.count) ? row.count : 0), 0);
+      return {
+        series,
+        latest,
+        first,
+        tradeCount30,
+        growthMultiple: first && latest && first.price > 0 ? latest.price / first.price : null,
+        changePct: prev && latest && prev.price > 0 ? ((latest.price - prev.price) / prev.price) * 100 : null
+      };
+    }
+
+    function buildSleeveOptionLabel(sleeve) {
+      return `${String(sleeve?.name || "").trim()} (${String(sleeve?.id || "").trim()})`;
+    }
+
+    function getSleeveTags(sleeve) {
+      return [
+        String(sleeve?.releaseYear || "").trim(),
+        String(sleeve?.series || "").trim(),
+        String(sleeve?.condition || "").trim(),
+        String(sleeve?.acquisitionType || "").trim(),
+        ...(Array.isArray(sleeve?.categories) ? sleeve.categories : [])
+      ].filter(Boolean).slice(0, 6);
+    }
+
+    function buildSleeveHref(sleeve) {
+      if (window.common && typeof window.common.buildSleeveDetailPath === "function") {
+        return window.common.buildSleeveDetailPath(sleeve?.id || "");
+      }
+      if (window.common && typeof window.common.buildSleeveDetailHref === "function") {
+        return window.common.buildSleeveDetailHref(sleeve?.id || "");
+      }
+      const id = String(sleeve?.id || "").trim();
+      const routeId = /^\d{6,7}$/.test(id) ? `4521329${id}` : id;
+      return routeId ? `./sleeve/${encodeURIComponent(routeId)}/` : "./sleeves/";
+    }
+
+    function resolveSleeveFromValue(value) {
+      const raw = String(value || "").trim();
+      if (!raw) return null;
+      return sleeveData.find((sleeve) => String(sleeve.id || "") === raw)
+        || sleeveData.find((sleeve) => buildSleeveOptionLabel(sleeve) === raw)
+        || sleeveData.find((sleeve) => String(sleeve.name || "").trim() === raw)
+        || null;
+    }
+
+    function resolveSleeveFromInput() {
+      return resolveSleeveFromValue(qs("sleeveInput")?.value);
+    }
+
+    function updateSleevePreview(sleeve) {
+      const preview = qs("sleevePreview");
+      if (!preview) return;
+      if (!sleeve) {
+        preview.innerHTML = `
+          <div></div>
+          <div>
+            <strong>スリーブ未選択</strong>
+            <span>名前またはIDで検索して、本文へ差し込む素材を選んでください。</span>
+          </div>
+        `;
+        return;
+      }
+      const stats = buildSleeveStats(sleeve);
+      const tags = getSleeveTags(sleeve).join(" / ") || "タグなし";
+      preview.innerHTML = `
+        ${sleeve.imageUrl ? `<img src="${escapeHtml(sleeve.imageUrl)}" alt="">` : "<div></div>"}
+        <div>
+          <strong>${escapeHtml(sleeve.name || "名称未設定")}</strong>
+          <span>ID ${escapeHtml(sleeve.id || "-")} / ${escapeHtml(tags)}<br>最新: ${escapeHtml(formatPrice(stats.latest?.price))} / 30日取引: ${stats.tradeCount30 || 0}件</span>
+        </div>
+      `;
+    }
+
+    async function loadSleevesForTool() {
+      try {
+        const [data, rakuten] = await Promise.all([
+          window.common && typeof window.common.loadData === "function"
+            ? window.common.loadData({ forceRefresh: false })
+            : fetch("./data.json?v=20260831a", { cache: "reload" }).then((res) => res.json()),
+          fetch("./data/rakuten-links.json?v=20260907a", { cache: "no-store" })
+            .then((res) => res.ok ? res.json() : { items: {} })
+            .catch(() => ({ items: {} }))
+        ]);
+        sleeveData = Array.isArray(data?.sleeves) ? data.sleeves.filter((sleeve) => sleeve && sleeve.id && sleeve.name) : [];
+        rakutenLinkCache = rakuten && typeof rakuten === "object" ? rakuten : { items: {} };
+      } catch (_) {
+        sleeveData = [];
+        rakutenLinkCache = { items: {} };
+      }
+
+      const datalist = qs("sleeveOptions");
+      if (datalist) {
+        const sorted = sleeveData.slice().sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "ja"));
+        datalist.innerHTML = sorted.map((sleeve) => `<option value="${escapeHtml(buildSleeveOptionLabel(sleeve))}"></option>`).join("");
+      }
+      updateSleevePreview(null);
+    }
+
+    function getSelectedSleeve() {
+      const resolved = resolveSleeveFromInput();
+      if (resolved) selectedSleeve = resolved;
+      if (!selectedSleeve) setStatus("先にスリーブ素材を選んでください。", "ng");
+      return selectedSleeve;
+    }
+
+    function formatDiffAmount(value) {
+      if (!Number.isFinite(value)) return "-";
+      const sign = value > 0 ? "+" : value < 0 ? "-" : "±";
+      return `${sign}${Math.abs(Math.round(value)).toLocaleString()}円`;
+    }
+
+    function formatDiffRate(value) {
+      if (!Number.isFinite(value)) return "-";
+      const sign = value > 0 ? "+" : value < 0 ? "-" : "±";
+      return `${sign}${Math.abs(value).toFixed(0)}%`;
+    }
+
+    function startOfMonthTs(timestamp) {
+      const d = new Date(timestamp);
+      return new Date(d.getFullYear(), d.getMonth(), 1).getTime();
+    }
+
+    function addMonthsTs(timestamp, count) {
+      const d = new Date(timestamp);
+      return new Date(d.getFullYear(), d.getMonth() + count, 1).getTime();
+    }
+
+    function buildCalendarMonthTicks(minTs, maxTs) {
+      const ticks = [];
+      const startTs = startOfMonthTs(minTs);
+      const endTs = startOfMonthTs(maxTs);
+      for (let ts = startTs; ts <= endTs; ts = addMonthsTs(ts, 1)) {
+        const d = new Date(ts);
+        ticks.push({ ts, year: d.getFullYear(), month: d.getMonth() + 1 });
+      }
+      return ticks;
+    }
+
+    function getPriceSourceBoundary(points) {
+      let leftIndex = -1;
+      let rightIndex = -1;
+      for (let i = 0; i < points.length; i++) {
+        const date = String(points[i]?.date || "").trim();
+        if (/^2024-\d{2}-\d{2}$/.test(date)) leftIndex = i;
+        if (leftIndex >= 0 && i > leftIndex && /^2025-\d{2}-\d{2}$/.test(date)) {
+          rightIndex = i;
+          break;
+        }
+      }
+      if (leftIndex < 0 || rightIndex < 0 || rightIndex <= leftIndex) return null;
+      return {
+        leftIndex,
+        rightIndex,
+        leftLabel: "買取相場ベース",
+        rightLabel: "メルカリ実売ベース"
+      };
+    }
+
+    function buildSleeveChartSvg(sleeve) {
+      const data = buildFullPeriodSeries(sleeve);
+      if (!data.length) {
+        return `<p class="article-sleeve-embed__note">表示できる価格推移データがありません。</p>`;
+      }
+      if (data.length === 1) {
+        const point = data[0];
+        return `
+          <div class="single-observation-card">
+            <p class="single-observation-title">現在確認できる価格</p>
+            <div class="single-observation-grid">
+              <div class="single-observation-item"><div class="label">観測価格</div><div class="value">${point.price.toLocaleString()}円</div></div>
+              <div class="single-observation-item"><div class="label">観測日</div><div class="value">${escapeHtml(formatDateLabel(point.date))}</div></div>
+            </div>
+          </div>
+        `;
+      }
+
+      const W = 940;
+      const H = 480;
+      const padL = 86;
+      const padR = 130;
+      const padT = 26;
+      const padB = 92;
+      const chartW = W - padL - padR;
+      const chartH = H - padT - padB;
+      const xMin = Math.min(...data.map((item) => item.timestamp));
+      const xMax = Math.max(...data.map((item) => item.timestamp));
+      const spanX = Math.max(24 * 60 * 60 * 1000, xMax - xMin);
+      const prices = data.map((item) => item.price);
+      const yMinRaw = Math.min(...prices);
+      const yMaxRaw = Math.max(...prices);
+      const ySpanRaw = Math.max(1, yMaxRaw - yMinRaw);
+      const yPad = Math.max(20, Math.round(ySpanRaw * 0.08));
+      const yMin = yMinRaw - yPad;
+      const yMax = yMaxRaw + yPad;
+      const xToPx = (ts) => padL + ((ts - xMin) / spanX) * chartW;
+      const yToPx = (v) => padT + (1 - ((v - yMin) / Math.max(1, yMax - yMin))) * chartH;
+
+      const yGrid = [];
+      const yLabels = [];
+      for (let i = 0; i <= 3; i++) {
+        const v = yMin + (i / 3) * (yMax - yMin);
+        const y = yToPx(v);
+        yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#dce4f0"></line>`);
+        yLabels.push(`<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="15" fill="#111827">${Math.round(v).toLocaleString()}</text>`);
+      }
+
+      const monthTicks = buildCalendarMonthTicks(xMin, xMax);
+      const labelStep = monthTicks.length > 36 ? 6 : monthTicks.length > 18 ? 3 : 2;
+      const xLabels = monthTicks
+        .filter((tick) => tick.month === 1 || ((tick.month - 1) % labelStep === 0))
+        .map((tick, index, arr) => {
+          const x = xToPx(tick.ts);
+          const label = `${String(tick.year).slice(-2)}/${tick.month}`;
+          const anchor = index === 0 ? "start" : (index === arr.length - 1 ? "end" : "middle");
+          return `<text x="${x}" y="${H - 16}" text-anchor="${anchor}" font-size="16" fill="#111827">${escapeHtml(label)}</text>`;
+        });
+      const yearGuides = monthTicks
+        .filter((tick) => tick.month === 1)
+        .map((tick) => {
+          const x = xToPx(tick.ts);
+          return `
+            <line x1="${x}" y1="${padT}" x2="${x}" y2="${H - padB}" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"></line>
+            <text x="${Math.min(x + 6, W - padR - 4)}" y="${padT + 18}" text-anchor="start" font-size="13.5" font-weight="800" fill="#64748b">${tick.year}</text>
+          `;
+        });
+
+      const lineD = data.map((point, index) => `${index === 0 ? "M" : "L"} ${xToPx(point.timestamp)} ${yToPx(point.price)}`).join(" ");
+      const areaD = `${lineD} L ${xToPx(data[data.length - 1].timestamp)} ${H - padB} L ${xToPx(data[0].timestamp)} ${H - padB} Z`;
+      const first = data[0];
+      const latest = data[data.length - 1];
+      const firstX = xToPx(first.timestamp);
+      const firstY = yToPx(first.price);
+      const latestX = xToPx(latest.timestamp);
+      const latestY = yToPx(latest.price);
+      const diffPrice = latest.price - first.price;
+      const diffRate = first.price > 0 ? ((latest.price / first.price) - 1) * 100 : null;
+      const firstLabelX = Math.min(firstX + 8, W - padR - 150);
+      const latestInfoX = W - 136;
+      const latestInfoY = H - padB + 34;
+      const latestLeaderEndX = latestInfoX - 12;
+      const latestLeaderBottomY = latestInfoY - 18;
+      const latestLeaderStartX = latestX + 11;
+      const latestCallout = `
+        <path d="M ${latestLeaderStartX} ${latestY} L ${latestLeaderEndX} ${latestY} L ${latestLeaderEndX} ${latestLeaderBottomY}" fill="none" stroke="#1e3a5f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <text x="${latestInfoX}" y="${latestInfoY}" text-anchor="start" font-size="15" font-weight="900" fill="#111827">現在 ¥${latest.price.toLocaleString()}</text>
+        <text x="${latestInfoX}" y="${latestInfoY + 18}" text-anchor="start" font-size="13.5" font-weight="900" fill="${diffPrice >= 0 ? "#0f766e" : "#b42318"}">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
+      `;
+      const highIndex = prices.findIndex((value) => value === yMaxRaw);
+      const lowIndex = prices.findIndex((value) => value === yMinRaw);
+      const highPoint = highIndex >= 0 ? data[highIndex] : null;
+      const lowPoint = lowIndex >= 0 ? data[lowIndex] : null;
+      const highLabel = highPoint && highIndex !== 0 && highIndex !== data.length - 1
+        ? `<text x="${Math.min(xToPx(highPoint.timestamp) + 6, W - padR - 84)}" y="${Math.max(18, yToPx(highPoint.price) - 10)}" text-anchor="start" font-size="13.5" font-weight="700" fill="#64748b">高値 ¥${highPoint.price.toLocaleString()}</text>`
+        : "";
+      const lowLabel = lowPoint && lowIndex !== 0 && lowIndex !== data.length - 1 && lowIndex !== highIndex
+        ? `<text x="${Math.min(xToPx(lowPoint.timestamp) + 6, W - padR - 84)}" y="${Math.min(H - padB - 8, yToPx(lowPoint.price) + 16)}" text-anchor="start" font-size="13.5" font-weight="700" fill="#64748b">安値 ¥${lowPoint.price.toLocaleString()}</text>`
+        : "";
+      const sourceBoundary = getPriceSourceBoundary(data);
+      const boundaryX = sourceBoundary
+        ? (xToPx(data[sourceBoundary.leftIndex].timestamp) + xToPx(data[sourceBoundary.rightIndex].timestamp)) / 2
+        : null;
+      const boundaryMarks = sourceBoundary && Number.isFinite(boundaryX)
+        ? `
+          <line x1="${boundaryX}" y1="${padT}" x2="${boundaryX}" y2="${H - padB}" stroke="#1e3a5f" stroke-width="3" stroke-dasharray="8 8"></line>
+          <text x="${Math.max(padL + 18, (padL + boundaryX) / 2)}" y="${padT + 18}" text-anchor="middle" font-size="13.5" font-weight="900" fill="#475467">${escapeHtml(sourceBoundary.leftLabel)}</text>
+          <text x="${Math.min(W - padR - 18, (boundaryX + (W - padR)) / 2)}" y="${padT + 18}" text-anchor="middle" font-size="13.5" font-weight="900" fill="#1e3a5f">${escapeHtml(sourceBoundary.rightLabel)}</text>
+        `
+        : "";
+      const markers = data.map((point, index) => {
+        const cx = xToPx(point.timestamp);
+        const cy = yToPx(point.price);
+        const isLatest = index === data.length - 1;
+        const isFirst = index === 0;
+        const radius = isLatest || isFirst ? 9 : 7;
+        const halo = isLatest ? `<circle cx="${cx}" cy="${cy}" r="${radius + 5}" fill="rgba(30,91,215,0.14)"></circle>` : "";
+        return `
+          ${halo}<circle cx="${cx}" cy="${cy}" r="${radius}" fill="#1e5bd7" stroke="${isLatest ? "#0f172a" : "#1e5bd7"}" stroke-width="${isLatest ? 2.4 : 1.8}"></circle>
+          ${isFirst ? `<circle cx="${cx}" cy="${cy}" r="${radius + 4}" fill="none" stroke="rgba(15,23,42,0.16)" stroke-width="1.8"></circle>` : ""}
+        `;
+      }).join("");
+
+      return `
+        <div class="chart-wrap article-sleeve-chart-wrap">
+          <div class="chart-viewport">
+            <svg class="chart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}">
+              <g>${yGrid.join("")}</g>
+              <g>${yearGuides.join("")}</g>
+              <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
+              <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
+              <path d="${areaD}" fill="rgba(30,91,215,0.16)"></path>
+              <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <g>${boundaryMarks}</g>
+              <line x1="${padL}" y1="${latestY}" x2="${W - padR}" y2="${latestY}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"></line>
+              <text x="${firstLabelX}" y="${Math.max(24, firstY - 18)}" text-anchor="start" font-size="16" font-weight="900" fill="#475467">開始 ¥${first.price.toLocaleString()}</text>
+              ${latestCallout}
+              ${highLabel}
+              ${lowLabel}
+              <g>${markers}</g>
+              <g>${yLabels.join("")}</g>
+              <g>${xLabels.join("")}</g>
+            </svg>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildSleeveCardHtml(sleeve) {
+      const stats = buildSleeveStats(sleeve);
+      const tags = getSleeveTags(sleeve);
+      const noteParts = [
+        sleeve.note ? String(sleeve.note).trim() : "",
+        stats.latest?.date ? `最終観測: ${formatDateLabel(stats.latest.date)}` : ""
+      ].filter(Boolean);
+      return `
+        <section class="article-sleeve-embed" data-sleeve-id="${escapeHtml(sleeve.id || "")}">
+          <div class="article-sleeve-embed__top">
+            ${sleeve.imageUrl ? `<img class="article-sleeve-embed__image" src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name || "")}">` : `<div class="article-sleeve-embed__image"></div>`}
+            <div class="article-sleeve-embed__body">
+              <p class="article-sleeve-embed__eyebrow">SLEEVE PICKUP</p>
+              <h2 class="article-sleeve-embed__title">${escapeHtml(sleeve.name || "名称未設定")}</h2>
+              <ul class="article-sleeve-embed__meta">${tags.map((tag) => `<li>${escapeHtml(tag)}</li>`).join("")}</ul>
+              ${noteParts.length ? `<p class="article-sleeve-embed__note">${escapeHtml(noteParts.join(" / "))}</p>` : ""}
+              <a class="article-sleeve-link" href="${escapeHtml(buildSleeveHref(sleeve))}" target="_blank" rel="noopener">スリーブ詳細を見る</a>
+            </div>
+          </div>
+          <div class="article-sleeve-metrics">
+            <div class="article-sleeve-metric"><span>最新相場</span><strong>${escapeHtml(formatPrice(stats.latest?.price))}</strong></div>
+            <div class="article-sleeve-metric"><span>直近変化</span><strong>${escapeHtml(formatPercent(stats.changePct))}</strong></div>
+            <div class="article-sleeve-metric"><span>30日取引数</span><strong>${stats.tradeCount30 ? `約${stats.tradeCount30.toLocaleString()}件` : "-"}</strong></div>
+          </div>
+        </section>
+      `;
+    }
+
+    function getSleevePurchaseLinks(sleeve) {
+      const name = String(sleeve?.name || "").trim();
+      if (!name) return [];
+      const common = window.common || {};
+      const rakutenUrl = typeof common.getRakutenAffiliateUrl === "function"
+        ? common.getRakutenAffiliateUrl(sleeve, rakutenLinkCache)
+        : "";
+      const mercariUrl = typeof common.buildMercariSearchUrl === "function"
+        ? common.buildMercariSearchUrl(name)
+        : "";
+      const surugayaUrl = typeof common.buildSurugayaAffiliateUrl === "function"
+        ? common.buildSurugayaAffiliateUrl(name)
+        : "";
+      return [
+        rakutenUrl ? { className: "rakuten", label: "楽天市場で見る", url: rakutenUrl, rel: "nofollow sponsored noopener" } : null,
+        mercariUrl ? { className: "mercari", label: "メルカリで探す", url: mercariUrl, rel: "noopener noreferrer nofollow" } : null,
+        surugayaUrl ? { className: "surugaya", label: "駿河屋で探す", url: surugayaUrl, rel: "noopener noreferrer nofollow" } : null
+      ].filter(Boolean);
+    }
+
+    function buildArticleSleeveCardHtml(sleeve) {
+      const stats = buildSleeveStats(sleeve);
+      const detailHref = buildSleeveHref(sleeve);
+      const purchaseLinks = getSleevePurchaseLinks(sleeve);
+      return `
+        <section class="article-sleeve-product-card" data-sleeve-id="${escapeHtml(sleeve.id || "")}" contenteditable="false">
+          <div class="article-sleeve-product-card__main">
+            <a class="article-sleeve-product-card__image-link" href="${escapeHtml(detailHref)}" target="_blank" rel="noopener" aria-label="${escapeHtml(sleeve.name || "スリーブ")}の詳細を見る">
+              ${sleeve.imageUrl ? `<img class="article-sleeve-product-card__image" src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name || "")}">` : `<span class="article-sleeve-product-card__image article-sleeve-product-card__image--empty">画像なし</span>`}
+            </a>
+            <div class="article-sleeve-product-card__body">
+              <h2 class="article-sleeve-product-card__title"><a href="${escapeHtml(detailHref)}" target="_blank" rel="noopener">${escapeHtml(sleeve.name || "名称未設定")}</a></h2>
+              <div class="article-sleeve-product-card__price"><span>現在相場</span><strong>${escapeHtml(formatPrice(stats.latest?.price))}</strong></div>
+              <a class="article-sleeve-product-card__detail" href="${escapeHtml(detailHref)}" target="_blank" rel="noopener">個別ページを見る</a>
+            </div>
+          </div>
+          ${purchaseLinks.length ? `<div class="article-sleeve-product-card__shops" aria-label="購入先リンク">${purchaseLinks.map((link) => `<a class="article-sleeve-shop-link article-sleeve-shop-link--${escapeHtml(link.className)}" href="${escapeHtml(link.url)}" target="_blank" rel="${escapeHtml(link.rel)}">${escapeHtml(link.label)}</a>`).join("")}</div>` : ""}
+        </section>
+        <p><br></p>
+      `;
+    }
+
+    function buildSleeveImageHtml(sleeve) {
+      if (!sleeve.imageUrl) {
+        return `<p class="article-sleeve-embed__note">このスリーブには画像URLが登録されていません。</p>`;
+      }
+      return `
+        <figure class="article-sleeve-image-only note-image-block" data-sleeve-id="${escapeHtml(sleeve.id || "")}">
+          <img src="${escapeHtml(sleeve.imageUrl)}" alt="${escapeHtml(sleeve.name || "")}">
+          <figcaption class="note-image-caption" contenteditable="true" data-placeholder="キャプションを入力"></figcaption>
+        </figure>
+      `;
+    }
+
+    function buildSleeveGraphHtml(sleeve) {
+      return `
+        <section class="article-sleeve-embed article-sleeve-embed--graph-only" data-sleeve-id="${escapeHtml(sleeve.id || "")}">
+          ${buildSleeveChartSvg(sleeve)}
+        </section>
+      `;
+    }
+
+    function insertHtmlAtCursor(html) {
+      const editor = qs("editor");
+      restoreEditorSelection();
+      editor.focus({ preventScroll: true });
+      restoreEditorSelection();
+      const normalized = sanitizeHtml(html);
+      if (document.queryCommandSupported && document.queryCommandSupported("insertHTML")) {
+        document.execCommand("insertHTML", false, normalized);
+      } else {
+        editor.insertAdjacentHTML("beforeend", normalized);
+      }
+      saveEditorSelection();
+      ensureEditableImageCaptions(editor);
+      updatePreview();
+    }
+
+    function buildEditableImageHtml(src, alt = "", caption = "") {
+      return `
+        <figure class="note-image-block">
+          <img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}">
+          <figcaption class="note-image-caption" contenteditable="true" data-placeholder="キャプションを入力">${escapeHtml(caption)}</figcaption>
+        </figure>
+        <p><br></p>
+      `;
+    }
+
+    function ensureEditableImageCaptions(root = qs("editor")) {
+      if (!root) return;
+      const rawImages = Array.from(root.querySelectorAll("img")).filter((img) =>
+        !img.closest(".article-sleeve-embed")
+        && !img.closest(".article-sleeve-product-card")
+        && !img.closest(".note-image-block")
+      );
+      for (const img of rawImages) {
+        const figure = document.createElement("figure");
+        figure.className = "note-image-block";
+        const caption = document.createElement("figcaption");
+        caption.className = "note-image-caption";
+        caption.contentEditable = "true";
+        caption.dataset.placeholder = "キャプションを入力";
+        caption.textContent = img.getAttribute("title") || "";
+        img.replaceWith(figure);
+        figure.appendChild(img);
+        figure.appendChild(caption);
+      }
+
+      root.querySelectorAll(".note-image-block").forEach((figure) => {
+        if (figure.closest(".article-sleeve-embed") && !figure.classList.contains("article-sleeve-image-only")) return;
+        let caption = figure.querySelector("figcaption");
+        if (!caption) {
+          caption = document.createElement("figcaption");
+          figure.appendChild(caption);
+        }
+        caption.classList.add("note-image-caption");
+        caption.contentEditable = "true";
+        caption.dataset.placeholder = "キャプションを入力";
+      });
+    }
+
+    function handleEditorPaste(event) {
+      const items = Array.from(event.clipboardData?.items || []);
+      const imageItem = items.find((item) => item.kind === "file" && /^image\//i.test(item.type || ""));
+      if (!imageItem) {
+        setTimeout(() => {
+          ensureEditableImageCaptions(qs("editor"));
+          updatePreview();
+        }, 0);
+        return;
+      }
+
+      const file = imageItem.getAsFile();
+      if (!file) return;
+      event.preventDefault();
+      const reader = new FileReader();
+      reader.onload = () => {
+        insertHtmlAtCursor(buildEditableImageHtml(String(reader.result || ""), file.name || ""));
+        setStatus("画像を貼り付けました。必要なら画像下のキャプションを入力してください。", "ok");
+      };
+      reader.onerror = () => setStatus("画像の貼り付けに失敗しました。画像URLで挿入してください。", "ng");
+      reader.readAsDataURL(file);
+    }
+
+    function insertSleeveMaterial(kind) {
+      const sleeve = getSelectedSleeve();
+      if (!sleeve) return;
+      const html = kind === "image"
+        ? buildSleeveImageHtml(sleeve)
+        : kind === "card"
+        ? buildSleeveCardHtml(sleeve)
+        : kind === "graph"
+          ? buildSleeveGraphHtml(sleeve)
+          : `${buildSleeveCardHtml(sleeve)}${buildSleeveGraphHtml(sleeve)}`;
+      insertHtmlAtCursor(html);
+      setStatus("スリーブ素材を本文へ挿入しました。", "ok");
+    }
+
+    function readForm(status) {
+      const title = qs("titleInput").value.trim();
+      if (!title) throw new Error("タイトルを入力してください。");
+      const slug = slugify(qs("slugInput").value || title);
+      const html = sanitizeHtml(qs("editor").innerHTML);
+      if (!html || html === "<br>") throw new Error("本文を入力してください。");
+      const now = new Date().toISOString();
+      return {
+        id: currentId || slug,
+        slug,
+        title,
+        excerpt: qs("excerptInput").value.trim(),
+        category: qs("categoryInput").value.trim() || "サイト情報",
+        coverImage: qs("coverInput").value.trim(),
+        publishedAt: qs("dateInput").value || todayISO(),
+        updatedAt: now,
+        status,
+        html
+      };
+    }
+
+    function fillForm(article) {
+      savedEditorRange = null;
+      currentId = article?.id || "";
+      qs("titleInput").value = article?.title || "";
+      qs("slugInput").value = article?.slug || "";
+      qs("excerptInput").value = article?.excerpt || "";
+      qs("categoryInput").value = article?.category || "サイト情報";
+      qs("coverInput").value = article?.coverImage || "";
+      qs("dateInput").value = article?.publishedAt || todayISO();
+      qs("editor").innerHTML = article?.html || "<p>ここに本文を書いてください。</p>";
+      updatePreview();
+      refreshWritingSurfaceFromForm();
+    }
+
+    async function saveArticle(status) {
+      const article = readForm(status);
+      const articles = readStoredArticles();
+      const next = [article, ...articles.filter((item) => item.slug !== article.slug && item.id !== article.id)].map(compactArticleForStorage);
+      try {
+        await writeStoredArticles(next);
+      } catch (error) {
+        if (isStorageQuotaError(error)) {
+          downloadArticlesPayload(next.filter((item) => item.status === "published"), `articles-recovery-${todayISO()}.json`);
+          setStatus("保存容量の上限を超えました。公開記事の退避JSONをダウンロードしました。画像はURL挿入にしてください。", "ng");
+          return article;
+        }
+        throw error;
+      }
+      currentId = article.id;
+      renderArticleList();
+      updatePreview();
+      setStatus(status === "published" ? "投稿しました。公開側の記事一覧にも表示されます。" : "下書きを保存しました。", "ok");
+      return article;
+    }
+
+    function renderArticleList() {
+      const list = qs("articleList");
+      const articles = readStoredArticles().sort((a, b) => String(b.updatedAt || "").localeCompare(String(a.updatedAt || "")));
+      if (!articles.length) {
+        list.innerHTML = `<p class="hint">保存済み記事はまだありません。</p>`;
+        return;
+      }
+      list.innerHTML = articles.map((article) => `
+        <button type="button" data-load="${escapeHtml(article.id || article.slug)}">
+          <strong>${escapeHtml(article.title || "無題")}</strong>
+          <span>${escapeHtml(article.status === "published" ? "公開" : "下書き")} / ${escapeHtml(article.slug || "")}</span>
+        </button>
+      `).join("");
+    }
+
+    function updatePreview() {
+      const title = qs("titleInput").value.trim() || "無題の記事";
+      const excerpt = qs("excerptInput").value.trim();
+      const html = sanitizeHtml(qs("editor").innerHTML);
+      qs("preview").innerHTML = `
+        <h1>${escapeHtml(title)}</h1>
+        ${excerpt ? `<p><strong>${escapeHtml(excerpt)}</strong></p>` : ""}
+        <hr>
+        ${html || "<p>本文プレビュー</p>"}
+      `;
+    }
+
+    function selectionBelongsToEditor(selection) {
+      const editor = qs("editor");
+      if (!editor || !selection || !selection.rangeCount) return false;
+      const range = selection.getRangeAt(0);
+      return editor.contains(range.startContainer) && editor.contains(range.endContainer);
+    }
+
+    function saveEditorSelection() {
+      const selection = window.getSelection();
+      if (!selectionBelongsToEditor(selection)) return savedEditorRange;
+      savedEditorRange = selection.getRangeAt(0).cloneRange();
+      return savedEditorRange;
+    }
+
+    function restoreEditorSelection() {
+      const editor = qs("editor");
+      if (!editor || !savedEditorRange) return false;
+      if (!editor.contains(savedEditorRange.startContainer) || !editor.contains(savedEditorRange.endContainer)) {
+        savedEditorRange = null;
+        return false;
+      }
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(savedEditorRange);
+      return true;
+    }
+
+    function exec(command, value = null) {
+      const editor = qs("editor");
+      if (!editor || editorIsComposing) return false;
+      restoreEditorSelection();
+      editor.focus({ preventScroll: true });
+      restoreEditorSelection();
+      const applied = document.execCommand(command, false, value);
+      saveEditorSelection();
+      updatePreview();
+      return applied;
+    }
+
+    function dispatchInput(el) {
+      if (!el) return;
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+
+    function isUsableImageSrc(value) {
+      return /^(https?:|data:image\/|\.\/|\/)/i.test(String(value || "").trim());
+    }
+
+    function setCoverImageValue(value, message = "") {
+      const cover = qs("coverInput");
+      if (!cover) return;
+      cover.value = String(value || "").trim();
+      dispatchInput(cover);
+      updateCoverDropPreview();
+      if (message) setStatus(message, "ok");
+    }
+
+    function readImageFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(reader.error || new Error("Failed to read image."));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function applyCoverImageFile(file) {
+      if (!file || !/^image\//i.test(file.type || "")) {
+        setStatus("画像ファイルを選択してください。", "ng");
+        return;
+      }
+      try {
+        const dataUrl = await readImageFileAsDataUrl(file);
+        setCoverImageValue(dataUrl, "カバー画像を設定しました。");
+        closeCoverImagePicker();
+      } catch (_) {
+        setStatus("カバー画像の読み込みに失敗しました。", "ng");
+      }
+    }
+
+    function collectCoverImageChoices() {
+      const seen = new Set();
+      const choices = [];
+      const add = (src) => {
+        const value = String(src || "").trim();
+        if (!value || seen.has(value) || !isUsableImageSrc(value)) return;
+        seen.add(value);
+        choices.push(value);
+      };
+
+      add(qs("coverInput")?.value);
+      qs("editor")?.querySelectorAll("img").forEach((img) => add(img.getAttribute("src")));
+      readStoredArticles().forEach((article) => {
+        add(article?.coverImage);
+        const template = document.createElement("template");
+        template.innerHTML = String(article?.html || "");
+        template.content.querySelectorAll("img").forEach((img) => add(img.getAttribute("src")));
+      });
+      return choices;
+    }
+
+    function ensureCoverImagePicker() {
+      let backdrop = document.getElementById("coverPickerBackdrop");
+      if (backdrop) return backdrop;
+
+      backdrop = document.createElement("div");
+      backdrop.id = "coverPickerBackdrop";
+      backdrop.className = "cover-picker-backdrop";
+      backdrop.innerHTML = `
+        <div class="cover-picker" role="dialog" aria-modal="true" aria-labelledby="coverPickerTitle">
+          <div class="cover-picker__head">
+            <h2 id="coverPickerTitle">カバー画像を選択</h2>
+            <button class="cover-picker__close" type="button" data-cover-close aria-label="閉じる">×</button>
+          </div>
+          <div class="cover-picker__body">
+            <div class="cover-picker__actions">
+              <button class="btn-admin" type="button" data-cover-file>PCから画像を選択</button>
+              <button class="btn-admin secondary" type="button" data-cover-remove>カバーを削除</button>
+              <input id="coverFileInput" type="file" accept="image/*" hidden>
+            </div>
+            <div class="cover-picker__url">
+              <input id="coverUrlPickerInput" type="text" placeholder="画像URLを貼り付け">
+              <button class="btn-admin secondary" type="button" data-cover-url-apply>URLを適用</button>
+            </div>
+            <section>
+              <h3 class="panel-title">本文・保存済み記事の画像</h3>
+              <div id="coverPickerGrid" class="cover-picker__grid"></div>
+            </section>
+          </div>
+          <div class="cover-picker__foot">
+            <button class="btn-admin secondary" type="button" data-cover-close>閉じる</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(backdrop);
+
+      const fileInput = backdrop.querySelector("#coverFileInput");
+      backdrop.querySelector("[data-cover-file]").addEventListener("click", () => fileInput.click());
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files?.[0];
+        fileInput.value = "";
+        if (file) applyCoverImageFile(file);
+      });
+      backdrop.querySelector("[data-cover-remove]").addEventListener("click", () => {
+        setCoverImageValue("", "カバー画像を削除しました。");
+        closeCoverImagePicker();
+      });
+      backdrop.querySelector("[data-cover-url-apply]").addEventListener("click", () => {
+        const input = backdrop.querySelector("#coverUrlPickerInput");
+        const value = String(input.value || "").trim();
+        if (!value) return;
+        if (!isUsableImageSrc(value)) {
+          setStatus("画像URLは https:// または ./assets/... の形式で入力してください。", "ng");
+          return;
+        }
+        setCoverImageValue(value, "カバー画像URLを設定しました。");
+        closeCoverImagePicker();
+      });
+      backdrop.addEventListener("click", (event) => {
+        if (event.target === backdrop || event.target.closest("[data-cover-close]")) closeCoverImagePicker();
+      });
+      backdrop.addEventListener("paste", handleCoverPaste);
+      return backdrop;
+    }
+
+    function renderCoverImagePicker() {
+      const backdrop = ensureCoverImagePicker();
+      const grid = backdrop.querySelector("#coverPickerGrid");
+      const urlInput = backdrop.querySelector("#coverUrlPickerInput");
+      const current = qs("coverInput")?.value.trim() || "";
+      urlInput.value = current && !current.startsWith("data:image/") ? current : "";
+      const choices = collectCoverImageChoices();
+      if (!choices.length) {
+        grid.innerHTML = `<p class="cover-picker__empty">本文に貼り付けた画像や保存済み記事の画像がここに表示されます。PC内の画像は「PCから画像を選択」から選べます。</p>`;
+        return;
+      }
+      grid.innerHTML = choices.map((src, index) => `
+        <button class="cover-picker__image" type="button" data-cover-choice="${index}" aria-label="画像${index + 1}をカバーに設定">
+          <img src="${escapeHtml(src)}" alt="">
+        </button>
+      `).join("");
+      grid.querySelectorAll("[data-cover-choice]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const src = choices[Number(button.dataset.coverChoice)];
+          setCoverImageValue(src, "カバー画像を設定しました。");
+          closeCoverImagePicker();
+        });
+      });
+    }
+
+    function openCoverImagePicker() {
+      renderCoverImagePicker();
+      const backdrop = ensureCoverImagePicker();
+      backdrop.classList.add("is-visible");
+      backdrop.querySelector("#coverUrlPickerInput")?.focus();
+    }
+
+    function closeCoverImagePicker() {
+      document.getElementById("coverPickerBackdrop")?.classList.remove("is-visible");
+    }
+
+    function getImageFileFromItems(items) {
+      return Array.from(items || [])
+        .find((item) => item.kind === "file" && /^image\//i.test(item.type || ""))
+        ?.getAsFile();
+    }
+
+    function getImageSrcFromTransfer(dataTransfer) {
+      const uri = String(dataTransfer?.getData("text/uri-list") || dataTransfer?.getData("text/plain") || "").trim();
+      if (isUsableImageSrc(uri)) return uri;
+      const html = String(dataTransfer?.getData("text/html") || "");
+      if (!html) return "";
+      const template = document.createElement("template");
+      template.innerHTML = html;
+      const src = template.content.querySelector("img")?.getAttribute("src") || "";
+      return isUsableImageSrc(src) ? src : "";
+    }
+
+    async function handleCoverPaste(event) {
+      const file = getImageFileFromItems(event.clipboardData?.items);
+      if (file) {
+        event.preventDefault();
+        event.stopPropagation();
+        await applyCoverImageFile(file);
+        return;
+      }
+      const target = event.target;
+      if (target?.matches?.("input, textarea") || target?.isContentEditable) return;
+      const src = getImageSrcFromTransfer(event.clipboardData);
+      if (src) {
+        event.preventDefault();
+        event.stopPropagation();
+        setCoverImageValue(src, "カバー画像を貼り付けました。");
+        closeCoverImagePicker();
+      }
+    }
+
+    async function handleCoverDrop(event) {
+      event.preventDefault();
+      const drop = document.getElementById("noteCoverDrop");
+      drop?.classList.remove("is-dragover");
+      const file = Array.from(event.dataTransfer?.files || []).find((item) => /^image\//i.test(item.type || ""));
+      if (file) {
+        await applyCoverImageFile(file);
+        return;
+      }
+      const src = getImageSrcFromTransfer(event.dataTransfer);
+      if (src) {
+        setCoverImageValue(src, "カバー画像を設定しました。");
+        return;
+      }
+      setStatus("画像ファイルまたは画像URLをドロップしてください。", "ng");
+    }
+
+    function autoGrowTextarea(el) {
+      if (!el) return;
+      el.style.height = "auto";
+      el.style.height = `${Math.max(el.scrollHeight, 34)}px`;
+    }
+
+    function updateCoverDropPreview() {
+      const cover = qs("coverInput");
+      const drop = document.getElementById("noteCoverDrop");
+      if (!cover || !drop) return;
+      const url = cover.value.trim();
+      drop.classList.toggle("has-image", !!url);
+      drop.classList.remove("is-dragover");
+      drop.style.backgroundImage = url ? `url("${url.replaceAll('"', "%22")}")` : "";
+      drop.textContent = url ? "カバー画像を変更" : "カバー画像を追加（クリック・ドロップ・貼り付け）";
+    }
+
+    function refreshWritingSurfaceFromForm() {
+      const title = document.getElementById("writingTitleInput");
+      const excerpt = document.getElementById("writingExcerptInput");
+      if (title && title.value !== qs("titleInput").value) title.value = qs("titleInput").value;
+      if (excerpt && excerpt.value !== qs("excerptInput").value) excerpt.value = qs("excerptInput").value;
+      autoGrowTextarea(title);
+      autoGrowTextarea(excerpt);
+      updateCoverDropPreview();
+    }
+
+    function getEditorSelection() {
+      const editor = qs("editor");
+      const selection = window.getSelection();
+      if (!editor || !selection || !selection.rangeCount) return null;
+      const node = selection.anchorNode;
+      if (!node || !editor.contains(node)) return null;
+      return selection;
+    }
+
+    function getSelectionRect(selection) {
+      if (!selection || !selection.rangeCount) return null;
+      const range = selection.getRangeAt(0).cloneRange();
+      let rect = range.getBoundingClientRect();
+      if ((!rect || (!rect.width && !rect.height)) && range.getClientRects().length) {
+        rect = range.getClientRects()[0];
+      }
+      if (!rect || (!rect.width && !rect.height)) {
+        const block = getCurrentTextBlock();
+        rect = block ? block.getBoundingClientRect() : null;
+      }
+      return rect;
+    }
+
+    function getCurrentTextBlock() {
+      const editor = qs("editor");
+      const selection = getEditorSelection();
+      if (!editor || !selection) return null;
+      let node = selection.anchorNode;
+      if (node && node.nodeType === Node.TEXT_NODE) node = node.parentElement;
+      while (node && node !== editor) {
+        if (/^(P|H2|H3|LI|BLOCKQUOTE|PRE|DIV)$/i.test(node.nodeName)) return node;
+        node = node.parentElement;
+      }
+      return null;
+    }
+
+    function insertEmbedCard() {
+      const url = prompt("埋め込みURLを入力してください");
+      if (!url) return;
+      const safeUrl = String(url).trim();
+      if (!/^https?:\/\//i.test(safeUrl)) {
+        setStatus("https:// から始まるURLを入力してください。", "ng");
+        return;
+      }
+      insertHtmlAtCursor(`
+        <div class="article-embed-card">
+          <a href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener">
+            <strong>リンクカード</strong>
+            <span>${escapeHtml(safeUrl)}</span>
+          </a>
+        </div>
+        <p><br></p>
+      `);
+    }
+
+    function insertImageByUrl() {
+      const url = prompt("画像URLを入力してください");
+      if (!url) return;
+      const safeUrl = String(url).trim();
+      if (!/^https?:\/\//i.test(safeUrl)) {
+        setStatus("https:// から始まる画像URLを入力してください。", "ng");
+        return;
+      }
+      insertHtmlAtCursor(buildEditableImageHtml(safeUrl));
+    }
+
+    function buildHeadingAnchorId(text, index) {
+      const base = String(text || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/_+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+      return base || `section-${index + 1}`;
+    }
+
+    function collectArticleHeadings() {
+      const editor = qs("editor");
+      if (!editor) return [];
+      const used = new Set();
+      return Array.from(editor.querySelectorAll("h2, h3")).map((heading, index) => {
+        const text = String(heading.textContent || "").trim() || `見出し ${index + 1}`;
+        let id = String(heading.getAttribute("id") || "").trim();
+        if (!id) id = buildHeadingAnchorId(text, index);
+        let uniqueId = id;
+        let suffix = 2;
+        while (used.has(uniqueId)) {
+          uniqueId = `${id}-${suffix}`;
+          suffix += 1;
+        }
+        used.add(uniqueId);
+        heading.setAttribute("id", uniqueId);
+        return { id: uniqueId, text, level: heading.tagName.toLowerCase() };
+      });
+    }
+
+    function buildArticleTocHtml(headings) {
+      return `
+        <div class="article-toc" role="navigation" aria-label="目次">
+          <strong class="article-toc__title">目次</strong>
+          <ol>
+            ${headings.map((heading) => `
+              <li class="article-toc__item article-toc__item--${escapeHtml(heading.level)}">
+                <a href="#${escapeHtml(heading.id)}">${escapeHtml(heading.text)}</a>
+              </li>
+            `).join("")}
+          </ol>
+        </div>
+        <p><br></p>
+      `;
+    }
+
+    function insertTocBlock() {
+      const editor = qs("editor");
+      const headings = collectArticleHeadings();
+      if (!headings.length) {
+        setStatus("目次にする見出しがありません。先に大見出し・小見出しを追加してください。", "ng");
+        return;
+      }
+      const html = sanitizeHtml(buildArticleTocHtml(headings));
+      const existing = editor.querySelector(".article-toc");
+      if (existing) {
+        existing.outerHTML = html;
+        updatePreview();
+        setStatus("目次を更新しました。", "ok");
+        return;
+      }
+      insertHtmlAtCursor(html);
+      setStatus("目次を追加しました。", "ok");
+    }
+
+    function insertTableBlock() {
+      insertHtmlAtCursor(`
+        <div class="article-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">項目</th>
+                <th scope="col">内容</th>
+                <th scope="col">メモ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>例: 商品名</td>
+                <td>例: プレミアム・グロス</td>
+                <td>例: 未開封</td>
+              </tr>
+              <tr>
+                <td>例: 相場</td>
+                <td>例: 約1,200円</td>
+                <td>例: 前週比 +8%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p><br></p>
+      `);
+      setStatus("表を追加しました。セルをクリックして編集できます。", "ok");
+    }
+
+    function initTableEditingTools() {
+      const editor = qs("editor");
+      if (!editor || document.getElementById("tableEditToolbar")) return;
+
+      const toolbar = document.createElement("div");
+      toolbar.id = "tableEditToolbar";
+      toolbar.className = "table-edit-toolbar";
+      toolbar.setAttribute("role", "toolbar");
+      toolbar.setAttribute("aria-label", "表の編集");
+      toolbar.innerHTML = `
+        <button type="button" data-table-action="add-row" title="選択セルの下に行を追加">+行</button>
+        <button type="button" data-table-action="add-column" title="選択セルの右に列を追加">+列</button>
+        <button type="button" data-table-action="delete-row" title="選択中の行を削除">-行</button>
+        <button type="button" data-table-action="delete-column" title="選択中の列を削除">-列</button>
+      `;
+      document.body.appendChild(toolbar);
+
+      let activeCell = null;
+
+      const getCell = (target) => {
+        const element = target?.nodeType === Node.TEXT_NODE ? target.parentElement : target;
+        const cell = element?.closest?.("td, th");
+        return cell && editor.contains(cell) ? cell : null;
+      };
+      const getCurrentTableCell = (event) => getCell(event?.target) || getCell(window.getSelection()?.anchorNode);
+
+      const getCellIndex = (cell) => Array.from(cell.parentElement?.children || []).indexOf(cell);
+      const getColumnCount = (table) => Math.max(1, ...Array.from(table.querySelectorAll("tr")).map((row) => row.children.length));
+      const getTableRows = (table) => Array.from(table.querySelectorAll("tr"));
+      const MIN_COLUMN_WIDTH = 54;
+      const MIN_ROW_HEIGHT = 34;
+      const RESIZE_HIT_SIZE = 8;
+      let resizeState = null;
+      let previewUpdateQueued = false;
+
+      const queuePreviewUpdate = () => {
+        if (previewUpdateQueued) return;
+        previewUpdateQueued = true;
+        requestAnimationFrame(() => {
+          previewUpdateQueued = false;
+          updatePreview();
+        });
+      };
+
+      const clearResizeHints = () => {
+        editor.querySelectorAll("table.is-resize-target").forEach((table) => table.classList.remove("is-resize-target"));
+        if (!resizeState) {
+          editor.style.cursor = "";
+          document.body.style.cursor = "";
+        }
+      };
+
+      const setResizeHint = (hit) => {
+        clearResizeHints();
+        if (!hit) return;
+        hit.table.classList.add("is-resize-target");
+        editor.style.cursor = hit.type === "column" ? "col-resize" : "row-resize";
+      };
+
+      const getResizeHit = (event) => {
+        if (resizeState) return null;
+        const cell = getCell(event.target);
+        if (!cell) return null;
+        const table = cell.closest("table");
+        const row = cell.closest("tr");
+        if (!table || !row) return null;
+
+        const tableRect = table.getBoundingClientRect();
+        if (
+          event.clientX < tableRect.left ||
+          event.clientX > tableRect.right ||
+          event.clientY < tableRect.top ||
+          event.clientY > tableRect.bottom
+        ) {
+          return null;
+        }
+
+        const cellRect = cell.getBoundingClientRect();
+        const columnIndex = getCellIndex(cell);
+        const rows = getTableRows(table);
+        const rowIndex = rows.indexOf(row);
+        const nearRight = Math.abs(event.clientX - cellRect.right) <= RESIZE_HIT_SIZE;
+        const nearBottom = Math.abs(event.clientY - cellRect.bottom) <= RESIZE_HIT_SIZE;
+
+        if (nearRight && Math.abs(event.clientX - tableRect.right) <= RESIZE_HIT_SIZE) {
+          return { type: "column", table, columnIndex: getColumnCount(table) - 1, outerEdge: true };
+        }
+        if (nearRight && columnIndex >= 0 && columnIndex < row.children.length - 1) {
+          return { type: "column", table, columnIndex };
+        }
+        if (nearBottom && rowIndex >= 0 && rowIndex < rows.length - 1) {
+          return { type: "row", table, row, rowIndex };
+        }
+        return null;
+      };
+
+      const getColumnWidthSnapshot = (table) => {
+        const columnCount = getColumnCount(table);
+        const sourceRow = getTableRows(table).find((row) => row.children.length === columnCount) || table.rows[0];
+        return Array.from(sourceRow?.children || []).slice(0, columnCount).map((cell) => cell.getBoundingClientRect().width);
+      };
+
+      const applyColumnWidths = (table, widths) => {
+        const total = widths.reduce((sum, width) => sum + width, 0);
+        if (!total) return;
+        table.querySelectorAll("tr").forEach((row) => {
+          Array.from(row.children).forEach((cell, index) => {
+            if (index >= widths.length || Number(cell.getAttribute("colspan") || 1) !== 1) return;
+            cell.style.width = `${((widths[index] / total) * 100).toFixed(3)}%`;
+          });
+        });
+      };
+
+      const normalizeColumnWidths = (table) => {
+        const widths = getColumnWidthSnapshot(table);
+        if (widths.length > 1) applyColumnWidths(table, widths);
+      };
+
+      const beginTableResize = (hit, event) => {
+        if (!hit) return;
+        event.preventDefault();
+        event.stopPropagation();
+        hit.table.classList.add("is-resize-target");
+        editor.classList.add("is-resizing-table");
+        document.body.style.cursor = hit.type === "column" ? "col-resize" : "row-resize";
+        toolbar.classList.remove("is-visible");
+
+        if (hit.type === "column") {
+          const widths = getColumnWidthSnapshot(hit.table);
+          const leftWidth = widths[hit.columnIndex] || MIN_COLUMN_WIDTH;
+          const rightWidth = widths[hit.columnIndex + 1] || MIN_COLUMN_WIDTH;
+          resizeState = {
+            type: "column",
+            table: hit.table,
+            columnIndex: hit.columnIndex,
+            startX: event.clientX,
+            startWidths: widths,
+            outerEdge: Boolean(hit.outerEdge),
+            startTableWidth: hit.table.getBoundingClientRect().width,
+            pairWidth: leftWidth + rightWidth,
+            leftWidth,
+            rightWidth
+          };
+        } else {
+          resizeState = {
+            type: "row",
+            table: hit.table,
+            row: hit.row,
+            startY: event.clientY,
+            startHeight: hit.row.getBoundingClientRect().height
+          };
+        }
+
+        try {
+          editor.setPointerCapture(event.pointerId);
+        } catch (_) {}
+      };
+
+      const updateTableResize = (event) => {
+        if (!resizeState) {
+          setResizeHint(getResizeHit(event));
+          return;
+        }
+
+        if (resizeState.type === "column") {
+          const widths = [...resizeState.startWidths];
+          const dx = event.clientX - resizeState.startX;
+          if (resizeState.outerEdge) {
+            const index = resizeState.columnIndex;
+            widths[index] = Math.max(MIN_COLUMN_WIDTH, resizeState.leftWidth + dx);
+            const fixedWidth = resizeState.startTableWidth - resizeState.leftWidth;
+            resizeState.table.style.minWidth = `${fixedWidth + MIN_COLUMN_WIDTH}px`;
+            resizeState.table.style.width = `${fixedWidth + widths[index]}px`;
+          } else {
+            const maxLeft = Math.max(MIN_COLUMN_WIDTH, resizeState.pairWidth - MIN_COLUMN_WIDTH);
+            const left = Math.max(MIN_COLUMN_WIDTH, Math.min(maxLeft, resizeState.leftWidth + dx));
+            widths[resizeState.columnIndex] = left;
+            widths[resizeState.columnIndex + 1] = resizeState.pairWidth - left;
+          }
+          applyColumnWidths(resizeState.table, widths);
+        } else {
+          const height = Math.max(MIN_ROW_HEIGHT, resizeState.startHeight + event.clientY - resizeState.startY);
+          resizeState.row.style.height = `${Math.round(height)}px`;
+          Array.from(resizeState.row.children).forEach((cell) => {
+            cell.style.height = `${Math.round(height)}px`;
+          });
+        }
+
+        queuePreviewUpdate();
+      };
+
+      const finishTableResize = (event) => {
+        if (!resizeState) return;
+        try {
+          editor.releasePointerCapture(event.pointerId);
+        } catch (_) {}
+        const table = resizeState.table;
+        resizeState = null;
+        editor.classList.remove("is-resizing-table");
+        document.body.style.cursor = "";
+        editor.style.cursor = "";
+        table?.classList.remove("is-resize-target");
+        updatePreview();
+        setStatus("表の線を調整しました。", "ok");
+      };
+
+      const createTableCell = (tagName, text = "") => {
+        const cell = document.createElement(tagName);
+        if (tagName === "th") cell.setAttribute("scope", "col");
+        cell.innerHTML = text ? escapeHtml(text) : "<br>";
+        return cell;
+      };
+
+      const focusCell = (cell) => {
+        if (!cell) return;
+        activeCell = cell;
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(cell);
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        updateToolbarPosition();
+      };
+
+      function updateToolbarPosition(cell = activeCell) {
+        if (!cell || !editor.contains(cell)) {
+          toolbar.classList.remove("is-visible");
+          activeCell = null;
+          return;
+        }
+        activeCell = cell;
+        const rect = cell.getBoundingClientRect();
+        toolbar.style.left = `${Math.max(12, Math.min(window.innerWidth - toolbar.offsetWidth - 12, rect.left))}px`;
+        toolbar.style.top = `${Math.max(12, rect.top - 48)}px`;
+        toolbar.classList.add("is-visible");
+      }
+
+      const addRow = () => {
+        if (!activeCell) return;
+        const table = activeCell.closest("table");
+        const row = activeCell.closest("tr");
+        const tbody = table.tBodies[0] || table.createTBody();
+        const newRow = document.createElement("tr");
+        const columnCount = getColumnCount(table);
+        for (let i = 0; i < columnCount; i++) newRow.appendChild(createTableCell("td"));
+        if (row?.parentElement?.tagName === "TBODY") row.after(newRow);
+        else tbody.prepend(newRow);
+        focusCell(newRow.children[Math.max(0, Math.min(getCellIndex(activeCell), columnCount - 1))]);
+        updatePreview();
+        setStatus("表に行を追加しました。", "ok");
+      };
+
+      const addColumn = () => {
+        if (!activeCell) return;
+        const table = activeCell.closest("table");
+        const columnIndex = getCellIndex(activeCell);
+        let newActiveCell = null;
+        table.querySelectorAll("tr").forEach((row) => {
+          const isHeader = row.parentElement?.tagName === "THEAD";
+          const newCell = createTableCell(isHeader ? "th" : "td", isHeader ? "見出し" : "");
+          const current = row.children[columnIndex];
+          if (current?.nextSibling) row.insertBefore(newCell, current.nextSibling);
+          else row.appendChild(newCell);
+          if (row === activeCell.parentElement) newActiveCell = newCell;
+        });
+        normalizeColumnWidths(table);
+        focusCell(newActiveCell);
+        updatePreview();
+        setStatus("表に列を追加しました。", "ok");
+      };
+
+      const deleteRow = () => {
+        if (!activeCell) return;
+        const row = activeCell.closest("tr");
+        const tbody = activeCell.closest("tbody");
+        if (!tbody || row.parentElement !== tbody) {
+          setStatus("見出し行は削除できません。本文行を選択してください。", "ng");
+          return;
+        }
+        if (tbody.rows.length <= 1) {
+          setStatus("最後の1行は削除できません。不要なら表ごと選択して削除してください。", "ng");
+          return;
+        }
+        const nextCell = row.nextElementSibling?.children[getCellIndex(activeCell)] || row.previousElementSibling?.children[getCellIndex(activeCell)];
+        row.remove();
+        focusCell(nextCell);
+        updatePreview();
+        setStatus("表の行を削除しました。", "ok");
+      };
+
+      const deleteColumn = () => {
+        if (!activeCell) return;
+        const table = activeCell.closest("table");
+        const columnCount = getColumnCount(table);
+        if (columnCount <= 1) {
+          setStatus("最後の1列は削除できません。不要なら表ごと選択して削除してください。", "ng");
+          return;
+        }
+        const columnIndex = getCellIndex(activeCell);
+        let nextCell = null;
+        table.querySelectorAll("tr").forEach((row) => {
+          const cell = row.children[columnIndex];
+          const candidate = row === activeCell.parentElement
+            ? cell?.nextElementSibling || cell?.previousElementSibling
+            : null;
+          if (candidate) nextCell = candidate;
+          cell?.remove();
+        });
+        normalizeColumnWidths(table);
+        focusCell(nextCell);
+        updatePreview();
+        setStatus("表の列を削除しました。", "ok");
+      };
+
+      editor.addEventListener("pointermove", updateTableResize);
+      editor.addEventListener("pointerdown", (event) => beginTableResize(getResizeHit(event), event));
+      editor.addEventListener("pointerleave", () => {
+        if (!resizeState) clearResizeHints();
+      });
+      window.addEventListener("pointermove", (event) => {
+        if (resizeState) updateTableResize(event);
+      });
+      window.addEventListener("pointerup", finishTableResize);
+      window.addEventListener("pointercancel", finishTableResize);
+      editor.addEventListener("click", (event) => {
+        const cell = getCell(event.target);
+        if (cell) updateToolbarPosition(cell);
+        else toolbar.classList.remove("is-visible");
+      });
+      editor.addEventListener("keydown", (event) => {
+        if (!getCurrentTableCell(event)) return;
+        if (event.key === "Tab") return;
+        toolbar.classList.remove("is-visible");
+      });
+      editor.addEventListener("beforeinput", (event) => {
+        if (getCurrentTableCell(event)) toolbar.classList.remove("is-visible");
+      });
+      editor.addEventListener("paste", (event) => {
+        if (getCurrentTableCell(event)) toolbar.classList.remove("is-visible");
+      });
+      editor.addEventListener("compositionstart", (event) => {
+        if (getCurrentTableCell(event)) toolbar.classList.remove("is-visible");
+      });
+      editor.addEventListener("keyup", () => {
+        if (!toolbar.classList.contains("is-visible")) return;
+        const cell = getCell(window.getSelection()?.anchorNode);
+        if (cell) updateToolbarPosition(cell);
+      });
+      toolbar.addEventListener("mousedown", (event) => event.preventDefault());
+      toolbar.addEventListener("click", (event) => {
+        const action = event.target.closest("button")?.dataset.tableAction;
+        if (action === "add-row") addRow();
+        if (action === "add-column") addColumn();
+        if (action === "delete-row") deleteRow();
+        if (action === "delete-column") deleteColumn();
+      });
+      document.addEventListener("click", (event) => {
+        if (toolbar.contains(event.target) || getCell(event.target)) return;
+        toolbar.classList.remove("is-visible");
+      });
+      window.addEventListener("scroll", () => {
+        if (toolbar.classList.contains("is-visible")) updateToolbarPosition();
+      }, { passive: true });
+      window.addEventListener("resize", () => {
+        if (toolbar.classList.contains("is-visible")) updateToolbarPosition();
+      }, { passive: true });
+    }
+
+    function insertCodeBlock() {
+      insertHtmlAtCursor("<pre><code>code</code></pre><p><br></p>");
+    }
+
+    function insertBlock(kind) {
+      const editor = qs("editor");
+      if (!editor) return;
+      editor.focus();
+      if (kind === "image") return insertImageByUrl();
+      if (kind === "embed") return insertEmbedCard();
+      if (kind === "h2") return exec("formatBlock", "h2");
+      if (kind === "h3") return exec("formatBlock", "h3");
+      if (kind === "ul") return exec("insertUnorderedList");
+      if (kind === "ol") return exec("insertOrderedList");
+      if (kind === "quote") return exec("formatBlock", "blockquote");
+      if (kind === "code") return insertCodeBlock();
+      if (kind === "hr") return insertHtmlAtCursor("<hr><p><br></p>");
+      if (kind === "table") return insertTableBlock();
+      if (kind === "toc") return insertTocBlock();
+      if (kind === "sleeve") return openSleeveCardPicker();
+    }
+
+    function ensureSleeveCardPicker() {
+      let backdrop = document.getElementById("sleeveCardPickerBackdrop");
+      if (backdrop) return backdrop;
+      backdrop = document.createElement("div");
+      backdrop.id = "sleeveCardPickerBackdrop";
+      backdrop.className = "sleeve-card-picker-backdrop";
+      backdrop.innerHTML = `
+        <section class="sleeve-card-picker" role="dialog" aria-modal="true" aria-labelledby="sleeveCardPickerTitle">
+          <h2 id="sleeveCardPickerTitle">デッキシールドを挿入</h2>
+          <p>名前またはIDで検索し、候補から選択してください。</p>
+          <input id="sleeveCardPickerInput" type="text" list="sleeveOptions" autocomplete="off" placeholder="名前またはIDで検索">
+          <div class="sleeve-card-picker__actions">
+            <button type="button" class="btn-admin secondary" data-sleeve-picker-cancel>キャンセル</button>
+            <button type="button" class="btn-admin primary" data-sleeve-picker-confirm>挿入</button>
+          </div>
+        </section>
+      `;
+      document.body.appendChild(backdrop);
+      backdrop.querySelector("[data-sleeve-picker-cancel]").addEventListener("click", closeSleeveCardPicker);
+      backdrop.addEventListener("click", (event) => {
+        if (event.target === backdrop) closeSleeveCardPicker();
+      });
+      backdrop.querySelector("[data-sleeve-picker-confirm]").addEventListener("click", () => {
+        const input = backdrop.querySelector("#sleeveCardPickerInput");
+        const sleeve = resolveSleeveFromValue(input.value);
+        if (!sleeve) {
+          setStatus("候補からデッキシールドを選択してください。", "ng");
+          input.focus();
+          return;
+        }
+        const target = backdrop._replaceTarget;
+        const html = sanitizeHtml(buildArticleSleeveCardHtml(sleeve));
+        if (target && target.isConnected) {
+          const template = document.createElement("template");
+          template.innerHTML = html;
+          const replacement = template.content.querySelector(".article-sleeve-product-card");
+          if (replacement) target.replaceWith(replacement);
+          setStatus("デッキシールドカードを変更しました。", "ok");
+        } else {
+          insertHtmlAtCursor(html);
+          setStatus("デッキシールドカードを挿入しました。", "ok");
+        }
+        updatePreview();
+        closeSleeveCardPicker();
+      });
+      return backdrop;
+    }
+
+    function openSleeveCardPicker(replaceTarget = null) {
+      saveEditorSelection();
+      const backdrop = ensureSleeveCardPicker();
+      const input = backdrop.querySelector("#sleeveCardPickerInput");
+      backdrop._replaceTarget = replaceTarget;
+      const currentSleeve = replaceTarget
+        ? sleeveData.find((sleeve) => String(sleeve.id || "") === String(replaceTarget.dataset.sleeveId || ""))
+        : null;
+      input.value = currentSleeve ? buildSleeveOptionLabel(currentSleeve) : "";
+      backdrop.classList.add("is-visible");
+      requestAnimationFrame(() => input.focus());
+    }
+
+    function closeSleeveCardPicker() {
+      const backdrop = document.getElementById("sleeveCardPickerBackdrop");
+      if (!backdrop) return;
+      backdrop.classList.remove("is-visible");
+      backdrop._replaceTarget = null;
+    }
+
+    function initSleeveCardEditingTools() {
+      const editor = qs("editor");
+      if (!editor || document.getElementById("sleeveCardEditToolbar")) return;
+      const toolbar = document.createElement("div");
+      toolbar.id = "sleeveCardEditToolbar";
+      toolbar.className = "sleeve-card-edit-toolbar";
+      toolbar.innerHTML = `
+        <button type="button" data-sleeve-card-action="change">別のスリーブに変更</button>
+        <button type="button" data-sleeve-card-action="delete">カードを削除</button>
+      `;
+      document.body.appendChild(toolbar);
+      let activeCard = null;
+
+      const position = () => {
+        if (!activeCard || !activeCard.isConnected) {
+          activeCard = null;
+          toolbar.classList.remove("is-visible");
+          return;
+        }
+        const rect = activeCard.getBoundingClientRect();
+        toolbar.style.left = `${Math.max(12, Math.min(window.innerWidth - toolbar.offsetWidth - 12, rect.left))}px`;
+        toolbar.style.top = `${Math.max(12, rect.top - 48)}px`;
+        toolbar.classList.add("is-visible");
+      };
+
+      editor.addEventListener("click", (event) => {
+        const card = event.target.closest(".article-sleeve-product-card");
+        if (!card) {
+          toolbar.classList.remove("is-visible");
+          activeCard = null;
+          return;
+        }
+        event.preventDefault();
+        activeCard = card;
+        position();
+      });
+      toolbar.addEventListener("mousedown", (event) => event.preventDefault());
+      toolbar.addEventListener("click", (event) => {
+        const action = event.target.closest("button")?.dataset.sleeveCardAction;
+        if (!activeCard || !action) return;
+        if (action === "change") {
+          openSleeveCardPicker(activeCard);
+          toolbar.classList.remove("is-visible");
+        }
+        if (action === "delete") {
+          activeCard.remove();
+          activeCard = null;
+          toolbar.classList.remove("is-visible");
+          updatePreview();
+          setStatus("デッキシールドカードを削除しました。", "ok");
+        }
+      });
+      window.addEventListener("scroll", position, { passive: true });
+      window.addEventListener("resize", position, { passive: true });
+    }
+
+    function applyMarkdownShortcut(event) {
+      if (event.key !== " ") return;
+      const block = getCurrentTextBlock();
+      if (!block) return;
+      const text = block.textContent || "";
+      const rules = [
+        { pattern: /^###$/, run: () => exec("formatBlock", "h3") },
+        { pattern: /^##$/, run: () => exec("formatBlock", "h2") },
+        { pattern: /^>$/, run: () => exec("formatBlock", "blockquote") },
+        { pattern: /^-$/, run: () => exec("insertUnorderedList") },
+        { pattern: /^1\.$/, run: () => exec("insertOrderedList") },
+        { pattern: /^```$/, run: () => insertCodeBlock() }
+      ];
+      const matched = rules.find((rule) => rule.pattern.test(text.trim()));
+      if (!matched) return;
+      event.preventDefault();
+      block.textContent = "";
+      matched.run();
+      updatePreview();
+    }
+
+    function initSelectionToolbar() {
+      const toolbar = document.createElement("div");
+      toolbar.className = "selection-toolbar";
+      toolbar.setAttribute("role", "toolbar");
+      toolbar.setAttribute("aria-label", "選択テキストの装飾");
+      toolbar.innerHTML = `
+        <button type="button" data-format="h2" title="大見出し">大</button>
+        <button type="button" data-format="h3" title="小見出し">小</button>
+        <button type="button" data-command="bold" title="太字">B</button>
+        <button type="button" data-size="3" title="標準の文字サイズに戻す">標準</button>
+        <button type="button" data-size="5" title="文字を大きくする">大字</button>
+        <button type="button" data-action="clear-format" title="選択範囲の書式をクリア">クリア</button>
+        <button type="button" data-command="strikeThrough" title="取り消し線">S</button>
+        <button type="button" data-command="insertUnorderedList" title="箇条書き">・</button>
+        <button type="button" data-command="insertOrderedList" title="番号付きリスト">1.</button>
+        <button type="button" data-command="justifyCenter" title="中央寄せ">中</button>
+        <button type="button" data-command="justifyRight" title="右寄せ">右</button>
+        <button type="button" data-action="link" title="リンク">リンク</button>
+        <button type="button" data-format="blockquote" title="引用">引用</button>
+        <button type="button" data-action="delete" title="削除">削除</button>
+      `;
+      document.body.appendChild(toolbar);
+
+      const updateToolbar = () => {
+        const selection = getEditorSelection();
+        if (!selection || selection.isCollapsed) {
+          toolbar.classList.remove("is-visible");
+          return;
+        }
+        const rect = getSelectionRect(selection);
+        if (!rect) return;
+        toolbar.style.left = `${Math.max(12, rect.left + rect.width / 2 - toolbar.offsetWidth / 2)}px`;
+        toolbar.style.top = `${Math.max(12, rect.top - 52)}px`;
+        toolbar.classList.add("is-visible");
+      };
+
+      toolbar.addEventListener("mousedown", (event) => {
+        saveEditorSelection();
+        event.preventDefault();
+      });
+      toolbar.addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (!button) return;
+        const command = button.dataset.command;
+        const format = button.dataset.format;
+        const size = button.dataset.size;
+        const action = button.dataset.action;
+        if (command) exec(command);
+        if (format) exec("formatBlock", format);
+        if (size) exec("fontSize", size);
+        if (action === "link") {
+          const url = prompt("リンクURLを入力してください");
+          if (url) exec("createLink", url);
+        }
+        if (action === "clear-format") exec("removeFormat");
+        if (action === "delete") exec("delete");
+        setTimeout(updateToolbar, 0);
+      });
+
+      document.addEventListener("selectionchange", updateToolbar);
+      qs("editor").addEventListener("keyup", updateToolbar);
+      qs("editor").addEventListener("mouseup", updateToolbar);
+      window.addEventListener("scroll", () => toolbar.classList.remove("is-visible"), { passive: true });
+    }
+
+    function initBlockInserter() {
+      const editor = qs("editor");
+      const button = document.createElement("button");
+      const menu = document.createElement("div");
+      button.type = "button";
+      button.id = "blockInsertButton";
+      button.className = "block-insert-button";
+      button.textContent = "+";
+      button.setAttribute("aria-label", "ブロックを追加");
+      menu.className = "block-insert-menu";
+      menu.setAttribute("role", "menu");
+      menu.innerHTML = `
+        <button type="button" data-block-kind="image">画像</button>
+        <button type="button" data-block-kind="embed">埋め込み</button>
+        <button type="button" data-block-kind="h2">大見出し</button>
+        <button type="button" data-block-kind="h3">小見出し</button>
+        <button type="button" data-block-kind="ul">箇条書きリスト</button>
+        <button type="button" data-block-kind="ol">番号付きリスト</button>
+        <button type="button" data-block-kind="quote">引用</button>
+        <button type="button" data-block-kind="table">表</button>
+        <button type="button" data-block-kind="toc">目次</button>
+        <button type="button" data-block-kind="code">コード</button>
+        <button type="button" data-block-kind="hr">区切り線</button>
+        <button type="button" data-block-kind="sleeve">デッキシールドを挿入</button>
+      `;
+      document.body.appendChild(button);
+      document.body.appendChild(menu);
+
+      const positionButton = () => {
+        const selection = getEditorSelection();
+        if (!selection || !selection.isCollapsed || document.activeElement !== editor) {
+          button.classList.remove("is-visible");
+          menu.classList.remove("is-visible");
+          return;
+        }
+        const rect = getSelectionRect(selection) || editor.getBoundingClientRect();
+        const editorRect = editor.getBoundingClientRect();
+        button.style.left = `${window.scrollX + Math.max(8, editorRect.left - 48)}px`;
+        button.style.top = `${window.scrollY + rect.top - 7}px`;
+        button.classList.add("is-visible");
+        if (menu.classList.contains("is-visible")) positionMenu();
+      };
+
+      const positionMenu = () => {
+        const rect = button.getBoundingClientRect();
+        menu.style.left = `${window.scrollX + rect.right + 8}px`;
+        menu.style.top = `${window.scrollY + rect.top}px`;
+      };
+
+      button.addEventListener("mousedown", (event) => event.preventDefault());
+      button.addEventListener("click", () => {
+        positionMenu();
+        menu.classList.toggle("is-visible");
+      });
+      menu.addEventListener("mousedown", (event) => event.preventDefault());
+      menu.addEventListener("click", (event) => {
+        const menuButton = event.target.closest("[data-block-kind]");
+        if (!menuButton) return;
+        menu.classList.remove("is-visible");
+        insertBlock(menuButton.dataset.blockKind);
+      });
+      document.addEventListener("click", (event) => {
+        if (event.target === button || menu.contains(event.target)) return;
+        menu.classList.remove("is-visible");
+      });
+      editor.addEventListener("focus", positionButton);
+      editor.addEventListener("click", positionButton);
+      editor.addEventListener("keyup", positionButton);
+      document.addEventListener("selectionchange", positionButton);
+      window.addEventListener("scroll", positionButton, { passive: true, capture: true });
+      window.addEventListener("resize", positionButton, { passive: true });
+    }
+
+    function initNoteLikeWritingSurface() {
+      const editorPanel = qs("editor")?.closest(".admin-panel");
+      const toolbar = editorPanel?.querySelector(".toolbar");
+      if (!editorPanel || !toolbar || document.getElementById("writingTitleInput")) return;
+
+      ["titleInput", "excerptInput", "coverInput"].forEach((id) => {
+        qs(id)?.closest(".field")?.classList.add("is-mirrored-hidden");
+      });
+
+      const head = document.createElement("div");
+      head.className = "note-writing-head";
+      head.innerHTML = `
+        <button id="noteCoverDrop" class="note-cover-drop" type="button">カバー画像を追加（クリック・ドロップ・貼り付け）</button>
+        <textarea id="writingTitleInput" class="note-title-input" rows="1" placeholder="タイトル"></textarea>
+        <textarea id="writingExcerptInput" class="note-excerpt-input" rows="1" placeholder="リード文を書く（任意）"></textarea>
+      `;
+      editorPanel.insertBefore(head, toolbar);
+
+      const writingTitle = document.getElementById("writingTitleInput");
+      const writingExcerpt = document.getElementById("writingExcerptInput");
+      const coverDrop = document.getElementById("noteCoverDrop");
+
+      writingTitle.addEventListener("input", () => {
+        qs("titleInput").value = writingTitle.value;
+        autoGrowTextarea(writingTitle);
+        updatePreview();
+      });
+      writingExcerpt.addEventListener("input", () => {
+        qs("excerptInput").value = writingExcerpt.value;
+        autoGrowTextarea(writingExcerpt);
+        updatePreview();
+      });
+      coverDrop.addEventListener("click", openCoverImagePicker);
+      coverDrop.addEventListener("paste", handleCoverPaste);
+      coverDrop.addEventListener("dragenter", (event) => {
+        event.preventDefault();
+        coverDrop.classList.add("is-dragover");
+      });
+      coverDrop.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        coverDrop.classList.add("is-dragover");
+      });
+      coverDrop.addEventListener("dragleave", () => coverDrop.classList.remove("is-dragover"));
+      coverDrop.addEventListener("drop", handleCoverDrop);
+      document.addEventListener("paste", (event) => {
+        const pickerOpen = document.getElementById("coverPickerBackdrop")?.classList.contains("is-visible");
+        if (document.activeElement === coverDrop || pickerOpen) handleCoverPaste(event);
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeCoverImagePicker();
+          closeSleeveCardPicker();
+        }
+      });
+      qs("coverInput").addEventListener("input", updateCoverDropPreview);
+      qs("editor").addEventListener("keydown", applyMarkdownShortcut);
+      qs("editor").addEventListener("paste", handleEditorPaste);
+      qs("editor").addEventListener("input", () => ensureEditableImageCaptions(qs("editor")));
+      refreshWritingSurfaceFromForm();
+      ensureEditableImageCaptions(qs("editor"));
+      initSelectionToolbar();
+      initBlockInserter();
+      initTableEditingTools();
+      initSleeveCardEditingTools();
+    }
+
+    function downloadJson() {
+      const articles = readStoredArticles().filter((article) => article.status === "published");
+      const payload = JSON.stringify({ articles }, null, 2);
+      const blob = new Blob([payload], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "articles.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setStatus("articles.jsonを書き出しました。", "ok");
+    }
+
+    async function copyJson() {
+      const articles = readStoredArticles().filter((article) => article.status === "published");
+      const payload = JSON.stringify({ articles }, null, 2);
+      await navigator.clipboard.writeText(payload);
+      setStatus("JSONをコピーしました。", "ok");
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      qs("dateInput").value = todayISO();
+      fillForm(null);
+      initNoteLikeWritingSurface();
+      const loadedArticles = await loadStoredArticles();
+      renderArticleList();
+      if (loadedArticles.publishedCount) {
+        setStatus(`公開中の記事${loadedArticles.publishedCount}件を読み込みました。`, "ok");
+      }
+      loadSleevesForTool();
+
+      const editor = qs("editor");
+      const mainToolbar = editor.closest(".admin-panel")?.querySelector(".toolbar");
+      document.addEventListener("selectionchange", saveEditorSelection);
+      editor.addEventListener("compositionstart", () => {
+        editorIsComposing = true;
+      });
+      editor.addEventListener("compositionend", () => {
+        editorIsComposing = false;
+        saveEditorSelection();
+        updatePreview();
+      });
+      mainToolbar?.addEventListener("mousedown", (event) => {
+        saveEditorSelection();
+        if (event.target.closest("button")) event.preventDefault();
+      });
+      mainToolbar?.addEventListener("focusin", saveEditorSelection);
+
+      mainToolbar?.querySelectorAll("[data-command]").forEach((button) => {
+        button.addEventListener("click", () => exec(button.dataset.command));
+      });
+      mainToolbar?.querySelectorAll("[data-block]").forEach((button) => {
+        button.addEventListener("click", () => exec("formatBlock", button.dataset.block));
+      });
+      qs("fontSelect").addEventListener("change", (event) => {
+        if (!event.target.value) return;
+        exec("fontName", event.target.value);
+        event.target.value = "";
+      });
+      qs("fontSizeSelect").addEventListener("change", (event) => {
+        if (!event.target.value) return;
+        exec("fontSize", event.target.value);
+        event.target.value = "";
+      });
+      qs("colorInput").addEventListener("input", (event) => exec("foreColor", event.target.value));
+      qs("clearFormatBtn").addEventListener("click", () => exec("removeFormat"));
+      qs("linkBtn").addEventListener("click", () => {
+        const url = prompt("リンクURLを入力してください");
+        if (url) exec("createLink", url);
+      });
+      qs("imageBtn").addEventListener("click", () => {
+        insertImageByUrl();
+      });
+      qs("quoteBtn").addEventListener("click", () => exec("formatBlock", "blockquote"));
+      qs("sleeveInput").addEventListener("change", () => {
+        selectedSleeve = resolveSleeveFromInput();
+        updateSleevePreview(selectedSleeve);
+      });
+      qs("insertSleeveImageBtn").addEventListener("click", () => insertSleeveMaterial("image"));
+      qs("insertSleeveCardBtn").addEventListener("click", () => insertSleeveMaterial("card"));
+      qs("insertSleeveGraphBtn").addEventListener("click", () => insertSleeveMaterial("graph"));
+      qs("insertSleeveBundleBtn").addEventListener("click", () => insertSleeveMaterial("bundle"));
+      qs("editor").addEventListener("input", updatePreview);
+      ["titleInput", "excerptInput", "categoryInput", "coverInput", "dateInput"].forEach((id) => {
+        qs(id).addEventListener("input", updatePreview);
+      });
+      qs("newBtn").addEventListener("click", () => {
+        currentId = "";
+        fillForm(null);
+        setStatus("新規記事を作成します。");
+      });
+      qs("draftBtn").addEventListener("click", async () => {
+        try { await saveArticle("draft"); } catch (error) { setStatus(error.message || "保存に失敗しました。", "ng"); }
+      });
+      qs("publishBtn").addEventListener("click", async () => {
+        try { await saveArticle("published"); } catch (error) { setStatus(error.message || "投稿に失敗しました。", "ng"); }
+      });
+      qs("exportBtn").addEventListener("click", downloadJson);
+      qs("copyJsonBtn").addEventListener("click", () => copyJson().catch(() => setStatus("コピーに失敗しました。", "ng")));
+      qs("articleList").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-load]");
+        if (!button) return;
+        const id = button.dataset.load;
+        const article = readStoredArticles().find((item) => String(item.id || item.slug) === id);
+        if (article) {
+          fillForm(article);
+          setStatus("記事を読み込みました。", "ok");
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
+
+
+
