@@ -94,7 +94,8 @@ function buildDiagnosisHtml(functions, sleeve) {
   const diagnosis = functions.buildAiMarketDiagnosis(sleeve);
   if (!diagnosis) return "";
   return `
-        <h3 class="ai-diagnosis-title">AI相場診断：${functions.escapeHtml(diagnosis.label)}</h3>
+        <h3 class="ai-diagnosis-title">AI相場診断</h3>
+        <p class="ai-diagnosis-level">現在の相場水準：${functions.escapeHtml(diagnosis.label)}</p>
         <p class="ai-diagnosis-reason">理由：${functions.escapeHtml(diagnosis.reason)}</p>
       `;
 }

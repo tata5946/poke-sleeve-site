@@ -124,6 +124,14 @@
       line-height: 1.35;
     }
 
+    .ai-diagnosis-level {
+      margin: 0 0 8px;
+      color: #0f172a;
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
     .ai-diagnosis-reason {
       margin: 0;
       color: #344054;
@@ -1815,8 +1823,11 @@
       }
     }
 
+    #weeklyTable {
+      display: none;
+    }
+
     @media (max-width: 700px) {
-      #weeklyTable,
       #chartLegend,
       #chartFootnotes {
         display: none;
@@ -2513,8 +2524,9 @@
         </div>
 
         <section class="panel ai-diagnosis-panel page-focus-panel" id="aiMarketDiagnosis">
-        <h3 class="ai-diagnosis-title">AI相場診断：相場どおり</h3>
-        <p class="ai-diagnosis-reason">理由：今回の目安は800円で、直近3か月の中央値800円よりほぼ同じ水準です。同じ価格帯での観測が中心です。観測が少ないため、出品状態や送料込み価格もあわせて見てください。急がず、状態や送料込み価格を見て選ぶのがおすすめです。</p>
+        <h3 class="ai-diagnosis-title">AI相場診断</h3>
+        <p class="ai-diagnosis-level">現在の相場水準：直近相場と同水準</p>
+        <p class="ai-diagnosis-reason">理由：今回の目安は800円で、直近3か月の中央値800円よりほぼ同じ水準です。同じ価格帯での観測が中心です。観測が少ないため、出品状態や送料込み価格もあわせて見てください。直近相場と大きな差はありません。状態や送料込み価格もあわせて確認してください。</p>
       </section>
 
         <section class="panel market-position-panel page-focus-panel" id="marketPositionPanel">
@@ -2706,6 +2718,9 @@
     }
 
     function isSafeRakutenAffiliateUrl(url) {
+      if (window.common && typeof window.common.isSafeRakutenAffiliateUrl === "function") {
+        return window.common.isSafeRakutenAffiliateUrl(url);
+      }
       try {
         const parsed = new URL(String(url || ""));
         return parsed.protocol === "https:" && parsed.hostname === "hb.afl.rakuten.co.jp";
@@ -3338,9 +3353,9 @@
     }
 
     function getNextCautiousDiagnosisLabel(label) {
-      if (label === "買いどきかも") return "相場どおり";
-      if (label === "相場どおり") return "ちょっと高め";
-      if (label === "ちょっと高め") return "今は待ちたい";
+      if (label === "直近相場より低め") return "直近相場と同水準";
+      if (label === "直近相場と同水準") return "直近相場よりやや高め";
+      if (label === "直近相場よりやや高め") return "直近相場より高め";
       return label;
     }
 
@@ -3379,35 +3394,35 @@
       const aroundMedian = Math.abs(diffRate) <= 0.1;
       const nearPeriodTop = rangePosition >= 0.85;
 
-      let label = "相場どおり";
+      let label = "直近相場と同水準";
       let tone = "neutral";
 
       if (longTermBargain && !recentSpike) {
-        label = "買いどきかも";
+        label = "直近相場より低め";
         tone = "watch";
       } else if (aroundMedian && !recentSpike) {
-        label = "相場どおり";
+        label = "直近相場と同水準";
         tone = "neutral";
       } else if (diffRate <= -0.15 || (rangePosition <= 0.35 && diffRate <= -0.08)) {
-        label = "買いどきかも";
+        label = "直近相場より低め";
         tone = "watch";
       } else if (diffRate >= 0.35 || (diffRate >= 0.25 && (recentSpike || nearPeriodTop || nearAllTimeHigh))) {
-        label = "今は待ちたい";
+        label = "直近相場より高め";
         tone = "wait";
       } else if (diffRate >= 0.15 || (diffRate >= 0.1 && (nearPeriodTop || nearAllTimeHigh)) || (recentSpike && diffRate >= 0.08)) {
-        label = "ちょっと高め";
+        label = "直近相場よりやや高め";
         tone = "caution";
       }
 
-      if (recentSpike && diffRate >= 0.2 && label !== "今は待ちたい") {
+      if (recentSpike && diffRate >= 0.2 && label !== "直近相場より高め") {
         label = getNextCautiousDiagnosisLabel(label);
       }
 
-      if (label === "買いどきかも") {
+      if (label === "直近相場より低め") {
         tone = "watch";
-      } else if (label === "ちょっと高め") {
+      } else if (label === "直近相場よりやや高め") {
         tone = "caution";
-      } else if (label === "今は待ちたい") {
+      } else if (label === "直近相場より高め") {
         tone = "wait";
       } else {
         tone = "neutral";
@@ -3425,19 +3440,19 @@
         ? `前回からは${changePrev > 0 ? "約" + formatDiagnosisPercent(changePrev) + "上がっています" : "約" + formatDiagnosisPercent(changePrev) + "下がっています"}。`
         : "";
       const longTermText = longTermBargain
-        ? `全期間の高いところ${formatDiagnosisYen(highPrice)}から約${formatDiagnosisPercent(-dropFromHigh)}下がっていて、今は安い側にいます。`
+        ? `全期間の高いところ${formatDiagnosisYen(highPrice)}から約${formatDiagnosisPercent(-dropFromHigh)}下がっていて、長期レンジでも低めの水準です。`
         : "";
       const dataNote = veryThinData
         ? "観測が少ないため、出品状態や送料込み価格もあわせて見てください。"
         : "";
       const periodNote = diagnosisPeriod.note ? `${diagnosisPeriod.note}` : "";
-      const advice = label === "買いどきかも"
-        ? "欲しいデザインなら候補に入れてよさそうです。"
-        : label === "ちょっと高め"
+      const advice = label === "直近相場より低め"
+        ? "直近の取引レンジでは低めの水準です。状態や送料込み価格もあわせて確認してください。"
+        : label === "直近相場よりやや高め"
           ? "急ぎでなければ、ほかの出品も見てからでよさそうです。"
-          : label === "今は待ちたい"
-            ? "急ぎでなければ、次の出品や価格の落ち着きを待つのがおすすめです。"
-            : "急がず、状態や送料込み価格を見て選ぶのがおすすめです。";
+          : label === "直近相場より高め"
+            ? "直近の取引レンジでは高めの水準です。次の出品や価格の落ち着きも参考になります。"
+            : "直近相場と大きな差はありません。状態や送料込み価格もあわせて確認してください。";
 
       return {
         label,
@@ -3591,7 +3606,8 @@
       }
 
       root.innerHTML = `
-        <h3 class="ai-diagnosis-title">AI相場診断：${escapeHtml(diagnosis.label)}</h3>
+        <h3 class="ai-diagnosis-title">AI相場診断</h3>
+        <p class="ai-diagnosis-level">現在の相場水準：${escapeHtml(diagnosis.label)}</p>
         <p class="ai-diagnosis-reason">理由：${escapeHtml(diagnosis.reason)}</p>
       `;
       root.hidden = false;
@@ -3831,6 +3847,9 @@
     }
 
     function buildMercariSearchUrl(name) {
+      if (window.common && typeof window.common.buildMercariSearchUrl === "function") {
+        return window.common.buildMercariSearchUrl(name);
+      }
       const baseName = String(name || "").trim();
       const keyword = baseName ? `${baseName} デッキシールド` : "";
       if (!keyword) return "https://jp.mercari.com/search";
@@ -3845,6 +3864,9 @@
     }
 
     function buildSurugayaAffiliateUrl(name) {
+      if (window.common && typeof window.common.buildSurugayaAffiliateUrl === "function") {
+        return window.common.buildSurugayaAffiliateUrl(name);
+      }
       const baseName = String(name || "").trim();
       const surugayaUrl = baseName
         ? `https://www.suruga-ya.jp/search?search_word=${encodeURIComponent(`${baseName} デッキシールド`)}`
