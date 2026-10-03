@@ -14,6 +14,15 @@ const common = await read('assets/common.js');
 const directory = await read('sleeves/index.html');
 assert.match(directory, /id="categoryMarketSummary"[^>]*data-static-market-summary="1"/);
 assert.match(directory, /category-market-summary-grid/);
+const latestWeek = data.sleeves
+  .flatMap(sleeve => Array.isArray(sleeve.weeklyPrices) ? sleeve.weeklyPrices : [])
+  .map(row => ({ week: String(row?.week || '').trim(), price: Number(row?.price) }))
+  .filter(row => /^\d{4}-\d{2}-\d{2}$/.test(row.week) && row.price > 0)
+  .sort((a, b) => a.week.localeCompare(b.week))
+  .at(-1)?.week;
+assert.ok(latestWeek, 'Latest weekly price date is required for static zukan metadata');
+assert.match(directory, new RegExp(`<strong id="updatedAt">${latestWeek}</strong>`));
+assert.doesNotMatch(directory, /id="updatedChip" class="zukan-meta-chip is-loading skeleton-shimmer"/);
 const snapshot = JSON.parse(html.match(/<script id="homeStaticArticles"[^>]*>([\s\S]*?)<\/script>/)[1]);
 const initialBody = html.slice(html.indexOf('<body')).replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
 for (const id of ['homeSiteIntroSleeveCount', 'homeSleeveSearchLeadCount', 'homeSleeveSearchCount']) {

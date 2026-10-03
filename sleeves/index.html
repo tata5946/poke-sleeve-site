@@ -1701,7 +1701,7 @@
             <p class="zukan-lead">日本で発売されたポケモンカード（ポケカ）のスリーブ・デッキシールドを掲載した図鑑です。発売年・シリーズ・ポケモン・トレーナー・イラストレーターで検索でき、各商品の現在相場や価格推移も確認できます。</p>
           </div>
           <div class="zukan-hero-meta" aria-label="集計状況">
-            <div id="updatedChip" class="zukan-meta-chip is-loading skeleton-shimmer">最終更新 <strong id="updatedAt">読み込み中</strong></div>
+            <div id="updatedChip" class="zukan-meta-chip" data-static-updated="1">最終更新 <strong id="updatedAt">2026-09-21</strong></div>
             <div id="countChip" class="zukan-meta-chip">表示 <strong id="countInfo">849件</strong></div>
             <a class="zukan-meta-chip" href="./sleeves/all.html">全デッキシールド一覧</a>
             <a class="zukan-meta-chip" href="./sleeves/page/1/">ページ分割一覧</a>
@@ -3132,6 +3132,7 @@
       function setLoadingState() {
         [updatedChip, countChip].forEach(el => {
           if (!el) return;
+          if (el.dataset.staticUpdated === "1") return;
           el.classList.add("is-loading", "skeleton-shimmer");
         });
         if (pagination) pagination.hidden = true;
@@ -3258,7 +3259,7 @@
       }
       if (maxWeek) {
         const u = document.getElementById("updatedAt");
-        if (u) {
+        if (u && u.closest("#updatedChip")?.dataset.staticUpdated !== "1") {
           u.textContent = `${maxWeek}`;
         }
       }

@@ -50,6 +50,18 @@ function latestWeeklyPrice(sleeve) {
   return latest?.price ?? null;
 }
 
+function latestWeeklyDate(sleeves) {
+  let latest = '';
+  for (const sleeve of Array.isArray(sleeves) ? sleeves : []) {
+    for (const row of Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : []) {
+      const week = String(row?.week || '').trim();
+      const price = numberOrNull(row?.price);
+      if (/^\d{4}-\d{2}-\d{2}$/.test(week) && price > 0 && week > latest) latest = week;
+    }
+  }
+  return latest;
+}
+
 function yen(value) {
   return Number.isFinite(value) ? `${Math.round(value).toLocaleString('ja-JP')}円` : '—';
 }
@@ -191,6 +203,11 @@ export async function generateHomeStatic({ root = path.resolve(path.dirname(file
   let directory = await readFile(path.join(root, 'sleeves/index.html'), 'utf8');
   directory = directory.replace(/【\d+種】/g, `【${ids.length}種】`);
   directory = replaceContents(directory, 'countInfo', ids.length + '件');
+  const latestWeek = latestWeeklyDate(sleeves);
+  if (latestWeek) {
+    directory = replaceContents(directory, 'updatedAt', latestWeek);
+    directory = directory.replace(/id="updatedChip" class="zukan-meta-chip(?: is-loading skeleton-shimmer)?"(?: data-static-updated="1")?/, 'id="updatedChip" class="zukan-meta-chip" data-static-updated="1"');
+  }
   directory = directory.replace('id="countChip" class="zukan-meta-chip is-loading skeleton-shimmer"', 'id="countChip" class="zukan-meta-chip"');
   directory = directory.replace(
     /<section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle"[\s\S]*?<\/section>/,

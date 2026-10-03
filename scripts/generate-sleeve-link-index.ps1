@@ -222,7 +222,7 @@ function Get-ZukanCardHtml([object]$Sleeve) {
 "@
 }
 
-function Update-ZukanStaticCards([string]$Path, [array]$Items) {
+function Update-ZukanStaticCards([string]$Path, [array]$Items, [string]$LastUpdated) {
   Assert-Exists -Path $Path -Label "Zukan page"
   $content = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
   $cards = New-Object System.Text.StringBuilder
@@ -238,6 +238,10 @@ function Update-ZukanStaticCards([string]$Path, [array]$Items) {
   $replacement = $startMarker + "`r`n" + $cards.ToString().TrimEnd("`r", "`n") + "`r`n            " + $endMarker
   $updated = [regex]::Replace($content, $pattern, { param($match) $replacement }, [Text.RegularExpressions.RegexOptions]::Singleline)
   $updated = [regex]::Replace($updated, '\u3010\d+\u7a2e\u3011', { param($match) ([char]0x3010) + [string]$Items.Count + ([char]0x7a2e) + ([char]0x3011) })
+  if (-not [string]::IsNullOrWhiteSpace($LastUpdated)) {
+    $updated = [regex]::Replace($updated, '<strong id="updatedAt">.*?</strong>', '<strong id="updatedAt">' + (ConvertTo-HtmlText $LastUpdated) + '</strong>')
+    $updated = [regex]::Replace($updated, 'id="updatedChip" class="zukan-meta-chip(?: is-loading skeleton-shimmer)?"(?: data-static-updated="1")?', 'id="updatedChip" class="zukan-meta-chip" data-static-updated="1"')
+  }
   $updated = [regex]::Replace($updated, '<strong id="countInfo">.*?</strong>', '<strong id="countInfo">' + $Items.Count + '&#20214;</strong>')
   $updated = [regex]::Replace($updated, '<strong id="resultCountBadge">.*?</strong>', '<strong id="resultCountBadge">' + $Items.Count + '</strong>')
   $updated = [regex]::Replace($updated, '<span id="resultRangeText">.*?</span>', '<span id="resultRangeText">&#20214;&#34920;&#31034;</span>')
@@ -489,7 +493,7 @@ $totalPages = [int][math]::Ceiling($items.Count / $PageSize)
 if ($totalPages -lt 1) { $totalPages = 1 }
 
 $changed = @()
-if (Update-ZukanStaticCards $ZukanPath $items) {
+if (Update-ZukanStaticCards $ZukanPath $items $lastUpdated) {
   $changed += $ZukanPath
 }
 $allIndexHtml = Build-AllIndexHtml $items $totalPages $lastUpdated
