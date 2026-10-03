@@ -12,6 +12,8 @@ assert.equal(new Set(data.sleeves.map(sleeve => String(sleeve.id))).size, count)
 const html = await read('index.html');
 const common = await read('assets/common.js');
 const directory = await read('sleeves/index.html');
+assert.match(directory, /id="categoryMarketSummary"[^>]*data-static-market-summary="1"/);
+assert.match(directory, /category-market-summary-grid/);
 const snapshot = JSON.parse(html.match(/<script id="homeStaticArticles"[^>]*>([\s\S]*?)<\/script>/)[1]);
 const initialBody = html.slice(html.indexOf('<body')).replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
 for (const id of ['homeSiteIntroSleeveCount', 'homeSleeveSearchLeadCount', 'homeSleeveSearchCount']) {

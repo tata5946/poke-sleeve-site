@@ -19,6 +19,83 @@ export function replaceContents(html, id, contents) {
   throw new Error(`Unclosed static target: ${id}`);
 }
 
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char]));
+}
+
+function routeId(id) {
+  const value = String(id ?? '').trim();
+  return /^\d{6,7}$/.test(value) ? `4521329${value}` : value;
+}
+
+function numberOrNull(value) {
+  if (value == null || String(value).trim() === '') return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function latestWeeklyPrice(sleeve) {
+  const rows = Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [];
+  const latest = rows
+    .map(row => ({ week: String(row?.week || '').trim(), price: numberOrNull(row?.price) }))
+    .filter(row => /^\d{4}-\d{2}-\d{2}$/.test(row.week) && row.price > 0)
+    .sort((a, b) => a.week.localeCompare(b.week))
+    .at(-1);
+  return latest?.price ?? null;
+}
+
+function yen(value) {
+  return Number.isFinite(value) ? `${Math.round(value).toLocaleString('ja-JP')}円` : '—';
+}
+
+function buildAllMarketSummaryHtml(sleeves) {
+  const items = Array.isArray(sleeves) ? sleeves : [];
+  const priced = items
+    .map(sleeve => ({ sleeve, price: latestWeeklyPrice(sleeve) }))
+    .filter(item => item.price > 0)
+    .sort((a, b) => a.price - b.price);
+  const prices = priced.map(item => item.price);
+  const average = prices.length ? Math.round(prices.reduce((sum, price) => sum + price, 0) / prices.length) : null;
+  const middle = Math.floor(prices.length / 2);
+  const median = !prices.length ? null : Math.round(prices.length % 2 ? prices[middle] : (prices[middle - 1] + prices[middle]) / 2);
+  const highest = priced.at(-1) || null;
+  const aboveRetail = priced.filter(({ sleeve, price }) => {
+    const retail = numberOrNull(sleeve?.firstPrice);
+    return retail > 0 && price >= retail;
+  }).length;
+  const rate = items.length ? Math.round((aboveRetail / items.length) * 100) : 0;
+  const stat = (label, value, unit, icon, tone) => `
+            <div class="category-market-stat">
+              <span class="category-market-stat-icon category-market-stat-icon--${escapeHtml(tone)}" aria-hidden="true">${escapeHtml(icon)}</span>
+              <span class="category-market-stat-copy">
+                <span class="category-market-stat-label">${escapeHtml(label)}</span>
+                <strong class="category-market-stat-value">${escapeHtml(value)}${unit ? `<span class="category-market-stat-unit">${escapeHtml(unit)}</span>` : ''}</strong>
+              </span>
+            </div>`;
+  const highestMarkup = highest ? `
+          <a class="category-market-highest" href="/sleeve/${escapeHtml(routeId(highest.sleeve.id))}/">
+            <span class="category-market-highest-label">♛ 最も高いデッキシールド</span>
+            <span class="category-market-highest-divider" aria-hidden="true"></span>
+            <span class="category-market-highest-copy"><span class="category-market-highest-kicker">スリーブ名</span><span class="category-market-highest-name">${escapeHtml(highest.sleeve.name || '名称未設定')}</span></span>
+            <span class="category-market-highest-price-wrap"><span class="category-market-highest-kicker">現在相場</span><strong class="category-market-highest-price">${escapeHtml(yen(highest.price))}</strong></span>
+          </a>` : '';
+
+  return `<section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle" data-static-market-summary="1">
+          <div class="category-market-summary-head">
+            <h2 id="categoryMarketSummaryTitle" class="category-market-summary-title"><span class="category-market-title-icon" aria-hidden="true"><i></i><i></i><i></i></span>全デッキシールドのデッキシールド相場</h2>
+            <p class="category-market-summary-note">※最新週の取引データをもとに集計<span class="category-market-help" role="img" aria-label="集計方法" title="最新週の取引データをもとに集計しています"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3.5 3.3a2.5 2.5 0 0 1 5 .2c0 1.5-2.5 1.6-2.5 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="6" cy="9.4" r=".8" fill="currentColor"/></svg></span></p>
+          </div>
+          <div class="category-market-summary-grid">${stat('掲載数', items.length.toLocaleString('ja-JP'), '種類', '▱', 'count')}${stat('平均相場', yen(average), '', '¥', 'average')}${stat('中央値', yen(median), '', '▥', 'median')}${stat('最高相場', yen(highest?.price), '', '♛', 'highest')}${stat('定価以上', aboveRetail.toLocaleString('ja-JP'), `種類（約${rate}%）`, '↗', 'retail')}
+          </div>${highestMarkup}
+        </section>`;
+}
+
 function jsonScript(html, id, value) {
   const markup = `<script id="${id}" type="application/json">${JSON.stringify(value).replaceAll('<', '\\u003c')}</script>`;
   const existing = new RegExp(`<script id="${id}"[^>]*>[\\s\\S]*?</script>`);
@@ -115,6 +192,10 @@ export async function generateHomeStatic({ root = path.resolve(path.dirname(file
   directory = directory.replace(/【\d+種】/g, `【${ids.length}種】`);
   directory = replaceContents(directory, 'countInfo', ids.length + '件');
   directory = directory.replace('id="countChip" class="zukan-meta-chip is-loading skeleton-shimmer"', 'id="countChip" class="zukan-meta-chip"');
+  directory = directory.replace(
+    /<section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle"[\s\S]*?<\/section>/,
+    () => buildAllMarketSummaryHtml(sleeves)
+  );
   directory = directory.replace(/assets\/common\.js\?v=[^"\s]+/g, `assets/common.js?v=catalog-${revision}`);
   await writeFile(path.join(root, 'sleeves/index.html'), directory);
   // Generated pages must load this catalog revision instead of an older cached common.js.
