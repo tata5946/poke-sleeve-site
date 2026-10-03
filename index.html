@@ -263,6 +263,61 @@
       word-break: keep-all;
       overflow-wrap: normal;
     }
+    .home-about-card {
+      width: 100%;
+      max-width: var(--home-hero-max);
+      margin: 0 auto;
+      padding: clamp(20px, 3vw, 28px);
+      border: 1px solid #cfe0ff;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at top right, rgba(59, 130, 246, 0.1), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+    }
+    .home-about-card-inner {
+      display: grid;
+      gap: 14px;
+      max-width: 760px;
+    }
+    .home-about-title {
+      margin: 0;
+      color: #1d4ed8;
+      font-family: "Zen Kaku Gothic New", "Noto Sans JP", sans-serif;
+      font-size: clamp(20px, 2.2vw, 28px);
+      line-height: 1.25;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+    .home-about-text {
+      margin: 0;
+      color: #334155;
+      font-size: 15px;
+      line-height: 1.85;
+      font-weight: 800;
+    }
+    .home-about-link {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 0 18px;
+      border: 1px solid #2563eb;
+      border-radius: 999px;
+      color: #1d4ed8;
+      background: #ffffff;
+      font-size: 14px;
+      line-height: 1.2;
+      font-weight: 950;
+      text-decoration: none;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.1);
+    }
+    .home-about-link:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.16);
+    }
     .home-card {
       background: #fff;
       border-radius: 22px;
@@ -4401,6 +4456,23 @@
         font-size: 10px;
         line-height: 1.35;
       }
+      body.home-page .home-about-card {
+        padding: 18px 14px;
+        border-radius: 16px;
+      }
+      body.home-page .home-about-card-inner {
+        gap: 12px;
+      }
+      body.home-page .home-about-text {
+        font-size: 13px;
+        line-height: 1.75;
+      }
+      body.home-page .home-about-link {
+        width: 100%;
+        min-height: 44px;
+        padding: 0 12px;
+        font-size: 13px;
+      }
       body.home-page .home-sleeve-search {
         padding: 18px 14px;
         border-radius: 18px;
@@ -4970,6 +5042,15 @@
       body.home-page .home-site-intro-feature-label {
         font-size: 9px;
       }
+      body.home-page .home-about-card {
+        padding: 16px 12px;
+      }
+      body.home-page .home-about-title {
+        font-size: 19px;
+      }
+      body.home-page .home-about-text {
+        font-size: 12px;
+      }
       body.home-page .dashboard-kpis {
         gap: 6px;
       }
@@ -5379,6 +5460,13 @@
                 <span class="home-site-intro-feature-label">コレクション管理</span>
               </div>
             </div>
+          </div>
+        </section>
+        <section class="home-about-card reveal-on-scroll" style="--reveal-delay: 54ms;" aria-labelledby="homeAboutTitle">
+          <div class="home-about-card-inner">
+            <h2 id="homeAboutTitle" class="home-about-title">ポケスリ相場ナビとは？</h2>
+            <p class="home-about-text">日本で発売されたデッキシールド約850種類の相場・価格推移・商品情報をまとめた、デッキシールド専門の情報サイトです。フリマ市場の取引データをもとに毎週更新し、図鑑・ランキング・市場指数・コレクション管理など、デッキシールドをより楽しむための情報とツールを提供しています。</p>
+            <a class="home-about-link" href="./articles/article-2026-06-09/" aria-label="本サイトについての記事を詳しく見る">詳しく見る（本サイトについて）<span aria-hidden="true">›</span></a>
           </div>
         </section>
         <section class="home-articles reveal-on-scroll" style="--reveal-delay: 56ms;" aria-label="お知らせ">
