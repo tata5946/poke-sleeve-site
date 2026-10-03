@@ -362,7 +362,9 @@ function ZukanCategoryPageHtml([object]$Entry, [string]$Slug, [string]$Template,
   if ($Entry.group -eq 'pokemon' -and $label -eq 'ピカチュウ') {
     $html = [regex]::Replace($html, '<span class="category-market-help"[^>]*>.*?</span>', '', [System.Text.RegularExpressions.RegexOptions]::Singleline)
   }
-  $html = $html.Replace('<section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle" hidden></section>', (CategoryMarketSummaryHtml $Entry))
+  $marketSummaryHtml = CategoryMarketSummaryHtml $Entry
+  $marketSummaryPattern = '<section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle"(?:\s+data-static-market-summary="1")?(?:\s+hidden)?>.*?</section>'
+  $html = [regex]::Replace($html, $marketSummaryPattern, { param($match) $marketSummaryHtml }, [System.Text.RegularExpressions.RegexOptions]::Singleline)
   $staticListPattern = '<div id="list" class="zukan-grid">\s*<!-- STATIC_ZUKAN_CARDS_START -->.*?<!-- STATIC_ZUKAN_CARDS_END -->\s*</div>'
   $staticList = '<div id="list" class="zukan-grid">' + "`r`n" +
     '            <!-- STATIC_ZUKAN_CARDS_START -->' + "`r`n" +
