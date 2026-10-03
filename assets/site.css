@@ -10420,9 +10420,9 @@ html:root body.page-market-list .category-page-wrap > .breadcrumb {
     }
 
     html:root body.page-market-list .category-page-wrap > .breadcrumb {
-        width: 100vw !important;
-        margin: 0 0 0 calc(50% - 50vw) !important;
-        padding: 18px 28px 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 18px 0 0 !important;
         white-space: nowrap !important;
         overflow: hidden !important;
     }

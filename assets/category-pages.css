@@ -28,8 +28,8 @@
 .category-index-count { flex: none; color: #64748b; font-size: 12px; }
 .category-index-empty { margin: 24px 0; color: #64748b; }
 @media (max-width: 700px) {
-  .category-page-wrap { padding: 0 18px 96px; }
-  .category-page-wrap .breadcrumb { width: 100vw; margin-left: calc(50% - 50vw); padding: 18px 28px 0; box-sizing: border-box; white-space: nowrap; overflow: hidden; }
+  .category-page-wrap { padding: 0 0 96px; }
+  .category-page-wrap .breadcrumb { width: 100%; margin-left: 0; padding: 18px 0 0; box-sizing: border-box; white-space: nowrap; overflow: hidden; }
   .category-page-hero { padding: 22px 0 18px; }
   .category-page-hero h1 { font-size: 24px; line-height: 1.35; }
   .category-page-hero p { margin-top: 8px; font-size: 13px; }

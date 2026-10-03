@@ -269,8 +269,8 @@ function PageHtml([object]$Entry, [string]$Slug) {
   <meta property="og:description" content="$(Html $description)" />
   <meta property="og:url" content="$(Html $url)" />
   <link rel="canonical" href="$(Html $url)" />
-  <link rel="stylesheet" href="./assets/site.css?v=20260917m" />
-  <link rel="stylesheet" href="./assets/category-pages.css?v=20260917a" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260917n" />
+  <link rel="stylesheet" href="./assets/category-pages.css?v=20260917c" />
   <script type="application/ld+json">$json</script>
 </head>
 <body class="page-market-list" data-hide-global-header="1">
@@ -455,8 +455,8 @@ function IndexPageHtml([string]$Group, [array]$Items) {
   <title>$(Html $title)</title>
   <meta name="description" content="$(Html $description)" />
   <link rel="canonical" href="$(Html $url)" />
-  <link rel="stylesheet" href="./assets/site.css?v=20260917m" />
-  <link rel="stylesheet" href="./assets/category-pages.css?v=20260917b" />
+  <link rel="stylesheet" href="./assets/site.css?v=20260917n" />
+  <link rel="stylesheet" href="./assets/category-pages.css?v=20260917c" />
   <script type="application/ld+json">$json</script>
 </head>
 <body class="page-market-list" data-hide-global-header="1">
