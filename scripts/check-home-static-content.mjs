@@ -80,5 +80,7 @@ for (const category of manifest) {
   }
   assert.match(page, new RegExp(`<strong id="countInfo">${category.count}(?:件|&#20214;)</strong>`), 'Category result counts remain category-specific');
   assert.match(page, new RegExp(`<strong id="resultCountBadge">${category.count}</strong><span id="resultRangeText">(?:件表示|&#20214;&#34920;&#31034;)</span>`), 'Category list heading count is static');
+  assert.match(page, new RegExp(`<strong id="updatedAt">${latestWeek}</strong>`), 'Category latest update date is static');
+  assert.doesNotMatch(page, /id="updatedChip" class="zukan-meta-chip is-loading skeleton-shimmer"/, 'Category latest update chip must not start in loading state');
 }
 console.log(`PASS: master count ${count}; 8 initial article cards and offline fallback; static market/charts/rankings; category counts, help display, and crawlable tags; ${manifest.length} category result counts.`);

@@ -39,6 +39,19 @@ function LatestWeeklyTradePrice([object]$Sleeve) {
   if (-not $rows.Count) { return $null }
   return NumberOrNull $rows[-1].price
 }
+function LatestWeeklyTradeDate([array]$Sleeves) {
+  $latest = ''
+  foreach ($sleeve in @($Sleeves)) {
+    foreach ($row in @($sleeve.weeklyPrices)) {
+      $week = IsoDate $row.week
+      $price = NumberOrNull $row.price
+      if ($week -and $null -ne $price -and $price -gt 0 -and ($latest -eq '' -or $week -gt $latest)) {
+        $latest = $week
+      }
+    }
+  }
+  return $latest
+}
 function CategoryMarketSummaryHtml([object]$Entry) {
   $items = @($Entry.items)
   $priced = @()
@@ -305,7 +318,7 @@ function PageHtml([object]$Entry, [string]$Slug) {
 "@
 }
 
-function ZukanCategoryPageHtml([object]$Entry, [string]$Slug, [string]$Template) {
+function ZukanCategoryPageHtml([object]$Entry, [string]$Slug, [string]$Template, [string]$LastUpdated) {
   $groupLabel = switch ($Entry.group) { 'pokemon' { 'ポケモン' } 'trainer' { 'トレーナー' } default { 'シリーズ' } }
   $label = [string]$Entry.label
   $count = @($Entry.items).Count
@@ -336,6 +349,10 @@ function ZukanCategoryPageHtml([object]$Entry, [string]$Slug, [string]$Template)
   }
   $breadcrumbMarkup = '<nav class="breadcrumb" aria-label="パンくず"><a href="/">ホーム</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><a href="/sleeves/">デッキシールド図鑑</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><a href="/sleeves/' + $Entry.group + '/">' + (Html $groupLabel) + 'から探す</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><span class="breadcrumb-current" aria-current="page">' + (Html $label) + '</span></nav>'
   $html = $Template
+  if (-not [string]::IsNullOrWhiteSpace($LastUpdated)) {
+    $html = [regex]::Replace($html, '<strong id="updatedAt">.*?</strong>', '<strong id="updatedAt">' + (Html $LastUpdated) + '</strong>')
+    $html = [regex]::Replace($html, 'id="updatedChip" class="zukan-meta-chip(?: is-loading skeleton-shimmer)?"(?: data-static-updated="1")?', 'id="updatedChip" class="zukan-meta-chip" data-static-updated="1"')
+  }
   $html = [regex]::Replace($html, '<strong id="countInfo">.*?</strong>', '<strong id="countInfo">' + $count + '&#20214;</strong>')
   $html = [regex]::Replace($html, '<strong id="resultCountBadge">.*?</strong>', '<strong id="resultCountBadge">' + $count + '</strong>')
   $html = [regex]::Replace($html, '<span id="resultRangeText">.*?</span>', '<span id="resultRangeText">&#20214;&#34920;&#31034;</span>')
@@ -522,6 +539,7 @@ $entries = @(
   (CategoryEntries @($data.sleeves) 'trainer' 'trainerCategories') +
   (CategoryEntries @($data.sleeves) 'series' 'categoryTags')
 )
+$latestWeeklyTradeDate = LatestWeeklyTradeDate @($data.sleeves)
 $used = @{}
 $manifest = New-Object 'System.Collections.Generic.List[object]'
 foreach ($entry in $entries) {
@@ -540,7 +558,7 @@ foreach ($entry in $entries) {
   if ($used.ContainsKey($key)) { throw "Duplicate category slug: $key" }
   $used[$key] = $true
   $path = Join-Path $OutputRoot (Join-Path $entry.group (Join-Path $slug 'index.html'))
-  WriteText $path (ZukanCategoryPageHtml $entry $slug $zukanTemplate)
+  WriteText $path (ZukanCategoryPageHtml $entry $slug $zukanTemplate $latestWeeklyTradeDate)
   $manifest.Add([pscustomobject]@{group=$entry.group;label=$entry.label;slug=$slug;count=@($entry.items).Count;path="/sleeves/$($entry.group)/$slug/"})
 }
 foreach ($old in $previous) {
