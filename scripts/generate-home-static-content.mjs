@@ -222,7 +222,7 @@ export async function generateHomeStatic({ root = path.resolve(path.dirname(file
       const file = path.join(directoryPath, entry.name);
       if (entry.isDirectory()) {
         if (recursive) await updateScriptVersions(file);
-      } else if (entry.name.endsWith('.html') && !entry.name.startsWith('admin-')) {
+      } else if (entry.name.endsWith('.html')) {
         const text = await readFile(file, 'utf8');
         const updated = text.replace(/assets\/common\.js\?v=[^"\s]+/g, `assets/common.js?v=catalog-${revision}`);
         if (updated !== text) await writeFile(file, updated);
