@@ -1746,6 +1746,9 @@
       height: 22px;
       display: block;
     }
+    .home-sleeve-mobile-break {
+      display: none;
+    }
     .home-sleeve-search-actions {
       position: relative;
       z-index: 1;
@@ -4593,6 +4596,9 @@
         width: 18px;
         height: 18px;
       }
+      body.home-page .home-sleeve-mobile-break {
+        display: inline;
+      }
       body.home-page .home-sleeve-tool-arrow {
         display: none;
       }
@@ -5635,7 +5641,7 @@
                 <circle cx="6.8" cy="17.5" r="1.2" />
                 <circle cx="17.2" cy="17.5" r="1.2" />
               </svg>
-              <span>ポケモンから<br />探す</span>
+              <span>ポケモンから<br class="home-sleeve-mobile-break" />探す</span>
               <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
             </a>
             <a class="home-sleeve-image-button home-sleeve-image-button--library" href="./sleeves/trainer/">
@@ -5643,12 +5649,12 @@
                 <circle cx="12" cy="7" r="4" />
                 <path d="M4 21v-2a8 8 0 0 1 16 0v2z" />
               </svg>
-              <span>トレーナーから<br />探す</span>
+              <span>トレーナーから<br class="home-sleeve-mobile-break" />探す</span>
               <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
             </a>
             <a class="home-sleeve-image-button home-sleeve-image-button--library" href="./sleeves/series/">
               <span class="home-sleeve-image-button-icon" aria-hidden="true">▤</span>
-              <span>シリーズから<br />探す</span>
+              <span>シリーズから<br class="home-sleeve-mobile-break" />探す</span>
               <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
             </a>
           </div>
