@@ -4499,7 +4499,7 @@
       }
       body.home-page .home-sleeve-search-head {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr);
         align-items: end;
         gap: 10px;
       }
@@ -4510,13 +4510,15 @@
         display: none;
       }
       body.home-page .home-sleeve-search-title {
-        font-size: 26px;
+        font-size: clamp(20px, 6vw, 26px);
         line-height: 1.15;
+        white-space: nowrap;
       }
       body.home-page .home-sleeve-search-lead {
         margin: 0;
-        font-size: 12px;
+        font-size: clamp(10px, 3vw, 12px);
         line-height: 1.45;
+        white-space: nowrap;
       }
       body.home-page .home-sleeve-search-count {
         width: fit-content;
