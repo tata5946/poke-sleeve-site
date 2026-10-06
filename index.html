@@ -1741,6 +1741,11 @@
       font-size: 22px;
       line-height: 1;
     }
+    svg.home-sleeve-image-button-icon {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
     .home-sleeve-search-actions {
       position: relative;
       z-index: 1;
@@ -4584,6 +4589,10 @@
       body.home-page .home-sleeve-image-button-icon {
         font-size: 18px;
       }
+      body.home-page svg.home-sleeve-image-button-icon {
+        width: 18px;
+        height: 18px;
+      }
       body.home-page .home-sleeve-tool-arrow {
         display: none;
       }
@@ -5620,12 +5629,23 @@
               <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
             </a>
             <a class="home-sleeve-image-button home-sleeve-image-button--library" href="./sleeves/pokemon/">
-              <span class="home-sleeve-image-button-icon" aria-hidden="true">◇</span>
+              <svg class="home-sleeve-image-button-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6.5 10 3 2l4.5 2 2 5h5l2-5L21 2l-3.5 8 1.5 4v4c0 2-3 4-7 4s-7-2-7-4v-4z" />
+                <path d="m3 2 1.5 3.5L6 4.5zM21 2l-1.5 3.5L18 4.5z" fill="currentColor" stroke="none" />
+                <circle cx="8.5" cy="14" r="1" fill="currentColor" stroke="none" />
+                <circle cx="15.5" cy="14" r="1" fill="currentColor" stroke="none" />
+                <path d="m11 16 1 1 1-1m-3 3 2 1 2-1" />
+                <circle cx="6.8" cy="17.5" r="1.2" />
+                <circle cx="17.2" cy="17.5" r="1.2" />
+              </svg>
               <span>ポケモンから探す</span>
               <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
             </a>
             <a class="home-sleeve-image-button home-sleeve-image-button--library" href="./sleeves/trainer/">
-              <span class="home-sleeve-image-button-icon" aria-hidden="true">♙</span>
+              <svg class="home-sleeve-image-button-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="7" r="4" />
+                <path d="M4 21v-2a8 8 0 0 1 16 0v2z" />
+              </svg>
               <span>トレーナーから探す</span>
               <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
             </a>
