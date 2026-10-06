@@ -4499,9 +4499,9 @@
       }
       body.home-page .home-sleeve-search-head {
         display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        align-items: end;
-        gap: 10px;
+        grid-template-columns: minmax(0, 1fr) 58px;
+        align-items: center;
+        gap: 6px;
       }
       body.home-page .home-sleeve-search-copy {
         gap: 6px;
@@ -4510,34 +4510,35 @@
         display: none;
       }
       body.home-page .home-sleeve-search-title {
-        font-size: clamp(20px, 6vw, 26px);
+        font-size: clamp(15px, 4.6vw, 26px);
         line-height: 1.15;
         white-space: nowrap;
       }
       body.home-page .home-sleeve-search-lead {
         margin: 0;
-        font-size: clamp(10px, 3vw, 12px);
+        font-size: clamp(8px, 2.35vw, 12px);
         line-height: 1.45;
         white-space: nowrap;
       }
       body.home-page .home-sleeve-search-count {
-        width: fit-content;
-        min-height: 38px;
-        gap: 8px;
-        padding: 0 10px;
+        width: 58px;
+        box-sizing: border-box;
+        min-height: 42px;
+        flex-direction: column;
+        justify-content: center;
+        gap: 2px;
+        padding: 4px;
         border-radius: 10px;
       }
       body.home-page .home-sleeve-search-count-number {
         font-size: 18px;
       }
       body.home-page .home-sleeve-search-count-number::after {
-        height: 18px;
-        margin-left: 8px;
-        vertical-align: -4px;
+        display: none;
       }
       body.home-page .home-sleeve-search-count-unit {
-        font-size: 8px;
-        letter-spacing: .1em;
+        font-size: 6px;
+        letter-spacing: 0;
       }
       body.home-page .home-sleeve-search-form {
         grid-template-columns: minmax(0, 1fr) auto;
