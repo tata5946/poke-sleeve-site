@@ -39,7 +39,8 @@ for (const article of snapshot.slice(0, 8)) assert.ok(initialBody.includes(artic
 for (const id of ['marketSnapshotCard', 'marketSentimentCard', 'marketStatsGrid', 'moversTableBody', 'priceTableBody', 'growthTableBody']) {
   assert.match(initialBody, new RegExp(`id="${id}" data-static-home="1"`));
 }
-assert.match(initialBody, /<svg class="hero-chart-svg"/);
+assert.match(initialBody, /<svg class="price-index-chart"/);
+assert.match(initialBody, /home-month-chart-period">1か月/);
 assert.equal((initialBody.match(/class="movers-row movers-row--ranking"/g) || []).length, 9);
 assert.match(html, /if \(el && el.dataset.staticHome !== "1"\)/, 'A failed refresh must preserve static market/ranking output');
 assert.match(html, /\.reveal-on-scroll \{\s*opacity: 1;/, 'Static content must remain visible without JavaScript');
@@ -67,6 +68,21 @@ const context = createContext({ console, URL, URLSearchParams, document: {
   querySelectorAll: () => []
 }, window: {}, localStorage: { getItem: () => null }, fetch: async () => { throw new Error('offline'); } });
 runInContext(source.slice(0, source.lastIndexOf('    main().catch')), context);
+// The home chart uses calendar dates: a one-month window is not seven weekly points.
+context.window.matchMedia = () => ({ matches: false });
+context.chartFixture = Array.from({ length: 8 }, (_, i) => ({
+  week: new Date(Date.UTC(2026, 7, 10 + i * 7)).toISOString().slice(0, 10),
+  avgPrice: 2500 + i * 10, updateCount: 100 + i
+}));
+const desktopChart = runInContext('buildHomeMonthChart(chartFixture)', context);
+assert.equal((desktopChart.match(/<rect x=/g) || []).length, 5, 'Only the five weekly observations in the last 31 days are shown');
+assert.match(desktopChart, /stroke="#2563eb"/);
+assert.match(desktopChart, /stroke="#ff7a00"/);
+assert.doesNotMatch(desktopChart, /NaN|Infinity/);
+context.window.matchMedia = () => ({ matches: true });
+const mobileChart = runInContext('buildHomeMonthChart(chartFixture)', context);
+assert.match(mobileChart, /viewBox="0 0 390 300"/);
+assert.doesNotMatch(mobileChart, /NaN|Infinity/);
 const offlineArticles = await runInContext('loadHomeArticles()', context);
 assert.deepEqual(JSON.parse(JSON.stringify(offlineArticles)), snapshot);
 new Script(common);
