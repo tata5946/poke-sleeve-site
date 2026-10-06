@@ -1708,11 +1708,19 @@
       display: none;
     }
     .home-sleeve-image-button {
-      display: inline-flex;
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr) 12px;
       align-items: center;
       justify-content: center;
-      gap: 18px;
+      gap: 8px;
       min-width: 0;
+      padding: 12px 14px;
+      font-size: 16px;
+      line-height: 1.5;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      text-align: center;
+      box-sizing: border-box;
       border: 1px solid #d8dee8;
       background: rgba(255,255,255,.74);
       color: #0f172a;
@@ -1730,7 +1738,7 @@
       box-shadow: 0 16px 30px rgba(15, 23, 42, 0.12);
     }
     .home-sleeve-image-button-icon {
-      font-size: 28px;
+      font-size: 22px;
       line-height: 1;
     }
     .home-sleeve-search-actions {
@@ -4561,6 +4569,7 @@
       }
       body.home-page .home-sleeve-image-button {
         display: grid;
+        grid-template-columns: minmax(0, 1fr);
         grid-template-rows: 20px auto;
         align-content: center;
         justify-items: center;
