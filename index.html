@@ -1737,7 +1737,7 @@
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       align-items: stretch;
       gap: 20px;
     }
@@ -4544,7 +4544,7 @@
       }
       body.home-page .home-sleeve-search-actions {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 6px;
       }
       body.home-page .home-sleeve-search-submit {
@@ -5605,19 +5605,24 @@
             </button>
           </form>
           <div class="home-sleeve-search-actions">
-            <label class="home-sleeve-image-button" for="homeSleeveLibraryInput" aria-label="画像から探す">
-              <span class="home-sleeve-image-button-icon" aria-hidden="true">▧</span>
-              <span>画像から探す</span>
-              <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
-            </label>
             <a class="home-sleeve-image-button home-sleeve-image-button--library" href="./sleeves/">
               <span class="home-sleeve-image-button-icon" aria-hidden="true">☷</span>
               <span>図鑑から探す</span>
               <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
             </a>
-            <a class="home-sleeve-image-button home-sleeve-image-button--library" href="./sleeves/">
+            <a class="home-sleeve-image-button home-sleeve-image-button--library" href="./sleeves/pokemon/">
               <span class="home-sleeve-image-button-icon" aria-hidden="true">◇</span>
-              <span>カテゴリから探す</span>
+              <span>ポケモンから探す</span>
+              <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
+            </a>
+            <a class="home-sleeve-image-button home-sleeve-image-button--library" href="./sleeves/trainer/">
+              <span class="home-sleeve-image-button-icon" aria-hidden="true">♙</span>
+              <span>トレーナーから探す</span>
+              <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
+            </a>
+            <a class="home-sleeve-image-button home-sleeve-image-button--library" href="./sleeves/series/">
+              <span class="home-sleeve-image-button-icon" aria-hidden="true">▤</span>
+              <span>シリーズから探す</span>
               <span class="home-sleeve-tool-arrow" aria-hidden="true">›</span>
             </a>
           </div>
