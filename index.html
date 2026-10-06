@@ -5689,11 +5689,6 @@
                   <div class="hero-index-value" data-countup="2534.2102496714847" data-format="yen">2,534円</div>
                   <span class="hero-index-chip up">+27円 / +1.1%（前週比）</span>
                 </div>
-                <div class="hero-index-meta-line">
-                  <span>2026/9/28</span>
-                  <span>対象 761種類</span>
-                  <span>今週更新 182種類</span>
-                </div>
               </div>
             </div>
             <div class="hero-chart-card">
@@ -7729,11 +7724,6 @@
                 <div class="hero-index-value-row">
                   <div class="hero-index-value"${getCountupAttrs(latest.avgPrice, "yen")}>${escapeHtml(formatYen(latest.avgPrice))}</div>
                   <span class="hero-index-chip ${escapeHtml(getDeltaClass(stats.rate))}">${escapeHtml(formatSignedYen(stats.diff))} / ${escapeHtml(formatPercent(stats.rate))}（前週比）</span>
-                </div>
-                <div class="hero-index-meta-line">
-                  <span>${escapeHtml(formatPeriodLabel(latest.week))}</span>
-                  <span>対象 ${escapeHtml(Number(latest.targetCount || 0).toLocaleString())}種類</span>
-                  <span>今週更新 ${escapeHtml(Number(latest.updateCount || 0).toLocaleString())}種類</span>
                 </div>
               </div>
             </div>
