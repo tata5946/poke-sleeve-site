@@ -2176,7 +2176,7 @@
       };
     }
 
-    function getSleeveCategoryValues(sleeve) {
+    function getMarketSleeveCategoryValues(sleeve) {
       return [
         ...(Array.isArray(sleeve?.categoryTags) ? sleeve.categoryTags : []),
         ...(Array.isArray(sleeve?.categories) ? sleeve.categories : []),
@@ -2189,7 +2189,7 @@
     }
 
     function sleeveHasCategoryTag(sleeve, tagName) {
-      return getSleeveCategoryValues(sleeve).some((value) => value === tagName);
+      return getMarketSleeveCategoryValues(sleeve).some((value) => value === tagName);
     }
 
     function isMemorialSleeve(sleeve) {
