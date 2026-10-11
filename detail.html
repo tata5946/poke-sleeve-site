@@ -5276,6 +5276,10 @@
               <div class="label">観測日</div>
               <div class="value">${escapeHtml(formatPointDate(point, mode))}</div>
             </div>
+            ${mode === "3m" ? `<div class="single-observation-item">
+              <div class="label">取引件数</div>
+              <div class="value">${Number.isFinite(point.count) ? `${point.count}件` : "-"}</div>
+            </div>` : ""}
           </div>
           <div class="chart-subnote">観測点が1件のみのため、価格推移チャートではなく単一観測カードを表示しています。</div>
         </div>
@@ -5612,7 +5616,6 @@
       const countHeight = Math.max(1, countBottom - countTop);
       const volumeBars = showVolumeBars && maxCount > 0
         ? data.map((point, index) => {
-          if (index === 0 || index === data.length - 1) return "";
           if (!(Number.isFinite(point.count) && point.count > 0)) return "";
           const cx = xToPx(point.timestamp);
           const nextTs = index < data.length - 1 ? data[index + 1].timestamp : point.timestamp + ((spanX / Math.max(1, data.length - 1)) || (7 * 24 * 60 * 60 * 1000));
@@ -5622,7 +5625,10 @@
           const h = Math.max(10, (point.count / maxCount) * countHeight * 0.76);
           const x = cx - (width / 2);
           const y = countBottom - h;
-          return `<rect x="${x}" y="${y}" width="${width}" height="${h}" rx="3" fill="rgba(148,163,184,0.18)"></rect>`;
+          return `<g class="chart-volume-bar" data-volume-count="${point.count}">
+            <rect x="${x}" y="${y}" width="${width}" height="${h}" rx="3" fill="rgba(100,116,139,0.45)"></rect>
+            <text x="${cx}" y="${y - 8}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="800" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${point.count}件</text>
+          </g>`;
         }).join("")
         : "";
       const highIndex = prices.findIndex((value) => value === yMaxRaw);
