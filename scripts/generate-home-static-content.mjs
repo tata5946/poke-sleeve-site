@@ -190,7 +190,8 @@ export async function generateHomeStatic({ root = path.resolve(path.dirname(file
     html = html.replaceAll('data-static-home="1" data-static-home="1"', 'data-static-home="1"');
   }
   html = replaceContents(html, 'dashboardSidebarSlot', sidebarWithCategories);
-  for (const id of ['homeSiteIntroSleeveCount', 'homeSleeveSearchLeadCount', 'homeSleeveSearchCount']) {
+  html = html.replace(/(日本で発売されたデッキシールド)(?:約)?\d+種類の相場/, '$1<span id="homeAboutSleeveCount"></span>種類の相場');
+  for (const id of ['homeSiteIntroSleeveCount', 'homeSleeveSearchLeadCount', 'homeSleeveSearchCount', 'homeAboutSleeveCount']) {
     html = replaceContents(html, id, String(ids.length));
   }
   html = jsonScript(html, 'homeStaticArticles', published);

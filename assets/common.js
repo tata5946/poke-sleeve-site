@@ -11,9 +11,9 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbwSJdC1W3YoXLHTLU-L0aLD
 const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon-512x512.png";
 /* STATIC_CATALOG_META_START */
-const SITE_CATALOG_COUNT = 849;
-const LOCAL_DATA_URL = "./data.json?v=catalog-296431ffbed8";
-const CATALOG_CACHE_REVISION = "296431ffbed8";
+const SITE_CATALOG_COUNT = 852;
+const LOCAL_DATA_URL = "./data.json?v=catalog-c0f0746b51b7";
+const CATALOG_CACHE_REVISION = "c0f0746b51b7";
 /* STATIC_CATALOG_META_END */
 
 function getCatalogCount() { return SITE_CATALOG_COUNT; }

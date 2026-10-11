@@ -969,7 +969,7 @@
         "group":  "pokemon",
         "label":  "シェイミ",
         "slug":  "pokemon-09663a30b5de",
-        "count":  2,
+        "count":  3,
         "path":  "/sleeves/pokemon/pokemon-09663a30b5de/"
     },
     {
@@ -4173,6 +4173,13 @@
     },
     {
         "group":  "series",
+        "label":  "ポケモンカードラウンジ",
+        "slug":  "series-3251162df616",
+        "count":  2,
+        "path":  "/sleeves/series/series-3251162df616/"
+    },
+    {
+        "group":  "series",
         "label":  "ほのおタイプ",
         "slug":  "series-a425f3af91ec",
         "count":  1,
@@ -4245,7 +4252,7 @@
         "group":  "series",
         "label":  "限定デッキシールド",
         "slug":  "series-663175d07b07",
-        "count":  79,
+        "count":  80,
         "path":  "/sleeves/series/series-663175d07b07/"
     },
     {
