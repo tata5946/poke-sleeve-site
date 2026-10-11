@@ -1,0 +1,269 @@
+{
+  "audit_date_jst": "2026-10-12",
+  "scope": "Local HTML and source audit; Google review logs and browser rendering are not inferred.",
+  "total_html": 1535,
+  "products": 852,
+  "latest_week": "2026-09-28",
+  "groups": {
+    "入口・機能・補助": {
+      "total": 25,
+      "noindex": 4,
+      "sitemap": 19,
+      "ad_loader": 14
+    },
+    "管理画面": {
+      "total": 6,
+      "noindex": 6,
+      "sitemap": 0,
+      "ad_loader": 0
+    },
+    "記事": {
+      "total": 14,
+      "noindex": 0,
+      "sitemap": 14,
+      "ad_loader": 14
+    },
+    "個別商品": {
+      "total": 853,
+      "noindex": 1,
+      "sitemap": 852,
+      "ad_loader": 852
+    },
+    "ページ送り一覧": {
+      "total": 18,
+      "noindex": 0,
+      "sitemap": 18,
+      "ad_loader": 0
+    },
+    "カテゴリ結果": {
+      "total": 616,
+      "noindex": 313,
+      "sitemap": 303,
+      "ad_loader": 615
+    },
+    "サンプルページ": {
+      "total": 3,
+      "noindex": 0,
+      "sitemap": 0,
+      "ad_loader": 3
+    }
+  },
+  "quality": {
+    "価格データなし": 57,
+    "データあり・現行チャート採用履歴なし": 24,
+    "週次履歴1〜3点": 163,
+    "週次履歴4点以上": 607,
+    "週次なし・補完データのみ": 1
+  },
+  "price_disagreements": 43,
+  "fractional_latest_prices": 42,
+  "price_disagreement_types": {
+    "小数の丸め方の差": 42,
+    "補完元・採用価格の差": 1
+  },
+  "static_runtime_price_disagreements": [
+    {
+      "url": "https://pokesuri-navi.com/sleeve/4521329100654/",
+      "static": "3,500円",
+      "runtime": "-"
+    },
+    {
+      "url": "https://pokesuri-navi.com/sleeve/4521329102351/",
+      "static": "1,800円",
+      "runtime": "-"
+    },
+    {
+      "url": "https://pokesuri-navi.com/sleeve/4521329106090/",
+      "static": "4,000円",
+      "runtime": "-"
+    },
+    {
+      "url": "https://pokesuri-navi.com/sleeve/4521329106137/",
+      "static": "1,700円",
+      "runtime": "-"
+    },
+    {
+      "url": "https://pokesuri-navi.com/sleeve/4521329176871/",
+      "static": "950円",
+      "runtime": "-"
+    },
+    {
+      "url": "https://pokesuri-navi.com/sleeve/4521329227610/",
+      "static": "4,100円",
+      "runtime": "3,250円"
+    },
+    {
+      "url": "https://pokesuri-navi.com/sleeve/4521329283708/",
+      "static": "1,925円",
+      "runtime": "-"
+    },
+    {
+      "url": "https://pokesuri-navi.com/sleeve/4521329306254/",
+      "static": "2,500円",
+      "runtime": "-"
+    },
+    {
+      "url": "https://pokesuri-navi.com/sleeve/45213292016005/",
+      "static": "3,900円",
+      "runtime": "-"
+    }
+  ],
+  "missing_observation_elements": 852,
+  "sheet_count_mismatches": 27,
+  "zero_retail_products": 101,
+  "missing_image_urls": 0,
+  "missing_release_dates": 0,
+  "stale_over_90_days": 131,
+  "latest_weekly_without_positive_count": 0,
+  "outlier_review_candidates": 17,
+  "embedded_data_mismatches": 0,
+  "index_cards_checked": 1764,
+  "index_card_disagreements": 108,
+  "sitemap_urls": 1206,
+  "sitemap_duplicate_urls": 0,
+  "sitemap_missing_files": [],
+  "sitemap_noindex_urls": [],
+  "canonical_missing": [
+    "https://pokesuri-navi.com/404.html",
+    "https://pokesuri-navi.com/admin-article-editor.html",
+    "https://pokesuri-navi.com/admin-buy-ranking.html",
+    "https://pokesuri-navi.com/admin-promo.html",
+    "https://pokesuri-navi.com/admin-should-have-bought-ranking.html",
+    "https://pokesuri-navi.com/admin-surge-ranking.html",
+    "https://pokesuri-navi.com/admin-weekly-ranking.html",
+    "https://pokesuri-navi.com/article.html",
+    "https://pokesuri-navi.com/contact-complete.html",
+    "https://pokesuri-navi.com/contact.html",
+    "https://pokesuri-navi.com/detail.html",
+    "https://pokesuri-navi.com/policy.html",
+    "https://pokesuri-navi.com/sleeves/sample-1.html",
+    "https://pokesuri-navi.com/sleeves/sample-2.html",
+    "https://pokesuri-navi.com/sleeves/sample-3.html"
+  ],
+  "canonical_multiple": [],
+  "canonical_duplicates": [],
+  "canonical_missing_target": [],
+  "duplicate_titles": [
+    {
+      "title": "スリーブ相場 - ポケスリ相場ナビ",
+      "urls": [
+        "https://pokesuri-navi.com/404.html",
+        "https://pokesuri-navi.com/detail.html"
+      ]
+    },
+    {
+      "title": "ピカチュウスリーブ2022｜価格推移",
+      "urls": [
+        "https://pokesuri-navi.com/sleeves/sample-1.html",
+        "https://pokesuri-navi.com/sleeves/sample-2.html",
+        "https://pokesuri-navi.com/sleeves/sample-3.html"
+      ]
+    }
+  ],
+  "jsonld_errors": [],
+  "broken_assets": [],
+  "broken_static_links_unique": [],
+  "ad_loader_pages": 1498,
+  "noindex_with_ad_loader": 314,
+  "actual_ins_ad_slots": 0,
+  "ads_txt_exists": false,
+  "category_noindex_mismatches": [],
+  "article_data_count": 19,
+  "article_html_count": 14,
+  "market_static": {
+    "updatedAt": "2026/9/28",
+    "countInfo": "対象 764種類 / 更新 184種類",
+    "kpiLatestPrice": "2,524円",
+    "aiCommentBody": "最新の全スリーブ平均相場は2,524円で、前回比では上昇しています。前回比は+22円（+0.9%）、月間は-87円（-3.3%）、年間は-590円（-18.9%）です。今週は184種類が更新され、対象764種類のうち24.1%に新しい相場が入りました。",
+    "subtitle": "登録：852件 / 週期間：2025/1/13〜2026/9/28",
+    "indexChart": ""
+  },
+  "market_calculations": [
+    {
+      "label": "raw-master",
+      "last_two_periods": [
+        {
+          "week": "2026-09-21",
+          "avgPrice": 2502.258846657929,
+          "targetCount": 763,
+          "updateCount": 183
+        },
+        {
+          "week": "2026-09-28",
+          "avgPrice": 2524.3566753926702,
+          "targetCount": 764,
+          "updateCount": 184
+        }
+      ],
+      "comment_stats": {
+        "latestWeek": "2026-09-28",
+        "latestRate": 0.8831152206437588,
+        "prevChange": {
+          "amount": 22.097828734741142,
+          "rate": 0.8831152206437588,
+          "week": "2026-09-21"
+        },
+        "monthChange": {
+          "amount": -86.55741856706118,
+          "rate": -3.3152151105740733,
+          "week": "2026-08-31"
+        },
+        "yearChange": {
+          "amount": -590.1638725525354,
+          "rate": -18.948787252082635,
+          "week": "2025-09-22"
+        },
+        "activeCount": 764,
+        "volume": 184,
+        "avgPrice": 2524.3566753926702,
+        "stateHint": "up"
+      }
+    },
+    {
+      "label": "common-sanitized",
+      "last_two_periods": [
+        {
+          "week": "2026-09-21",
+          "avgPrice": 2508.237812911726,
+          "targetCount": 759,
+          "updateCount": 183
+        },
+        {
+          "week": "2026-09-28",
+          "avgPrice": 2524.3566753926702,
+          "targetCount": 764,
+          "updateCount": 184
+        }
+      ],
+      "comment_stats": {
+        "latestWeek": "2026-09-28",
+        "latestRate": 0.6426369301175799,
+        "prevChange": {
+          "amount": 16.118862480944244,
+          "rate": 0.6426369301175799,
+          "week": "2026-09-21"
+        },
+        "monthChange": {
+          "amount": -86.55741856706118,
+          "rate": -3.3152151105740733,
+          "week": "2026-08-31"
+        },
+        "yearChange": {
+          "amount": -590.1638725525354,
+          "rate": -18.948787252082635,
+          "week": "2025-09-22"
+        },
+        "activeCount": 764,
+        "volume": 184,
+        "avgPrice": 2524.3566753926702,
+        "stateHint": "up"
+      }
+    }
+  ],
+  "top_static": {
+    "homeSiteIntroSleeveCount": "852",
+    "homeAboutSleeveCount": "852",
+    "marketStatsGrid": "全スリーブ平均相場 2,524円 +0.9% 計算対象 764 種類 今週の相場更新 184 24.1%"
+  },
+  "finding_rows": 1268
+}

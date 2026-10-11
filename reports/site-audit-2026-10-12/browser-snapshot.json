@@ -1,0 +1,55 @@
+[
+  {
+    "name": "PJCS2026",
+    "file": ".tmp_audit_pjcs_dom.html",
+    "dom_bytes": 270964,
+    "fields": {
+      "latestWeekly": "1,437円",
+      "weeklyCount": "",
+      "updatedAt": "",
+      "countInfo": "",
+      "kpiLatestPrice": "",
+      "aiCommentBody": "",
+      "error": ""
+    },
+    "chart_svg_present": true,
+    "footer_injected": true
+  },
+  {
+    "name": "Kalos",
+    "file": ".tmp_audit_fallback_dom.html",
+    "dom_bytes": 270486,
+    "fields": {
+      "latestWeekly": "3,250円",
+      "weeklyCount": "",
+      "updatedAt": "",
+      "countInfo": "",
+      "kpiLatestPrice": "",
+      "aiCommentBody": "",
+      "error": ""
+    },
+    "chart_svg_present": true,
+    "footer_injected": true
+  },
+  {
+    "name": "market-index",
+    "file": ".tmp_audit_market_dom.html",
+    "dom_bytes": 177854,
+    "fields": {
+      "latestWeekly": "",
+      "weeklyCount": "",
+      "updatedAt": "2026/9/28",
+      "countInfo": "対象 764種類 / 更新 184種類",
+      "kpiLatestPrice": "2,524円",
+      "aiCommentBody": "最新の全スリーブ平均相場は2,524円で、前回比ではほぼ横ばいです。前回比は+16円（+0.6%）、月間は-87円（-3.3%）、年間は-590円（-18.9%）です。今週は184種類が更新され、対象764種類のうち24.1%に新しい相場が入りました。",
+      "error": "",
+      "kpiPrevChange": "+16円",
+      "kpiPrevPct": "+0.6%",
+      "kpiMonthChange": "-87円",
+      "kpiYearChange": "-590円",
+      "marketStateValue": "上昇中"
+    },
+    "chart_svg_present": true,
+    "footer_injected": true
+  }
+]
