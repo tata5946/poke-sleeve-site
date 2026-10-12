@@ -45,7 +45,7 @@ const route = id => /^\d{6,7}$/.test(id) ? `4521329${id}` : id;
 for (const [file,[scope,fact]] of Object.entries(featureNotes)) {
   let html = fs.readFileSync(file,"utf8");
   const groups = new Map([...html.matchAll(/const (NEW|RESTOCK)_SLEEVE_ITEMS = (\[[\s\S]*?\n\s*\]);/g)].map(m => [m[1],Function(`return ${m[2]}`)()]));
-  html = html.replace(/<p class="abyss-copy">[\s\S]*?<\/p>/,`<p class="abyss-copy">${scope}</p><p class="abyss-copy">${fact}</p>`);
+  html = html.replace(/(?:\s*<p class="abyss-copy">[\s\S]*?<\/p>)+/,`\n                <p class="abyss-copy">${scope}</p><p class="abyss-copy">${fact}</p>`);
   html = html.replace(/<div id="(new|restock)SleeveGrid" class="abyss-grid">[\s\S]*?<\/div>\s*<\/section>/g,(all,kind) => {
     const cards=(groups.get(kind.toUpperCase())||[]).map(([id,fallback,imageFallback]) => { const s=sleeveMap.get(String(id)); const name=s?.name||fallback||id; const date=String(s?.releaseDate||"").replace(/^(\d{4})-(\d{2})-(\d{2})$/,`$1/$2/$3発売`); const image=s?.imageUrl||imageFallback||""; return `<a class="abyss-card" data-static-feature-card="1" href="./sleeve/${esc(route(String(id)))}/"><div class="abyss-thumb">${image?`<img src="${esc(image)}" alt="${esc(name)}" loading="lazy" decoding="async" referrerpolicy="no-referrer">`:""}</div><p class="abyss-name">${esc(name)}</p><p class="abyss-meta">${esc(date||"発売日未登録")}</p><span class="abyss-tag">商品詳細を見る</span></a>`; }).join("\n                ");
     return `<div id="${kind}SleeveGrid" class="abyss-grid" data-static-feature-list="1">\n                ${cards}\n              </div>\n            </section>`;
