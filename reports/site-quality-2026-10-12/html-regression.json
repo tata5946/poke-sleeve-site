@@ -2,9 +2,9 @@
   "html_count": 1536,
   "product_count": 852,
   "card_prices_checked": 1764,
-  "ranked_reference_products": 795,
+  "ranked_reference_products": 797,
   "sitemap_urls": 1207,
-  "ad_loader_pages": 1107,
+  "ad_loader_pages": 1098,
   "excluded_ad_loaders": 0,
   "major_problem_count": 0,
   "problems": [],
@@ -147,7 +147,7 @@
     {
       "file": "articles/article-2026-06-15/index.html",
       "url": "https://pokesuri-navi.com/articles/article-2026-06-15/",
-      "title": "シロナのデッキシールド相場を比較｜歴代5種類の価格ランキングと高額になる理由｜ポケスリ相場ナビ",
+      "title": "シロナのデッキシールド相場を比較｜歴代6種類の価格ランキングと高額になる理由｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/articles/article-2026-06-15/",
       "ads": false,
@@ -879,7 +879,7 @@
       "title": "イーブイ・リーフィア・グレイシア｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/4521329130125/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
@@ -2679,7 +2679,7 @@
       "title": "ラティアス・ラティオス｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/4521329226446/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
@@ -8403,7 +8403,7 @@
       "title": "レジエレキのデッキシールド一覧｜歴代2種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-0113fff86d55/",
-      "ads": true,
+      "ads": false,
       "sitemap": true
     },
     {
@@ -8502,7 +8502,7 @@
       "title": "ムウマのデッキシールド一覧｜歴代2種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-05fa8df038bd/",
-      "ads": true,
+      "ads": false,
       "sitemap": true
     },
     {
@@ -9906,7 +9906,7 @@
       "title": "ラティアスのデッキシールド一覧｜歴代5種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-6c69d9d1b279/",
-      "ads": true,
+      "ads": false,
       "sitemap": true
     },
     {
@@ -10509,7 +10509,7 @@
       "title": "ゴースのデッキシールド一覧｜歴代2種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-959393a7f672/",
-      "ads": true,
+      "ads": false,
       "sitemap": true
     },
     {
@@ -10536,7 +10536,7 @@
       "title": "ラティオスのデッキシールド一覧｜歴代5種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-96506f915a8a/",
-      "ads": true,
+      "ads": false,
       "sitemap": true
     },
     {
@@ -10995,7 +10995,7 @@
       "title": "カミツルギのデッキシールド一覧｜歴代2種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-b47b6b0737d6/",
-      "ads": true,
+      "ads": false,
       "sitemap": true
     },
     {
@@ -11751,7 +11751,7 @@
       "title": "レジドラゴのデッキシールド一覧｜歴代2種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-dd2e45e9d79f/",
-      "ads": true,
+      "ads": false,
       "sitemap": true
     },
     {
@@ -11841,7 +11841,7 @@
       "title": "アクジキングのデッキシールド一覧｜歴代2種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-e5a8a14c5bfd/",
-      "ads": true,
+      "ads": false,
       "sitemap": true
     },
     {
@@ -11868,7 +11868,7 @@
       "title": "マッシブーンのデッキシールド一覧｜歴代2種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-e74f10afac65/",
-      "ads": true,
+      "ads": false,
       "sitemap": true
     },
     {
@@ -11895,7 +11895,7 @@
       "title": "マフィティフのデッキシールド一覧｜歴代2種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-e80d68640d3c/",
-      "ads": true,
+      "ads": false,
       "sitemap": true
     },
     {
@@ -13479,7 +13479,7 @@
       "title": "ペパーのデッキシールド一覧｜歴代2種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/trainer/trainer-8820c2e9e267/",
-      "ads": true,
+      "ads": false,
       "sitemap": true
     },
     {

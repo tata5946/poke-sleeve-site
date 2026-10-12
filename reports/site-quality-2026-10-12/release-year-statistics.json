@@ -1,5 +1,5 @@
 {
-  "latestWeek": "2026-09-28",
+  "latestWeek": "2026-10-05",
   "conditions": "Shared reference quotes; valid latest observation per product; unpriced products excluded from price denominators.",
   "rows": [
     {
@@ -55,15 +55,15 @@
       "year": 2011,
       "count": 31,
       "priced": 24,
-      "median": 4150,
-      "highRate": 66.66666666666666
+      "median": 3900,
+      "highRate": 62.5
     },
     {
       "year": 2012,
       "count": 31,
-      "priced": 24,
-      "median": 4161,
-      "highRate": 70.83333333333334
+      "priced": 25,
+      "median": 4100,
+      "highRate": 68
     },
     {
       "year": 2013,
@@ -91,28 +91,28 @@
       "count": 39,
       "priced": 37,
       "median": 3888,
-      "highRate": 59.45945945945946
+      "highRate": 62.16216216216216
     },
     {
       "year": 2017,
       "count": 58,
       "priced": 50,
-      "median": 4040,
-      "highRate": 64
+      "median": 4006.5,
+      "highRate": 66
     },
     {
       "year": 2018,
       "count": 55,
-      "priced": 51,
-      "median": 3200,
-      "highRate": 52.94117647058824
+      "priced": 52,
+      "median": 3105.5,
+      "highRate": 51.92307692307693
     },
     {
       "year": 2019,
       "count": 82,
       "priced": 78,
       "median": 1980,
-      "highRate": 17.94871794871795
+      "highRate": 19.230769230769234
     },
     {
       "year": 2020,
@@ -125,42 +125,42 @@
       "year": 2021,
       "count": 71,
       "priced": 70,
-      "median": 1199.5,
+      "median": 1211,
       "highRate": 10
     },
     {
       "year": 2022,
       "count": 88,
       "priced": 88,
-      "median": 888,
+      "median": 889,
       "highRate": 1.1363636363636365
     },
     {
       "year": 2023,
       "count": 75,
       "priced": 75,
-      "median": 799,
-      "highRate": 2.666666666666667
+      "median": 780,
+      "highRate": 4
     },
     {
       "year": 2024,
       "count": 70,
       "priced": 70,
-      "median": 999.5,
+      "median": 1025,
       "highRate": 4.285714285714286
     },
     {
       "year": 2025,
       "count": 73,
       "priced": 73,
-      "median": 1099,
+      "median": 1111,
       "highRate": 2.73972602739726
     },
     {
       "year": 2026,
       "count": 28,
       "priced": 28,
-      "median": 1218.5,
+      "median": 1236,
       "highRate": 0
     }
   ]
