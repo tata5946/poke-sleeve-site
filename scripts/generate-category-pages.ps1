@@ -8,6 +8,7 @@
   [string]$SiteOrigin = "https://pokesuri-navi.com"
 )
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "pricing-helpers.ps1")
 
 function Html([object]$Value) { [System.Net.WebUtility]::HtmlEncode([string]$Value) }
 function RouteId([object]$Value) {
@@ -21,24 +22,10 @@ function NumberOrNull([object]$Value) {
   if ([double]::TryParse([string]$Value, [ref]$number)) { return $number }
   return $null
 }
-function LatestPrice([object]$Sleeve) {
-  foreach ($spec in @(@('weeklyPrices','week'), @('monthlyPrices','month'), @('yearlyPrices','year'))) {
-    $rows = @($Sleeve.($spec[0])) | Where-Object { $null -ne (NumberOrNull $_.price) -and (NumberOrNull $_.price) -gt 0 } | Sort-Object { [string]$_.($spec[1]) }
-    if ($rows.Count) { return NumberOrNull $rows[-1].price }
-  }
-  if ($Sleeve.pricesByYear) {
-    $rows = @($Sleeve.pricesByYear.PSObject.Properties) | Where-Object { $null -ne (NumberOrNull $_.Value) -and (NumberOrNull $_.Value) -gt 0 } | Sort-Object { [int]$_.Name }
-    if ($rows.Count) { return NumberOrNull $rows[-1].Value }
-  }
-  return $null
-}
-function LatestWeeklyTradePrice([object]$Sleeve) {
-  $rows = @($Sleeve.weeklyPrices) |
-    Where-Object { (IsoDate $_.week) -and $null -ne (NumberOrNull $_.price) -and (NumberOrNull $_.price) -gt 0 } |
-    Sort-Object { IsoDate $_.week }
-  if (-not $rows.Count) { return $null }
-  return NumberOrNull $rows[-1].price
-}
+function LatestPrice([object]$Sleeve) { return Get-ReferencePrice $Sleeve }
+
+function LatestWeeklyTradePrice([object]$Sleeve) { return Get-ReferencePrice $Sleeve }
+
 function LatestWeeklyTradeDate([array]$Sleeves) {
   $latest = ''
   foreach ($sleeve in @($Sleeves)) {
@@ -89,8 +76,8 @@ function CategoryMarketSummaryHtml([object]$Entry) {
     $highestMarkup = '<a class="category-market-highest" href="/sleeve/' + (Html $routeId) + '/"><span class="category-market-highest-label">♛ 最も高いデッキシールド</span><span class="category-market-highest-divider" aria-hidden="true"></span><span class="category-market-highest-copy"><span class="category-market-highest-kicker">スリーブ名</span><span class="category-market-highest-name">' + (Html $sleeve.name) + '</span></span><span class="category-market-highest-price-wrap"><span class="category-market-highest-kicker">現在相場</span><strong class="category-market-highest-price">' + (Html (& $yen $highest.price)) + '</strong></span></a>'
   }
   $statsMarkup = (& $stat '掲載数' $items.Count.ToString('N0') '種類' '▱' 'count') + (& $stat '平均相場' (& $yen $average) '' '¥' 'average') + (& $stat '中央値' (& $yen $median) '' '▥' 'median') + (& $stat '最高相場' (& $yen $(if ($highest) { $highest.price } else { $null })) '' '♛' 'highest') + (& $stat '定価以上' $aboveRetail.ToString('N0') ('種類（約' + $rate + '%）') '↗' 'retail')
-  $helpMarkup = if ([string]$Entry.label -eq 'ピカチュウ') { '' } else { '<span class="category-market-help" role="img" aria-label="集計方法" title="最新週の取引データをもとに集計しています"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3.5 3.3a2.5 2.5 0 0 1 5 .2c0 1.5-2.5 1.6-2.5 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="6" cy="9.4" r=".8" fill="currentColor"/></svg></span>' }
-  return '<section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle" data-static-market-summary="1"><div class="category-market-summary-head"><h2 id="categoryMarketSummaryTitle" class="category-market-summary-title"><span class="category-market-title-icon" aria-hidden="true"><i></i><i></i><i></i></span>' + $label + 'のデッキシールド相場</h2><p class="category-market-summary-note">※最新週の取引データをもとに集計' + $helpMarkup + '</p></div><div class="category-market-summary-grid">' + $statsMarkup + '</div>' + $highestMarkup + '</section>'
+  $helpMarkup = if ([string]$Entry.label -eq 'ピカチュウ') { '' } else { '<span class="category-market-help" role="img" aria-label="集計方法" title="有効な最新観測の参考相場を集計（補完データを含む）"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3.5 3.3a2.5 2.5 0 0 1 5 .2c0 1.5-2.5 1.6-2.5 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="6" cy="9.4" r=".8" fill="currentColor"/></svg></span>' }
+  return '<section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle" data-static-market-summary="1"><div class="category-market-summary-head"><h2 id="categoryMarketSummaryTitle" class="category-market-summary-title"><span class="category-market-title-icon" aria-hidden="true"><i></i><i></i><i></i></span>' + $label + 'のデッキシールド相場</h2><p class="category-market-summary-note">※有効な最新観測の参考相場を集計（補完データを含む）' + $helpMarkup + '</p></div><div class="category-market-summary-grid">' + $statsMarkup + '</div>' + $highestMarkup + '</section>'
 }
 function IsoDate([object]$Value) {
   $text = ([string]$Value).Trim()
@@ -101,23 +88,13 @@ function IsoDate([object]$Value) {
   try { return ([datetime]$text).ToString('yyyy-MM-dd') } catch { return '' }
 }
 function LatestWeeklyPair([object]$Sleeve) {
-  $rows = @($Sleeve.weeklyPrices) |
-    Where-Object { (IsoDate $_.week) -and $null -ne (NumberOrNull $_.price) -and (NumberOrNull $_.price) -gt 0 } |
-    Sort-Object { IsoDate $_.week }
-  if (-not $rows.Count) { return $null }
-  return [pscustomobject]@{ latest=$rows[-1]; previous=$(if ($rows.Count -gt 1) { $rows[-2] } else { $null }) }
+  $pair = (Get-PricingFact $Sleeve).weeklyPair
+  if ($null -eq $pair) { return $null }
+  return [pscustomobject]@{latest=$pair.latest;previous=$pair.prev}
 }
-function ZukanLatestPrice([object]$Sleeve) {
-  $pair = LatestWeeklyPair $Sleeve
-  if ($null -ne $pair) { return NumberOrNull $pair.latest.price }
-  $yearly = @($Sleeve.yearlyPrices) | Where-Object { $null -ne (NumberOrNull $_.price) -and (NumberOrNull $_.price) -gt 0 } | Sort-Object { [string]$_.year }
-  if ($yearly.Count) { return NumberOrNull $yearly[-1].price }
-  if ($Sleeve.pricesByYear) {
-    $rows = @($Sleeve.pricesByYear.PSObject.Properties) | Where-Object { $null -ne (NumberOrNull $_.Value) -and (NumberOrNull $_.Value) -gt 0 } | Sort-Object { [int]$_.Name }
-    if ($rows.Count) { return NumberOrNull $rows[-1].Value }
-  }
-  return $null
-}
+
+function ZukanLatestPrice([object]$Sleeve) { return Get-ReferencePrice $Sleeve }
+
 function ZukanDeltaHtml([object]$Sleeve) {
   $pair = LatestWeeklyPair $Sleeve
   if ($null -eq $pair -or $null -eq $pair.previous) { return '' }
@@ -139,6 +116,7 @@ function ZukanCardHtml([object]$Sleeve) {
   $latest = ZukanLatestPrice $Sleeve
   $currentPrice = if ($null -eq $latest) { '-' } else { $latest.ToString('#,0.###', [System.Globalization.CultureInfo]::InvariantCulture) + '&#20870;' }
   $deltaHtml = ZukanDeltaHtml $Sleeve
+  $quoteMeta = Html (Get-PricingFact $Sleeve).summary
   $imageHtml = if ($imageUrl) { '<img src="' + $imageUrl + '" alt="' + $name + '" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display=''none'';" />' } else { '' }
   $releaseHtml = if ($releaseYear) { '<div class="zukan-card-meta zukan-card-meta--release"><span class="zukan-card-spec">' + $releaseYear + '&#24180;&#30330;&#22770;</span></div>' } else { '' }
   return @"
@@ -150,8 +128,9 @@ function ZukanCardHtml([object]$Sleeve) {
                   $releaseHtml
                   <div class="zukan-card-price-wrap zukan-price-panel">
                     <div class="zukan-price-copy">
-                      <p class="zukan-card-price-label">&#29694;&#22312;&#30456;&#22580;</p>
+                      <p class="zukan-card-price-label">&#21442;&#32771;&#30456;&#22580;</p>
                       <p class="zukan-card-price">$currentPrice</p>
+                      <small class="reference-card-meta">$quoteMeta</small>
                       <div class="zukan-card-badges">$deltaHtml</div>
                     </div>
                   </div>
@@ -214,7 +193,7 @@ function CardHtml([object]$Sleeve, [int]$Index) {
   $date = ([string]$Sleeve.releaseDate).Trim()
   if (-not $date) { $date = ([string]$Sleeve.releaseYear).Trim() }
   $latest = LatestPrice $Sleeve
-  $first = NumberOrNull $Sleeve.firstPrice
+  $first = Get-ReleasePriceLabel $Sleeve
   $dateKey = if ($date -match '^\d{4}') { $date } else { '0000-00-00' }
   $imageHtml = if ($image) { '<img src="' + $image + '" alt="' + $name + '" loading="lazy" referrerpolicy="no-referrer" />' } else { '' }
   $priceKey = if ($null -ne $latest) { [string]$latest } else { '' }
@@ -225,7 +204,7 @@ function CardHtml([object]$Sleeve, [int]$Index) {
           <span class="category-card-image">$imageHtml</span>
           <span class="category-card-body">
             <span class="category-card-name">$name</span>
-            <span class="category-card-meta"><span>発売日 $(Html $dateText)</span><span>発売時価格 $(Html (Yen $first))</span><span>現在相場 $(Html (Yen $latest '価格データなし'))</span></span>
+            <span class="category-card-meta"><span>発売日 $(Html $dateText)</span><span>発売時価格 $(Html $first)</span><span>現在相場 $(Html (Yen $latest '価格データなし'))</span></span>
           </span>
         </a>
       </li>
@@ -483,7 +462,7 @@ function IndexPageHtml([string]$Group, [array]$Items) {
   <script src="./assets/common.js?v=20260917c"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      if (window.common?.setupDashboardChrome) await window.common.setupDashboardChrome({ sidebarActive: 'zukan' });
+      const chromeReady = window.common?.setupDashboardChrome ? window.common.setupDashboardChrome({ sidebarActive: 'zukan' }) : Promise.resolve();
       const input = document.getElementById('categoryIndexSearch');
       const items = Array.from(document.querySelectorAll('.category-index-item'));
       const sections = Array.from(document.querySelectorAll('.category-index-section'));
@@ -524,7 +503,7 @@ function IndexPageHtml([string]$Group, [array]$Items) {
           };
           scrollToTarget();
           chromeReady.then(scrollToTarget, scrollToTarget);
-          history.replaceState(null, '', `#${encodeURIComponent(targetId)}`);
+          history.replaceState(null, '', '#' + encodeURIComponent(targetId));
         });
       });
       await chromeReady.catch((error) => console.error('Dashboard chrome setup failed:', error));
@@ -538,7 +517,7 @@ function IndexPageHtml([string]$Group, [array]$Items) {
 if (-not (Test-Path -LiteralPath $DataPath)) { throw "Data not found: $DataPath" }
 if (-not (Test-Path -LiteralPath $SlugMapPath)) { throw "Slug map not found: $SlugMapPath" }
 if (-not (Test-Path -LiteralPath $TemplatePath)) { throw "Template not found: $TemplatePath" }
-$data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$data = Read-PricingCatalog $DataPath
 $slugData = Get-Content -LiteralPath $SlugMapPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $zukanTemplate = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
 $previous = if (Test-Path -LiteralPath $ManifestPath) { Get-Content -LiteralPath $ManifestPath -Raw -Encoding UTF8 | ConvertFrom-Json } else { @() }

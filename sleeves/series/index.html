@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="./assets/site.css?v=20260917n" />
   <link rel="stylesheet" href="./assets/category-pages.css?v=20260917c" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"トップ","item":"https://pokesuri-navi.com/"},{"@type":"ListItem","position":2,"name":"デッキシールド図鑑","item":"https://pokesuri-navi.com/sleeves/"},{"@type":"ListItem","position":3,"name":"シリーズからデッキシールドを探す","item":"https://pokesuri-navi.com/sleeves/series/"}]}</script>
-</head>
+<link rel="stylesheet" href="/assets/pricing-quality.css?v=catalog-803b7f85011b"></head>
 <body class="page-market-list" data-hide-global-header="1">
   <div id="site-header"></div>
   <div class="dashboard-shell">
@@ -35,10 +35,11 @@
       </div>
     </main>
   </div>
-  <script src="./assets/common.js?v=catalog-c0f0746b51b7"></script>
+  <script src="./assets/pricing.js?v=catalog-803b7f85011b"></script>
+<script src="./assets/common.js?v=catalog-803b7f85011b"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      if (window.common?.setupDashboardChrome) await window.common.setupDashboardChrome({ sidebarActive: 'zukan' });
+      const chromeReady = window.common?.setupDashboardChrome ? window.common.setupDashboardChrome({ sidebarActive: 'zukan' }) : Promise.resolve();
       const input = document.getElementById('categoryIndexSearch');
       const items = Array.from(document.querySelectorAll('.category-index-item'));
       const sections = Array.from(document.querySelectorAll('.category-index-section'));
@@ -79,7 +80,7 @@
           };
           scrollToTarget();
           chromeReady.then(scrollToTarget, scrollToTarget);
-          history.replaceState(null, '', #);
+          history.replaceState(null, '', '#' + encodeURIComponent(targetId));
         });
       });
       await chromeReady.catch((error) => console.error('Dashboard chrome setup failed:', error));

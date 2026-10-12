@@ -21,13 +21,19 @@ foreach ($requiredGenerator in @($categoryGenerator, $generator, $duplicateSeoUp
   }
 }
 
+& node (Join-Path $PSScriptRoot "update-catalog-evidence.cjs") --data $DataPath
+if ($LASTEXITCODE -ne 0) { throw "Catalog evidence update failed" }
 & $categoryGenerator -DataPath $DataPath
 & $generator -DataPath $DataPath -TemplatePath $TemplatePath -OutputRoot $OutputRoot
 & $duplicateSeoUpdater -DataPath $DataPath -OutputRoot $OutputRoot
 & $linkIndexGenerator -DataPath $DataPath
 & $rankingGenerator -DataPath $DataPath
 & $marketIndexGenerator -DataPath $DataPath
+& node (Join-Path $PSScriptRoot 'update-analysis-content.cjs') --data $DataPath
+if ($LASTEXITCODE -ne 0) { throw 'Article analysis update failed' }
 & $articleGenerator
 & $sitemapGenerator -DataPath $DataPath
 & node $homeGenerator --data $DataPath
 if ($LASTEXITCODE -ne 0) { throw "Home static generation failed." }
+& node (Join-Path $PSScriptRoot 'finalize-pricing-pages.cjs')
+if ($LASTEXITCODE -ne 0) { throw 'Page quality finalization failed' }

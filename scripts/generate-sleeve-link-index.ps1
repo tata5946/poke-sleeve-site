@@ -8,6 +8,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "pricing-helpers.ps1")
 
 function Assert-Exists([string]$Path, [string]$Label) {
   if (-not (Test-Path -LiteralPath $Path)) {
@@ -104,43 +105,12 @@ function Get-LatestSeriesPrice([object]$Rows, [string]$DateProperty) {
   return $latestPrice
 }
 
-function Get-LatestPriceValue([object]$Sleeve) {
-  $weekly = Get-LatestSeriesPrice $Sleeve.weeklyPrices "week"
-  if ($null -ne $weekly) { return $weekly }
-
-  $monthly = Get-LatestSeriesPrice $Sleeve.monthlyPrices "month"
-  if ($null -ne $monthly) { return $monthly }
-
-  $yearly = Get-LatestSeriesPrice $Sleeve.yearlyPrices "year"
-  if ($null -ne $yearly) { return $yearly }
-
-  if ($Sleeve.pricesByYear) {
-    $latestYear = 0
-    $latestPrice = $null
-    foreach ($property in @($Sleeve.pricesByYear.PSObject.Properties)) {
-      $year = 0
-      $price = Get-NumberOrNull $property.Value
-      if ([int]::TryParse($property.Name, [ref]$year) -and $null -ne $price -and $price -gt 0 -and $year -gt $latestYear) {
-        $latestYear = $year
-        $latestPrice = $price
-      }
-    }
-    if ($null -ne $latestPrice) { return $latestPrice }
-  }
-
-  return $null
-}
+function Get-LatestPriceValue([object]$Sleeve) { return Get-ReferencePrice $Sleeve }
 
 function Get-LatestWeeklyPair([object]$Sleeve) {
-  $rows = @($Sleeve.weeklyPrices) |
-    Where-Object { (Get-IsoDate $_.week) -and $null -ne (Get-NumberOrNull $_.price) -and (Get-NumberOrNull $_.price) -gt 0 } |
-    Sort-Object { Get-IsoDate $_.week }
-  if ($rows.Count -eq 0) { return $null }
-  $previous = if ($rows.Count -gt 1) { $rows[-2] } else { $null }
-  return [pscustomobject]@{
-    latest = $rows[-1]
-    previous = $previous
-  }
+  $pair = (Get-PricingFact $Sleeve).weeklyPair
+  if ($null -eq $pair) { return $null }
+  return [pscustomobject]@{latest=$pair.latest;previous=$pair.prev}
 }
 
 function Get-ZukanDeltaHtml([object]$Sleeve) {
@@ -156,28 +126,7 @@ function Get-ZukanDeltaHtml([object]$Sleeve) {
   return '<span class="zukan-badge zukan-badge--delta ' + $className + '">' + $text + '</span>'
 }
 
-function Get-ZukanLatestPriceValue([object]$Sleeve) {
-  $weekly = Get-LatestSeriesPrice $Sleeve.weeklyPrices "week"
-  if ($null -ne $weekly) { return $weekly }
-
-  $yearly = Get-LatestSeriesPrice $Sleeve.yearlyPrices "year"
-  if ($null -ne $yearly) { return $yearly }
-
-  if ($Sleeve.pricesByYear) {
-    $latestYear = 0
-    $latestPrice = $null
-    foreach ($property in @($Sleeve.pricesByYear.PSObject.Properties)) {
-      $year = 0
-      $price = Get-NumberOrNull $property.Value
-      if ([int]::TryParse($property.Name, [ref]$year) -and $null -ne $price -and $price -gt 0 -and $year -gt $latestYear) {
-        $latestYear = $year
-        $latestPrice = $price
-      }
-    }
-    return $latestPrice
-  }
-  return $null
-}
+function Get-ZukanLatestPriceValue([object]$Sleeve) { return Get-ReferencePrice $Sleeve }
 
 function Get-ZukanYenText([object]$Value) {
   $price = Get-NumberOrNull $Value
@@ -194,6 +143,7 @@ function Get-ZukanCardHtml([object]$Sleeve) {
   $releaseYear = ConvertTo-HtmlText $Sleeve.releaseYear
   $currentPrice = Get-ZukanYenText (Get-ZukanLatestPriceValue $Sleeve)
   $deltaHtml = Get-ZukanDeltaHtml $Sleeve
+  $quoteMeta = ConvertTo-HtmlText (Get-PricingFact $Sleeve).summary
   $imageHtml = if ([string]::IsNullOrWhiteSpace($imageUrl)) { "" } else {
     '<img src="' + $imageUrl + '" alt="' + $name + '" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display=''none'';" />'
   }
@@ -209,8 +159,9 @@ function Get-ZukanCardHtml([object]$Sleeve) {
                   $releaseHtml
                   <div class="zukan-card-price-wrap zukan-price-panel">
                     <div class="zukan-price-copy">
-                      <p class="zukan-card-price-label">&#29694;&#22312;&#30456;&#22580;</p>
+                      <p class="zukan-card-price-label">&#21442;&#32771;&#30456;&#22580;</p>
                       <p class="zukan-card-price">$currentPrice</p>
+                      <small class="reference-card-meta">$quoteMeta</small>
                       <div class="zukan-card-badges">$deltaHtml</div>
                     </div>
                   </div>
@@ -377,7 +328,7 @@ function Append-ItemList([System.Text.StringBuilder]$Html, [array]$Items) {
     $imageUrl = ConvertTo-HtmlText $sleeve.imageUrl
     $releaseDateAttr = ConvertTo-HtmlText (Get-IsoDate $sleeve.releaseDate)
     $releaseDate = Get-DateText $sleeve.releaseDate
-    $firstPrice = Get-YenText $sleeve.firstPrice "&#26410;&#21462;&#24471;" $true
+    $firstPrice = ConvertTo-HtmlText (Get-ReleasePriceLabel $sleeve)
     $latestPrice = Get-LatestPriceValue $sleeve
     $currentPrice = Get-YenText $latestPrice "&#20385;&#26684;&#12487;&#12540;&#12479;&#12394;&#12375;"
     [void]$Html.AppendLine('            <li class="sleeve-index-item">')
@@ -392,7 +343,7 @@ function Append-ItemList([System.Text.StringBuilder]$Html, [array]$Items) {
     [void]$Html.AppendLine('                  <span class="sleeve-index-meta">')
     [void]$Html.AppendLine(("                    <span>&#30330;&#22770;&#26085; {0}</span>" -f $releaseDate))
     [void]$Html.AppendLine(("                    <span>&#30330;&#22770;&#26178;&#20385;&#26684; {0}</span>" -f $firstPrice))
-    [void]$Html.AppendLine(("                    <span>&#29694;&#22312;&#30456;&#22580; {0}</span>" -f $currentPrice))
+    [void]$Html.AppendLine(("                    <span>&#21442;&#32771;&#30456;&#22580; {0}</span>" -f $currentPrice))
     [void]$Html.AppendLine('                  </span>')
     [void]$Html.AppendLine('                </span>')
     [void]$Html.AppendLine('              </a>')
@@ -486,7 +437,7 @@ function Build-PageIndexHtml([array]$Items, [int]$PageNumber, [int]$TotalPages, 
 Assert-Exists -Path $DataPath -Label "Data file"
 if ($PageSize -lt 1) { throw "PageSize must be 1 or greater." }
 
-$data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$data = Read-PricingCatalog $DataPath
 $items = @($data.sleeves) |
   Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_.id) } |
   Sort-Object @{ Expression = { Get-IsoDate $_.releaseDate }; Descending = $true }, @{ Expression = { [string]$_.name }; Ascending = $true }

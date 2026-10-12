@@ -6,6 +6,7 @@ param(
   [string[]]$Pages = @('price', 'growth', 'surge', 'access')
 )
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "pricing-helpers.ps1")
 $WeeklyCache = @{}
 
 function Html([object]$Value) { [System.Net.WebUtility]::HtmlEncode([string]$Value) }
@@ -31,7 +32,7 @@ function RouteId([object]$Value) {
 function Yen([object]$Value) {
   $number = NumberOrNull $Value
   if ($null -eq $number) { return '&mdash;' }
-  return $number.ToString('#,0.###', [System.Globalization.CultureInfo]::InvariantCulture) + '&#20870;'
+  return ([math]::Floor($number + 0.5)).ToString('N0') + '&#20870;'
 }
 function WeeklyRows([object]$Sleeve, [bool]$ExcludeLegacyMonthly = $false) {
   $cacheKey = ([string]$Sleeve.id) + '|' + $(if ($ExcludeLegacyMonthly) { '1' } else { '0' })
@@ -71,9 +72,9 @@ function PodiumHtml([object]$Row, [int]$Rank, [string]$Type) {
   $headingTag = if ($Rank -eq 1) { 'h2' } else { 'h3' }
   $kicker = switch ($Type) { 'price' {'PRICE RANKING'} 'growth' {'HIGH RATE RANKING'} 'surge' {'PRICE UP RANKING'} default {'ACCESS RANKING'} }
   $metricHtml = switch ($Type) {
-    'price' { '<div class="podium-metric"><span class="podium-metric-label">&#29694;&#22312;&#20385;&#26684;</span><div class="podium-price">' + (Yen $Row.price) + '</div></div><div class="podium-metric"><span class="podium-metric-label">&#21069;&#36913;&#27604;</span><div class="podium-diff ' + $Row.deltaClass + '">' + $Row.deltaText + '</div><div class="podium-rate ' + $Row.deltaClass + '">' + $Row.rateText + '</div></div>' }
+    'price' { '<div class="podium-metric"><span class="podium-metric-label">&#21442;&#32771;&#30456;&#22580;</span><div class="podium-price">' + (Yen $Row.price) + '</div></div><div class="podium-metric"><span class="podium-metric-label">&#21069;&#22238;&#35251;&#28204;&#27604;</span><div class="podium-diff ' + $Row.deltaClass + '">' + $Row.deltaText + '</div><div class="podium-rate ' + $Row.deltaClass + '">' + $Row.rateText + '</div></div>' }
     'growth' { '<div class="podium-metric"><span class="podium-metric-label">&#26368;&#26032;&#20385;&#26684;</span><div class="podium-price">' + (Yen $Row.latest) + '</div></div><div class="podium-metric"><span class="podium-metric-label">&#19978;&#26119;&#29575;</span><div class="podium-rate ' + $Row.deltaClass + '">' + $Row.rateText + '</div></div>' }
-    'surge' { '<div class="podium-metric"><span class="podium-metric-label">&#29694;&#22312;&#20385;&#26684;</span><div class="podium-price">' + (Yen $Row.latest) + '</div></div><div class="podium-metric"><span class="podium-metric-label">&#21069;&#36913;&#27604;</span><div class="podium-diff">' + $Row.deltaText + '</div><div class="podium-rate ' + $Row.deltaClass + '">' + $Row.rateText + '</div></div>' }
+    'surge' { '<div class="podium-metric"><span class="podium-metric-label">&#21442;&#32771;&#30456;&#22580;</span><div class="podium-price">' + (Yen $Row.latest) + '</div></div><div class="podium-metric"><span class="podium-metric-label">&#21069;&#22238;&#35251;&#28204;&#27604;</span><div class="podium-diff">' + $Row.deltaText + '</div><div class="podium-rate ' + $Row.deltaClass + '">' + $Row.rateText + '</div></div>' }
     default { '<div class="podium-metric"><span class="podium-metric-label">&#26368;&#26032;&#20385;&#26684;</span><div class="podium-price">' + (Yen $Row.latest) + '</div></div><div class="podium-metric"><span class="podium-metric-label">&#26368;&#23433;&#20516;</span><div class="podium-price">' + (Yen $Row.min) + '</div></div><div class="podium-metric"><span class="podium-metric-label">&#26368;&#39640;&#20516;</span><div class="podium-price">' + (Yen $Row.max) + '</div></div>' }
   }
   $meta = MetaHtml $s 'podium'
@@ -99,10 +100,11 @@ function StandardHtml([object]$Row, [int]$Rank, [string]$Type) {
 }
 function PriceRows([array]$Sleeves) {
   $rows = foreach ($s in $Sleeves) {
-    $weekly = @(WeeklyRows $s $false)
-    if (-not $weekly.Count) { continue }
-    $latest = $weekly[-1]
-    $prev = if ($weekly.Count -ge 2) { $weekly[-2] } else { $null }
+    $weekly = @(WeeklyRows $s $true)
+    $q = (Get-PricingFact $s).quote
+    if ($null -eq $q) { continue }
+    $latest = [pscustomobject]@{price=$q.price;week=$q.date}
+    $prev = if ($q.type -eq "weekly" -and $weekly.Count -ge 2) { $weekly[-2] } else { $null }
     $diff = if ($prev) { $latest.price - $prev.price } else { $null }
     $rate = if ($prev -and $prev.price -ne 0) { ($diff / $prev.price) * 100 } else { $null }
     $deltaClass = if ($null -eq $diff -or $diff -eq 0) {'flat'} elseif ($diff -gt 0) {'up'} else {'down'}
@@ -110,7 +112,7 @@ function PriceRows([array]$Sleeves) {
     $rateText = if ($null -eq $rate) {'&mdash;'} else { $(if($rate -gt 0){'+'}else{''}) + $rate.ToString('0.0') + '%' }
     [pscustomobject]@{s=$s;price=$latest.price;latest=$latest.price;compare=$(if($prev){$prev.price}else{$null});metric=$latest.price;deltaClass=$deltaClass;deltaText=$deltaText;rateText=$rateText}
   }
-  return @($rows | Sort-Object @{Expression={$_.price};Descending=$true}, @{Expression={[string]$_.s.name};Ascending=$true})
+  return @($rows | Sort-Object @{Expression={(Get-PricingFact $_.s).rank};Ascending=$true})
 }
 function GrowthRows([array]$Sleeves) {
   $globalWeek = LatestGlobalWeek $Sleeves $true
@@ -162,9 +164,9 @@ function RankingMobileHtml([object]$Row, [int]$Rank, [string]$Type) {
   if($weekly.Count){$latest=$weekly[-1];$previousWeek=([datetime]$latest.week).AddDays(-7).ToString('yyyy-MM-dd');$previous=@($weekly|Where-Object{$_.week -eq $previousWeek});if($previous.Count){$delta=$latest.price-$previous[-1].price}}
   $direction=if($null -eq $delta -or $delta -eq 0){'flat'}elseif($delta -gt 0){'up'}else{'down'}
   $change=if($null -eq $delta){'&#12487;&#12540;&#12479;&#12394;&#12375;'}else{$prefix=if($delta -gt 0){'&#8599; +'}elseif($delta -lt 0){'&#8600; &#8722;'}else{'&#177;'};$prefix+[math]::Round([math]::Abs($delta),0,[MidpointRounding]::AwayFromZero).ToString('#,0',[Globalization.CultureInfo]::InvariantCulture)+'&#20870;'}
-  $changeLabel='&#21069;&#36913;&#27604;'
+  $changeLabel='&#21069;&#22238;&#35251;&#28204;&#27604;'
   if($Type -eq 'growth'){$change=$Row.rateText;$changeLabel='30&#26085;&#21069;&#27604;';$direction=$Row.deltaClass}
-  if($Type -eq 'surge'){$change='&#8599; '+$Row.deltaText;$changeLabel='&#21069;&#22238;&#27604;';$direction=$Row.deltaClass}
+  if($Type -eq 'surge'){$change='&#8599; '+$Row.deltaText;$changeLabel='&#21069;&#22238;&#35251;&#28204;&#27604;';$direction=$Row.deltaClass}
   $price=if($null -eq $Row.latest){'&#20385;&#26684;&#12394;&#12375;'}else{[math]::Round($Row.latest,0,[MidpointRounding]::AwayFromZero).ToString('#,0',[Globalization.CultureInfo]::InvariantCulture)+'&#20870;'}
   $graph=RankingSparklineHtml $s
   $badge=switch($Type){'price'{'&#26368;&#39640;&#20385;&#26684; No.1'}'growth'{'&#19978;&#26119;&#29575; No.1'}'surge'{'&#20516;&#19978;&#12364;&#12426;&#38989; No.1'}default{'&#27880;&#30446;&#24230; No.1'}}
@@ -189,7 +191,7 @@ function AccessRows([array]$Sleeves, [string]$PageHtml) {
     $id=[string]$item.id
     if(-not $byId.ContainsKey($id)){continue}
     $s=$byId[$id];$weekly=@(WeeklyRows $s $false)
-    $latest=if($weekly.Count){$weekly[-1].price}else{$null}
+    $latest=Get-ReferencePrice $s
     $prices=@($weekly|ForEach-Object{$_.price})
     $min=if($prices.Count){($prices|Measure-Object -Minimum).Minimum}else{$null}
     $max=if($prices.Count){($prices|Measure-Object -Maximum).Maximum}else{$null}
@@ -257,7 +259,7 @@ function ReplaceRanking([string]$Path,[array]$Rows,[string]$Type) {
 }
 
 if($Limit -lt 0){throw 'Limit must be nonnegative (0 generates all rows)'}
-$data=Get-Content $DataPath -Raw -Encoding UTF8|ConvertFrom-Json
+$data = Read-PricingCatalog $DataPath
 $sleeves=@($data.sleeves)
 if('price' -in $Pages){ReplaceRanking 'ranking.html' (PriceRows $sleeves) 'price'}
 if('growth' -in $Pages){ReplaceRanking 'growth.html' (GrowthRows $sleeves) 'growth'}

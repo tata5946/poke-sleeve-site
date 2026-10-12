@@ -12,8 +12,8 @@ const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon-512x512.png";
 /* STATIC_CATALOG_META_START */
 const SITE_CATALOG_COUNT = 852;
-const LOCAL_DATA_URL = "./data.json?v=catalog-c0f0746b51b7";
-const CATALOG_CACHE_REVISION = "c0f0746b51b7";
+const LOCAL_DATA_URL = "./data.json?v=catalog-803b7f85011b";
+const CATALOG_CACHE_REVISION = "803b7f85011b";
 /* STATIC_CATALOG_META_END */
 
 function getCatalogCount() { return SITE_CATALOG_COUNT; }
@@ -111,6 +111,7 @@ const HEADER_HTML = `
     </div>
     <div class="header-right">
       <a href="./policy.html">ポリシー</a>
+      <a href="./pricing-method.html">相場の算出方法</a>
     </div>
   </div>
   <div class="header-bottom" id="headerPrimaryNav">
@@ -315,37 +316,7 @@ function isPriceDateBeforeRelease(date, sleeve, granularity = "day") {
   return String(date).slice(0, 10) < basis;
 }
 
-function sanitizeSleevePriceHistory(sleeve) {
-  if (!sleeve || typeof sleeve !== "object") return sleeve;
-  const next = { ...sleeve };
-  if (Array.isArray(next.weeklyPrices)) {
-    next.weeklyPrices = next.weeklyPrices.filter((row) => {
-      const price = numOrNull(row?.price);
-      const date = toISODate(row?.week);
-      return !(Number.isFinite(price) && price > 0 && isPriceDateBeforeRelease(date, next, "day"));
-    });
-  }
-  if (Array.isArray(next.monthlyPrices)) {
-    next.monthlyPrices = next.monthlyPrices.filter((row) => {
-      const price = numOrNull(row?.price);
-      const date = toISODate(row?.month);
-      return !(Number.isFinite(price) && price > 0 && isPriceDateBeforeRelease(date, next, "month"));
-    });
-  }
-  if (Array.isArray(next.yearlyPrices)) {
-    next.yearlyPrices = next.yearlyPrices.filter((row) => {
-      const price = numOrNull(row?.price);
-      return !(Number.isFinite(price) && price > 0 && isPriceDateBeforeRelease(row?.year, next, "year"));
-    });
-  }
-  if (next.pricesByYear && typeof next.pricesByYear === "object") {
-    next.pricesByYear = Object.fromEntries(Object.entries(next.pricesByYear).filter(([year, price]) => {
-      const normalized = numOrNull(price);
-      return !(Number.isFinite(normalized) && normalized > 0 && isPriceDateBeforeRelease(year, next, "year"));
-    }));
-  }
-  return next;
-}
+function sanitizeSleevePriceHistory(sleeve) { return SleevePricing.sanitizeSleeve(sleeve); }
 
 function sanitizeDataPayload(data) {
   if (!data || typeof data !== "object" || !Array.isArray(data.sleeves)) return data;
@@ -1748,17 +1719,15 @@ function buildSearchVariants(value) {
   return Array.from(variants);
 }
 
-function getLatestPositivePrice(sleeve) {
-  const arr = Array.isArray(sleeve && sleeve.weeklyPrices) ? sleeve.weeklyPrices : [];
-  let latest = null;
-  for (const x of arr) {
-    const week = toISODate(x && x.week);
-    const price = numOrNull(x && x.price);
-    if (!week || !(price > 0)) continue;
-    if (!latest || week > latest.week) latest = { week, price };
-  }
-  return latest ? latest.price : null;
+function loadContentAds() {
+  if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) return;
+  const ad = document.createElement("script");
+  ad.async = true; ad.crossOrigin = "anonymous";
+  ad.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022";
+  document.head.appendChild(ad);
 }
+
+function getLatestPositivePrice(sleeve) { return SleevePricing.quote(sleeve)?.price ?? null; }
 
 async function getAutocompleteIndex() {
   if (__autocompleteIndexPromise) return await __autocompleteIndexPromise;
@@ -2839,6 +2808,7 @@ window.common = {
   navigateToZukanSearch,
   wireSleeveSelectionFeedback,
   getLatestPositivePrice,
+  loadContentAds,
   waitForInjected,
   MY_COLLECTION_STORAGE_KEY,
   MY_COLLECTION_HISTORY_STORAGE_KEY,

@@ -23,7 +23,7 @@ const context = createContext({
   navigator: {}, localStorage: { getItem: () => null },
   fetch: () => { throw new Error('Chart verification must not request data'); }
 });
-runInContext(source, context);
+runInContext(await readFile(path.join(root, 'assets/pricing.js'), 'utf8') + '\n' + source, context);
 function render(points, mode) {
   context.points = points;
   context.mode = mode;

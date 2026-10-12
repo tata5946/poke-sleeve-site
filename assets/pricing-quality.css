@@ -1,0 +1,21 @@
+.reference-observation { margin-top: 10px; font-size: 12px; line-height: 1.7; color: #475467; font-weight: 500; }
+.reference-observation #weeklyCount { display: block !important; visibility: visible !important; }
+.reference-observation #weeklyCount { min-height: 0; border: 0; background: none; padding: 0; text-align: left; }
+.reference-observation { width: 100%; min-width: 0; overflow-wrap: anywhere; }
+.detail-hero-main { min-width: 0; }
+.kpi .price-kpi-card .label { white-space: normal; line-height: 1.3; }
+@media (min-width: 901px) {
+  .detail-hero-main { grid-template-areas: "title title" "badges price" "info price" "tags price" "actions actions" "share share"; }
+}
+@media (max-width: 900px) {
+  .detail-hero { grid-template-columns: minmax(0, 1fr); }
+  .detail-hero-main { grid-template-columns: minmax(0, 1fr); }
+}
+.reference-observation p { margin: 4px 0; }
+.reference-observation a { color: #1e5bd7; font-size: 12px; }
+.reference-card-meta { display: block; margin: 6px 0; color: #475467; font-size: 11px; line-height: 1.6; }
+.pricing-method-body { max-width: 900px; margin: 30px auto; padding: 0 20px; line-height: 1.9; }
+.pricing-method-body table, .independent-year-analysis table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.pricing-method-body th, .pricing-method-body td, .independent-year-analysis th, .independent-year-analysis td { border: 1px solid #dce4f0; padding: 8px; text-align: left; }
+.independent-year-analysis { margin: 24px 0; }
+.independent-year-analysis .analysis-table-wrap { overflow-x: auto; }

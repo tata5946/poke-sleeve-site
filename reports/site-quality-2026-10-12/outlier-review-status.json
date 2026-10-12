@@ -1,0 +1,6 @@
+{
+  "reviewed_aggregate_candidates": 17,
+  "matching_original_aggregates": 17,
+  "raw_transaction_verification": "未確認。原取引単位の資料が公開JSON・GAS APIに含まれない。",
+  "action": "集計値は根拠なく削除・変更せず、少数件数・急変の注意を表示。原取引照合を人が実施するため記録を保存。"
+}

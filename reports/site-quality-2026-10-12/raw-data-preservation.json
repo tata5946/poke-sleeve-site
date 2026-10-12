@@ -1,0 +1,7 @@
+{
+  "products_checked": 852,
+  "raw_price_history": "unchanged",
+  "raw_first_price": "unchanged",
+  "product_identity": "unchanged",
+  "changes": "Added evidence-backed firstPriceStatus/firstPriceEvidence and sheetCount/sheetCountEvidence; no raw prices or observations deleted."
+}

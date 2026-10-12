@@ -2,8 +2,11 @@ import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const data = JSON.parse(await readFile(path.join(root, 'data.json'), 'utf8'));
+data.sleeves = createRequire(import.meta.url)('../assets/pricing.js').sanitizeCatalog(data.sleeves);
+const pricing = createRequire(import.meta.url)('../assets/pricing.js');
 const byId = new Map(data.sleeves.map(sleeve => [String(sleeve.id), sleeve]));
 const css = await readFile(path.join(root, 'assets/ranking-mobile.css'), 'utf8');
 assert.match(css, /@media \(max-width: 700px\)/);
@@ -25,7 +28,7 @@ function weekly(sleeve, excludeLegacy) {
 }
 function attr(tag, name) { return tag.match(new RegExp(name + '="([^"\\n]*)"'))?.[1]; }
 const report = [];
-for (const [page, type, label] of [['ranking.html','price','前週比'],['surge.html','surge','前回比'],['growth.html','growth','30日前比']]) {
+for (const [page, type, label] of [['ranking.html','price','前回観測比'],['surge.html','surge','前回観測比'],['growth.html','growth','30日前比']]) {
   const html = await readFile(path.join(root, page), 'utf8');
   assert.match(html, /assets\/ranking-mobile\.css/);
   assert.match(html, /assets\/ranking-static\.js/);
@@ -47,8 +50,8 @@ for (const [page, type, label] of [['ranking.html','price','前週比'],['surge.
   const eligible = data.sleeves.filter(sleeve => {
     const rows = weekly(sleeve, excludeLegacy);
     const latest = rows.at(-1);
+    if (type === 'price') return Boolean(pricing.quote(sleeve));
     if (!latest) return false;
-    if (type === 'price') return true;
     if (latest.week !== globalWeek) return false;
     if (type === 'surge') return rows.length >= 2 && latest.price > rows.at(-2).price;
     const target = new Date(Date.parse(latest.week) - 30 * 86400000).toISOString().slice(0, 10);
@@ -64,7 +67,7 @@ for (const [page, type, label] of [['ranking.html','price','前週比'],['surge.
     const decodedLabel = card.body.replace(/&#(\d+);/g, (_, number) => String.fromCodePoint(Number(number)));
     assert.ok(decodedLabel.includes('<small>' + label + '</small>'), page + ': correct comparison label');
     const rows = weekly(byId.get(id), excludeLegacy);
-    const latest = rows.at(-1);
+    const latest = type === 'price' ? { price: pricing.quote(byId.get(id)).price } : rows.at(-1);
     assert.equal(Number(attr(card.tag, 'data-ranking-current')), latest.price, page + ': latest static price');
     let metric = latest.price;
     if (type === 'surge') metric = latest.price - rows.at(-2).price;

@@ -3,6 +3,8 @@ import { createHash } from 'node:crypto';
 import { createContext, runInContext } from 'node:vm';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
+const pricing = createRequire(import.meta.url)('../assets/pricing.js');
 
 // Replace only the initial HTML element, including nested elements of the same tag.
 export function replaceContents(html, id, contents) {
@@ -40,15 +42,7 @@ function numberOrNull(value) {
   return Number.isFinite(number) ? number : null;
 }
 
-function latestWeeklyPrice(sleeve) {
-  const rows = Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [];
-  const latest = rows
-    .map(row => ({ week: String(row?.week || '').trim(), price: numberOrNull(row?.price) }))
-    .filter(row => /^\d{4}-\d{2}-\d{2}$/.test(row.week) && row.price > 0)
-    .sort((a, b) => a.week.localeCompare(b.week))
-    .at(-1);
-  return latest?.price ?? null;
-}
+function latestWeeklyPrice(sleeve) { return pricing.quote(sleeve)?.price ?? null; }
 
 function latestWeeklyDate(sleeves) {
   let latest = '';
@@ -101,7 +95,7 @@ function buildAllMarketSummaryHtml(sleeves) {
   return `<section id="categoryMarketSummary" class="category-market-summary" aria-labelledby="categoryMarketSummaryTitle" data-static-market-summary="1">
           <div class="category-market-summary-head">
             <h2 id="categoryMarketSummaryTitle" class="category-market-summary-title"><span class="category-market-title-icon" aria-hidden="true"><i></i><i></i><i></i></span>全デッキシールドのデッキシールド相場</h2>
-            <p class="category-market-summary-note">※最新週の取引データをもとに集計<span class="category-market-help" role="img" aria-label="集計方法" title="最新週の取引データをもとに集計しています"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3.5 3.3a2.5 2.5 0 0 1 5 .2c0 1.5-2.5 1.6-2.5 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="6" cy="9.4" r=".8" fill="currentColor"/></svg></span></p>
+            <p class="category-market-summary-note">※有効な最新観測の参考相場を集計（補完データを含む）<span class="category-market-help" role="img" aria-label="集計方法" title="有効な最新観測の参考相場を集計（補完データを含む）"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3.5 3.3a2.5 2.5 0 0 1 5 .2c0 1.5-2.5 1.6-2.5 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="6" cy="9.4" r=".8" fill="currentColor"/></svg></span></p>
           </div>
           <div class="category-market-summary-grid">${stat('掲載数', items.length.toLocaleString('ja-JP'), '種類', '▱', 'count')}${stat('平均相場', yen(average), '', '¥', 'average')}${stat('中央値', yen(median), '', '▥', 'median')}${stat('最高相場', yen(highest?.price), '', '♛', 'highest')}${stat('定価以上', aboveRetail.toLocaleString('ja-JP'), `種類（約${rate}%）`, '↗', 'retail')}
           </div>${highestMarkup}
@@ -123,12 +117,14 @@ function element() {
 export async function generateHomeStatic({ root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), dataPath = 'data.json' } = {}) {
   const dataText = await readFile(path.resolve(root, dataPath), 'utf8');
   const data = JSON.parse(dataText);
-  const sleeves = data.sleeves;
+  const sleeves = pricing.sanitizeCatalog(data.sleeves);
   if (!Array.isArray(sleeves) || !sleeves.length) throw new Error('Master catalog is empty');
   const ids = sleeves.map(sleeve => String(sleeve.id ?? '').trim());
   if (ids.some(id => !id) || new Set(ids).size !== ids.length) throw new Error('Master IDs must be present and unique');
-  const revision = createHash('sha256').update(dataText).digest('hex').slice(0, 12);
   let common = await readFile(path.join(root, 'assets/common.js'), 'utf8');
+  const pricingSource = await readFile(path.join(root, 'assets/pricing.js'), 'utf8');
+  const pricingStyles = await readFile(path.join(root, 'assets/pricing-quality.css'), 'utf8');
+  const revision = createHash('sha256').update(dataText + pricingSource + pricingStyles + common.replace(/\/\* STATIC_CATALOG_META_START \*\/[\s\S]*?\/\* STATIC_CATALOG_META_END \*\//, '')).digest('hex').slice(0, 12);
   const metadata = `/* STATIC_CATALOG_META_START */\nconst SITE_CATALOG_COUNT = ${ids.length};\nconst LOCAL_DATA_URL = "./data.json?v=catalog-${revision}";\nconst CATALOG_CACHE_REVISION = "${revision}";\n/* STATIC_CATALOG_META_END */`;
   if (!common.includes('/* STATIC_CATALOG_META_START */')) throw new Error('Catalog metadata marker missing');
   common = common.replace(/\/\* STATIC_CATALOG_META_START \*\/[\s\S]*?\/\* STATIC_CATALOG_META_END \*\//, () => metadata);
@@ -145,6 +141,7 @@ export async function generateHomeStatic({ root = path.resolve(path.dirname(file
     localStorage: { getItem: () => null }, sessionStorage: { getItem: () => null },
     fetch: async () => { throw new Error('Static generation must not access the network'); } };
   const commonContext = createContext({ ...sandbox });
+  runInContext(pricingSource, commonContext);
   const mapSource = await readFile(path.join(root, 'assets/category-page-map.js'), 'utf8');
   runInContext(mapSource + '\n' + common.slice(0, common.indexOf('/* ----- Auto-init')), commonContext, { timeout: 10000 });
   const categoryMarkup = runInContext('buildCategoryNavMarkup(globalThis.staticSleeves).listHtml',
@@ -157,6 +154,7 @@ export async function generateHomeStatic({ root = path.resolve(path.dirname(file
     .find(match => !/\bsrc=|application\//.test(match[1]) && match[2].includes('function renderHomeArticles'))?.[2];
   if (!source || !source.includes('    main().catch')) throw new Error('Home rendering functions missing');
   const homeContext = createContext({ ...sandbox, staticSleeves: sleeves, staticArticles: articles });
+  runInContext(pricingSource, homeContext);
   runInContext(source.slice(0, source.lastIndexOf('    main().catch')), homeContext, { timeout: 10000 });
   const published = runInContext(`
     const staticArticleMap = new Map();
@@ -225,7 +223,9 @@ export async function generateHomeStatic({ root = path.resolve(path.dirname(file
         if (recursive) await updateScriptVersions(file);
       } else if (entry.name.endsWith('.html')) {
         const text = await readFile(file, 'utf8');
-        const updated = text.replace(/assets\/common\.js\?v=[^"\s]+/g, `assets/common.js?v=catalog-${revision}`);
+        const updated = text.replace(/assets\/common\.js\?v=[^"\s]+/g, `assets/common.js?v=catalog-${revision}`)
+          .replace(/assets\/pricing\.js\?v=[^"\s]+/g, `assets/pricing.js?v=catalog-${revision}`)
+          .replace(/assets\/pricing-quality\.css\?v=[^"\s]+/g, `assets/pricing-quality.css?v=catalog-${revision}`);
         if (updated !== text) await writeFile(file, updated);
       }
     }

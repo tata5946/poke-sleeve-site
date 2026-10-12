@@ -32,6 +32,7 @@
       }
     }
   </style>
+<link rel="stylesheet" href="./assets/pricing-quality.css?v=catalog-803b7f85011b">
 </head>
 
 <body class="page-market-list my-collection-page shared-page-layout" data-hide-global-header="1">
@@ -156,7 +157,8 @@
 
   <div id="site-footer"></div>
 
-  <script src="./assets/common.js?v=catalog-c0f0746b51b7"></script>
+  <script src="./assets/pricing.js?v=catalog-803b7f85011b"></script>
+<script src="./assets/common.js?v=catalog-803b7f85011b"></script>
   <script>
     let currentAssetPeriod = "1m";
     let currentAssetTimeline = [];
@@ -200,20 +202,7 @@
       return Number.isFinite(quantity) && quantity > 0 ? quantity : 1;
     }
 
-    function getLatestPrice(sleeve) {
-      if (window.common && typeof window.common.getLatestPositivePrice === "function") {
-        return window.common.getLatestPositivePrice(sleeve);
-      }
-      const rows = Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : [];
-      let latest = null;
-      for (const row of rows) {
-        const week = String(row?.week || "").slice(0, 10);
-        const price = Number(row?.price);
-        if (!week || !(Number.isFinite(price) && price > 0)) continue;
-        if (!latest || week > latest.week) latest = { week, price };
-      }
-      return latest ? latest.price : null;
-    }
+    function getLatestPrice(sleeve) { return SleevePricing.quote(sleeve)?.price ?? null; }
 
     function getReleaseTimestamp(sleeve) {
       const releaseDate = normalizeDate(
@@ -398,12 +387,7 @@
       return latest;
     }
 
-    function getFirstPriceValue(sleeve) {
-      const rawValue = sleeve?.firstPrice;
-      if (rawValue == null || rawValue === "") return null;
-      const price = Number(rawValue);
-      return Number.isFinite(price) && price >= 0 ? price : null;
-    }
+    function getFirstPriceValue(sleeve) { return SleevePricing.firstPrice(sleeve).price; }
 
     function resolvePurchasePriceInfo(item, sleeve, pricePoints, purchaseDate, releaseTimestamp) {
       if (isPurchasedOnRelease(item)) {

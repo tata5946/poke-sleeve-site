@@ -108,6 +108,7 @@ $staticPages = @(
   "june-19-restock.html",
   "contact.html",
   "policy.html"
+  "pricing-method.html"
 ) | Select-Object -Unique
 
 $sleeveIds = @($data.sleeves) |

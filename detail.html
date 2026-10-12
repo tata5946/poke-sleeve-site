@@ -7,8 +7,7 @@
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png" />
   <link rel="apple-touch-icon" sizes="192x192" href="/assets/favicon-192x192.png" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022"
-     crossorigin="anonymous"></script>
+  <meta name="robots" content="noindex, follow" />
   <title>スリーブ相場 - ポケスリ相場ナビ</title>
   <meta name="description" content="ポケカスリーブの週次価格推移を確認できる詳細ページです。" />
   <meta property="og:title" content="スリーブ相場 - ポケスリ相場ナビ" />
@@ -2426,6 +2425,7 @@
       }
     }
   </style>
+<link rel="stylesheet" href="./assets/pricing-quality.css?v=catalog-803b7f85011b">
 </head>
 
 <body class="page-content-focus shared-page-layout" data-hide-global-header="1">
@@ -2465,8 +2465,9 @@
 
               <div class="kpi">
                 <div class="box price-kpi-card">
-                  <div id="latestPriceLabel" class="label">現在価格</div>
+                  <div id="latestPriceLabel" class="label">現在の参考相場</div>
                   <div id="latestWeekly" class="value">-</div>
+                  <div id="referenceObservation"></div>
                 </div>
                 <div class="box price-kpi-card">
                   <div class="label">1枚あたり価格</div>
@@ -2577,7 +2578,8 @@
   </div>
 
   <script src="./assets/category-page-map.js?v=20260917a"></script>
-  <script src="./assets/common.js?v=catalog-c0f0746b51b7"></script>
+  <script src="./assets/pricing.js?v=catalog-803b7f85011b"></script>
+<script src="./assets/common.js?v=catalog-803b7f85011b"></script>
 
   <script>
     function escapeHtml(str) {
@@ -3075,15 +3077,11 @@
     }
 
     function getFirstPriceValue(sleeve) {
-      const rawValue = sleeve?.firstPrice;
-      if (rawValue == null || rawValue === "") return null;
-      const price = Number(rawValue);
-      return Number.isFinite(price) && price >= 0 ? price : null;
+      return SleevePricing.firstPrice(sleeve).price;
     }
 
     function getFirstPriceText(sleeve) {
-      const price = getFirstPriceValue(sleeve);
-      return price == null ? "" : `${Math.round(price).toLocaleString()}円`;
+      return SleevePricing.firstPrice(sleeve).label;
     }
 
     function getDetailFieldRows(sleeve) {
@@ -3233,11 +3231,7 @@
       return keywords.some((keyword) => source.includes(String(keyword).toLowerCase()));
     }
 
-    function getMarketDiagnosisPriceRows(sleeve) {
-      return normalizeObservationRows(sleeve?.weeklyPrices)
-        .filter((row) => row.hasTrade && Number.isFinite(row.avgPrice) && row.avgPrice > 0)
-        .sort((a, b) => a.timestamp - b.timestamp);
-    }
+    function getMarketDiagnosisPriceRows(sleeve) { return buildFullPeriodSeries(sleeve).map(point => ({ avgPrice: point.price, timestamp: Date.parse(point.date), periodStart: point.date, tradeCount: point.count, granularity: point.type === "weekly" ? "week" : point.type === "monthly" ? "month" : "year", hasTrade: true })); }
 
     function getNearestPastMarketRow(rows, latestTs, days) {
       const startTs = latestTs - days * 24 * 60 * 60 * 1000;
@@ -3428,8 +3422,7 @@
     }
 
     function getSleeveLatestMarketPrice(sleeve) {
-      const rows = getMarketDiagnosisPriceRows(sleeve);
-      return rows.length ? Number(rows[rows.length - 1].avgPrice) : null;
+      return SleevePricing.quote(sleeve)?.price ?? null;
     }
 
     const marketPositionIndexCache = new WeakMap();
@@ -3462,7 +3455,7 @@
 
       const pricedSleeves = index.pricedEntries;
       const overallRank = pricedSleeves.length
-        ? 1 + pricedSleeves.filter((entry) => entry.price > latestPrice).length
+        ? 1 + [...pricedSleeves].sort((a,b) => b.price - a.price || String(a.item.id).localeCompare(String(b.item.id), "en")).findIndex(entry => String(entry.item.id) === String(sleeve.id))
         : null;
 
       const releaseYear = getSleeveReleaseYearNumber(sleeve);
@@ -3471,7 +3464,7 @@
         : [];
       const yearPricedSleeves = pricedSleeves.filter((entry) => entry.releaseYear === releaseYear);
       const yearRank = yearPricedSleeves.length
-        ? 1 + yearPricedSleeves.filter((entry) => entry.price > latestPrice).length
+        ? 1 + [...yearPricedSleeves].sort((a,b) => b.price - a.price || String(a.item.id).localeCompare(String(b.item.id), "en")).findIndex(entry => String(entry.item.id) === String(sleeve.id))
         : null;
 
       const firstPrice = getFirstPriceValue(sleeve);
@@ -3566,7 +3559,7 @@
       }
 
       root.innerHTML = `
-        <h3 class="ai-diagnosis-title">AI相場診断</h3>
+        <h3 class="ai-diagnosis-title">相場データ分析</h3>
         <p class="ai-diagnosis-level">現在の相場水準：${escapeHtml(diagnosis.label)}</p>
         <p class="ai-diagnosis-reason">理由：${escapeHtml(diagnosis.reason)}</p>
       `;
@@ -5131,9 +5124,9 @@
 
     function dedupeSeriesByDate(points) {
       const priorityOf = (type) => {
-        if (type === "yearly") return 3;
+        if (type === "yearly") return 1;
         if (type === "monthly") return 2;
-        if (type === "weekly") return 1;
+        if (type === "weekly") return 3;
         return 0;
       };
       const map = new Map();
@@ -5158,14 +5151,7 @@
     }
 
     function buildFullPeriodSeries(sleeve) {
-      const explicitMonthly = filterFullPeriodMonthlySeries(buildMonthlySeries(sleeve));
-      const explicitWeekly = buildWeeklySeries(sleeve);
-      const legacyMonthly = filterFullPeriodMonthlySeries(buildLegacyObservationSeries(sleeve, ["month"]));
-      const legacyWeekly = buildLegacyObservationSeries(sleeve, ["week"]);
-      return dedupeSeriesByDate([
-        ...(explicitMonthly.length ? explicitMonthly : legacyMonthly),
-        ...(explicitWeekly.length ? explicitWeekly : legacyWeekly)
-      ]);
+      return dedupeSeriesByDate(SleevePricing.chartSeries(sleeve).map(point => ({ ...point, timestamp: Date.parse(point.date) })));
     }
 
     function buildRecentWeeklySeries(sleeve, windowDays = 92) {
@@ -5307,8 +5293,7 @@
     }
 
     function getSleeveSheetCount(sleeve) {
-      const categories = getSleeveCategoryTexts(sleeve);
-      return categories.some((text) => /32\s*枚販売|32\s*枚/.test(text)) ? 32 : 64;
+      return SleevePricing.sheetCount(sleeve);
     }
 
     function renderUnitPrice(latestPrice, sleeve) {
@@ -5319,45 +5304,14 @@
         return;
       }
 
-      const sheetCount = getSleeveSheetCount(sleeve);
-      const unitPrice = Math.round(latestPrice / sheetCount);
-      el.textContent = `約${unitPrice.toLocaleString()}円`;
+      el.textContent = SleevePricing.unitPrice(sleeve);
     }
 
     function setPriceKpiFromSeries(points, sleeve) {
-      const latestEl = document.getElementById("latestWeekly");
-      const deltaEl = document.getElementById("weeklyDelta") || { textContent: "", className: "" };
-      const countEl = document.getElementById("weeklyCount") || { textContent: "" };
-      const labelEl = document.getElementById("latestPriceLabel");
-      if (labelEl) labelEl.textContent = "現在価格";
-      const list = enrichSeries(points);
-      if (!list.length) {
-        latestEl.textContent = "-";
-        renderUnitPrice(null, sleeve);
-        deltaEl.textContent = "比較できるデータがありません";
-        deltaEl.className = "delta flat";
-        countEl.textContent = "最終観測日: -";
-        return;
-      }
-      const latest = list[list.length - 1];
-      latestEl.textContent = `${latest.price.toLocaleString()}円`;
-      renderUnitPrice(latest.price, sleeve);
-      countEl.textContent = `最終観測日: ${formatPointDate(latest, "all")}`;
-      const prev = list.length >= 2 ? list[list.length - 2] : null;
-      if (!prev) {
-        deltaEl.textContent = "比較できる過去データがありません";
-        deltaEl.className = "delta flat";
-        return;
-      }
-      const diff = latest.price - prev.price;
-      const abs = Math.abs(diff);
-      let cls = "flat";
-      let arrow = "→";
-      let sign = "±";
-      if (diff > 0) { cls = "up"; arrow = "↑"; sign = "+"; }
-      if (diff < 0) { cls = "down"; arrow = "↓"; sign = "-"; }
-      deltaEl.className = "delta " + cls;
-      deltaEl.textContent = `${arrow} 前回観測比 ${sign}${abs.toLocaleString()}円`;
+      document.getElementById("latestWeekly").textContent = SleevePricing.yen(SleevePricing.quote(sleeve)?.price);
+      const observationEl = document.getElementById("referenceObservation");
+      if (observationEl) observationEl.innerHTML = SleevePricing.observationHtml(sleeve);
+      renderUnitPrice(SleevePricing.quote(sleeve)?.price ?? null, sleeve);
     }
 
     function buildMarkerSvg(point, cx, cy, radius, isLatest, mode) {
@@ -5940,6 +5894,7 @@
         window.common.setupMyCollectionButton(s, document.getElementById("myCollectionToggle"));
       }
       renderCollectionPopularity(s);
+      if (/\/detail\.html$/.test(location.pathname) && SleevePricing.quote(s)) window.common?.loadContentAds?.();
       document.addEventListener("pokesuri:collection-stats-synced", () => renderCollectionPopularity(s));
 
       const fullPeriodSeries = buildFullPeriodSeries(s);
@@ -6044,6 +5999,7 @@
       img.alt = s.name || "";
       setupSleeveImageZoom();
       renderSleevePage(s, sleeves);
+      document.body.dataset.pricingHydrated = "1";
       if (!sleeves.length) {
         refreshSleeveDataAfterRender(s, id);
       }

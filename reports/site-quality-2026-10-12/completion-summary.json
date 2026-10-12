@@ -1,0 +1,101 @@
+{
+  "date_jst": "2026-10-12",
+  "published": false,
+  "changed_files": 1572,
+  "changed_file_groups": {
+    "source-data-assets": 29,
+    "generated-article": 14,
+    "report-and-evidence": 14,
+    "implementation-and-checks": 22,
+    "generated-product": 852,
+    "index-category-sample": 641
+  },
+  "original_html_count": 1535,
+  "html_count": 1536,
+  "products": 852,
+  "reference_products": 795,
+  "reference_sources": {
+    "none": 57,
+    "yearly": 3,
+    "weekly": 764,
+    "monthly": 28
+  },
+  "retail_status": {
+    "sale": 751,
+    "set": 42,
+    "unknown": 59
+  },
+  "sheet_counts_confirmed": 148,
+  "sheet_counts_unknown": 704,
+  "unit_prices_displayed": 114,
+  "static_runtime_price_mismatches": 0,
+  "html_major_problems": 0,
+  "card_prices_checked": 1764,
+  "price_ranks": 795,
+  "sitemap_urls": 1207,
+  "ad_loaders_before": 1498,
+  "ad_loaders_after": 1107,
+  "excluded_ad_loaders": 0,
+  "browser_cases": 20,
+  "browser_failed": 0,
+  "mobile_390_verified": true,
+  "collection_fixture": {
+    "latestWeekly": "",
+    "weeklyCount": "",
+    "referenceTradeCount": "",
+    "referencePriceNotes": "",
+    "weeklyUnitPrice": "",
+    "kpiLatestPrice": "",
+    "kpiPrevChange": "",
+    "kpiPrevPct": "",
+    "aiCommentBody": "",
+    "error": "",
+    "collectionAssetTotal": "6,974円",
+    "collectionCount": "2種類",
+    "collectionQuantityTotal": "3個"
+  },
+  "market_fixture": {
+    "latestWeekly": "",
+    "weeklyCount": "",
+    "referenceTradeCount": "",
+    "referencePriceNotes": "",
+    "weeklyUnitPrice": "",
+    "kpiLatestPrice": "2,530円",
+    "kpiPrevChange": "+16円",
+    "kpiPrevPct": "+0.6%",
+    "aiCommentBody": "最新の全スリーブ平均相場は2,530円で、前回比ではほぼ横ばいです。前回比は+16円（+0.6%）、月間は-87円（-3.3%）、年間は-585円（-18.8%）です。今週は184種類が更新され、対象764種類のうち24.1%に新しい相場が入りました。",
+    "error": "",
+    "collectionAssetTotal": "",
+    "collectionCount": "",
+    "collectionQuantityTotal": ""
+  },
+  "original_aggregate_review": {
+    "reviewed_aggregate_candidates": 17,
+    "matching_original_aggregates": 17,
+    "raw_transaction_verification": "未確認。原取引単位の資料が公開JSON・GAS APIに含まれない。",
+    "action": "集計値は根拠なく削除・変更せず、少数件数・急変の注意を表示。原取引照合を人が実施するため記録を保存。"
+  },
+  "raw_data_preserved": {
+    "products_checked": 852,
+    "raw_price_history": "unchanged",
+    "raw_first_price": "unchanged",
+    "product_identity": "unchanged",
+    "changes": "Added evidence-backed firstPriceStatus/firstPriceEvidence and sheetCount/sheetCountEvidence; no raw prices or observations deleted."
+  },
+  "checks": [
+    "check-price-quality.mjs",
+    "check-site-quality.mjs",
+    "check-home-static-content.mjs",
+    "check-static-rankings.mjs",
+    "check-detail-weekly-volume.mjs",
+    "check-access-ranking-static.mjs",
+    "check-browser-price-quality.cjs"
+  ],
+  "remaining": [
+    "Original transaction verification for 17 candidates",
+    "Unknown retail price: 59 products",
+    "Unknown sheet count: 704 products",
+    "Per-product editorial/index review for 57 unpriced products",
+    "AdSense account settings/Search Console/deployment not performed"
+  ]
+}

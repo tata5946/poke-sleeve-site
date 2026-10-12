@@ -70,6 +70,7 @@ function loadDetailFunctions(templatePath) {
   };
   sandbox.globalThis = sandbox;
   vm.createContext(sandbox);
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../assets/pricing.js'), 'utf8'), sandbox);
   const exportsSource = `
     globalThis.__staticSleeveFunctions = {
       buildAiMarketDiagnosis,
@@ -94,7 +95,7 @@ function buildDiagnosisHtml(functions, sleeve) {
   const diagnosis = functions.buildAiMarketDiagnosis(sleeve);
   if (!diagnosis) return "";
   return `
-        <h3 class="ai-diagnosis-title">AI相場診断</h3>
+        <h3 class="ai-diagnosis-title">相場データ分析</h3>
         <p class="ai-diagnosis-level">現在の相場水準：${functions.escapeHtml(diagnosis.label)}</p>
         <p class="ai-diagnosis-reason">理由：${functions.escapeHtml(diagnosis.reason)}</p>
       `;
@@ -109,6 +110,7 @@ function buildStaticContent(functions, sleeves) {
       diagnosisHtml: buildDiagnosisHtml(functions, sleeve),
       marketPositionHtml: functions.renderMarketPosition(sleeve, sleeves),
       priceHistoryHtml: functions.renderPriceTable(functions.buildFullPeriodSeries(sleeve), "all")
+      , observationHtml: require('../assets/pricing.js').observationHtml(sleeve)
     };
   }
   return result;
@@ -122,7 +124,7 @@ if (!dataPath || !templatePath || !outputPath) {
 }
 
 const data = readJson(dataPath, "Data file");
-const sleeves = Array.isArray(data?.sleeves) ? data.sleeves : [];
+const sleeves = require('../assets/pricing.js').sanitizeCatalog(data.sleeves);
 const functions = loadDetailFunctions(templatePath);
 const content = buildStaticContent(functions, sleeves);
 fs.writeFileSync(outputPath, JSON.stringify(content), "utf8");

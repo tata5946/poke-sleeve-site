@@ -7,7 +7,8 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dateArg = process.argv.indexOf('--date');
 const date = dateArg >= 0 ? process.argv[dateArg + 1] : '2026-10-12';
-const out = path.join(root, 'reports', `site-audit-${date}`);
+const outputArg = process.argv.indexOf('--output');
+const out = outputArg >= 0 ? path.resolve(root, process.argv[outputArg + 1]) : path.join(root, 'reports', `site-audit-${date}`);
 fs.mkdirSync(out, { recursive: true });
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const origin = 'https://pokesuri-navi.com';
@@ -44,20 +45,20 @@ const context = createContext({ console, URL, URLSearchParams, Date, Intl, setTi
   location: { href: origin + '/', pathname: '/', search: '' }, navigator: {},
   localStorage: { getItem: () => null }, fetch: () => { throw Error('Local audit must not fetch'); }
 });
-runInContext(source, context);
+runInContext(read('assets/pricing.js') + '\n' + source, context);
 const functions = runInContext('({buildFullPeriodSeries,getSleeveLatestMarketPrice,buildAiMarketDiagnosis,getSeriesForMode,setPriceKpiFromSeries,getFirstPriceValue,getSleeveSheetCount})', context);
 const commonSource = read('assets/common.js');
 const commonContext = createContext({ console, URL, URLSearchParams, Date, Intl, setTimeout, clearTimeout,
   window: { addEventListener() {} }, document: { addEventListener() {}, querySelectorAll: () => [], getElementById: () => null },
   location: { href: origin + '/', pathname: '/', search: '' }, navigator: {}, localStorage: { getItem: () => null }, sessionStorage: { getItem: () => null } });
-runInContext(commonSource.slice(0, commonSource.indexOf('/* ----- Auto-init')), commonContext);
+runInContext(read('assets/pricing.js') + '\n' + commonSource.slice(0, commonSource.indexOf('/* ----- Auto-init')), commonContext);
 commonContext.auditData = { sleeves: data };
 const sanitized = runInContext('sanitizeDataPayload(auditData).sleeves', commonContext);
 const marketSource = [...read('index-market.html').matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/gi)]
   .find(match => !/\bsrc=/.test(match[1]) && match[2].includes('function buildMarketIndexView'))[2];
 const marketContext = createContext({ console, URL, URLSearchParams, Date, Intl, setTimeout, clearTimeout,
   window: { matchMedia: () => ({ matches: false }) }, document: { getElementById: () => null }, location: { href: origin + '/' } });
-runInContext(marketSource.slice(0, marketSource.lastIndexOf('    main();')), marketContext);
+runInContext(read('assets/pricing.js') + '\n' + marketSource.slice(0, marketSource.lastIndexOf('    main();')), marketContext);
 const marketFunctions = runInContext('({buildMarketIndexView,buildAveragePriceSeries,buildMarketCommentStats})', marketContext);
 const marketCalculations = [];
 for (const [label, sleeves] of [['raw-master', data], ['common-sanitized', sanitized]]) {

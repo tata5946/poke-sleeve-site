@@ -9,6 +9,7 @@
 )
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "pricing-helpers.ps1")
 
 function Assert-Exists([string]$Path, [string]$Label) {
   if (-not (Test-Path -LiteralPath $Path)) {
@@ -47,59 +48,12 @@ function Write-TextIfChanged([string]$Path, [string]$Text) {
   [System.IO.File]::WriteAllText($resolvedPath, $content, $utf8NoBom)
 }
 
-function Get-FirstPriceText([object]$Sleeve) {
-  if (-not $Sleeve.PSObject.Properties.Name.Contains("firstPrice")) { return "" }
-  if ($null -eq $Sleeve.firstPrice -or [string]::IsNullOrWhiteSpace([string]$Sleeve.firstPrice)) { return "" }
-  $price = 0.0
-  if (-not [double]::TryParse([string]$Sleeve.firstPrice, [ref]$price)) { return "" }
-  if ($price -lt 0) { return "" }
-  return ([Math]::Round($price)).ToString("N0") + "円"
-}
+function Get-FirstPriceText([object]$Sleeve) { return Get-ReleasePriceLabel $Sleeve }
 
 function Get-LatestTrade([object]$Sleeve) {
-  $rows = @($Sleeve.weeklyPrices) | Where-Object {
-    $null -ne $_.price -and [double]$_.price -gt 0
-  } | Sort-Object { [datetime]$_.week }
-  if ($rows.Count -gt 0) {
-    $row = $rows[-1]
-    $dateText = ([string]$row.week).Substring(0, [Math]::Min(10, ([string]$row.week).Length))
-    return [pscustomobject]@{
-      price = $row.price
-      count = $row.count
-      period = $row.week
-      observedText = "最終観測日: " + $dateText
-    }
-  }
-
-  $yearly = @($Sleeve.yearlyPrices) | Where-Object {
-    $null -ne $_.price -and [double]$_.price -gt 0
-  } | Sort-Object { [int]$_.year }
-  if ($yearly.Count -gt 0) {
-    $row = $yearly[-1]
-    return [pscustomobject]@{
-      price = $row.price
-      count = $row.count
-      period = $row.year
-      observedText = "年次データ: " + ([string]$row.year)
-    }
-  }
-
-  if ($Sleeve.pricesByYear) {
-    $pricesByYear = @($Sleeve.pricesByYear.PSObject.Properties) |
-      Where-Object { $null -ne $_.Value -and [double]$_.Value -gt 0 } |
-      Sort-Object { [int]$_.Name }
-    if ($pricesByYear.Count -gt 0) {
-      $row = $pricesByYear[-1]
-      return [pscustomobject]@{
-        price = $row.Value
-        count = $null
-        period = $row.Name
-        observedText = "年次データ: " + ([string]$row.Name)
-      }
-    }
-  }
-
-  return $null
+  $q = (Get-PricingFact $Sleeve).quote
+  if ($null -eq $q) { return $null }
+  return [pscustomobject]@{ price=$q.price; count=$q.count; period=$q.date; observedText=$q.date }
 }
 
 function Test-SleeveNameHasDeckShield([string]$Name) {
@@ -263,7 +217,7 @@ Assert-Exists -Path $DataPath -Label "Data file"
 Assert-Exists -Path $TemplatePath -Label "Template"
 Assert-Exists -Path $StaticContentBuilderPath -Label "Static content builder"
 
-$data = Get-Content -LiteralPath $DataPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$data = Read-PricingCatalog $DataPath
 $script:SleeveSeoQualifierById = @{}
 foreach ($group in @($data.sleeves | Where-Object { ([string]$_.name).Trim() } | Group-Object { ([string]$_.name).Trim() } | Where-Object Count -gt 1)) {
   $used = @{}
@@ -342,6 +296,8 @@ foreach ($sleeve in @($data.sleeves)) {
   $inlinePageDataScript = '  <script>window.__SLEEVE_PAGE_ID = ' + $jsId + ';window.__SLEEVE_PAGE_DATA = ' + $jsSleeve + ';</script>'
   $latestPriceText = if ($latestTrade) { ([double]$latestTrade.price).ToString("N0") + "円" } else { "-" }
   $content = $template
+  $content = [regex]::Replace($content, '<meta name="robots" content="noindex, follow" />', '', 1)
+  if ($null -ne $latestTrade) { $content = $content.Replace("</head>", '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022" crossorigin="anonymous"></script></head>') }
   $content = $content -replace '<head>', ("<head>`r`n" + $baseTag)
   $content = [regex]::Replace($content, '<title>.*?</title>', ('  <title>' + ($ogTitle.Replace('$', '$$')) + '</title>'), 1)
   $content = [regex]::Replace($content, '<meta name="description" content="[^"]*" />', ('  <meta name="description" content="' + ($ogDescription.Replace('"', '&quot;').Replace('$', '$$')) + '" />'), 1)
@@ -390,6 +346,8 @@ foreach ($sleeve in @($data.sleeves)) {
     $diagnosisHtml = [string]$staticContent.diagnosisHtml
     $positionHtml = [string]$staticContent.marketPositionHtml
     $historyHtml = [string]$staticContent.priceHistoryHtml
+    $content = $content.Replace('<div id="referenceObservation"></div>', '<div id="referenceObservation">' + [string]$staticContent.observationHtml + '</div>')
+    $content = $content.Replace('<div id="weeklyUnitPrice" class="value price-unit-value">-</div>', '<div id="weeklyUnitPrice" class="value price-unit-value">' + (ConvertTo-HtmlText (Get-PricingFact $sleeve).unitPrice) + '</div>')
     if (-not [string]::IsNullOrWhiteSpace($diagnosisHtml)) {
       $content = $content.Replace(
         '<section class="panel ai-diagnosis-panel page-focus-panel" id="aiMarketDiagnosis" hidden></section>',
