@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/assets/favicon-192x192.png" />
+  <meta name="robots" content="noindex,follow" />
+  <title>マイコレクション - ポケスリ相場ナビ</title>
+  <meta name="description" content="お気に入りのポケカスリーブ・デッキシールドを登録して、自分だけのコレクションを管理。保有数やコレクション総額、資産推移もまとめて確認できます。" />
+  <meta property="og:title" content="マイコレクション - ポケスリ相場ナビ" />
+  <meta property="og:description" content="お気に入りのポケカスリーブ・デッキシールドを登録して、自分だけのコレクションを管理。保有数やコレクション総額、資産推移もまとめて確認できます。" />
+  <meta property="og:image" content="https://pokesuri-navi.com/assets/favicon-512x512.png" />
+  <meta property="og:url" content="https://pokesuri-navi.com/my-collection.html" />
+  <link rel="canonical" href="https://pokesuri-navi.com/my-collection.html" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/site.css?v=20261002sharedlayout" />
+  <style>
+    @media (max-width: 700px) {
+      html:root body.my-collection-page .my-collection-hero-copy {
+        display: grid !important;
+        gap: 0 !important;
+      }
+
+      html:root body.my-collection-page .my-asset-chart-panel {
+        margin-top: 8px !important;
+      }
+    }
+  </style>
+<link rel="stylesheet" href="./assets/pricing-quality.css?v=catalog-38ed72af9e57">
+</head>
+
+<body class="page-market-list my-collection-page shared-page-layout" data-hide-global-header="1">
+  <div id="site-header"></div>
+
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="サイドバー">
+      <div id="dashboardSidebarSlot" data-dashboard-sidebar-active="collection"></div>
+    </aside>
+    <main class="dashboard-main">
+      <header class="dashboard-topbar">
+        <div id="dashboardTopbarSlot" data-dashboard-topbar-active="collection"></div>
+      </header>
+      <div class="dashboard-content shared-page-content">
+        <nav class="breadcrumb" aria-label="パンくず">
+          <a href="./">ホーム</a>
+          <span class="breadcrumb-sep" aria-hidden="true">></span>
+          <span class="breadcrumb-current" aria-current="page">マイコレクション</span>
+        </nav>
+
+        <section class="page-hero-card shared-page-heading" aria-label="ページ見出し">
+          <div class="my-collection-hero-copy">
+            <h1 class="page-hero-title shared-page-heading-title">マイコレクション</h1>
+            <p class="my-collection-lead shared-page-heading-desc">持っているデッキシールドを登録して、自分だけのコレクションを管理できます。</p>
+          </div>
+          <a class="my-collection-add-btn" href="./sleeves/">＋ 追加する</a>
+        </section>
+
+        <section class="my-asset-panel" aria-label="コレクション資産サマリー">
+          <div class="my-asset-card my-asset-card--primary">
+            <span class="my-asset-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <ellipse cx="12" cy="5" rx="6" ry="3"></ellipse>
+                <path d="M6 5v5c0 1.7 2.7 3 6 3s6-1.3 6-3V5"></path>
+                <path d="M6 10v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"></path>
+                <path d="M6 15v4c0 1.7 2.7 3 6 3s6-1.3 6-3v-4"></path>
+              </svg>
+            </span>
+            <span class="my-asset-card-body">
+              <span class="my-asset-label">総資産額</span>
+              <strong id="collectionAssetTotal" class="my-asset-card-value my-asset-total-value">―</strong>
+              <span class="my-asset-primary-foot">
+                <span>取得総額 <strong id="collectionAcquisitionTotal">―</strong></span>
+                <span>評価損益 <strong id="collectionValuationPnl" class="my-asset-inline-pnl">―</strong> <strong id="collectionValuationRate" class="my-asset-inline-rate">―</strong></span>
+              </span>
+              <small id="collectionValuationNote" class="my-asset-card-note" hidden>※取得価格・評価損益は購入価格取得済みアイテムのみで計算</small>
+            </span>
+          </div>
+          <div class="my-asset-card">
+            <span class="my-asset-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <rect x="8" y="4" width="10" height="14" rx="1.6"></rect>
+                <path d="M6 7H5.6A1.6 1.6 0 0 0 4 8.6v10.8A1.6 1.6 0 0 0 5.6 21h7.8A1.6 1.6 0 0 0 15 19.4V19"></path>
+              </svg>
+            </span>
+            <span class="my-asset-card-body">
+              <span class="my-asset-label">保有数</span>
+              <strong id="collectionCount" class="my-asset-card-value my-collection-summary">0種類</strong>
+            </span>
+          </div>
+          <div class="my-asset-card">
+            <span class="my-asset-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <rect x="6" y="3" width="12" height="18" rx="2"></rect>
+                <path d="M9 7h6"></path>
+                <path d="M9 11h6"></path>
+                <path d="M9 15h3"></path>
+              </svg>
+            </span>
+            <span class="my-asset-card-body">
+              <span class="my-asset-label">保有枚数</span>
+              <strong id="collectionQuantityTotal" class="my-asset-card-value">0個</strong>
+            </span>
+          </div>
+        </section>
+
+        <section class="my-asset-chart-panel" aria-label="資産額の推移">
+          <div class="my-asset-chart-head">
+            <div>
+              <h2>資産額の推移</h2>
+              <p>コレクションの追加・削除・保有数変更の履歴と、各時点の相場で評価した参考推移です。</p>
+            </div>
+            <div class="my-asset-periods" aria-label="表示期間">
+              <button type="button" class="my-asset-period-btn is-active" data-asset-period="1m">1か月</button>
+              <button type="button" class="my-asset-period-btn" data-asset-period="3m">3か月</button>
+              <button type="button" class="my-asset-period-btn" data-asset-period="6m">6か月</button>
+              <button type="button" class="my-asset-period-btn" data-asset-period="1y">1年</button>
+              <button type="button" class="my-asset-period-btn" data-asset-period="all">全期間</button>
+            </div>
+          </div>
+          <div id="collectionAssetChart" class="my-asset-chart" aria-live="polite"></div>
+        </section>
+
+        <section class="my-collection-list-section" aria-label="登録済みデッキシールド">
+          <div class="my-collection-list-head">
+            <h2>コレクション一覧</h2>
+            <label class="my-collection-sort">
+              <select id="collectionSort" aria-label="並び替え">
+                <option value="valuationDesc">評価額の高い順</option>
+                <option value="pnlDesc">評価損益の高い順</option>
+                <option value="quantityDesc">保有枚数の多い順</option>
+                <option value="nameAsc">名前順</option>
+              </select>
+            </label>
+          </div>
+          <div id="collectionList" class="my-collection-grid" aria-live="polite"></div>
+        </section>
+
+        <div id="collectionEditSheet" class="my-collection-edit-sheet" hidden>
+          <button class="my-collection-edit-backdrop" type="button" data-edit-close aria-label="編集を閉じる"></button>
+          <section class="my-collection-edit-panel" role="dialog" aria-modal="true" aria-labelledby="collectionEditTitle">
+            <div id="collectionEditContent"></div>
+          </section>
+        </div>
+
+        <p class="my-collection-note">
+          マイコレクションのデータは、このブラウザ内に保存されます。ブラウザのサイトデータ・Cookie等を削除した場合や、シークレットモード、別ブラウザ、別端末ではデータが引き継がれない場合があります。
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <div id="site-footer"></div>
+
+  <script src="./assets/pricing.js?v=catalog-38ed72af9e57"></script>
+<script src="./assets/common.js?v=catalog-38ed72af9e57"></script>
+  <script>
+    let currentAssetPeriod = "1m";
+    let currentAssetTimeline = [];
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatPrice(price) {
+      const n = Number(price);
+      return Number.isFinite(n) && n > 0 ? `${Math.round(n).toLocaleString()}円` : "価格データなし";
+    }
+
+    function formatCurrency(price) {
+      const n = Number(price);
+      return Number.isFinite(n) && n >= 0 ? `¥${Math.round(n).toLocaleString()}` : "―";
+    }
+
+    function parsePositiveNumber(value) {
+      const n = Number(String(value ?? "").replace(/[^\d.-]/g, ""));
+      return Number.isFinite(n) && n > 0 ? n : null;
+    }
+
+    function normalizeDate(value, fallbackDay = "01") {
+      const text = String(value ?? "").trim();
+      if (!text) return "";
+      if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
+      if (/^\d{4}-\d{2}$/.test(text)) return `${text}-${fallbackDay}`;
+      if (/^\d{4}$/.test(text)) return `${text}-01-01`;
+      const parsed = new Date(text);
+      return Number.isFinite(parsed.getTime()) ? parsed.toISOString().slice(0, 10) : "";
+    }
+
+    function getCollectionQuantity(item) {
+      const quantity = Number(item?.quantity);
+      return Number.isFinite(quantity) && quantity > 0 ? quantity : 1;
+    }
+
+    function getLatestPrice(sleeve) { return SleevePricing.quote(sleeve)?.price ?? null; }
+
+    function getReleaseTimestamp(sleeve) {
+      const releaseDate = normalizeDate(
+        sleeve?.releaseDate
+        ?? sleeve?.release_date
+        ?? sleeve?.releaseAt
+        ?? sleeve?.releasedAt
+        ?? sleeve?.releasedDate
+        ?? sleeve?.released_date
+        ?? sleeve?.releaseDatetime
+        ?? sleeve?.release_datetime
+        ?? sleeve?.["発売日"]
+        ?? sleeve?.["発売年月日"]
+      );
+      let timestamp = Date.parse(releaseDate);
+      if (Number.isFinite(timestamp)) return timestamp;
+      const releaseYear = Number(sleeve?.releaseYear ?? sleeve?.release_year ?? sleeve?.["発売年"]);
+      if (Number.isFinite(releaseYear) && releaseYear > 0) {
+        timestamp = Date.parse(`${releaseYear}-01-01`);
+        if (Number.isFinite(timestamp)) return timestamp;
+      }
+      return null;
+    }
+
+    function buildMarketPricePoints(sleeve, releaseTimestamp = getReleaseTimestamp(sleeve)) {
+      const byDate = new Map();
+      const addPoint = (dateValue, priceValue, priority) => {
+        const date = normalizeDate(dateValue);
+        const price = parsePositiveNumber(priceValue);
+        const timestamp = Date.parse(date);
+        if (!date || !(price > 0) || !Number.isFinite(timestamp)) return;
+        if (Number.isFinite(releaseTimestamp) && timestamp < releaseTimestamp) return;
+        const previous = byDate.get(date);
+        if (!previous || priority > previous.priority) {
+          byDate.set(date, { date, timestamp, price, priority });
+        }
+      };
+
+      for (const row of Array.isArray(sleeve?.yearlyPrices) ? sleeve.yearlyPrices : []) {
+        const year = String(row?.year || "").match(/^\d{4}/)?.[0];
+        if (year) addPoint(`${year}-01-01`, row?.price, 1);
+      }
+      if (sleeve?.pricesByYear && typeof sleeve.pricesByYear === "object") {
+        for (const [year, price] of Object.entries(sleeve.pricesByYear)) {
+          if (/^\d{4}$/.test(String(year))) addPoint(`${year}-01-01`, price, 1);
+        }
+      }
+      for (const row of Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : []) {
+        addPoint(row?.month, row?.price, 2);
+      }
+      for (const row of Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : []) {
+        addPoint(row?.week, row?.price, 3);
+      }
+
+      return Array.from(byDate.values())
+        .sort((a, b) => a.timestamp - b.timestamp)
+        .map(({ date, timestamp, price }) => ({ date, timestamp, price }));
+    }
+
+    function isSleeveIndexWeek(date) {
+      const normalized = normalizeDate(date);
+      return /^\d{4}-\d{2}-\d{2}$/.test(normalized) && normalized.slice(-2) !== "01";
+    }
+
+    function getLatestSleeveIndexWeek(sleeves) {
+      let latest = "";
+      for (const sleeve of Array.isArray(sleeves) ? sleeves : []) {
+        for (const row of Array.isArray(sleeve?.weeklyPrices) ? sleeve.weeklyPrices : []) {
+          const week = normalizeDate(row?.week);
+          if (!isSleeveIndexWeek(week)) continue;
+          if (!latest || week > latest) latest = week;
+        }
+      }
+      return latest;
+    }
+
+    function isExplicitPurchaseWeek(item) {
+      if (window.common && typeof window.common.hasExplicitMyCollectionPurchaseWeek === "function") {
+        return window.common.hasExplicitMyCollectionPurchaseWeek(item);
+      }
+      return item?.purchaseWeekSet === true;
+    }
+
+    function isPurchasedOnRelease(item) {
+      return item?.purchasedOnRelease === true;
+    }
+
+    function isExplicitPurchaseDate(item) {
+      if (window.common && typeof window.common.hasExplicitMyCollectionPurchaseDate === "function") {
+        return window.common.hasExplicitMyCollectionPurchaseDate(item);
+      }
+      return isPurchasedOnRelease(item) || item?.purchaseDateSet === true || isExplicitPurchaseWeek(item);
+    }
+
+    function normalizePurchaseDateForCollection(value) {
+      if (window.common && typeof window.common.normalizeMyCollectionPurchaseDate === "function") {
+        return window.common.normalizeMyCollectionPurchaseDate(value);
+      }
+      return normalizeDate(value || new Date());
+    }
+
+    function getExplicitPurchaseDate(item) {
+      if (!isExplicitPurchaseDate(item)) return "";
+      return normalizePurchaseDateForCollection(item?.purchaseDate ?? item?.purchase_date ?? item?.purchaseWeek);
+    }
+
+    function clampTimestampToLatestIndex(timestamp, latestIndexTimestamp) {
+      if (!Number.isFinite(timestamp)) return timestamp;
+      return Number.isFinite(latestIndexTimestamp) ? Math.min(timestamp, latestIndexTimestamp) : timestamp;
+    }
+
+    function resolvePurchaseTimestamp(item, pricePoints, releaseTimestamp, latestIndexTimestamp) {
+      if (isPurchasedOnRelease(item) && Number.isFinite(releaseTimestamp)) {
+        return clampTimestampToLatestIndex(releaseTimestamp, latestIndexTimestamp);
+      }
+      const explicitPurchaseDate = getExplicitPurchaseDate(item);
+      const explicitTimestamp = Date.parse(explicitPurchaseDate);
+      if (Number.isFinite(explicitTimestamp)) {
+        const timestamp = Number.isFinite(releaseTimestamp) ? Math.max(explicitTimestamp, releaseTimestamp) : explicitTimestamp;
+        return clampTimestampToLatestIndex(timestamp, latestIndexTimestamp);
+      }
+      if (Number.isFinite(releaseTimestamp)) return clampTimestampToLatestIndex(releaseTimestamp, latestIndexTimestamp);
+      const firstPoint = Array.isArray(pricePoints) ? pricePoints[0] : null;
+      if (Number.isFinite(firstPoint?.timestamp)) return clampTimestampToLatestIndex(firstPoint.timestamp, latestIndexTimestamp);
+      return clampTimestampToLatestIndex(Date.parse(normalizePurchaseDateForCollection(new Date())), latestIndexTimestamp);
+    }
+
+    function getPurchaseDateForInput(item, pricePoints, releaseTimestamp, latestIndexTimestamp) {
+      if (isPurchasedOnRelease(item) && Number.isFinite(releaseTimestamp)) {
+        return new Date(releaseTimestamp).toISOString().slice(0, 10);
+      }
+      const explicitPurchaseDate = getExplicitPurchaseDate(item);
+      if (explicitPurchaseDate) {
+        const explicitTimestamp = Date.parse(explicitPurchaseDate);
+        const clampedTimestamp = clampTimestampToLatestIndex(explicitTimestamp, latestIndexTimestamp);
+        return Number.isFinite(clampedTimestamp) ? new Date(clampedTimestamp).toISOString().slice(0, 10) : explicitPurchaseDate;
+      }
+      const resolvedTimestamp = resolvePurchaseTimestamp(item, pricePoints, releaseTimestamp, latestIndexTimestamp);
+      return Number.isFinite(resolvedTimestamp)
+        ? new Date(resolvedTimestamp).toISOString().slice(0, 10)
+        : normalizePurchaseDateForCollection(new Date());
+    }
+
+    function timestampToDateValue(timestamp) {
+      return Number.isFinite(timestamp) ? new Date(timestamp).toISOString().slice(0, 10) : "";
+    }
+
+    function formatPurchaseDateLabel(date) {
+      const normalized = normalizeDate(date);
+      const parsed = new Date(normalized);
+      if (!Number.isFinite(parsed.getTime())) return "日付を選択";
+      return `${parsed.getFullYear()}/${parsed.getMonth() + 1}/${parsed.getDate()}`;
+    }
+
+    function formatPurchasePriceNoteDate(date) {
+      const parsed = new Date(normalizeDate(date));
+      if (!Number.isFinite(parsed.getTime())) return "";
+      return `${parsed.getFullYear()}年${parsed.getMonth() + 1}月${parsed.getDate()}日`;
+    }
+
+    function clampPurchaseDate(value, min, max) {
+      let date = normalizeDate(value);
+      const minDate = normalizeDate(min);
+      const maxDate = normalizeDate(max);
+      if (!date) date = maxDate || minDate || normalizePurchaseDateForCollection(new Date());
+      if (minDate && date < minDate) date = minDate;
+      if (maxDate && date > maxDate) date = maxDate;
+      return date;
+    }
+
+    function getPriceAtOrBefore(points, timestamp) {
+      const point = getMarketPointAtOrBefore(points, timestamp);
+      return point ? point.price : null;
+    }
+
+    function getMarketPointAtOrBefore(points, timestamp) {
+      let latest = null;
+      for (const point of Array.isArray(points) ? points : []) {
+        if (point.timestamp > timestamp) break;
+        latest = point;
+      }
+      return latest;
+    }
+
+    function getFirstPriceValue(sleeve) { return SleevePricing.firstPrice(sleeve).price; }
+
+    function resolvePurchasePriceInfo(item, sleeve, pricePoints, purchaseDate, releaseTimestamp) {
+      if (isPurchasedOnRelease(item)) {
+        const releaseDate = timestampToDateValue(releaseTimestamp) || normalizeDate(sleeve?.releaseDate);
+        const firstPrice = getFirstPriceValue(sleeve);
+        return {
+          price: firstPrice,
+          basisDate: releaseDate,
+          note: firstPrice != null ? "発売時価格" : "発売時価格未取得",
+          source: "firstPrice"
+        };
+      }
+
+      const basisDate = normalizeDate(purchaseDate);
+      const basisTimestamp = Date.parse(basisDate);
+      const marketPoint = Number.isFinite(basisTimestamp) ? getMarketPointAtOrBefore(pricePoints, basisTimestamp) : null;
+      const price = marketPoint ? marketPoint.price : null;
+      if (price == null) {
+        return {
+          price: null,
+          basisDate,
+          note: "購入日時点の相場データなし",
+          source: "market"
+        };
+      }
+      const noteDate = formatPurchasePriceNoteDate(marketPoint?.date || basisDate);
+      return {
+        price,
+        basisDate,
+        note: noteDate ? `${noteDate}時点` : "購入日時点",
+        source: "market"
+      };
+    }
+
+    function formatPurchasePrice(price) {
+      const n = Number(price);
+      return Number.isFinite(n) && n > 0 ? `${Math.round(n).toLocaleString()}円` : "未取得";
+    }
+
+    function formatValuationMoney(price) {
+      const n = Number(price);
+      return Number.isFinite(n) && n >= 0 ? `${Math.round(n).toLocaleString()}円` : "―";
+    }
+
+    function formatSignedValuationMoney(price) {
+      const n = Number(price);
+      if (!Number.isFinite(n)) return "―";
+      const rounded = Math.round(n);
+      const sign = rounded > 0 ? "+" : rounded < 0 ? "-" : "";
+      return `${sign}${Math.abs(rounded).toLocaleString()}円`;
+    }
+
+    function formatSignedRate(rate) {
+      const n = Number(rate);
+      if (!Number.isFinite(n)) return "―";
+      const sign = n > 0 ? "+" : n < 0 ? "-" : "";
+      return `${sign}${Math.abs(n).toFixed(1)}%`;
+    }
+
+    function getValuationToneClass(value) {
+      const n = Number(value);
+      if (n > 0) return "is-positive";
+      if (n < 0) return "is-negative";
+      return "";
+    }
+
+    function buildCollectionValuation(row) {
+      const quantity = getCollectionQuantity(row);
+      const purchasePrice = parsePositiveNumber(row?.purchasePriceInfo?.price);
+      const currentPrice = parsePositiveNumber(row?.price);
+      const acquisitionValue = purchasePrice > 0 ? purchasePrice * quantity : null;
+      const currentValue = currentPrice > 0 ? currentPrice * quantity : null;
+      const pnlValue = purchasePrice > 0 && currentPrice > 0 ? (currentPrice - purchasePrice) * quantity : null;
+      return {
+        quantity,
+        purchasePrice,
+        currentPrice,
+        acquisitionValue,
+        currentValue,
+        pnlValue,
+        pnlCostBasis: pnlValue != null ? acquisitionValue : null,
+        hasPurchasePrice: purchasePrice > 0,
+        hasCurrentPrice: currentPrice > 0,
+        hasPnl: pnlValue != null
+      };
+    }
+
+    function summarizeCollectionValuations(rows) {
+      let acquisitionTotal = 0;
+      let acquisitionCount = 0;
+      let currentTotal = 0;
+      let currentCount = 0;
+      let pnlTotal = 0;
+      let pnlCostBasis = 0;
+      let pnlCount = 0;
+      let missingPurchaseCount = 0;
+
+      for (const row of Array.isArray(rows) ? rows : []) {
+        const valuation = row?.valuation || buildCollectionValuation(row);
+        if (valuation.hasPurchasePrice) {
+          acquisitionTotal += valuation.acquisitionValue;
+          acquisitionCount += 1;
+        } else {
+          missingPurchaseCount += 1;
+        }
+        if (valuation.hasCurrentPrice) {
+          currentTotal += valuation.currentValue;
+          currentCount += 1;
+        }
+        if (valuation.hasPnl) {
+          pnlTotal += valuation.pnlValue;
+          pnlCostBasis += valuation.pnlCostBasis;
+          pnlCount += 1;
+        }
+      }
+
+      return {
+        acquisitionTotal: acquisitionCount > 0 ? acquisitionTotal : null,
+        acquisitionCount,
+        currentTotal: currentCount > 0 ? currentTotal : null,
+        currentCount,
+        pnlTotal: pnlCount > 0 ? pnlTotal : null,
+        pnlCostBasis,
+        pnlRate: pnlCount > 0 && pnlCostBasis > 0 ? (pnlTotal / pnlCostBasis) * 100 : null,
+        pnlCount,
+        missingPurchaseCount
+      };
+    }
+
+    function buildCollectionRows(stored, sleeveMap, latestIndexWeek) {
+      const latestIndexTimestamp = Date.parse(latestIndexWeek);
+      return stored.map((item) => {
+        const sleeveId = window.common.normalizeMyCollectionSleeveId(item?.sleeveId);
+        const sleeve = sleeveMap.get(sleeveId);
+        const name = String(sleeve?.name || item?.name || `ID: ${sleeveId}`).trim();
+        const image = String(sleeve?.imageUrl || item?.image || "").trim();
+        const releaseTimestamp = sleeve ? getReleaseTimestamp(sleeve) : null;
+        const pricePoints = sleeve ? buildMarketPricePoints(sleeve, releaseTimestamp) : [];
+        const purchaseDate = getPurchaseDateForInput(item, pricePoints, releaseTimestamp, latestIndexTimestamp);
+        const purchasePriceInfo = resolvePurchasePriceInfo(item, sleeve, pricePoints, purchaseDate, releaseTimestamp);
+        const row = {
+          sleeveId,
+          name,
+          image,
+          quantity: getCollectionQuantity(item),
+          purchasedOnRelease: isPurchasedOnRelease(item),
+          purchaseDate,
+          purchasePriceInfo,
+          purchaseWeek: purchaseDate,
+          purchaseWeekSet: isExplicitPurchaseDate(item),
+          minPurchaseDate: timestampToDateValue(releaseTimestamp),
+          maxPurchaseDate: latestIndexWeek,
+          price: sleeve ? getLatestPrice(sleeve) : null,
+          releaseYear: sleeve?.releaseYear ?? sleeve?.release_year ?? "",
+          condition: sleeve?.condition || "公式",
+          releaseTimestamp,
+          pricePoints,
+          weeklyPoints: pricePoints,
+          href: window.common.buildSleeveDetailHref(sleeveId)
+        };
+        row.valuation = buildCollectionValuation(row);
+        return row;
+      }).filter((row) => row.sleeveId);
+    }
+
+    function buildTrackedRows(stored, sleeveMap, latestIndexWeek) {
+      const latestIndexTimestamp = Date.parse(latestIndexWeek);
+      return (Array.isArray(stored) ? stored : []).map((item) => {
+        const sleeveId = window.common.normalizeMyCollectionSleeveId(item?.sleeveId);
+        if (!sleeveId) return null;
+        const sleeve = sleeveMap.get(sleeveId);
+        const releaseTimestamp = sleeve ? getReleaseTimestamp(sleeve) : null;
+        const pricePoints = sleeve ? buildMarketPricePoints(sleeve, releaseTimestamp) : [];
+        const purchaseTimestamp = resolvePurchaseTimestamp(item, pricePoints, releaseTimestamp, latestIndexTimestamp);
+        return {
+          sleeveId,
+          currentQuantity: getCollectionQuantity(item),
+          purchaseTimestamp,
+          releaseTimestamp,
+          pricePoints,
+          weeklyPoints: pricePoints
+        };
+      }).filter(Boolean);
+    }
+
+    function calculateCurrentAssetTotal(rows) {
+      const summary = summarizeCollectionValuations(rows);
+      return { total: summary.currentTotal, pricedCount: summary.currentCount };
+    }
+
+    function evaluateRowsAt(rows, timestamp) {
+      let total = 0;
+      let pricedCount = 0;
+      for (const row of rows) {
+        if (Number.isFinite(row.releaseTimestamp) && timestamp < row.releaseTimestamp) continue;
+        const price = getPriceAtOrBefore(row.weeklyPoints, timestamp);
+        if (!(price > 0)) continue;
+        total += price * row.quantity;
+        pricedCount += 1;
+      }
+      return pricedCount > 0 ? { total, pricedCount } : null;
+    }
+
+    function evaluateTrackedRowsAt(rows, timestamp) {
+      let total = 0;
+      let pricedCount = 0;
+      let totalQuantity = 0;
+      for (const row of rows) {
+        const quantity = Math.max(0, Math.trunc(Number(row.currentQuantity) || 0));
+        if (quantity <= 0) continue;
+        if (Number.isFinite(row.purchaseTimestamp) && timestamp < row.purchaseTimestamp) continue;
+        if (Number.isFinite(row.releaseTimestamp) && timestamp < row.releaseTimestamp) continue;
+        totalQuantity += quantity;
+        const price = getPriceAtOrBefore(row.weeklyPoints, timestamp);
+        if (!(price > 0)) continue;
+        total += price * quantity;
+        pricedCount += 1;
+      }
+      if (totalQuantity <= 0) return null;
+      return pricedCount > 0 ? { total, pricedCount, totalQuantity } : null;
+    }
+
+    function buildAssetTimeline(rows, latestIndexWeek) {
+      const dates = new Map();
+      const latestIndexTimestamp = Date.parse(latestIndexWeek);
+      const currentTimestamp = Number.isFinite(latestIndexTimestamp) ? latestIndexTimestamp : Date.now();
+      dates.set(new Date(currentTimestamp).toISOString(), currentTimestamp);
+      for (const row of rows) {
+        if (Number.isFinite(row.purchaseTimestamp)) {
+          dates.set(new Date(row.purchaseTimestamp).toISOString(), row.purchaseTimestamp);
+        }
+        if (Number.isFinite(row.releaseTimestamp)) {
+          dates.set(new Date(row.releaseTimestamp).toISOString(), row.releaseTimestamp);
+        }
+        for (const point of row.weeklyPoints) {
+          if (Number.isFinite(latestIndexTimestamp) && point.timestamp > latestIndexTimestamp) continue;
+          dates.set(point.date, point.timestamp);
+        }
+      }
+      const timeline = [];
+      for (const [date, timestamp] of Array.from(dates.entries()).sort((a, b) => a[1] - b[1])) {
+        const evaluated = evaluateTrackedRowsAt(rows, timestamp);
+        if (!evaluated) continue;
+        timeline.push({
+          date: String(date).slice(0, 10),
+          timestamp,
+          value: Math.round(evaluated.total),
+          pricedCount: evaluated.pricedCount,
+          totalQuantity: evaluated.totalQuantity
+        });
+      }
+      return compactTimelineByDate(timeline);
+    }
+
+    function compactTimelineByDate(timeline) {
+      const byDate = new Map();
+      for (const point of Array.isArray(timeline) ? timeline : []) {
+        const date = String(point?.date || "").slice(0, 10);
+        if (!date) continue;
+        const previous = byDate.get(date);
+        if (!previous || point.timestamp >= previous.timestamp) byDate.set(date, point);
+      }
+      return Array.from(byDate.values()).sort((a, b) => a.timestamp - b.timestamp);
+    }
+
+    function formatDeltaAmount(currentTotal, pastTotal) {
+      if (!(Number.isFinite(currentTotal) && Number.isFinite(pastTotal) && pastTotal >= 0)) return { amount: "―", rate: "" };
+      const diff = Math.round(currentTotal - pastTotal);
+      const sign = diff > 0 ? "+" : diff < 0 ? "-" : "";
+      const rate = pastTotal > 0 ? ((currentTotal / pastTotal) - 1) * 100 : null;
+      return {
+        amount: `${sign}${formatCurrency(Math.abs(diff))}`,
+        rate: Number.isFinite(rate) ? `（${rate > 0 ? "+" : ""}${rate.toFixed(1)}%）` : ""
+      };
+    }
+
+    function getTimelinePointAtOrBefore(timeline, timestamp) {
+      let latest = null;
+      for (const point of Array.isArray(timeline) ? timeline : []) {
+        if (point.timestamp > timestamp) break;
+        latest = point;
+      }
+      return latest;
+    }
+
+    function updateAssetSummary(rows, timeline) {
+      const totalEl = document.getElementById("collectionAssetTotal");
+      const acquisitionEl = document.getElementById("collectionAcquisitionTotal");
+      const currentValuationEl = document.getElementById("collectionCurrentValuation");
+      const pnlEl = document.getElementById("collectionValuationPnl");
+      const pnlRateEl = document.getElementById("collectionValuationRate");
+      const valuationNoteEl = document.getElementById("collectionValuationNote");
+      const countEl = document.getElementById("collectionCount");
+      const quantityEl = document.getElementById("collectionQuantityTotal");
+      const weekDeltaEl = document.getElementById("collectionWeekDelta");
+      const weekRateEl = document.getElementById("collectionWeekRate");
+      const monthDeltaEl = document.getElementById("collectionMonthDelta");
+      const monthRateEl = document.getElementById("collectionMonthRate");
+      const summary = summarizeCollectionValuations(rows);
+      const currentTotal = summary.currentTotal;
+      const latestPoint = timeline.length ? timeline[timeline.length - 1] : null;
+      const weekPast = latestPoint ? getTimelinePointAtOrBefore(timeline, latestPoint.timestamp - (7 * 24 * 60 * 60 * 1000)) : null;
+      const monthPast = latestPoint ? getTimelinePointAtOrBefore(timeline, latestPoint.timestamp - (30 * 24 * 60 * 60 * 1000)) : null;
+      const weekDelta = formatDeltaAmount(currentTotal, weekPast?.value);
+      const monthDelta = formatDeltaAmount(currentTotal, monthPast?.value);
+      const totalQuantity = rows.reduce((sum, row) => sum + getCollectionQuantity(row), 0);
+
+      if (totalEl) totalEl.textContent = currentTotal != null ? formatValuationMoney(currentTotal) : "―";
+      if (acquisitionEl) acquisitionEl.textContent = summary.acquisitionTotal != null ? formatValuationMoney(summary.acquisitionTotal) : "―";
+      if (currentValuationEl) currentValuationEl.textContent = currentTotal != null ? formatValuationMoney(currentTotal) : "―";
+      if (pnlEl) {
+        pnlEl.textContent = summary.pnlTotal != null ? formatSignedValuationMoney(summary.pnlTotal) : "―";
+        pnlEl.classList.remove("is-positive", "is-negative");
+        const tone = getValuationToneClass(summary.pnlTotal);
+        if (tone) pnlEl.classList.add(tone);
+      }
+      if (pnlRateEl) {
+        pnlRateEl.textContent = summary.pnlRate != null ? formatSignedRate(summary.pnlRate) : "―";
+        pnlRateEl.classList.remove("is-positive", "is-negative");
+        const tone = getValuationToneClass(summary.pnlRate);
+        if (tone) pnlRateEl.classList.add(tone);
+      }
+      if (valuationNoteEl) valuationNoteEl.hidden = summary.missingPurchaseCount <= 0;
+      if (countEl) countEl.textContent = `${rows.length}種類`;
+      if (quantityEl) quantityEl.textContent = `${totalQuantity}個`;
+      if (weekDeltaEl) weekDeltaEl.textContent = weekDelta.amount;
+      if (weekRateEl) weekRateEl.textContent = weekDelta.rate;
+      if (monthDeltaEl) monthDeltaEl.textContent = monthDelta.amount;
+      if (monthRateEl) monthRateEl.textContent = monthDelta.rate;
+    }
+
+    function filterTimelineByPeriod(timeline, period) {
+      if (!timeline.length || period === "all") return timeline;
+      const daysByPeriod = { "1m": 31, "3m": 92, "6m": 183, "1y": 366 };
+      const days = daysByPeriod[period] || 92;
+      const latestTs = timeline[timeline.length - 1].timestamp;
+      const cutoff = latestTs - (days * 24 * 60 * 60 * 1000);
+      return timeline.filter((point) => point.timestamp >= cutoff);
+    }
+
+    function formatChartDate(date) {
+      const parsed = new Date(date);
+      if (!Number.isFinite(parsed.getTime())) return date;
+      return parsed.toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" });
+    }
+
+    function formatCompactChartCurrency(price) {
+      const n = Number(price);
+      if (!(Number.isFinite(n) && n >= 0)) return "―";
+      if (n >= 100000000) return `¥${Math.round(n / 100000000).toLocaleString()}億`;
+      if (n >= 10000) {
+        const man = n / 10000;
+        const value = man >= 100 ? Math.round(man) : Math.round(man * 10) / 10;
+        return `¥${value.toLocaleString()}万`;
+      }
+      return `¥${Math.round(n).toLocaleString()}`;
+    }
+
+    function getMobileAssetLabelIndexes(count) {
+      if (count <= 1) return [0];
+      if (count <= 3) return Array.from({ length: count }, (_, index) => index);
+      const candidates = count >= 10
+        ? [0, Math.round((count - 1) * 0.33), Math.round((count - 1) * 0.66), count - 1]
+        : [0, Math.round((count - 1) / 2), count - 1];
+      return Array.from(new Set(candidates.map((index) => Math.min(count - 1, Math.max(0, index)))));
+    }
+
+    function getNiceAxisStep(rawStep) {
+      const safeStep = Math.max(1, Number(rawStep) || 1);
+      const pow = Math.pow(10, Math.floor(Math.log10(safeStep)));
+      const normalized = safeStep / pow;
+      const multiplier = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 2.5 ? 2.5 : normalized <= 5 ? 5 : 10;
+      return multiplier * pow;
+    }
+
+    function getNiceAxisCeil(value) {
+      const safeValue = Math.max(1, Number(value) || 1);
+      const pow = Math.pow(10, Math.floor(Math.log10(safeValue)));
+      const normalized = safeValue / pow;
+      const multiplier = normalized <= 1 ? 1 : normalized <= 1.5 ? 1.5 : normalized <= 2 ? 2 : normalized <= 2.5 ? 2.5 : normalized <= 4 ? 4 : normalized <= 5 ? 5 : 10;
+      return multiplier * pow;
+    }
+
+    function getNiceAssetTickStep(rawStep) {
+      const safeStep = Math.max(1, Number(rawStep) || 1);
+      const pow = Math.pow(10, Math.floor(Math.log10(safeStep)));
+      const normalized = safeStep / pow;
+      const multiplier = normalized <= 1 ? 1 : normalized <= 2.5 ? 2 : normalized <= 5 ? 5 : 10;
+      return multiplier * pow;
+    }
+
+    function getMinimumAssetTickStep(maxAbsValue) {
+      const value = Math.max(0, Number(maxAbsValue) || 0);
+      if (value >= 1000000) return 100000;
+      if (value >= 300000) return 50000;
+      if (value >= 50000) return 10000;
+      if (value >= 10000) return 5000;
+      if (value >= 5000) return 1000;
+      return 500;
+    }
+
+    function buildAssetAxis(minValue, maxValue, targetIntervals = 4) {
+      if (!(Number.isFinite(minValue) && Number.isFinite(maxValue))) return { min: 0, max: 1, ticks: [0, 1] };
+      const lowValue = Math.min(minValue, maxValue);
+      const highValue = Math.max(minValue, maxValue);
+      const dataRange = highValue - lowValue;
+      const maxAbsValue = Math.max(Math.abs(lowValue), Math.abs(highValue), 1);
+      const minTickStep = getMinimumAssetTickStep(maxAbsValue);
+      const padding = dataRange > 0
+        ? Math.max(dataRange * 0.25, minTickStep * 0.75)
+        : Math.max(minTickStep, maxAbsValue * 0.08);
+      const paddedMin = lowValue - padding;
+      const paddedMax = highValue + padding;
+      const rawStep = Math.max(1, paddedMax - paddedMin) / Math.max(1, targetIntervals);
+      const step = Math.max(minTickStep, getNiceAssetTickStep(rawStep));
+      const shouldStartAtZero = paddedMin <= 0 || maxAbsValue < 5000 || lowValue < step * 2;
+      const min = shouldStartAtZero ? 0 : Math.floor(paddedMin / step) * step;
+      const max = Math.max(min + step, Math.ceil(paddedMax / step) * step);
+      const ticks = [];
+      for (let value = min; value <= max + step * 0.001; value += step) ticks.push(Math.round(value));
+      return { min, max, ticks };
+    }
+
+    function buildQuantityAxis(maxValue) {
+      const max = Math.max(1, Math.ceil(Number(maxValue) || 1));
+      const rawStep = max / 3;
+      const pow = Math.pow(10, Math.floor(Math.log10(rawStep)));
+      const normalized = rawStep / pow;
+      const step = Math.max(1, (normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10) * pow);
+      const axisMax = Math.ceil(max / step) * step;
+      const ticks = [];
+      for (let value = 0; value <= axisMax + step * 0.001; value += step) ticks.push(Math.round(value));
+      return { min: 0, max: axisMax, ticks };
+    }
+
+    function formatFullChartDate(date) {
+      const parsed = new Date(date);
+      if (!Number.isFinite(parsed.getTime())) return date;
+      return parsed.toLocaleDateString("ja-JP", { year: "numeric", month: "numeric", day: "numeric" });
+    }
+
+    function renderAssetChart(timeline) {
+      const root = document.getElementById("collectionAssetChart");
+      if (!root) return;
+      const scoped = filterTimelineByPeriod(timeline, currentAssetPeriod);
+      if (scoped.length < 1) {
+        root.innerHTML = '<div class="my-asset-chart-empty">資産推移を表示できる価格データがまだありません。</div>';
+        return;
+      }
+
+      const isMobileChart = window.matchMedia("(max-width: 700px)").matches;
+      const W = isMobileChart ? 360 : 760;
+      const H = isMobileChart ? 190 : 320;
+      const padL = isMobileChart ? 38 : 82;
+      const padR = isMobileChart ? 18 : 64;
+      const padT = isMobileChart ? 18 : 32;
+      const padB = isMobileChart ? 30 : 54;
+      const values = scoped.map((point) => point.value);
+      const quantities = scoped.map((point) => point.totalQuantity || 0);
+      const axis = buildAssetAxis(Math.min(...values), Math.max(...values), isMobileChart ? 4 : 5);
+      const quantityAxis = buildQuantityAxis(Math.max(...quantities));
+      const chartW = W - padL - padR;
+      const chartH = H - padT - padB;
+      const xToPx = (index) => scoped.length === 1 ? padL + (chartW / 2) : padL + (index / (scoped.length - 1)) * chartW;
+      const yToPx = (value) => padT + (1 - ((value - axis.min) / Math.max(1, axis.max - axis.min))) * chartH;
+      const quantityToPx = (value) => padT + (1 - ((value - quantityAxis.min) / Math.max(1, quantityAxis.max - quantityAxis.min))) * chartH;
+      const lineD = scoped.map((point, index) => `${index === 0 ? "M" : "L"} ${xToPx(index).toFixed(2)} ${yToPx(point.value).toFixed(2)}`).join(" ");
+      const areaD = `${lineD} L ${xToPx(scoped.length - 1).toFixed(2)} ${H - padB} L ${xToPx(0).toFixed(2)} ${H - padB} Z`;
+      const labelIndexes = isMobileChart
+        ? getMobileAssetLabelIndexes(scoped.length)
+        : Array.from(new Set([0, Math.floor((scoped.length - 1) / 2), scoped.length - 1]));
+      const barW = isMobileChart
+        ? Math.max(1, Math.min(7, (chartW / Math.max(1, scoped.length)) * 0.22))
+        : Math.max(3, Math.min(18, (chartW / Math.max(1, scoped.length)) * 0.56));
+      const axisFontSize = isMobileChart ? 10 : 12;
+      const dateFontSize = isMobileChart ? 11 : 13;
+      const lineWidth = isMobileChart ? 3.2 : 4;
+      const mobileDotRadius = scoped.length > 80 ? 1.3 : scoped.length > 40 ? 1.7 : scoped.length > 20 ? 2.1 : 2.6;
+      const dotRadius = isMobileChart ? mobileDotRadius : 4;
+      const latestDotRadius = isMobileChart ? Math.max(2.8, mobileDotRadius + 1.1) : 5.5;
+      const hitRadius = isMobileChart ? Math.max(5, Math.min(11, chartW / Math.max(1, scoped.length) * 0.5)) : 18;
+      const quantityBarOpacity = isMobileChart ? 0.2 : 0.34;
+      const assetTickLabel = isMobileChart ? formatCompactChartCurrency : formatCurrency;
+
+      root.innerHTML = `
+        <div class="my-asset-chart-wrap${isMobileChart ? " is-mobile-density" : ""}">
+          <div class="my-asset-chart-tooltip" hidden></div>
+          <svg class="my-asset-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="資産額の推移グラフ">
+            <defs>
+              <linearGradient id="myAssetAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1e5bd7" stop-opacity="${isMobileChart ? "0.18" : "0.24"}"></stop>
+                <stop offset="100%" stop-color="#1e5bd7" stop-opacity="0.03"></stop>
+              </linearGradient>
+            </defs>
+            ${axis.ticks.map((tick) => `<line x1="${padL}" y1="${yToPx(tick).toFixed(2)}" x2="${W - padR}" y2="${yToPx(tick).toFixed(2)}" stroke="#dce4f0"></line>`).join("")}
+            <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
+            <line x1="${W - padR}" y1="${padT}" x2="${W - padR}" y2="${H - padB}" stroke="#c4cedd"></line>
+            <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
+            ${scoped.map((point, index) => {
+              const x = xToPx(index) - (barW / 2);
+              const y = quantityToPx(point.totalQuantity || 0);
+              return `<rect class="my-asset-quantity-bar" x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${barW.toFixed(2)}" height="${Math.max(0, H - padB - y).toFixed(2)}" rx="2" fill="#9fb3d1" opacity="${quantityBarOpacity}"></rect>`;
+            }).join("")}
+            <path d="${areaD}" fill="url(#myAssetAreaGradient)"></path>
+            <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="${lineWidth}" stroke-linecap="round" stroke-linejoin="round"></path>
+            ${axis.ticks.map((tick) => `<text x="${padL - 8}" y="${yToPx(tick) + 4}" text-anchor="end" font-size="${axisFontSize}" font-weight="800" fill="#475467">${escapeHtml(assetTickLabel(tick))}</text>`).join("")}
+            ${quantityAxis.ticks.map((tick) => `<text x="${W - padR + 7}" y="${quantityToPx(tick) + 4}" text-anchor="start" font-size="${axisFontSize}" font-weight="800" fill="#667085">${escapeHtml(isMobileChart ? String(tick) : `${tick}個`)}</text>`).join("")}
+            ${labelIndexes.map((index) => {
+              const point = scoped[index];
+              const anchor = scoped.length === 1 ? "middle" : index === 0 ? "start" : index === scoped.length - 1 ? "end" : "middle";
+              return `<text x="${xToPx(index).toFixed(2)}" y="${H - 17}" text-anchor="${anchor}" font-size="${dateFontSize}" font-weight="800" fill="#475467">${escapeHtml(formatChartDate(point.date))}</text>`;
+            }).join("")}
+            <g aria-hidden="true">
+              <circle cx="${W - padR - (isMobileChart ? 102 : 154)}" cy="${isMobileChart ? 15 : 18}" r="${isMobileChart ? 3 : 4}" fill="#1e5bd7"></circle>
+              <text x="${W - padR - (isMobileChart ? 95 : 144)}" y="${isMobileChart ? 18.5 : 22}" font-size="${isMobileChart ? 9.5 : 11}" font-weight="800" fill="#475467">総資産額</text>
+              <rect x="${W - padR - (isMobileChart ? 46 : 80)}" y="${isMobileChart ? 12 : 14}" width="${isMobileChart ? 5.5 : 8}" height="${isMobileChart ? 5.5 : 8}" rx="2" fill="#9fb3d1" opacity="${isMobileChart ? 0.34 : 0.5}"></rect>
+              <text x="${W - padR - (isMobileChart ? 37 : 68)}" y="${isMobileChart ? 18.5 : 22}" font-size="${isMobileChart ? 9.5 : 11}" font-weight="800" fill="#667085">保有数</text>
+            </g>
+            ${scoped.map((point, index) => `<circle class="my-asset-chart-dot" cx="${xToPx(index).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="${index === scoped.length - 1 ? latestDotRadius : dotRadius}" fill="#1e5bd7"></circle><circle class="my-asset-hit-point" data-index="${index}" cx="${xToPx(index).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="${hitRadius}" fill="transparent"></circle>`).join("")}
+          </svg>
+        </div>
+      `;
+
+      const wrap = root.querySelector(".my-asset-chart-wrap");
+      const tooltip = root.querySelector(".my-asset-chart-tooltip");
+      const showTip = (event, index) => {
+        const point = scoped[index];
+        if (!wrap || !tooltip || !point) return;
+        tooltip.innerHTML = `<strong>${escapeHtml(formatFullChartDate(point.date))}</strong><span>総資産額　${escapeHtml(formatCurrency(point.value))}</span><span>総保有数　${escapeHtml(`${point.totalQuantity || 0}個`)}</span>`;
+        tooltip.hidden = false;
+        const rect = wrap.getBoundingClientRect();
+        const clientX = event.touches?.[0]?.clientX ?? event.clientX ?? rect.left + rect.width / 2;
+        const x = Math.min(Math.max(clientX - rect.left, 70), rect.width - 70);
+        tooltip.style.left = `${x}px`;
+      };
+      const hideTip = () => {
+        if (tooltip) tooltip.hidden = true;
+      };
+      root.querySelectorAll(".my-asset-hit-point").forEach((hit) => {
+        const index = Number(hit.getAttribute("data-index"));
+        hit.addEventListener("mouseenter", (event) => showTip(event, index));
+        hit.addEventListener("mousemove", (event) => showTip(event, index));
+        hit.addEventListener("click", (event) => showTip(event, index));
+        hit.addEventListener("touchstart", (event) => showTip(event, index), { passive: true });
+      });
+      wrap.addEventListener("mouseleave", hideTip);
+    }
+
+    function setupAssetPeriodButtons() {
+      document.querySelectorAll("[data-asset-period]").forEach((button) => {
+        button.classList.toggle("is-active", button.getAttribute("data-asset-period") === currentAssetPeriod);
+        button.addEventListener("click", () => {
+          currentAssetPeriod = button.getAttribute("data-asset-period") || "3m";
+          document.querySelectorAll("[data-asset-period]").forEach((btn) => {
+            btn.classList.toggle("is-active", btn === button);
+          });
+          renderAssetChart(currentAssetTimeline);
+        });
+      });
+    }
+
+    function buildCard(row) {
+      const maxPurchaseDateValue = normalizeDate(row.maxPurchaseDate) || normalizePurchaseDateForCollection(new Date());
+      const minPurchaseDateValue = row.minPurchaseDate && row.minPurchaseDate <= maxPurchaseDateValue ? row.minPurchaseDate : "";
+      const purchaseDateValue = clampPurchaseDate(row.purchaseDate || row.purchaseWeek, minPurchaseDateValue, maxPurchaseDateValue);
+      const purchaseDateLabel = formatPurchaseDateLabel(purchaseDateValue);
+      const purchasePriceNote = row.purchasePriceInfo?.note ? `（${row.purchasePriceInfo.note}）` : "";
+      const valuation = row.valuation || buildCollectionValuation(row);
+      const cardPnlClass = getValuationToneClass(valuation.pnlValue);
+      const cardPnlRate = valuation.pnlCostBasis > 0 && valuation.pnlValue != null ? (valuation.pnlValue / valuation.pnlCostBasis) * 100 : null;
+      const valuationTotal = valuation.currentValue != null ? valuation.currentValue : null;
+      const releaseText = row.releaseYear ? `${row.releaseYear}年発売` : "";
+      const conditionText = row.condition || "公式";
+      return `
+        <article class="my-collection-card">
+          <a class="my-collection-card-link" href="${escapeHtml(row.href)}" data-edit-collection="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の詳細を見る">
+            <span class="my-collection-thumb">
+              ${row.image ? `<img src="${escapeHtml(row.image)}" alt="${escapeHtml(row.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}
+            </span>
+            <span class="my-collection-info">
+              <h2 class="my-collection-title">${escapeHtml(row.name)}</h2>
+              <span class="my-collection-meta">${escapeHtml([releaseText, conditionText].filter(Boolean).join("　"))}</span>
+              <span class="my-collection-qty-pill">${escapeHtml(row.quantity)}枚</span>
+            </span>
+            <div class="my-collection-price">
+              <span class="my-collection-price-label">評価額</span>
+              <strong>${escapeHtml(valuationTotal != null ? formatValuationMoney(valuationTotal) : formatPrice(row.price))}</strong>
+              ${valuation.hasPnl ? `<small class="${escapeHtml(cardPnlClass)}">${escapeHtml(formatSignedValuationMoney(valuation.pnlValue))}${cardPnlRate != null ? ` ${escapeHtml(formatSignedRate(cardPnlRate))}` : ""}</small>` : ""}
+            </div>
+            <span class="my-collection-row-arrow" aria-hidden="true">›</span>
+          </a>
+          <div class="my-collection-quantity" aria-label="${escapeHtml(row.name)}の保有数">
+            <span class="my-collection-quantity-label">保有数</span>
+            <div class="my-collection-stepper">
+              <button type="button" data-quantity-action="decrease" data-sleeve-id="${escapeHtml(row.sleeveId)}" aria-label="保有数を1減らす">−</button>
+              <span>${escapeHtml(row.quantity)}</span>
+              <button type="button" data-quantity-action="increase" data-sleeve-id="${escapeHtml(row.sleeveId)}" aria-label="保有数を1増やす">＋</button>
+            </div>
+          </div>
+          <div class="my-collection-purchase-week">
+            <label class="my-collection-release-check">
+              <input type="checkbox" data-purchased-on-release="${escapeHtml(row.sleeveId)}" ${row.purchasedOnRelease ? "checked" : ""}>
+              <span>発売日に購入</span>
+            </label>
+            <div class="my-collection-purchase-price">
+              <span class="my-collection-purchase-price-label">購入価格</span>
+              <strong>${escapeHtml(formatPurchasePrice(row.purchasePriceInfo?.price))}</strong>
+              ${purchasePriceNote ? `<small>${escapeHtml(purchasePriceNote)}</small>` : ""}
+              ${valuation.hasPnl ? `
+                <div class="my-collection-card-pnl">
+                  <span>評価損益</span>
+                  <strong class="${escapeHtml(cardPnlClass)}">${escapeHtml(formatSignedValuationMoney(valuation.pnlValue))}</strong>
+                </div>
+              ` : ""}
+            </div>
+            <span class="my-collection-purchase-date-field" ${row.purchasedOnRelease ? "hidden" : ""}>
+              <span>購入日</span>
+              <span class="my-collection-date-picker">
+                <button class="my-collection-date-button" type="button" data-purchase-date-open="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の購入日を選ぶ">
+                  <span data-purchase-date-label="${escapeHtml(row.sleeveId)}">${escapeHtml(purchaseDateLabel)}</span>
+                  <span class="my-collection-calendar-mark" aria-hidden="true"></span>
+                </button>
+                <input class="my-collection-date-input" type="date" value="${escapeHtml(purchaseDateValue)}" min="${escapeHtml(minPurchaseDateValue)}" max="${escapeHtml(maxPurchaseDateValue)}" data-purchase-date="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の購入日" ${row.purchasedOnRelease ? "disabled" : ""}>
+              </span>
+            </span>
+          </div>
+          <button class="my-collection-remove" type="button" data-remove-collection="${escapeHtml(row.sleeveId)}">コレクションから削除</button>
+        </article>
+      `;
+    }
+
+    function renderEmpty(root) {
+      root.innerHTML = `
+        <div class="my-collection-empty">
+          <h2 class="my-collection-empty-title">まだデッキシールドが登録されていません。</h2>
+          <p>気になるデッキシールドのページから『マイコレクションに追加』を押して登録できます。</p>
+          <a class="btn primary" href="./sleeves/">デッキシールドを探す</a>
+        </div>
+      `;
+    }
+
+    function sortCollectionRows(rows, sortValue) {
+      const collator = new Intl.Collator("ja-JP", { numeric: true, sensitivity: "base" });
+      const list = [...rows];
+      const getValuation = (row) => Number(row?.valuation?.currentValue ?? row?.price ?? 0);
+      const getPnl = (row) => Number(row?.valuation?.pnlValue ?? Number.NEGATIVE_INFINITY);
+      if (sortValue === "pnlDesc") {
+        return list.sort((a, b) => getPnl(b) - getPnl(a));
+      }
+      if (sortValue === "quantityDesc") {
+        return list.sort((a, b) => (Number(b.quantity) || 0) - (Number(a.quantity) || 0));
+      }
+      if (sortValue === "nameAsc") {
+        return list.sort((a, b) => collator.compare(a.name || "", b.name || ""));
+      }
+      return list.sort((a, b) => getValuation(b) - getValuation(a));
+    }
+
+    function isMobileCollectionView() {
+      return window.matchMedia("(max-width: 700px)").matches;
+    }
+
+    function closeCollectionEditSheet() {
+      const sheet = document.getElementById("collectionEditSheet");
+      if (!sheet) return;
+      sheet.hidden = true;
+      document.body.classList.remove("my-collection-edit-open");
+    }
+
+    function buildCollectionEditSheet(row) {
+      const maxPurchaseDateValue = normalizeDate(row.maxPurchaseDate) || normalizePurchaseDateForCollection(new Date());
+      const minPurchaseDateValue = row.minPurchaseDate && row.minPurchaseDate <= maxPurchaseDateValue ? row.minPurchaseDate : "";
+      const purchaseDateValue = clampPurchaseDate(row.purchaseDate || row.purchaseWeek, minPurchaseDateValue, maxPurchaseDateValue);
+      const purchaseDateLabel = formatPurchaseDateLabel(purchaseDateValue);
+      const valuation = row.valuation || buildCollectionValuation(row);
+      const cardPnlClass = getValuationToneClass(valuation.pnlValue);
+      const cardPnlRate = valuation.pnlCostBasis > 0 && valuation.pnlValue != null ? (valuation.pnlValue / valuation.pnlCostBasis) * 100 : null;
+      const releaseText = row.releaseYear ? `${row.releaseYear}年発売` : "";
+      const conditionText = row.condition || "未開封";
+      const unitCurrentPrice = valuation.currentPrice || parsePositiveNumber(row.price);
+      const totalCurrentValue = unitCurrentPrice > 0 ? unitCurrentPrice * row.quantity : null;
+
+      return `
+        <header class="my-collection-edit-head">
+          <h2 id="collectionEditTitle">コレクションを編集</h2>
+          <button class="my-collection-edit-close" type="button" data-edit-close aria-label="編集を閉じる">×</button>
+        </header>
+        <section class="my-collection-edit-product">
+          <span class="my-collection-edit-thumb">
+            ${row.image ? `<img src="${escapeHtml(row.image)}" alt="${escapeHtml(row.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display='none';">` : ""}
+          </span>
+          <span class="my-collection-edit-titleblock">
+            <strong>${escapeHtml(row.name)}</strong>
+            <span class="my-collection-edit-chips">
+              ${releaseText ? `<span>${escapeHtml(releaseText)}</span>` : ""}
+              ${conditionText ? `<span>${escapeHtml(conditionText)}</span>` : ""}
+            </span>
+          </span>
+        </section>
+        <section class="my-collection-edit-metrics">
+          <div class="my-collection-edit-metric">
+            <span>現在の評価額</span>
+            <strong>${escapeHtml(totalCurrentValue != null ? formatValuationMoney(totalCurrentValue) : formatPrice(row.price))}</strong>
+          </div>
+          <div class="my-collection-edit-metric is-gain">
+            <span>評価損益</span>
+            <strong class="${escapeHtml(cardPnlClass)}">${escapeHtml(valuation.hasPnl ? formatSignedValuationMoney(valuation.pnlValue) : "―")}</strong>
+            ${cardPnlRate != null ? `<small class="${escapeHtml(cardPnlClass)}">(${escapeHtml(formatSignedRate(cardPnlRate))})</small>` : ""}
+          </div>
+        </section>
+        <section class="my-collection-edit-quantity">
+          <div class="my-collection-edit-section-head">
+            <h3>保有数量</h3>
+            <span>半角数字で入力</span>
+          </div>
+          <div class="my-collection-edit-stepper">
+            <button type="button" data-sheet-quantity-action="decrease" aria-label="保有枚数を減らす">−</button>
+            <strong data-sheet-quantity-value>${escapeHtml(row.quantity)}</strong>
+            <span>枚</span>
+            <button type="button" data-sheet-quantity-action="increase" aria-label="保有枚数を増やす">＋</button>
+          </div>
+          <p data-sheet-total-label>${escapeHtml(unitCurrentPrice > 0 ? `合計評価額　${formatValuationMoney(unitCurrentPrice * row.quantity)}（${formatPrice(unitCurrentPrice)} × ${row.quantity}枚）` : "合計評価額　―")}</p>
+        </section>
+        <section class="my-collection-edit-purchase">
+          <h3>購入情報</h3>
+          <label class="my-collection-edit-check">
+            <input type="checkbox" data-sheet-purchased-on-release="${escapeHtml(row.sleeveId)}" ${row.purchasedOnRelease ? "checked" : ""}>
+            <span>発売日に購入した</span>
+          </label>
+          <div class="my-collection-edit-purchase-grid">
+            <label>
+              <span>購入価格（1枚あたり）</span>
+              <input type="text" value="${escapeHtml(formatPurchasePrice(row.purchasePriceInfo?.price).replace(/円$/, ""))}" readonly aria-label="購入価格">
+            </label>
+            <label>
+              <span>購入日</span>
+              <span class="my-collection-date-picker">
+                <button class="my-collection-date-button" type="button" data-sheet-purchase-date-open="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の購入日を選ぶ">
+                  <span data-sheet-purchase-date-label="${escapeHtml(row.sleeveId)}">${escapeHtml(purchaseDateLabel)}</span>
+                  <span class="my-collection-calendar-mark" aria-hidden="true"></span>
+                </button>
+                <input class="my-collection-date-input" type="date" value="${escapeHtml(purchaseDateValue)}" min="${escapeHtml(minPurchaseDateValue)}" max="${escapeHtml(maxPurchaseDateValue)}" data-sheet-purchase-date="${escapeHtml(row.sleeveId)}" aria-label="${escapeHtml(row.name)}の購入日" ${row.purchasedOnRelease ? "disabled" : ""}>
+              </span>
+            </label>
+          </div>
+          <small data-sheet-purchase-note>${escapeHtml(row.purchasePriceInfo?.note || "購入日時点の相場から評価損益を計算します")}</small>
+        </section>
+        <button class="my-collection-edit-remove" type="button" data-sheet-remove-collection="${escapeHtml(row.sleeveId)}">コレクションから削除</button>
+        <button class="my-collection-edit-save" type="button" data-sheet-save>変更を保存</button>
+      `;
+    }
+
+    function openCollectionEditSheet(row) {
+      const sheet = document.getElementById("collectionEditSheet");
+      const content = document.getElementById("collectionEditContent");
+      if (!sheet || !content || !row) return;
+      content.innerHTML = buildCollectionEditSheet(row);
+      sheet.hidden = false;
+      document.body.classList.add("my-collection-edit-open");
+      const draft = {
+        quantity: Math.max(1, Number(row.quantity) || 1),
+        purchasedOnRelease: row.purchasedOnRelease === true,
+        purchaseDate: content.querySelector("[data-sheet-purchase-date]")?.value || ""
+      };
+      const unitCurrentPrice = parsePositiveNumber(row.price);
+      const updateDraftView = () => {
+        const quantityLabel = content.querySelector("[data-sheet-quantity-value]");
+        const totalLabel = content.querySelector("[data-sheet-total-label]");
+        const releaseInput = content.querySelector("[data-sheet-purchased-on-release]");
+        const dateInput = content.querySelector("[data-sheet-purchase-date]");
+        const dateButton = content.querySelector("[data-sheet-purchase-date-open]");
+        if (quantityLabel) quantityLabel.textContent = String(draft.quantity);
+        if (totalLabel) {
+          totalLabel.textContent = unitCurrentPrice > 0
+            ? `合計評価額　${formatValuationMoney(unitCurrentPrice * draft.quantity)}（${formatPrice(unitCurrentPrice)} × ${draft.quantity}枚）`
+            : "合計評価額　―";
+        }
+        if (releaseInput) releaseInput.checked = draft.purchasedOnRelease;
+        if (dateInput) dateInput.disabled = draft.purchasedOnRelease;
+        if (dateButton) dateButton.toggleAttribute("disabled", draft.purchasedOnRelease);
+      };
+
+      content.querySelectorAll("[data-edit-close]").forEach((button) => {
+        button.addEventListener("click", closeCollectionEditSheet);
+      });
+      content.querySelectorAll("[data-sheet-quantity-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const delta = button.getAttribute("data-sheet-quantity-action") === "increase" ? 1 : -1;
+          draft.quantity = Math.max(1, draft.quantity + delta);
+          updateDraftView();
+        });
+      });
+      const releaseInput = content.querySelector("[data-sheet-purchased-on-release]");
+      if (releaseInput) {
+        releaseInput.addEventListener("change", () => {
+          draft.purchasedOnRelease = releaseInput.checked;
+          updateDraftView();
+        });
+      }
+      const openDateButton = content.querySelector("[data-sheet-purchase-date-open]");
+      const dateInput = content.querySelector("[data-sheet-purchase-date]");
+      if (openDateButton && dateInput) {
+        openDateButton.addEventListener("click", () => {
+          if (dateInput.disabled) return;
+          if (typeof dateInput.showPicker === "function") {
+            dateInput.showPicker();
+          } else {
+            dateInput.click();
+          }
+        });
+        dateInput.addEventListener("change", () => {
+          const selectedDate = clampPurchaseDate(dateInput.value, dateInput.min, dateInput.max);
+          dateInput.value = selectedDate;
+          draft.purchaseDate = selectedDate;
+          const sleeveId = dateInput.getAttribute("data-sheet-purchase-date");
+          const label = Array.from(content.querySelectorAll("[data-sheet-purchase-date-label]")).find((item) => item.getAttribute("data-sheet-purchase-date-label") === sleeveId);
+          if (label) label.textContent = formatPurchaseDateLabel(selectedDate);
+        });
+      }
+      const removeButton = content.querySelector("[data-sheet-remove-collection]");
+      if (removeButton) {
+        removeButton.addEventListener("click", () => {
+          window.common.removeFromMyCollection(removeButton.getAttribute("data-sheet-remove-collection"));
+          closeCollectionEditSheet();
+        });
+      }
+      const saveButton = content.querySelector("[data-sheet-save]");
+      if (saveButton) {
+        saveButton.addEventListener("click", () => {
+          const sleeveId = row.sleeveId;
+          if (!sleeveId) return;
+          if (window.common.updateMyCollectionQuantity) {
+            window.common.updateMyCollectionQuantity(sleeveId, draft.quantity);
+          }
+          if (window.common.updateMyCollectionPurchasedOnRelease) {
+            window.common.updateMyCollectionPurchasedOnRelease(sleeveId, draft.purchasedOnRelease);
+          }
+          if (!draft.purchasedOnRelease && draft.purchaseDate && window.common.updateMyCollectionPurchaseDate) {
+            window.common.updateMyCollectionPurchaseDate(sleeveId, draft.purchaseDate);
+          }
+          closeCollectionEditSheet();
+        });
+      }
+      updateDraftView();
+    }
+
+    async function renderCollection() {
+      const root = document.getElementById("collectionList");
+      const countEl = document.getElementById("collectionCount");
+      if (!root || !countEl || !window.common) return;
+
+      const stored = window.common.readMyCollection();
+      countEl.textContent = `${stored.length}種類`;
+      window.common.updateMyCollectionCountBadges(stored.length);
+
+      if (!stored.length) {
+        currentAssetTimeline = [];
+        updateAssetSummary([], []);
+        renderAssetChart([]);
+        renderEmpty(root);
+        return;
+      }
+
+      root.innerHTML = '<div class="my-collection-empty"><p>読み込み中...</p></div>';
+
+      let data;
+      try {
+        data = await window.common.loadData();
+      } catch (e) {
+        currentAssetTimeline = [];
+        updateAssetSummary([], []);
+        renderAssetChart([]);
+        root.innerHTML = `<div class="my-collection-empty"><p>${escapeHtml(e.message || "データの読み込みに失敗しました。")}</p></div>`;
+        return;
+      }
+
+      const sleeveMap = new Map();
+      for (const sleeve of Array.isArray(data?.sleeves) ? data.sleeves : []) {
+        const id = window.common.normalizeMyCollectionSleeveId(sleeve?.id);
+        if (id) sleeveMap.set(id, sleeve);
+      }
+
+      const latestIndexWeek = getLatestSleeveIndexWeek(data?.sleeves);
+      const rows = buildCollectionRows(stored, sleeveMap, latestIndexWeek);
+      const trackedRows = buildTrackedRows(stored, sleeveMap, latestIndexWeek);
+      currentAssetTimeline = buildAssetTimeline(trackedRows, latestIndexWeek);
+      updateAssetSummary(rows, currentAssetTimeline);
+      renderAssetChart(currentAssetTimeline);
+
+      const sortSel = document.getElementById("collectionSort");
+      const sortedRows = sortCollectionRows(rows, sortSel?.value || "valuationDesc");
+      root.innerHTML = sortedRows.map(buildCard).join("");
+      root.querySelectorAll("[data-edit-collection]").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          if (!isMobileCollectionView()) return;
+          const sleeveId = link.getAttribute("data-edit-collection");
+          const row = rows.find((item) => item.sleeveId === sleeveId);
+          if (!row) return;
+          event.preventDefault();
+          openCollectionEditSheet(row);
+        });
+      });
+      root.querySelectorAll("[data-remove-collection]").forEach((button) => {
+        button.addEventListener("click", () => {
+          window.common.removeFromMyCollection(button.getAttribute("data-remove-collection"));
+        });
+      });
+      root.querySelectorAll("[data-quantity-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const sleeveId = button.getAttribute("data-sleeve-id");
+          const row = rows.find((item) => item.sleeveId === sleeveId);
+          if (!row || !window.common.updateMyCollectionQuantity) return;
+          const delta = button.getAttribute("data-quantity-action") === "increase" ? 1 : -1;
+          window.common.updateMyCollectionQuantity(sleeveId, Math.max(1, row.quantity + delta));
+        });
+      });
+      root.querySelectorAll("[data-purchased-on-release]").forEach((input) => {
+        input.addEventListener("change", () => {
+          const sleeveId = input.getAttribute("data-purchased-on-release");
+          if (!sleeveId || !window.common.updateMyCollectionPurchasedOnRelease) return;
+          window.common.updateMyCollectionPurchasedOnRelease(sleeveId, input.checked);
+        });
+      });
+      root.querySelectorAll("[data-purchase-date-open]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const sleeveId = button.getAttribute("data-purchase-date-open");
+          const input = Array.from(root.querySelectorAll("[data-purchase-date]")).find((item) => item.getAttribute("data-purchase-date") === sleeveId);
+          if (!input || input.disabled) return;
+          if (typeof input.showPicker === "function") {
+            input.showPicker();
+          } else {
+            input.click();
+          }
+        });
+      });
+      root.querySelectorAll("[data-purchase-date]").forEach((input) => {
+        input.addEventListener("change", () => {
+          const sleeveId = input.getAttribute("data-purchase-date");
+          if (!sleeveId || !window.common.updateMyCollectionPurchaseDate) return;
+          const selectedDate = clampPurchaseDate(input.value, input.min, input.max);
+          input.value = selectedDate;
+          const label = Array.from(root.querySelectorAll("[data-purchase-date-label]")).find((item) => item.getAttribute("data-purchase-date-label") === sleeveId);
+          if (label) label.textContent = formatPurchaseDateLabel(selectedDate);
+          window.common.updateMyCollectionPurchaseDate(sleeveId, selectedDate);
+        });
+      });
+      if (sortSel && !sortSel.dataset.bound) {
+        sortSel.dataset.bound = "1";
+        sortSel.addEventListener("change", () => renderCollection());
+      }
+    }
+
+    async function main() {
+      await window.common.setupDashboardChrome({ sidebarActive: "collection", topbarActive: "collection" });
+      setupAssetPeriodButtons();
+      document.querySelectorAll("[data-edit-close]").forEach((button) => {
+        button.addEventListener("click", closeCollectionEditSheet);
+      });
+      await renderCollection();
+      document.addEventListener("pokesuri:my-collection-change", () => renderCollection());
+      let resizeTimer = 0;
+      window.addEventListener("resize", () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => renderAssetChart(currentAssetTimeline), 120);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => main());
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,347 @@
+{
+  "articles/1428/index.html": {
+    "classification": "A",
+    "reason": "4商品の発売価格・上昇率・具体的な週次価格を比較し、デザインの違いと因果関係を断定できない限界を説明している",
+    "unique_information": "ホミカ＆クロバットの8/31〜9/21の値動き、Nの直近3か月中央値、商品ごとのデザイン構成と比較表",
+    "intent_fulfilment": "最近発売された商品のうち何が値上がりしたか、どのような経路で価格が変わったかを比較できる",
+    "improvement": "価格の集計日・取引件数と公式在庫確認日を表へ添えると根拠を追いやすい",
+    "confidence": "高（本文読解）"
+  },
+  "articles/4500/index.html": {
+    "classification": "A",
+    "reason": "4商品の発売価格・現在価格・下落率・過去の高値を独自データで比較し、定価割れと人気の因果関係を区別している",
+    "unique_information": "499〜550円の4商品の発売価格比較表と945円・1,167円等の過去観測に対する比較",
+    "intent_fulfilment": "安く集められる商品の候補と、現在価格だけでは分からない変動を示す",
+    "improvement": "記事の基準日と各商品の最終観測週・件数を明示する",
+    "confidence": "高（本文読解）"
+  },
+  "articles/article-2026-10-01/index.html": {
+    "classification": "A",
+    "reason": "25商品から高額5商品を抽出し、商品背景と過去の22,000円・27,000円等の価格を示す。単なるカテゴリ一覧の転載に留まらない",
+    "unique_information": "リザードン関連商品の高額TOP5、XとYの価格差、限定セット・記念商品の違い、安価な商品の反例",
+    "intent_fulfilment": "どのリザードン商品が高いかと、価格差の観察事実を確認できる",
+    "improvement": "高値の観測期間・件数と販売形態の公式出典を添える。需要・希少性の説明は推論として維持する",
+    "confidence": "高（本文読解）"
+  },
+  "articles/article-2026-10-03/index.html": {
+    "classification": "A",
+    "reason": "発売年別の掲載数・相場取得数・中央値・3,000円以上割合と採用条件が初期HTMLにあり、サイトの独自データを再集計している",
+    "unique_information": "2002〜2026年の発売年別集計表、852商品を母集団とする条件・欠損除外・月次年次補完の明示",
+    "intent_fulfilment": "古い商品が高い傾向と例外を、年代別の比較で判断できる",
+    "improvement": "少数の発売年の不確実性や、キャラクター・限定販売の影響との混同をさらに説明するとよい",
+    "confidence": "高（本文読解・集計表を確認）"
+  },
+  "articles/article-2026-06-09/index.html": {
+    "classification": "A",
+    "reason": "開設の背景、集める中で生じた課題、データを残す方針と個人運営・非公式の立場を具体的に説明する",
+    "unique_information": "運営者自身の収集動機、探す・調べる・集める・振り返るという方針とサービスの使い分け",
+    "intent_fulfilment": "誰がどの目的で運営しているかというAboutページの検索目的を満たす",
+    "improvement": "データ収集の担当範囲・確認工程と連絡先への導線を明確にすると信頼性が高まる",
+    "confidence": "高（本文読解）"
+  },
+  "articles/article-2026-08-26/index.html": {
+    "classification": "A",
+    "reason": "自サイト固有の登録・数量変更・資産推移とブラウザ保存の制約を説明し、操作前に必要な情報を提供する。文章量だけで低評価にしない",
+    "unique_information": "マイコレクションの具体的な利用方法と、Cookie削除・別端末での保存データの制約",
+    "intent_fulfilment": "機能の使い方と保存上の注意を確認できる",
+    "improvement": "画面付きの具体的な登録手順や保存内容の確認例があるとさらに使いやすい",
+    "confidence": "高（本文読解）"
+  },
+  "articles/article-2026-06-15/index.html": {
+    "classification": "B",
+    "reason": "発売情報と相場表には独自価値があるが、タイトルと導入の『5種類』に対して比較表・ランキング・結論は6種類で、読者への約束が一致しない",
+    "unique_information": "2012〜2025年のシロナ関連6商品の発売形態と相場比較表、6,666円から1,000円までの差",
+    "intent_fulfilment": "相場比較はできるが対象数と記事説明に不整合がある",
+    "insufficient_information": "対象商品数の統一、価格の観測日と件数、販売形態・未開封供給量の根拠",
+    "improvement": "実際の比較対象6種にタイトル・導入・目次を統一し、確認した価格の期間・件数と公式出典を添える",
+    "confidence": "高（本文読解）"
+  },
+  "articles/2026916307/index.html": {
+    "classification": "B",
+    "reason": "9/10時点の発表として7種の仕様・価格と考察はあるが、発売後に追記予定とする相場が未追記のまま。特集の新規6件との差も読者に説明されていない",
+    "unique_information": "7商品の価格・仕様・デザイン解説と、No.30の図鑑番号の背景、damage designとの違いを踏まえた考察",
+    "intent_fulfilment": "発売前の資料として有用。現時点の発売後相場を探す目的には追補が不足",
+    "insufficient_information": "発売後の確認結果、追記予定の進捗、特集と対象が違う理由、参照先をクリックできる出典",
+    "improvement": "当時の記事を保持しつつ、発売後追補の日付・実際の対象商品・現在の観測情報へのリンクを追加する",
+    "confidence": "高（本文読解）"
+  },
+  "articles/premium-gloss/index.html": {
+    "classification": "B",
+    "reason": "通常版とプレミアム・グロスの仕様・価格・歴史を比較する価値はあるが、本文に読者が辿れない内部引用記号が残る。公式と称する根拠へのリンクもない",
+    "unique_information": "889円と990円の仕様比較、2016年・2017年の再展開と、プレミアム仕様でも価格が高いとは限らない反例",
+    "intent_fulfilment": "違いの理解には役立つが出典を追えず、引用記号が読解を妨げる",
+    "insufficient_information": "公式仕様・初期商品展開を確認する正式な資料リンク、内部引用記号の置換",
+    "improvement": "『citeturn292313search3』を正式な出典タイトルとリンクへ置き換え、確認日を記載する",
+    "confidence": "高（本文と実ブラウザを確認）"
+  },
+  "articles/deck-shield-size/index.html": {
+    "classification": "B",
+    "reason": "サイズ表と二重スリーブの手順・適合限界を説明しており有用だが、公式商品寸法と大会ルールを参照するリンク・確認日がなく再検証しにくい",
+    "unique_information": "63×88mm、66×92mm、インナー／オーバーの違いと『同じ66×92mmでは外側に使えない』という選定上の注意",
+    "intent_fulfilment": "サイズ選定はできる。大会利用条件と適合確認の根拠が不足",
+    "insufficient_information": "公式の商品仕様・大会規定へのリンク、確認日、製品ごとの装着実例",
+    "improvement": "寸法を確認した公式商品とルールの出典を添え、任意の実測写真や適合例を追加する",
+    "confidence": "高（本文読解。大会規定そのものの事実監査は範囲外）"
+  },
+  "articles/deck-shield-storage/index.html": {
+    "classification": "B",
+    "reason": "素材別の注意と光・熱・湿気・圧力への対策があり検索目的を満たすが、保存科学機関の名前を挙げるのみで参照資料を辿れない",
+    "unique_information": "PP製品と未開封外袋を分けて考える保管手順、PE・PP・PETとPVCの違いを説明",
+    "intent_fulfilment": "具体的な保管の基本は分かる。推奨素材と保存条件の根拠を再確認しにくい",
+    "insufficient_information": "保存資料の正式タイトル・リンク、商品外袋に対する適用限界、運営者自身の保管例",
+    "improvement": "参照する保存機関の資料と対象材質を明記し、実物の収納例と劣化を完全には防げない条件を示す",
+    "confidence": "高（本文読解）"
+  },
+  "articles/deck-shield-list-price/index.html": {
+    "classification": "B",
+    "reason": "32枚と64枚を揃えて価格変遷を比較する編集価値はあるが、価格改定と当時の販売仕様の一次資料を辿れない",
+    "unique_information": "380円×2＝760円の64枚相当換算、2016年移行期、2023年の792円から889円への比較",
+    "intent_fulfilment": "『昔の380円と現在889円を単純比較できない』ことは分かる。歴史的根拠の再確認が不足",
+    "insufficient_information": "各年代の商品例の正式資料、税表記と価格改定の公式告知、抽出対象の根拠",
+    "improvement": "各価格帯を確認した代表商品の商品ページ／公式告知へリンクし、税込・税抜と調査日を表に揃える",
+    "confidence": "高（本文読解）"
+  },
+  "articles/deck-shield-where-to-buy/index.html": {
+    "classification": "B",
+    "reason": "新作と過去品で購入先を分ける比較表と具体的な状態確認項目は有用だが、実際の調査例や確認日がなく一般的な購入先紹介の比重が高い",
+    "unique_information": "公式・中古・フリマ・通販の用途別比較と、出品価格と成立価格を区別する注意",
+    "intent_fulfilment": "購入先の選択はできる。実在する商品をどう探すかの再現手順が不足",
+    "insufficient_information": "実際の検索手順、具体的な同一商品の状態比較、公式窓口への参照",
+    "improvement": "代表商品で調査日付きの探し方を示し、価格・送料・状態をどう比較するかの実例を加える",
+    "confidence": "高（本文読解）"
+  },
+  "articles/deck-shield-collection-future/index.html": {
+    "classification": "B",
+    "reason": "具体的な再商品化の例と収集・記録の課題に独自の視点はあるが、About記事と方針の説明が部分的に重なり、読者自身が行動できる手順が少ない",
+    "unique_information": "初版・ver.2・プレミアムの再登場を分けて集める視点、852種類を全収集する制約と記録の課題",
+    "intent_fulfilment": "コレクションの方向性を考える材料はある。実際の管理方法やデータによる検証が限定的",
+    "insufficient_information": "Aboutとの役割分担、運営者自身の収集・記録の事例、再登場の一次資料",
+    "improvement": "Aboutは運営方針、この記事は読者の収集計画に役割を分け、実例・チェック項目・一次資料を加える",
+    "confidence": "中（テーマ重複は完全な複製ではない）"
+  },
+  "index.html": {
+    "classification": "A",
+    "reason": "サイトの目的と独自データの入口を示し、価格・値動きの順位と記事・図鑑への導線が初期HTMLにある",
+    "unique_information": "852商品のサイト説明、3つのデータランキング、お知らせ記事とカテゴリの導線",
+    "intent_fulfilment": "サイトの用途を把握し、相場・商品・記事を探し始められる",
+    "own_data_display": "初期HTMLのランキング9行と掲載数・記事を確認",
+    "confidence": "高"
+  },
+  "ranking.html": {
+    "classification": "A",
+    "reason": "795商品の価格順位・参考価格・比較と詳細リンクが初期HTMLにあり、高額商品の比較という目的を満たす",
+    "unique_information": "最新有効価格の順位、上位3件の比較と4位以降の価格・観測情報",
+    "intent_fulfilment": "高額商品の発見と価格比較ができる",
+    "own_data_display": "初期HTMLと実ブラウザで795商品への導線を確認",
+    "improvement": "少数取引・古い観測を上位カードでも明記すると判断しやすい",
+    "confidence": "高"
+  },
+  "growth.html": {
+    "classification": "A",
+    "reason": "30日前を基準とする174商品の上昇率と対象条件を示し、価格順位とは異なる比較軸を提供する",
+    "unique_information": "30日前比の上昇率と商品順位、対象期間の説明と価格履歴グラフ",
+    "intent_fulfilment": "どの商品が相対的に上がったかを比較できる",
+    "own_data_display": "初期HTMLに174件・30日前比と価格を確認",
+    "improvement": "比較元の観測日・件数を商品ごとに示すと外れ値の評価に役立つ",
+    "confidence": "高"
+  },
+  "surge.html": {
+    "classification": "A",
+    "reason": "74商品の前回週次価格からの値上がり額と条件があり、価格順位・高騰率とは異なる検索目的に対応する",
+    "unique_information": "前回観測からの金額差の順位と価格、商品ごとの観測情報",
+    "intent_fulfilment": "値上がり幅の大きい商品を金額で比較できる",
+    "own_data_display": "初期HTMLに74件・+27,001円等の金額差を確認",
+    "improvement": "連続した週とは限らないことと少数取引の注記を上位でも分かりやすくする",
+    "confidence": "高"
+  },
+  "access-ranking.html": {
+    "classification": "B",
+    "reason": "703商品の独自閲覧順位と商品情報はあるが、累計閲覧数を需要の気配として解釈する説明に対し、計測開始・重複・ボット除外の根拠が不足する",
+    "unique_information": "サイト内で記録した累計閲覧順位と商品価格・価格推移",
+    "intent_fulfilment": "サイト内の閲覧傾向は比較できる。市場需要そのものの判断には不十分",
+    "own_data_display": "初期HTMLに703件の順位と価格を確認",
+    "insufficient_information": "集計期間・計測対象・重複扱い・ボット除外の有無、閲覧と取引需要の違い",
+    "improvement": "実施している計測条件を説明し、閲覧順位が市場需要や取引数を表すとは限らないことを明記する",
+    "confidence": "高（説明の不足を確認。実計測の正確性は未検証）"
+  },
+  "index-market.html": {
+    "classification": "A",
+    "reason": "平均相場・期間別の差・更新数・静的グラフとデータコメントを掲載し、サイト固有の市場俯瞰を提供する",
+    "unique_information": "2,530円の平均、前回+16円、月間・年間差、対象764・更新184の集計と指数推移",
+    "intent_fulfilment": "個別商品と異なる市場全体の変化を確認できる",
+    "own_data_display": "初期HTMLと実ブラウザで主要数値を確認。初期HTMLに指数グラフのSVGあり",
+    "improvement": "商品ごとの持ち越しと構成変化による影響をグラフ近くでも説明するとよい",
+    "confidence": "高"
+  },
+  "pricing-method.html": {
+    "classification": "A",
+    "reason": "サイト固有の採用優先順位・件数・補完・外れ値表示と未確認運用を説明し、データの読み方という目的を満たす",
+    "unique_information": "週次優先と月次・年次補完、件数0、発売前除外、64枚を標準とするGASの運用と採用限界",
+    "intent_fulfilment": "参考価格と観測日・件数、表示上の注意を解釈できる",
+    "own_data_display": "実数値の一覧は目的外。サイト固有の算出条件を初期HTMLに説明",
+    "improvement": "実際の取引状態・送料の採用運用を確認できたら、その根拠とともに説明を補う",
+    "confidence": "高"
+  },
+  "my-collection.html": {
+    "classification": "B",
+    "reason": "保有商品を登録し相場と集計する固有ツールの価値はあるが、新規訪問時は0種類と空グラフで操作目的の画面となる。空の初期状態を未完成とは判定しない",
+    "unique_information": "ブラウザ保存による数量・取得額・参考評価の管理機能と保存制約",
+    "intent_fulfilment": "登録後の自分のコレクション管理には対応。初回訪問時は独自の公開データが少ない",
+    "own_data_display": "未登録の隔離ブラウザでは0種類、collectionListは空。登録済みの全状態は今回再検証しない",
+    "content_status": "入力待ちの正常な空状態（未完成ではない）",
+    "insufficient_information": "初回の利用例、集計条件・保存制約・操作画面への広告適用の確認",
+    "improvement": "利用例と手順を示し、空・操作状態で広告を実際に出しているか管理画面と実表示で確認する。今回は変更しない",
+    "confidence": "高（未登録状態を実ブラウザで確認）"
+  },
+  "policy.html": {
+    "classification": "B",
+    "reason": "運営・個人情報・免責を確認する補助情報として必要だが、一般的な法務文が中心で集客用の独自記事とは役割が異なる",
+    "unique_information": "当サイトの保存・広告・非公式運営に関する方針と免責",
+    "intent_fulfilment": "利用前の方針確認として機能する",
+    "own_data_display": "価格履歴は目的外。方針文が初期HTMLにある",
+    "improvement": "実際のデータ保存・外部通信・連絡窓口と記載内容が一致するか定期的に確認する",
+    "confidence": "中"
+  },
+  "contact.html": {
+    "classification": "B",
+    "reason": "修正依頼・問い合わせの操作目的を満たす補助画面。短い文章だから低品質とはしないが独自記事としては扱わない",
+    "unique_information": "当サイトの修正・不具合報告の入力窓口",
+    "intent_fulfilment": "問い合わせ入力に対応。送信は監査で実施しない",
+    "own_data_display": "価格履歴は目的外。フォームと用途説明あり",
+    "improvement": "必要な連絡条件と対応方針を明確にする。操作画面への広告は避ける方針を維持する",
+    "confidence": "中（送信機能は未実行）"
+  },
+  "404.html": {
+    "classification": "C",
+    "reason": "エラー画面に商品詳細の読み込み待ちと未指定IDの説明が残り、読者の探した商品についての固有情報は出ない。広告・検索からは除外済み",
+    "intent_fulfilment": "図鑑へ戻る導線はあるが、読み込み中の見出しがエラーの意味を分かりにくくする",
+    "insufficient_information": "明確なエラー説明と探し直す方法。読み込み待ちの商品名・空グラフの整理",
+    "improvement": "404専用の案内と検索・図鑑への導線に整理する。記事のような長文を無理に足さず広告なしを維持する",
+    "content_status": "エラー用途。読み込み待ちと空の商品欄を実ブラウザで確認",
+    "confidence": "高"
+  },
+  "detail.html": {
+    "classification": "C",
+    "reason": "IDなしURLでは商品が特定されず、見出し読み込み中・価格と履歴が空のまま。ID付きの互換導線とは分けて判定する",
+    "intent_fulfilment": "IDなしのページ単独では商品・価格確認の目的を満たさない",
+    "insufficient_information": "商品未指定の説明と商品選択への誘導。未確定の商品見出し・空価格欄の整理",
+    "improvement": "未指定URLは図鑑への案内にし、有効IDの互換表示は別途維持する。広告・noindex除外を維持する",
+    "content_status": "IDなしでは本文未確定（有効IDの表示とは別）",
+    "confidence": "高（IDなしを実ブラウザで確認）"
+  },
+  "article.html": {
+    "classification": "C",
+    "reason": "slugなしURLでは記事本文が確定せず読み込み案内のみ。生成済みの14記事とは分けて判定する",
+    "intent_fulfilment": "記事未指定のURL単独では記事を読む目的を満たさない",
+    "insufficient_information": "記事未指定の明確な説明と記事選択への誘導",
+    "improvement": "記事一覧への案内へ整理し、既存slug付き互換表示は別扱いにする。広告・noindex除外を維持する",
+    "content_status": "slugなしでは記事本文なし（生成済み記事とは別）",
+    "confidence": "高（slugなしを実ブラウザで確認）"
+  },
+  "contact-complete.html": {
+    "classification": "C",
+    "reason": "送信完了の操作通知が中心で、独立した読み物や検索向け情報はない。役割通りの画面であり未完成ではない",
+    "intent_fulfilment": "完了確認は満たす。独立したコンテンツを読む目的は対象外",
+    "insufficient_information": "収益化できる独立本文はないが、完了画面に長文を追加する必要はない",
+    "improvement": "完了案内の用途に留め、広告なし・noindexを維持する",
+    "content_status": "正常な操作完了通知",
+    "confidence": "高"
+  },
+  "admin-buy-ranking.html": {
+    "classification": "C",
+    "reason": "管理・画像制作向けの画面でTOP5の表題に対して初期の具体的な商品行がなく、一般訪問者向けの買い判断の根拠を示さない",
+    "insufficient_information": "一般公開する場合の選定条件、対象期間、実際の採用商品の表と根拠",
+    "improvement": "内部制作ツールとして公開導線・広告の対象外に留める。公開記事に転用するならデータと選定根拠を別途確認する",
+    "content_status": "制作向けの空テンプレート",
+    "confidence": "中（初期HTMLを確認。管理操作は未実行）"
+  },
+  "admin-should-have-bought-ranking.html": {
+    "classification": "C",
+    "reason": "4月比較を約束する画面だが表示は前週比の固定例で、別の管理ランキングと商品・金額が実質的に同じ",
+    "insufficient_information": "4月の基準価格と現在価格の実測比較、対象期間と固定例を区別する説明",
+    "improvement": "内部制作の例として明示し公開記事と区別する。一般公開には実測期間・計算根拠と固有の対象を用意する。広告なしを維持する",
+    "content_status": "固定例の管理画面（現在の公開相場として使わない）",
+    "confidence": "高（初期内容の一致を確認）"
+  },
+  "admin-surge-ranking.html": {
+    "classification": "C",
+    "reason": "『下落』の表題に対して表示値は+25.6%等の上昇例で、他の管理ランキングと同じ固定商品を並べる",
+    "insufficient_information": "実際の下落商品・負の変化率・比較期間と根拠",
+    "improvement": "制作サンプルとして明示し一般公開ランキングと分離する。広告なし・noindexを維持する",
+    "content_status": "固定例の管理画面。見出しと方向が不一致",
+    "confidence": "高（初期内容を確認）"
+  },
+  "admin-weekly-ranking.html": {
+    "classification": "C",
+    "reason": "固定のTOP5例が他の管理ランキングと同一で、現在週の観測期間と独自の選定根拠を確認できない",
+    "insufficient_information": "実データの対象週と比較期間、固定例の区別、選定根拠",
+    "improvement": "内部画像制作の例として扱い、公開中のgrowth／surgeへの導線と区別する。広告なし・noindexを維持する",
+    "content_status": "固定例の管理画面",
+    "confidence": "中（初期内容を確認）"
+  },
+  "admin-article-editor.html": {
+    "classification": "B",
+    "reason": "記事を作成する内部操作ツールで、一般読者向けのコンテンツとは役割が違う。入力前の空状態だけで未完成としない",
+    "intent_fulfilment": "内部制作向け。投稿・保存は監査で実行しない",
+    "improvement": "内部利用と公開記事の導線を分け、広告なし・noindexを維持する",
+    "confidence": "中"
+  },
+  "admin-promo.html": {
+    "classification": "B",
+    "reason": "自サイト固有の投稿画像を作る内部操作ツール。商品未選択という入力待ちを未完成や低品質記事と混同しない",
+    "intent_fulfilment": "内部制作向け。画像生成・投稿は監査で実行しない",
+    "improvement": "公開コンテンツと内部操作の役割を分け、広告なし・noindexを維持する",
+    "confidence": "中"
+  },
+  "sleeves/sample-1.html": {
+    "classification": "C",
+    "reason": "終了案内だけで商品や相場の独自情報はなく、sample-2とsample-3と本文が一致する。ただし広告・検索からは除外済み",
+    "insufficient_information": "独立した商品・相場・解説本文はない。終了案内としては不足ではない",
+    "improvement": "終了案内を維持し広告なし・noindexを保持する。必要なら1つの終了案内への集約を検討する",
+    "content_status": "終了済みの案内。未完成商品ページではない",
+    "confidence": "高"
+  },
+  "sleeves/sample-2.html": {
+    "classification": "C",
+    "reason": "sample-1／3と同じ終了案内のみ。独立した相場・解説本文はないが広告・検索からは除外済み",
+    "insufficient_information": "独立した商品・相場・解説本文はない。終了案内としては不足ではない",
+    "improvement": "広告なし・noindexを維持し、必要なら終了案内を集約する",
+    "content_status": "終了済みの案内",
+    "confidence": "高"
+  },
+  "sleeves/sample-3.html": {
+    "classification": "C",
+    "reason": "sample-1／2と同じ終了案内のみ。独立した相場・解説本文はないが広告・検索からは除外済み",
+    "insufficient_information": "独立した商品・相場・解説本文はない。終了案内としては不足ではない",
+    "improvement": "広告なし・noindexを維持し、必要なら終了案内を集約する",
+    "content_status": "終了済みの案内",
+    "confidence": "高"
+  },
+  "sleeve/4521329254500/index.html": {
+    "classification": "C",
+    "reason": "現行852商品とは別の廃止経路で、該当情報なしと図鑑への案内のみ。現行商品ページの欠損に含めない",
+    "insufficient_information": "現行の商品資料としての固有本文はない。廃止経路の案内としては目的を果たす",
+    "improvement": "案内・noindex・広告なしを維持し、正しい移動先を確認する",
+    "content_status": "廃止経路の案内",
+    "confidence": "高"
+  },
+  "sleeves/pokemon/pokemon-72049f83d8bb/index.html": {
+    "type": "カテゴリ旧経路",
+    "classification": "B",
+    "reason": "旧カテゴリの絞り込み先へ移動する案内で、現行615カテゴリとは別の経路。独立本文として収益化するものではない",
+    "unique_information": "group=pokemon&tag=32の絞り込み先への移動案内",
+    "intent_fulfilment": "旧URLの移動案内はある。移動先で有効なカテゴリ条件となるかは要確認",
+    "insufficient_information": "移動先のtag=32が現在の商品分類と一致する根拠",
+    "improvement": "移動先が実際に該当商品を返すか確認し、誤った旧条件なら正しい図鑑の導線へ整理する。広告なし・noindexを維持する",
+    "content_status": "旧カテゴリの移動案内",
+    "confidence": "中"
+  },
+  "zukan.html": {
+    "classification": "B",
+    "reason": "現行図鑑への移動用URLで独立本文は少ないが、同じ内容を別記事として公開するものではない",
+    "intent_fulfilment": "現行図鑑へ移動する目的を満たす",
+    "improvement": "移動先の図鑑を維持し、独立した記事・広告ページとして扱わない",
+    "content_status": "リダイレクト用途",
+    "confidence": "高"
+  }
+}

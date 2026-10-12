@@ -1,0 +1,24 @@
+{
+  "coverage": {
+    "urls": 1536,
+    "products": 852,
+    "categories": 615,
+    "articles": 14,
+    "ads": 1107
+  },
+  "classifications": {
+    "A": 773,
+    "B": 616,
+    "C": 147
+  },
+  "C_action_coverage": 147,
+  "C_ads": 0,
+  "C_indexed": 0,
+  "CSV_valid": true,
+  "public_samples": 21,
+  "browser_samples": 16,
+  "rendering_checks": 852,
+  "site_files_hashed": 1591,
+  "site_changed": 0,
+  "report_links_valid": true
+}
