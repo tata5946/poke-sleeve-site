@@ -8518,10 +8518,20 @@ footer.site-footer {
     gap: 12px;
 }
 
+/* Sleeve Index visual treatment for the My Collection chart. */
+.my-asset-chart-panel {
+    gap: 16px;
+    padding: 20px 0 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
 .my-asset-chart-head h2 {
     margin: 0;
     color: #101828;
-    font-size: 20px;
+    font-size: 24px;
     line-height: 1.25;
     font-weight: 900;
 }
@@ -8529,7 +8539,7 @@ footer.site-footer {
 .my-asset-chart-head p {
     margin: 4px 0 0;
     color: #667085;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.7;
     font-weight: 700;
 }
@@ -8538,41 +8548,45 @@ footer.site-footer {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 6px;
+    gap: 12px;
 }
 
 .my-asset-period-btn {
-    min-height: 32px;
-    padding: 0 10px;
-    border: 1px solid #dbe5f2;
+    min-width: 104px;
+    min-height: 42px;
+    padding: 0 22px;
+    border: 1px solid #cfe0f5;
     border-radius: 999px;
-    background: #fff;
-    color: #475467;
+    background: #f8fbff;
+    color: #253858;
     font: inherit;
-    font-size: 12px;
-    font-weight: 900;
+    font-size: 16px;
+    font-weight: 800;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9);
     cursor: pointer;
 }
 
 .my-asset-period-btn.is-active {
-    border-color: #002366;
-    background: #002366;
+    border-color: #082968;
+    background: #082968;
     color: #fff;
+    box-shadow: 0 10px 22px rgba(8, 41, 104, .18);
 }
 
 .my-asset-chart {
     min-width: 0;
-    width: min(100%, 920px);
+    width: 100%;
     margin-inline: auto;
 }
 
 .my-asset-chart-wrap {
     position: relative;
     min-width: 0;
-    overflow: hidden;
-    border: 1px solid #e4eaf4;
-    border-radius: 8px;
-    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    overflow: visible;
+    padding: 20px 18px 16px;
+    border: 1px solid #cfe0f5;
+    border-radius: 18px;
+    background: #fff;
 }
 
 .my-asset-chart-legend {
@@ -8642,12 +8656,16 @@ svg[class*="-chart"],
 }
 
 .my-asset-quantity-bar {
-    fill: #9fb3d1;
+    fill: #c9d9ee;
     opacity: .34;
 }
 
 .my-asset-hit-point {
     cursor: pointer;
+}
+
+.my-asset-chart-dot {
+    fill: #2563eb;
 }
 
 .my-asset-chart-tooltip {
@@ -8659,11 +8677,11 @@ svg[class*="-chart"],
     gap: 2px;
     min-width: 154px;
     padding: 8px 10px;
-    border: 1px solid #dbe5f2;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, .98);
-    box-shadow: 0 10px 24px rgba(15, 23, 42, .14);
-    color: #111827;
+    border: 1px solid #cfd9e8;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, .14);
+    color: #1f2a44;
     text-align: left;
     pointer-events: none;
 }
