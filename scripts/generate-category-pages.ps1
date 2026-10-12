@@ -10,6 +10,18 @@
 $ErrorActionPreference = "Stop"
 . (Join-Path $PSScriptRoot "pricing-helpers.ps1")
 
+$NoAdCategorySlugs = @(
+  'pokemon-0113fff86d55', 'pokemon-dd2e45e9d79f',
+  'pokemon-05fa8df038bd', 'pokemon-959393a7f672',
+  'pokemon-6c69d9d1b279', 'pokemon-96506f915a8a',
+  'pokemon-b47b6b0737d6', 'pokemon-e5a8a14c5bfd', 'pokemon-e74f10afac65',
+  'pokemon-e80d68640d3c', 'trainer-8820c2e9e267'
+)
+
+function Remove-AdLoader([string]$HtmlText) {
+  return [regex]::Replace($HtmlText, '\s*<script\s+async\s+src="https://pagead2\.googlesyndication\.com/pagead/js/adsbygoogle\.js\?client=[^"]+"\s+crossorigin="anonymous"></script>', '', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+}
+
 function Html([object]$Value) { [System.Net.WebUtility]::HtmlEncode([string]$Value) }
 function RouteId([object]$Value) {
   $id = ([string]$Value).Trim()
@@ -331,6 +343,7 @@ function ZukanCategoryPageHtml([object]$Entry, [string]$Slug, [string]$Template,
   }
   $breadcrumbMarkup = '<nav class="breadcrumb" aria-label="パンくず"><a href="/">ホーム</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><a href="/sleeves/">デッキシールド図鑑</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><a href="/sleeves/' + $Entry.group + '/">' + (Html $groupLabel) + 'から探す</a><span class="breadcrumb-sep" aria-hidden="true">&gt;</span><span class="breadcrumb-current" aria-current="page">' + (Html $label) + '</span></nav>'
   $html = $Template
+  if ($NoAdCategorySlugs -contains $Slug) { $html = Remove-AdLoader $html }
   if (-not [string]::IsNullOrWhiteSpace($LastUpdated)) {
     $html = [regex]::Replace($html, '<strong id="updatedAt">.*?</strong>', '<strong id="updatedAt">' + (Html $LastUpdated) + '</strong>')
     $html = [regex]::Replace($html, 'id="updatedChip" class="zukan-meta-chip(?: is-loading skeleton-shimmer)?"(?: data-static-updated="1")?', 'id="updatedChip" class="zukan-meta-chip" data-static-updated="1"')
