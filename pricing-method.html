@@ -5,11 +5,24 @@
   <meta name="description" content="デッキシールドの参考相場、観測週と取引件数、月次・年次補完、少数取引、発売時価格と内容枚数の扱いを説明します。">
   <link rel="canonical" href="https://pokesuri-navi.com/pricing-method.html">
   <link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="./assets/site.css">
-  <link rel="stylesheet" href="./assets/pricing-quality.css?v=catalog-803b7f85011b">
-</head><body class="page-content-focus">
-<div id="site-header"></div><main class="pricing-method-body">
-<nav><a href="/">ホーム</a> / <a href="/sleeves/">図鑑</a></nav>
-<h1>相場データの見方・算出方法</h1>
+  <link rel="stylesheet" href="./assets/pricing-quality.css?v=catalog-7f582d6c9e97">
+</head><body class="page-content-focus policy-page shared-page-layout" data-hide-global-header="1">
+<div id="site-header"></div>
+<div class="dashboard-shell">
+  <aside class="dashboard-sidebar" aria-label="サイドバー"><div id="dashboardSidebarSlot"></div></aside>
+  <main class="dashboard-main">
+    <header class="dashboard-topbar"><div id="dashboardTopbarSlot" data-dashboard-topbar-active="zukan"></div></header>
+    <div class="dashboard-content">
+      <div class="container page-shell page-shell--content shared-page-content">
+        <nav class="breadcrumb" aria-label="パンくず">
+          <a href="./">ホーム</a><span class="breadcrumb-sep" aria-hidden="true">></span>
+          <span class="breadcrumb-current" aria-current="page">相場データの見方・算出方法</span>
+        </nav>
+        <div class="policy-wrap shared-page-body">
+          <article class="policy-card page-reading-panel pricing-method-body">
+            <div class="page-focus-intro shared-page-heading">
+              <h1 class="page-focus-title shared-page-heading-title">相場データの見方・算出方法</h1>
+            </div>
 <p>当サイトの参考相場は、商品マスターと週次・月次・年次の価格記録を整理した参考値です。その金額での販売や売却を保証するものではありません。商品ごとの観測期間と採用取引件数を合わせて確認してください。</p>
 <h2>参考相場と観測期間</h2>
 <p>正の価格が記録されている有効な週次観測のうち、最も新しい週を採用します。週次がない場合に月次、それもない場合に年次で補完します。期間の粒度と採用件数を確認できる週次を優先し、月次集計で週次の取引件数を上書きしません。発売前の期間の価格は除外します。月次は発売月、年次は発売年以降を対象にします。週次の件数が0の記録は新しい取引の観測として採用しません。</p>
@@ -30,7 +43,13 @@
 <p>「相場データ分析」は、観測価格の中央値、範囲、直前との比較などを閾値で判定し、文章を組み立てる統計ルールによる分析です。商品固有の人気の理由や将来価格をAIで推測する機能ではありません。</p>
 <p>価格データは週単位で管理し、取得とページ再生成時に公開内容を更新します。毎週必ず全商品に新しい取引があるわけではありません。ページに表示した商品固有の最終観測期間を基準にしてください。</p>
 <p>記録の誤りや追加資料については<a href="/contact.html">お問い合わせ</a>からご連絡ください。価格の一般的な注意事項は<a href="/policy.html">運営方針・免責事項</a>をご確認ください。</p>
-</main><div id="site-footer"></div>
-<script src="./assets/pricing.js?v=catalog-803b7f85011b"></script><script src="./assets/common.js?v=catalog-803b7f85011b"></script>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="site-footer"></div>
+<script src="./assets/pricing.js?v=catalog-7f582d6c9e97"></script><script src="./assets/common.js?v=catalog-7f582d6c9e97"></script>
 <script>window.common.setupDashboardChrome({sidebarActive:'zukan'});</script>
 </body></html>

@@ -144,6 +144,7 @@ function Get-ZukanCardHtml([object]$Sleeve) {
   $currentPrice = Get-ZukanYenText (Get-ZukanLatestPriceValue $Sleeve)
   $deltaHtml = Get-ZukanDeltaHtml $Sleeve
   $quoteMeta = ConvertTo-HtmlText (Get-PricingFact $Sleeve).summary
+  $sparklineHtml = (Get-PricingFact $Sleeve).sparkline
   $imageHtml = if ([string]::IsNullOrWhiteSpace($imageUrl)) { "" } else {
     '<img src="' + $imageUrl + '" alt="' + $name + '" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.style.display=''none'';" />'
   }
@@ -164,6 +165,7 @@ function Get-ZukanCardHtml([object]$Sleeve) {
                       <small class="reference-card-meta">$quoteMeta</small>
                       <div class="zukan-card-badges">$deltaHtml</div>
                     </div>
+                    $sparklineHtml
                   </div>
                   <span class="zukan-card-cta">&#35443;&#32048;&#12434;&#35211;&#12427; &rarr;</span>
                 </div>

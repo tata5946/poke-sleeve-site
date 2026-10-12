@@ -26,6 +26,7 @@ items.push({ scenario: 'market', route: '/index-market.html' }, { scenario: 'hom
   { scenario: 'pokemon-index', route: '/sleeves/pokemon/' }, { scenario: 'trainer-index', route: '/sleeves/trainer/' },
   { scenario: 'series-index', route: '/sleeves/series/' }, { scenario: 'pricing-method', route: '/pricing-method.html' });
 items.push({ scenario: 'collection-populated', route: '/my-collection.html?qualitySeed=1' });
+items.push({ scenario: 'pricing-method-mobile', route: '/pricing-method.html', mobile: true });
 const selectedScenario = process.argv.find(arg => arg.startsWith('--scenario='))?.slice('--scenario='.length);
 if (selectedScenario) {
   const selected = items.filter(item => item.scenario === selectedScenario);
@@ -48,7 +49,7 @@ const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': (mime[extension] || 'application/octet-stream') + (['.html', '.js', '.css', '.json'].includes(extension) ? '; charset=utf-8' : ''), 'Cache-Control': 'no-store' });
   res.end(content);
 });
-async function mobileDom(profile, url) {
+async function mobileDom(profile, url, scenario) {
   const browser = spawn(edge, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--disable-extensions', '--disable-sync', '--remote-debugging-port=0', '--user-data-dir=' + profile, 'about:blank'], { windowsHide: true, stdio: 'ignore' });
   let ws;
   const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -81,7 +82,7 @@ async function mobileDom(profile, url) {
     }
     if (!captured) throw Error('Mobile DOM capture did not complete');
     const screenshot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
-    fs.writeFileSync(path.join(output, 'mobile-pjcs.png'), Buffer.from(screenshot.data, 'base64'));
+    fs.writeFileSync(path.join(output, scenario + '.png'), Buffer.from(screenshot.data, 'base64'));
     const result = await send('Runtime.evaluate', { expression: 'document.documentElement.outerHTML', returnByValue: true });
     await send('Browser.close').catch(() => {});
     return { stdout: result.result.value };
@@ -97,9 +98,9 @@ async function mobileDom(profile, url) {
       const item = items[cursor++];
       try {
         const profile = path.join(profiles, item.scenario);
-        const screenshot = ['many-weekly', 'mobile-pjcs'].includes(item.scenario) ? ['--screenshot=' + path.join(output, item.scenario + '.png')] : [];
+        const screenshot = ['many-weekly', 'mobile-pjcs', 'pricing-method', 'zukan'].includes(item.scenario) ? ['--screenshot=' + path.join(output, item.scenario + '.png')] : [];
         fs.mkdirSync(output, { recursive: true });
-        const { stdout } = item.mobile ? await mobileDom(profile, `http://127.0.0.1:${port}${item.route}`) : await promisify(execFile)(edge, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--disable-extensions', '--disable-background-networking', '--disable-sync', ...screenshot,
+        const { stdout } = item.mobile ? await mobileDom(profile, `http://127.0.0.1:${port}${item.route}`, item.scenario) : await promisify(execFile)(edge, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--disable-extensions', '--disable-background-networking', '--disable-sync', ...screenshot,
           '--user-data-dir=' + profile, '--window-size=' + (item.mobile ? '390,844' : '1280,900'), '--virtual-time-budget=12000', '--dump-dom', `http://127.0.0.1:${port}${item.route}`], { windowsHide: true, timeout: 60000, maxBuffer: 20 * 1024 * 1024 });
         const raw = stdout.match(/<script id="browserQualitySnapshot" type="application\/json">([\s\S]*?)<\/script>/)?.[1];
         if (!raw) throw Error('Browser capture not produced');
@@ -123,6 +124,8 @@ async function mobileDom(profile, url) {
           if (snapshot.fields.collectionCount !== '2種類' || snapshot.fields.collectionQuantityTotal !== '3個') failures.push('Collection quantities changed');
         }
         if (item.scenario === 'empty-template' && snapshot.ads > 0) failures.push('Ads on empty template');
+        if (item.scenario === 'zukan' && !stdout.includes('zukan-sparkline-line')) failures.push('Missing catalog SVG graphs');
+        if (item.scenario.startsWith('pricing-method') && (!stdout.includes('id="dashboardTopbarSlot"') || !stdout.includes('shared-page-heading-title'))) failures.push('Missing shared dashboard layout');
         if (item.mobile && (snapshot.viewportWidth !== 390 || snapshot.pageWidth > 391)) failures.push('Mobile viewport overflow');
         results.push({ scenario: item.scenario, url: item.route, ...snapshot, failures, pass: failures.length === 0 });
         console.log(`${failures.length ? 'FAIL' : 'PASS'} browser ${item.scenario}: ${failures.join('; ')}`);
