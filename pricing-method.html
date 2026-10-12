@@ -5,7 +5,7 @@
   <meta name="description" content="デッキシールドの参考相場、観測週と取引件数、月次・年次補完、少数取引、発売時価格と内容枚数の扱いを説明します。">
   <link rel="canonical" href="https://pokesuri-navi.com/pricing-method.html">
   <link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="./assets/site.css">
-  <link rel="stylesheet" href="./assets/pricing-quality.css?v=catalog-372712729ca8">
+  <link rel="stylesheet" href="./assets/pricing-quality.css?v=catalog-38ed72af9e57">
 </head><body class="page-content-focus policy-page shared-page-layout" data-hide-global-header="1">
 <div id="site-header"></div>
 <div class="dashboard-shell">
@@ -38,7 +38,7 @@
 <p>90日以上前の観測は「直近の取引データが少ない商品」と表示します。観測点が少ない商品は、価格変動の判断に注意してください。元取引を調査する際は、価格、取引日、商品状態、送料、枚数、セット内容を確認する必要があります。</p>
 <h2>発売時価格と内容枚数</h2>
 <p>発売時価格が正の数値ならその金額を表示します。0という内部値だけでは無料とは判断しません。備考などに根拠がある場合のみ「無料配布」「単品定価なし」と分類し、それ以外は「価格不明」とします。数値で比較できない発売時価格は騰落率の計算から除外します。</p>
-<p>1枚あたり価格は、商品記録で確認できる内容枚数で参考相場を割った概算です。内容枚数の根拠がない場合は「-」とし、64枚と推定しません。</p>
+<p>1枚あたり価格は、参考相場を内容枚数で割った概算です。GASの商品マスターでは、32枚・62枚などの通常と異なる枚数を「○枚販売」カテゴリに記録し、枚数カテゴリの指定がない商品は64枚として管理しています。指定された枚数を優先して計算し、整数円に丸めて「約○円」と表示します。参考相場がない場合や枚数の指定が競合する場合は「-」とします。</p>
 <h2>相場データ分析と更新</h2>
 <p>「相場データ分析」は、観測価格の中央値、範囲、直前との比較などを閾値で判定し、文章を組み立てる統計ルールによる分析です。商品固有の人気の理由や将来価格をAIで推測する機能ではありません。</p>
 <p>価格データは週単位で管理し、取得とページ再生成時に公開内容を更新します。毎週必ず全商品に新しい取引があるわけではありません。ページに表示した商品固有の最終観測期間を基準にしてください。</p>
@@ -50,6 +50,6 @@
   </main>
 </div>
 <div id="site-footer"></div>
-<script src="./assets/pricing.js?v=catalog-372712729ca8"></script><script src="./assets/common.js?v=catalog-372712729ca8"></script>
+<script src="./assets/pricing.js?v=catalog-38ed72af9e57"></script><script src="./assets/common.js?v=catalog-38ed72af9e57"></script>
 <script>window.common.setupDashboardChrome({sidebarActive:'zukan'});</script>
 </body></html>

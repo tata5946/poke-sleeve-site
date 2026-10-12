@@ -91,10 +91,16 @@
     return { status: 'unknown', price: null, label: '価格不明', evidence: '' };
   }
   function sheetCount(sleeve) {
+    const labels = [...(sleeve?.categories || []), ...(sleeve?.categoryTags || []), ...Array.from({ length: 9 }, (_, i) => sleeve?.['category' + (i + 1)])];
+    const counts = [...new Set(labels.flatMap(label => [...String(label || '').normalize('NFKC').matchAll(/(\d+)\s*枚販売/g)].map(match => Number(match[1]))).filter(count => count > 0))];
+    if (counts.length === 1) return counts[0];
+    if (counts.length > 1) return null;
     const count = number(sleeve?.sheetCount);
-    return Number.isInteger(count) && count > 0 && sleeve?.sheetCountEvidence ? count : null;
+    if (Number.isInteger(count) && count > 0) return count;
+    // Confirmed GAS master convention: only nonstandard pack sizes are tagged.
+    return 64;
   }
-  const unitPrice = sleeve => { const value = quote(sleeve), count = sheetCount(sleeve); return value && count ? yen(value.price / count) : '-'; };
+  const unitPrice = sleeve => { const value = quote(sleeve), count = sheetCount(sleeve); return value && count ? '約' + yen(value.price / count) : '-'; };
   function periodLabel(value) {
     if (!value) return '-';
     const [year, month, day] = value.date.split('-').map(Number);

@@ -25,9 +25,9 @@
     "set": 42,
     "unknown": 59
   },
-  "sheet_counts_confirmed": 148,
-  "sheet_counts_unknown": 704,
-  "unit_prices_displayed": 114,
+  "sheet_counts_confirmed": 852,
+  "sheet_counts_unknown": 0,
+  "unit_prices_displayed": 795,
   "static_runtime_price_mismatches": 0,
   "html_major_problems": 0,
   "card_prices_checked": 1764,
@@ -94,8 +94,10 @@
   "remaining": [
     "Original transaction verification for 17 candidates",
     "Unknown retail price: 59 products",
-    "Unknown sheet count: 704 products",
     "Per-product editorial/index review for 57 unpriced products",
     "AdSense account settings/Search Console/deployment not performed"
-  ]
+  ],
+  "sheet_counts_explicit": 148,
+  "sheet_counts_standard64": 704,
+  "sheet_count_rule": "Operator confirmed: GAS pack-size category overrides the standard 64-sheet pack; absent category means 64."
 }

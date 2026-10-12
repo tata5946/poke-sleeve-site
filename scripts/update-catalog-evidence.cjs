@@ -1,15 +1,19 @@
 const fs = require('fs');
+const pricing = require('../assets/pricing.js');
 const file = process.argv[process.argv.indexOf('--data') + 1] || 'data.json';
 const data = JSON.parse(fs.readFileSync(file, 'utf8'));
 for (const sleeve of data.sleeves) {
-  const labels = [...(sleeve.categories || []), ...(sleeve.categoryTags || [])];
-  const counts = [...new Set(labels.flatMap(label => [...String(label).matchAll(/(\d+)枚販売/g)].map(match => Number(match[1]))))];
-  if (!sleeve.sheetCountEvidence && counts.length === 1) {
-    sleeve.sheetCount = counts[0];
-    sleeve.sheetCountEvidence = '商品マスターの「' + counts[0] + '枚販売」カテゴリ';
-  } else if (!sleeve.sheetCountEvidence) {
+  const labels = [...(sleeve.categories || []), ...(sleeve.categoryTags || []), ...Array.from({ length: 9 }, (_, i) => sleeve['category' + (i + 1)])];
+  const counts = [...new Set(labels.flatMap(label => [...String(label || '').normalize('NFKC').matchAll(/(\d+)\s*枚販売/g)].map(match => Number(match[1]))).filter(count => count > 0))];
+  const count = pricing.sheetCount(sleeve);
+  if (count) {
+    sleeve.sheetCount = count;
+    sleeve.sheetCountEvidence = counts.length === 1
+      ? 'GAS商品マスターの「' + count + '枚販売」カテゴリ'
+      : sleeve.sheetCountEvidence || (count === 64 ? 'GASマスター運用：枚数カテゴリの指定なしは64枚（運営者確認）' : 'GAS商品マスターの枚数');
+  } else {
     sleeve.sheetCount = null;
-    sleeve.sheetCountEvidence = '';
+    sleeve.sheetCountEvidence = '枚数カテゴリが競合しているため要確認';
   }
   if (sleeve.firstPrice > 0) {
     sleeve.firstPriceStatus = 'sale';

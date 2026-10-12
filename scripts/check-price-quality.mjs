@@ -38,10 +38,18 @@ assert.equal(p.quote(newest).price, 1437, 'Weekly observations have priority ove
 assert.equal(p.quote(newest).count, 1, 'Monthly aggregate cannot hide the weekly transaction count');
 assert.equal(p.periodKind('2026-06-01'), 'week', 'A Monday on day 01 is still a weekly observation');
 assert.equal(p.periodKind('2025-06-01'), 'month', 'Legacy monthly records retain their source granularity');
-assert.equal(p.sheetCount(one), null);
-assert.equal(p.unitPrice(one), '-');
+assert.equal(p.sheetCount(one), 64);
+assert.equal(p.unitPrice(one), '約22円');
 const counted = { ...one, sheetCount: 62, sheetCountEvidence: '62枚販売カテゴリ' };
-assert.equal(p.unitPrice(counted), '23円');
+assert.equal(p.unitPrice(counted), '約23円');
+for (const count of [10, 30, 32, 60, 62, 65]) {
+  const rawGas = { ...one, categories: [count + '枚販売'] };
+  assert.equal(p.sheetCount(rawGas), count, 'Read GAS size category directly');
+  assert.equal(p.unitPrice(rawGas), '約' + p.yen(1437 / count));
+}
+assert.equal(p.sheetCount({ ...one, category6: '３２枚販売' }), 32);
+assert.equal(p.sheetCount({ ...one, categories: ['32枚販売', '62枚販売'] }), null);
+assert.equal(p.unitPrice(fixture), '-');
 const spike = { ...one, weeklyPrices: [{ week: '2026-09-14', price: 7999, count: 1 }, { week: '2026-09-28', price: 35000, count: 1 }] };
 assert.ok(p.notices(spike, today).some(note => note.includes('元取引の確認')));
 const data = JSON.parse(read('data.json'));
