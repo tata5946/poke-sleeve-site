@@ -66,7 +66,7 @@ for (const sleeve of data.sleeves) {
   assert.equal(staticPrice, p.yen(q?.price), id + ': static quote');
   assert.equal(staticUnit, p.unitPrice(sleeve), id + ': static unit price');
   assert.ok(/id="weeklyCount"/.test(html) && /id="referenceTradeCount"/.test(html), id + ': initial observation and count');
-  assert.ok(content(html, 'weeklyCount').includes(p.periodLabel(q)), id + ': observation period');
+  assert.ok(content(html, 'weeklyCount').includes(q?.type === 'weekly' ? q.date.replaceAll('-', '/') : p.periodLabel(q)), id + ': observation period');
   assert.ok(content(html, 'referenceTradeCount').includes(q?.count != null ? q.count + '件' : '確認できません'), id + ': adopted count');
   assert.ok(decode(html).includes(p.firstPrice(sleeve).label), id + ': retail status');
   if (!q) assert.doesNotMatch(html, /<script[^>]*src="https:\/\/pagead2/, id + ': no price data, no ad loader');

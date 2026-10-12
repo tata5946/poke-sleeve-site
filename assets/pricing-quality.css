@@ -1,15 +1,22 @@
-.reference-observation { margin-top: 10px; font-size: 12px; line-height: 1.7; color: #475467; font-weight: 500; }
+.reference-observation { font-size: 13px; line-height: 1.7; color: #475467; font-weight: 500; text-align: left; }
 .reference-observation #weeklyCount { display: block !important; visibility: visible !important; }
 .reference-observation #weeklyCount { min-height: 0; border: 0; background: none; padding: 0; text-align: left; }
-.reference-observation { width: 100%; min-width: 0; overflow-wrap: anywhere; }
+.reference-observation { width: 100%; min-width: 0; overflow-wrap: normal; }
+#referenceObservation { grid-area: observation; min-width: 0; }
+.reference-observation-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+.reference-observation-meta > * { white-space: nowrap; }
+.reference-observation #weeklyCount { font-size: inherit; line-height: inherit; margin: 0; }
 .detail-hero-main { min-width: 0; }
 .kpi .price-kpi-card .label { white-space: normal; line-height: 1.3; }
 @media (min-width: 901px) {
-  .detail-hero-main { grid-template-areas: "title title" "badges price" "info price" "tags price" "actions actions" "share share"; }
+  .detail-hero-main { grid-template-areas: "title title" "badges price" "info price" "tags price" "observation observation" "actions actions" "share share"; grid-template-rows: auto auto auto auto auto auto auto; }
 }
 @media (max-width: 900px) {
   .detail-hero { grid-template-columns: minmax(0, 1fr); }
-  .detail-hero-main { grid-template-columns: minmax(0, 1fr); }
+  .detail-hero-main { grid-template-columns: minmax(0, 1fr); grid-template-areas: "title" "badges" "info" "tags" "price" "observation" "actions" "share"; }
+}
+@media (min-width: 901px) and (max-width: 1400px) {
+  .detail-hero-main { grid-template-columns: minmax(0, 1fr); grid-template-areas: "title" "badges" "info" "tags" "price" "observation" "actions" "share"; }
 }
 .reference-observation p { margin: 4px 0; }
 .reference-observation a { color: #1e5bd7; font-size: 12px; }

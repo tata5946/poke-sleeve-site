@@ -116,12 +116,15 @@
   }
   function observationHtml(sleeve, today) {
     const value = quote(sleeve);
-    const label = value?.type === 'weekly' ? '最終観測週' : '最終観測期間';
+    const label = value?.type === 'weekly' ? '観測週' : '観測期間';
+    const period = value?.type === 'weekly' ? value.date.replaceAll('-', '/') : periodLabel(value);
     return `<div class="reference-observation" data-reference-source="${value?.type || 'none'}">
-      <div id="weeklyCount">${label}：${escape(periodLabel(value))}</div>
-      <div id="referenceTradeCount">採用取引件数：${value?.count != null ? value.count + '件' : '確認できません'}</div>
+      <div class="reference-observation-meta">
+        <span id="weeklyCount">${label}：${escape(period)}</span>
+        <span id="referenceTradeCount">取引件数：${value?.count != null ? value.count + '件' : '確認できません'}</span>
+        <a href="/pricing-method.html">算出方法</a>
+      </div>
       <div id="referencePriceNotes">${notices(sleeve, today).map(note => `<p>${escape(note)}</p>`).join('')}</div>
-      <a href="/pricing-method.html">相場データの見方・算出方法</a>
     </div>`;
   }
   function summary(sleeve) {

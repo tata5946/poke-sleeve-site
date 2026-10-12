@@ -607,5 +607,110 @@
     "pageWidth": 1250,
     "failures": [],
     "pass": true
+  },
+  {
+    "scenario": "compact-price-hero",
+    "url": "/sleeve/4521329463285/",
+    "fields": {
+      "latestWeekly": "1,099円",
+      "weeklyCount": "観測週：2026/09/28",
+      "referenceTradeCount": "取引件数：15件",
+      "referencePriceNotes": "観測データが少ないため、価格変動の判断には注意が必要です",
+      "weeklyUnitPrice": "-",
+      "kpiLatestPrice": "",
+      "kpiPrevChange": "",
+      "kpiPrevPct": "",
+      "aiCommentBody": "",
+      "error": "",
+      "collectionAssetTotal": "",
+      "collectionCount": "",
+      "collectionQuantityTotal": ""
+    },
+    "errors": [],
+    "hydrated": "1",
+    "observationDisplay": "block",
+    "ads": 2,
+    "svg": 4,
+    "marketChartCount": 0,
+    "heroLayout": {
+      "priceHeight": 112,
+      "dateHeight": 22.09375,
+      "dateLineHeight": 22.1,
+      "observationInsidePrice": false
+    },
+    "viewportWidth": 1250,
+    "pageWidth": 1250,
+    "failures": [],
+    "pass": true
+  },
+  {
+    "scenario": "compact-price-hero-mobile",
+    "url": "/sleeve/4521329463285/",
+    "fields": {
+      "latestWeekly": "1,099円",
+      "weeklyCount": "観測週：2026/09/28",
+      "referenceTradeCount": "取引件数：15件",
+      "referencePriceNotes": "観測データが少ないため、価格変動の判断には注意が必要です",
+      "weeklyUnitPrice": "-",
+      "kpiLatestPrice": "",
+      "kpiPrevChange": "",
+      "kpiPrevPct": "",
+      "aiCommentBody": "",
+      "error": "",
+      "collectionAssetTotal": "",
+      "collectionCount": "",
+      "collectionQuantityTotal": ""
+    },
+    "errors": [],
+    "hydrated": "1",
+    "observationDisplay": "block",
+    "ads": 2,
+    "svg": 4,
+    "marketChartCount": 0,
+    "heroLayout": {
+      "priceHeight": 92,
+      "dateHeight": 22.09375,
+      "dateLineHeight": 22.1,
+      "observationInsidePrice": false
+    },
+    "viewportWidth": 390,
+    "pageWidth": 390,
+    "failures": [],
+    "pass": true
+  },
+  {
+    "scenario": "compact-price-hero-wide",
+    "url": "/sleeve/4521329463285/",
+    "fields": {
+      "latestWeekly": "1,099円",
+      "weeklyCount": "観測週：2026/09/28",
+      "referenceTradeCount": "取引件数：15件",
+      "referencePriceNotes": "観測データが少ないため、価格変動の判断には注意が必要です",
+      "weeklyUnitPrice": "-",
+      "kpiLatestPrice": "",
+      "kpiPrevChange": "",
+      "kpiPrevPct": "",
+      "aiCommentBody": "",
+      "error": "",
+      "collectionAssetTotal": "",
+      "collectionCount": "",
+      "collectionQuantityTotal": ""
+    },
+    "errors": [],
+    "hydrated": "1",
+    "observationDisplay": "block",
+    "ads": 2,
+    "svg": 4,
+    "marketChartCount": 0,
+    "heroLayout": {
+      "priceHeight": 112,
+      "dateHeight": 22.09375,
+      "dateLineHeight": 22.1,
+      "observationInsidePrice": false
+    },
+    "viewportWidth": 1570,
+    "pageWidth": 1570,
+    "failures": [],
+    "pass": true
   }
 ]

@@ -27,6 +27,11 @@ items.push({ scenario: 'market', route: '/index-market.html' }, { scenario: 'hom
   { scenario: 'series-index', route: '/sleeves/series/' }, { scenario: 'pricing-method', route: '/pricing-method.html' });
 items.push({ scenario: 'collection-populated', route: '/my-collection.html?qualitySeed=1' });
 items.push({ scenario: 'pricing-method-mobile', route: '/pricing-method.html', mobile: true });
+const celebration = data.find(s => s.name === '30th CELEBRATION');
+const celebrationRoute = '/sleeve/4521329' + celebration.id + '/';
+items.push({ scenario: 'compact-price-hero', route: celebrationRoute, sleeve: celebration },
+  { scenario: 'compact-price-hero-mobile', route: celebrationRoute, sleeve: celebration, mobile: true });
+items.push({ scenario: 'compact-price-hero-wide', route: celebrationRoute, sleeve: celebration, desktopWidth: 1600 });
 const selectedScenario = process.argv.find(arg => arg.startsWith('--scenario='))?.slice('--scenario='.length);
 if (selectedScenario) {
   const selected = items.filter(item => item.scenario === selectedScenario);
@@ -34,7 +39,7 @@ if (selectedScenario) {
   items.splice(0, items.length, ...selected);
 }
 const injection = `<script>window.__qualityErrors=[];window.addEventListener('error',function(e){if(e.message)window.__qualityErrors.push(e.message)});window.addEventListener('unhandledrejection',function(e){window.__qualityErrors.push(String(e.reason))});</script>`;
-const capture = `<script>setTimeout(function(){var ids=['latestWeekly','weeklyCount','referenceTradeCount','referencePriceNotes','weeklyUnitPrice','kpiLatestPrice','kpiPrevChange','kpiPrevPct','aiCommentBody','error','collectionAssetTotal','collectionCount','collectionQuantityTotal'];var fields={};ids.forEach(function(id){var el=document.getElementById(id);fields[id]=el?el.textContent.trim():''});var el=document.getElementById('weeklyCount');var script=document.createElement('script');script.id='browserQualitySnapshot';script.type='application/json';script.textContent=JSON.stringify({fields:fields,errors:window.__qualityErrors,hydrated:document.body.dataset.pricingHydrated||document.body.dataset.marketHydrated||'',observationDisplay:el?getComputedStyle(el).display:'missing',ads:document.querySelectorAll('script[src*="pagead2.googlesyndication.com"]').length,svg:document.querySelectorAll('svg').length,marketChartCount:document.querySelectorAll('svg.price-index-chart').length,viewportWidth:innerWidth,pageWidth:document.documentElement.scrollWidth});document.body.appendChild(script)},6000)</script>`;
+const capture = `<script>setTimeout(function(){var ids=['latestWeekly','weeklyCount','referenceTradeCount','referencePriceNotes','weeklyUnitPrice','kpiLatestPrice','kpiPrevChange','kpiPrevPct','aiCommentBody','error','collectionAssetTotal','collectionCount','collectionQuantityTotal'];var fields={};ids.forEach(function(id){var el=document.getElementById(id);fields[id]=el?el.textContent.trim():''});var el=document.getElementById('weeklyCount');var script=document.createElement('script');script.id='browserQualitySnapshot';script.type='application/json';script.textContent=JSON.stringify({fields:fields,errors:window.__qualityErrors,hydrated:document.body.dataset.pricingHydrated||document.body.dataset.marketHydrated||'',observationDisplay:el?getComputedStyle(el).display:'missing',ads:document.querySelectorAll('script[src*="pagead2.googlesyndication.com"]').length,svg:document.querySelectorAll('svg').length,marketChartCount:document.querySelectorAll('svg.price-index-chart').length,heroLayout:(function(){var box=document.querySelector('.kpi'),date=document.getElementById('weeklyCount'),obs=document.getElementById('referenceObservation');return box&&date&&obs?{priceHeight:box.getBoundingClientRect().height,dateHeight:date.getBoundingClientRect().height,dateLineHeight:parseFloat(getComputedStyle(date).lineHeight),observationInsidePrice:box.contains(obs)}:null})(),viewportWidth:innerWidth,pageWidth:document.documentElement.scrollWidth});document.body.appendChild(script)},6000)</script>`;
 const mime = { '.html': 'text/html', '.js': 'application/javascript', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.ico': 'image/x-icon' };
 const server = http.createServer((req, res) => {
   const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
@@ -98,10 +103,10 @@ async function mobileDom(profile, url, scenario) {
       const item = items[cursor++];
       try {
         const profile = path.join(profiles, item.scenario);
-        const screenshot = ['many-weekly', 'mobile-pjcs', 'pricing-method', 'zukan'].includes(item.scenario) ? ['--screenshot=' + path.join(output, item.scenario + '.png')] : [];
+        const screenshot = ['many-weekly', 'mobile-pjcs', 'pricing-method', 'zukan', 'compact-price-hero', 'compact-price-hero-wide'].includes(item.scenario) ? ['--screenshot=' + path.join(output, item.scenario + '.png')] : [];
         fs.mkdirSync(output, { recursive: true });
         const { stdout } = item.mobile ? await mobileDom(profile, `http://127.0.0.1:${port}${item.route}`, item.scenario) : await promisify(execFile)(edge, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--disable-extensions', '--disable-background-networking', '--disable-sync', ...screenshot,
-          '--user-data-dir=' + profile, '--window-size=' + (item.mobile ? '390,844' : '1280,900'), '--virtual-time-budget=12000', '--dump-dom', `http://127.0.0.1:${port}${item.route}`], { windowsHide: true, timeout: 60000, maxBuffer: 20 * 1024 * 1024 });
+          '--user-data-dir=' + profile, '--window-size=' + (item.mobile ? '390,844' : (item.desktopWidth || 1280) + ',900'), '--virtual-time-budget=12000', '--dump-dom', `http://127.0.0.1:${port}${item.route}`], { windowsHide: true, timeout: 60000, maxBuffer: 20 * 1024 * 1024 });
         const raw = stdout.match(/<script id="browserQualitySnapshot" type="application\/json">([\s\S]*?)<\/script>/)?.[1];
         if (!raw) throw Error('Browser capture not produced');
         const snapshot = JSON.parse(raw);
@@ -109,7 +114,7 @@ async function mobileDom(profile, url, scenario) {
         if (item.sleeve) {
           const q = pricing.quote(item.sleeve);
           if (snapshot.fields.latestWeekly !== pricing.yen(q?.price)) failures.push('Reference quote differs');
-          if (!snapshot.fields.weeklyCount.includes(pricing.periodLabel(q))) failures.push('Observation period differs');
+          if (!snapshot.fields.weeklyCount.includes(q?.type === 'weekly' ? q.date.replaceAll('-', '/') : pricing.periodLabel(q))) failures.push('Observation period differs');
           if (!snapshot.fields.referenceTradeCount.includes(q?.count != null ? q.count + '件' : '確認できません')) failures.push('Transaction count differs');
           if (snapshot.fields.weeklyUnitPrice !== pricing.unitPrice(item.sleeve)) failures.push('Unit price differs');
           if (snapshot.hydrated !== '1') failures.push('Detail hydration did not complete');
@@ -126,6 +131,7 @@ async function mobileDom(profile, url, scenario) {
         if (item.scenario === 'empty-template' && snapshot.ads > 0) failures.push('Ads on empty template');
         if (item.scenario === 'zukan' && !stdout.includes('zukan-sparkline-line')) failures.push('Missing catalog SVG graphs');
         if (item.scenario.startsWith('pricing-method') && (!stdout.includes('id="dashboardTopbarSlot"') || !stdout.includes('shared-page-heading-title'))) failures.push('Missing shared dashboard layout');
+        if (item.scenario.startsWith('compact-price-hero') && (snapshot.heroLayout.observationInsidePrice || snapshot.heroLayout.priceHeight > 150 || snapshot.heroLayout.dateHeight > snapshot.heroLayout.dateLineHeight + 2)) failures.push('Price hero is too tall or date wraps');
         if (item.mobile && (snapshot.viewportWidth !== 390 || snapshot.pageWidth > 391)) failures.push('Mobile viewport overflow');
         results.push({ scenario: item.scenario, url: item.route, ...snapshot, failures, pass: failures.length === 0 });
         console.log(`${failures.length ? 'FAIL' : 'PASS'} browser ${item.scenario}: ${failures.join('; ')}`);
