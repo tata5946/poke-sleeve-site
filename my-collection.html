@@ -851,14 +851,30 @@
       const quantityAxis = buildQuantityAxis(Math.max(...quantities));
       const chartW = W - padL - padR;
       const chartH = H - padT - padB;
-      const xToPx = (index) => scoped.length === 1 ? padL + (chartW / 2) : padL + (index / (scoped.length - 1)) * chartW;
+      const firstTimestamp = scoped[0].timestamp;
+      const lastTimestamp = scoped[scoped.length - 1].timestamp;
+      const timestampSpan = Math.max(1, lastTimestamp - firstTimestamp);
+      const xForTimestamp = (timestamp) => scoped.length === 1 ? padL + (chartW / 2) : padL + ((timestamp - firstTimestamp) / timestampSpan) * chartW;
+      const xToPx = (index) => xForTimestamp(scoped[index].timestamp);
       const yToPx = (value) => padT + (1 - ((value - axis.min) / Math.max(1, axis.max - axis.min))) * chartH;
       const quantityToPx = (value) => padT + (1 - ((value - quantityAxis.min) / Math.max(1, quantityAxis.max - quantityAxis.min))) * chartH;
       const lineD = scoped.map((point, index) => `${index === 0 ? "M" : "L"} ${xToPx(index).toFixed(2)} ${yToPx(point.value).toFixed(2)}`).join(" ");
       const areaD = `${lineD} L ${xToPx(scoped.length - 1).toFixed(2)} ${H - padB} L ${xToPx(0).toFixed(2)} ${H - padB} Z`;
-      const labelIndexes = isMobileChart
-        ? getMobileAssetLabelIndexes(scoped.length)
-        : Array.from(new Set([0, Math.floor((scoped.length - 1) / 2), scoped.length - 1]));
+      const movingAverage = scoped.map((point, index) => {
+        const start = Math.max(0, index - 19);
+        const windowValues = scoped.slice(start, index + 1).map((item) => item.value);
+        return { ...point, average: windowValues.reduce((sum, value) => sum + value, 0) / windowValues.length };
+      });
+      const movingAverageD = movingAverage.map((point, index) => `${index === 0 ? "M" : "L"} ${xToPx(index).toFixed(2)} ${yToPx(point.average).toFixed(2)}`).join(" ");
+      const monthTicks = [];
+      const firstDate = new Date(firstTimestamp);
+      const lastDate = new Date(lastTimestamp);
+      for (let date = new Date(firstDate.getFullYear(), firstDate.getMonth(), 1); date <= lastDate; date = new Date(date.getFullYear(), date.getMonth() + 1, 1)) {
+        if (date.getTime() >= firstTimestamp) monthTicks.push(new Date(date));
+      }
+      const maxMonthTicks = isMobileChart ? 5 : 9;
+      const monthStep = Math.max(1, Math.ceil(monthTicks.length / maxMonthTicks));
+      const visibleMonthTicks = monthTicks.filter((_, index) => index % monthStep === 0);
       const barW = isMobileChart
         ? Math.max(1, Math.min(7, (chartW / Math.max(1, scoped.length)) * 0.22))
         : Math.max(3, Math.min(18, (chartW / Math.max(1, scoped.length)) * 0.56));
@@ -885,6 +901,11 @@
             <text x="${isMobileChart ? padL - 42 : padL - 62}" y="${padT - 22}" font-size="${isMobileChart ? 10 : 15}" font-weight="800" fill="#334155">資産額（円）</text>
             <text x="${W - padR - 6}" y="${padT - 22}" text-anchor="end" font-size="${isMobileChart ? 10 : 15}" font-weight="800" fill="#334155">保有数（枚）</text>
             ${axis.ticks.map((tick) => `<line x1="${padL}" y1="${yToPx(tick).toFixed(2)}" x2="${W - padR}" y2="${yToPx(tick).toFixed(2)}" stroke="#d8e1ec" stroke-width="1" stroke-dasharray="4 4"></line>`).join("")}
+            ${visibleMonthTicks.map((date) => {
+              const x = xForTimestamp(date.getTime());
+              const label = `${date.getFullYear()}年${date.getMonth() + 1}月`;
+              return `<line x1="${x.toFixed(2)}" y1="${padT}" x2="${x.toFixed(2)}" y2="${H - padB}" stroke="#e6edf5" stroke-width="1"></line><text x="${x.toFixed(2)}" y="${H - 18}" text-anchor="middle" font-size="${dateFontSize}" font-weight="700" fill="#334155">${escapeHtml(label)}</text>`;
+            }).join("")}
             ${scoped.map((point, index) => {
               const x = xToPx(index) - (barW / 2);
               const y = quantityToPx(point.totalQuantity || 0);
@@ -892,18 +913,16 @@
             }).join("")}
             <path d="${areaD}" fill="url(#myAssetAreaGradient)"></path>
             <path d="${lineD}" fill="none" stroke="#2563eb" stroke-width="${lineWidth}" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="${movingAverageD}" fill="none" stroke="#ff7a00" stroke-width="${isMobileChart ? 2.4 : 3}" stroke-linecap="round" stroke-linejoin="round"></path>
             ${axis.ticks.map((tick) => `<text x="${padL - 8}" y="${yToPx(tick) + 4}" text-anchor="end" font-size="${axisFontSize}" font-weight="800" fill="#475467">${escapeHtml(assetTickLabel(tick))}</text>`).join("")}
             ${quantityAxis.ticks.map((tick) => `<text x="${W - padR + 7}" y="${quantityToPx(tick) + 4}" text-anchor="start" font-size="${axisFontSize}" font-weight="800" fill="#667085">${escapeHtml(isMobileChart ? String(tick) : `${tick}個`)}</text>`).join("")}
-            ${labelIndexes.map((index) => {
-              const point = scoped[index];
-              const anchor = scoped.length === 1 ? "middle" : index === 0 ? "start" : index === scoped.length - 1 ? "end" : "middle";
-              return `<text x="${xToPx(index).toFixed(2)}" y="${H - 17}" text-anchor="${anchor}" font-size="${dateFontSize}" font-weight="800" fill="#475467">${escapeHtml(formatChartDate(point.date))}</text>`;
-            }).join("")}
             <g aria-hidden="true">
-              <circle cx="${W - padR - (isMobileChart ? 102 : 154)}" cy="${isMobileChart ? 15 : 18}" r="${isMobileChart ? 3 : 4}" fill="#1e5bd7"></circle>
-              <text x="${W - padR - (isMobileChart ? 95 : 144)}" y="${isMobileChart ? 18.5 : 22}" font-size="${isMobileChart ? 9.5 : 11}" font-weight="800" fill="#475467">総資産額</text>
-              <rect x="${W - padR - (isMobileChart ? 46 : 80)}" y="${isMobileChart ? 12 : 14}" width="${isMobileChart ? 5.5 : 8}" height="${isMobileChart ? 5.5 : 8}" rx="2" fill="#9fb3d1" opacity="${isMobileChart ? 0.34 : 0.5}"></rect>
-              <text x="${W - padR - (isMobileChart ? 37 : 68)}" y="${isMobileChart ? 18.5 : 22}" font-size="${isMobileChart ? 9.5 : 11}" font-weight="800" fill="#667085">保有数</text>
+              <line x1="${W - padR - (isMobileChart ? 225 : 360)}" y1="18" x2="${W - padR - (isMobileChart ? 205 : 330)}" y2="18" stroke="#2563eb" stroke-width="4" stroke-linecap="round"></line>
+              <text x="${W - padR - (isMobileChart ? 199 : 322)}" y="22" font-size="${isMobileChart ? 9 : 15}" font-weight="800" fill="#334155">総資産額</text>
+              <line x1="${W - padR - (isMobileChart ? 132 : 220)}" y1="18" x2="${W - padR - (isMobileChart ? 112 : 190)}" y2="18" stroke="#ff7a00" stroke-width="3" stroke-linecap="round"></line>
+              <text x="${W - padR - (isMobileChart ? 106 : 182)}" y="22" font-size="${isMobileChart ? 9 : 15}" font-weight="800" fill="#334155">20期間移動平均</text>
+              <rect x="${W - padR - (isMobileChart ? 19 : 42)}" y="10" width="16" height="16" rx="3" fill="#c9d9ee"></rect>
+              <text x="${W - padR + (isMobileChart ? 1 : -20)}" y="22" font-size="${isMobileChart ? 9 : 15}" font-weight="800" fill="#334155">保有数</text>
             </g>
             ${scoped.map((point, index) => `<circle class="my-asset-chart-dot" cx="${xToPx(index).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="${index === scoped.length - 1 ? latestDotRadius : dotRadius}" fill="#1e5bd7"></circle><circle class="my-asset-hit-point" data-index="${index}" cx="${xToPx(index).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="${hitRadius}" fill="transparent"></circle>`).join("")}
           </svg>

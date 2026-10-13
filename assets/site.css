@@ -8583,10 +8583,10 @@ footer.site-footer {
     position: relative;
     min-width: 0;
     overflow: visible;
-    padding: 20px 18px 16px;
-    border: 1px solid #cfe0f5;
-    border-radius: 18px;
-    background: #fff;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
 }
 
 .my-asset-chart-legend {
@@ -9103,7 +9103,7 @@ svg[class*="-chart"],
     .my-asset-chart-panel {
         gap: 12px;
         margin-bottom: 12px;
-        padding: 12px;
+        padding: 0;
     }
 
     .my-asset-panel {
@@ -9160,9 +9160,9 @@ svg[class*="-chart"],
 
     .my-asset-chart-wrap.is-mobile-density {
         margin-inline: -4px;
-        border-inline: 1px solid #e4eaf4;
-        border-radius: 8px;
-        background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+        border: 0;
+        border-radius: 0;
+        background: transparent;
     }
 
     .my-asset-chart-legend {
@@ -9813,8 +9813,11 @@ svg[class*="-chart"],
         width: 100%;
         gap: 8px;
         margin-bottom: 2px;
-        padding: 12px;
-        border-radius: 12px;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
     }
 
     .my-asset-chart-head {
@@ -9854,7 +9857,11 @@ svg[class*="-chart"],
     .my-asset-chart-wrap,
     .my-asset-chart-wrap.is-mobile-density {
         margin-inline: 0;
-        border-radius: 10px;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
     }
 
     .my-collection-list-section,
