@@ -21,7 +21,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/site.css?v=20261013collectionchart2" />
   <style>
-    @media (max-width: 700px) {
+    @media (max-width: 800px) {
       html:root body.my-collection-page .my-collection-hero-copy {
         display: grid !important;
         gap: 0 !important;
@@ -78,7 +78,7 @@
       margin: 0 !important;
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 800px) {
       html:root body.my-collection-page .my-asset-chart-panel {
         padding: 0 !important;
       }
@@ -88,6 +88,11 @@
         min-height: 24px !important;
         padding-bottom: 6px !important;
         font-size: 9px !important;
+      }
+
+      html:root body.my-collection-page .my-asset-chart-svg {
+        height: 180px !important;
+        max-height: 180px !important;
       }
     }
   </style>
@@ -896,13 +901,13 @@
         return;
       }
 
-      const isMobileChart = window.matchMedia("(max-width: 700px)").matches;
+      const isMobileChart = window.matchMedia("(max-width: 800px)").matches;
       const W = isMobileChart ? 390 : 1200;
-      const H = isMobileChart ? 220 : 520;
+      const H = isMobileChart ? 180 : 520;
       const padL = isMobileChart ? 62 : 112;
       const padR = isMobileChart ? 50 : 92;
-      const padT = isMobileChart ? 38 : 62;
-      const padB = isMobileChart ? 36 : 68;
+      const padT = isMobileChart ? 32 : 62;
+      const padB = isMobileChart ? 28 : 68;
       const values = scoped.map((point) => point.value);
       const quantities = scoped.map((point) => point.totalQuantity || 0);
       const axis = buildAssetAxis(Math.min(...values), Math.max(...values), isMobileChart ? 4 : 5);
