@@ -872,6 +872,7 @@
       for (let date = new Date(firstDate.getFullYear(), firstDate.getMonth(), 1); date <= lastDate; date = new Date(date.getFullYear(), date.getMonth() + 1, 1)) {
         if (date.getTime() >= firstTimestamp) monthTicks.push(new Date(date));
       }
+      if (!monthTicks.length) monthTicks.push(firstDate);
       const maxMonthTicks = isMobileChart ? 5 : 9;
       const monthStep = Math.max(1, Math.ceil(monthTicks.length / maxMonthTicks));
       const visibleMonthTicks = monthTicks.filter((_, index) => index % monthStep === 0);
@@ -891,6 +892,11 @@
       root.innerHTML = `
         <div class="my-asset-chart-wrap${isMobileChart ? " is-mobile-density" : ""}">
           <div class="my-asset-chart-tooltip" hidden></div>
+          <div class="my-asset-chart-legend" aria-label="凡例">
+            <span><i class="my-asset-legend-line"></i>総資産額</span>
+            <span><i class="my-asset-legend-average"></i>20期間移動平均</span>
+            <span><i class="my-asset-legend-bar"></i>保有数</span>
+          </div>
           <svg class="my-asset-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="資産額の推移グラフ">
             <defs>
               <linearGradient id="myAssetAreaGradient" x1="0" y1="0" x2="0" y2="1">
@@ -916,14 +922,6 @@
             <path d="${movingAverageD}" fill="none" stroke="#ff7a00" stroke-width="${isMobileChart ? 2.4 : 3}" stroke-linecap="round" stroke-linejoin="round"></path>
             ${axis.ticks.map((tick) => `<text x="${padL - 8}" y="${yToPx(tick) + 4}" text-anchor="end" font-size="${axisFontSize}" font-weight="800" fill="#475467">${escapeHtml(assetTickLabel(tick))}</text>`).join("")}
             ${quantityAxis.ticks.map((tick) => `<text x="${W - padR + 7}" y="${quantityToPx(tick) + 4}" text-anchor="start" font-size="${axisFontSize}" font-weight="800" fill="#667085">${escapeHtml(isMobileChart ? String(tick) : `${tick}個`)}</text>`).join("")}
-            <g aria-hidden="true">
-              <line x1="${W - padR - (isMobileChart ? 225 : 360)}" y1="18" x2="${W - padR - (isMobileChart ? 205 : 330)}" y2="18" stroke="#2563eb" stroke-width="4" stroke-linecap="round"></line>
-              <text x="${W - padR - (isMobileChart ? 199 : 322)}" y="22" font-size="${isMobileChart ? 9 : 15}" font-weight="800" fill="#334155">総資産額</text>
-              <line x1="${W - padR - (isMobileChart ? 132 : 220)}" y1="18" x2="${W - padR - (isMobileChart ? 112 : 190)}" y2="18" stroke="#ff7a00" stroke-width="3" stroke-linecap="round"></line>
-              <text x="${W - padR - (isMobileChart ? 106 : 182)}" y="22" font-size="${isMobileChart ? 9 : 15}" font-weight="800" fill="#334155">20期間移動平均</text>
-              <rect x="${W - padR - (isMobileChart ? 19 : 42)}" y="10" width="16" height="16" rx="3" fill="#c9d9ee"></rect>
-              <text x="${W - padR + (isMobileChart ? 1 : -20)}" y="22" font-size="${isMobileChart ? 9 : 15}" font-weight="800" fill="#334155">保有数</text>
-            </g>
             ${scoped.map((point, index) => `<circle class="my-asset-chart-dot" cx="${xToPx(index).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="${index === scoped.length - 1 ? latestDotRadius : dotRadius}" fill="#1e5bd7"></circle><circle class="my-asset-hit-point" data-index="${index}" cx="${xToPx(index).toFixed(2)}" cy="${yToPx(point.value).toFixed(2)}" r="${hitRadius}" fill="transparent"></circle>`).join("")}
           </svg>
         </div>
@@ -934,7 +932,8 @@
       const showTip = (event, index) => {
         const point = scoped[index];
         if (!wrap || !tooltip || !point) return;
-        tooltip.innerHTML = `<strong>${escapeHtml(formatFullChartDate(point.date))}</strong><span>総資産額　${escapeHtml(formatCurrency(point.value))}</span><span>総保有数　${escapeHtml(`${point.totalQuantity || 0}個`)}</span>`;
+        const average = movingAverage[index]?.average;
+        tooltip.innerHTML = `<strong>${escapeHtml(formatFullChartDate(point.date))}</strong><span>総資産額　${escapeHtml(formatCurrency(point.value))}</span><span>20期間平均　${escapeHtml(formatCurrency(average))}</span><span>総保有数　${escapeHtml(`${point.totalQuantity || 0}個`)}</span>`;
         tooltip.hidden = false;
         const rect = wrap.getBoundingClientRect();
         const clientX = event.touches?.[0]?.clientX ?? event.clientX ?? rect.left + rect.width / 2;
