@@ -48,22 +48,63 @@
     }
 
     .moetaku-a8-placement {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      max-width: 100vw;
+      margin: 14px 0 0 calc(50% - 50vw);
+      overflow: hidden;
+    }
+
+    .moetaku-a8-banner--desktop {
       display: none;
+    }
+
+    .moetaku-a8-banner--mobile {
+      position: relative;
+      display: block;
+      flex: 0 0 320px;
+      width: 320px;
+      height: 50px;
+      line-height: 0;
+    }
+
+    .moetaku-a8-banner--mobile > img[width="1"] {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+    }
+
+    .moetaku-a8-placement + .detail-price-grid {
+      margin-top: 28px;
     }
 
     @media (min-width: 1024px) {
       .moetaku-a8-placement {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         width: 100%;
+        max-width: none;
         margin: 12px 0 0;
+        overflow: visible;
       }
 
-      .moetaku-a8-banner {
+      .moetaku-a8-banner--desktop {
+        position: relative;
+        display: block;
+        flex: 0 0 468px;
         width: 468px;
         height: 60px;
         line-height: 0;
+      }
+
+      .moetaku-a8-banner--desktop > img[width="1"] {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+      }
+
+      .moetaku-a8-banner--mobile {
+        display: none;
       }
 
       .moetaku-a8-placement + .detail-price-grid {
@@ -2551,10 +2592,15 @@
         <section class="panel market-position-panel page-focus-panel" id="marketPositionPanel" hidden></section>
 
         <aside class="moetaku-a8-placement" aria-label="広告">
-          <div class="moetaku-a8-banner">
+          <div class="moetaku-a8-banner moetaku-a8-banner--desktop">
 <a href="https://px.a8.net/svt/ejp?a8mat=4BEFL2+4KX3CI+1SOW+2HENWX" rel="nofollow">
 <img border="0" width="468" height="60" alt="" src="https://www20.a8.net/svt/bgt?aid=261013862277&wid=001&eno=01&mid=s00000008384015017000&mc=1"></a>
 <img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=4BEFL2+4KX3CI+1SOW+2HENWX" alt="">
+          </div>
+          <div class="moetaku-a8-banner moetaku-a8-banner--mobile">
+<a href="https://px.a8.net/svt/ejp?a8mat=4BEFL2+4KX3CI+1SOW+2HE0RL" rel="nofollow">
+<img border="0" width="320" height="50" alt="" src="https://www27.a8.net/svt/bgt?aid=261013862277&wid=001&eno=01&mid=s00000008384015014000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www18.a8.net/0.gif?a8mat=4BEFL2+4KX3CI+1SOW+2HE0RL" alt="">
           </div>
         </aside>
 
