@@ -898,11 +898,11 @@
 
       const isMobileChart = window.matchMedia("(max-width: 700px)").matches;
       const W = isMobileChart ? 390 : 1200;
-      const H = isMobileChart ? 300 : 520;
-      const padL = isMobileChart ? 72 : 112;
-      const padR = isMobileChart ? 62 : 92;
-      const padT = isMobileChart ? 52 : 62;
-      const padB = isMobileChart ? 48 : 68;
+      const H = isMobileChart ? 220 : 520;
+      const padL = isMobileChart ? 62 : 112;
+      const padR = isMobileChart ? 50 : 92;
+      const padT = isMobileChart ? 38 : 62;
+      const padB = isMobileChart ? 36 : 68;
       const values = scoped.map((point) => point.value);
       const quantities = scoped.map((point) => point.totalQuantity || 0);
       const axis = buildAssetAxis(Math.min(...values), Math.max(...values), isMobileChart ? 4 : 5);
