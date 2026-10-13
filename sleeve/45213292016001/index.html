@@ -2688,9 +2688,13 @@
       </div>
     </div>
 
-    <!-- admax -->
-    <script src="https://adm.shinobi.jp/s/2a8b85be4b85635d008a5e0a3f74cb53"></script>
-    <!-- admax -->
+    <script>
+      if (window.matchMedia("(max-width: 700px)").matches) {
+        document.write('<!-- admax --><script src="https://adm.shinobi.jp/s/c77be9fc46c2c891faaacf8068ae7e61"><\/script><!-- admax -->');
+      } else {
+        document.write('<!-- admax --><script src="https://adm.shinobi.jp/s/2a8b85be4b85635d008a5e0a3f74cb53"><\/script><!-- admax -->');
+      }
+    </script>
     <div id="site-footer"></div>
   </div>
       </div>
