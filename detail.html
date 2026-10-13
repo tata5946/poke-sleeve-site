@@ -80,6 +80,24 @@
       margin-top: 28px;
     }
 
+    .ninja-admax-placement {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      margin: 28px auto 24px;
+    }
+
+    @media (max-width: 1023px) {
+      .ninja-admax-placement {
+        width: 100vw;
+        max-width: 100vw;
+        margin: 24px 0 20px calc(50% - 50vw);
+      }
+    }
+
     @media (min-width: 1024px) {
       .moetaku-a8-placement {
         width: 100%;
@@ -2646,6 +2664,12 @@
             <div id="relatedPriceBand" class="related-list"></div>
           </section>
         </div>
+
+        <aside class="ninja-admax-placement" aria-label="広告">
+<!-- admax -->
+<script src="https://adm.shinobi.jp/s/2a8b85be4b85635d008a5e0a3f74cb53"></script>
+<!-- admax -->
+        </aside>
 
       </div>
     </div>
