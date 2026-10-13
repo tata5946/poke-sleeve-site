@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/site.css?v=20261002sharedlayout" />
+  <link rel="stylesheet" href="./assets/site.css?v=20261013collectionchart2" />
   <style>
     @media (max-width: 700px) {
       html:root body.my-collection-page .my-collection-hero-copy {
@@ -33,6 +33,64 @@
     }
   </style>
 <link rel="stylesheet" href="./assets/pricing-quality.css?v=catalog-d016f06d4a2a">
+  <style>
+    html:root body.my-collection-page .my-asset-chart-panel {
+      padding: 20px 0 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    html:root body.my-collection-page .my-asset-chart-wrap,
+    html:root body.my-collection-page .my-asset-chart-wrap.is-mobile-density {
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+    }
+
+    html:root body.my-collection-page .my-asset-chart-legend {
+      position: static !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-end !important;
+      align-self: stretch !important;
+      gap: 22px !important;
+      min-height: 34px !important;
+      margin: 0 !important;
+      padding: 0 2px 8px !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    html:root body.my-collection-page .my-asset-chart-svg {
+      position: static !important;
+      display: block !important;
+      width: 100% !important;
+      margin: 0 !important;
+    }
+
+    @media (max-width: 700px) {
+      html:root body.my-collection-page .my-asset-chart-panel {
+        padding: 0 !important;
+      }
+
+      html:root body.my-collection-page .my-asset-chart-legend {
+        gap: 10px !important;
+        min-height: 24px !important;
+        padding-bottom: 6px !important;
+        font-size: 9px !important;
+      }
+    }
+  </style>
 </head>
 
 <body class="page-market-list my-collection-page shared-page-layout" data-hide-global-header="1">
