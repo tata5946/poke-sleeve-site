@@ -10557,3 +10557,33 @@ html:root body .detail-info-card :is(
 #weeklyTable {
   display: none !important;
 }
+.detail-bottom-affiliates {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .detail-bottom-affiliates {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px;
+    width: fit-content;
+    max-width: 100%;
+    margin: 64px auto 56px;
+  }
+
+  .detail-bottom-affiliate {
+    position: relative;
+    flex: 0 0 300px;
+    width: 300px;
+    height: 250px;
+    line-height: 0;
+  }
+
+  .detail-bottom-affiliate > img[width="1"] {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+}
