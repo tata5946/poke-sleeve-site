@@ -5915,9 +5915,20 @@
           : buildCalendarMonthTicks(xMin, xMax);
         const maxAxisLabels = isMobileView ? 4 : 8;
         const labelStep = Math.max(1, Math.ceil(periodTicks.length / maxAxisLabels));
-        const visibleTicks = periodTicks.filter((tick, index) => (
+        const sampledTicks = periodTicks.filter((tick, index) => (
           index === 0 || index === periodTicks.length - 1 || index % labelStep === 0
         ));
+        const minLabelGap = isMobileView ? 150 : 125;
+        const visibleTicks = [];
+        for (const tick of sampledTicks) {
+          const isLast = tick === sampledTicks[sampledTicks.length - 1];
+          const previous = visibleTicks[visibleTicks.length - 1];
+          if (!previous || xToPx(tick.ts) - xToPx(previous.ts) >= minLabelGap) {
+            visibleTicks.push(tick);
+          } else if (isLast && visibleTicks.length > 1) {
+            visibleTicks[visibleTicks.length - 1] = tick;
+          }
+        }
         xLabels = visibleTicks
           .map((tick, index, arr) => {
             const x = xToPx(tick.ts);
