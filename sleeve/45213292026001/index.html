@@ -6088,7 +6088,12 @@
         return dedupeSeriesByDate(explicitMonthly.length ? explicitMonthly : legacyMonthly);
       }
       if (mode === "3m") return buildRecentWeeklySeries(sleeve, 92);
-      return buildFullPeriodSeries(sleeve);
+      const fullPeriod = buildFullPeriodSeries(sleeve);
+      const nonMonthly = fullPeriod.filter((point) => point.type !== "monthly");
+      const monthlyBefore2026 = filterFullPeriodMonthlySeries(
+        fullPeriod.filter((point) => point.type === "monthly")
+      );
+      return dedupeSeriesByDate([...nonMonthly, ...monthlyBefore2026]);
     }
 
     function getLatestTradeStamp(sleeve) {
