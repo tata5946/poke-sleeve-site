@@ -5983,9 +5983,11 @@
           const h = Math.max(10, (point.count / maxCount) * countHeight * 0.76);
           const x = cx - (width / 2);
           const y = countBottom - h;
+          const priceY = yToPx(point.price);
+          const countLabelY = Math.min(y - 16, priceY - (isMobileView ? 32 : 26));
           return `<g class="chart-volume-bar" data-volume-count="${point.count}">
             <rect x="${x}" y="${y}" width="${width}" height="${h}" rx="3" fill="rgba(100,116,139,0.45)"></rect>
-            <text x="${cx}" y="${y - 16}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="800" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${point.count}件</text>
+            <text x="${cx}" y="${countLabelY}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="800" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${point.count}件</text>
           </g>`;
         }).join("")
         : "";
