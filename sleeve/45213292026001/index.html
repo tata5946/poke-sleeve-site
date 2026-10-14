@@ -4281,6 +4281,14 @@
       return formatPeriodLabel(s);
     }
 
+    function formatWeeklyAxisDateLabel(raw) {
+      const s = String(raw || "");
+      const matched = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!matched) return formatCompactAxisDateLabel(s);
+      const weekOfMonth = Math.ceil(Number(matched[3]) / 7);
+      return `${String(matched[1]).slice(-2)}年${Number(matched[2])}月${weekOfMonth}週`;
+    }
+
     function parseNumberLike(v) {
       if (v == null) return null;
       if (typeof v === "number") return Number.isFinite(v) ? v : null;
@@ -5933,7 +5941,7 @@
         xLabels = labelIndexes.map((index) => {
           const point = data[index];
           const x = xToPx(point.timestamp);
-          const label = formatCompactAxisDateLabel(point.date);
+          const label = formatWeeklyAxisDateLabel(point.date);
           const anchor = index === 0 ? "start" : (index === data.length - 1 ? "end" : "middle");
           return `<text x="${x}" y="${H - 16}" text-anchor="${anchor}" font-size="${xAxisFontSize}" fill="#111827">${escapeHtml(label)}</text>`;
         });
