@@ -533,6 +533,9 @@ if (-not (Test-Path -LiteralPath $TemplatePath)) { throw "Template not found: $T
 $data = Read-PricingCatalog $DataPath
 $slugData = Get-Content -LiteralPath $SlugMapPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $zukanTemplate = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
+if ($zukanTemplate -notmatch '<aside class="detail-bottom-affiliates" aria-label="広告">') {
+  throw "Category page template is missing the shared desktop affiliate block: $TemplatePath"
+}
 $previous = if (Test-Path -LiteralPath $ManifestPath) { Get-Content -LiteralPath $ManifestPath -Raw -Encoding UTF8 | ConvertFrom-Json } else { @() }
 $entries = @(
   (CategoryEntries @($data.sleeves) 'pokemon' 'pokemonCategories') +
