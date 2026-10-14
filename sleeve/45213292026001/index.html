@@ -50,37 +50,80 @@
       align-items: start;
     }
 
-    .moetaku-a8-placement {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100vw;
-      max-width: 100vw;
-      margin: 14px 0 0 calc(50% - 50vw);
-      overflow: hidden;
-    }
-
-    .moetaku-a8-banner--desktop {
+    .mobile-chart-affiliate {
       display: none;
     }
 
-    .moetaku-a8-banner--mobile {
-      position: relative;
-      display: block;
-      flex: 0 0 320px;
-      width: 320px;
-      height: 50px;
-      line-height: 0;
+    .mobile-anchor-affiliate {
+      display: none;
     }
 
-    .moetaku-a8-banner--mobile > img[width="1"] {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-    }
+    @media (max-width: 700px) {
+      body.mobile-affiliate-test {
+        padding-bottom: calc(170px + env(safe-area-inset-bottom, 0px));
+      }
 
-    .moetaku-a8-placement + .detail-price-grid {
-      margin-top: 28px;
+      .mobile-chart-affiliate {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 100%;
+        margin: 28px auto 0;
+      }
+
+      .mobile-affiliate-disclosure {
+        margin: 0 0 6px;
+        color: #6b7280;
+        font-size: 11px;
+        line-height: 1;
+        text-align: center;
+      }
+
+      .mobile-chart-affiliate-banner {
+        position: relative;
+        width: 300px;
+        height: 250px;
+        line-height: 0;
+      }
+
+      .mobile-anchor-affiliate {
+        position: fixed;
+        z-index: 110;
+        left: 0;
+        right: 0;
+        bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        pointer-events: none;
+      }
+
+      .mobile-anchor-affiliate .mobile-affiliate-disclosure {
+        margin-bottom: 4px;
+        padding: 2px 5px;
+        background: rgba(255, 255, 255, 0.94);
+      }
+
+      .mobile-anchor-affiliate-banner {
+        position: relative;
+        width: 320px;
+        height: 50px;
+        line-height: 0;
+        pointer-events: auto;
+      }
+
+      .mobile-chart-affiliate-banner > img[width="1"],
+      .mobile-anchor-affiliate-banner > img[width="1"] {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+      }
+
+      .mobile-chart-affiliate + .detail-price-grid {
+        margin-top: 28px;
+      }
     }
 
     .detail-bottom-affiliates {
@@ -88,28 +131,6 @@
     }
 
     @media (min-width: 1024px) {
-      .moetaku-a8-placement {
-        display: none;
-      }
-
-      .moetaku-a8-banner--desktop {
-        display: none;
-      }
-
-      .moetaku-a8-banner--desktop > img[width="1"] {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-      }
-
-      .moetaku-a8-banner--mobile {
-        display: none;
-      }
-
-      .moetaku-a8-placement + .detail-price-grid {
-        margin-top: 28px;
-      }
-
       .detail-bottom-affiliates {
         display: flex;
         flex-wrap: wrap;
@@ -2517,7 +2538,7 @@
 <link rel="stylesheet" href="./assets/pricing-quality.css?v=catalog-d016f06d4a2a">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022" crossorigin="anonymous"></script></head>
 
-<body class="page-content-focus shared-page-layout" data-hide-global-header="1">
+<body class="page-content-focus shared-page-layout mobile-affiliate-test" data-hide-global-header="1">
   <div id="site-header"></div>
 
   <div class="dashboard-shell">
@@ -2643,16 +2664,12 @@
         </section>
       </section>
 
-        <aside class="moetaku-a8-placement" aria-label="広告">
-          <div class="moetaku-a8-banner moetaku-a8-banner--desktop">
-<a href="https://px.a8.net/svt/ejp?a8mat=4BEFL2+4KX3CI+1SOW+2HENWX" rel="nofollow">
-<img border="0" width="468" height="60" alt="" src="https://www20.a8.net/svt/bgt?aid=261013862277&wid=001&eno=01&mid=s00000008384015017000&mc=1"></a>
-<img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=4BEFL2+4KX3CI+1SOW+2HENWX" alt="">
-          </div>
-          <div class="moetaku-a8-banner moetaku-a8-banner--mobile">
-<a href="https://px.a8.net/svt/ejp?a8mat=4BEFL2+4KX3CI+1SOW+2HE0RL" rel="nofollow">
-<img border="0" width="320" height="50" alt="" src="https://www27.a8.net/svt/bgt?aid=261013862277&wid=001&eno=01&mid=s00000008384015014000&mc=1"></a>
-<img border="0" width="1" height="1" src="https://www18.a8.net/0.gif?a8mat=4BEFL2+4KX3CI+1SOW+2HE0RL" alt="">
+        <aside class="mobile-chart-affiliate" aria-label="広告">
+          <p class="mobile-affiliate-disclosure">PR</p>
+          <div class="mobile-chart-affiliate-banner">
+<a href="https://px.a8.net/svt/ejp?a8mat=4BEFL2+3WIBJM+5PLE+5YZ75" rel="nofollow">
+<img border="0" width="300" height="250" alt="" src="https://www21.a8.net/svt/bgt?aid=261013862236&wid=001&eno=01&mid=s00000026645001003000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=4BEFL2+3WIBJM+5PLE+5YZ75" alt="">
           </div>
         </aside>
 
@@ -2737,6 +2754,15 @@
       </div>
     </main>
   </div>
+
+  <aside class="mobile-anchor-affiliate" aria-label="広告">
+    <p class="mobile-affiliate-disclosure">PR</p>
+    <div class="mobile-anchor-affiliate-banner">
+<a href="https://px.a8.net/svt/ejp?a8mat=4BEET4+25ZT0Y+2QOI+2TAH5D" rel="nofollow">
+<img border="0" width="320" height="50" alt="" src="https://www27.a8.net/svt/bgt?aid=261012856131&wid=001&eno=01&mid=s00000012789017013000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=4BEET4+25ZT0Y+2QOI+2TAH5D" alt="">
+    </div>
+  </aside>
 
   <script src="./assets/category-page-map.js?v=20260917a"></script>
   <script src="./assets/pricing.js?v=catalog-d016f06d4a2a"></script>
