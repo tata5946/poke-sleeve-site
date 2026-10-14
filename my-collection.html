@@ -1080,7 +1080,10 @@
             ${axis.ticks.map((tick) => `<line x1="${padL}" y1="${yToPx(tick).toFixed(2)}" x2="${W - padR}" y2="${yToPx(tick).toFixed(2)}" stroke="#d8e1ec" stroke-width="1" stroke-dasharray="4 4"></line>`).join("")}
             ${visibleMonthTicks.map((date) => {
               const x = xForTimestamp(date.getTime());
-              const label = `${date.getFullYear()}年${date.getMonth() + 1}月`;
+              const yearLabel = isMobileChart
+                ? String(date.getFullYear()).slice(-2)
+                : String(date.getFullYear());
+              const label = `${yearLabel}年${date.getMonth() + 1}月`;
               return `<line x1="${x.toFixed(2)}" y1="${padT}" x2="${x.toFixed(2)}" y2="${H - padB}" stroke="#e6edf5" stroke-width="1"></line><text x="${x.toFixed(2)}" y="${H - 18}" text-anchor="middle" font-size="${dateFontSize}" font-weight="700" fill="#334155">${escapeHtml(label)}</text>`;
             }).join("")}
             ${scoped.map((point, index) => {
