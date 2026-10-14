@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./assets/site.css?v=20261014chartframe" />
+  <link rel="stylesheet" href="./assets/site.css?v=20261014unifiedchart" />
 
   <style>
     .detail-wrap {
@@ -4054,18 +4054,26 @@
       const s = String(isoMonth || "");
       const m = s.match(/^(\d{4})-(\d{2})$/);
       if (!m) return formatPeriodLabel(s);
-      return `${String(m[1]).slice(-2)}/${Number(m[2])}`;
+      return `${String(m[1]).slice(-2)}年${Number(m[2])}月`;
     }
 
     function formatCompactAxisDateLabel(raw) {
       const s = String(raw || "");
       let m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-      if (m) return `${String(m[1]).slice(-2)}/${Number(m[2])}`;
+      if (m) return `${String(m[1]).slice(-2)}年${Number(m[2])}月`;
       m = s.match(/^(\d{4})-(\d{2})$/);
-      if (m) return `${String(m[1]).slice(-2)}/${Number(m[2])}`;
+      if (m) return `${String(m[1]).slice(-2)}年${Number(m[2])}月`;
       m = s.match(/^(\d{4})$/);
-      if (m) return String(m[1]).slice(-2);
+      if (m) return `${String(m[1]).slice(-2)}年`;
       return formatPeriodLabel(s);
+    }
+
+    function formatWeeklyAxisDateLabel(raw) {
+      const s = String(raw || "");
+      const matched = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!matched) return formatCompactAxisDateLabel(s);
+      const weekOfMonth = Math.ceil(Number(matched[3]) / 7);
+      return `${String(matched[1]).slice(-2)}年${Number(matched[2])}月${weekOfMonth}週`;
     }
 
     function parseNumberLike(v) {
@@ -5163,14 +5171,20 @@
         .map((item) => String(item?.week ?? "").trim().match(/^(\d{4})-(\d{2})-\d{2}$/))
         .filter(Boolean)
         .map((matched) => `${matched[1]}-${matched[2]}`));
-      const pushMonthPoint = (monthValue, priceValue) => {
+      const pushMonthPoint = (monthValue, priceValue, countValue = null) => {
         const date = normalizeDateFromInput(monthValue, "01");
         const price = normalizeChartPrice(priceValue);
         if (!date || !(Number.isFinite(price) && price > 0)) return;
         const key = `monthly|${date}`;
         if (seen.has(key)) return;
         seen.add(key);
-        out.push({ type: "monthly", date, price: Math.round(price) });
+        const count = parseNumberLike(countValue);
+        out.push({
+          type: "monthly",
+          date,
+          price: Math.round(price),
+          count: Number.isFinite(count) && count >= 0 ? Math.round(count) : null
+        });
       };
       for (const item of (Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [])) {
         const date = normalizeDateFromInput(item?.month, "01");
@@ -5178,7 +5192,7 @@
         if (isBeforeReleaseDate(date, sleeve, "month")) continue;
         if (monthKey && latestWeeklyTs != null && !isMonthlyBucketComplete(monthKey, latestWeeklyTs)) continue;
         if (monthKey && hasWeeklyMonth.has(monthKey) && !completedWeeklyMonths.has(monthKey)) continue;
-        pushMonthPoint(item?.month, item?.price);
+        pushMonthPoint(item?.month, item?.price, item?.count);
       }
       for (const point of completedWeeklyMonths.values()) {
         const date = normalizeDateFromInput(point?.month, "01");
@@ -5189,7 +5203,7 @@
         for (let i = out.length - 1; i >= 0; i--) {
           if (`monthly|${out[i].date}` === key) out.splice(i, 1);
         }
-        pushMonthPoint(point.month, point.price);
+        pushMonthPoint(point.month, point.price, point.count);
       }
       return out.sort((a, b) => a.date.localeCompare(b.date));
     }
@@ -5219,15 +5233,20 @@
         if (!(Number.isFinite(price) && price > 0)) continue;
         const monthKey = week.slice(0, 7);
         if (!buckets.has(monthKey)) buckets.set(monthKey, []);
-        buckets.get(monthKey).push(price);
+        buckets.get(monthKey).push({
+          price,
+          count: Math.max(0, Number(item?.count) || 0)
+        });
       }
       const out = new Map();
       if (latestWeekTs == null) return out;
-      for (const [monthKey, prices] of buckets) {
+      for (const [monthKey, rows] of buckets) {
         if (!isMonthlyBucketComplete(monthKey, latestWeekTs)) continue;
+        const prices = rows.map((row) => row.price);
         const avg = prices.reduce((sum, price) => sum + price, 0) / prices.length;
         if (Number.isFinite(avg) && avg > 0) {
-          out.set(monthKey, { month: monthKey, price: avg });
+          const count = rows.reduce((sum, row) => sum + row.count, 0);
+          out.set(monthKey, { month: monthKey, price: avg, count });
         }
       }
       return out;
@@ -5357,6 +5376,7 @@
       if (mode === "all") {
         el.innerHTML = `
           <span class="legend-item"><span class="legend-mark">●</span>価格</span>
+          <span class="legend-item"><span class="legend-mark">▮</span>取引件数</span>
           <span class="legend-item">◎ 最新観測データ</span>
         `;
         return;
@@ -5371,6 +5391,7 @@
       }
       el.innerHTML = `
         <span class="legend-item"><span class="legend-mark">●</span>月次データ</span>
+        <span class="legend-item"><span class="legend-mark">▮</span>取引件数</span>
         <span class="legend-item">◎ 最新観測データ</span>
       `;
     }
@@ -5665,37 +5686,45 @@
       const yLabels = [];
       for (const v of niceAxis.ticks) {
         const y = yToPx(v);
-        yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#dce4f0"></line>`);
+        if (v !== yMin) {
+          yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#d8e1ec" stroke-width="1" stroke-dasharray="4 4"></line>`);
+        }
         yLabels.push(`<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="#111827">${v.toLocaleString()}</text>`);
       }
 
       let xLabels = [];
       let yearGuides = [];
       if (mode === "all" || mode === "monthly") {
-        const monthTicks = buildCalendarMonthTicks(xMin, xMax);
-        const labelStep = monthTicks.length > 36 ? 6 : monthTicks.length > 18 ? 3 : 2;
-        xLabels = monthTicks
-          .filter((tick) => tick.month === 1 || ((tick.month - 1) % labelStep === 0))
+        const sparseLimit = isMobileView ? 6 : 10;
+        const useObservedTicks = data.length <= sparseLimit;
+        const observedMonthTicks = Array.from(data.reduce((map, point) => {
+          const date = new Date(point.timestamp);
+          const year = date.getFullYear();
+          const month = date.getMonth() + 1;
+          const key = `${year}-${String(month).padStart(2, "0")}`;
+          if (!map.has(key)) map.set(key, { ts: point.timestamp, year, month });
+          return map;
+        }, new Map()).values());
+        const monthTicks = useObservedTicks ? observedMonthTicks : buildCalendarMonthTicks(xMin, xMax);
+        const maxAxisLabels = isMobileView ? 4 : 8;
+        const labelStep = Math.max(1, Math.ceil(monthTicks.length / maxAxisLabels));
+        const visibleTicks = monthTicks.filter((tick, index) => (
+          index === 0 || index === monthTicks.length - 1 || index % labelStep === 0
+        ));
+        xLabels = visibleTicks
           .map((tick, index, arr) => {
             const x = xToPx(tick.ts);
-            const label = `${String(tick.year).slice(-2)}/${tick.month}`;
+            const label = `${String(tick.year).slice(-2)}年${tick.month}月`;
             const anchor = index === 0 ? "start" : (index === arr.length - 1 ? "end" : "middle");
             return `<text x="${x}" y="${H - 16}" text-anchor="${anchor}" font-size="${xAxisFontSize}" fill="#111827">${escapeHtml(label)}</text>`;
           });
-        yearGuides = monthTicks
-          .filter((tick) => tick.month === 1)
-          .map((tick) => {
-            const x = xToPx(tick.ts);
-            const line = `<line x1="${x}" y1="${padT}" x2="${x}" y2="${H - padB}" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"></line>`;
-            const text = `<text x="${Math.min(x + 6, W - padR - 4)}" y="${padT + 14}" text-anchor="start" font-size="${subLabelFontSize}" font-weight="800" fill="#64748b">${tick.year}</text>`;
-            return `${line}${text}`;
-          });
+        yearGuides = [];
       } else {
         const labelIndexes = Array.from(new Set([0, Math.floor((data.length - 1) / 2), data.length - 1]));
         xLabels = labelIndexes.map((index) => {
           const point = data[index];
           const x = xToPx(point.timestamp);
-          const label = formatCompactAxisDateLabel(point.date);
+          const label = formatWeeklyAxisDateLabel(point.date);
           const anchor = index === 0 ? "start" : (index === data.length - 1 ? "end" : "middle");
           return `<text x="${x}" y="${H - 16}" text-anchor="${anchor}" font-size="${xAxisFontSize}" fill="#111827">${escapeHtml(label)}</text>`;
         });
@@ -5720,11 +5749,10 @@
       const latestMarkerRadius = isMobileView ? 11 : 9;
       const latestLeaderStartX = latestX + latestMarkerRadius + 2;
       const latestCallout = `
-        <path d="M ${latestLeaderStartX} ${latestY} L ${latestLeaderEndX} ${latestY} L ${latestLeaderEndX} ${latestLeaderBottomY}" fill="none" stroke="#1e3a5f" stroke-width="${isMobileView ? 2.2 : 2}" stroke-linecap="round" stroke-linejoin="round"></path>
         <text x="${latestInfoX}" y="${latestInfoY}" text-anchor="start" font-size="${isMobileView ? 18 : 15}" font-weight="900" fill="#111827">現在 ¥${latest.price.toLocaleString()}</text>
         <text x="${latestInfoX}" y="${latestInfoLine2Y}" text-anchor="start" font-size="${isMobileView ? 16 : 13.5}" font-weight="900" fill="${diffPrice >= 0 ? "#0f766e" : "#b42318"}">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
       `;
-      const showVolumeBars = mode === "3m";
+      const showVolumeBars = data.some((item) => Number.isFinite(item.count) && item.count > 0);
       const maxCount = showVolumeBars
         ? Math.max(0, ...data.map((item) => Number.isFinite(item.count) ? item.count : 0))
         : 0;
@@ -5742,9 +5770,11 @@
           const h = Math.max(10, (point.count / maxCount) * countHeight * 0.76);
           const x = cx - (width / 2);
           const y = countBottom - h;
+          const priceY = yToPx(point.price);
+          const countLabelY = Math.min(y - 16, priceY - (isMobileView ? 32 : 26));
           return `<g class="chart-volume-bar" data-volume-count="${point.count}">
             <rect x="${x}" y="${y}" width="${width}" height="${h}" rx="3" fill="rgba(100,116,139,0.45)"></rect>
-            <text x="${cx}" y="${y - 8}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="800" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${point.count}件</text>
+            <text x="${cx}" y="${countLabelY}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="800" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${point.count}件</text>
           </g>`;
         }).join("")
         : "";
@@ -5793,8 +5823,6 @@
           </defs>
           <g>${yGrid.join("")}</g>
           <g>${yearGuides.join("")}</g>
-          <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" stroke="#a8b3c7"></line>
-          <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#a8b3c7"></line>
           <path d="${areaD}" fill="url(#priceAreaGrad-${escapeHtml(containerId)})"></path>
           <g>${volumeBars}</g>
           <path d="${lineD}" fill="none" stroke="#1e5bd7" stroke-width="${isMobileView ? 5.5 : 4.2}" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -5875,7 +5903,12 @@
         return dedupeSeriesByDate(explicitMonthly.length ? explicitMonthly : legacyMonthly);
       }
       if (mode === "3m") return buildRecentWeeklySeries(sleeve, 92);
-      return buildFullPeriodSeries(sleeve);
+      const fullPeriod = buildFullPeriodSeries(sleeve);
+      const nonMonthly = fullPeriod.filter((point) => point.type !== "monthly");
+      const monthlyBefore2026 = filterFullPeriodMonthlySeries(
+        fullPeriod.filter((point) => point.type === "monthly")
+      );
+      return dedupeSeriesByDate([...nonMonthly, ...monthlyBefore2026]);
     }
 
     function getLatestTradeStamp(sleeve) {
