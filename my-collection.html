@@ -111,10 +111,30 @@
 
     @media (max-width: 800px) {
       html:root body.my-collection-page .my-asset-chart-panel {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
         padding: 0 !important;
+        overflow: hidden !important;
+      }
+
+      html:root body.my-collection-page .my-asset-chart {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+      }
+
+      html:root body.my-collection-page .my-asset-chart-wrap,
+      html:root body.my-collection-page .my-asset-chart-wrap.is-mobile-density {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
       }
 
       html:root body.my-collection-page .my-asset-chart-legend {
+        flex-wrap: wrap !important;
         gap: 10px !important;
         min-height: 24px !important;
         padding-bottom: 6px !important;
@@ -122,8 +142,12 @@
       }
 
       html:root body.my-collection-page .my-asset-chart-svg {
-        height: 180px !important;
-        max-height: 180px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        max-height: none !important;
+        aspect-ratio: 390 / 180;
       }
     }
   </style>
