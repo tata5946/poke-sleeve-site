@@ -40,6 +40,37 @@
     .index-pager { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin: 22px 0 0; }
     .index-pager a { min-width: 36px; min-height: 36px; display: inline-flex; align-items: center; justify-content: center; padding: 0 10px; border: 1px solid #dbe4f0; border-radius: 8px; background: #fff; color: #0f172a; font-weight: 800; text-decoration: none; }
     .index-pager [aria-current="page"] { border-color: #0f172a; background: #0f172a; color: #fff; }
+    .detail-bottom-affiliates {
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .detail-bottom-affiliates {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 24px;
+        width: fit-content;
+        max-width: 100%;
+        margin: 64px auto 56px;
+      }
+
+      .detail-bottom-affiliate {
+        position: relative;
+        flex: 0 0 300px;
+        width: 300px;
+        height: 250px;
+        line-height: 0;
+      }
+
+      .detail-bottom-affiliate > img[width="1"] {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+      }
+    }
+
     @media (max-width: 560px) { .sleeve-index-list { grid-template-columns: 1fr; } .sleeve-index-item a { grid-template-columns: 70px minmax(0, 1fr); } }
   </style>
 <link rel="stylesheet" href="/assets/pricing-quality.css?v=catalog-d016f06d4a2a"></head>
@@ -872,6 +903,23 @@
               <button class="collection-quick-add" type="button" data-my-collection-quick-add data-sleeve-id="365534" data-sleeve-name="かがやくサーナイト" data-sleeve-image="https://drive.google.com/thumbnail?id=1WK7l1W_zW6GzH17DLGBBtKXiUVOxYooh&amp;sz=w1200" data-sleeve-release-date="2022-05-13" aria-label="かがやくサーナイト&#12434;&#12510;&#12452;&#12467;&#12524;&#12463;&#12471;&#12519;&#12531;&#12395;&#36861;&#21152;">+</button>
             </li>
           </ul>
+          <aside class="detail-bottom-affiliates" aria-label="広告">
+            <div class="detail-bottom-affiliate">
+<a href="https://px.a8.net/svt/ejp?a8mat=4BEET4+25ZT0Y+2QOI+2TKRIP" rel="nofollow">
+<img border="0" width="300" height="250" alt="" src="https://www20.a8.net/svt/bgt?aid=261012856131&wid=001&eno=01&mid=s00000012789017061000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=4BEET4+25ZT0Y+2QOI+2TKRIP" alt="">
+            </div>
+            <div class="detail-bottom-affiliate">
+<a href="https://px.a8.net/svt/ejp?a8mat=4BEFL2+3WIBJM+5PLE+5YZ75" rel="nofollow">
+<img border="0" width="300" height="250" alt="" src="https://www21.a8.net/svt/bgt?aid=261013862236&wid=001&eno=01&mid=s00000026645001003000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=4BEFL2+3WIBJM+5PLE+5YZ75" alt="">
+            </div>
+            <div class="detail-bottom-affiliate">
+<a href="https://px.a8.net/svt/ejp?a8mat=4BEET4+1FSQEQ+5NJ8+5Z6WX" rel="nofollow">
+<img border="0" width="300" height="250" alt="" src="https://www23.a8.net/svt/bgt?aid=261012856087&wid=001&eno=01&mid=s00000026378001004000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www10.a8.net/0.gif?a8mat=4BEET4+1FSQEQ+5NJ8+5Z6WX" alt="">
+            </div>
+          </aside>
           <nav class="index-pager" aria-label="&#12506;&#12540;&#12472;&#36865;&#12426;">
             <a href="/sleeves/page/5/" rel="prev">&#21069;&#12408;</a>
             <a href="/sleeves/page/1/">1</a>

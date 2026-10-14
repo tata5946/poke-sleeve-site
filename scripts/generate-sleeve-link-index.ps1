@@ -273,6 +273,12 @@ function Append-PageShellStart([System.Text.StringBuilder]$Html, [string]$TitleH
   [void]$Html.AppendLine('    .index-pager { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin: 22px 0 0; }')
   [void]$Html.AppendLine('    .index-pager a { min-width: 36px; min-height: 36px; display: inline-flex; align-items: center; justify-content: center; padding: 0 10px; border: 1px solid #dbe4f0; border-radius: 8px; background: #fff; color: #0f172a; font-weight: 800; text-decoration: none; }')
   [void]$Html.AppendLine('    .index-pager [aria-current="page"] { border-color: #0f172a; background: #0f172a; color: #fff; }')
+  [void]$Html.AppendLine('    .detail-bottom-affiliates { display: none; }')
+  [void]$Html.AppendLine('    @media (min-width: 1024px) {')
+  [void]$Html.AppendLine('      .detail-bottom-affiliates { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 24px; width: fit-content; max-width: 100%; margin: 64px auto 56px; }')
+  [void]$Html.AppendLine('      .detail-bottom-affiliate { position: relative; flex: 0 0 300px; width: 300px; height: 250px; line-height: 0; }')
+  [void]$Html.AppendLine('      .detail-bottom-affiliate > img[width="1"] { position: absolute; right: 0; bottom: 0; }')
+  [void]$Html.AppendLine('    }')
   [void]$Html.AppendLine('    @media (max-width: 560px) { .sleeve-index-list { grid-template-columns: 1fr; } .sleeve-index-item a { grid-template-columns: 70px minmax(0, 1fr); } }')
   [void]$Html.AppendLine('  </style>')
   [void]$Html.AppendLine('</head>')
@@ -377,6 +383,26 @@ function Append-Pager([System.Text.StringBuilder]$Html, [int]$CurrentPage, [int]
   [void]$Html.AppendLine('          </nav>')
 }
 
+function Append-AffiliateBlock([System.Text.StringBuilder]$Html) {
+  [void]$Html.AppendLine('          <aside class="detail-bottom-affiliates" aria-label="広告">')
+  [void]$Html.AppendLine('            <div class="detail-bottom-affiliate">')
+  [void]$Html.AppendLine('<a href="https://px.a8.net/svt/ejp?a8mat=4BEET4+25ZT0Y+2QOI+2TKRIP" rel="nofollow">')
+  [void]$Html.AppendLine('<img border="0" width="300" height="250" alt="" src="https://www20.a8.net/svt/bgt?aid=261012856131&wid=001&eno=01&mid=s00000012789017061000&mc=1"></a>')
+  [void]$Html.AppendLine('<img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=4BEET4+25ZT0Y+2QOI+2TKRIP" alt="">')
+  [void]$Html.AppendLine('            </div>')
+  [void]$Html.AppendLine('            <div class="detail-bottom-affiliate">')
+  [void]$Html.AppendLine('<a href="https://px.a8.net/svt/ejp?a8mat=4BEFL2+3WIBJM+5PLE+5YZ75" rel="nofollow">')
+  [void]$Html.AppendLine('<img border="0" width="300" height="250" alt="" src="https://www21.a8.net/svt/bgt?aid=261013862236&wid=001&eno=01&mid=s00000026645001003000&mc=1"></a>')
+  [void]$Html.AppendLine('<img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=4BEFL2+3WIBJM+5PLE+5YZ75" alt="">')
+  [void]$Html.AppendLine('            </div>')
+  [void]$Html.AppendLine('            <div class="detail-bottom-affiliate">')
+  [void]$Html.AppendLine('<a href="https://px.a8.net/svt/ejp?a8mat=4BEET4+1FSQEQ+5NJ8+5Z6WX" rel="nofollow">')
+  [void]$Html.AppendLine('<img border="0" width="300" height="250" alt="" src="https://www23.a8.net/svt/bgt?aid=261012856087&wid=001&eno=01&mid=s00000026378001004000&mc=1"></a>')
+  [void]$Html.AppendLine('<img border="0" width="1" height="1" src="https://www10.a8.net/0.gif?a8mat=4BEET4+1FSQEQ+5NJ8+5Z6WX" alt="">')
+  [void]$Html.AppendLine('            </div>')
+  [void]$Html.AppendLine('          </aside>')
+}
+
 function Write-TextIfChanged([string]$Path, [string]$Text) {
   $resolvedPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path)
   $dir = Split-Path -Path $resolvedPath -Parent
@@ -431,6 +457,7 @@ function Build-PageIndexHtml([array]$Items, [int]$PageNumber, [int]$TotalPages, 
   [void]$html.AppendLine('            </div>')
   [void]$html.AppendLine('          </section>')
   Append-ItemList $html $Items
+  Append-AffiliateBlock $html
   Append-Pager $html $PageNumber $TotalPages
   Append-PageShellEnd $html
   return $html.ToString()
