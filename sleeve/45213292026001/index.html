@@ -60,7 +60,11 @@
 
     @media (max-width: 700px) {
       body.mobile-affiliate-test {
-        padding-bottom: calc(180px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: calc(200px + env(safe-area-inset-bottom, 0px));
+      }
+
+      body.mobile-affiliate-test.mobile-anchor-collapsed {
+        padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px));
       }
 
       .mobile-chart-affiliate {
@@ -98,6 +102,40 @@
         flex-direction: column;
         align-items: center;
         pointer-events: none;
+      }
+
+      .mobile-anchor-toggle {
+        display: grid;
+        place-items: center;
+        width: 80px;
+        height: 32px;
+        margin: 0;
+        padding: 0;
+        border: 1px solid #d9dee7;
+        border-bottom: 0;
+        border-radius: 12px 12px 0 0;
+        background: #f8fafc;
+        color: #7a8493;
+        box-shadow: 0 -3px 10px rgba(15, 23, 42, 0.12);
+        font: 700 20px/1 sans-serif;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+
+      .mobile-anchor-toggle:focus-visible {
+        outline: 2px solid #2563eb;
+        outline-offset: 2px;
+      }
+
+      .mobile-anchor-affiliate-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        pointer-events: none;
+      }
+
+      .mobile-anchor-affiliate-body[hidden] {
+        display: none;
       }
 
       .mobile-anchor-affiliate .mobile-affiliate-disclosure {
@@ -2751,13 +2789,49 @@
   </div>
 
   <aside class="mobile-anchor-affiliate" aria-label="広告">
-    <p class="mobile-affiliate-disclosure">PR</p>
-    <div class="mobile-anchor-affiliate-banner">
+    <button class="mobile-anchor-toggle" id="mobileAnchorToggle" type="button" aria-expanded="true" aria-controls="mobileAnchorAdBody" aria-label="広告を収納">
+      <span aria-hidden="true">∨</span>
+    </button>
+    <div class="mobile-anchor-affiliate-body" id="mobileAnchorAdBody">
+      <p class="mobile-affiliate-disclosure">PR</p>
+      <div class="mobile-anchor-affiliate-banner">
 <a href="https://px.a8.net/svt/ejp?a8mat=4BEET4+25ZT0Y+2QOI+2TAH5D" rel="nofollow">
 <img border="0" width="320" height="50" alt="" src="https://www27.a8.net/svt/bgt?aid=261012856131&wid=001&eno=01&mid=s00000012789017013000&mc=1"></a>
 <img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=4BEET4+25ZT0Y+2QOI+2TAH5D" alt="">
+      </div>
     </div>
   </aside>
+
+  <script>
+    (() => {
+      const storageKey = "pokesuri:mobile-anchor-ad-collapsed:v1";
+      const toggle = document.getElementById("mobileAnchorToggle");
+      const adBody = document.getElementById("mobileAnchorAdBody");
+      if (!toggle || !adBody) return;
+
+      const applyCollapsedState = (collapsed, persist = false) => {
+        document.body.classList.toggle("mobile-anchor-collapsed", collapsed);
+        adBody.hidden = collapsed;
+        toggle.setAttribute("aria-expanded", String(!collapsed));
+        toggle.setAttribute("aria-label", collapsed ? "広告を再表示" : "広告を収納");
+        toggle.querySelector("span").textContent = collapsed ? "∧" : "∨";
+        if (persist) {
+          try {
+            sessionStorage.setItem(storageKey, collapsed ? "1" : "0");
+          } catch (_) {}
+        }
+      };
+
+      let collapsed = false;
+      try {
+        collapsed = sessionStorage.getItem(storageKey) === "1";
+      } catch (_) {}
+      applyCollapsedState(collapsed);
+      toggle.addEventListener("click", () => {
+        applyCollapsedState(toggle.getAttribute("aria-expanded") === "true", true);
+      });
+    })();
+  </script>
 
   <script src="./assets/category-page-map.js?v=20260917a"></script>
   <script src="./assets/pricing.js?v=catalog-d016f06d4a2a"></script>
