@@ -5873,7 +5873,7 @@
       const W = 940;
       const H = isMobileView ? 620 : 480;
       const padL = isMobileView ? 90 : 86;
-      const padR = isMobileView ? 42 : 130;
+      const padR = isMobileView ? 60 : 130;
       const padT = isMobileView ? 28 : 26;
       const padB = (mode === "all" || mode === "monthly") ? (isMobileView ? 120 : 92) : (isMobileView ? 98 : 76);
       const axisFontSize = isMobileView ? 18 : 15;
@@ -5972,6 +5972,15 @@
       const countTop = padT + 10;
       const countBottom = H - padB;
       const countHeight = Math.max(1, countBottom - countTop);
+      const countTicks = maxCount > 1
+        ? Array.from(new Set([0, Math.ceil(maxCount / 2), maxCount]))
+        : [0, 1];
+      const countAxisLabels = showVolumeBars
+        ? countTicks.map((tick) => {
+          const y = countBottom - ((tick / Math.max(1, maxCount)) * countHeight);
+          return `<text x="${W - padR + 12}" y="${y + 5}" text-anchor="start" font-size="${axisFontSize}" font-weight="700" fill="#667085">${tick}件</text>`;
+        }).join("")
+        : "";
       const volumeBars = showVolumeBars && maxCount > 0
         ? data.map((point, index) => {
           if (!(Number.isFinite(point.count) && point.count > 0)) return "";
@@ -5980,14 +5989,11 @@
           const prevTs = index > 0 ? data[index - 1].timestamp : point.timestamp - ((spanX / Math.max(1, data.length - 1)) || (7 * 24 * 60 * 60 * 1000));
           const halfGap = Math.max(4, Math.min(12, Math.round((xToPx(nextTs) - xToPx(prevTs)) / 6)));
           const width = Math.max(5, halfGap);
-          const h = Math.max(10, (point.count / maxCount) * countHeight * 0.76);
+          const h = Math.max(10, (point.count / maxCount) * countHeight);
           const x = cx - (width / 2);
           const y = countBottom - h;
-          const priceY = yToPx(point.price);
-          const countLabelY = Math.min(y - 16, priceY - (isMobileView ? 32 : 26));
           return `<g class="chart-volume-bar" data-volume-count="${point.count}">
             <rect x="${x}" y="${y}" width="${width}" height="${h}" rx="3" fill="rgba(100,116,139,0.45)"></rect>
-            <text x="${cx}" y="${countLabelY}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="800" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${point.count}件</text>
           </g>`;
         }).join("")
         : "";
@@ -6047,6 +6053,7 @@
           ${lowLabel}
           <g>${markers}</g>
           <g>${yLabels.join("")}</g>
+          <g>${countAxisLabels}</g>
           <g>${xLabels.join("")}</g>
         </svg>
       `;
