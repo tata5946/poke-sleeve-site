@@ -4267,17 +4267,17 @@
       const s = String(isoMonth || "");
       const m = s.match(/^(\d{4})-(\d{2})$/);
       if (!m) return formatPeriodLabel(s);
-      return `${String(m[1]).slice(-2)}/${Number(m[2])}`;
+      return `${String(m[1]).slice(-2)}年${Number(m[2])}月`;
     }
 
     function formatCompactAxisDateLabel(raw) {
       const s = String(raw || "");
       let m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-      if (m) return `${String(m[1]).slice(-2)}/${Number(m[2])}`;
+      if (m) return `${String(m[1]).slice(-2)}年${Number(m[2])}月`;
       m = s.match(/^(\d{4})-(\d{2})$/);
-      if (m) return `${String(m[1]).slice(-2)}/${Number(m[2])}`;
+      if (m) return `${String(m[1]).slice(-2)}年${Number(m[2])}月`;
       m = s.match(/^(\d{4})$/);
-      if (m) return String(m[1]).slice(-2);
+      if (m) return `${String(m[1]).slice(-2)}年`;
       return formatPeriodLabel(s);
     }
 
@@ -5898,23 +5898,35 @@
       let xLabels = [];
       let yearGuides = [];
       if (mode === "all" || mode === "monthly") {
-        const monthTicks = buildCalendarMonthTicks(xMin, xMax);
-        const labelStep = monthTicks.length > 36 ? 6 : monthTicks.length > 18 ? 3 : 2;
-        xLabels = monthTicks
-          .filter((tick) => tick.month === 1 || ((tick.month - 1) % labelStep === 0))
+        const sparseLimit = isMobileView ? 6 : 10;
+        const useObservedTicks = data.length <= sparseLimit;
+        const observedMonthTicks = Array.from(data.reduce((map, point) => {
+          const date = new Date(point.timestamp);
+          const year = date.getFullYear();
+          const month = date.getMonth() + 1;
+          const key = `${year}-${String(month).padStart(2, "0")}`;
+          if (!map.has(key)) map.set(key, { ts: point.timestamp, year, month });
+          return map;
+        }, new Map()).values());
+        const monthTicks = useObservedTicks ? observedMonthTicks : buildCalendarMonthTicks(xMin, xMax);
+        const maxAxisLabels = isMobileView ? 4 : 8;
+        const labelStep = Math.max(1, Math.ceil(monthTicks.length / maxAxisLabels));
+        const visibleTicks = monthTicks.filter((tick, index) => (
+          index === 0 || index === monthTicks.length - 1 || index % labelStep === 0
+        ));
+        xLabels = visibleTicks
           .map((tick, index, arr) => {
             const x = xToPx(tick.ts);
-            const label = `${String(tick.year).slice(-2)}/${tick.month}`;
+            const label = `${String(tick.year).slice(-2)}年${tick.month}月`;
             const anchor = index === 0 ? "start" : (index === arr.length - 1 ? "end" : "middle");
             return `<text x="${x}" y="${H - 16}" text-anchor="${anchor}" font-size="${xAxisFontSize}" fill="#111827">${escapeHtml(label)}</text>`;
           });
-        yearGuides = monthTicks
+        yearGuides = visibleTicks
           .filter((tick) => tick.month === 1)
           .map((tick) => {
             const x = xToPx(tick.ts);
             const line = `<line x1="${x}" y1="${padT}" x2="${x}" y2="${H - padB}" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"></line>`;
-            const text = `<text x="${Math.min(x + 6, W - padR - 4)}" y="${padT + 14}" text-anchor="start" font-size="${subLabelFontSize}" font-weight="800" fill="#64748b">${tick.year}</text>`;
-            return `${line}${text}`;
+            return line;
           });
       } else {
         const labelIndexes = Array.from(new Set([0, Math.floor((data.length - 1) / 2), data.length - 1]));
