@@ -5376,14 +5376,20 @@
         .map((item) => String(item?.week ?? "").trim().match(/^(\d{4})-(\d{2})-\d{2}$/))
         .filter(Boolean)
         .map((matched) => `${matched[1]}-${matched[2]}`));
-      const pushMonthPoint = (monthValue, priceValue) => {
+      const pushMonthPoint = (monthValue, priceValue, countValue = null) => {
         const date = normalizeDateFromInput(monthValue, "01");
         const price = normalizeChartPrice(priceValue);
         if (!date || !(Number.isFinite(price) && price > 0)) return;
         const key = `monthly|${date}`;
         if (seen.has(key)) return;
         seen.add(key);
-        out.push({ type: "monthly", date, price: Math.round(price) });
+        const count = parseNumberLike(countValue);
+        out.push({
+          type: "monthly",
+          date,
+          price: Math.round(price),
+          count: Number.isFinite(count) && count >= 0 ? Math.round(count) : null
+        });
       };
       for (const item of (Array.isArray(sleeve?.monthlyPrices) ? sleeve.monthlyPrices : [])) {
         const date = normalizeDateFromInput(item?.month, "01");
@@ -5391,7 +5397,7 @@
         if (isBeforeReleaseDate(date, sleeve, "month")) continue;
         if (monthKey && latestWeeklyTs != null && !isMonthlyBucketComplete(monthKey, latestWeeklyTs)) continue;
         if (monthKey && hasWeeklyMonth.has(monthKey) && !completedWeeklyMonths.has(monthKey)) continue;
-        pushMonthPoint(item?.month, item?.price);
+        pushMonthPoint(item?.month, item?.price, item?.count);
       }
       for (const point of completedWeeklyMonths.values()) {
         const date = normalizeDateFromInput(point?.month, "01");
@@ -5402,7 +5408,7 @@
         for (let i = out.length - 1; i >= 0; i--) {
           if (`monthly|${out[i].date}` === key) out.splice(i, 1);
         }
-        pushMonthPoint(point.month, point.price);
+        pushMonthPoint(point.month, point.price, point.count);
       }
       return out.sort((a, b) => a.date.localeCompare(b.date));
     }
@@ -5432,15 +5438,20 @@
         if (!(Number.isFinite(price) && price > 0)) continue;
         const monthKey = week.slice(0, 7);
         if (!buckets.has(monthKey)) buckets.set(monthKey, []);
-        buckets.get(monthKey).push(price);
+        buckets.get(monthKey).push({
+          price,
+          count: Math.max(0, Number(item?.count) || 0)
+        });
       }
       const out = new Map();
       if (latestWeekTs == null) return out;
-      for (const [monthKey, prices] of buckets) {
+      for (const [monthKey, rows] of buckets) {
         if (!isMonthlyBucketComplete(monthKey, latestWeekTs)) continue;
+        const prices = rows.map((row) => row.price);
         const avg = prices.reduce((sum, price) => sum + price, 0) / prices.length;
         if (Number.isFinite(avg) && avg > 0) {
-          out.set(monthKey, { month: monthKey, price: avg });
+          const count = rows.reduce((sum, row) => sum + row.count, 0);
+          out.set(monthKey, { month: monthKey, price: avg, count });
         }
       }
       return out;
@@ -5570,6 +5581,7 @@
       if (mode === "all") {
         el.innerHTML = `
           <span class="legend-item"><span class="legend-mark">●</span>価格</span>
+          <span class="legend-item"><span class="legend-mark">▮</span>取引件数</span>
           <span class="legend-item">◎ 最新観測データ</span>
         `;
         return;
@@ -5584,6 +5596,7 @@
       }
       el.innerHTML = `
         <span class="legend-item"><span class="legend-mark">●</span>月次データ</span>
+        <span class="legend-item"><span class="legend-mark">▮</span>取引件数</span>
         <span class="legend-item">◎ 最新観測データ</span>
       `;
     }
@@ -5937,7 +5950,7 @@
         <text x="${latestInfoX}" y="${latestInfoY}" text-anchor="start" font-size="${isMobileView ? 18 : 15}" font-weight="900" fill="#111827">現在 ¥${latest.price.toLocaleString()}</text>
         <text x="${latestInfoX}" y="${latestInfoLine2Y}" text-anchor="start" font-size="${isMobileView ? 16 : 13.5}" font-weight="900" fill="${diffPrice >= 0 ? "#0f766e" : "#b42318"}">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
       `;
-      const showVolumeBars = mode === "3m";
+      const showVolumeBars = data.some((item) => Number.isFinite(item.count) && item.count > 0);
       const maxCount = showVolumeBars
         ? Math.max(0, ...data.map((item) => Number.isFinite(item.count) ? item.count : 0))
         : 0;
