@@ -5985,7 +5985,7 @@
           const y = countBottom - h;
           return `<g class="chart-volume-bar" data-volume-count="${point.count}">
             <rect x="${x}" y="${y}" width="${width}" height="${h}" rx="3" fill="rgba(100,116,139,0.45)"></rect>
-            <text x="${cx}" y="${y - 8}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="800" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${point.count}件</text>
+            <text x="${cx}" y="${y - 16}" text-anchor="middle" font-size="${subLabelFontSize}" font-weight="800" fill="#475467" style="paint-order:stroke;stroke:#ffffff;stroke-width:4px;stroke-linejoin:round;">${point.count}件</text>
           </g>`;
         }).join("")
         : "";
