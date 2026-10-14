@@ -2572,6 +2572,120 @@
         font-size: 11px;
       }
     }
+
+    /* Test only: align this sleeve chart with the market-index/collection charts. */
+    body.mobile-affiliate-test .price-panel {
+      margin-top: 18px;
+      padding: 20px 0 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
+    }
+
+    body.mobile-affiliate-test .price-panel-body {
+      gap: 12px;
+    }
+
+    body.mobile-affiliate-test #priceSectionTitle,
+    body.mobile-affiliate-test .chart-title {
+      display: none !important;
+    }
+
+    body.mobile-affiliate-test .chart-period-switch {
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 0 2px auto;
+      padding: 4px;
+      gap: 4px;
+      border: 0;
+      border-radius: 999px;
+      background: #eaeef2;
+      overflow: visible;
+    }
+
+    body.mobile-affiliate-test .chart-period-btn {
+      min-height: 34px;
+      padding: 0 13px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      color: #475569;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    body.mobile-affiliate-test .chart-period-btn.is-active {
+      border-color: rgba(197, 198, 210, .3);
+      color: #00113a;
+      background: #fff;
+      box-shadow: 0 8px 18px rgba(23, 28, 31, .07);
+    }
+
+    body.mobile-affiliate-test .chart-legend {
+      justify-content: flex-end;
+      min-height: 30px;
+      margin: 0;
+      padding: 0 2px 6px;
+      color: #475467;
+    }
+
+    body.mobile-affiliate-test .chart-wrap {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
+    }
+
+    body.mobile-affiliate-test .chart-viewport {
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    body.mobile-affiliate-test svg.chart {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      font-family: var(--font-heading);
+    }
+
+    body.mobile-affiliate-test .chart-footnotes {
+      margin-top: 2px;
+      color: #667085;
+    }
+
+    @media (max-width: 700px) {
+      body.mobile-affiliate-test .price-panel {
+        margin-top: 12px;
+        padding-top: 12px;
+      }
+
+      body.mobile-affiliate-test .chart-period-switch {
+        width: 100%;
+        margin-left: 0;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        border-radius: 10px;
+      }
+
+      body.mobile-affiliate-test .chart-period-btn {
+        min-width: 0;
+        padding-inline: 4px;
+        border-radius: 8px;
+      }
+
+      body.mobile-affiliate-test #chartLegend {
+        display: flex;
+        gap: 10px;
+        font-size: 10px;
+      }
+    }
   </style>
 <link rel="stylesheet" href="./assets/pricing-quality.css?v=catalog-d016f06d4a2a">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2464891540281022" crossorigin="anonymous"></script></head>
