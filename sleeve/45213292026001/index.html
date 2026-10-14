@@ -2576,21 +2576,24 @@
     /* Test only: align this sleeve chart with the market-index/collection charts. */
     body.mobile-affiliate-test .price-panel {
       margin-top: 18px;
-      padding: 20px 0 0;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      box-shadow: none;
-      overflow: visible;
+      padding: 18px;
+      border: 1px solid rgba(197, 198, 210, .45) !important;
+      border-radius: 18px !important;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .98), rgba(246, 250, 254, .94)) !important;
+      box-shadow: 0 14px 34px rgba(23, 28, 31, .055) !important;
+      overflow: hidden;
     }
 
     body.mobile-affiliate-test .price-panel-body {
       gap: 12px;
     }
 
-    body.mobile-affiliate-test #priceSectionTitle,
     body.mobile-affiliate-test .chart-title {
       display: none !important;
+    }
+
+    body.mobile-affiliate-test #priceSectionTitle {
+      display: block !important;
     }
 
     body.mobile-affiliate-test .chart-period-switch {
@@ -2663,7 +2666,8 @@
     @media (max-width: 700px) {
       body.mobile-affiliate-test .price-panel {
         margin-top: 12px;
-        padding-top: 12px;
+        padding: 14px;
+        border-radius: 12px !important;
       }
 
       body.mobile-affiliate-test .chart-period-switch {
