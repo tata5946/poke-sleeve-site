@@ -1005,8 +1005,8 @@
       const isMobileChart = window.matchMedia("(max-width: 800px)").matches;
       const W = isMobileChart ? 320 : 1200;
       const H = isMobileChart ? 220 : 520;
-      const padL = isMobileChart ? 52 : 112;
-      const padR = isMobileChart ? 42 : 92;
+      const padL = isMobileChart ? 60 : 112;
+      const padR = isMobileChart ? 46 : 92;
       const padT = isMobileChart ? 36 : 62;
       const padB = isMobileChart ? 34 : 68;
       const values = scoped.map((point) => point.value);
@@ -1051,7 +1051,14 @@
       const latestDotRadius = isMobileChart ? Math.max(2.8, mobileDotRadius + 1.1) : 5.5;
       const hitRadius = isMobileChart ? Math.max(5, Math.min(11, chartW / Math.max(1, scoped.length) * 0.5)) : 18;
       const quantityBarOpacity = isMobileChart ? 0.2 : 0.34;
-      const assetTickLabel = (value) => `${Math.round(Number(value) || 0).toLocaleString()}円`;
+      const compactAssetFormatter = new Intl.NumberFormat("ja-JP", {
+        notation: "compact",
+        maximumFractionDigits: 1
+      });
+      const assetTickLabel = (value) => {
+        const amount = Math.round(Number(value) || 0);
+        return `${isMobileChart ? compactAssetFormatter.format(amount) : amount.toLocaleString()}円`;
+      };
 
       root.innerHTML = `
         <div class="my-asset-chart-wrap${isMobileChart ? " is-mobile-density" : ""}">
