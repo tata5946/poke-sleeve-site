@@ -10587,3 +10587,16 @@ html:root body .detail-info-card :is(
     bottom: 0;
   }
 }
+
+/* Individual sleeve pages: keep the price chart visually open. */
+body.page-content-focus #priceSectionTitle {
+  display: none !important;
+}
+
+body.page-content-focus .price-panel,
+body.page-content-focus .chart-wrap {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
