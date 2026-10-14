@@ -5899,7 +5899,9 @@
       const yLabels = [];
       for (const v of niceAxis.ticks) {
         const y = yToPx(v);
-        yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#d8e1ec" stroke-width="1" stroke-dasharray="4 4"></line>`);
+        if (v !== yMin) {
+          yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#d8e1ec" stroke-width="1" stroke-dasharray="4 4"></line>`);
+        }
         yLabels.push(`<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="#111827">${v.toLocaleString()}</text>`);
       }
 
@@ -5929,13 +5931,7 @@
             const anchor = index === 0 ? "start" : (index === arr.length - 1 ? "end" : "middle");
             return `<text x="${x}" y="${H - 16}" text-anchor="${anchor}" font-size="${xAxisFontSize}" fill="#111827">${escapeHtml(label)}</text>`;
           });
-        yearGuides = visibleTicks
-          .filter((tick) => tick.month === 1)
-          .map((tick) => {
-            const x = xToPx(tick.ts);
-            const line = `<line x1="${x}" y1="${padT}" x2="${x}" y2="${H - padB}" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"></line>`;
-            return line;
-          });
+        yearGuides = [];
       } else {
         const labelIndexes = Array.from(new Set([0, Math.floor((data.length - 1) / 2), data.length - 1]));
         xLabels = labelIndexes.map((index) => {
@@ -5966,7 +5962,6 @@
       const latestMarkerRadius = isMobileView ? 11 : 9;
       const latestLeaderStartX = latestX + latestMarkerRadius + 2;
       const latestCallout = `
-        <path d="M ${latestLeaderStartX} ${latestY} L ${latestLeaderEndX} ${latestY} L ${latestLeaderEndX} ${latestLeaderBottomY}" fill="none" stroke="#1e3a5f" stroke-width="${isMobileView ? 2.2 : 2}" stroke-linecap="round" stroke-linejoin="round"></path>
         <text x="${latestInfoX}" y="${latestInfoY}" text-anchor="start" font-size="${isMobileView ? 18 : 15}" font-weight="900" fill="#111827">現在 ¥${latest.price.toLocaleString()}</text>
         <text x="${latestInfoX}" y="${latestInfoLine2Y}" text-anchor="start" font-size="${isMobileView ? 16 : 13.5}" font-weight="900" fill="${diffPrice >= 0 ? "#0f766e" : "#b42318"}">${escapeHtml(formatDiffAmount(diffPrice))} / ${escapeHtml(formatDiffRate(diffRate))}</text>
       `;
