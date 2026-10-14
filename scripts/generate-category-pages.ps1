@@ -262,6 +262,9 @@ function PageHtml([object]$Entry, [string]$Slug) {
   <link rel="canonical" href="$(Html $url)" />
   <link rel="stylesheet" href="./assets/site.css?v=20260917n" />
   <link rel="stylesheet" href="./assets/category-pages.css?v=20260917c" />
+  <style>
+${script:SharedAffiliateStyles}
+  </style>
   <script type="application/ld+json">$json</script>
 </head>
 <body class="page-market-list" data-hide-global-header="1">
@@ -468,6 +471,7 @@ function IndexPageHtml([string]$Group, [array]$Items) {
           <div id="categoryIndexSections">$($sections.ToString())</div>
           <p id="categoryIndexEmpty" class="category-index-empty" hidden>該当するカテゴリーがありません。</p>
         </div>
+${script:SharedAffiliateBlock}
         <div id="site-footer"></div>
       </div>
     </main>
@@ -536,6 +540,13 @@ $zukanTemplate = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
 if ($zukanTemplate -notmatch '<aside class="detail-bottom-affiliates" aria-label="広告">') {
   throw "Category page template is missing the shared desktop affiliate block: $TemplatePath"
 }
+$affiliateStyleMatch = [regex]::Match($zukanTemplate, '(?s)    \.detail-bottom-affiliates \{.*?(?=    \.zukan-page-button \{)')
+$affiliateBlockMatch = [regex]::Match($zukanTemplate, '(?s)          <aside class="detail-bottom-affiliates" aria-label="広告">.*?          </aside>')
+if (-not $affiliateStyleMatch.Success -or -not $affiliateBlockMatch.Success) {
+  throw "Category page template has an incomplete shared desktop affiliate implementation: $TemplatePath"
+}
+$script:SharedAffiliateStyles = $affiliateStyleMatch.Value.TrimEnd("`r", "`n")
+$script:SharedAffiliateBlock = $affiliateBlockMatch.Value
 $previous = if (Test-Path -LiteralPath $ManifestPath) { Get-Content -LiteralPath $ManifestPath -Raw -Encoding UTF8 | ConvertFrom-Json } else { @() }
 $entries = @(
   (CategoryEntries @($data.sleeves) 'pokemon' 'pokemonCategories') +

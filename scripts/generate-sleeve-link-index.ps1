@@ -434,6 +434,7 @@ function Build-AllIndexHtml([array]$Items, [int]$TotalPages, [string]$LastUpdate
   [void]$html.AppendLine('            </div>')
   [void]$html.AppendLine('          </section>')
   Append-ItemList $html $Items
+  Append-AffiliateBlock $html
   Append-PageShellEnd $html
   return $html.ToString()
 }
