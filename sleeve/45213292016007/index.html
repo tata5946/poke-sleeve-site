@@ -5695,26 +5695,22 @@
       let xLabels = [];
       let yearGuides = [];
       if (mode === "all" || mode === "monthly") {
-        const sparseLimit = isMobileView ? 6 : 10;
-        const useObservedTicks = data.length <= sparseLimit;
-        const observedMonthTicks = Array.from(data.reduce((map, point) => {
-          const date = new Date(point.timestamp);
-          const year = date.getFullYear();
-          const month = date.getMonth() + 1;
-          const key = `${year}-${String(month).padStart(2, "0")}`;
-          if (!map.has(key)) map.set(key, { ts: point.timestamp, year, month });
-          return map;
-        }, new Map()).values());
-        const monthTicks = useObservedTicks ? observedMonthTicks : buildCalendarMonthTicks(xMin, xMax);
+        const spanDays = (xMax - xMin) / (24 * 60 * 60 * 1000);
+        const useWeeklyTicks = mode === "all" && spanDays <= 120;
+        const periodTicks = useWeeklyTicks
+          ? data.map((point) => ({ ts: point.timestamp, date: point.date }))
+          : buildCalendarMonthTicks(xMin, xMax);
         const maxAxisLabels = isMobileView ? 4 : 8;
-        const labelStep = Math.max(1, Math.ceil(monthTicks.length / maxAxisLabels));
-        const visibleTicks = monthTicks.filter((tick, index) => (
-          index === 0 || index === monthTicks.length - 1 || index % labelStep === 0
+        const labelStep = Math.max(1, Math.ceil(periodTicks.length / maxAxisLabels));
+        const visibleTicks = periodTicks.filter((tick, index) => (
+          index === 0 || index === periodTicks.length - 1 || index % labelStep === 0
         ));
         xLabels = visibleTicks
           .map((tick, index, arr) => {
             const x = xToPx(tick.ts);
-            const label = `${String(tick.year).slice(-2)}年${tick.month}月`;
+            const label = useWeeklyTicks
+              ? formatWeeklyAxisDateLabel(tick.date)
+              : `${String(tick.year).slice(-2)}年${tick.month}月`;
             const anchor = index === 0 ? "start" : (index === arr.length - 1 ? "end" : "middle");
             return `<text x="${x}" y="${H - 16}" text-anchor="${anchor}" font-size="${xAxisFontSize}" fill="#111827">${escapeHtml(label)}</text>`;
           });
