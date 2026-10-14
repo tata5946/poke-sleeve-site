@@ -5899,7 +5899,7 @@
       const yLabels = [];
       for (const v of niceAxis.ticks) {
         const y = yToPx(v);
-        yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#dce4f0"></line>`);
+        yGrid.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#d8e1ec" stroke-width="1" stroke-dasharray="4 4"></line>`);
         yLabels.push(`<text x="${padL - 10}" y="${y + 4}" text-anchor="end" font-size="${axisFontSize}" fill="#111827">${v.toLocaleString()}</text>`);
       }
 
