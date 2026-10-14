@@ -112,10 +112,38 @@
     @media (max-width: 800px) {
       html:root body.my-collection-page .my-asset-chart-panel {
         width: 100% !important;
-        max-width: 100% !important;
+        max-width: calc(100vw - 36px) !important;
         min-width: 0 !important;
+        margin-inline: auto !important;
         padding: 0 !important;
         overflow: hidden !important;
+        box-sizing: border-box !important;
+      }
+
+      html:root body.my-collection-page .my-asset-chart-head {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        gap: 10px !important;
+      }
+
+      html:root body.my-collection-page .my-asset-chart-head > div,
+      html:root body.my-collection-page .my-asset-periods {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+      }
+
+      html:root body.my-collection-page .my-asset-periods {
+        display: grid !important;
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        gap: 4px !important;
+      }
+
+      html:root body.my-collection-page .my-asset-period-btn {
+        min-width: 0 !important;
+        padding-inline: 2px !important;
       }
 
       html:root body.my-collection-page .my-asset-chart {
@@ -147,7 +175,7 @@
         min-width: 0 !important;
         height: auto !important;
         max-height: none !important;
-        aspect-ratio: 390 / 180;
+        aspect-ratio: 320 / 220;
       }
     }
   </style>
@@ -975,12 +1003,12 @@
       }
 
       const isMobileChart = window.matchMedia("(max-width: 800px)").matches;
-      const W = isMobileChart ? 390 : 1200;
-      const H = isMobileChart ? 180 : 520;
-      const padL = isMobileChart ? 62 : 112;
-      const padR = isMobileChart ? 50 : 92;
-      const padT = isMobileChart ? 32 : 62;
-      const padB = isMobileChart ? 28 : 68;
+      const W = isMobileChart ? 320 : 1200;
+      const H = isMobileChart ? 220 : 520;
+      const padL = isMobileChart ? 52 : 112;
+      const padR = isMobileChart ? 42 : 92;
+      const padT = isMobileChart ? 36 : 62;
+      const padB = isMobileChart ? 34 : 68;
       const values = scoped.map((point) => point.value);
       const quantities = scoped.map((point) => point.totalQuantity || 0);
       const axis = buildAssetAxis(Math.min(...values), Math.max(...values), isMobileChart ? 4 : 5);
