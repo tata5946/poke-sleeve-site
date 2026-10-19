@@ -1655,7 +1655,122 @@
       .category-market-highest-price { font-size:23px; }
     }
   </style>
-<link rel="stylesheet" href="./assets/pricing-quality.css?v=catalog-d016f06d4a2a">
+<link rel="stylesheet" href="./assets/pricing-quality.css?v=catalog-97693ad81614">
+  <style>
+    .mobile-chart-affiliate {
+      display: none;
+    }
+
+    .mobile-anchor-affiliate {
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      body.has-mobile-bottom-nav {
+        padding-bottom: calc(200px + env(safe-area-inset-bottom, 0px));
+      }
+
+      body.has-mobile-bottom-nav.mobile-anchor-collapsed {
+        padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .mobile-chart-affiliate {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 100%;
+        margin: 20px auto;
+      }
+
+      .mobile-affiliate-disclosure {
+        margin: 0 0 6px;
+        color: #6b7280;
+        font-size: 11px;
+        line-height: 1;
+        text-align: center;
+      }
+
+      .mobile-chart-affiliate-banner {
+        position: relative;
+        width: 300px;
+        height: 250px;
+        line-height: 0;
+      }
+
+      .mobile-anchor-affiliate {
+        position: fixed;
+        z-index: 110;
+        left: 0;
+        right: 0;
+        bottom: var(--catalog-anchor-bottom, calc(90px + env(safe-area-inset-bottom, 0px)));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        pointer-events: none;
+      }
+
+      .mobile-anchor-toggle {
+        display: grid;
+        place-items: center;
+        width: 80px;
+        height: 32px;
+        margin: 0;
+        padding: 0;
+        border: 1px solid #d9dee7;
+        border-bottom: 0;
+        border-radius: 12px 12px 0 0;
+        background: #f8fafc;
+        color: #7a8493;
+        box-shadow: 0 -3px 10px rgba(15, 23, 42, 0.12);
+        font: 700 20px/1 sans-serif;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+
+      .mobile-anchor-toggle:focus-visible {
+        outline: 2px solid #2563eb;
+        outline-offset: 2px;
+      }
+
+      .mobile-anchor-affiliate-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        pointer-events: none;
+      }
+
+      .mobile-anchor-affiliate-body[hidden] {
+        display: none;
+      }
+
+      .mobile-anchor-affiliate .mobile-affiliate-disclosure {
+        margin-bottom: 4px;
+        padding: 2px 5px;
+        background: rgba(255, 255, 255, 0.94);
+      }
+
+      .mobile-anchor-affiliate-banner {
+        position: relative;
+        width: 320px;
+        height: 50px;
+        line-height: 0;
+        pointer-events: auto;
+      }
+
+      .mobile-chart-affiliate-banner > img[width="1"],
+      .mobile-anchor-affiliate-banner > img[width="1"] {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+      }
+
+      .mobile-chart-affiliate + .detail-price-grid {
+        margin-top: 28px;
+      }
+    }
+  </style>
 </head>
 
 <body data-hide-global-header="1">
@@ -1680,7 +1795,7 @@
             <p class="zukan-lead">ユクシーが描かれたポケカスリーブ・デッキシールドを一覧で掲載。歴代1種類の現在相場や発売時価格、価格推移を確認できます。</p>
           </div>
           <div class="zukan-hero-meta" aria-label="集計状況">
-            <div id="updatedChip" class="zukan-meta-chip" data-static-updated="1">最終更新 <strong id="updatedAt">2026-10-05</strong></div>
+            <div id="updatedChip" class="zukan-meta-chip" data-static-updated="1">最終更新 <strong id="updatedAt">2026-10-12</strong></div>
             <div id="countChip" class="zukan-meta-chip">表示 <strong id="countInfo">1&#20214;</strong></div>
             <a class="zukan-meta-chip" href="./sleeves/all.html">全デッキシールド一覧</a>
             <a class="zukan-meta-chip" href="./sleeves/page/1/">ページ分割一覧</a>
@@ -1773,6 +1888,15 @@
           <div id="error" class="error ranking-error"></div>
         </section>
 
+        <aside class="mobile-chart-affiliate" aria-label="広告">
+          <p class="mobile-affiliate-disclosure">PR</p>
+          <div class="mobile-chart-affiliate-banner">
+<a href="https://px.a8.net/svt/ejp?a8mat=4BEFL2+3WIBJM+5PLE+5YZ75" rel="nofollow">
+<img border="0" width="300" height="250" alt="" src="https://www21.a8.net/svt/bgt?aid=261013862236&wid=001&eno=01&mid=s00000026645001003000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=4BEFL2+3WIBJM+5PLE+5YZ75" alt="">
+          </div>
+        </aside>
+
         <section class="zukan-results-card" aria-label="図鑑一覧">
           <div class="zukan-results-head">
             <div>
@@ -1836,9 +1960,9 @@
 
   <script>window.__SLEEVE_CATEGORY_PAGE__ = {"group":"pokemon","tag":"ユクシー"};</script>
   <script src="./assets/category-page-map.js?v=20260917a"></script>
-  <script src="./assets/pricing.js?v=catalog-d016f06d4a2a"></script>
+  <script src="./assets/pricing.js?v=catalog-97693ad81614"></script>
 <script src="./assets/zukan-sparkline.js?v=20261012-static1"></script>
-<script src="./assets/common.js?v=catalog-d016f06d4a2a"></script>
+<script src="./assets/common.js?v=catalog-97693ad81614"></script>
   <script>
     function escapeHtml(str) {
       return String(str ?? "")
@@ -2725,6 +2849,67 @@
     }
 
     main();
+  </script>
+  <aside class="mobile-anchor-affiliate" aria-label="広告">
+    <button class="mobile-anchor-toggle" id="mobileAnchorToggle" type="button" aria-expanded="true" aria-controls="mobileAnchorAdBody" aria-label="広告を収納">
+      <span aria-hidden="true">∨</span>
+    </button>
+    <div class="mobile-anchor-affiliate-body" id="mobileAnchorAdBody">
+      <p class="mobile-affiliate-disclosure">PR</p>
+      <div class="mobile-anchor-affiliate-banner">
+<a href="https://px.a8.net/svt/ejp?a8mat=4BEET4+25ZT0Y+2QOI+2TAH5D" rel="nofollow">
+<img border="0" width="320" height="50" alt="" src="https://www27.a8.net/svt/bgt?aid=261012856131&wid=001&eno=01&mid=s00000012789017013000&mc=1"></a>
+<img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=4BEET4+25ZT0Y+2QOI+2TAH5D" alt="">
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    (() => {
+      const updateAnchorOffset = () => {
+        const nav = document.querySelector('.mobile-bottom-nav');
+        if (!nav) return;
+        const bottom = Math.max(0, window.innerHeight - nav.getBoundingClientRect().top) + 8;
+        document.body.style.setProperty('--catalog-anchor-bottom', bottom + 'px');
+      };
+      const observeNav = () => {
+        const nav = document.querySelector('.mobile-bottom-nav');
+        if (nav) new ResizeObserver(updateAnchorOffset).observe(nav);
+        updateAnchorOffset();
+      };
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', observeNav);
+      } else {
+        observeNav();
+      }
+      window.addEventListener('resize', updateAnchorOffset);
+      const storageKey = "pokesuri:mobile-anchor-ad-collapsed:v1";
+      const toggle = document.getElementById("mobileAnchorToggle");
+      const adBody = document.getElementById("mobileAnchorAdBody");
+      if (!toggle || !adBody) return;
+
+      const applyCollapsedState = (collapsed, persist = false) => {
+        document.body.classList.toggle("mobile-anchor-collapsed", collapsed);
+        adBody.hidden = collapsed;
+        toggle.setAttribute("aria-expanded", String(!collapsed));
+        toggle.setAttribute("aria-label", collapsed ? "広告を再表示" : "広告を収納");
+        toggle.querySelector("span").textContent = collapsed ? "∧" : "∨";
+        if (persist) {
+          try {
+            sessionStorage.setItem(storageKey, collapsed ? "1" : "0");
+          } catch (_) {}
+        }
+      };
+
+      let collapsed = false;
+      try {
+        collapsed = sessionStorage.getItem(storageKey) === "1";
+      } catch (_) {}
+      applyCollapsedState(collapsed);
+      toggle.addEventListener("click", () => {
+        applyCollapsedState(toggle.getAttribute("aria-expanded") === "true", true);
+      });
+    })();
   </script>
 </body>
 

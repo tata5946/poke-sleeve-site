@@ -1,10 +1,10 @@
 {
-  "html_count": 1536,
+  "html_count": 1537,
   "product_count": 852,
-  "card_prices_checked": 1764,
-  "ranked_reference_products": 797,
+  "card_prices_checked": 1765,
+  "ranked_reference_products": 800,
   "sitemap_urls": 1207,
-  "ad_loader_pages": 1098,
+  "ad_loader_pages": 1101,
   "excluded_ad_loaders": 0,
   "major_problem_count": 0,
   "problems": [],
@@ -645,7 +645,7 @@
       "title": "ゲームドット ゼクロム｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/4521329114613/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
@@ -1824,7 +1824,7 @@
       "title": "オフィシャルプレイヤーズ　デッキシールド〈ホワイト〉｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/45213292005002/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
@@ -3624,7 +3624,7 @@
       "title": "ダメカン50｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/4521329266879/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
@@ -3828,7 +3828,7 @@
     {
       "file": "sleeve/4521329283760/index.html",
       "url": "https://pokesuri-navi.com/sleeve/4521329283760/",
-      "title": "ザシアン＆ザマゼンタ（2019年発売）｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
+      "title": "ザシアン＆ザマゼンタ｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/4521329283760/",
       "ads": true,
@@ -6303,7 +6303,7 @@
     {
       "file": "sleeve/4521329373065/index.html",
       "url": "https://pokesuri-navi.com/sleeve/4521329373065/",
-      "title": "ザシアン＆ザマゼンタ（2022年発売）｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
+      "title": "ザシアン＆ザマゼンタ（れきせんのゆうしゃ）｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/4521329373065/",
       "ads": true,
@@ -9532,6 +9532,15 @@
       "sitemap": true
     },
     {
+      "file": "sleeves/pokemon/pokemon-53baabd1fc48/index.html",
+      "url": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-53baabd1fc48/",
+      "title": "30のデッキシールド一覧｜歴代1種類・相場価格 | ポケスリ相場ナビ",
+      "noindex": true,
+      "canonical": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-53baabd1fc48/",
+      "ads": false,
+      "sitemap": false
+    },
+    {
       "file": "sleeves/pokemon/pokemon-53cba340556a/index.html",
       "url": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-53cba340556a/",
       "title": "ネクロズマのデッキシールド一覧｜歴代2種類・相場価格 | ポケスリ相場ナビ",
@@ -12711,7 +12720,7 @@
     {
       "file": "sleeves/series/series-9e35bbebb628/index.html",
       "url": "https://pokesuri-navi.com/sleeves/series/series-9e35bbebb628/",
-      "title": "32枚販売のデッキシールド一覧｜歴代121種類・相場価格 | ポケスリ相場ナビ",
+      "title": "32枚販売のデッキシールド一覧｜歴代120種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/series/series-9e35bbebb628/",
       "ads": true,

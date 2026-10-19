@@ -5,6 +5,7 @@ const args = process.argv.slice(2);
 const xlsxDir = args[0] || ".tmp_deckshield_db_xlsx";
 const outPath = args[1] || "data.json";
 const inspectOnly = args.includes("--inspect");
+const maxWeek = (args.find((arg) => arg.startsWith("--max-week=")) || "").slice(11);
 
 function readText(file) {
   return fs.readFileSync(file, "utf8");
@@ -146,6 +147,7 @@ function addPriceRows(target, rows, keyName) {
     if (!byId.has(id)) byId.set(id, []);
     const period = normalizeDate(row[keyName] || row.week || row.month || row.year);
     if (!period) continue;
+    if (keyName === "week" && maxWeek && period > maxWeek) continue;
     const price = numberOrNull(row.price);
     if (keyName !== "week" && price == null) continue;
     const count = numberOrNull(row.count);

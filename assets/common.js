@@ -12,8 +12,8 @@ const GA_MEASUREMENT_ID = "G-FLDX8EB1W8";
 const FAVICON_PATH = "./assets/favicon-512x512.png";
 /* STATIC_CATALOG_META_START */
 const SITE_CATALOG_COUNT = 852;
-const LOCAL_DATA_URL = "./data.json?v=catalog-d016f06d4a2a";
-const CATALOG_CACHE_REVISION = "d016f06d4a2a";
+const LOCAL_DATA_URL = "./data.json?v=catalog-97693ad81614";
+const CATALOG_CACHE_REVISION = "97693ad81614";
 /* STATIC_CATALOG_META_END */
 
 function getCatalogCount() { return SITE_CATALOG_COUNT; }
