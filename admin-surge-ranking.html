@@ -683,9 +683,9 @@
 
           <aside class="period-card">
             <div class="period-title">▣ 集計期間</div>
-            <div class="period-date">2026/07/27 (月)</div>
+            <div class="period-date">2026/10/19 (月)</div>
             <div class="period-arrow">▼</div>
-            <div class="period-date">2026/08/02 (日)</div>
+            <div class="period-date">2026/10/25 (日)</div>
           </aside>
           <div class="source-note">※当サイトの取引価格を元に集計</div>
         </header>
@@ -781,7 +781,7 @@
       { bg: "linear-gradient(135deg,#e8f7ff,#b9e6ff)", rank: "#148cc3", chart: "#ff9700" }
     ];
 const WEEKLY_RANKING_GAS_URL = "https://script.google.com/macros/s/AKfycbwSJdC1W3YoXLHTLU-L0aLD3WM4aewlBDDyQTciBYbNNIuYWNFY7M_o9WatMlF0XnYe/exec";
-    const WEEKLY_RANKING_TARGET_WEEK = "2026-09-14";
+    const WEEKLY_RANKING_TARGET_WEEK = "2026-10-19";
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
@@ -1025,7 +1025,7 @@ const WEEKLY_RANKING_GAS_URL = "https://script.google.com/macros/s/AKfycbwSJdC1W
     async function loadWeeklyRankingData() {
       const sources = [
         { url: WEEKLY_RANKING_GAS_URL, cache: "no-store", label: "GAS" },
-        { url: "./data.json?v=20260831a", cache: "reload", label: "data.json" }
+        { url: "./data.json?v=20261019", cache: "reload", label: "data.json" }
       ];
       let lastError = null;
       for (const source of sources) {
