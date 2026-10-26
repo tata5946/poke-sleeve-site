@@ -1,5 +1,5 @@
 {
-  "latestWeek": "2026-10-12",
+  "latestWeek": "2026-10-19",
   "conditions": "Shared reference quotes; valid latest observation per product; unpriced products excluded from price denominators.",
   "rows": [
     {
@@ -12,8 +12,8 @@
     {
       "year": 2005,
       "count": 2,
-      "priced": 1,
-      "median": 7000,
+      "priced": 2,
+      "median": 6290,
       "highRate": 100
     },
     {
@@ -47,9 +47,9 @@
     {
       "year": 2010,
       "count": 9,
-      "priced": 4,
-      "median": 2085,
-      "highRate": 25
+      "priced": 5,
+      "median": 1333,
+      "highRate": 20
     },
     {
       "year": 2011,
@@ -61,9 +61,9 @@
     {
       "year": 2012,
       "count": 31,
-      "priced": 25,
-      "median": 4222,
-      "highRate": 68
+      "priced": 27,
+      "median": 4100,
+      "highRate": 62.96296296296296
     },
     {
       "year": 2013,
@@ -75,78 +75,78 @@
     {
       "year": 2014,
       "count": 11,
-      "priced": 6,
-      "median": 3400,
-      "highRate": 66.66666666666666
+      "priced": 7,
+      "median": 3000,
+      "highRate": 57.14285714285714
     },
     {
       "year": 2015,
       "count": 35,
-      "priced": 31,
-      "median": 2600,
-      "highRate": 45.16129032258064
+      "priced": 33,
+      "median": 2222,
+      "highRate": 39.39393939393939
     },
     {
       "year": 2016,
       "count": 39,
       "priced": 37,
-      "median": 3900,
-      "highRate": 62.16216216216216
+      "median": 3888,
+      "highRate": 59.45945945945946
     },
     {
       "year": 2017,
       "count": 58,
       "priced": 50,
-      "median": 4016.5,
+      "median": 4066.5,
       "highRate": 68
     },
     {
       "year": 2018,
       "count": 55,
       "priced": 52,
-      "median": 3100,
-      "highRate": 51.92307692307693
+      "median": 2943.5,
+      "highRate": 48.07692307692308
     },
     {
       "year": 2019,
       "count": 82,
       "priced": 79,
-      "median": 1980,
+      "median": 1925,
       "highRate": 20.253164556962027
     },
     {
       "year": 2020,
       "count": 82,
       "priced": 80,
-      "median": 2211,
+      "median": 2140,
       "highRate": 30
     },
     {
       "year": 2021,
       "count": 71,
       "priced": 70,
-      "median": 1260.5,
+      "median": 1159,
       "highRate": 10
     },
     {
       "year": 2022,
       "count": 88,
       "priced": 88,
-      "median": 891,
+      "median": 900,
       "highRate": 1.1363636363636365
     },
     {
       "year": 2023,
       "count": 75,
       "priced": 75,
-      "median": 799,
+      "median": 856,
       "highRate": 4
     },
     {
       "year": 2024,
       "count": 70,
       "priced": 70,
-      "median": 1000,
+      "median": 1105.5,
       "highRate": 2.857142857142857
     },
     {
@@ -160,8 +160,8 @@
       "year": 2026,
       "count": 28,
       "priced": 28,
-      "median": 1232.5,
-      "highRate": 3.571428571428571
+      "median": 1207,
+      "highRate": 0
     }
   ]
 }

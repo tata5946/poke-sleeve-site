@@ -1,10 +1,10 @@
 {
   "html_count": 1537,
   "product_count": 852,
-  "card_prices_checked": 1765,
-  "ranked_reference_products": 800,
+  "card_prices_checked": 1764,
+  "ranked_reference_products": 807,
   "sitemap_urls": 1207,
-  "ad_loader_pages": 1101,
+  "ad_loader_pages": 1108,
   "excluded_ad_loaders": 0,
   "major_problem_count": 0,
   "problems": [],
@@ -663,7 +663,7 @@
       "title": "レックウザ｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/4521329115566/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
@@ -888,7 +888,7 @@
       "title": "ポケモンセンタートウホク｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/4521329130156/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
@@ -951,7 +951,7 @@
       "title": "ゼルネアス・イベルタル｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/4521329134789/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
@@ -1059,7 +1059,7 @@
       "title": "カイリュー｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/4521329135540/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
@@ -1167,7 +1167,7 @@
       "title": "ヤドン｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/4521329136226/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
@@ -1815,7 +1815,7 @@
       "title": "オフィシャルプレイヤーズ　デッキシールド〈レッド〉｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/45213292005001/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
@@ -1842,7 +1842,7 @@
       "title": "モンスターボール柄 レッドver.（2010年発売）｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/45213292010001/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
@@ -9534,9 +9534,9 @@
     {
       "file": "sleeves/pokemon/pokemon-53baabd1fc48/index.html",
       "url": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-53baabd1fc48/",
-      "title": "30のデッキシールド一覧｜歴代1種類・相場価格 | ポケスリ相場ナビ",
+      "title": "カテゴリページを移動しました",
       "noindex": true,
-      "canonical": "https://pokesuri-navi.com/sleeves/pokemon/pokemon-53baabd1fc48/",
+      "canonical": "https://pokesuri-navi.com/sleeves/?group=pokemon&tag=30",
       "ads": false,
       "sitemap": false
     },
@@ -12720,7 +12720,7 @@
     {
       "file": "sleeves/series/series-9e35bbebb628/index.html",
       "url": "https://pokesuri-navi.com/sleeves/series/series-9e35bbebb628/",
-      "title": "32枚販売のデッキシールド一覧｜歴代120種類・相場価格 | ポケスリ相場ナビ",
+      "title": "32枚販売のデッキシールド一覧｜歴代121種類・相場価格 | ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeves/series/series-9e35bbebb628/",
       "ads": true,
