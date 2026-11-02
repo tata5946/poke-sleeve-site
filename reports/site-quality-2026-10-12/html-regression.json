@@ -2,9 +2,9 @@
   "html_count": 1537,
   "product_count": 852,
   "card_prices_checked": 1764,
-  "ranked_reference_products": 807,
+  "ranked_reference_products": 808,
   "sitemap_urls": 1207,
-  "ad_loader_pages": 1108,
+  "ad_loader_pages": 1109,
   "excluded_ad_loaders": 0,
   "major_problem_count": 0,
   "problems": [],
@@ -960,7 +960,7 @@
       "title": "メガリザードン｜デッキシールドの相場・価格推移｜ポケスリ相場ナビ",
       "noindex": false,
       "canonical": "https://pokesuri-navi.com/sleeve/4521329134918/",
-      "ads": false,
+      "ads": true,
       "sitemap": true
     },
     {
