@@ -3500,8 +3500,13 @@
 
       applyStaticCategoryFilter();
 
+      // The catalog is fixed for this page load. Reuse quotes across filters and sorts.
+      const cardPriceCache = new WeakMap();
       function getCardPrice(s) {
-        return SleevePricing.quote(s)?.price ?? null;
+        if (!cardPriceCache.has(s)) {
+          cardPriceCache.set(s, SleevePricing.quote(s)?.price ?? null);
+        }
+        return cardPriceCache.get(s);
       }
 
       function getReleaseSortTime(sleeve) {
@@ -3685,7 +3690,10 @@
         selectEl.value = values.some((value) => String(value) === selectedValue) ? selectedValue : "";
       }
 
+      let lastFacetStateKey = null;
       function refreshFacetOptions(state) {
+        const stateKey = JSON.stringify(state);
+        if (stateKey === lastFacetStateKey) return;
         const facetConfigs = [
           { key: "releaseYear", select: releaseYearSel, values: (items) => uniq(items.map((sleeve) => sleeve.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b) },
           { key: "series", select: seriesSel, values: (items) => uniq(items.flatMap(getSeriesFilterValues)).sort((a, b) => a.localeCompare(b, "ja")) },
@@ -3698,6 +3706,7 @@
           const matchingSleeves = sleeves.filter((sleeve) => sleeveMatchesFilters(sleeve, state, facet.key));
           replaceFacetOptions(facet.select, facet.values(matchingSleeves));
         }
+        lastFacetStateKey = JSON.stringify(getActiveFilterState());
       }
 
       function render() {
@@ -3719,18 +3728,23 @@
           filtered.push(s);
         }
 
-        filtered.sort((a, b) => {
-          const pa = getCardPrice(a) ?? -1;
-          const pb = getCardPrice(b) ?? -1;
-          const ta = getTotalTradeCount(a) ?? 0;
-          const tb = getTotalTradeCount(b) ?? 0;
-
+        // Calculate expensive sort keys once per item, and only for the chosen order.
+        const sortKeys = new Map();
+        for (const sleeve of filtered) {
           switch (sortOrder) {
-            case "priceAsc": return pa - pb;
-            case "tradeCountDesc": return (tb - ta) || (pb - pa);
+            case "nameAsc": break;
+            case "releaseDesc": sortKeys.set(sleeve, getReleaseSortTime(sleeve)); break;
+            case "tradeCountDesc": sortKeys.set(sleeve, getTotalTradeCount(sleeve) ?? 0); break;
+            default: sortKeys.set(sleeve, getCardPrice(sleeve) ?? -1);
+          }
+        }
+        filtered.sort((a, b) => {
+          switch (sortOrder) {
+            case "priceAsc": return sortKeys.get(a) - sortKeys.get(b);
+            case "tradeCountDesc": return (sortKeys.get(b) - sortKeys.get(a)) || ((getCardPrice(b) ?? -1) - (getCardPrice(a) ?? -1));
             case "nameAsc": return String(a.name ?? "").localeCompare(String(b.name ?? ""));
-            case "releaseDesc": return (getReleaseSortTime(b) - getReleaseSortTime(a)) || String(a.name ?? "").localeCompare(String(b.name ?? ""));
-            default: return pb - pa;
+            case "releaseDesc": return (sortKeys.get(b) - sortKeys.get(a)) || String(a.name ?? "").localeCompare(String(b.name ?? ""));
+            default: return sortKeys.get(b) - sortKeys.get(a);
           }
         });
 
@@ -3835,6 +3849,7 @@
 
       let t = null;
       const renderFromFirstPage = () => {
+        clearTimeout(t);
         currentPage = 1;
         render();
       };
