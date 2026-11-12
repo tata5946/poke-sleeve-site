@@ -3677,6 +3677,8 @@
       function replaceFacetOptions(selectEl, values) {
         if (!selectEl || selectEl.disabled) return;
         const selectedValue = selectEl.value;
+        if (selectEl.options.length === values.length + 1 &&
+            values.every((value, index) => selectEl.options[index + 1].value === String(value))) return;
         const allOption = document.createElement("option");
         allOption.value = "";
         allOption.textContent = "全部";
@@ -3690,10 +3692,14 @@
         selectEl.value = values.some((value) => String(value) === selectedValue) ? selectedValue : "";
       }
 
+      // Keep a small history so clearing filters can restore the full menus directly.
+      const facetOptionsCache = new Map();
+      const cardNodeCache = new WeakMap();
       let lastFacetStateKey = null;
       function refreshFacetOptions(state) {
         const stateKey = JSON.stringify(state);
         if (stateKey === lastFacetStateKey) return;
+        const cachedOptions = facetOptionsCache.get(stateKey);
         const facetConfigs = [
           { key: "releaseYear", select: releaseYearSel, values: (items) => uniq(items.map((sleeve) => sleeve.releaseYear)).map(Number).filter(Number.isFinite).sort((a, b) => a - b) },
           { key: "series", select: seriesSel, values: (items) => uniq(items.flatMap(getSeriesFilterValues)).sort((a, b) => a.localeCompare(b, "ja")) },
@@ -3701,12 +3707,21 @@
           { key: "trainer", select: trainerFilterSel, values: (items) => uniq(items.flatMap(getTrainerFilterValues)).sort((a, b) => a.localeCompare(b, "ja")) },
           { key: "illustrator", select: illustratorFilterSel, values: (items) => uniq(items.flatMap(getIllustratorFilterValues)).sort((a, b) => a.localeCompare(b, "ja")) }
         ];
+        const optionsByFacet = cachedOptions || {};
         for (const facet of facetConfigs) {
           if (!facet.select || facet.select.disabled) continue;
-          const matchingSleeves = sleeves.filter((sleeve) => sleeveMatchesFilters(sleeve, state, facet.key));
-          replaceFacetOptions(facet.select, facet.values(matchingSleeves));
+          if (!cachedOptions) {
+            const matchingSleeves = sleeves.filter((sleeve) => sleeveMatchesFilters(sleeve, state, facet.key));
+            optionsByFacet[facet.key] = facet.values(matchingSleeves);
+          }
+          replaceFacetOptions(facet.select, optionsByFacet[facet.key]);
         }
-        lastFacetStateKey = JSON.stringify(getActiveFilterState());
+        if (!cachedOptions) {
+          if (facetOptionsCache.size >= 12) facetOptionsCache.delete(facetOptionsCache.keys().next().value);
+          facetOptionsCache.set(stateKey, optionsByFacet);
+        }
+        // Cache under the input state: replacing options can clear invalid selections.
+        lastFacetStateKey = stateKey;
       }
 
       function render() {
@@ -3719,8 +3734,6 @@
         const normalizedGroup = filterState.group;
         const normalizedTag = filterState.tag;
         const normalizedType = filterState.type;
-
-        list.innerHTML = "";
 
         const filtered = [];
         for (const s of sleeves) {
@@ -3778,6 +3791,11 @@
         const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
         pageItems.forEach((s) => {
+          const cachedCard = cardNodeCache.get(s);
+          if (cachedCard) {
+            frag.appendChild(cachedCard);
+            return;
+          }
           const p = getCardPrice(s);
           const priceText = (p == null) ? "-" : `${p.toLocaleString()}円`;
 
@@ -3838,10 +3856,12 @@
           quickButton.textContent = "+";
 
           shell.append(card, quickButton);
+          cardNodeCache.set(s, shell);
           frag.appendChild(shell);
         });
 
-        list.appendChild(frag);
+        // Swap once after preparation; reuse cards, images and graphs on reset.
+        list.replaceChildren(frag);
         if (window.common && typeof window.common.setupQuickCollectionButtons === "function") {
           window.common.setupQuickCollectionButtons(list);
         }
